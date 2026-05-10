@@ -1,5 +1,5 @@
 import { defineCollection, z } from 'astro:content';
-import { glob, file } from 'astro/loaders';
+import { glob } from 'astro/loaders';
 
 const insights = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/insights' }),
@@ -11,6 +11,7 @@ const insights = defineCollection({
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
+    ogImage: z.string().optional(),
   }),
 });
 

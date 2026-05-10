@@ -1,5 +1,10 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+
+const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+);
 ---
 
 <Layout
@@ -7,6 +12,26 @@ import Layout from '../../layouts/Layout.astro';
   description="Articles on growth, AI systems, GTM architecture, and building revenue systems."
 >
   <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
-    <p class="text-[var(--color-text-muted)]">Insights — coming in Sprint 3.</p>
+    <div class="max-w-2xl mb-12">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Insights</p>
+      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight">
+        Articles on growth, AI systems, and GTM architecture.
+      </h1>
+    </div>
+    <div class="grid gap-6">
+      {posts.map((post) => {
+        const slug = post.id.replace(/\.mdx?$/, '');
+
+        return (
+          <a
+            href={`/insights/${slug}/`}
+            class="block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 hover:border-[var(--color-border-2)] transition-colors"
+          >
+            <h2 class="text-xl font-semibold text-[var(--color-text)] mb-3">{post.data.title}</h2>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{post.data.description}</p>
+          </a>
+        );
+      })}
+    </div>
   </div>
 </Layout>

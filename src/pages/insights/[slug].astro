@@ -1,0 +1,64 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('insights', ({ data }) => !data.draft);
+
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.mdx?$/, '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const canonicalPath = `/insights/${post.id.replace(/\.mdx?$/, '')}/`;
+const canonicalURL = new URL(canonicalPath, Astro.site).href;
+const publishedAt = post.data.publishedAt.toISOString();
+const updatedAt = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: publishedAt,
+  dateModified: updatedAt,
+  mainEntityOfPage: canonicalURL,
+  url: canonicalURL,
+  author: {
+    '@type': 'Person',
+    name: 'Wojciech Łuszczyński',
+    url: 'https://wojciech.io/',
+  },
+  publisher: {
+    '@type': 'Person',
+    name: 'Wojciech Łuszczyński',
+    url: 'https://wojciech.io/',
+  },
+};
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  canonical={canonicalPath}
+  ogImage={post.data.ogImage}
+  type="article"
+  publishedAt={publishedAt}
+  updatedAt={updatedAt}
+  schema={articleSchema}
+>
+  <article class="mx-auto max-w-3xl px-6 py-[var(--space-section)]">
+    <header class="mb-12">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Insight</p>
+      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
+        {post.data.title}
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] leading-relaxed">{post.data.description}</p>
+    </header>
+    <div class="prose-content">
+      <Content />
+    </div>
+  </article>
+</Layout>
