@@ -1,46 +1,96 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import Badge from '../components/ui/Badge.astro';
 import CTABand from '../components/ui/CTABand.astro';
+import ProofCard from '../components/ui/ProofCard.astro';
+import TestimonialCard from '../components/ui/TestimonialCard.astro';
+import AvatarRing from '../components/ui/AvatarRing.astro';
+
+const featuredWork = (await getCollection('work', ({ data }) => data.featured && !data.draft))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+// Testimonials — content validated by Wojciech before Sprint 3 publish
+const testimonials = [
+  {
+    quote: "Testimonial content — to be provided and validated before launch.",
+    name: "TBD",
+    role: "Role, Company",
+  },
+  {
+    quote: "Testimonial content — to be provided and validated before launch.",
+    name: "TBD",
+    role: "Role, Company",
+  },
+  {
+    quote: "Testimonial content — to be provided and validated before launch.",
+    name: "TBD",
+    role: "Role, Company",
+  },
+];
 ---
 
 <Layout>
 
   <!-- ─── 1. HERO ─────────────────────────────────────────────────── -->
   <section class="relative pt-24 pb-20 md:pt-32 md:pb-28 overflow-hidden">
-    <!-- Subtle grid background -->
-    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:48px_48px] opacity-30" aria-hidden="true" />
+    <!-- Grid -->
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:48px_48px] opacity-20" aria-hidden="true" />
     <!-- Glow -->
-    <div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[var(--color-accent-lo)]/20 blur-[120px] rounded-full" aria-hidden="true" />
+    <div class="pointer-events-none absolute -top-40 left-1/3 w-[700px] h-[500px] bg-[var(--color-accent-lo)]/15 blur-[140px] rounded-full" aria-hidden="true" />
 
     <div class="relative mx-auto max-w-6xl px-6">
-      <div class="max-w-3xl">
-        <Badge variant="accent" class="mb-6">Growth operator · AI-native builder</Badge>
-        <h1 class="text-4xl md:text-6xl font-semibold text-[var(--color-text)] leading-[1.1] tracking-tight mb-6">
-          <!-- TBD: final hero line in Sprint 2 -->
-          I build revenue systems<br class="hidden md:block" /> that compound.
-        </h1>
-        <p class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-2xl mb-10">
-          <!-- TBD: hero subline -->
-          Growth strategy, GTM architecture, AI workflows, and the missing product layer — built and shipped, not just scoped.
-        </p>
-        <div class="flex flex-wrap gap-4">
-          <a
-            href="/work"
-            class="inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-medium px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
-          >
-            See the work
-          </a>
-          <a
-            href="https://cal.com/wojciech-luszczynski"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 border border-[var(--color-border-2)] text-[var(--color-text)] font-medium px-6 py-3 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent-hi)] transition-colors"
-          >
-            Book a call
-          </a>
+      <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
+
+        <!-- Text -->
+        <div class="flex-1 max-w-2xl">
+          <div class="inline-flex items-center gap-2 border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 rounded-[var(--radius-badge)] px-3 py-1 mb-8">
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]"></span>
+            <span class="text-xs font-medium text-[var(--color-accent)]">Growth operator · AI-native builder</span>
+          </div>
+
+          <h1 class="text-4xl md:text-6xl font-semibold text-[var(--color-text)] leading-[1.08] tracking-tight mb-6">
+            I build revenue systems<br class="hidden md:block" />
+            <span class="text-[var(--color-accent)]">that compound.</span>
+          </h1>
+
+          <p class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-xl mb-10">
+            Growth strategy, GTM architecture, AI workflows, and the missing product layer —
+            built and shipped, not just scoped.
+          </p>
+
+          <div class="flex flex-wrap gap-3">
+            <a
+              href="/work"
+              class="inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
+            >
+              See the work
+            </a>
+            <a
+              href="https://cal.com/wojciech-luszczynski"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 border border-[var(--color-border-2)] text-[var(--color-text)] font-medium px-6 py-3 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors"
+            >
+              Book a call
+            </a>
+          </div>
         </div>
+
+        <!-- Avatar -->
+        <div class="shrink-0 flex flex-col items-center gap-6">
+          <AvatarRing src="/images/wojciech.jpg" size="xl" />
+          <div class="flex gap-3">
+            {['GetResponse', 'Brand24', 'Kadromierz'].map((co) => (
+              <span class="text-xs text-[var(--color-text-dim)] px-3 py-1 rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface)]">
+                {co}
+              </span>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -48,22 +98,24 @@ import CTABand from '../components/ui/CTABand.astro';
   <!-- ─── 2. PROBLEM FRAMING ──────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader
-        eyebrow="The problem"
-        heading="Growth breaks when systems are fragmented — not because teams lack activity."
-        lead="Most growth stalls because the pieces don't connect: the CRM doesn't feed the playbook, the playbook doesn't match the pipeline, and the pipeline data isn't trusted. I fix the architecture, not just the symptoms."
-      />
+      <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+        <SectionHeader
+          eyebrow="The problem"
+          heading="Growth breaks when systems are fragmented — not because teams lack activity."
+        />
+        <p class="text-[var(--color-text-muted)] leading-relaxed text-lg">
+          Most growth stalls because the pieces don't connect: the CRM doesn't feed the playbook,
+          the playbook doesn't match the pipeline, and the pipeline data isn't trusted.
+          I fix the architecture, not just the symptoms.
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- ─── 3. HOW I WORK ───────────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader
-        eyebrow="How I work"
-        heading="Diagnose. Design. Implement. Instrument."
-        class="mb-12"
-      />
+      <SectionHeader eyebrow="How I work" heading="Diagnose. Design. Implement. Instrument." class="mb-12" />
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { step: '01', title: 'Diagnose', body: 'Audit the revenue architecture — pipeline, CRM, GTM motions, and where the signal is lost.' },
@@ -71,8 +123,8 @@ import CTABand from '../components/ui/CTABand.astro';
           { step: '03', title: 'Implement', body: 'Build it — ops, tooling, copy, sequences, dashboards — or work alongside the team doing it.' },
           { step: '04', title: 'Build missing tools', body: "If the right tool doesn't exist, I ship it. AI workflows, custom apps, operator tooling." },
         ].map(({ step, title, body }) => (
-          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-            <p class="text-xs font-mono text-[var(--color-accent)] mb-3">{step}</p>
+          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 hover:border-[var(--color-border-2)] transition-colors">
+            <p class="text-xs font-mono text-[var(--color-accent)] mb-4">{step}</p>
             <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{title}</h3>
             <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
           </div>
@@ -84,34 +136,38 @@ import CTABand from '../components/ui/CTABand.astro';
   <!-- ─── 4. PROOF CLUSTERS ───────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader
-        eyebrow="Proof architecture"
-        heading="Three clusters. One coherent story."
-        class="mb-12"
-      />
+      <SectionHeader eyebrow="Proof architecture" heading="Three clusters. One coherent story." class="mb-12" />
       <div class="grid md:grid-cols-3 gap-6">
         {[
           {
             cluster: 'AI-native GTM systems',
-            description: 'AdsAI, Ad Assistant, Claude Code GTM Starter Pack, Notch macOS app built with Codex.',
+            description: 'AdsAI, Ad Assistant, Claude Code GTM Starter Pack, Notch macOS app — practical AI that ships and runs.',
             tag: 'AI · Builder',
+            href: '/work#ai-gtm',
           },
           {
             cluster: 'Growth architecture in practice',
-            description: 'Kadromierz Q1/Q2 system, CRO/SEO/CRM operating models, Brand24 AI adoption.',
+            description: 'Kadromierz Q1/Q2 system, CRO/SEO/CRM operating models, Brand24 AI adoption — revenue systems, not campaigns.',
             tag: 'Growth · GTM',
+            href: '/work#growth-architecture',
           },
           {
             cluster: 'Products actually shipped',
-            description: 'Kamperownia booking engine, Działka+, Paczka+, Resume+, and the full app portfolio.',
+            description: 'Kamperownia booking engine, Działka+, Paczka+, Resume+ — real products with real users, not just side projects.',
             tag: 'Product · Execution',
+            href: '/work#products-shipped',
           },
-        ].map(({ cluster, description, tag }) => (
-          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 hover:border-[var(--color-border-2)] hover:shadow-[var(--shadow-card-hover)] transition-all">
-            <Badge variant="accent" class="mb-4">{tag}</Badge>
-            <h3 class="text-lg font-semibold text-[var(--color-text)] mb-3">{cluster}</h3>
+        ].map(({ cluster, description, tag, href }) => (
+          <a
+            href={href}
+            class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 hover:border-[var(--color-accent)]/40 hover:shadow-[var(--shadow-card-hover)] transition-all block"
+          >
+            <span class="inline-flex items-center text-xs font-medium px-3 py-1 rounded-[var(--radius-badge)] border border-[var(--color-accent)]/30 text-[var(--color-accent)] bg-[var(--color-accent)]/5 mb-5">
+              {tag}
+            </span>
+            <h3 class="text-lg font-semibold text-[var(--color-text)] mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors">{cluster}</h3>
             <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{description}</p>
-          </div>
+          </a>
         ))}
       </div>
     </div>
@@ -122,16 +178,20 @@ import CTABand from '../components/ui/CTABand.astro';
     <div class="mx-auto max-w-6xl px-6">
       <div class="flex items-end justify-between mb-12">
         <SectionHeader eyebrow="Selected work" heading="Flagship proof." />
-        <a href="/work" class="text-sm text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors hidden sm:block">
-          View all work →
+        <a href="/work" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block">
+          View all →
         </a>
       </div>
-      <!-- TBD: replace with real ProofCard components in Sprint 2 -->
       <div class="grid md:grid-cols-3 gap-6">
-        {['Case study 1', 'Case study 2', 'Case study 3'].map((label) => (
-          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 h-48 flex items-end">
-            <p class="text-sm text-[var(--color-text-dim)] font-mono">{label} — TBD Sprint 2</p>
-          </div>
+        {featuredWork.map((item) => (
+          <ProofCard
+            title={item.data.title}
+            description={item.data.description}
+            tags={item.data.tags}
+            metrics={item.data.metrics}
+            href={item.data.href}
+            featured={item.data.featured}
+          />
         ))}
       </div>
     </div>
@@ -144,11 +204,26 @@ import CTABand from '../components/ui/CTABand.astro';
         <SectionHeader
           eyebrow="AI systems"
           heading="AI changes the operating leverage, not just the output."
-          lead="I don't use AI to generate copy faster. I use it to redesign how growth systems are built, instrumented, and iterated — so the whole stack moves faster."
+          lead="I use AI to redesign how growth systems are built, instrumented, and iterated — so the whole stack moves faster, not just one task in the queue."
         />
-        <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-          <!-- TBD: AI systems teaser block in Sprint 2 -->
-          <p class="text-sm text-[var(--color-text-dim)] font-mono">AI systems detail — TBD Sprint 2</p>
+        <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 space-y-4">
+          {[
+            { label: 'Ad creation loop', before: 'Days', after: 'Minutes' },
+            { label: 'CRM enrichment', before: 'Manual / BDR time', after: 'Automated' },
+            { label: 'SEO brief → draft', before: 'Week', after: 'Hours' },
+            { label: 'Outbound sequencing', before: 'Templates', after: 'AI-personalised' },
+          ].map(({ label, before, after }) => (
+            <div class="flex items-center justify-between py-3 border-b border-[var(--color-border)] last:border-0">
+              <p class="text-sm text-[var(--color-text-muted)]">{label}</p>
+              <div class="flex items-center gap-3 text-xs">
+                <span class="text-[var(--color-text-dim)] line-through">{before}</span>
+                <span class="text-[var(--color-accent)] font-semibold">{after}</span>
+              </div>
+            </div>
+          ))}
+          <a href="/ai-systems" class="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors mt-2">
+            See all AI systems →
+          </a>
         </div>
       </div>
     </div>
@@ -157,20 +232,13 @@ import CTABand from '../components/ui/CTABand.astro';
   <!-- ─── 7. TESTIMONIALS ─────────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader
-        eyebrow="Testimonials"
-        heading="What operators say."
-        align="center"
-        class="mb-12"
-      />
-      <!-- TBD: curated subset in Sprint 2 -->
+      <SectionHeader eyebrow="Testimonials" heading="What operators say." align="center" class="mb-12" />
       <div class="grid md:grid-cols-3 gap-6">
-        {['Testimonial 1', 'Testimonial 2', 'Testimonial 3'].map((label) => (
-          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 h-40 flex items-end">
-            <p class="text-sm text-[var(--color-text-dim)] font-mono">{label} — TBD Sprint 2</p>
-          </div>
+        {testimonials.map((t) => (
+          <TestimonialCard quote={t.quote} name={t.name} role={t.role} />
         ))}
       </div>
+      <p class="text-center text-xs text-[var(--color-text-dim)] mt-6">Testimonial content to be validated before launch.</p>
     </div>
   </section>
 
@@ -179,26 +247,31 @@ import CTABand from '../components/ui/CTABand.astro';
     <div class="mx-auto max-w-6xl px-6">
       <div class="flex items-end justify-between mb-8">
         <SectionHeader eyebrow="From the insights" heading="One article worth your time." />
-        <a href="/insights" class="text-sm text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors hidden sm:block">
+        <a href="/insights" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block">
           All articles →
         </a>
       </div>
-      <!-- TBD: real InsightCard in Sprint 3 -->
-      <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8">
-        <Badge variant="muted" class="mb-4">Article</Badge>
-        <h3 class="text-xl font-semibold text-[var(--color-text)] mb-2">
-          Claude Code vs Clay — which AI tool actually moves the pipeline?
-        </h3>
-        <p class="text-sm text-[var(--color-text-muted)] mb-6">
-          A practical comparison for GTM operators who ship, not just evaluate.
-        </p>
-        <a
-          href="/insights/claude-code-vs-clay/"
-          class="text-sm font-medium text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors"
-        >
-          Read the article →
-        </a>
-      </div>
+      <a
+        href="/insights/claude-code-vs-clay"
+        class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 flex flex-col md:flex-row gap-8 hover:border-[var(--color-border-2)] transition-colors block"
+      >
+        <div class="flex-1">
+          <span class="inline-flex items-center text-xs font-medium px-3 py-1 rounded-[var(--radius-badge)] border border-[var(--color-border-2)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)] mb-4">
+            Article
+          </span>
+          <h3 class="text-xl font-semibold text-[var(--color-text)] mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors">
+            Claude Code vs Clay — which AI tool actually moves the pipeline?
+          </h3>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            A practical comparison for GTM operators who ship, not just evaluate.
+          </p>
+        </div>
+        <div class="flex items-end md:items-center shrink-0">
+          <span class="text-sm font-medium text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
+            Read →
+          </span>
+        </div>
+      </a>
     </div>
   </section>
 
