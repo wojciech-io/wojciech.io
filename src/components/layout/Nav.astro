@@ -1,0 +1,35 @@
+---
+const links = [
+  { label: 'Work', href: '/work' },
+  { label: 'AI Systems', href: '/ai-systems' },
+  { label: 'Products', href: 'https://app.wojciech.io/apps', external: true },
+  { label: 'Insights', href: '/insights' },
+  { label: 'About', href: '/about' },
+];
+
+const current = Astro.url.pathname;
+---
+
+<nav aria-label="Primary navigation">
+  <ul class="flex items-center gap-6 list-none m-0 p-0">
+    {links.map(({ label, href, external }) => {
+      const isActive = !external && (href === '/' ? current === '/' : current.startsWith(href));
+      return (
+        <li>
+          <a
+            href={href}
+            class:list={[
+              'text-sm font-medium tracking-wide transition-colors duration-150',
+              isActive
+                ? 'text-[var(--color-text)]'
+                : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
+            ]}
+            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >
+            {label}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
