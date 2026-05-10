@@ -3,24 +3,47 @@ interface Props {
   src?: string;
   alt?: string;
   size?: 'md' | 'lg' | 'xl';
+  loading?: 'eager' | 'lazy';
+  fetchpriority?: 'high' | 'low' | 'auto';
 }
 
-const { src, alt = 'Wojciech Łuszczyński', size = 'lg' } = Astro.props;
+const {
+  src,
+  alt = 'Wojciech Łuszczyński',
+  size = 'lg',
+  loading = 'lazy',
+  fetchpriority = 'auto',
+} = Astro.props;
 
 const sizes = {
-  md: 'w-24 h-24',
-  lg: 'w-36 h-36',
-  xl: 'w-48 h-48',
+  md: { className: 'w-24 h-24', pixels: 96 },
+  lg: { className: 'w-36 h-36', pixels: 144 },
+  xl: { className: 'w-48 h-48', pixels: 192 },
 };
+
+const sizeConfig = sizes[size];
+const avatarSrcSet = src === '/images/wojciech.jpg'
+  ? '/images/wojciech-avatar-384.webp 384w, /images/wojciech-avatar-768.webp 768w'
+  : undefined;
 ---
 
-<div class:list={['relative rounded-full p-[3px] shrink-0', sizes[size]]}
+<div class:list={['relative rounded-full p-[3px] shrink-0', sizeConfig.className]}
      style="background: var(--color-accent);">
   <div class="rounded-full overflow-hidden w-full h-full bg-[var(--color-surface-2)]">
     {src ? (
-      <img src={src} alt={alt} class="w-full h-full object-cover" loading="eager" />
+      <img
+        src={src}
+        srcset={avatarSrcSet}
+        sizes={`${sizeConfig.pixels}px`}
+        width={sizeConfig.pixels}
+        height={sizeConfig.pixels}
+        alt={alt}
+        class="w-full h-full object-cover"
+        loading={loading}
+        decoding="async"
+        fetchpriority={fetchpriority}
+      />
     ) : (
-      <!-- Placeholder until image is added to public/images/wojciech.jpg -->
       <div class="w-full h-full flex items-center justify-center bg-[var(--color-surface-2)]">
         <span class="text-4xl font-bold text-[var(--color-accent)]">W</span>
       </div>
