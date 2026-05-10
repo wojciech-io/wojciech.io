@@ -1,5 +1,5 @@
 ---
-import Nav from './Nav.astro';
+import Nav, { links } from './Nav.astro';
 ---
 
 <header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg)]/90 backdrop-blur-md">
@@ -27,16 +27,44 @@ import Nav from './Nav.astro';
       </a>
     </div>
 
-    <!-- Mobile: simple menu placeholder (Sprint 2) -->
-    <button
-      class="md:hidden text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-      aria-label="Open menu"
-      aria-expanded="false"
-    >
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-        <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-      </svg>
-    </button>
+    <!-- Mobile nav -->
+    <details class="md:hidden relative">
+      <summary
+        class="list-none cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)] [&::-webkit-details-marker]:hidden"
+        aria-label="Open navigation"
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </summary>
+      <div class="absolute right-0 top-10 w-56 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-card)]">
+        <nav aria-label="Mobile navigation">
+          <ul class="list-none m-0 p-0 space-y-1">
+            {links.map(({ label, href, external }) => (
+              <li>
+                <a
+                  href={href}
+                  class="block rounded-[var(--radius-btn)] px-3 py-2 text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors"
+                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+            <li class="pt-2">
+              <a
+                href="https://cal.com/wojciech-luszczynski"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block rounded-[var(--radius-btn)] bg-[var(--color-accent)] px-3 py-2 text-sm font-semibold text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hi)] transition-colors"
+              >
+                Book a call
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </details>
 
   </div>
 </header>
