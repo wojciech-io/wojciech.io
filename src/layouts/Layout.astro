@@ -10,9 +10,23 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   noindex?: boolean;
+  type?: 'website' | 'article';
+  publishedAt?: Date | string;
+  updatedAt?: Date | string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, canonical, ogImage, noindex } = Astro.props;
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  noindex,
+  type,
+  publishedAt,
+  updatedAt,
+  schema,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -24,6 +38,10 @@ const { title, description, canonical, ogImage, noindex } = Astro.props;
       canonical={canonical}
       ogImage={ogImage}
       noindex={noindex}
+      type={type}
+      publishedAt={publishedAt}
+      updatedAt={updatedAt}
+      schema={schema}
     />
   </head>
   <body class="min-h-dvh flex flex-col">
