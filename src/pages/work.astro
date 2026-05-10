@@ -1,12 +1,81 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import ProofCard from '../components/ui/ProofCard.astro';
+import CTABand from '../components/ui/CTABand.astro';
+
+const allWork = (await getCollection('work', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const clusters = [
+  {
+    id: 'ai-gtm',
+    label: 'AI-native GTM systems',
+    eyebrow: 'Cluster 01',
+    description: 'Practical AI implementation, workflow redesign, and code-assisted execution — turning ideas into working operator tools.',
+  },
+  {
+    id: 'growth-architecture',
+    label: 'Growth architecture in practice',
+    eyebrow: 'Cluster 02',
+    description: 'Revenue-system thinking with real metrics, operating cadence, and growth levers — built and run, not just scoped.',
+  },
+  {
+    id: 'products-shipped',
+    label: 'Products actually shipped',
+    eyebrow: 'Cluster 03',
+    description: 'Real product delivery with UX and conversion thinking — proof of range beyond strategic documents.',
+  },
+];
 ---
 
 <Layout
   title="Work"
   description="Selected systems, case studies, and growth outcomes — the proof architecture of Wojciech Łuszczyński."
 >
-  <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
-    <p class="text-[var(--color-text-muted)]">Work — coming in Sprint 2.</p>
-  </div>
+
+  <!-- Header -->
+  <section class="pt-20 pb-16 border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Work</p>
+      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5 max-w-2xl">
+        Three clusters. One coherent story.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+        The proof is grouped by what it demonstrates — not by date, client, or format.
+      </p>
+    </div>
+  </section>
+
+  <!-- Clusters -->
+  {clusters.map(({ id, label, eyebrow, description }) => {
+    const items = allWork.filter((w) => w.data.cluster === id);
+    return (
+      <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+        <div class="mx-auto max-w-6xl px-6">
+          <div class="mb-12">
+            <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">{eyebrow}</p>
+            <h2 class="text-2xl md:text-3xl font-semibold text-[var(--color-text)] mb-3">{label}</h2>
+            <p class="text-[var(--color-text-muted)] max-w-xl">{description}</p>
+          </div>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {items.map((item) => (
+              <ProofCard
+                title={item.data.title}
+                description={item.data.description}
+                tags={item.data.tags}
+                metrics={item.data.metrics}
+                href={item.data.href}
+                featured={item.data.featured}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  })}
+
+  <CTABand />
+
 </Layout>
