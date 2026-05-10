@@ -1,12 +1,154 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import ProofCard from '../components/ui/ProofCard.astro';
+import CTABand from '../components/ui/CTABand.astro';
+
+const principles = [
+  {
+    n: '01',
+    title: 'Architecture first',
+    body: 'AI doesn\'t fix a broken system. I design the system first, then identify where AI creates genuine leverage — not cosmetic automation.',
+  },
+  {
+    n: '02',
+    title: 'Operator-grade tooling',
+    body: 'Generic AI assistants are not the answer for serious GTM work. I build or configure tools that are specific, instrumented, and actually used in production.',
+  },
+  {
+    n: '03',
+    title: 'Compounding, not one-shots',
+    body: 'The goal is a workflow that gets faster and smarter over time — not a one-off prompt that impresses in a demo and breaks in reality.',
+  },
+  {
+    n: '04',
+    title: 'Ship and measure',
+    body: 'AI workflows that aren\'t measured don\'t improve. Every system I build has a feedback loop — so you know what\'s working and what to change next.',
+  },
+];
+
+const tools = [
+  {
+    title: 'AdsAI + Ad Assistant',
+    description: 'Full ad lifecycle in AI: brief → generate → score → iterate → deploy. Built for GTM operators, not agency workflows.',
+    tags: ['Ads', 'LLMs', 'GTM'],
+  },
+  {
+    title: 'Claude Code GTM Agent Starter Pack',
+    description: 'Open-source foundation for building GTM agents with Claude Code. Designed so operators can ship without starting from scratch.',
+    tags: ['Claude Code', 'Agents', 'Open source'],
+    href: 'https://github.com/wojciechluszczynski',
+  },
+  {
+    title: 'Notch — native macOS app',
+    description: 'Built with Codex and Xcode. Proof that AI-assisted development covers native apps, not just web — extending the operator\'s reach beyond the browser.',
+    tags: ['macOS', 'Swift', 'Codex'],
+    href: 'https://notch.wojciech.io',
+  },
+  {
+    title: 'Brand24 AI Adoption framework',
+    description: 'Internal framework for responsible, compounding AI adoption across a B2B SaaS company — from growth and marketing through to product and ops.',
+    tags: ['AI adoption', 'Framework', 'B2B SaaS'],
+  },
+  {
+    title: 'CRM + outbound AI workflows',
+    description: 'Prospecting, sequencing, scoring, and CRM enrichment — redesigned with AI in the loop to cut manual work and improve signal quality.',
+    tags: ['CRM', 'Outbound', 'AI'],
+  },
+  {
+    title: 'SEO + content AI workflows',
+    description: 'From keyword research and brief generation to programmatic content scoring. Built to scale content production without scaling headcount.',
+    tags: ['SEO', 'Content', 'AI'],
+  },
+];
 ---
 
 <Layout
   title="AI Systems"
   description="AI-native workflows, GTM agents, and operating leverage — how Wojciech builds with AI in practice."
 >
-  <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
-    <p class="text-[var(--color-text-muted)]">AI Systems — coming in Sprint 2.</p>
-  </div>
+
+  <!-- Header -->
+  <section class="pt-20 pb-16 border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">AI Systems</p>
+      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5 max-w-2xl">
+        AI changes the operating leverage — not just the output speed.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+        I don't use AI to generate copy faster. I use it to redesign how growth systems are built,
+        instrumented, and iterated — so the whole stack moves faster, not just one task.
+      </p>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader eyebrow="How I think about AI" heading="Four principles." class="mb-12" />
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {principles.map(({ n, title, body }) => (
+          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7">
+            <p class="text-xs font-mono text-[var(--color-accent)] mb-4">{n}</p>
+            <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{title}</h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools built -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader
+        eyebrow="What I've built"
+        heading="AI workflows and tools in production."
+        class="mb-12"
+      />
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {tools.map(({ title, description, tags, href }) => (
+          <ProofCard
+            title={title}
+            description={description}
+            tags={tags}
+            href={href}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Working together -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-2 gap-16 items-start">
+        <SectionHeader
+          eyebrow="Work with me"
+          heading="If you want AI in your GTM stack — done right."
+          lead="Not a workshop. Not a deck of use cases. An actual system, built, shipped, and measured."
+        />
+        <div class="space-y-5">
+          {[
+            'AI GTM audit — where does AI actually help vs. add noise',
+            'Workflow redesign with AI in the critical path',
+            'Custom agent and tool development',
+            'Team onboarding to AI-native operating patterns',
+            'Ongoing iteration and measurement',
+          ].map((item) => (
+            <div class="flex items-start gap-3">
+              <span class="text-[var(--color-accent)] mt-0.5 shrink-0">→</span>
+              <p class="text-sm text-[var(--color-text-muted)]">{item}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTABand
+    heading="Want AI in your revenue system — actually working?"
+    subtext="Book a call. We'll figure out where AI creates real leverage for your GTM."
+  />
+
 </Layout>
