@@ -1,0 +1,39 @@
+---
+interface Props {
+  heading?: string;
+  subtext?: string;
+  cta?: string;
+  ctaHref?: string;
+}
+
+const {
+  heading = 'Ready to build a revenue system that compounds?',
+  subtext = 'Book a call to talk about your growth architecture.',
+  cta = 'Book a call',
+  ctaHref = 'https://cal.com/wojciech',
+} = Astro.props;
+---
+
+<section class="py-[var(--space-section)]">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] px-8 py-14 md:px-16 text-center">
+      <h2 class="text-3xl md:text-4xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
+        {heading}
+      </h2>
+      {subtext && (
+        <p class="text-[var(--color-text-muted)] mb-8 max-w-md mx-auto">{subtext}</p>
+      )}
+      <a
+        href={ctaHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 bg-[var(--color-accent)] text-white font-medium px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
+      >
+        {cta}
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
