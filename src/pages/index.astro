@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import CTABand from '../components/ui/CTABand.astro';
 import ProofCard from '../components/ui/ProofCard.astro';
-import TestimonialCard from '../components/ui/TestimonialCard.astro';
+import TestimonialSlider from '../components/ui/TestimonialSlider.astro';
 import AvatarRing from '../components/ui/AvatarRing.astro';
 
 const featuredWork = (await getCollection('work', ({ data }) => data.featured && !data.draft))
@@ -241,12 +241,8 @@ const testimonials = [
   <!-- ─── 7. TESTIMONIALS ─────────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader eyebrow="Testimonials" heading="What operators say." align="center" class="mb-12" />
-      <div class="grid md:grid-cols-3 gap-6">
-        {testimonials.map((t) => (
-          <TestimonialCard quote={t.quote} name={t.name} role={t.role} company={t.company} />
-        ))}
-      </div>
+      <SectionHeader eyebrow="Testimonials" heading="What operators say." class="mb-10" />
+      <TestimonialSlider testimonials={testimonials} />
     </div>
   </section>
 

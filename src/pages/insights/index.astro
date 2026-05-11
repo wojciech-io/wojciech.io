@@ -12,26 +12,71 @@ const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort(
   description="Articles on growth, AI systems, GTM architecture, and building revenue systems."
 >
   <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
-    <div class="max-w-2xl mb-12">
+
+    <!-- Header -->
+    <div class="max-w-2xl mb-16">
       <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Insights</p>
-      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight">
-        Articles on growth, AI systems, and GTM architecture.
+      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
+        Articles on growth, AI systems,<br class="hidden md:block" /> and GTM architecture.
       </h1>
+      <p class="text-lg text-[var(--color-text-muted)]">
+        Practical frameworks and systems — not hot takes or tool comparisons.
+      </p>
     </div>
-    <div class="grid gap-6">
+
+    <!-- Article list -->
+    <div class="grid gap-5 mb-16">
       {posts.map((post) => {
         const slug = post.id.replace(/\.mdx?$/, '');
-
         return (
           <a
             href={`/insights/${slug}/`}
-            class="block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 hover:border-[var(--color-border-2)] transition-colors"
+            class="group block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 card-lift hover:border-[var(--color-accent)]/30"
           >
-            <h2 class="text-xl font-semibold text-[var(--color-text)] mb-3">{post.data.title}</h2>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{post.data.description}</p>
+            <div class="flex flex-wrap items-center gap-3 mb-4">
+              {post.data.tags.slice(0, 3).map((tag) => (
+                <span class="text-xs px-2.5 py-1 rounded-[var(--radius-badge)] border border-[var(--color-border-2)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)]">
+                  {tag}
+                </span>
+              ))}
+              <span class="text-xs text-[var(--color-text-dim)] ml-auto">
+                {post.data.publishedAt.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
+              </span>
+            </div>
+            <h2 class="text-xl font-semibold text-[var(--color-text)] mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors duration-150">
+              {post.data.title}
+            </h2>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+              {post.data.description}
+            </p>
           </a>
         );
       })}
     </div>
+
+    <!-- Newsletter CTA -->
+    <div class="rounded-[var(--radius-card)] border border-[var(--color-accent)]/25 bg-[var(--color-accent)]/5 px-8 py-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+      <div class="flex-1">
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Newsletter</p>
+        <h2 class="text-2xl font-semibold text-[var(--color-text)] mb-2">Want to know more first?</h2>
+        <p class="text-[var(--color-text-muted)]">
+          New articles on AI systems, GTM architecture, and growth operating models — delivered when they publish.
+        </p>
+      </div>
+      <div class="shrink-0">
+        <a
+          href="https://subscribe.wojciech.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-7 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
+        >
+          Subscribe
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
   </div>
 </Layout>
