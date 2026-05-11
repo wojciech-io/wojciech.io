@@ -69,10 +69,17 @@ const traits = [
   },
 ];
 
+const stats = [
+  { value: '15+', label: 'years in B2B growth' },
+  { value: '4', label: 'global markets' },
+  { value: 'MBA', label: 'Executive, UBiNS' },
+  { value: '30+', label: 'tools in stack' },
+];
+
 const faq = [
   {
     question: 'What kind of companies do you work with?',
-    answer: 'B2B SaaS companies, typically Series A–C, with 15–200 people. The common thread: they have a working product and a pipeline problem, something in the revenue architecture is broken or missing. I\'m not a good fit for pre-product or consumer.',
+    answer: 'B2B SaaS companies, typically Series A–C, with 15–200 people. The common thread: they have a working product and a pipeline problem — something in the revenue architecture is broken or missing. I\'m not a good fit for pre-product or consumer.',
   },
   {
     question: 'Do you work as a fractional leader or on project basis?',
@@ -80,7 +87,7 @@ const faq = [
   },
   {
     question: 'What does an engagement actually look like?',
-    answer: 'Starts with a revenue architecture audit, I map what\'s connected, what\'s broken, and where the signal is lost. Then we agree on the system to build or fix, I build it (sometimes alongside your team), and instrument it so you can run it without me.',
+    answer: 'Starts with a revenue architecture audit — I map what\'s connected, what\'s broken, and where the signal is lost. Then we agree on the system to build or fix, I build it (sometimes alongside your team), and instrument it so you can run it without me.',
   },
   {
     question: 'Can you just help with AI tooling without the GTM layer?',
@@ -95,27 +102,42 @@ const faq = [
 
 <Layout
   title="About"
-  description="Wojciech Łuszczyński, growth operator, GTM architect, AI-native builder. The full operator profile."
+  description="Wojciech Łuszczyński — growth operator, GTM architect, AI-native builder. The full operator profile."
 >
 
   <!-- Hero -->
-  <section class="pt-20 pb-16 border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="flex flex-col sm:flex-row gap-10 md:gap-14 items-start sm:items-center animate-fade-up">
+  <section class="relative pt-24 pb-16 border-b border-[var(--color-border)] overflow-hidden">
+    <!-- Background grid -->
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:48px_48px] opacity-15" aria-hidden="true" />
+    <!-- Accent glow -->
+    <div class="pointer-events-none absolute -top-32 left-1/2 w-[500px] h-[400px] bg-[var(--color-accent-lo)]/15 blur-[120px] rounded-full" aria-hidden="true" />
+
+    <div class="relative mx-auto max-w-6xl px-6">
+      <div class="flex flex-col sm:flex-row gap-10 md:gap-14 items-start sm:items-center animate-fade-up mb-12">
         <AvatarRing src="/images/wojciech.jpg" size="xl" loading="eager" />
         <div class="max-w-xl">
           <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">About</p>
-          <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
+          <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
             Wojciech Łuszczyński
           </h1>
-          <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-4">
+          <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-3">
             Growth operator. GTM architect. AI-native builder.
           </p>
           <p class="text-[var(--color-text-muted)] leading-relaxed">
             I work at the intersection of growth strategy, revenue systems, and AI-native execution.
-            I don't just design frameworks, I build and run the systems, and ship the missing tools when they don't exist.
+            I don't just design frameworks — I build and run the systems, and ship the missing tools when they don't exist.
           </p>
         </div>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-px border border-[var(--color-border)] rounded-[var(--radius-card)] overflow-hidden bg-[var(--color-border)]">
+        {stats.map(({ value, label }) => (
+          <div class="bg-[var(--color-surface)] px-6 py-5">
+            <p class="text-2xl md:text-3xl font-semibold text-[var(--color-accent)] mb-1">{value}</p>
+            <p class="text-xs text-[var(--color-text-dim)]">{label}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -128,9 +150,12 @@ const faq = [
         heading="Most growth leaders either strategize or execute. I do both."
         class="mb-12"
       />
-      <div class="grid sm:grid-cols-2 gap-6 stagger">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {traits.map(({ label, body }) => (
-          <div class="animate-fade-up rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 card-lift hover:border-[var(--color-border-2)]">
+          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 card-lift hover:border-[var(--color-border-2)]">
+            <div class="w-8 h-8 rounded-lg bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center mb-5">
+              <span class="w-2 h-2 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
+            </div>
             <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{label}</h3>
             <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
           </div>
@@ -142,23 +167,45 @@ const faq = [
   <!-- Timeline -->
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-12" />
-      <div class="space-y-0">
+      <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-10" />
+      <div class="divide-y divide-[var(--color-border)] max-w-3xl">
         {timeline.map(({ period, role, company, description }, i) => (
-          <div class:list={[
-            'flex flex-col sm:flex-row sm:gap-8 py-8',
-            i < timeline.length - 1 ? 'border-b border-[var(--color-border)]' : '',
-          ]}>
-            <div class="sm:w-28 shrink-0 mb-2 sm:mb-0 pt-0.5">
+          <div class:list={['flex flex-col sm:flex-row gap-4 py-7', i === 0 ? 'pt-0' : '']}>
+            <div class="sm:w-32 shrink-0 pt-0.5">
               <p class="text-xs font-mono text-[var(--color-text-dim)]">{period}</p>
             </div>
             <div>
               <p class="text-base font-semibold text-[var(--color-text)] mb-0.5">{role}</p>
-              <p class="text-sm text-[var(--color-accent)] font-medium mb-3">{company}</p>
+              <p class="text-sm text-[var(--color-accent)] font-medium mb-2">{company}</p>
               <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-lg">{description}</p>
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ — moved up, visible before "working with me" -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-start">
+        <div>
+          <SectionHeader eyebrow="FAQ" heading="Common questions." class="mb-2" />
+          <p class="text-[var(--color-text-muted)] mt-4 text-sm leading-relaxed max-w-sm">
+            If you're considering working with me — these cover how I engage, what to expect, and whether it's the right fit.
+          </p>
+          <a
+            href="https://cal.com/wojciech-luszczynski"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-press inline-flex items-center gap-2 mt-8 border border-[var(--color-border-2)] text-[var(--color-text)] text-sm font-medium px-5 py-2.5 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors"
+          >
+            Book a call instead →
+          </a>
+        </div>
+        <div>
+          <FAQ items={faq} />
+        </div>
       </div>
     </div>
   </section>
@@ -178,25 +225,15 @@ const faq = [
             'GTM system build or rebuild',
             'AI workflow design and implementation',
             'CRM, SEO, CRO and outbound operating models',
-            'Missing product layer, built and shipped',
+            'Missing product layer — built and shipped',
             'Growth team operating cadence and dashboards',
           ].map((item) => (
             <div class="flex items-start gap-3 group">
-              <span class="text-[var(--color-accent)] mt-0.5 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+              <span class="text-[var(--color-accent)] mt-0.5 shrink-0 group-hover:translate-x-0.5 transition-transform duration-150">→</span>
               <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors duration-150">{item}</p>
             </div>
           ))}
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader eyebrow="FAQ" heading="Common questions." class="mb-10" />
-      <div class="max-w-3xl">
-        <FAQ items={faq} />
       </div>
     </div>
   </section>
