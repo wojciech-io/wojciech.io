@@ -8,7 +8,7 @@ import Nav, { links } from './Nav.astro';
     <!-- Wordmark -->
     <a
       href="/"
-      class="text-[var(--color-text)] font-semibold tracking-tight text-sm shrink-0 hover:text-[var(--color-accent-hi)] transition-colors"
+      class="text-[var(--color-text)] font-semibold tracking-tight text-sm shrink-0 hover:text-[var(--color-accent-hi)] transition-colors duration-150"
       aria-label="Wojciech Łuszczyński — home"
     >
       Wojciech Łuszczyński
@@ -21,24 +21,34 @@ import Nav, { links } from './Nav.astro';
         href="https://cal.com/wojciech-luszczynski"
         target="_blank"
         rel="noopener noreferrer"
-        class="shrink-0 text-sm font-medium px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hi)] transition-colors"
+        class="btn-press shrink-0 text-sm font-semibold px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hi)] transition-colors"
       >
         Book a call
       </a>
     </div>
 
     <!-- Mobile nav -->
-    <details class="md:hidden relative">
+    <details class="nav-dropdown md:hidden relative">
       <summary
-        class="list-none cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)] [&::-webkit-details-marker]:hidden"
+        class="flex items-center gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
         aria-label="Open navigation"
       >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-          <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <!-- Hamburger icon -->
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" class="shrink-0">
+          <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <!-- Chevron -->
+        <svg class="chevron w-3.5 h-3.5 shrink-0" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </summary>
-      <div class="absolute right-0 top-10 w-56 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[var(--shadow-card)]">
-        <nav aria-label="Mobile navigation">
+
+      <!-- Animated panel -->
+      <div class="nav-panel absolute right-0 top-10 w-56">
+        <nav
+          class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[0_8px_32px_0_rgb(0,0,0,0.4)]"
+          aria-label="Mobile navigation"
+        >
           <ul class="list-none m-0 p-0 space-y-1">
             {links.map(({ label, href, external }) => (
               <li>
@@ -51,12 +61,12 @@ import Nav, { links } from './Nav.astro';
                 </a>
               </li>
             ))}
-            <li class="pt-2">
+            <li class="pt-2 border-t border-[var(--color-border)] mt-1">
               <a
                 href="https://cal.com/wojciech-luszczynski"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="block rounded-[var(--radius-btn)] bg-[var(--color-accent)] px-3 py-2 text-sm font-semibold text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hi)] transition-colors"
+                class="btn-press block rounded-[var(--radius-btn)] bg-[var(--color-accent)] px-3 py-2 text-sm font-semibold text-[var(--color-accent-text)] text-center hover:bg-[var(--color-accent-hi)] transition-colors"
               >
                 Book a call
               </a>

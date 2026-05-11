@@ -57,6 +57,170 @@ body {
 ::-webkit-scrollbar-track { background: var(--color-bg); }
 ::-webkit-scrollbar-thumb { background: var(--color-border-2); border-radius: 3px; }
 
+/* ─── Animations ─────────────────────────────────────────────── */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-fade-in {
+  animation: fade-in 0.4s ease both;
+}
+.animate-scale-in {
+  animation: scale-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Staggered children */
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 80ms; }
+.stagger > *:nth-child(3) { animation-delay: 160ms; }
+.stagger > *:nth-child(4) { animation-delay: 240ms; }
+.stagger > *:nth-child(5) { animation-delay: 320ms; }
+.stagger > *:nth-child(6) { animation-delay: 400ms; }
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-scale-in {
+    animation: none;
+  }
+}
+
+/* ─── Interactive base states ─────────────────────────────────── */
+
+/* Card lift — applied as utility class */
+.card-lift {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.2s ease;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px 0 rgb(235 255 0 / 0.07);
+}
+
+/* Button active feedback */
+.btn-press {
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+.btn-press:active {
+  transform: scale(0.96);
+}
+
+/* Nav link underline sweep */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-accent);
+  transition: width 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-link:hover::after,
+.nav-link[aria-current="page"]::after {
+  width: 100%;
+}
+
+/* ─── Mobile nav animation ────────────────────────────────────── */
+
+details.nav-dropdown summary { list-style: none; }
+details.nav-dropdown summary::-webkit-details-marker { display: none; }
+
+details.nav-dropdown .nav-panel {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.2s ease;
+}
+details.nav-dropdown[open] .nav-panel {
+  max-height: 400px;
+  opacity: 1;
+}
+
+details.nav-dropdown .chevron {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+details.nav-dropdown[open] .chevron {
+  transform: rotate(180deg);
+}
+
+/* ─── FAQ accordion ───────────────────────────────────────────── */
+
+details.faq-item {
+  border-bottom: 1px solid var(--color-border);
+}
+details.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.25rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  transition: color 0.15s ease;
+  user-select: none;
+}
+details.faq-item summary::-webkit-details-marker { display: none; }
+details.faq-item summary:hover { color: var(--color-accent-hi); }
+
+details.faq-item summary .faq-icon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+details.faq-item[open] summary .faq-icon {
+  transform: rotate(45deg);
+}
+
+details.faq-item .faq-body {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.25s ease;
+}
+details.faq-item[open] .faq-body {
+  max-height: 600px;
+  opacity: 1;
+}
+
 .prose-content {
   color: var(--color-text-muted);
   font-size: 1rem;
