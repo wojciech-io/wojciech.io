@@ -4,7 +4,7 @@ This checklist is for the end of Sprint 3, after staging is approved. Do not sta
 
 ## Pre-cutover blockers
 
-- [ ] Create or publish `https://github.com/wojciech-luszczynski/claude-code-gtm-starter`, or remove the public links to it from `/resources` and the article.
+- [ ] Confirm `https://github.com/wojciechluszczynski/gtm-agent-repo` is public and is the intended Starter Pack target.
 - [ ] Add `PUBLIC_CF_BEACON_TOKEN` to Cloudflare Pages production environment variables.
 - [ ] Confirm the latest `main` commit is deployed to `https://wojciech-io.pages.dev`.
 - [ ] Confirm the staging build does not include `noindex` unless intentionally testing preview-only indexing behavior.
