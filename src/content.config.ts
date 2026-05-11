@@ -27,6 +27,8 @@ const work = defineCollection({
       value: z.string(),
     })).default([]),
     href: z.string().optional(),
+    image: z.string().optional(),
+    icon: z.string().optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
     order: z.number().default(99),
