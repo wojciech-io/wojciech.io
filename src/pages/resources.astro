@@ -9,6 +9,15 @@ const resources = [
     tags: ['Claude Code', 'MCP', 'GTM', 'AI'],
     href: 'https://github.com/wojciechluszczynski/gtm-agent-repo',
     label: 'View on GitHub',
+    external: true,
+  },
+  {
+    title: 'GTM Agent architecture breakdown',
+    description: 'The article that explains the four-layer system behind the starter pack: operator brief, MCP tools, client memory files, and reusable skills.',
+    tags: ['Article', 'Architecture', 'Claude Code'],
+    href: '/insights/claude-code-vs-clay/',
+    label: 'Read the breakdown',
+    external: false,
   },
 ];
 ---
@@ -35,11 +44,10 @@ const resources = [
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {resources.map(({ title, description, tags, href, label }) => (
+        {resources.map(({ title, description, tags, href, label, external }) => (
           <a
             href={href}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col gap-4 hover:border-[var(--color-accent)]/40 hover:shadow-[var(--shadow-card-hover)] transition-all"
           >
             <div class="flex flex-wrap gap-2">
@@ -58,19 +66,6 @@ const resources = [
             </span>
           </a>
         ))}
-
-        <!-- Placeholder card -->
-        <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] border-dashed bg-[var(--color-surface)] p-7 flex flex-col gap-4 opacity-50">
-          <div class="flex flex-wrap gap-2">
-            <span class="text-xs font-medium px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border-2)] text-[var(--color-text-dim)] bg-transparent">
-              Coming soon
-            </span>
-          </div>
-          <div class="flex-1">
-            <h2 class="text-base font-semibold text-[var(--color-text-muted)] mb-2">CRM Operating Model Template</h2>
-            <p class="text-sm text-[var(--color-text-dim)] leading-relaxed">HubSpot pipeline structure, stage definitions, and deal hygiene rules for B2B SaaS teams.</p>
-          </div>
-        </div>
       </div>
     </div>
   </section>
