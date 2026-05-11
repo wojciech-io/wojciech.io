@@ -21,8 +21,7 @@ A flat list of projects would understate the real story. The stronger message is
 
 **Candidate proof**
 
-- AdsAI
-- Ad Assistant
+- AdsAI / Ad Assistant
 - Claude Code GTM Agent Starter Pack
 - Notch native macOS app built with Codex + Xcode
 
