@@ -2,8 +2,20 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
-import ProofCard from '../components/ui/ProofCard.astro';
+import ProjectCard from '../components/ui/ProjectCard.astro';
 import CTABand from '../components/ui/CTABand.astro';
+
+type CoverType = 'ads-ai' | 'gtm-pack' | 'notch' | 'kamperownia' | 'ai-adoption' | 'growth-system' | 'mini-apps';
+
+const coverMap: Record<string, CoverType> = {
+  'ad-assistant':    'ads-ai',
+  'gtm-starter-pack':'gtm-pack',
+  'notch':           'notch',
+  'kamperownia':     'kamperownia',
+  'brand24-ai':      'ai-adoption',
+  'kadromierz':      'growth-system',
+  'mini-apps':       'mini-apps',
+};
 
 const allWork = (await getCollection('work', ({ data }) => !data.draft))
   .sort((a, b) => a.data.order - b.data.order);
@@ -106,15 +118,13 @@ const clusters = [
           <!-- Cards -->
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {items.map((item) => (
-              <ProofCard
+              <ProjectCard
                 title={item.data.title}
                 description={item.data.description}
-                tags={item.data.tags}
-                metrics={item.data.metrics}
-                href={item.data.href}
-                image={item.data.image}
-                icon={item.data.icon}
-                featured={item.data.featured}
+                tags={item.data.tags ?? []}
+                href={item.data.href ?? '/work'}
+                cover={coverMap[item.id] ?? 'growth-system'}
+                external={!!item.data.href && item.data.href.startsWith('http')}
               />
             ))}
           </div>
