@@ -172,20 +172,90 @@ const testimonials = [
   <!-- ─── 5. PROJECTS ────────────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
+
+      <!-- Header -->
       <div class="flex items-end justify-between mb-12">
         <div>
-          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Best work</p>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Selected work</p>
           <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
             <span class="text-[var(--color-text)]">Projects that shipped.</span><br />
-            <span class="text-[var(--color-text-muted)]">And systems that still run.</span>
+            <span class="text-[var(--color-text-muted)]">Systems that still run.</span>
           </h2>
         </div>
         <a href="/work" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
           All work →
         </a>
       </div>
+
+      <!-- Featured project: split view (Ayro-style) -->
+      <a
+        href={projects[0].external ? projects[0].href : projects[0].href}
+        target={projects[0].external ? '_blank' : undefined}
+        rel={projects[0].external ? 'noopener noreferrer' : undefined}
+        class="group block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/30 transition-colors mb-5"
+      >
+        <div class="grid md:grid-cols-2 min-h-[320px]">
+          <!-- Left: cover visual -->
+          <div class="relative bg-[var(--color-surface-2)] overflow-hidden">
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle, #EBFF0014 1px, transparent 1px); background-size: 28px 28px;" />
+            <!-- AdsAI SVG illustration -->
+            <svg viewBox="0 0 480 320" class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- orbit rings -->
+              <circle cx="240" cy="160" r="90"  fill="none" stroke="#EBFF00" stroke-width="0.5" opacity="0.15"/>
+              <circle cx="240" cy="160" r="60"  fill="none" stroke="#EBFF00" stroke-width="0.5" opacity="0.2"/>
+              <circle cx="240" cy="160" r="30"  fill="none" stroke="#EBFF00" stroke-width="1"   opacity="0.3"/>
+              <!-- center -->
+              <circle cx="240" cy="160" r="14" fill="#EBFF00" opacity="0.9"/>
+              <text x="240" y="165" font-family="monospace" font-size="10" fill="#0c0c0c" text-anchor="middle" font-weight="bold">AI</text>
+              <!-- satellites -->
+              <circle cx="240" cy="70"  r="7" fill="#EBFF00" opacity="0.5"/>
+              <circle cx="315" cy="205" r="7" fill="#EBFF00" opacity="0.5"/>
+              <circle cx="165" cy="205" r="7" fill="#EBFF00" opacity="0.5"/>
+              <!-- labels -->
+              <text x="240" y="55"  font-family="monospace" font-size="9" fill="#EBFF00" opacity="0.6" text-anchor="middle">BRIEF</text>
+              <text x="328" y="218" font-family="monospace" font-size="9" fill="#EBFF00" opacity="0.6" text-anchor="middle">SCORE</text>
+              <text x="152" y="218" font-family="monospace" font-size="9" fill="#EBFF00" opacity="0.6" text-anchor="middle">ITERATE</text>
+              <!-- connecting lines -->
+              <line x1="240" y1="146" x2="240" y2="77"  stroke="#EBFF00" stroke-width="0.5" opacity="0.3"/>
+              <line x1="240" y1="174" x2="309" y2="200" stroke="#EBFF00" stroke-width="0.5" opacity="0.3"/>
+              <line x1="240" y1="174" x2="171" y2="200" stroke="#EBFF00" stroke-width="0.5" opacity="0.3"/>
+              <!-- lightning bolt -->
+              <path d="M237 148 L232 162 L239 162 L234 176 L248 158 L241 158 L246 148z" fill="#EBFF00" opacity="0.8"/>
+            </svg>
+          </div>
+          <!-- Right: content -->
+          <div class="p-8 md:p-10 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-6">
+                <svg viewBox="0 0 24 24" class="w-5 h-5 text-[var(--color-accent)]" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <path d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21a48.25 48.25 0 01-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-widest">Featured</span>
+              </div>
+              <h3 class="text-xl md:text-2xl font-semibold text-[var(--color-text)] leading-snug mb-4 group-hover:text-[var(--color-accent-hi)] transition-colors">
+                {projects[0].title}
+              </h3>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-6">
+                {projects[0].description}
+              </p>
+              <div class="flex flex-wrap gap-1.5">
+                {projects[0].tags.map((tag) => (
+                  <span class="text-xs px-2 py-0.5 rounded border border-[var(--color-border-2)] text-[var(--color-text-dim)] bg-[var(--color-surface-2)]">{tag}</span>
+                ))}
+              </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+              <span class="text-sm font-medium text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
+                {projects[0].external ? 'View project ↗' : 'See case study →'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Remaining projects: 3-column grid -->
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {projects.map((p) => (
+        {projects.slice(1).map((p) => (
           <ProjectCard
             cover={p.cover}
             title={p.title}
@@ -196,6 +266,7 @@ const testimonials = [
           />
         ))}
       </div>
+
     </div>
   </section>
 
@@ -255,7 +326,95 @@ const testimonials = [
     </div>
   </section>
 
-  <!-- ─── 9. FINAL CTA ────────────────────────────────────────────── -->
+  <!-- ─── 9. INSIGHTS ──────────────────────────────────────────────── -->
+  <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+
+      <!-- Editorial header: large title left, description right -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Writing</p>
+          <h2 class="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-[var(--color-text)]">
+            Operator notes.
+          </h2>
+        </div>
+        <p class="text-sm text-[var(--color-text-muted)] max-w-xs leading-relaxed md:text-right">
+          Practical writing on AI GTM systems, agent tooling, and revenue architecture.
+          No thought leadership. No LinkedIn reposts.
+        </p>
+      </div>
+
+      <!-- Featured article: horizontal split card -->
+      <a
+        href="/insights/claude-code-vs-clay"
+        class="group block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/30 transition-colors"
+      >
+        <div class="grid md:grid-cols-2">
+
+          <!-- Left: visual / terminal illustration -->
+          <div class="relative min-h-[220px] md:min-h-0 bg-[var(--color-surface-2)] overflow-hidden">
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle, #EBFF0012 1px, transparent 1px); background-size: 28px 28px;" />
+            <svg viewBox="0 0 560 360" class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- terminal window -->
+              <rect x="40" y="36" width="340" height="200" rx="8" fill="#111111" stroke="#2a2a2a" stroke-width="1"/>
+              <rect x="40" y="36" width="340" height="30" rx="8" fill="#1a1a1a"/>
+              <rect x="40" y="52" width="340" height="14" fill="#1a1a1a"/>
+              <circle cx="58" cy="51" r="5" fill="#ef4444" opacity="0.5"/>
+              <circle cx="75" cy="51" r="5" fill="#eab308" opacity="0.5"/>
+              <circle cx="92" cy="51" r="5" fill="#22c55e" opacity="0.5"/>
+              <text x="130" y="55" font-family="monospace" font-size="10" fill="#555">gtm-agent — claude code</text>
+              <!-- terminal lines -->
+              <text x="58" y="90"  font-family="monospace" font-size="11" fill="#EBFF00" opacity="0.7">$ claude run outbound --client kadromierz</text>
+              <text x="58" y="113" font-family="monospace" font-size="10" fill="#555">▸ Loading operator identity (CLAUDE.md)...</text>
+              <text x="58" y="132" font-family="monospace" font-size="10" fill="#555">▸ Reading client memory: kadromierz.md</text>
+              <text x="58" y="151" font-family="monospace" font-size="10" fill="#555">▸ Fetching ICP signal, 340 prospects...</text>
+              <text x="58" y="170" font-family="monospace" font-size="10" fill="#22c55e" opacity="0.8">✓ 18 high-fit leads enriched and scored</text>
+              <text x="58" y="189" font-family="monospace" font-size="10" fill="#22c55e" opacity="0.8">✓ Sequences staged in HubSpot</text>
+              <text x="58" y="212" font-family="monospace" font-size="10" fill="#333">Cost: </text>
+              <text x="88" y="212" font-family="monospace" font-size="10" fill="#EBFF00" opacity="0.7">$3.40</text>
+              <text x="120" y="212" font-family="monospace" font-size="10" fill="#333"> · Time: </text>
+              <text x="165" y="212" font-family="monospace" font-size="10" fill="#EBFF00" opacity="0.7">4m 12s</text>
+              <!-- vs label -->
+              <text x="400" y="120" font-family="monospace" font-size="11" fill="#333">vs. Clay</text>
+              <text x="400" y="142" font-family="monospace" font-size="10" fill="#333">$300/mo</text>
+              <text x="400" y="162" font-family="monospace" font-size="10" fill="#333">manual</text>
+              <text x="400" y="182" font-family="monospace" font-size="10" fill="#333">enrichment</text>
+            </svg>
+          </div>
+
+          <!-- Right: article content -->
+          <div class="p-8 md:p-10 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-6">
+                <span class="text-xs text-[var(--color-text-dim)]">Apr 2025</span>
+                {['AI', 'GTM', 'Claude Code'].map((tag) => (
+                  <span class="text-xs px-2 py-0.5 rounded border border-[var(--color-border-2)] text-[var(--color-text-dim)] bg-[var(--color-surface-2)]">{tag}</span>
+                ))}
+              </div>
+              <h3 class="text-xl md:text-2xl font-semibold text-[var(--color-text)] leading-snug mb-4 group-hover:text-[var(--color-accent-hi)] transition-colors">
+                The Claude Code GTM Agent Starter Pack
+              </h3>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+                How I built a four-layer AI system that runs outbound research, drafts sequences, and enriches CRM records —
+                no Clay, no Apollo credits, no manual enrichment. Cost per run: $2–8.
+              </p>
+            </div>
+            <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+              <span class="text-sm font-medium text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">Read article →</span>
+            </div>
+          </div>
+
+        </div>
+      </a>
+
+      <div class="mt-6 text-right">
+        <a href="/insights" class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">All writing →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── 10. FINAL CTA ───────────────────────────────────────────── -->
   <CTABand />
 
 </Layout>

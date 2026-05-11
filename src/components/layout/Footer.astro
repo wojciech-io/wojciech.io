@@ -1,24 +1,7 @@
 ---
 const year = new Date().getFullYear();
 
-const nav = [
-  { label: 'Work', href: '/work' },
-  { label: 'AI', href: '/ai-systems' },
-  { label: 'Apps', href: '/apps' },
-  { label: 'Blog', href: '/insights' },
-  { label: 'Contact', href: '/contact' },
-  { label: 'About', href: '/about' },
-];
-
-// viewBox 0 0 24 24, fill=currentColor unless noted
 const social = [
-  {
-    label: 'Website',
-    href: 'https://wojciech.io',
-    path: 'M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8 8 8 0 0 1 8-8 8 8 0 0 1 8 8 8 8 0 0 1-8 8zm-1-13h2v2h-2zm0 4h2v6h-2z',
-    // globe icon — simpler
-    pathD: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z',
-  },
   {
     label: 'LinkedIn',
     pathD: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
@@ -43,34 +26,76 @@ const social = [
 ---
 
 <footer class="border-t border-[var(--color-border)] mt-auto">
-  <div class="mx-auto max-w-6xl px-6 pt-12 pb-8">
+  <div class="mx-auto max-w-6xl px-6 pt-16 pb-8">
 
-    <!-- Top row: wordmark + social -->
-    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-6 mb-10">
+    <!-- Main grid: left brand + right nav columns -->
+    <div class="grid md:grid-cols-2 gap-12 md:gap-20 mb-16">
 
-      <!-- Wordmark + tagline -->
+      <!-- Left: wordmark + tagline + two-tone statement -->
       <div>
         <a href="/" class="text-sm font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-hi)] transition-colors tracking-tight">
           Wojciech Łuszczyński
         </a>
-        <p class="text-xs text-[var(--color-text-dim)] mt-1.5 leading-relaxed">
+        <p class="text-xs text-[var(--color-text-dim)] mt-2 mb-8 leading-relaxed">
           Growth operator · GTM architect · AI-native builder
+        </p>
+        <p class="text-2xl md:text-3xl font-semibold leading-snug tracking-tight">
+          <span class="text-[var(--color-text)]">Build revenue systems</span><br />
+          <span class="text-[var(--color-text-muted)]">that compound.</span>
         </p>
       </div>
 
-      <!-- Social icons — plain, no borders, just icons -->
+      <!-- Right: three nav columns -->
+      <div class="grid grid-cols-3 gap-6">
+
+        <!-- Pages -->
+        <div>
+          <p class="text-[10px] font-semibold text-[var(--color-text-dim)] uppercase tracking-widest mb-5">Pages</p>
+          <ul class="space-y-3">
+            <li><a href="/work"        class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">Work</a></li>
+            <li><a href="/ai-systems"  class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">AI Systems</a></li>
+            <li><a href="/insights"    class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">Insights</a></li>
+            <li><a href="/about"       class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">About</a></li>
+            <li><a href="/contact"     class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Projects -->
+        <div>
+          <p class="text-[10px] font-semibold text-[var(--color-text-dim)] uppercase tracking-widest mb-5">Projects</p>
+          <ul class="space-y-3">
+            <li><a href="https://app.wojciech.io/apps"                             target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">AdsAI</a></li>
+            <li><a href="https://github.com/wojciechluszczynski/gtm-agent-repo"   target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">GTM Pack</a></li>
+            <li><a href="https://notch.wojciech.io"                                target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">Notch</a></li>
+            <li><a href="https://app.wojciech.io/apps"                             target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">All apps ↗</a></li>
+          </ul>
+        </div>
+
+        <!-- Connect -->
+        <div>
+          <p class="text-[10px] font-semibold text-[var(--color-text-dim)] uppercase tracking-widest mb-5">Connect</p>
+          <ul class="space-y-3">
+            <li><a href="https://cal.com/wojciech-luszczynski"                    target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors">Book a call →</a></li>
+            <li><a href="https://linkedin.com/in/wojciechluszczynski"             target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">LinkedIn</a></li>
+            <li><a href="https://github.com/wojciechluszczynski"                  target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">GitHub</a></li>
+            <li><a href="https://x.com/wojciechluszcz"                            target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">X / Twitter</a></li>
+            <li><a href="https://substack.com/@wojciechluszczynski"               target="_blank" rel="noopener noreferrer" class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">Substack</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom bar: social icons left · copyright + privacy right -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-8 border-t border-[var(--color-border)]">
+
       <nav aria-label="Social links">
-        <ul class="flex gap-5 list-none m-0 p-0 items-center">
+        <ul class="flex gap-4 list-none m-0 p-0 items-center">
           {social.map(({ label, href, pathD }) => (
             <li>
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                class="block text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors"
-              >
-                <svg viewBox="0 0 24 24" class="w-[18px] h-[18px]" fill="currentColor" aria-hidden="true">
+              <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
+                class="block text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">
+                <svg viewBox="0 0 24 24" class="w-[15px] h-[15px]" fill="currentColor" aria-hidden="true">
                   <path d={pathD} />
                 </svg>
               </a>
@@ -79,38 +104,11 @@ const social = [
         </ul>
       </nav>
 
-    </div>
-
-    <!-- Nav links -->
-    <nav aria-label="Footer navigation" class="mb-8">
-      <ul class="flex flex-wrap gap-x-6 gap-y-2 list-none m-0 p-0">
-        {nav.map(({ label, href }) => (
-          <li>
-            <a href={href} class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">
-              {label}
-            </a>
-          </li>
-        ))}
-        <li>
-          <a href="https://app.wojciech.io/apps" target="_blank" rel="noopener noreferrer"
-            class="text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors">
-            app.wojciech.io ↗
-          </a>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- Bottom row -->
-    <div class="flex flex-col sm:flex-row justify-between gap-2 text-xs text-[var(--color-text-dim)] border-t border-[var(--color-border)] pt-6">
-      <p>© {year} Wojciech Łuszczyński. All rights reserved.</p>
-      <div class="flex gap-4">
+      <div class="flex items-center gap-5 text-xs text-[var(--color-text-dim)]">
+        <span>© {year} Wojciech Łuszczyński</span>
         <a href="/privacy" class="hover:text-[var(--color-text-muted)] transition-colors">Privacy</a>
-        <a href="https://cal.com/wojciech-luszczynski" target="_blank" rel="noopener noreferrer"
-          class="hover:text-[var(--color-accent)] transition-colors">
-          Book a call →
-        </a>
       </div>
-    </div>
 
+    </div>
   </div>
 </footer>
