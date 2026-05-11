@@ -1,12 +1,80 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import CTABand from '../components/ui/CTABand.astro';
+
+const resources = [
+  {
+    title: 'Claude Code GTM Agent Starter Pack',
+    description: 'CLAUDE.md template, Skills definitions, folder structure, and scoring MCP source for building an AI-powered outbound GTM agent. Built for operators who want the system, not the SaaS wrapper.',
+    tags: ['Claude Code', 'MCP', 'GTM', 'AI'],
+    href: 'https://github.com/wojciech-luszczynski/claude-code-gtm-starter',
+    label: 'View on GitHub',
+  },
+];
 ---
 
 <Layout
   title="Resources"
   description="Starter packs, repositories, and downloadable assets for growth operators and AI builders."
 >
-  <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
-    <p class="text-[var(--color-text-muted)]">Resources — coming in Sprint 3.</p>
-  </div>
+
+  <!-- Header -->
+  <section class="pt-20 pb-16 border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Resources</p>
+      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5 max-w-2xl">
+        Tools and templates, not content.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+        Starter packs, MCP configs, and operator frameworks. Built for people who ship, not people who evaluate.
+      </p>
+    </div>
+  </section>
+
+  <!-- Resources grid -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {resources.map(({ title, description, tags, href, label }) => (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col gap-4 hover:border-[var(--color-accent)]/40 hover:shadow-[var(--shadow-card-hover)] transition-all"
+          >
+            <div class="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span class="text-xs font-medium px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-accent)]/30 text-[var(--color-accent)] bg-[var(--color-accent)]/5">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div class="flex-1">
+              <h2 class="text-base font-semibold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors">{title}</h2>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{description}</p>
+            </div>
+            <span class="text-xs font-medium text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
+              {label} →
+            </span>
+          </a>
+        ))}
+
+        <!-- Placeholder card -->
+        <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] border-dashed bg-[var(--color-surface)] p-7 flex flex-col gap-4 opacity-50">
+          <div class="flex flex-wrap gap-2">
+            <span class="text-xs font-medium px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border-2)] text-[var(--color-text-dim)] bg-transparent">
+              Coming soon
+            </span>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-base font-semibold text-[var(--color-text-muted)] mb-2">CRM Operating Model Template</h2>
+            <p class="text-sm text-[var(--color-text-dim)] leading-relaxed">HubSpot pipeline structure, stage definitions, and deal hygiene rules for B2B SaaS teams.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+
 </Layout>
