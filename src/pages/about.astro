@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import AvatarRing from '../components/ui/AvatarRing.astro';
 import CTABand from '../components/ui/CTABand.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
+import FAQ from '../components/ui/FAQ.astro';
 
 const timeline = [
   {
@@ -49,6 +50,29 @@ const traits = [
     body: 'I care about compounding returns, not quarterly campaigns. Every engagement is designed to leave something that keeps working.',
   },
 ];
+
+const faq = [
+  {
+    question: 'What kind of companies do you work with?',
+    answer: 'B2B SaaS companies, typically Series A–C, with 15–200 people. The common thread: they have a working product and a pipeline problem — something in the revenue architecture is broken or missing. I\'m not a good fit for pre-product or consumer.',
+  },
+  {
+    question: 'Do you work as a fractional leader or on project basis?',
+    answer: 'Both, depending on the scope. For deep system builds (CRM overhaul, outbound motion, AI workflow design) I prefer a defined project with a clear output. For ongoing operating cadence or embedded GTM work I can do fractional. Happy to talk through what makes sense for your situation.',
+  },
+  {
+    question: 'What does an engagement actually look like?',
+    answer: 'Starts with a revenue architecture audit — I map what\'s connected, what\'s broken, and where the signal is lost. Then we agree on the system to build or fix, I build it (sometimes alongside your team), and instrument it so you can run it without me.',
+  },
+  {
+    question: 'Can you just help with AI tooling without the GTM layer?',
+    answer: 'Yes — I can scope a standalone AI workflow design and implementation engagement. Most of my AI work is practical: agent stacks, MCP tooling, CRM automation, AI-assisted sequences. Not strategy decks.',
+  },
+  {
+    question: 'How long does a typical project take?',
+    answer: 'A focused system build (e.g. outbound motion + CRM operating model) runs 6–10 weeks. A full revenue architecture rebuild is 3–4 months. Smaller scopes (AI workflow design, audit only) can be 2–3 weeks.',
+  },
+];
 ---
 
 <Layout
@@ -59,16 +83,14 @@ const traits = [
   <!-- Hero -->
   <section class="pt-20 pb-16 border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <div class="flex flex-col md:flex-row gap-12 items-start md:items-center">
-
+      <div class="flex flex-col sm:flex-row gap-10 md:gap-14 items-start sm:items-center animate-fade-up">
         <AvatarRing src="/images/wojciech.jpg" size="xl" loading="eager" />
-
         <div class="max-w-xl">
           <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">About</p>
           <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
             Wojciech Łuszczyński
           </h1>
-          <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-6">
+          <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-4">
             Growth operator. GTM architect. AI-native builder.
           </p>
           <p class="text-[var(--color-text-muted)] leading-relaxed">
@@ -88,9 +110,9 @@ const traits = [
         heading="Most growth leaders either strategize or execute. I do both."
         class="mb-12"
       />
-      <div class="grid sm:grid-cols-2 gap-6">
+      <div class="grid sm:grid-cols-2 gap-6 stagger">
         {traits.map(({ label, body }) => (
-          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7">
+          <div class="animate-fade-up rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 card-lift hover:border-[var(--color-border-2)]">
             <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{label}</h3>
             <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
           </div>
@@ -106,10 +128,10 @@ const traits = [
       <div class="space-y-0">
         {timeline.map(({ period, role, company, description }, i) => (
           <div class:list={[
-            'flex gap-8 py-8',
+            'flex flex-col sm:flex-row sm:gap-8 py-8',
             i < timeline.length - 1 ? 'border-b border-[var(--color-border)]' : '',
           ]}>
-            <div class="w-32 shrink-0 pt-0.5">
+            <div class="sm:w-28 shrink-0 mb-2 sm:mb-0 pt-0.5">
               <p class="text-xs font-mono text-[var(--color-text-dim)]">{period}</p>
             </div>
             <div>
@@ -126,13 +148,13 @@ const traits = [
   <!-- Working with me -->
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <div class="grid md:grid-cols-2 gap-16 items-start">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
         <SectionHeader
           eyebrow="Working with me"
           heading="What you can expect."
           lead="I work best in engagements where there's a real business problem, not a vague mandate. The output is always a system — not a deck."
         />
-        <div class="space-y-5">
+        <div class="space-y-4">
           {[
             'Revenue architecture audit and redesign',
             'GTM system build or rebuild',
@@ -141,12 +163,22 @@ const traits = [
             'Missing product layer — built and shipped',
             'Growth team operating cadence and dashboards',
           ].map((item) => (
-            <div class="flex items-start gap-3">
-              <span class="text-[var(--color-accent)] mt-0.5 shrink-0">→</span>
-              <p class="text-sm text-[var(--color-text-muted)]">{item}</p>
+            <div class="flex items-start gap-3 group">
+              <span class="text-[var(--color-accent)] mt-0.5 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+              <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors duration-150">{item}</p>
             </div>
           ))}
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader eyebrow="FAQ" heading="Common questions." class="mb-10" />
+      <div class="max-w-3xl">
+        <FAQ items={faq} />
       </div>
     </div>
   </section>
