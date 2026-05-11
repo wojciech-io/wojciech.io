@@ -30,41 +30,30 @@ const testimonials = [
     company: "Type2Sell",
   },
 ];
-
-const stats = [
-  { value: '10+', label: 'Years in GTM & growth' },
-  { value: '5', label: 'Enterprise clients' },
-  { value: '4+', label: 'AI apps shipped' },
-  { value: '24h', label: 'Response time' },
-];
 ---
 
 <Layout>
 
   <!-- ─── 1. HERO ─────────────────────────────────────────────────── -->
-  <section class="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
-    <!-- Grid background -->
+  <section class="relative pt-24 pb-16 md:pt-32 md:pb-20 overflow-hidden">
     <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:48px_48px] opacity-20" aria-hidden="true" />
-    <!-- Glow -->
-    <div class="pointer-events-none absolute -top-40 left-1/3 w-[800px] h-[600px] bg-[var(--color-accent-lo)]/12 blur-[160px] rounded-full" aria-hidden="true" />
 
     <div class="relative mx-auto max-w-6xl px-6">
-      <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
+      <div class="flex flex-col lg:flex-row gap-16 items-center">
 
         <!-- Text -->
-        <div class="flex-1 max-w-2xl animate-fade-up">
+        <div class="flex-1 max-w-xl animate-fade-up">
           <div class="inline-flex items-center gap-2 border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 rounded-[var(--radius-badge)] px-3 py-1 mb-8">
             <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse-dot"></span>
             <span class="text-xs font-medium text-[var(--color-accent)]">Growth operator · AI-native builder</span>
           </div>
 
-          <h1 class="text-5xl md:text-[4.5rem] lg:text-[5rem] font-semibold text-[var(--color-text)] leading-[1.04] tracking-tight mb-6">
-            I build revenue<br class="hidden sm:block" />
-            systems<span class="text-[var(--color-accent)]"> that<br class="hidden sm:block" />
-            compound.</span>
+          <h1 class="text-5xl md:text-[4.25rem] font-semibold leading-[1.05] tracking-tight mb-6">
+            <span class="text-[var(--color-text)]">I build revenue systems</span><br />
+            <span class="text-[var(--color-text-muted)]">that compound.</span>
           </h1>
 
-          <p class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-xl mb-10">
+          <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-md mb-10">
             GTM architecture, growth systems, AI workflows — and the missing
             product layer. Built and shipped, not just scoped.
           </p>
@@ -86,9 +75,13 @@ const stats = [
             </a>
           </div>
 
-          <!-- Social proof strip -->
-          <div class="flex flex-wrap gap-x-8 gap-y-4">
-            {stats.map(({ value, label }) => (
+          <!-- Social proof micro -->
+          <div class="flex flex-wrap gap-x-8 gap-y-4 border-t border-[var(--color-border)] pt-8">
+            {[
+              { value: '10+', label: 'Years in GTM & growth' },
+              { value: '5', label: 'Enterprise clients' },
+              { value: '4+', label: 'AI apps shipped' },
+            ].map(({ value, label }) => (
               <div>
                 <p class="text-2xl font-semibold text-[var(--color-text)] tracking-tight">{value}</p>
                 <p class="text-xs text-[var(--color-text-dim)] mt-0.5">{label}</p>
@@ -97,19 +90,28 @@ const stats = [
           </div>
         </div>
 
-        <!-- Portrait cutout -->
-        <div class="shrink-0 relative animate-scale-in hidden lg:flex items-end self-end" style="animation-delay: 120ms">
-          <div class="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-80 h-80 bg-[var(--color-accent-lo)]/22 blur-[100px] rounded-full" aria-hidden="true" />
-          <img
-            src="/images/wojciech-cutout.webp"
-            alt="Wojciech Łuszczyński"
-            width="400"
-            height="533"
-            class="relative z-10 h-[500px] w-auto object-contain object-bottom"
-            loading="eager"
-            decoding="async"
-            fetchpriority="high"
-          />
+        <!-- Photo in styled container -->
+        <div class="shrink-0 relative animate-scale-in hidden lg:block" style="animation-delay: 120ms">
+          <!-- Gradient blobs behind photo -->
+          <div class="pointer-events-none absolute -top-12 -left-12 w-72 h-72 rounded-full bg-[var(--color-accent)]/12 blur-[80px]" aria-hidden="true" />
+          <div class="pointer-events-none absolute -bottom-12 -right-12 w-80 h-80 rounded-full bg-blue-500/8 blur-[100px]" aria-hidden="true" />
+          <div class="pointer-events-none absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-emerald-500/6 blur-[80px]" aria-hidden="true" />
+
+          <!-- Photo card -->
+          <div class="relative w-[380px] rounded-[var(--radius-card)] overflow-hidden border border-[var(--color-border)]">
+            <img
+              src="/images/wojciech.jpg"
+              alt="Wojciech Łuszczyński"
+              width="380"
+              height="500"
+              class="w-full h-[500px] object-cover object-top"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            />
+            <!-- Subtle bottom fade -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)]/30 via-transparent to-transparent" />
+          </div>
         </div>
 
       </div>
@@ -119,7 +121,7 @@ const stats = [
   <!-- ─── 2. TRUSTED BY ───────────────────────────────────────────── -->
   <section class="py-10 border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <div class="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-10">
         <p class="text-[10px] font-semibold tracking-[0.18em] uppercase text-[var(--color-text-dim)] shrink-0">Trusted by</p>
         <div class="flex flex-wrap gap-x-8 gap-y-2">
           {['GetResponse', 'SentiOne', 'Qi Group / WebWave', 'Symfonia', 'Marquard Media'].map((name) => (
@@ -134,10 +136,13 @@ const stats = [
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-        <SectionHeader
-          eyebrow="The problem"
-          heading="Growth breaks when the system is fragmented — not because the team is slow."
-        />
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">The problem</p>
+          <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+            <span class="text-[var(--color-text)]">Growth breaks when</span><br />
+            <span class="text-[var(--color-text-muted)]">the system is fragmented.</span>
+          </h2>
+        </div>
         <p class="text-[var(--color-text-muted)] leading-relaxed text-lg">
           Most growth stalls because the pieces don't connect: the CRM doesn't feed the playbook,
           the playbook doesn't match the pipeline, and the pipeline data isn't trusted.
@@ -150,7 +155,13 @@ const stats = [
   <!-- ─── 4. HOW I WORK ───────────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader eyebrow="How I work" heading="Diagnose. Design. Implement. Instrument." class="mb-12" />
+      <div class="mb-12">
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">How I work</p>
+        <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+          <span class="text-[var(--color-text)]">Diagnose. Design.</span><br />
+          <span class="text-[var(--color-text-muted)]">Implement. Instrument.</span>
+        </h2>
+      </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 stagger">
         {[
           { step: '01', title: 'Diagnose', body: 'Audit the revenue architecture, pipeline, CRM, GTM motions, and where the signal breaks.' },
@@ -172,7 +183,13 @@ const stats = [
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="flex items-end justify-between mb-12">
-        <SectionHeader eyebrow="Proof architecture" heading="Three clusters. One coherent story." />
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Proof architecture</p>
+          <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+            <span class="text-[var(--color-text)]">Three clusters.</span><br />
+            <span class="text-[var(--color-text-muted)]">One coherent story.</span>
+          </h2>
+        </div>
         <a href="/work" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
           All work →
         </a>
@@ -288,7 +305,13 @@ const stats = [
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="flex items-end justify-between mb-12">
-        <SectionHeader eyebrow="Selected work" heading="Flagship proof." />
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Selected work</p>
+          <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+            <span class="text-[var(--color-text)]">Flagship proof.</span><br />
+            <span class="text-[var(--color-text-muted)]">Real companies, real results.</span>
+          </h2>
+        </div>
         <a href="/work" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
           View all →
         </a>
@@ -314,11 +337,17 @@ const stats = [
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-        <SectionHeader
-          eyebrow="AI systems"
-          heading="AI changes the operating leverage — not just the output."
-          lead="I use AI to redesign how growth systems are built, instrumented, and iterated. The whole stack moves faster, not just one task in the queue."
-        />
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">AI systems</p>
+          <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-5">
+            <span class="text-[var(--color-text)]">AI changes the operating leverage.</span><br />
+            <span class="text-[var(--color-text-muted)]">Not just the output.</span>
+          </h2>
+          <p class="text-[var(--color-text-muted)] leading-relaxed">
+            I use AI to redesign how growth systems are built, instrumented, and iterated.
+            The whole stack moves faster — not just one task in the queue.
+          </p>
+        </div>
         <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 space-y-1 card-lift hover:border-[var(--color-accent)]/30">
           {[
             { label: 'Ad creation loop', before: 'Days', after: 'Minutes' },
@@ -345,8 +374,12 @@ const stats = [
   <!-- ─── 8. TESTIMONIALS ─────────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <div class="flex items-end justify-between mb-10">
-        <SectionHeader eyebrow="Testimonials" heading="What operators say." />
+      <div class="mb-12">
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Testimonials</p>
+        <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+          <span class="text-[var(--color-text)]">Real feedback.</span><br />
+          <span class="text-[var(--color-text-muted)]">Real results.</span>
+        </h2>
       </div>
       <TestimonialSlider testimonials={testimonials} />
     </div>
@@ -356,7 +389,13 @@ const stats = [
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="flex items-end justify-between mb-8">
-        <SectionHeader eyebrow="From the blog" heading="One article worth your time." />
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">From the blog</p>
+          <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+            <span class="text-[var(--color-text)]">One article</span><br />
+            <span class="text-[var(--color-text-muted)]">worth your time.</span>
+          </h2>
+        </div>
         <a href="/insights" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
           All articles →
         </a>
