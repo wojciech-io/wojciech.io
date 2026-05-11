@@ -4,7 +4,6 @@ import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('insights', ({ data }) => !data.draft);
-
   return posts.map((post) => ({
     params: { slug: post.id.replace(/\.mdx?$/, '') },
     props: { post },
@@ -26,17 +25,24 @@ const articleSchema = {
   dateModified: updatedAt,
   mainEntityOfPage: canonicalURL,
   url: canonicalURL,
-  author: {
-    '@type': 'Person',
-    name: 'Wojciech Łuszczyński',
-    url: 'https://wojciech.io/',
-  },
-  publisher: {
-    '@type': 'Person',
-    name: 'Wojciech Łuszczyński',
-    url: 'https://wojciech.io/',
-  },
+  author: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: 'https://wojciech.io/' },
+  publisher: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: 'https://wojciech.io/' },
 };
+
+const upcomingArticles = [
+  {
+    title: 'How I replaced Clay with Claude Code and $50/month',
+    description: 'The exact stack, the exact cost, and why operator-built beats SaaS-subscribed every time.',
+  },
+  {
+    title: 'The CRM operating system I use in every engagement',
+    description: 'Not a tool. Not a process. A living system that improves every week without adding headcount.',
+  },
+  {
+    title: 'Building AI-native GTM: the full playbook',
+    description: 'From CLAUDE.md to shipped sequences — a complete walkthrough of the architecture behind every AI GTM engagement.',
+  },
+];
 ---
 
 <Layout
@@ -49,16 +55,149 @@ const articleSchema = {
   updatedAt={updatedAt}
   schema={articleSchema}
 >
-  <article class="mx-auto max-w-3xl px-6 py-[var(--space-section)]">
-    <header class="mb-12">
-      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Insight</p>
+  <!-- Reading progress bar -->
+  <div
+    id="progress-bar"
+    class="fixed top-0 left-0 z-50 h-0.5 bg-[var(--color-accent)] w-0 transition-none"
+    role="progressbar"
+    aria-label="Reading progress"
+    aria-valuenow={0}
+    aria-valuemin={0}
+    aria-valuemax={100}
+  />
+
+  <article id="article-content" class="mx-auto max-w-3xl px-6 pt-[var(--space-section)] pb-16">
+
+    <!-- Header -->
+    <header class="mb-10">
+      <a href="/insights/" class="inline-flex items-center gap-1.5 text-xs text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors mb-6">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        All insights
+      </a>
+      <div class="flex flex-wrap items-center gap-3 mb-5">
+        <span class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)]">Insight</span>
+        {post.data.tags.map((tag) => (
+          <span class="text-xs px-2.5 py-1 rounded-[var(--radius-badge)] border border-[var(--color-border-2)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)]">
+            {tag}
+          </span>
+        ))}
+      </div>
       <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
         {post.data.title}
       </h1>
-      <p class="text-lg text-[var(--color-text-muted)] leading-relaxed">{post.data.description}</p>
+      <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-6">
+        {post.data.description}
+      </p>
+      <div class="flex items-center gap-3 pb-8 border-b border-[var(--color-border)]">
+        <img
+          src="/images/wojciech.jpg"
+          alt="Wojciech Łuszczyński"
+          width="36"
+          height="36"
+          loading="eager"
+          decoding="async"
+          class="w-9 h-9 rounded-full object-cover object-top border-2 border-[var(--color-accent)]/40"
+        />
+        <div>
+          <p class="text-sm font-medium text-[var(--color-text)]">Wojciech Łuszczyński</p>
+          <p class="text-xs text-[var(--color-text-dim)]">
+            {post.data.publishedAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </p>
+        </div>
+      </div>
     </header>
+
+    <!-- TL;DR -->
+    {post.data.tldr && post.data.tldr.length > 0 && (
+      <div class="rounded-[var(--radius-card)] border border-[var(--color-accent)]/25 bg-[var(--color-accent)]/5 px-7 py-6 mb-10">
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">TL;DR — Key insights</p>
+        <ul class="space-y-3">
+          {post.data.tldr.map((item) => (
+            <li class="flex gap-3 text-sm text-[var(--color-text)] leading-relaxed">
+              <span class="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    <!-- Article body -->
     <div class="prose-content">
       <Content />
     </div>
+
   </article>
+
+  <!-- Newsletter / Subscribe -->
+  <section class="border-t border-[var(--color-border)] py-16">
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] p-8 md:p-10">
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Newsletter</p>
+        <h2 class="text-2xl font-semibold text-[var(--color-text)] mb-3">Get the next one first.</h2>
+        <p class="text-[var(--color-text-muted)] mb-6 max-w-md">
+          When I publish a new article on AI systems, GTM architecture, or growth operating models — you'll be the first to know.
+        </p>
+        <a
+          href="https://subscribe.wojciech.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
+        >
+          Subscribe
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming articles -->
+  <section class="border-t border-[var(--color-border)] py-16">
+    <div class="mx-auto max-w-3xl px-6">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-2">Coming next</p>
+      <h2 class="text-2xl font-semibold text-[var(--color-text)] mb-8">More in the pipeline.</h2>
+      <div class="space-y-4">
+        {upcomingArticles.map((article) => (
+          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 opacity-50 select-none">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h3 class="text-base font-semibold text-[var(--color-text)] mb-2 blur-[2px]">{article.title}</h3>
+                <p class="text-sm text-[var(--color-text-muted)] leading-relaxed blur-[2px]">{article.description}</p>
+              </div>
+              <span class="shrink-0 text-xs px-2.5 py-1 rounded-[var(--radius-badge)] border border-[var(--color-border-2)] text-[var(--color-text-dim)] bg-[var(--color-surface-2)] whitespace-nowrap">
+                Coming soon
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="text-sm text-[var(--color-text-dim)] mt-6">
+        Subscribe to be notified when these publish →
+        <a href="https://subscribe.wojciech.io" target="_blank" rel="noopener noreferrer" class="text-[var(--color-accent)] hover:text-[var(--color-accent-hi)] transition-colors ml-1">subscribe.wojciech.io</a>
+      </p>
+    </div>
+  </section>
+
 </Layout>
+
+<script>
+  const bar = document.getElementById('progress-bar') as HTMLElement;
+  const article = document.getElementById('article-content') as HTMLElement;
+
+  function updateProgress() {
+    const { top, height } = article.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    const scrollable = height - windowH;
+    const scrolled = Math.max(0, -top);
+    const pct = scrollable > 0 ? Math.min(100, (scrolled / scrollable) * 100) : 0;
+    bar.style.width = pct + '%';
+    bar.setAttribute('aria-valuenow', String(Math.round(pct)));
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+</script>
