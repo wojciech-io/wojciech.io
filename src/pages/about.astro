@@ -11,42 +11,63 @@ const timeline = [
     role: 'Independent operator',
     company: 'wojciech.io',
     description: 'Building revenue systems, GTM architecture, and AI-native workflows for B2B SaaS companies. Shipping tools when they don\'t exist.',
+    contract: false,
   },
   {
     period: '2025 – present',
     role: 'Head of Marketing',
     company: 'WebWave / WeNet Group',
     description: 'Leading global marketing and growth for an AI-powered website builder. GTM strategy, commercial messaging, and data-driven growth engine across SEO, content, paid, and automation.',
+    contract: false,
   },
   {
     period: '2024 – 2025',
     role: 'Head of Growth & Web Development',
     company: 'Symfonia',
     description: 'Grew organic traffic 40% and lead generation 30%. Large-scale website migration, UX/CRO improvements, and integrated campaigns driving measurable revenue impact.',
+    contract: false,
   },
   {
     period: '2020 – 2024',
-    role: 'Global Head of Growth & Retention',
+    role: 'Global Head of Growth',
     company: 'SentiOne',
     description: 'Built B2B SaaS GTM across Europe, UK, US, and LATAM. 50% traffic growth, 20% lead uplift. Enterprise go-to-market strategy and deal cycle acceleration.',
+    contract: false,
   },
   {
     period: '2019 – 2020',
-    role: 'Global Lifecycle Marketing Lead',
+    role: 'Head of Lifecycle Marketing',
     company: 'GetResponse',
-    description: '30% increase in engagement and revenue through CRM-led lifecycle marketing. Advanced segmentation, A/B testing, and conversion optimisation across global SaaS markets.',
+    description: '30% increase in customer engagement and revenue through CRM-led lifecycle marketing. Advanced segmentation, A/B testing, and conversion optimisation across global SaaS markets.',
+    contract: false,
+  },
+  {
+    period: 'Contract',
+    role: 'AI & Innovation Manager · Fractional CMO',
+    company: 'Gi Group Holding · Tekhuset · Lilla House Digital',
+    description: 'Parallel contract engagements: AI-driven workflow transformation and ATS unification at Gi Group; growth, SEO, and A/B testing at Tekhuset; digital marketing at Lilla House Digital.',
+    contract: true,
   },
   {
     period: '2018 – 2019',
     role: 'Head of Digital',
     company: 'Marquard Media Group',
     description: 'Digital strategy for 9 portals with a 21-person team across EU markets. SEO, UX, and PPC improvements driving brand engagement and revenue.',
+    contract: false,
   },
   {
-    period: '2010 – 2018',
-    role: 'Senior PR & Comms Lead',
+    period: '2015 – 2018',
+    role: 'Head of Marketing Communications',
     company: 'City of Łódź Office',
-    description: 'Large-scale communication strategy for a major public institution. 20% social media growth through team leadership, brand-building, and media campaigns.',
+    description: 'Built and led the communications team for one of Poland\'s largest cities. Grew social media audience 20%, exceeded marketing targets by 30%, secured 50+ media placements.',
+    contract: false,
+  },
+  {
+    period: '2010 – 2015',
+    role: 'PR Manager',
+    company: 'City of Łódź Office',
+    description: 'Media relations, crisis communications, and brand-building for a major public institution. 95% adherence to PR campaign KPIs.',
+    contract: false,
   },
 ];
 
@@ -124,7 +145,7 @@ const faq = [
             Growth operator. GTM architect. AI-native builder.
           </p>
           <p class="text-[var(--color-text-muted)] leading-relaxed">
-            12 years in B2B growth. EU, US, LATAM. I've run GTM from 0 at startups
+            15+ years in B2B growth. EU, US, LATAM. I've run GTM from 0 at startups
             and rebuilt revenue architecture at scale. I don't hand off decks —
             I stay in until the system runs and the numbers move.
           </p>
@@ -170,14 +191,14 @@ const faq = [
     <div class="mx-auto max-w-6xl px-6">
       <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-10" />
       <div class="divide-y divide-[var(--color-border)] max-w-3xl">
-        {timeline.map(({ period, role, company, description }, i) => (
-          <div class:list={['flex flex-col sm:flex-row gap-4 py-7', i === 0 ? 'pt-0' : '']}>
+        {timeline.map(({ period, role, company, description, contract }, i) => (
+          <div class:list={['flex flex-col sm:flex-row gap-4 py-7', i === 0 ? 'pt-0' : '', contract ? 'opacity-75' : '']}>
             <div class="sm:w-32 shrink-0 pt-0.5">
-              <p class="text-xs font-mono text-[var(--color-text-dim)]">{period}</p>
+              <p class:list={['text-xs font-mono', contract ? 'text-[var(--color-text-dim)] italic' : 'text-[var(--color-text-dim)]']}>{period}</p>
             </div>
             <div>
               <p class="text-base font-semibold text-[var(--color-text)] mb-0.5">{role}</p>
-              <p class="text-sm text-[var(--color-accent)] font-medium mb-2">{company}</p>
+              <p class:list={['text-sm font-medium mb-2', contract ? 'text-[var(--color-text-muted)]' : 'text-[var(--color-accent)]']}>{company}</p>
               <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-lg">{description}</p>
             </div>
           </div>
