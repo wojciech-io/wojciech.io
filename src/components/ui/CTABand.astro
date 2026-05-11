@@ -4,77 +4,61 @@ interface Props {
   subtext?: string;
   cta?: string;
   ctaHref?: string;
+  ctaSecondary?: string;
+  ctaSecondaryHref?: string;
 }
 const {
   heading = 'Ready to build a revenue system that compounds?',
-  subtext = 'Book a call to talk about your growth architecture.',
+  subtext = 'Book a call or send a message. I respond within 24 hours.',
   cta = 'Book a call',
   ctaHref = 'https://cal.com/wojciech-luszczynski',
+  ctaSecondary = 'See the work',
+  ctaSecondaryHref = '/work',
 } = Astro.props;
 ---
 
-<section class="py-[var(--space-section)]">
+<section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
   <div class="mx-auto max-w-6xl px-6">
-    <div class="relative rounded-[var(--radius-card)] border border-[var(--color-border-2)] overflow-hidden min-h-[320px] flex items-stretch">
+    <div class="relative text-center rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] overflow-hidden px-8 py-20 md:py-28">
 
-      <!-- Office background photo -->
-      <img
-        src="/images/office-bg.jpg"
-        alt=""
-        aria-hidden="true"
-        class="absolute inset-0 w-full h-full object-cover object-center"
-        loading="lazy"
-        decoding="async"
-      />
-      <!-- Dark overlay -->
-      <div class="absolute inset-0 bg-[var(--color-bg)]/82" aria-hidden="true" />
-      <!-- Grid pattern on top -->
-      <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:48px_48px] opacity-15" aria-hidden="true" />
       <!-- Accent glow -->
-      <div class="pointer-events-none absolute -top-32 -left-32 w-[500px] h-[500px] bg-[var(--color-accent-lo)]/25 blur-[120px] rounded-full" aria-hidden="true" />
+      <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[420px] bg-[var(--color-accent-lo)]/18 blur-[130px] rounded-full" aria-hidden="true" />
+      <!-- Grid pattern -->
+      <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:48px_48px] opacity-10" aria-hidden="true" />
+      <!-- Corner accents -->
+      <div class="pointer-events-none absolute top-0 left-0 w-32 h-32 border-t-2 border-l-2 border-[var(--color-accent)]/20 rounded-tl-[var(--radius-card)]" aria-hidden="true" />
+      <div class="pointer-events-none absolute bottom-0 right-0 w-32 h-32 border-b-2 border-r-2 border-[var(--color-accent)]/20 rounded-br-[var(--radius-card)]" aria-hidden="true" />
 
-      <div class="relative flex flex-col md:flex-row items-center w-full">
-
-        <!-- Text side -->
-        <div class="flex-1 px-8 py-14 md:px-14 md:py-16 z-10">
-          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Let's talk</p>
-          <h2 class="text-3xl md:text-4xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4 max-w-lg">
-            {heading}
-          </h2>
-          {subtext && (
-            <p class="text-[var(--color-text-muted)] mb-8 max-w-md">{subtext}</p>
-          )}
-          <div class="flex flex-wrap gap-4 items-center">
-            <a
-              href={ctaHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-8 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
-            >
-              {cta}
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </a>
-            <span class="text-xs text-[var(--color-text-dim)]">Responds within 24h</span>
-          </div>
+      <div class="relative">
+        <p class="text-xs font-semibold tracking-[0.18em] uppercase text-[var(--color-accent)] mb-5">Let's build it</p>
+        <h2 class="text-4xl md:text-6xl font-semibold text-[var(--color-text)] leading-[1.08] tracking-tight mb-6 max-w-3xl mx-auto">
+          {heading}
+        </h2>
+        <p class="text-lg text-[var(--color-text-muted)] mb-10 max-w-md mx-auto leading-relaxed">
+          {subtext}
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center items-center">
+          <a
+            href={ctaHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-8 py-4 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors text-sm"
+          >
+            {cta}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a
+            href={ctaSecondaryHref}
+            class="btn-press inline-flex items-center gap-2 border border-[var(--color-border-2)] text-[var(--color-text)] font-medium px-8 py-4 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors text-sm"
+          >
+            {ctaSecondary}
+          </a>
         </div>
-
-        <!-- Photo side -->
-        <div class="hidden md:block shrink-0 w-64 lg:w-72 self-stretch relative overflow-hidden">
-          <img
-            src="/images/wojciech.jpg"
-            alt="Wojciech Łuszczyński"
-            width="288"
-            height="384"
-            loading="lazy"
-            decoding="async"
-            class="absolute inset-0 w-full h-full object-cover object-top"
-            style="mask-image: linear-gradient(to left, black 55%, transparent 100%); -webkit-mask-image: linear-gradient(to left, black 55%, transparent 100%);"
-          />
-        </div>
-
+        <p class="text-xs text-[var(--color-text-dim)] mt-6">No commitment. Responds within 24 hours.</p>
       </div>
+
     </div>
   </div>
 </section>
