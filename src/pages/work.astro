@@ -13,52 +13,96 @@ const clusters = [
     id: 'ai-gtm',
     label: 'AI-native GTM systems',
     eyebrow: 'Cluster 01',
-    description: 'Practical AI implementation, workflow redesign, and code-assisted execution, turning ideas into working operator tools.',
+    n: '01',
+    description: 'Practical AI implementation, workflow redesign, and code-assisted execution — turning ideas into working operator tools.',
+    icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
   },
   {
     id: 'growth-architecture',
     label: 'Growth architecture in practice',
     eyebrow: 'Cluster 02',
-    description: 'Revenue-system thinking with real metrics, operating cadence, and growth levers, built and run, not just scoped.',
+    n: '02',
+    description: 'Revenue-system thinking with real metrics, operating cadence, and growth levers — built and run, not just scoped.',
+    icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
   },
   {
     id: 'products-shipped',
     label: 'Products actually shipped',
     eyebrow: 'Cluster 03',
-    description: 'Real product delivery with UX and conversion thinking, proof of range beyond strategic documents.',
+    n: '03',
+    description: 'Real product delivery with UX and conversion thinking — proof of range beyond strategic documents.',
+    icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
   },
 ];
 ---
 
 <Layout
   title="Work"
-  description="Selected systems, case studies, and growth outcomes, the proof architecture of Wojciech Łuszczyński."
+  description="Selected systems, case studies, and growth outcomes — the proof architecture of Wojciech Łuszczyński."
 >
 
-  <!-- Header -->
-  <section class="pt-20 pb-16 border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
+  <!-- Hero with office background -->
+  <section class="relative pt-24 pb-20 border-b border-[var(--color-border)] overflow-hidden">
+    <!-- Office photo -->
+    <img
+      src="/images/office-bg.jpg"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 w-full h-full object-cover object-center opacity-10"
+      loading="eager"
+      decoding="async"
+    />
+    <!-- Gradient overlay — fades to bg at bottom -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[var(--color-bg)]/60 via-[var(--color-bg)]/80 to-[var(--color-bg)]" aria-hidden="true" />
+    <!-- Accent glow -->
+    <div class="pointer-events-none absolute -top-40 right-1/4 w-[600px] h-[400px] bg-[var(--color-accent-lo)]/15 blur-[140px] rounded-full" aria-hidden="true" />
+
+    <div class="relative mx-auto max-w-6xl px-6">
       <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Work</p>
-      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5 max-w-2xl">
-        Three clusters. One coherent story.
+      <h1 class="text-4xl md:text-6xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-6 max-w-3xl">
+        Three clusters.<br class="hidden md:block" />
+        <span class="text-[var(--color-text-muted)]">One coherent story.</span>
       </h1>
-      <p class="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
-        The proof is grouped by what it demonstrates, not by date, client, or format.
+      <p class="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed mb-10">
+        The proof is grouped by what it demonstrates — not by date, client, or format.
       </p>
+      <!-- Cluster quick-links -->
+      <div class="flex flex-wrap gap-3">
+        {clusters.map(({ id, label, n }) => (
+          <a
+            href={`#${id}`}
+            class="group inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-surface)] text-sm px-4 py-2 rounded-[var(--radius-btn)] text-[var(--color-text-muted)] hover:border-[var(--color-accent)]/40 hover:text-[var(--color-text)] transition-colors"
+          >
+            <span class="text-xs font-mono text-[var(--color-accent)]">{n}</span>
+            {label}
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
   <!-- Clusters -->
-  {clusters.map(({ id, label, eyebrow, description }) => {
+  {clusters.map(({ id, label, eyebrow, n, description, icon }) => {
     const items = allWork.filter((w) => w.data.cluster === id);
     return (
-      <section id={id} class="scroll-mt-24 py-[var(--space-section)] border-b border-[var(--color-border)]">
+      <section id={id} class="scroll-mt-20 py-[var(--space-section)] border-b border-[var(--color-border)]">
         <div class="mx-auto max-w-6xl px-6">
-          <div class="mb-12">
-            <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">{eyebrow}</p>
-            <h2 class="text-2xl md:text-3xl font-semibold text-[var(--color-text)] mb-3">{label}</h2>
-            <p class="text-[var(--color-text-muted)] max-w-xl">{description}</p>
+          <!-- Cluster header -->
+          <div class="flex flex-col md:flex-row md:items-end gap-6 mb-12 pb-8 border-b border-[var(--color-border)]">
+            <div class="flex items-center gap-5 flex-1">
+              <div class="shrink-0 w-14 h-14 rounded-2xl bg-[var(--color-surface-2)] border border-[var(--color-border-2)] flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-[var(--color-accent)]" aria-hidden="true">
+                  <path d={icon} />
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-1">{eyebrow}</p>
+                <h2 class="text-2xl md:text-3xl font-semibold text-[var(--color-text)]">{label}</h2>
+              </div>
+            </div>
+            <p class="text-[var(--color-text-muted)] max-w-md text-sm leading-relaxed">{description}</p>
           </div>
+          <!-- Cards -->
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {items.map((item) => (
               <ProofCard
