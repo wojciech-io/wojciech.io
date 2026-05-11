@@ -1,14 +1,59 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import SectionHeader from '../components/ui/SectionHeader.astro';
 import CTABand from '../components/ui/CTABand.astro';
-import ProofCard from '../components/ui/ProofCard.astro';
+import ProjectCard from '../components/ui/ProjectCard.astro';
 import TestimonialSlider from '../components/ui/TestimonialSlider.astro';
 
-const featuredWork = (await getCollection('work', ({ data }) => data.featured && !data.draft))
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 3);
+const projects = [
+  {
+    cover: 'ads-ai' as const,
+    title: 'AdsAI / Ad Assistant',
+    description: 'One AI-native ad workflow: brief, generate, score, iterate, and prepare variants for deployment. Built as an operator tool, not a separate agency workflow.',
+    tags: ['AI', 'Ads', 'GTM', 'Operator tooling'],
+    href: 'https://app.wojciech.io/apps',
+    external: true,
+  },
+  {
+    cover: 'gtm-pack' as const,
+    title: 'Claude Code GTM Agent Starter Pack',
+    description: 'Open-source starter pack for building AI GTM agents with Claude Code. Designed for growth operators who want to ship AI-native workflows without starting from scratch.',
+    tags: ['Claude Code', 'AI', 'GTM', 'Open source'],
+    href: 'https://github.com/wojciechluszczynski/gtm-agent-repo',
+    external: true,
+  },
+  {
+    cover: 'notch' as const,
+    title: 'Notch',
+    description: 'Native macOS teleprompter app built with Codex and Xcode. Lives in the camera notch — keeps notes visible, scrolls automatically, makes you sound natural on calls and demos.',
+    tags: ['macOS', 'Swift', 'Codex', 'AI-built'],
+    href: 'https://notch.wojciech.io',
+    external: true,
+  },
+  {
+    cover: 'kamperownia' as const,
+    title: 'Kamperownia Booking Engine',
+    description: 'Custom booking and availability system for a campervan rental business. Replaced manual coordination with a structured self-serve flow — payment and availability logic included.',
+    tags: ['Product', 'Booking', 'Web app'],
+    href: 'https://app.wojciech.io/apps',
+    external: true,
+  },
+  {
+    cover: 'ai-adoption' as const,
+    title: 'AI Adoption Framework',
+    description: 'Designed an AI adoption framework for a B2B SaaS — translating AI capabilities into practical operator workflows across growth, marketing, and product.',
+    tags: ['AI adoption', 'Growth', 'B2B SaaS', 'Ops'],
+    href: '/work',
+    external: false,
+  },
+  {
+    cover: 'growth-system' as const,
+    title: 'B2B SaaS Growth System',
+    description: 'Full Q1/Q2 growth architecture: ICP refinement, outbound system, CRM operating model, SEO foundation, CRO layer. Built as an integrated system — not a set of campaigns.',
+    tags: ['B2B SaaS', 'GTM', 'CRM', 'SEO', 'CRO'],
+    href: '/work',
+    external: false,
+  },
+];
 
 const testimonials = [
   {
@@ -97,27 +142,7 @@ const testimonials = [
     </div>
   </section>
 
-  <!-- ─── 2. PROBLEM FRAMING ──────────────────────────────────────── -->
-  <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-        <div>
-          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">The problem</p>
-          <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
-            <span class="text-[var(--color-text)]">Growth breaks when</span><br />
-            <span class="text-[var(--color-text-muted)]">the system is fragmented.</span>
-          </h2>
-        </div>
-        <p class="text-[var(--color-text-muted)] leading-relaxed text-lg">
-          Most growth stalls because the pieces don't connect: the CRM doesn't feed the playbook,
-          the playbook doesn't match the pipeline, and the pipeline data isn't trusted.
-          I fix the architecture, not just the symptoms.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── 4. HOW I WORK ───────────────────────────────────────────── -->
+  <!-- ─── 2. HOW I WORK ───────────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="mb-12">
@@ -144,154 +169,30 @@ const testimonials = [
     </div>
   </section>
 
-  <!-- ─── 5. PROOF CLUSTERS ───────────────────────────────────────── -->
+  <!-- ─── 5. PROJECTS ────────────────────────────────────────────── -->
   <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="flex items-end justify-between mb-12">
         <div>
-          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Proof architecture</p>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Best work</p>
           <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
-            <span class="text-[var(--color-text)]">Three clusters.</span><br />
-            <span class="text-[var(--color-text-muted)]">One coherent story.</span>
+            <span class="text-[var(--color-text)]">Projects that shipped.</span><br />
+            <span class="text-[var(--color-text-muted)]">And systems that still run.</span>
           </h2>
         </div>
         <a href="/work" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
           All work →
         </a>
       </div>
-      <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-5">
-
-        <!-- AI-native GTM -->
-        <a href="/work#ai-gtm" class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/40 flex flex-col">
-          <div class="relative w-full aspect-[4/3] bg-[var(--color-surface-2)] overflow-hidden shrink-0">
-            <div class="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:28px_28px] opacity-30" aria-hidden="true" />
-            <svg viewBox="0 0 400 300" fill="none" class="absolute inset-0 w-full h-full" aria-hidden="true">
-              <line x1="100" y1="150" x2="185" y2="100" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-              <line x1="100" y1="150" x2="185" y2="200" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-              <line x1="185" y1="100" x2="280" y2="80" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-              <line x1="185" y1="100" x2="280" y2="150" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-              <line x1="185" y1="200" x2="280" y2="150" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-              <line x1="185" y1="200" x2="280" y2="230" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-              <line x1="280" y1="150" x2="355" y2="115" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-              <line x1="280" y1="150" x2="355" y2="195" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-              <circle cx="100" cy="150" r="14" fill="none" stroke="#EBFF00" stroke-width="1.5" stroke-opacity="0.9"/>
-              <circle cx="100" cy="150" r="5" fill="#EBFF00" fill-opacity="0.8"/>
-              <circle cx="185" cy="100" r="9" fill="none" stroke="#EBFF00" stroke-width="1" stroke-opacity="0.6"/>
-              <circle cx="185" cy="100" r="3" fill="#EBFF00" fill-opacity="0.5"/>
-              <circle cx="185" cy="200" r="9" fill="none" stroke="#EBFF00" stroke-width="1" stroke-opacity="0.6"/>
-              <circle cx="185" cy="200" r="3" fill="#EBFF00" fill-opacity="0.5"/>
-              <circle cx="280" cy="150" r="18" fill="none" stroke="#EBFF00" stroke-width="2"/>
-              <circle cx="280" cy="150" r="7" fill="#EBFF00" fill-opacity="0.9"/>
-              <circle cx="280" cy="80" r="7" fill="none" stroke="#EBFF00" stroke-width="1" stroke-opacity="0.4"/>
-              <circle cx="280" cy="230" r="7" fill="none" stroke="#EBFF00" stroke-width="1" stroke-opacity="0.4"/>
-              <circle cx="355" cy="115" r="5" fill="none" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-              <circle cx="355" cy="195" r="5" fill="none" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.3"/>
-            </svg>
-            <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)]/60 to-transparent" />
-          </div>
-          <div class="p-6 flex-1 flex flex-col">
-            <p class="text-xs font-medium text-[var(--color-accent)] tracking-widest uppercase mb-3">AI · Builder</p>
-            <h3 class="text-lg font-semibold text-[var(--color-text)] mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors duration-150 leading-snug">AI-native GTM systems</h3>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5 flex-1">AdsAI, Ad Assistant, Claude Code GTM Starter Pack, Notch macOS app — practical AI that ships and runs.</p>
-            <span class="text-xs font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors duration-150 flex items-center gap-1">
-              Explore
-              <svg class="w-3 h-3 group-hover:translate-x-1 transition-transform duration-150" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-          </div>
-        </a>
-
-        <!-- Growth architecture -->
-        <a href="/work#growth-architecture" class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/40 flex flex-col">
-          <div class="relative w-full aspect-[4/3] bg-[var(--color-surface-2)] overflow-hidden shrink-0">
-            <div class="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:28px_28px] opacity-30" aria-hidden="true" />
-            <svg viewBox="0 0 400 300" fill="none" class="absolute inset-0 w-full h-full" aria-hidden="true">
-              <rect x="55" y="215" width="42" height="55" rx="3" fill="#EBFF00" fill-opacity="0.08" stroke="#EBFF00" stroke-width="1" stroke-opacity="0.3"/>
-              <rect x="117" y="185" width="42" height="85" rx="3" fill="#EBFF00" fill-opacity="0.1" stroke="#EBFF00" stroke-width="1" stroke-opacity="0.38"/>
-              <rect x="179" y="148" width="42" height="122" rx="3" fill="#EBFF00" fill-opacity="0.13" stroke="#EBFF00" stroke-width="1" stroke-opacity="0.48"/>
-              <rect x="241" y="108" width="42" height="162" rx="3" fill="#EBFF00" fill-opacity="0.17" stroke="#EBFF00" stroke-width="1.5" stroke-opacity="0.6"/>
-              <rect x="303" y="62" width="42" height="208" rx="3" fill="#EBFF00" fill-opacity="0.22" stroke="#EBFF00" stroke-width="2" stroke-opacity="0.85"/>
-              <polyline points="76,210 138,180 200,143 262,103 324,57" stroke="#EBFF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="76" cy="210" r="4" fill="#EBFF00" fill-opacity="0.7"/>
-              <circle cx="138" cy="180" r="4" fill="#EBFF00" fill-opacity="0.75"/>
-              <circle cx="200" cy="143" r="4" fill="#EBFF00" fill-opacity="0.85"/>
-              <circle cx="262" cy="103" r="4" fill="#EBFF00" fill-opacity="0.9"/>
-              <circle cx="324" cy="57" r="6" fill="#EBFF00"/>
-              <line x1="35" y1="272" x2="365" y2="272" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.2"/>
-            </svg>
-            <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)]/60 to-transparent" />
-          </div>
-          <div class="p-6 flex-1 flex flex-col">
-            <p class="text-xs font-medium text-[var(--color-accent)] tracking-widest uppercase mb-3">Growth · GTM</p>
-            <h3 class="text-lg font-semibold text-[var(--color-text)] mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors duration-150 leading-snug">Growth architecture in practice</h3>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5 flex-1">CRO, SEO, CRM, outbound, winback — operating models that connect the pipeline, not campaigns that fill the calendar.</p>
-            <span class="text-xs font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors duration-150 flex items-center gap-1">
-              Explore
-              <svg class="w-3 h-3 group-hover:translate-x-1 transition-transform duration-150" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-          </div>
-        </a>
-
-        <!-- Products shipped -->
-        <a href="/work#products-shipped" class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/40 flex flex-col">
-          <div class="relative w-full aspect-[4/3] bg-[var(--color-surface-2)] overflow-hidden shrink-0">
-            <div class="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:28px_28px] opacity-30" aria-hidden="true" />
-            <svg viewBox="0 0 400 300" fill="none" class="absolute inset-0 w-full h-full" aria-hidden="true">
-              <rect x="55" y="70" width="260" height="175" rx="10" fill="none" stroke="#EBFF00" stroke-width="0.75" stroke-opacity="0.18"/>
-              <rect x="75" y="90" width="240" height="155" rx="8" fill="none" stroke="#EBFF00" stroke-width="1" stroke-opacity="0.32"/>
-              <rect x="95" y="108" width="220" height="137" rx="7" fill="#EBFF00" fill-opacity="0.04" stroke="#EBFF00" stroke-width="1.5" stroke-opacity="0.85"/>
-              <rect x="95" y="108" width="220" height="28" rx="7" fill="#EBFF00" fill-opacity="0.12"/>
-              <circle cx="113" cy="122" r="5" fill="#EBFF00" fill-opacity="0.7"/>
-              <circle cx="128" cy="122" r="5" fill="#EBFF00" fill-opacity="0.38"/>
-              <circle cx="143" cy="122" r="5" fill="#EBFF00" fill-opacity="0.18"/>
-              <rect x="111" y="152" width="115" height="7" rx="3.5" fill="#EBFF00" fill-opacity="0.35"/>
-              <rect x="111" y="167" width="160" height="5" rx="2.5" fill="#EBFF00" fill-opacity="0.16"/>
-              <rect x="111" y="179" width="135" height="5" rx="2.5" fill="#EBFF00" fill-opacity="0.16"/>
-              <rect x="111" y="191" width="105" height="5" rx="2.5" fill="#EBFF00" fill-opacity="0.1"/>
-              <rect x="111" y="214" width="72" height="22" rx="11" fill="#EBFF00" fill-opacity="0.88"/>
-            </svg>
-            <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-surface)]/60 to-transparent" />
-          </div>
-          <div class="p-6 flex-1 flex flex-col">
-            <p class="text-xs font-medium text-[var(--color-accent)] tracking-widest uppercase mb-3">Product · Execution</p>
-            <h3 class="text-lg font-semibold text-[var(--color-text)] mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors duration-150 leading-snug">Products actually shipped</h3>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5 flex-1">Kamperownia booking engine, Działka+, Paczka+, Resume+ — real products with real users, not side-project demos.</p>
-            <span class="text-xs font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors duration-150 flex items-center gap-1">
-              Explore
-              <svg class="w-3 h-3 group-hover:translate-x-1 transition-transform duration-150" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-          </div>
-        </a>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── 6. SELECTED WORK ────────────────────────────────────────── -->
-  <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="flex items-end justify-between mb-12">
-        <div>
-          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Selected work</p>
-          <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
-            <span class="text-[var(--color-text)]">Flagship proof.</span><br />
-            <span class="text-[var(--color-text-muted)]">Real companies, real results.</span>
-          </h2>
-        </div>
-        <a href="/work" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
-          View all →
-        </a>
-      </div>
-      <div class="grid md:grid-cols-3 gap-5">
-        {featuredWork.map((item) => (
-          <ProofCard
-            title={item.data.title}
-            description={item.data.description}
-            tags={item.data.tags}
-            metrics={item.data.metrics}
-            href={item.data.href}
-            image={item.data.image}
-            icon={item.data.icon}
-            featured={item.data.featured}
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {projects.map((p) => (
+          <ProjectCard
+            cover={p.cover}
+            title={p.title}
+            description={p.description}
+            tags={p.tags}
+            href={p.href}
+            external={p.external}
           />
         ))}
       </div>
@@ -350,50 +251,7 @@ const testimonials = [
     </div>
   </section>
 
-  <!-- ─── 9. LATEST INSIGHT ───────────────────────────────────────── -->
-  <section class="py-[var(--space-section)] border-t border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="flex items-end justify-between mb-8">
-        <div>
-          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">From the blog</p>
-          <h2 class="text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
-            <span class="text-[var(--color-text)]">One article</span><br />
-            <span class="text-[var(--color-text-muted)]">worth your time.</span>
-          </h2>
-        </div>
-        <a href="/insights" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
-          All articles →
-        </a>
-      </div>
-      <a
-        href="/insights/claude-code-vs-clay/"
-        class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 flex flex-col md:flex-row gap-8 card-lift hover:border-[var(--color-accent)]/30"
-      >
-        <div class="flex-1">
-          <span class="inline-flex items-center text-xs font-medium px-3 py-1 rounded-[var(--radius-badge)] border border-[var(--color-border-2)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)] mb-4">
-            Article
-          </span>
-          <h3 class="text-xl font-semibold text-[var(--color-text)] mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors duration-150">
-            The Claude Code GTM Agent Starter Pack
-          </h3>
-          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-            A four-layer AI agent system for outbound research, sequence drafting, and CRM enrichment —
-            built for operators who ship, not evaluate.
-          </p>
-        </div>
-        <div class="flex items-end md:items-center shrink-0">
-          <span class="text-sm font-medium text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors flex items-center gap-1.5">
-            Read
-            <svg class="w-3.5 h-3.5 translate-x-0 group-hover:translate-x-1 transition-transform duration-150" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </div>
-      </a>
-    </div>
-  </section>
-
-  <!-- ─── 10. FINAL CTA ───────────────────────────────────────────── -->
+  <!-- ─── 9. FINAL CTA ────────────────────────────────────────────── -->
   <CTABand />
 
 </Layout>
