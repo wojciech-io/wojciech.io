@@ -2,6 +2,7 @@
 const calLink = 'wojciech-luszczynski/30min';
 const profileLink = 'wojciech-luszczynski';
 const calNamespace = '30min';
+const calTimezone = 'Europe/Berlin';
 ---
 
 <div
@@ -25,6 +26,7 @@ const calNamespace = '30min';
     data-cal-link={calLink}
     data-cal-namespace={calNamespace}
     data-cal-endpoint="/api/cal/booking-link"
+    data-cal-timezone={calTimezone}
     class="h-[400px] w-full overflow-hidden bg-[var(--color-bg)]"
   ></div>
 
@@ -48,7 +50,15 @@ const calNamespace = '30min';
     const calLink = target.getAttribute('data-cal-link');
     const calNamespace = target.getAttribute('data-cal-namespace');
     const calEndpoint = target.getAttribute('data-cal-endpoint');
+    const calTimezone = target.getAttribute('data-cal-timezone') || 'Europe/Berlin';
     if (!calLink || !calNamespace) return;
+
+    const withTimezone = (link) => {
+      const [path, query = ''] = link.split('?');
+      const params = new URLSearchParams(query);
+      params.set('timezone', calTimezone);
+      return `${path}?${params.toString()}`;
+    };
 
     (function (C, A, L) {
       const push = function (api, args) {
@@ -94,18 +104,18 @@ const calNamespace = '30min';
     })(window, 'https://app.cal.com/embed/embed.js', 'init');
 
     const getCalLink = async () => {
-      if (!calEndpoint) return calLink;
+      if (!calEndpoint) return withTimezone(calLink);
 
       try {
         const response = await fetch(calEndpoint, {
           headers: { accept: 'application/json' },
         });
-        if (!response.ok) return calLink;
+        if (!response.ok) return withTimezone(calLink);
 
         const data = await response.json();
-        return typeof data.calLink === 'string' && data.calLink ? data.calLink : calLink;
+        return withTimezone(typeof data.calLink === 'string' && data.calLink ? data.calLink : calLink);
       } catch {
-        return calLink;
+        return withTimezone(calLink);
       }
     };
 
@@ -116,6 +126,7 @@ const calNamespace = '30min';
       config: {
         layout: 'week_view',
         theme: 'dark',
+        timezone: calTimezone,
       },
     });
     window.Cal.ns[calNamespace]('ui', {
