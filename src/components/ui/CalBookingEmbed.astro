@@ -1,142 +1,399 @@
 ---
-const calLink = 'wojciech-luszczynski/30min';
-const profileLink = 'wojciech-luszczynski';
-const calNamespace = '30min';
+const calLink = 'https://cal.com/wojciech-luszczynski/30min?timezone=Europe%2FBerlin';
 const calTimezone = 'Europe/Berlin';
 ---
 
 <div
   id="book-call"
+  data-slots-endpoint="/api/cal/slots"
+  data-book-endpoint="/api/cal/book"
+  data-direct-link={calLink}
+  data-timezone={calTimezone}
   class="scroll-mt-20 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden"
 >
-  <div class="px-5 py-4 border-b border-[var(--color-border)]">
-    <p class="text-[10px] font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-2">
-      Book a call
-    </p>
-    <h2 class="text-lg font-semibold text-[var(--color-text)] mb-1.5">
-      Pick a time that works.
-    </h2>
-    <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
-      Book a 30-minute virtual coffee directly here, or open the calendar on Cal.com if the embed does not load.
-    </p>
+  <div class="border-b border-[var(--color-border)] px-5 py-3">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-[10px] font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-2">
+          Book a call
+        </p>
+        <h2 class="text-lg font-semibold text-[var(--color-text)] leading-tight">
+          30 minutes virtual coffee
+        </h2>
+      </div>
+      <div class="shrink-0 rounded-full border border-[var(--color-border)] px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)]">
+        Berlin time
+      </div>
+    </div>
   </div>
 
-  <div
-    id="cal-booking-inline"
-    data-cal-link={calLink}
-    data-cal-namespace={calNamespace}
-    data-cal-endpoint="/api/cal/booking-link"
-    data-cal-timezone={calTimezone}
-    class="h-[400px] w-full overflow-hidden bg-[var(--color-bg)]"
-  ></div>
+  <div class="grid lg:grid-cols-[0.85fr_1fr]">
+    <div class="border-b border-[var(--color-border)] p-4 lg:border-b-0 lg:border-r">
+      <div class="mb-3 flex items-center justify-between gap-3">
+        <div>
+          <p class="text-xs font-medium text-[var(--color-text-muted)]">Availability</p>
+          <p id="cal-month-label" class="text-base font-semibold text-[var(--color-text)]">Loading</p>
+        </div>
+        <a
+          id="cal-direct-link"
+          href={calLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-xs font-medium text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors"
+        >
+          Open Cal.com
+        </a>
+      </div>
 
-  <div class="px-5 py-3 border-t border-[var(--color-border)]">
-    <a
-      href={`https://cal.com/${profileLink}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="text-sm font-medium text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors"
-    >
-      Open Cal.com directly →
-    </a>
+      <div id="cal-date-options" class="mb-3 grid grid-cols-5 gap-1.5" aria-label="Available days"></div>
+
+      <div>
+        <div class="mb-2 flex items-center justify-between gap-3">
+          <p class="text-xs font-medium text-[var(--color-text-muted)]">Start time</p>
+          <p id="cal-status" class="text-[11px] text-[var(--color-text-dim)]">Checking Cal.com...</p>
+        </div>
+        <div id="cal-slot-options" class="grid grid-cols-2 gap-2" aria-label="Available times"></div>
+      </div>
+    </div>
+
+    <form id="cal-booking-form" class="p-4" novalidate>
+      <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
+      <input type="hidden" name="start" id="cal-selected-start" />
+
+      <div class="mb-3 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2.5">
+        <p class="text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-dim)]">Selected slot</p>
+        <p id="cal-selected-label" class="mt-1 text-sm font-semibold text-[var(--color-text)]">
+          Pick a day and time
+        </p>
+      </div>
+
+      <div class="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <label class="grid min-w-0 gap-1.5">
+          <span class="text-xs font-medium text-[var(--color-text-muted)]">Name</span>
+          <input
+            name="name"
+            required
+            autocomplete="name"
+            class="h-9 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+            placeholder="Your name"
+          />
+        </label>
+
+        <label class="grid min-w-0 gap-1.5">
+          <span class="text-xs font-medium text-[var(--color-text-muted)]">Email</span>
+          <input
+            name="email"
+            required
+            type="email"
+            autocomplete="email"
+            class="h-9 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+            placeholder="you@company.com"
+          />
+        </label>
+
+        <label class="grid min-w-0 gap-1.5">
+          <span class="text-xs font-medium text-[var(--color-text-muted)]">Company</span>
+          <input
+            name="company"
+            autocomplete="organization"
+            class="h-9 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+            placeholder="Optional"
+          />
+        </label>
+
+        <label class="grid gap-1.5 lg:col-span-2">
+          <span class="text-xs font-medium text-[var(--color-text-muted)]">What should we cover?</span>
+          <textarea
+            name="message"
+            rows="2"
+            class="resize-none rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+            placeholder="A few words of context"
+          ></textarea>
+        </label>
+      </div>
+
+      <button
+        id="cal-submit-button"
+        type="submit"
+        disabled
+        class="btn-press mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent)] px-5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-hi)] disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        Confirm booking
+      </button>
+
+      <p id="cal-form-status" class="mt-2 min-h-5 text-xs text-[var(--color-text-dim)]" role="status" aria-live="polite"></p>
+    </form>
   </div>
 </div>
 
 <script is:inline>
-  (async () => {
-    const target = document.querySelector('#cal-booking-inline');
-    if (!target) return;
+  (() => {
+    const root = document.querySelector('#book-call');
+    if (!root) return;
 
-    const calLink = target.getAttribute('data-cal-link');
-    const calNamespace = target.getAttribute('data-cal-namespace');
-    const calEndpoint = target.getAttribute('data-cal-endpoint');
-    const calTimezone = target.getAttribute('data-cal-timezone') || 'Europe/Berlin';
-    if (!calLink || !calNamespace) return;
+    const slotsEndpoint = root.getAttribute('data-slots-endpoint');
+    const bookEndpoint = root.getAttribute('data-book-endpoint');
+    const directLink = root.getAttribute('data-direct-link');
+    const timezone = root.getAttribute('data-timezone') || 'Europe/Berlin';
+    const dateOptions = root.querySelector('#cal-date-options');
+    const slotOptions = root.querySelector('#cal-slot-options');
+    const monthLabel = root.querySelector('#cal-month-label');
+    const status = root.querySelector('#cal-status');
+    const form = root.querySelector('#cal-booking-form');
+    const submitButton = root.querySelector('#cal-submit-button');
+    const selectedStart = root.querySelector('#cal-selected-start');
+    const selectedLabel = root.querySelector('#cal-selected-label');
+    const formStatus = root.querySelector('#cal-form-status');
 
-    const withTimezone = (link) => {
-      const [path, query = ''] = link.split('?');
-      const params = new URLSearchParams(query);
-      params.set('timezone', calTimezone);
-      return `${path}?${params.toString()}`;
+    const state = {
+      days: [],
+      selectedDate: '',
+      selectedSlot: null,
     };
 
-    (function (C, A, L) {
-      const push = function (api, args) {
-        api.q.push(args);
+    const dateParts = (date) => {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).formatToParts(date);
+      const get = (type) => parts.find((part) => part.type === type)?.value;
+      return {
+        year: get('year'),
+        month: get('month'),
+        day: get('day'),
       };
-      const doc = C.document;
+    };
 
-      C.Cal =
-        C.Cal ||
-        function () {
-          const cal = C.Cal;
-          const args = arguments;
+    const dateKey = (date) => {
+      const parts = dateParts(date);
+      return `${parts.year}-${parts.month}-${parts.day}`;
+    };
 
-          if (!cal.loaded) {
-            cal.ns = {};
-            cal.q = cal.q || [];
-            const script = doc.createElement('script');
-            script.src = A;
-            script.async = true;
-            doc.head.appendChild(script);
-            cal.loaded = true;
-          }
+    const addDays = (date, days) => {
+      const next = new Date(date);
+      next.setUTCDate(next.getUTCDate() + days);
+      return next;
+    };
 
-          if (args[0] === L) {
-            const api = function () {
-              push(api, arguments);
-            };
-            const namespace = args[1];
-            api.q = api.q || [];
+    const dateFromKey = (key) => new Date(`${key}T12:00:00Z`);
 
-            if (typeof namespace === 'string') {
-              cal.ns[namespace] = cal.ns[namespace] || api;
-              push(cal.ns[namespace], args);
-              push(cal, ['initNamespace', namespace]);
-            } else {
-              push(cal, args);
-            }
-            return;
-          }
+    const dayLabel = (key) =>
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        weekday: 'short',
+      }).format(dateFromKey(key));
 
-          push(cal, args);
-        };
-    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+    const monthText = (key) =>
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        month: 'long',
+        year: 'numeric',
+      }).format(dateFromKey(key));
 
-    const getCalLink = async () => {
-      if (!calEndpoint) return withTimezone(calLink);
+    const slotTime = (value) =>
+      new Intl.DateTimeFormat('en-GB', {
+        timeZone: timezone,
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(new Date(value));
 
-      try {
-        const response = await fetch(calEndpoint, {
-          headers: { accept: 'application/json' },
+    const slotDateTime = (value) =>
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(new Date(value));
+
+    const setStatus = (message) => {
+      if (status) status.textContent = message;
+    };
+
+    const setFormStatus = (message, tone = 'muted') => {
+      if (!formStatus) return;
+      formStatus.textContent = message;
+      formStatus.className = `mt-2 min-h-5 text-xs ${
+        tone === 'error'
+          ? 'text-red-300'
+          : tone === 'success'
+            ? 'text-[var(--color-accent-hi)]'
+            : 'text-[var(--color-text-dim)]'
+      }`;
+    };
+
+    const buttonClass = (active, disabled = false) =>
+      [
+        'btn-press rounded-[var(--radius-btn)] border px-2.5 py-1.5 text-left transition-colors',
+        active
+          ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-text)]'
+          : 'border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] hover:border-[var(--color-accent)]/50',
+        disabled ? 'cursor-not-allowed opacity-35 hover:border-[var(--color-border)]' : '',
+      ].join(' ');
+
+    const renderDates = () => {
+      if (!dateOptions) return;
+      dateOptions.innerHTML = '';
+
+      state.days.slice(0, 10).forEach((day) => {
+        const available = day.slots.length > 0;
+        const active = day.date === state.selectedDate;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.disabled = !available;
+        button.className = buttonClass(active, !available);
+        button.setAttribute('aria-pressed', String(active));
+        button.innerHTML = `
+          <span class="block text-[9px] font-semibold uppercase tracking-wider">${dayLabel(day.date)}</span>
+          <span class="block text-base font-semibold leading-tight">${Number(day.date.slice(-2))}</span>
+        `;
+        button.addEventListener('click', () => {
+          state.selectedDate = day.date;
+          state.selectedSlot = null;
+          render();
         });
-        if (!response.ok) return withTimezone(calLink);
+        dateOptions.appendChild(button);
+      });
+    };
 
-        const data = await response.json();
-        return withTimezone(typeof data.calLink === 'string' && data.calLink ? data.calLink : calLink);
-      } catch {
-        return withTimezone(calLink);
+    const renderSlots = () => {
+      if (!slotOptions) return;
+      slotOptions.innerHTML = '';
+
+      const day = state.days.find((item) => item.date === state.selectedDate);
+      if (!day || day.slots.length === 0) {
+        slotOptions.innerHTML = `
+          <div class="col-span-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-5 text-sm text-[var(--color-text-muted)]">
+            No slots on this day.
+          </div>
+        `;
+        return;
+      }
+
+      day.slots.slice(0, 8).forEach((slot) => {
+        const active = state.selectedSlot?.start === slot.start;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `${buttonClass(active)} text-center text-sm font-semibold`;
+        button.textContent = slotTime(slot.start);
+        button.setAttribute('aria-pressed', String(active));
+        button.addEventListener('click', () => {
+          state.selectedSlot = slot;
+          render();
+        });
+        slotOptions.appendChild(button);
+      });
+    };
+
+    const renderSelectedSlot = () => {
+      const hasSlot = Boolean(state.selectedSlot?.start);
+      if (selectedStart) selectedStart.value = hasSlot ? state.selectedSlot.start : '';
+      if (submitButton) submitButton.disabled = !hasSlot;
+      if (selectedLabel) {
+        selectedLabel.textContent = hasSlot
+          ? `${slotDateTime(state.selectedSlot.start)} (${timezone})`
+          : 'Pick a day and time';
       }
     };
 
-    window.Cal('init', calNamespace, { origin: 'https://cal.com' });
-    window.Cal.ns[calNamespace]('inline', {
-      elementOrSelector: '#cal-booking-inline',
-      calLink: await getCalLink(),
-      config: {
-        layout: 'week_view',
-        theme: 'dark',
-        timezone: calTimezone,
-      },
+    const render = () => {
+      if (monthLabel) monthLabel.textContent = monthText(state.selectedDate || dateKey(new Date()));
+      renderDates();
+      renderSlots();
+      renderSelectedSlot();
+    };
+
+    const loadSlots = async () => {
+      const today = new Date();
+      const start = dateKey(today);
+      const end = dateKey(addDays(today, 14));
+
+      setStatus('Checking Cal.com...');
+
+      try {
+        const url = new URL(slotsEndpoint, window.location.origin);
+        url.searchParams.set('start', start);
+        url.searchParams.set('end', end);
+        const response = await fetch(url, { headers: { accept: 'application/json' } });
+        const payload = await response.json();
+
+        const daysByDate = new Map((payload.days || []).map((day) => [day.date, day.slots || []]));
+        state.days = Array.from({ length: 10 }, (_, index) => {
+          const date = dateKey(addDays(today, index));
+          return {
+            date,
+            slots: daysByDate.get(date) || [],
+          };
+        });
+
+        state.selectedDate = state.days.find((day) => day.slots.length > 0)?.date || state.days[0]?.date || start;
+        state.selectedSlot = null;
+
+        if (payload.directLink && root.querySelector('#cal-direct-link')) {
+          root.querySelector('#cal-direct-link').setAttribute('href', payload.directLink);
+        }
+
+        setStatus(payload.status === 'success' ? `${timezone}` : 'Use Cal.com fallback');
+      } catch {
+        state.days = Array.from({ length: 10 }, (_, index) => ({
+          date: dateKey(addDays(today, index)),
+          slots: [],
+        }));
+        state.selectedDate = state.days[0]?.date || start;
+        setStatus('Use Cal.com fallback');
+        setFormStatus('Could not load availability here. Open Cal.com directly.', 'error');
+      }
+
+      render();
+    };
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!state.selectedSlot?.start || !bookEndpoint) return;
+
+      setFormStatus('Booking...');
+      if (submitButton) submitButton.disabled = true;
+
+      const formData = new FormData(form);
+      const payload = {
+        start: state.selectedSlot.start,
+        name: formData.get('name'),
+        email: formData.get('email'),
+        company: formData.get('company'),
+        message: formData.get('message'),
+        website: formData.get('website'),
+      };
+
+      try {
+        const response = await fetch(bookEndpoint, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || data.status !== 'success') {
+          throw new Error(data.message || 'Booking failed.');
+        }
+
+        setFormStatus('Booked. You will get a calendar invite by email.', 'success');
+        form.querySelectorAll('input, textarea, button').forEach((field) => {
+          if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLButtonElement) {
+            field.disabled = true;
+          }
+        });
+      } catch (error) {
+        setFormStatus(error instanceof Error ? error.message : 'Booking failed. Open Cal.com directly.', 'error');
+        if (submitButton) submitButton.disabled = false;
+      }
     });
-    window.Cal.ns[calNamespace]('ui', {
-      theme: 'dark',
-      layout: 'week_view',
-      hideEventTypeDetails: false,
-      styles: {
-        body: { background: 'transparent' },
-        eventTypeListItem: { background: '#171717' },
-      },
-    });
+
+    loadSlots();
   })();
 </script>
