@@ -11,10 +11,12 @@ const {
   heading = 'Build a revenue system\nthat compounds.',
   subtext = 'Working product. Broken pipeline. Book a call and we figure out what to fix first. I respond within 24 hours.',
   cta = 'Book a call',
-  ctaHref = 'https://cal.com/wojciech-luszczynski',
+  ctaHref = '/contact#book-call',
   ctaSecondary = 'See the work',
   ctaSecondaryHref = '/work',
 } = Astro.props;
+const ctaIsExternal = ctaHref.startsWith('http');
+const secondaryIsExternal = ctaSecondaryHref.startsWith('http');
 ---
 
 <section class="border-t border-[var(--color-border)] py-28 md:py-36 text-center relative overflow-hidden">
@@ -39,8 +41,7 @@ const {
     <div class="flex flex-wrap gap-3 justify-center">
       <a
         href={ctaHref}
-        target="_blank"
-        rel="noopener noreferrer"
+        {...(ctaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-8 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors text-sm"
       >
         {cta}
@@ -50,6 +51,7 @@ const {
       </a>
       <a
         href={ctaSecondaryHref}
+        {...(secondaryIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         class="btn-press inline-flex items-center gap-2 border border-[var(--color-border-2)] text-[var(--color-text-muted)] font-medium px-8 py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-border)] hover:text-[var(--color-text)] transition-colors text-sm"
       >
         {ctaSecondary}

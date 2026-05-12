@@ -1,0 +1,131 @@
+---
+const calLink = 'wojciech-luszczynski/30min';
+const profileLink = 'wojciech-luszczynski';
+const calNamespace = '30min';
+---
+
+<div
+  id="book-call"
+  class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden"
+>
+  <div class="p-6 border-b border-[var(--color-border)]">
+    <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">
+      Book a call
+    </p>
+    <h2 class="text-xl font-semibold text-[var(--color-text)] mb-2">
+      Pick a time that works.
+    </h2>
+    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+      Book a 30-minute virtual coffee directly here, or open the calendar on Cal.com if the embed does not load.
+    </p>
+  </div>
+
+  <div
+    id="cal-booking-inline"
+    data-cal-link={calLink}
+    data-cal-namespace={calNamespace}
+    data-cal-endpoint="/api/cal/booking-link"
+    class="h-[780px] w-full overflow-hidden bg-[var(--color-bg)]"
+  ></div>
+
+  <div class="px-6 py-4 border-t border-[var(--color-border)]">
+    <a
+      href={`https://cal.com/${profileLink}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-sm font-medium text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors"
+    >
+      Open Cal.com directly →
+    </a>
+  </div>
+</div>
+
+<script is:inline>
+  (async () => {
+    const target = document.querySelector('#cal-booking-inline');
+    if (!target) return;
+
+    const calLink = target.getAttribute('data-cal-link');
+    const calNamespace = target.getAttribute('data-cal-namespace');
+    const calEndpoint = target.getAttribute('data-cal-endpoint');
+    if (!calLink || !calNamespace) return;
+
+    (function (C, A, L) {
+      const push = function (api, args) {
+        api.q.push(args);
+      };
+      const doc = C.document;
+
+      C.Cal =
+        C.Cal ||
+        function () {
+          const cal = C.Cal;
+          const args = arguments;
+
+          if (!cal.loaded) {
+            cal.ns = {};
+            cal.q = cal.q || [];
+            const script = doc.createElement('script');
+            script.src = A;
+            script.async = true;
+            doc.head.appendChild(script);
+            cal.loaded = true;
+          }
+
+          if (args[0] === L) {
+            const api = function () {
+              push(api, arguments);
+            };
+            const namespace = args[1];
+            api.q = api.q || [];
+
+            if (typeof namespace === 'string') {
+              cal.ns[namespace] = cal.ns[namespace] || api;
+              push(cal.ns[namespace], args);
+              push(cal, ['initNamespace', namespace]);
+            } else {
+              push(cal, args);
+            }
+            return;
+          }
+
+          push(cal, args);
+        };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+    const getCalLink = async () => {
+      if (!calEndpoint) return calLink;
+
+      try {
+        const response = await fetch(calEndpoint, {
+          headers: { accept: 'application/json' },
+        });
+        if (!response.ok) return calLink;
+
+        const data = await response.json();
+        return typeof data.calLink === 'string' && data.calLink ? data.calLink : calLink;
+      } catch {
+        return calLink;
+      }
+    };
+
+    window.Cal('init', calNamespace, { origin: 'https://cal.com' });
+    window.Cal.ns[calNamespace]('inline', {
+      elementOrSelector: '#cal-booking-inline',
+      calLink: await getCalLink(),
+      config: {
+        layout: 'month_view',
+        theme: 'dark',
+      },
+    });
+    window.Cal.ns[calNamespace]('ui', {
+      theme: 'dark',
+      layout: 'month_view',
+      hideEventTypeDetails: false,
+      styles: {
+        body: { background: 'transparent' },
+        eventTypeListItem: { background: '#171717' },
+      },
+    });
+  })();
+</script>
