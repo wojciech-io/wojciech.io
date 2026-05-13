@@ -5,9 +5,10 @@ import SectionHeader from '../components/ui/SectionHeader.astro';
 import ProjectCard from '../components/ui/ProjectCard.astro';
 import CTABand from '../components/ui/CTABand.astro';
 
-type CoverType = 'ads-ai' | 'gtm-pack' | 'notch' | 'kamperownia' | 'ai-adoption' | 'growth-system' | 'mini-apps';
+type CoverType = 'ads-ai' | 'gtm-pack' | 'notch' | 'kamperownia' | 'ai-adoption' | 'growth-system' | 'mini-apps' | 'relora';
 
 const coverMap: Record<string, CoverType> = {
+  'relora':          'relora',
   'ad-assistant':    'ads-ai',
   'gtm-starter-pack':'gtm-pack',
   'notch':           'notch',
@@ -124,6 +125,11 @@ const clusters = [
                 tags={item.data.tags ?? []}
                 href={item.data.href ?? '/work'}
                 cover={coverMap[item.id] ?? 'growth-system'}
+                screenshot={item.data.image}
+                problem={item.data.problem}
+                system={item.data.system}
+                artifact={item.data.artifact}
+                outcome={item.data.outcome}
                 external={!!item.data.href && item.data.href.startsWith('http')}
               />
             ))}
