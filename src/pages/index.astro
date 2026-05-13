@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import CTABand from '../components/ui/CTABand.astro';
 import ProjectCard from '../components/ui/ProjectCard.astro';
 import TestimonialSlider from '../components/ui/TestimonialSlider.astro';
-import HeroSystemCanvas from '../components/home/HeroSystemCanvas.astro';
 
 const projects = [
   {
@@ -81,72 +80,99 @@ const testimonials = [
 <Layout>
 
   <!-- ─── 1. HERO ─────────────────────────────────────────────────── -->
-  <section class="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
-    <!-- Grid -->
+  <section class="relative overflow-hidden" style="min-height: 620px;">
+    <!-- Subtle grid -->
     <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border)_1px,transparent_1px)] bg-[size:48px_48px] opacity-20" aria-hidden="true" />
-    <!-- Animated glow -->
-    <div class="animate-glow-breathe pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[var(--color-accent-lo)] blur-[160px] rounded-full" aria-hidden="true" />
+    <!-- Glow behind text -->
+    <div class="animate-glow-breathe pointer-events-none absolute top-0 left-0 w-[640px] h-[600px] bg-[var(--color-accent-lo)] blur-[180px] rounded-full opacity-60" aria-hidden="true" />
+
+    <!-- Photo: desktop only, right half, absolute -->
+    <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[46%] overflow-hidden" aria-hidden="true">
+      <img
+        src="/images/wojciech-hero.webp"
+        alt=""
+        width="920"
+        height="1380"
+        loading="eager"
+        decoding="async"
+        class="absolute inset-0 w-full h-full object-cover object-top"
+      />
+      <!-- Left fade overlay: blends photo into dark background -->
+      <div class="absolute inset-y-0 left-0 w-[30%] pointer-events-none" style="background: linear-gradient(to right, #0c0c0c 0%, transparent 100%);" />
+      <!-- Bottom fade overlay -->
+      <div class="absolute inset-x-0 bottom-0 h-[18%] pointer-events-none" style="background: linear-gradient(to top, #0c0c0c 0%, transparent 100%);" />
+      <!-- Floating chips -->
+      <div class="absolute bottom-14 left-8 flex flex-col gap-2 z-10">
+        <div class="inline-flex items-center gap-2 rounded-[14px] border border-[var(--color-border-2)] bg-[rgb(12_12_12/0.82)] backdrop-blur-md px-3.5 py-2.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0"></span>
+          <span class="text-xs font-mono text-[var(--color-text-muted)]">15+ yrs · B2B SaaS</span>
+        </div>
+        <div class="inline-flex items-center gap-2 rounded-[14px] border border-[var(--color-border-2)] bg-[rgb(12_12_12/0.82)] backdrop-blur-md px-3.5 py-2.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0"></span>
+          <span class="text-xs font-mono text-[var(--color-text-muted)]">EU · UK · US · LATAM</span>
+        </div>
+        <div class="inline-flex items-center gap-2 rounded-[14px] border border-[var(--color-border-2)] bg-[rgb(12_12_12/0.82)] backdrop-blur-md px-3.5 py-2.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0"></span>
+          <span class="text-xs font-mono text-[var(--color-text-muted)]">Strategy · Build · Ship</span>
+        </div>
+      </div>
+    </div>
 
     <div class="relative mx-auto max-w-6xl px-6">
-      <div class="grid lg:grid-cols-[minmax(0,1fr)_460px] gap-10 lg:gap-12 items-center">
 
-        <!-- Left: text -->
-        <div class="animate-fade-up">
+      <!-- Text: left column, constrained width so photo shows on right -->
+      <div class="animate-fade-up flex flex-col justify-center py-24 lg:py-32 lg:max-w-[54%]">
 
-          <!-- Badge -->
-          <div class="inline-flex items-center gap-2 border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 rounded-[var(--radius-badge)] px-3 py-1 mb-8">
-            <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse-dot"></span>
-            <span class="text-xs font-medium text-[var(--color-accent)]">GTM operator · Revenue systems · AI-native</span>
-          </div>
-
-          <div class="lg:hidden flex items-center gap-3 mb-6 rounded-[18px] border border-[var(--color-border)] bg-[var(--color-surface)]/70 p-2.5 max-w-sm">
-            <img
-              src="/images/wojciech-avatar-384.webp"
-              alt="Wojciech Łuszczyński"
-              width="48"
-              height="48"
-              loading="eager"
-              decoding="async"
-              class="w-12 h-12 rounded-full object-cover border border-[var(--color-accent)]/35"
-            />
-            <div class="min-w-0">
-              <p class="text-xs font-mono uppercase tracking-widest text-[var(--color-accent)]">Operator-led</p>
-              <p class="text-sm text-[var(--color-text-muted)] leading-tight">Strategy, build, and tooling in one loop.</p>
-            </div>
-          </div>
-
-          <!-- Headline -->
-          <h1 class="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-[4.55rem] font-bold leading-[1.08] tracking-tight mb-6">
-            <span class="text-[var(--color-text)]">I build revenue systems</span><br />
-            <span class="text-[var(--color-text-muted)]">that compound.</span>
-          </h1>
-
-          <!-- Sub-copy -->
-          <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-snug mb-10 max-w-xl">
-            Working product. Broken pipeline. I design the revenue system, build it, and ship the tools it needs to run.
-          </p>
-
-          <!-- Buttons -->
-          <div class="flex flex-wrap gap-3 mb-4">
-            <a
-              href="/work"
-              class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-7 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
-            >
-              See the work
-            </a>
-            <a
-              href="/contact#book-call"
-              class="btn-press inline-flex items-center gap-2 border border-[var(--color-border-2)] text-[var(--color-text)] font-medium px-7 py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors"
-            >
-              Book a call
-            </a>
-          </div>
-          <p class="text-xs text-[var(--color-text-dim)]">15+ years in B2B SaaS · EU · UK · US · LATAM</p>
-
+        <!-- Badge -->
+        <div class="inline-flex self-start items-center gap-2 border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 rounded-[var(--radius-badge)] px-3 py-1 mb-8">
+          <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse-dot"></span>
+          <span class="text-xs font-medium text-[var(--color-accent)]">GTM operator · Revenue systems · AI-native</span>
         </div>
 
-        <!-- Right: interactive operating model -->
-        <HeroSystemCanvas />
+        <!-- Mobile: avatar -->
+        <div class="lg:hidden flex items-center gap-3 mb-8">
+          <img
+            src="/images/wojciech-avatar-384.webp"
+            alt="Wojciech Łuszczyński"
+            width="56"
+            height="56"
+            loading="eager"
+            decoding="async"
+            class="w-14 h-14 rounded-full object-cover border border-[var(--color-accent)]/35 shrink-0"
+          />
+          <div>
+            <p class="text-sm font-semibold text-[var(--color-text)]">Wojciech Łuszczyński</p>
+            <p class="text-xs text-[var(--color-text-muted)]">GTM operator · AI-native builder</p>
+          </div>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="text-[2rem] sm:text-4xl md:text-5xl lg:text-[3.8rem] font-bold leading-[1.08] tracking-tight mb-6">
+          <span class="text-[var(--color-text)]">I build revenue systems</span><br />
+          <span class="text-[var(--color-text-muted)]">that compound.</span>
+        </h1>
+
+        <!-- Sub-copy -->
+        <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed mb-10 max-w-lg">
+          Working product. Broken pipeline. I design the revenue system, build it, and ship the tools it needs to run.
+        </p>
+
+        <!-- Buttons -->
+        <div class="flex flex-wrap gap-3 mb-5">
+          <a
+            href="/work"
+            class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-7 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
+          >
+            See the work
+          </a>
+          <a
+            href="/contact#book-call"
+            class="btn-press inline-flex items-center gap-2 border border-[var(--color-border-2)] text-[var(--color-text)] font-medium px-7 py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors"
+          >
+            Book a call
+          </a>
+        </div>
+        <p class="text-xs text-[var(--color-text-dim)]">15+ years in B2B SaaS · EU · UK · US · LATAM</p>
 
       </div>
     </div>
