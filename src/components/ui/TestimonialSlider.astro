@@ -11,46 +11,46 @@ interface Props {
 const { testimonials } = Astro.props;
 ---
 
-<div class="relative max-w-3xl" id="testimonial-slider">
+<div class="relative w-full" id="testimonial-slider">
 
-  <!-- Slides -->
-  <div class="overflow-hidden relative min-h-[220px]">
-    {testimonials.map((t, i) => (
-      <figure
-        class:list={[
-          'testimonial-slide absolute inset-0 transition-opacity duration-700',
-          i === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
-        ]}
-        data-index={i}
-      >
-        <!-- Stars -->
-        <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
-          {Array.from({ length: 5 }).map(() => (
-            <svg class="w-3.5 h-3.5 text-[var(--color-accent)]" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path d="M8 1l1.9 3.9L14 5.6l-3 2.9.7 4.1L8 10.5l-3.7 2.1.7-4.1-3-2.9 4.1-.7L8 1z"/>
-            </svg>
-          ))}
-        </div>
+  <!-- Track wrapper -->
+  <div class="testimonial-viewport overflow-hidden">
+    <div
+      class="testimonial-track flex gap-5 transition-transform duration-500 ease-out"
+      style="will-change: transform;"
+    >
+      {testimonials.map((t) => (
+        <figure class="testimonial-card shrink-0 w-[86%] sm:w-[64%] lg:w-[46%] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col">
 
-        <blockquote class="text-lg md:text-xl font-medium text-[var(--color-text)] leading-snug mb-7">
-          &ldquo;{t.quote}&rdquo;
-        </blockquote>
-
-        <figcaption class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-full bg-[var(--color-accent)] flex items-center justify-center shrink-0">
-            <span class="text-xs font-bold text-[var(--color-accent-text)]">{t.name.charAt(0)}</span>
+          <!-- Stars -->
+          <div class="flex gap-1 mb-5" aria-label="5 out of 5 stars">
+            {Array.from({ length: 5 }).map(() => (
+              <svg class="w-3.5 h-3.5 text-[var(--color-accent)]" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M8 1l1.9 3.9L14 5.6l-3 2.9.7 4.1L8 10.5l-3.7 2.1.7-4.1-3-2.9 4.1-.7L8 1z"/>
+              </svg>
+            ))}
           </div>
-          <div>
-            <p class="text-sm font-semibold text-[var(--color-text)]">{t.name}</p>
-            <p class="text-xs text-[var(--color-text-muted)] mt-0.5">{t.role} · {t.company}</p>
-          </div>
-        </figcaption>
-      </figure>
-    ))}
+
+          <blockquote class="text-sm md:text-base font-medium text-[var(--color-text)] leading-relaxed flex-1 mb-6">
+            &ldquo;{t.quote}&rdquo;
+          </blockquote>
+
+          <figcaption class="flex items-center gap-3 mt-auto pt-5 border-t border-[var(--color-border)]">
+            <div class="w-9 h-9 rounded-full bg-[var(--color-accent)] flex items-center justify-center shrink-0">
+              <span class="text-xs font-bold text-[var(--color-accent-text)]">{t.name.charAt(0)}</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-[var(--color-text)]">{t.name}</p>
+              <p class="text-xs text-[var(--color-text-muted)] mt-0.5">{t.role} · {t.company}</p>
+            </div>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
   </div>
 
-  <!-- Controls row -->
-  <div class="flex items-center justify-between mt-10 pt-6 border-t border-[var(--color-border)]">
+  <!-- Controls -->
+  <div class="flex items-center justify-between mt-8 pt-6 border-t border-[var(--color-border)]">
 
     <!-- Dots -->
     <div class="flex gap-2" role="tablist" aria-label="Testimonials">
@@ -69,62 +69,75 @@ const { testimonials } = Astro.props;
 
     <!-- Arrows -->
     <div class="flex gap-2">
-      <button
-        id="testimonial-prev"
-        aria-label="Previous testimonial"
-        class="w-8 h-8 rounded-full border border-[var(--color-border-2)] flex items-center justify-center text-[var(--color-text-dim)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent)] transition-colors"
-      >
+      <button id="testimonial-prev" aria-label="Previous" class="w-8 h-8 rounded-full border border-[var(--color-border-2)] flex items-center justify-center text-[var(--color-text-dim)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent)] transition-colors">
         <svg viewBox="0 0 16 16" fill="none" class="w-3.5 h-3.5" aria-hidden="true">
           <path d="M10 4L6 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <button
-        id="testimonial-next"
-        aria-label="Next testimonial"
-        class="w-8 h-8 rounded-full border border-[var(--color-border-2)] flex items-center justify-center text-[var(--color-text-dim)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent)] transition-colors"
-      >
+      <button id="testimonial-next" aria-label="Next" class="w-8 h-8 rounded-full border border-[var(--color-border-2)] flex items-center justify-center text-[var(--color-text-dim)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent)] transition-colors">
         <svg viewBox="0 0 16 16" fill="none" class="w-3.5 h-3.5" aria-hidden="true">
           <path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
     </div>
-
   </div>
 </div>
 
 <script>
   const slider = document.getElementById('testimonial-slider');
   if (slider) {
-    const slides = slider.querySelectorAll<HTMLElement>('.testimonial-slide');
-    const dots   = slider.querySelectorAll<HTMLButtonElement>('.testimonial-dot');
+    const viewport = slider.querySelector<HTMLElement>('.testimonial-viewport')!;
+    const track  = slider.querySelector<HTMLElement>('.testimonial-track')!;
+    const cards  = Array.from(slider.querySelectorAll<HTMLElement>('.testimonial-card'));
+    const dots   = Array.from(slider.querySelectorAll<HTMLButtonElement>('.testimonial-dot'));
     const prev   = document.getElementById('testimonial-prev');
     const next   = document.getElementById('testimonial-next');
     let current  = 0;
     let timer: ReturnType<typeof setInterval>;
 
-    function goTo(idx: number) {
-      slides[current].classList.replace('opacity-100', 'opacity-0');
-      slides[current].classList.replace('pointer-events-auto', 'pointer-events-none');
-      dots[current].classList.replace('w-6', 'w-2');
-      dots[current].classList.replace('bg-[var(--color-accent)]', 'bg-[var(--color-border-2)]');
+    function getMaxIndex() {
+      if (!cards.length) return 0;
+      const card = cards[0];
+      const gap = 20;
+      const step = card.offsetWidth + gap;
+      const maxOffset = Math.max(0, track.scrollWidth - viewport.offsetWidth);
+      return Math.max(0, Math.ceil(maxOffset / step));
+    }
 
-      current = (idx + slides.length) % slides.length;
+    function slide(idx: number) {
+      const max = getMaxIndex();
+      current = Math.max(0, Math.min(idx, max));
 
-      slides[current].classList.replace('opacity-0', 'opacity-100');
-      slides[current].classList.replace('pointer-events-none', 'pointer-events-auto');
-      dots[current].classList.replace('w-2', 'w-6');
-      dots[current].classList.replace('bg-[var(--color-border-2)]', 'bg-[var(--color-accent)]');
+      const card = cards[0];
+      const gap = 20; // gap-5 = 20px
+      const maxOffset = Math.max(0, track.scrollWidth - viewport.offsetWidth);
+      const offset = Math.min(current * (card.offsetWidth + gap), maxOffset);
+      track.style.transform = `translateX(-${offset}px)`;
+
+      dots.forEach((d, i) => {
+        d.hidden = i > max;
+        const active = i === current;
+        d.classList.toggle('w-6', active);
+        d.classList.toggle('w-2', !active);
+        d.classList.toggle('bg-[var(--color-accent)]', active);
+        d.classList.toggle('bg-[var(--color-border-2)]', !active);
+      });
     }
 
     function startTimer() {
       clearInterval(timer);
-      timer = setInterval(() => goTo(current + 1), 5000);
+      timer = setInterval(() => {
+        const max = getMaxIndex();
+        slide(current >= max ? 0 : current + 1);
+      }, 5000);
     }
 
-    prev?.addEventListener('click', () => { goTo(current - 1); startTimer(); });
-    next?.addEventListener('click', () => { goTo(current + 1); startTimer(); });
-    dots.forEach((dot, i) => dot.addEventListener('click', () => { goTo(i); startTimer(); }));
+    prev?.addEventListener('click', () => { slide(current - 1); startTimer(); });
+    next?.addEventListener('click', () => { slide(current + 1); startTimer(); });
+    dots.forEach((d, i) => d.addEventListener('click', () => { slide(i); startTimer(); }));
 
+    window.addEventListener('resize', () => slide(current));
+    slide(0);
     startTimer();
   }
 </script>
