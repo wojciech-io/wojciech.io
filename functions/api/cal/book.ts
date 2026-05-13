@@ -1,6 +1,5 @@
 const CAL_USERNAME = 'wojciech-luszczynski';
 const EVENT_TYPE_SLUG = '30min';
-const EVENT_DURATION_MINUTES = 30;
 const CAL_TIMEZONE = 'Europe/Berlin';
 const CAL_API_VERSION = '2026-02-25';
 const FALLBACK_CAL_LINK = `https://cal.com/${CAL_USERNAME}/${EVENT_TYPE_SLUG}?timezone=${encodeURIComponent(CAL_TIMEZONE)}`;
@@ -105,7 +104,6 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
         },
         eventTypeSlug: EVENT_TYPE_SLUG,
         username: CAL_USERNAME,
-        lengthInMinutes: EVENT_DURATION_MINUTES,
         metadata: {
           source: 'wojciech.io',
           company,
@@ -122,7 +120,6 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
           status: 'error',
           message: 'Cal.com rejected this booking.',
           directLink: FALLBACK_CAL_LINK,
-          details: payload,
         },
         { status: response.status }
       );
