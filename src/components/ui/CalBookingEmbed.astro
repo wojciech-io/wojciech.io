@@ -9,120 +9,142 @@ const calTimezone = 'Europe/Berlin';
   data-book-endpoint="/api/cal/book"
   data-direct-link={calLink}
   data-timezone={calTimezone}
-  class="scroll-mt-20 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden"
+  class="scroll-mt-20 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_24px_80px_rgb(0_0_0/0.28)]"
 >
-  <div class="border-b border-[var(--color-border)] px-5 py-3">
-    <div class="flex items-start justify-between gap-4">
+  <div class="border-b border-[var(--color-border)] px-5 py-4">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
       <div>
-        <p class="text-[10px] font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-2">
-          Book a call
+        <p class="mb-2 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent)]">
+          Private scheduler
         </p>
-        <h2 class="text-lg font-semibold text-[var(--color-text)] leading-tight">
+        <h2 class="text-xl font-semibold leading-tight text-[var(--color-text)]">
           30 minutes virtual coffee
         </h2>
       </div>
-      <div class="shrink-0 rounded-full border border-[var(--color-border)] px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)]">
-        Berlin time
+      <div class="flex flex-wrap gap-2 text-[11px] font-medium text-[var(--color-text-muted)]">
+        <span class="rounded-full border border-[var(--color-border)] px-3 py-1">30m</span>
+        <span class="rounded-full border border-[var(--color-border)] px-3 py-1">Google Meet</span>
+        <span class="rounded-full border border-[var(--color-border)] px-3 py-1">Europe/Berlin</span>
       </div>
     </div>
   </div>
 
-  <div class="grid lg:grid-cols-[0.85fr_1fr]">
-    <div class="border-b border-[var(--color-border)] p-4 lg:border-b-0 lg:border-r">
-      <div class="mb-3 flex items-center justify-between gap-3">
+  <div class="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)]">
+    <div class="border-b border-[var(--color-border)] p-5 lg:border-b-0 lg:border-r">
+      <div class="mb-4 flex items-end justify-between gap-3">
         <div>
-          <p class="text-xs font-medium text-[var(--color-text-muted)]">Availability</p>
-          <p id="cal-month-label" class="text-base font-semibold text-[var(--color-text)]">Loading</p>
+          <p class="text-xs font-medium text-[var(--color-text-muted)]">Choose a day</p>
+          <p id="cal-month-label" class="text-lg font-semibold leading-tight text-[var(--color-text)]">Loading</p>
         </div>
+        <p id="cal-status" class="text-right text-[11px] text-[var(--color-text-dim)]">Checking Cal.com...</p>
+      </div>
+
+      <div id="cal-date-options" class="grid grid-cols-2 gap-2 sm:grid-cols-4" aria-label="Available days">
+        <div class="h-[58px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] opacity-60"></div>
+        <div class="h-[58px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] opacity-40"></div>
+        <div class="h-[58px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] opacity-25"></div>
+        <div class="h-[58px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] opacity-15"></div>
+      </div>
+
+      <div class="mt-5">
+        <div class="mb-3 flex items-center justify-between gap-3">
+          <p class="text-xs font-medium text-[var(--color-text-muted)]">Choose a time</p>
+          <p id="cal-slot-count" class="text-[11px] text-[var(--color-text-dim)]"></p>
+        </div>
+        <div id="cal-slot-options" class="grid grid-cols-2 gap-2 sm:grid-cols-3" aria-label="Available times"></div>
+      </div>
+    </div>
+
+    <div class="bg-[var(--color-bg)]/45 p-5">
+      <div
+        id="cal-selected-card"
+        class="mb-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3"
+      >
+        <p class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Selected slot</p>
+        <p id="cal-selected-label" class="mt-1 text-base font-semibold leading-snug text-[var(--color-text)]">
+          Pick a day and time
+        </p>
+      </div>
+
+      <form id="cal-booking-form" class="hidden" novalidate>
+        <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
+        <input type="hidden" name="start" id="cal-selected-start" />
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          <label class="grid min-w-0 gap-1.5">
+            <span class="text-xs font-medium text-[var(--color-text-muted)]">Name</span>
+            <input
+              name="name"
+              required
+              autocomplete="name"
+              class="h-10 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+              placeholder="Your name"
+            />
+          </label>
+
+          <label class="grid min-w-0 gap-1.5">
+            <span class="text-xs font-medium text-[var(--color-text-muted)]">Email</span>
+            <input
+              name="email"
+              required
+              type="email"
+              autocomplete="email"
+              class="h-10 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+              placeholder="you@company.com"
+            />
+          </label>
+
+          <label class="grid min-w-0 gap-1.5 sm:col-span-2">
+            <span class="text-xs font-medium text-[var(--color-text-muted)]">Company</span>
+            <input
+              name="company"
+              autocomplete="organization"
+              class="h-10 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+              placeholder="Optional"
+            />
+          </label>
+
+          <label class="grid gap-1.5 sm:col-span-2">
+            <span class="text-xs font-medium text-[var(--color-text-muted)]">Context</span>
+            <textarea
+              name="message"
+              rows="3"
+              class="resize-none rounded-[18px] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+              placeholder="What should we cover?"
+            ></textarea>
+          </label>
+        </div>
+
+        <button
+          id="cal-submit-button"
+          type="submit"
+          disabled
+          class="btn-press mt-4 inline-flex h-11 w-full items-center justify-center rounded-[var(--radius-btn)] bg-[var(--color-accent)] px-5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-hi)] disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Confirm booking
+        </button>
+      </form>
+
+      <div id="cal-empty-state" class="rounded-[var(--radius-card)] border border-dashed border-[var(--color-border)] px-4 py-5">
+        <p class="text-sm font-medium text-[var(--color-text)]">Select a time to continue.</p>
+        <p class="mt-1 text-sm leading-relaxed text-[var(--color-text-muted)]">
+          Availability is pulled from Cal.com and already respects blocked German public holidays.
+        </p>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <p id="cal-form-status" class="min-h-5 text-xs text-[var(--color-text-dim)]" role="status" aria-live="polite"></p>
         <a
           id="cal-direct-link"
           href={calLink}
           target="_blank"
           rel="noopener noreferrer"
-          class="text-xs font-medium text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors"
+          class="text-xs font-medium text-[var(--color-text-dim)] transition-colors hover:text-[var(--color-accent-hi)]"
         >
-          Open Cal.com
+          Open fallback
         </a>
       </div>
-
-      <div id="cal-date-options" class="mb-3 grid grid-cols-5 gap-1.5" aria-label="Available days"></div>
-
-      <div>
-        <div class="mb-2 flex items-center justify-between gap-3">
-          <p class="text-xs font-medium text-[var(--color-text-muted)]">Start time</p>
-          <p id="cal-status" class="text-[11px] text-[var(--color-text-dim)]">Checking Cal.com...</p>
-        </div>
-        <div id="cal-slot-options" class="grid grid-cols-2 gap-2" aria-label="Available times"></div>
-      </div>
     </div>
-
-    <form id="cal-booking-form" class="p-4" novalidate>
-      <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
-      <input type="hidden" name="start" id="cal-selected-start" />
-
-      <div class="mb-3 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2.5">
-        <p class="text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-dim)]">Selected slot</p>
-        <p id="cal-selected-label" class="mt-1 text-sm font-semibold text-[var(--color-text)]">
-          Pick a day and time
-        </p>
-      </div>
-
-      <div class="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <label class="grid min-w-0 gap-1.5">
-          <span class="text-xs font-medium text-[var(--color-text-muted)]">Name</span>
-          <input
-            name="name"
-            required
-            autocomplete="name"
-            class="h-9 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
-            placeholder="Your name"
-          />
-        </label>
-
-        <label class="grid min-w-0 gap-1.5">
-          <span class="text-xs font-medium text-[var(--color-text-muted)]">Email</span>
-          <input
-            name="email"
-            required
-            type="email"
-            autocomplete="email"
-            class="h-9 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
-            placeholder="you@company.com"
-          />
-        </label>
-
-        <label class="grid min-w-0 gap-1.5">
-          <span class="text-xs font-medium text-[var(--color-text-muted)]">Company</span>
-          <input
-            name="company"
-            autocomplete="organization"
-            class="h-9 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
-            placeholder="Optional"
-          />
-        </label>
-
-        <label class="grid gap-1.5 lg:col-span-2">
-          <span class="text-xs font-medium text-[var(--color-text-muted)]">What should we cover?</span>
-          <textarea
-            name="message"
-            rows="2"
-            class="resize-none rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-bg)] px-3 py-2 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
-            placeholder="A few words of context"
-          ></textarea>
-        </label>
-      </div>
-
-      <button
-        id="cal-submit-button"
-        type="submit"
-        disabled
-        class="btn-press mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent)] px-5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-hi)] disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        Confirm booking
-      </button>
-
-      <p id="cal-form-status" class="mt-2 min-h-5 text-xs text-[var(--color-text-dim)]" role="status" aria-live="polite"></p>
-    </form>
   </div>
 </div>
 
@@ -133,16 +155,18 @@ const calTimezone = 'Europe/Berlin';
 
     const slotsEndpoint = root.getAttribute('data-slots-endpoint');
     const bookEndpoint = root.getAttribute('data-book-endpoint');
-    const directLink = root.getAttribute('data-direct-link');
     const timezone = root.getAttribute('data-timezone') || 'Europe/Berlin';
     const dateOptions = root.querySelector('#cal-date-options');
     const slotOptions = root.querySelector('#cal-slot-options');
     const monthLabel = root.querySelector('#cal-month-label');
     const status = root.querySelector('#cal-status');
+    const slotCount = root.querySelector('#cal-slot-count');
     const form = root.querySelector('#cal-booking-form');
+    const emptyState = root.querySelector('#cal-empty-state');
     const submitButton = root.querySelector('#cal-submit-button');
     const selectedStart = root.querySelector('#cal-selected-start');
     const selectedLabel = root.querySelector('#cal-selected-label');
+    const selectedCard = root.querySelector('#cal-selected-card');
     const formStatus = root.querySelector('#cal-form-status');
 
     const state = {
@@ -159,11 +183,7 @@ const calTimezone = 'Europe/Berlin';
         day: '2-digit',
       }).formatToParts(date);
       const get = (type) => parts.find((part) => part.type === type)?.value;
-      return {
-        year: get('year'),
-        month: get('month'),
-        day: get('day'),
-      };
+      return { year: get('year'), month: get('month'), day: get('day') };
     };
 
     const dateKey = (date) => {
@@ -183,6 +203,13 @@ const calTimezone = 'Europe/Berlin';
       new Intl.DateTimeFormat('en-US', {
         timeZone: timezone,
         weekday: 'short',
+      }).format(dateFromKey(key));
+
+    const dayMonthLabel = (key) =>
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        month: 'short',
+        day: 'numeric',
       }).format(dateFromKey(key));
 
     const monthText = (key) =>
@@ -216,7 +243,7 @@ const calTimezone = 'Europe/Berlin';
     const setFormStatus = (message, tone = 'muted') => {
       if (!formStatus) return;
       formStatus.textContent = message;
-      formStatus.className = `mt-2 min-h-5 text-xs ${
+      formStatus.className = `min-h-5 text-xs ${
         tone === 'error'
           ? 'text-red-300'
           : tone === 'success'
@@ -225,30 +252,36 @@ const calTimezone = 'Europe/Berlin';
       }`;
     };
 
-    const buttonClass = (active, disabled = false) =>
-      [
-        'btn-press rounded-[var(--radius-btn)] border px-2.5 py-1.5 text-left transition-colors',
-        active
-          ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-text)]'
-          : 'border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] hover:border-[var(--color-accent)]/50',
-        disabled ? 'cursor-not-allowed opacity-35 hover:border-[var(--color-border)]' : '',
-      ].join(' ');
-
     const renderDates = () => {
       if (!dateOptions) return;
       dateOptions.innerHTML = '';
 
-      state.days.slice(0, 10).forEach((day) => {
-        const available = day.slots.length > 0;
+      const availableDays = state.days.filter((day) => day.slots.length > 0).slice(0, 8);
+
+      if (availableDays.length === 0) {
+        dateOptions.innerHTML = `
+          <div class="col-span-full rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-5 text-sm text-[var(--color-text-muted)]">
+            No available days in the next two weeks.
+          </div>
+        `;
+        return;
+      }
+
+      availableDays.forEach((day) => {
         const active = day.date === state.selectedDate;
         const button = document.createElement('button');
         button.type = 'button';
-        button.disabled = !available;
-        button.className = buttonClass(active, !available);
+        button.className = [
+          'btn-press min-h-[58px] rounded-[18px] border px-3 py-2 text-left transition-colors',
+          active
+            ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-text)]'
+            : 'border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] hover:border-[var(--color-accent)]/50',
+        ].join(' ');
         button.setAttribute('aria-pressed', String(active));
         button.innerHTML = `
-          <span class="block text-[9px] font-semibold uppercase tracking-wider">${dayLabel(day.date)}</span>
-          <span class="block text-base font-semibold leading-tight">${Number(day.date.slice(-2))}</span>
+          <span class="block text-[10px] font-semibold uppercase tracking-wider">${dayLabel(day.date)}</span>
+          <span class="mt-0.5 block text-sm font-semibold leading-tight">${dayMonthLabel(day.date)}</span>
+          <span class="mt-1 block text-[10px] opacity-70">${day.slots.length} slots</span>
         `;
         button.addEventListener('click', () => {
           state.selectedDate = day.date;
@@ -265,24 +298,35 @@ const calTimezone = 'Europe/Berlin';
 
       const day = state.days.find((item) => item.date === state.selectedDate);
       if (!day || day.slots.length === 0) {
+        if (slotCount) slotCount.textContent = '';
         slotOptions.innerHTML = `
-          <div class="col-span-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-5 text-sm text-[var(--color-text-muted)]">
-            No slots on this day.
+          <div class="col-span-full rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-5 text-sm text-[var(--color-text-muted)]">
+            Select another day or open the fallback.
           </div>
         `;
         return;
       }
 
-      day.slots.slice(0, 8).forEach((slot) => {
+      if (slotCount) {
+        slotCount.textContent = `${Math.min(day.slots.length, 12)} shown`;
+      }
+
+      day.slots.slice(0, 12).forEach((slot) => {
         const active = state.selectedSlot?.start === slot.start;
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = `${buttonClass(active)} text-center text-sm font-semibold`;
+        button.className = [
+          'btn-press h-10 rounded-[var(--radius-btn)] border px-3 text-center text-sm font-semibold transition-colors',
+          active
+            ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-text)]'
+            : 'border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] hover:border-[var(--color-accent)]/50',
+        ].join(' ');
         button.textContent = slotTime(slot.start);
         button.setAttribute('aria-pressed', String(active));
         button.addEventListener('click', () => {
           state.selectedSlot = slot;
           render();
+          form?.querySelector('input[name="name"]')?.focus();
         });
         slotOptions.appendChild(button);
       });
@@ -292,10 +336,12 @@ const calTimezone = 'Europe/Berlin';
       const hasSlot = Boolean(state.selectedSlot?.start);
       if (selectedStart) selectedStart.value = hasSlot ? state.selectedSlot.start : '';
       if (submitButton) submitButton.disabled = !hasSlot;
+      form?.classList.toggle('hidden', !hasSlot);
+      emptyState?.classList.toggle('hidden', hasSlot);
+      selectedCard?.classList.toggle('border-[var(--color-accent)]', hasSlot);
+      selectedCard?.classList.toggle('shadow-[0_0_0_1px_rgb(235_255_0/0.15)]', hasSlot);
       if (selectedLabel) {
-        selectedLabel.textContent = hasSlot
-          ? `${slotDateTime(state.selectedSlot.start)} (${timezone})`
-          : 'Pick a day and time';
+        selectedLabel.textContent = hasSlot ? `${slotDateTime(state.selectedSlot.start)} (${timezone})` : 'Pick a day and time';
       }
     };
 
@@ -321,7 +367,7 @@ const calTimezone = 'Europe/Berlin';
         const payload = await response.json();
 
         const daysByDate = new Map((payload.days || []).map((day) => [day.date, day.slots || []]));
-        state.days = Array.from({ length: 10 }, (_, index) => {
+        state.days = Array.from({ length: 14 }, (_, index) => {
           const date = dateKey(addDays(today, index));
           return {
             date,
@@ -336,15 +382,15 @@ const calTimezone = 'Europe/Berlin';
           root.querySelector('#cal-direct-link').setAttribute('href', payload.directLink);
         }
 
-        setStatus(payload.status === 'success' ? `${timezone}` : 'Use Cal.com fallback');
+        setStatus(payload.status === 'success' ? 'Live availability' : 'Fallback mode');
       } catch {
-        state.days = Array.from({ length: 10 }, (_, index) => ({
+        state.days = Array.from({ length: 14 }, (_, index) => ({
           date: dateKey(addDays(today, index)),
           slots: [],
         }));
         state.selectedDate = state.days[0]?.date || start;
-        setStatus('Use Cal.com fallback');
-        setFormStatus('Could not load availability here. Open Cal.com directly.', 'error');
+        setStatus('Fallback mode');
+        setFormStatus('Could not load availability here. Open fallback.', 'error');
       }
 
       render();
@@ -389,7 +435,7 @@ const calTimezone = 'Europe/Berlin';
           }
         });
       } catch (error) {
-        setFormStatus(error instanceof Error ? error.message : 'Booking failed. Open Cal.com directly.', 'error');
+        setFormStatus(error instanceof Error ? error.message : 'Booking failed. Open fallback.', 'error');
         if (submitButton) submitButton.disabled = false;
       }
     });
