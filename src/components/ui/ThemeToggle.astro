@@ -1,0 +1,48 @@
+---
+interface Props {
+  class?: string;
+}
+
+const className = Astro.props.class ?? '';
+---
+
+<button
+  type="button"
+  class:list={[
+    'theme-toggle btn-press relative inline-flex items-center rounded-full p-0',
+    className,
+  ]}
+  data-theme-toggle
+  aria-label="Toggle light and dark theme"
+  aria-pressed="false"
+>
+  <span class="theme-toggle__thumb" aria-hidden="true"></span>
+  <span class="theme-toggle__label theme-toggle__label--light">Light</span>
+  <span class="theme-toggle__label theme-toggle__label--dark">Dark</span>
+</button>
+
+<script>
+  const root = document.documentElement;
+  const toggles = () => document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+
+  function setTheme(theme: 'light' | 'dark') {
+    root.dataset.theme = theme;
+    root.style.colorScheme = theme;
+    localStorage.setItem('theme', theme);
+    toggles().forEach((toggle) => {
+      toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    });
+  }
+
+  const initial = root.dataset.theme === 'dark' ? 'dark' : 'light';
+  setTheme(initial);
+
+  if (!root.dataset.themeToggleReady) {
+    root.dataset.themeToggleReady = 'true';
+    document.addEventListener('click', (event) => {
+      const toggle = (event.target as HTMLElement).closest('[data-theme-toggle]');
+      if (!toggle) return;
+      setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+    });
+  }
+</script>

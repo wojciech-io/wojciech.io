@@ -44,6 +44,14 @@ const {
       updatedAt={updatedAt}
       schema={schema}
     />
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme');
+        const theme = stored === 'dark' || stored === 'light' ? stored : 'light';
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
   </head>
   <body class="min-h-dvh flex flex-col">
     <Header />
