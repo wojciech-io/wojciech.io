@@ -11,7 +11,7 @@ const escapeXml = (value: string) =>
 
 export const GET: APIRoute = async ({ site }) => {
   const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+    (a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
   );
 
   const origin = site ?? new URL('https://wojciech.io/');
