@@ -53,15 +53,17 @@ const proof = [
   {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
   class="group flex min-h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-lift hover:border-[var(--color-accent)]/40"
 >
-  <div class="relative aspect-[16/10] overflow-hidden bg-[var(--color-surface-2)]">
+  <div class="artifact-stage relative aspect-[16/10] overflow-hidden p-4">
     {screenshot ? (
-      <img
-        src={screenshot}
-        alt={`${title} product screenshot`}
-        loading="lazy"
-        decoding="async"
-        class="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.025]"
-      />
+      <div class="artifact-shot h-full w-full overflow-hidden rounded-[18px] bg-[var(--color-surface)] transition-transform duration-500 group-hover:scale-[1.025]">
+        <img
+          src={screenshot}
+          alt={`${title} product screenshot`}
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover object-top"
+        />
+      </div>
     ) : (
       <div class="absolute inset-0">
         <div
@@ -75,9 +77,9 @@ const proof = [
       </div>
     )}
 
-    <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[var(--color-surface)] via-[var(--color-surface)]/60 to-transparent" aria-hidden="true"></div>
+    <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>
 
-    <div class="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-[rgb(12_12_12/0.72)] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text)] backdrop-blur-md">
+    <div class="artifact-label absolute left-5 top-5 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold backdrop-blur-md">
       <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
       {coverLabels[cover]}
     </div>
