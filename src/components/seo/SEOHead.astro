@@ -91,3 +91,14 @@ const schemaItems = [...baseSchema, ...pageSchema];
 <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png?v=3" />
 <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3" />
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const stored = localStorage.getItem('theme');
+    const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    const theme = stored === 'light' || stored === 'dark' ? stored : preferred;
+    root.dataset.theme = theme;
+    root.style.colorScheme = theme;
+  })();
+</script>

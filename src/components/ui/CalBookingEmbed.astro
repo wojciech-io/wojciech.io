@@ -5,11 +5,11 @@ const calTimezone = 'Europe/Berlin';
 
 <div
   id="book-call"
-  data-slots-endpoint="/api/cal/slots"
-  data-book-endpoint="/api/cal/book"
+  data-slots-endpoint=""
+  data-book-endpoint=""
   data-direct-link={calLink}
   data-timezone={calTimezone}
-  class="scroll-mt-20 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_24px_80px_rgb(0_0_0/0.28)]"
+  class="scroll-mt-20 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)]"
 >
   <div class="border-b border-[var(--color-border)] px-5 py-4">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -109,7 +109,7 @@ const calTimezone = 'Europe/Berlin';
             <textarea
               name="message"
               rows="3"
-              class="resize-none rounded-[18px] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+              class="resize-none rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
               placeholder="What should we cover?"
             ></textarea>
           </label>
@@ -128,7 +128,7 @@ const calTimezone = 'Europe/Berlin';
       <div id="cal-empty-state" class="rounded-[var(--radius-card)] border border-dashed border-[var(--color-border)] px-4 py-5">
         <p class="text-sm font-medium text-[var(--color-text)]">Select a time to continue.</p>
         <p class="mt-1 text-sm leading-relaxed text-[var(--color-text-muted)]">
-          Availability is pulled from Cal.com and already respects blocked German public holidays.
+          Availability is managed in the private scheduler and already respects blocked German public holidays.
         </p>
       </div>
 
@@ -139,9 +139,9 @@ const calTimezone = 'Europe/Berlin';
           href={calLink}
           target="_blank"
           rel="noopener noreferrer"
-          class="text-xs font-medium text-[var(--color-text-dim)] transition-colors hover:text-[var(--color-accent-hi)]"
+          class="btn-press inline-flex h-9 items-center justify-center rounded-[var(--radius-btn)] bg-[var(--color-accent)] px-4 text-xs font-semibold text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-hi)]"
         >
-          Open fallback
+          Open scheduler
         </a>
       </div>
     </div>
@@ -262,7 +262,7 @@ const calTimezone = 'Europe/Berlin';
       if (availableDays.length === 0) {
         dateOptions.innerHTML = `
           <div class="col-span-full rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-5 text-sm text-[var(--color-text-muted)]">
-            No available days in the next two weeks.
+            Use the private scheduler to pick a day.
           </div>
         `;
         return;
@@ -273,7 +273,7 @@ const calTimezone = 'Europe/Berlin';
         const button = document.createElement('button');
         button.type = 'button';
         button.className = [
-          'btn-press min-h-[58px] rounded-[18px] border px-3 py-2 text-left transition-colors',
+          'btn-press min-h-[58px] rounded-[var(--radius-card)] border px-3 py-2 text-left transition-colors',
           active
             ? 'border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-text)]'
             : 'border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] hover:border-[var(--color-accent)]/50',
@@ -302,7 +302,7 @@ const calTimezone = 'Europe/Berlin';
         if (slotCount) slotCount.textContent = '';
         slotOptions.innerHTML = `
           <div class="col-span-full rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-5 text-sm text-[var(--color-text-muted)]">
-            Select another day or open the fallback.
+            Open the scheduler to choose a time.
           </div>
         `;
         return;
@@ -358,7 +358,20 @@ const calTimezone = 'Europe/Berlin';
       const start = dateKey(today);
       const end = dateKey(addDays(today, 14));
 
-      setStatus('Checking Cal.com...');
+      if (!slotsEndpoint) {
+        state.days = Array.from({ length: 14 }, (_, index) => ({
+          date: dateKey(addDays(today, index)),
+          slots: [],
+        }));
+        state.selectedDate = state.days[0]?.date || start;
+        state.selectedSlot = null;
+        setStatus('Private scheduler');
+        setFormStatus('Use the scheduler link to pick a time.');
+        render();
+        return;
+      }
+
+      setStatus('Checking availability...');
 
       try {
         const url = new URL(slotsEndpoint, window.location.origin);
@@ -383,15 +396,15 @@ const calTimezone = 'Europe/Berlin';
           root.querySelector('#cal-direct-link').setAttribute('href', payload.directLink);
         }
 
-        setStatus(payload.status === 'success' ? 'Live availability' : 'Fallback mode');
+        setStatus(payload.status === 'success' ? 'Live availability' : 'Private scheduler');
       } catch {
         state.days = Array.from({ length: 14 }, (_, index) => ({
           date: dateKey(addDays(today, index)),
           slots: [],
         }));
         state.selectedDate = state.days[0]?.date || start;
-        setStatus('Fallback mode');
-        setFormStatus('Could not load availability here. Open fallback.', 'error');
+        setStatus('Private scheduler');
+        setFormStatus('Use the scheduler link to pick a time.');
       }
 
       render();
@@ -436,7 +449,7 @@ const calTimezone = 'Europe/Berlin';
           }
         });
       } catch (error) {
-        setFormStatus(error instanceof Error ? error.message : 'Booking failed. Open fallback.', 'error');
+        setFormStatus(error instanceof Error ? error.message : 'Booking failed. Open the scheduler.', 'error');
         if (submitButton) submitButton.disabled = false;
       }
     });
