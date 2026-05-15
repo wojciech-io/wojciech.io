@@ -13,6 +13,7 @@ const insights = defineCollection({
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
     ogImage: z.string().optional(),
+    coverType: z.enum(['terminal', 'builder', 'default']).default('default'),
   }),
 });
 
