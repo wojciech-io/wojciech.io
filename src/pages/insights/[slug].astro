@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import ArticleCover from '../../components/ui/ArticleCover.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('insights', ({ data }) => !data.draft);
@@ -51,6 +52,9 @@ const articleSchema = {
     aria-valuemin={0}
     aria-valuemax={100}
   />
+
+  <!-- Article cover — full-width, outside max-w constraint -->
+  <ArticleCover coverType={post.data.coverType} tags={post.data.tags} title={post.data.title} />
 
   <article id="article-content" class="mx-auto max-w-3xl px-6 pt-[var(--space-section)] pb-16">
 
