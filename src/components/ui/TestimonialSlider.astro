@@ -38,16 +38,26 @@ const { testimonials } = Astro.props;
           </blockquote>
 
           <figcaption class="flex items-center gap-3 mt-auto pt-5 border-t border-[var(--color-border)]">
-            <div class="w-9 h-9 rounded-full bg-[var(--color-accent)] flex items-center justify-center overflow-hidden shrink-0">
+            <a
+              href={t.linkedin ?? undefined}
+              target={t.linkedin ? '_blank' : undefined}
+              rel={t.linkedin ? 'noopener noreferrer' : undefined}
+              aria-label={t.linkedin ? `${t.name} on LinkedIn` : undefined}
+              class:list={['w-9 h-9 rounded-full bg-[var(--color-accent)] flex items-center justify-center overflow-hidden shrink-0', t.linkedin && 'hover:opacity-80 transition-opacity']}
+            >
               {t.avatar ? (
-                <img src={t.avatar} alt="" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+                <img src={t.avatar} alt={t.name} loading="lazy" decoding="async" class="h-full w-full object-cover" />
               ) : (
                 <span class="text-xs font-bold text-[var(--color-accent-text)]">{t.name.charAt(0)}</span>
               )}
-            </div>
+            </a>
             <div class="min-w-0">
               <div class="flex items-center gap-2">
-                <p class="truncate text-sm font-semibold text-[var(--color-text)]">{t.name}</p>
+                {t.linkedin ? (
+                  <a href={t.linkedin} target="_blank" rel="noopener noreferrer" class="truncate text-sm font-semibold text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors">{t.name}</a>
+                ) : (
+                  <p class="truncate text-sm font-semibold text-[var(--color-text)]">{t.name}</p>
+                )}
                 {t.linkedin && (
                   <a
                     href={t.linkedin}
@@ -156,6 +166,12 @@ const { testimonials } = Astro.props;
     prev?.addEventListener('click', () => { slide(current - 1); startTimer(); });
     next?.addEventListener('click', () => { slide(current + 1); startTimer(); });
     dots.forEach((d, i) => d.addEventListener('click', () => { slide(i); startTimer(); }));
+
+    // Pause auto-play on hover
+    slider.addEventListener('mouseenter', () => clearInterval(timer));
+    slider.addEventListener('mouseleave', () => startTimer());
+    slider.addEventListener('focusin', () => clearInterval(timer));
+    slider.addEventListener('focusout', () => startTimer());
 
     window.addEventListener('resize', () => slide(current));
     slide(0);
