@@ -1,8 +1,8 @@
 ---
 title: "From Framer to Cloudflare: The Agentic Portfolio Build"
-description: "How I rebuilt my portfolio system with Claude Code, Codex, Astro, Cloudflare Pages, DNS cutover, deployment checks, and a human taste loop that kept the agents honest."
+description: "How I rebuilt my portfolio system with Claude Code, Codex, Astro, Cloudflare Pages, and a human decision loop that kept the work sharp."
 publishedAt: "2026-05-14"
-updatedAt: "2026-05-14"
+updatedAt: "2026-05-15"
 tags:
   - AI
   - Codex
@@ -10,842 +10,291 @@ tags:
   - Cloudflare
   - Astro
 tldr:
-  - "This was not a one-prompt website. It was a real migration from a Framer-era surface into a versioned Astro + Cloudflare Pages system."
-  - "Cloudflare was chosen because the project was static, DNS was already part of the launch problem, and I wanted hosting, SSL, redirects, analytics, and domain verification in one control plane."
-  - "Claude Code handled larger implementation batches; Codex handled review, conflict resolution, UI patches, Playwright QA, build checks, and Cloudflare deploy verification."
-  - "The process ran like a product sprint: audit -> IA -> design tokens -> pages -> content -> SEO -> DNS cutover -> post-launch UI hardening."
-  - "The real output was not just a prettier portfolio. It was an operating system for proof, articles, shipped apps, CV, contact, and future agent-assisted iteration."
+  - "This was a real migration from a Framer-era portfolio into a versioned Astro + Cloudflare Pages system."
+  - "The work was driven by a human product owner loop: direction, taste, scope, critique, approvals, and final decisions stayed with me."
+  - "Claude Code handled larger build batches; Codex handled focused patches, QA, deployment checks, and production verification."
+  - "Cloudflare Pages fit because the site is static, DNS and hosting needed to be simple, and deploy verification had to be repeatable."
+  - "The output is a maintainable portfolio system: public site, app surface, articles, proof, contact flow, and a foundation for future iteration."
 featured: false
 draft: false
 ---
 
-Most AI website rebuild stories are written like magic tricks: one prompt, one screenshot, one perfect deploy.
-
-This was not that.
-
 This is the companion case study to [The Claude Code GTM Agent Starter Pack](/insights/claude-code-vs-clay/). That first article breaks down a GTM agent stack. This one breaks down how the portfolio system itself was rebuilt.
 
-This was a working rebuild of my own portfolio and operator surface: the public [wojciech.io](https://wojciech.io/), the app-style portfolio surface at [app.wojciech.io](https://app.wojciech.io/), the work cards, CV, timeline, contact flow, article system, redirects, SEO plumbing, DNS cutover, and Cloudflare Pages deployment path.
+The public site is [wojciech.io](https://wojciech.io/). The app-style portfolio surface is [app.wojciech.io](https://app.wojciech.io/). The point of the rebuild was to make both feel like parts of one operating system: public positioning, shipped proof, apps, CV, writing, contact, and future case studies.
 
-The interesting part was not that AI wrote code. That is table stakes now.
-
-The interesting part was the operating model: how Claude Code, Codex, Cloudflare Pages, GitHub, Astro, Playwright, terminal checks, and my own taste layer worked together without turning the site into a generic AI-generated landing page.
-
-This is the breakdown.
+The result was not a one-prompt website. It was a structured build process with AI agents, code, review, deployment checks, and a very human taste layer.
 
 ---
 
-## The goal
+## Why rebuild it
 
-The goal was not "make the website look nicer."
+The previous site came from a Framer-era version of the portfolio. It was useful, but the system had outgrown it.
 
-The goal was to rebuild the site as a technical and editorial asset:
+The new version needed to do more than present a bio:
 
-- move away from the old Framer-era structure;
-- turn portfolio proof into a system, not a flat list of projects;
-- connect the public site with the app-style portfolio surface;
-- publish practical writing in a real article system;
-- make deployments repeatable;
-- make DNS and hosting easier to reason about;
-- keep the visual system close to [app.wojciech.io](https://app.wojciech.io/);
-- make future changes agent-friendly without letting agents destroy the design language.
+- show proof through shipped work, not generic services;
+- connect the public site with the app portfolio;
+- support long-form technical articles;
+- make future content and UI changes versioned;
+- make deployment and DNS easier to reason about;
+- keep the design language consistent across `wojciech.io` and `app.wojciech.io`;
+- give agents a codebase they could safely work inside.
 
-The old site was a web presence.
-
-The new system needed to be a portfolio operating surface.
+The main shift was from "website as a page" to "portfolio as an operating surface."
 
 ---
 
-## The starting point
+## My role in the process
 
-The previous public site had the usual legacy problems:
+The most important role in this build was not Claude Code or Codex. It was the human decision loop.
 
-- it carried Framer-era assumptions about layout, animation, and content structure;
-- the strongest proof was present, but not packaged cleanly;
-- the AI/GTM work, shipped apps, operator profile, writing, and booking path were split across surfaces;
-- the blog had one strong article and several older posts that did not belong in the new featured content strategy;
-- the app surface had useful material, but the visual language needed to converge with the public site;
-- deployment and DNS needed to move into a cleaner Cloudflare Pages setup.
+My job was to:
 
-The most important decision was to stop treating this as a design refresh.
+- define what the site should become;
+- decide what legacy content should be kept, rewritten, redirected, or dropped;
+- set the visual direction;
+- keep the system close to the app-style portfolio;
+- reject generic AI output;
+- decide which proof was strong enough to publish;
+- review screenshots and call out when a section felt off;
+- approve the final deployment direction.
 
-It was a migration plus a productization effort.
+The agents accelerated the work, but they did not own the taste.
 
----
-
-## What we were building
-
-The target architecture had two related surfaces:
-
-```text
-wojciech.io
-  public positioning
-  proof-led work system
-  AI / GTM narrative
-  insights articles
-  contact and booking path
-  SEO, RSS, sitemap, robots, redirects
-
-app.wojciech.io
-  app-style portfolio
-  apps
-  stack
-  timeline
-  CV
-  contact
-  compact profile UI
-```
-
-They did not need to be identical.
-
-They needed to feel like the same person built them.
-
-That meant shared decisions around:
-
-- accent color;
-- restrained typography;
-- card radius;
-- compact footer;
-- toggle behavior;
-- light/dark theme handling;
-- proof-led information architecture;
-- less marketing decoration, more operator-grade UI.
+That distinction matters. Agentic builds move quickly, but speed only helps if someone keeps the direction tight.
 
 ---
 
-## Why not stay on Framer
+## Why code instead of Framer
 
-Framer is useful when the primary problem is visual composition and publishing speed.
+Framer is strong when the priority is visual composition and fast publishing. For this project, the priority changed.
 
-That was no longer the main problem.
-
-The new site needed:
+I needed:
 
 - versioned content;
 - MDX articles;
+- reusable components;
 - predictable redirects;
-- sitemap and RSS generation;
-- structured metadata;
+- sitemap, RSS, robots, canonical URLs, and article schema;
+- Git history;
 - repeatable builds;
-- deploy verification from terminal;
-- agent-readable docs and code;
-- easy diffs;
-- a design system that could be patched safely.
+- deploy verification;
+- a design system that could be patched by agents without starting from scratch.
 
-Framer can ship a polished page, but it is not the control plane I wanted for an agent-assisted portfolio system.
-
-The moment the site became a combination of content architecture, proof objects, launch checklist, DNS, redirects, articles, app references, and Cloudflare checks, code became the better surface.
+At that point, a codebase became the better control plane.
 
 ---
 
-## Why not Vercel
+## Why Cloudflare instead of Vercel
 
-This was not an anti-Vercel decision.
+This was not an anti-Vercel decision. Vercel is a strong platform, especially for Next.js products and server-rendered applications.
 
-Vercel is a strong default for many Next.js products, server-rendered apps, and teams already operating inside the Vercel ecosystem.
+For this project, Cloudflare Pages was the cleaner fit:
 
-For this project, the constraints pointed elsewhere:
+- the public site is mostly static;
+- Astro produces a simple build artifact;
+- DNS and custom domain handling were already part of the launch work;
+- HTTPS, edge hosting, redirects, and domain verification could sit close together;
+- Cloudflare Web Analytics gave enough visibility without adding a heavier analytics stack;
+- the app-style portfolio surface also needed simple custom-domain verification.
 
-- the public site is static Astro, not a server-heavy app;
-- there was no need for Vercel Functions as the main architecture;
-- DNS and domain cutover were already central to the project;
-- I wanted the custom domain, SSL, edge hosting, redirects, and analytics close together;
-- the site needed simple static deployment, not platform complexity;
-- I wanted to avoid a split-brain setup where DNS lives in one place and the serving platform lives somewhere else;
-- [app.wojciech.io](https://app.wojciech.io/) also needed clean Cloudflare Pages verification.
+The decision was pragmatic: use the platform that matches the shape of the site.
 
-Cloudflare Pages was the pragmatic fit.
+For this case, that meant Cloudflare Pages.
 
-The simpler architecture was:
+---
+
+## The stack
+
+The final stack is deliberately simple:
 
 ```text
-GitHub main
-  -> npm run build
-  -> dist/
-  -> Cloudflare Pages project
-  -> custom domain
-  -> Cloudflare edge
+Astro
+Tailwind CSS
+MDX content collections
+GitHub
+Cloudflare Pages
+Cloudflare DNS
+Cloudflare Web Analytics
+Playwright
+Claude Code
+Codex
 ```
 
-That gave us fewer moving pieces for this use case.
+Astro handles the public site and article system. Tailwind and design tokens handle the UI system. GitHub is the source of truth. Cloudflare Pages serves production. Playwright checks what the browser actually renders.
+
+The AI tools are part of the workflow, not the architecture itself.
 
 ---
 
-## Why Cloudflare Pages
+## How the work was split
 
-Cloudflare Pages fit the job because the site is mostly static and the launch problem was as much operational as visual.
+The cleanest split was by role, not by tool popularity.
 
-The project needed:
+### Claude Code
 
-- fast global static hosting;
-- custom domain support;
-- managed HTTPS;
-- Cloudflare DNS alignment;
-- simple deploy previews;
-- direct deploys through `wrangler`;
-- `_redirects` support;
-- cache and header inspection from the terminal;
-- Cloudflare Web Analytics without adding a heavy analytics layer;
-- a way to verify that production was really serving the new build.
+Claude Code was useful for larger implementation batches:
 
-The decision was not about chasing infrastructure fashion.
+- foundations;
+- page structures;
+- components;
+- content migration;
+- article templates;
+- broad page implementation.
 
-It was about using the platform that matched the site:
+It worked best when the task had clear docs and bounded scope.
 
-- static site;
-- code-first content;
-- Cloudflare-managed domain;
-- clear deployment artifact;
-- low operational overhead.
+### Codex
 
----
+Codex was useful for engineering iteration:
 
-## The deployment model
+- reading the current repo state;
+- making focused patches;
+- resolving conflicts;
+- running builds;
+- checking UI with browser automation;
+- verifying production after deployment;
+- tightening details after screenshot review.
 
-The deployment flow is intentionally boring:
+It worked best as a pragmatic engineering loop.
 
-```text
-edit files
-  -> npm run build
-  -> git status
-  -> git add
-  -> git commit
-  -> git push origin main
-  -> npx wrangler pages deploy dist --project-name wojciech-io --branch main
-  -> verify production domain
-```
+### Human review
 
-The important part is the final verification, not the deploy command.
+My role was to decide:
 
-After a deploy, we check:
+- whether the UI felt right;
+- whether the copy sounded like me;
+- whether a section was too large, too generic, or too disconnected from the rest;
+- whether the system was ready to publish.
 
-```bash
-curl -I https://wojciech.io/
-curl -fsSL https://wojciech.io/insights/
-curl -fsSL https://wojciech.io/rss.xml
-```
-
-And then we verify markers:
-
-- does the public HTML contain the new article or CSS marker?
-- does `server: cloudflare` appear?
-- are `x-vercel-*` headers absent?
-- does the custom domain serve the same thing as the Pages deployment?
-- does the article route return `200`?
-- did RSS and sitemap pick up the new content?
-
-That is the difference between "I deployed it" and "the production site is actually serving the thing I think it is serving."
-
----
-
-## DNS cutover
-
-The DNS part mattered because the project had legacy surfaces and old assumptions.
-
-The launch process was:
-
-1. Keep the old production site live while building the new version.
-2. Build the Astro site on staging.
-3. Verify staging routes, redirects, SEO files, and article output.
-4. Add the production custom domain to Cloudflare Pages.
-5. Point the domain to the Cloudflare Pages project.
-6. Confirm HTTPS certificate issuance.
-7. Confirm `https://wojciech.io/` serves the new Astro site.
-8. Re-run redirect, sitemap, RSS, robots, and article checks on production.
-
-For [app.wojciech.io](https://app.wojciech.io/), verification also included checking that the public domain was no longer leaking old platform headers and that Cloudflare was serving the expected build.
-
-This became a repeated rule:
-
-> Never trust a deploy URL alone. Verify the custom domain.
-
----
-
-## Security and operational safeguards
-
-This is not a bank-grade security architecture. It does not need to be.
-
-But it does have a safer shape than a random dynamic website with exposed endpoints.
-
-The security posture comes from simplicity:
-
-- static Astro output;
-- no database;
-- no public admin panel;
-- no app server in the request path;
-- no exposed booking API on the static site;
-- no secrets needed in the browser for core pages;
-- external booking handled through Cal.com;
-- production served behind Cloudflare;
-- managed HTTPS;
-- redirects and route behavior controlled in the repo;
-- no heavyweight analytics script required for basic traffic visibility.
-
-The contact page originally exposed a bad assumption: it tried to fetch `/api/cal/slots`, but the static site did not ship that API.
-
-That was fixed by making the private scheduler the real path:
-
-- no fake live availability;
-- no red error state;
-- no broken backend illusion;
-- one clear "Open scheduler" CTA.
-
-Security is often framed as adding more systems.
-
-Here, the better move was removing an unnecessary system.
-
----
-
-## The technical stack
-
-Here is the real stack, separated by job.
-
-### Site and content
-
-**Astro**  
-Static site framework. Used for page routing, layouts, content collections, MDX articles, static generation, sitemap output, and fast builds.
-
-**Tailwind CSS**  
-Used for layout, spacing, responsive behavior, and component styling.
-
-**Design tokens**
-The real design system lives in tokens: colors, surfaces, radius, borders, shadows, typography, and theme behavior.
-
-**MDX content collections**  
-Insights live in `src/content/insights/*.mdx`. This made the article system versioned, reviewable, and easy to deploy.
-
-**RSS, sitemap, robots, canonical metadata, article schema**
-These were part of the migration, not afterthoughts.
-
-### Source control and deploy
-
-**GitHub**
-The source of truth. Every meaningful change lands as a commit.
-
-**Cloudflare Pages**
-Production hosting for [wojciech.io](https://wojciech.io/) and the app-style surface.
-
-**Wrangler**
-Used for direct terminal deploys when we wanted to push a known local `dist` build.
-
-### AI and engineering loop
-
-**Claude Code**  
-Used for larger implementation batches: foundations, components, pages, article template, content migration, and broad feature work.
-
-**Claude / Claude Design direction**  
-Used for ideation and visual exploration, not as final source-of-truth code.
-
-**Codex**  
-Used for inspection, patches, conflict resolution, build verification, Playwright checks, deployment, Cloudflare validation, and tighter iteration after human critique.
-
-**ChatGPT / GPT-5.5 strategy layer**  
-Used for positioning, editorial structure, proof framing, and deciding what should not be migrated.
-
-### QA and inspection
-
-**Playwright**  
-Used for browser checks: screenshots, desktop/mobile verification, overflow checks, theme toggle behavior, contact page state, and production sanity checks.
-
-**curl**
-Used for headers, status codes, and production HTML checks.
-
-**rg**
-Used for fast repo inspection: old copy, conflicting CSS, markers, dead references, and deployment proof.
+The agents produced and adjusted. I directed and accepted.
 
 ---
 
 ## The sprint model
 
-The work was organized like a product sprint, not like a single design session.
+The work ran in batches.
 
-### Sprint 0: Decisions and setup
+### Sprint 0: Audit and direction
 
-Outcome:
+We defined the old-site inventory, what should be migrated, what should be retired, and what the new site needed to prove.
 
-- old site audited;
-- direction documented;
-- hosting selected;
-- repo created;
-- Cloudflare Pages staging established;
-- Framer kept live until launch readiness.
+### Sprint 1: Foundation
 
-Human role:
-
-- decide what the site should become;
-- decide what should not be carried forward;
-- approve Cloudflare as the deployment target.
-
-### Sprint 1: Foundation and visual system
-
-Claude Code handled:
-
-- Tailwind setup;
-- global tokens;
-- layout primitives;
-- reusable components;
-- metadata and SEO primitives;
-- content collection scaffolding.
-
-Codex reviewed:
-
-- project structure;
-- accessibility baseline;
-- SEO foundation;
-- performance risks;
-- whether the implementation matched the docs.
-
-Human role:
-
-- reject generic visual directions;
-- choose the final direction;
-- keep the system close to the app surface.
+The first build pass focused on Astro, Tailwind, tokens, layouts, metadata, content collections, and reusable components.
 
 ### Sprint 2: Core pages and proof
 
-Claude Code handled:
+The site moved from skeleton to actual narrative: homepage, work, AI systems, about, proof cards, testimonials, and app links.
 
-- homepage;
-- about;
-- work;
-- AI systems;
-- proof clusters;
-- testimonial and project cards.
+### Sprint 3: Content and launch
 
-Codex reviewed:
+The article system, redirects, RSS, sitemap, robots, structured metadata, and launch checks came together.
 
-- responsive behavior;
-- duplicate markup;
-- component reuse;
-- semantics;
-- dead links.
+### Sprint 4: Post-launch hardening
 
-Human role:
+After launch, the work shifted to coherence: app surface, CV, stack, timeline, contact, toggles, footer, light/dark mode, and visual consistency.
 
-- choose proof hierarchy;
-- validate which projects should be public;
-- correct tone and positioning.
-
-### Sprint 3: Content, SEO, and launch readiness
-
-Claude Code handled:
-
-- insights index;
-- article template;
-- migrated GTM Agent Starter Pack article;
-- redirects;
-- RSS;
-- sitemap;
-- robots;
-- `llms.txt`;
-- 404 page.
-
-Codex handled:
-
-- redirect checks;
-- canonical checks;
-- article route checks;
-- build checks;
-- production verification;
-- Cloudflare deployment.
-
-Human role:
-
-- go / no-go for launch;
-- decide what legacy content to keep, redirect, or retire.
-
-### Sprint 4: Post-launch UI hardening
-
-This is where a lot of visible quality came from.
-
-The app surface went through several focused batches:
-
-- header and profile layout;
-- Stack cards;
-- Timeline readability;
-- CV accordion and role layout;
-- Contact form and scheduler;
-- light/dark toggle behavior;
-- footer consistency;
-- lime contrast in light mode.
-
-This is also where the workflow became most honest.
-
-Some AI output was directionally useful but visually wrong. The only way to fix that was screenshots, blunt critique, and focused patches.
+That last sprint mattered because this is where a website becomes a system instead of a collection of pages.
 
 ---
 
-## The agent roles
+## Deployment and verification
 
-The cleanest split was this:
-
-### Claude Code: implementation agent
-
-Good for:
-
-- larger build passes;
-- setting up file structure;
-- implementing page systems;
-- following detailed docs;
-- content migration;
-- component scaffolding.
-
-Weak when:
-
-- the design critique is taste-heavy;
-- several CSS layers have started conflicting;
-- production verification requires careful terminal work.
-
-### Codex: engineering QA and deploy agent
-
-Good for:
-
-- reading the repo state;
-- making focused patches;
-- resolving Git conflicts;
-- rebasing against remote changes;
-- running builds;
-- Playwright QA;
-- checking `curl` headers;
-- verifying Cloudflare Pages deployments;
-- confirming live markers on custom domains.
-
-Weak when:
-
-- asked to invent the entire visual direction without enough constraints.
-
-### Human: product owner and taste layer
-
-Good for:
-
-- saying "this looks cheap";
-- saying "this is too big";
-- saying "this does not match Apps";
-- deciding what proof is real;
-- deciding what content should be retired;
-- forcing the agents back toward the intended brand.
-
-Weak when:
-
-- trying to manually do all implementation work that agents can do faster.
-
-The point was not to replace one role with another.
-
-The point was to give each role the right job.
-
----
-
-## The prompts were part of the system
-
-The repo included explicit prompts for agent handoff:
-
-- Claude Code kickoff;
-- Claude design exploration;
-- Codex SEO foundation review;
-- Codex responsive QA.
-
-That kept the agents from freewheeling.
-
-Each prompt had a narrow job:
-
-- inspect docs before writing code;
-- propose a sprint plan;
-- review SEO foundations;
-- review responsive behavior;
-- identify file-level issues;
-- avoid rewriting positioning unless asked.
-
-Without this, every agent tries to be designer, engineer, strategist, copywriter, release manager, and QA at once.
-
-That is how you get a confident mess.
-
----
-
-## The testing model
-
-The test model combined automated checks, browser automation, and manual visual review.
-
-### Automated checks
-
-The baseline check was:
-
-```bash
-npm run build
-```
-
-That verified:
-
-- Astro content collections;
-- MDX parsing;
-- static route generation;
-- sitemap generation;
-- RSS generation;
-- TypeScript / framework-level build errors.
-
-For article work, the build had to generate:
+The deployment flow is intentionally boring:
 
 ```text
-/insights/framer-to-cloudflare-agentic-portfolio-build/
-/insights/
-/rss.xml
-/sitemap-index.xml
+build
+commit
+push
+deploy
+verify production
 ```
 
-### Browser automation
+The verification step is the important part.
 
-Playwright was used to check:
+After deployment, the checks include:
 
-- page titles;
-- article `h1`;
-- presence of links in `/insights/`;
-- desktop overflow;
-- mobile overflow;
-- theme toggle state;
-- Contact scheduler state;
-- footer link count;
-- live production behavior.
+- does the custom domain return the new build?
+- does the page return `200`?
+- are the expected article and UI markers present?
+- does `/insights/` list the right posts?
+- does RSS include the new article?
+- does desktop and mobile render without horizontal overflow?
+- does the theme toggle behave correctly?
+- does the contact flow show the intended state?
 
-Example checks:
+A deploy preview is useful. The custom domain is the truth.
 
-```text
-desktop overflow: 0
-mobile overflow: 0
-theme: light -> dark
-article route: 200
-Cloudflare headers present
-Vercel headers absent
-```
+---
 
-### Terminal verification
+## Testing model
 
-`curl` checked production reality:
+Testing combined three layers.
 
-```bash
-curl -I https://wojciech.io/
-curl -I https://wojciech.io/insights/framer-to-cloudflare-agentic-portfolio-build/
-```
+### Build checks
 
-`rg` checked whether the deployed HTML contained the expected markers:
+`npm run build` validates the Astro site, content collections, MDX, routes, RSS, sitemap, and static output.
 
-```bash
-curl -fsSL https://wojciech.io/insights/ | rg "From Framer to Cloudflare"
-curl -fsSL https://wojciech.io/rss.xml | rg "From Framer to Cloudflare"
-```
+### Browser checks
+
+Playwright verifies what actually renders:
+
+- desktop layout;
+- mobile layout;
+- article pages;
+- insights listing;
+- footer and navigation;
+- light/dark toggle;
+- contact state;
+- overflow.
 
 ### Manual review
 
-Manual review caught what automated checks could not:
+Manual review catches what automated checks do not:
 
-- typography felt too large;
-- a white panel did not belong in Timeline;
-- CV felt like a PDF import;
-- Contact felt cheaper than the rest of the site;
-- light-mode lime was too harsh;
-- Stack cards lost the visual quality of the app surface.
+- visual hierarchy;
+- tone;
+- rhythm;
+- whether a section feels like the same product;
+- whether the page is becoming too generic.
 
-Frontend QA is not only whether the route loads.
-
-It is whether the page feels like the same product.
+That combination worked better than relying on any single tool.
 
 ---
 
-## What went wrong
+## What changed
 
-Several things went wrong, and they were useful.
+The rebuild produced a maintainable portfolio system:
 
-### 1. The accent color broke in light mode
+- [wojciech.io](https://wojciech.io/) is now a code-first Astro site on Cloudflare Pages;
+- [app.wojciech.io](https://app.wojciech.io/) is aligned more closely with the public site;
+- Insights are real MDX articles;
+- the GTM Agent Starter Pack is the first article;
+- this rebuild case study is the second;
+- deployment is repeatable;
+- the design system is easier to iterate;
+- future agent-assisted work has a clearer structure.
 
-The brand lime `#ebff00` works as a CTA background.
+The real value is not that AI made a website.
 
-It does not work everywhere as text or icon color on a pale background.
-
-The fix was semantic separation:
-
-- bright lime for CTA backgrounds;
-- darker olive-lime for text, icons, links, and subtle accent work in light mode;
-- brighter lime preserved in dark mode where contrast supports it.
-
-### 2. Sections drifted into different design systems
-
-Apps and Contact looked coherent.
-
-Stack, Timeline, and CV started to feel like separate products.
-
-The fix was to normalize:
-
-- container widths;
-- radius;
-- border weight;
-- heading scale;
-- chip styling;
-- footer behavior;
-- toggle behavior;
-- light/dark token use.
-
-### 3. CV initially looked like a PDF import
-
-The CV needed information architecture, not decoration.
-
-The better model was:
-
-- roles as accordion sections;
-- responsibilities and outcomes inside each role;
-- tools and setup widgets compressed into a secondary area;
-- roles closed by default so the page does not become endless.
-
-### 4. Contact exposed backend assumptions
-
-The static site did not actually have a live `/api/cal/slots` endpoint.
-
-The UI was pretending it did, which created a red error state in the booking card.
-
-The fix was to make the private scheduler the real path:
-
-- no fake live availability;
-- no red "fallback" copy;
-- one clear scheduler CTA;
-- calm status copy.
-
-### 5. Deploy verification mattered more than expected
-
-At several points, the important question was not "is the code right?"
-
-It was:
-
-- which origin is the domain actually serving?
-- are Cloudflare headers present?
-- are old platform headers gone?
-- did the custom domain receive the new build?
-- is production HTML carrying the marker we expect?
-
-This is why browser checks and `curl` checks became part of the workflow.
+The real value is that the site now has a workflow behind it.
 
 ---
 
-## What was achieved
+## What I would reuse
 
-The real output was not just a redesigned website.
+The pattern is simple:
 
-The output was a maintainable portfolio system:
+1. Start with the product goal, not the tool.
+2. Keep the human in charge of taste, scope, and approval.
+3. Give Claude Code large implementation batches.
+4. Give Codex review, QA, patching, and deployment verification.
+5. Use screenshots, not opinions, to settle UI questions.
+6. Keep production verification as part of the workflow.
+7. Remove unnecessary moving parts instead of adding infrastructure for its own sake.
 
-- [wojciech.io](https://wojciech.io/) moved into Astro and Cloudflare Pages;
-- [app.wojciech.io](https://app.wojciech.io/) became a more coherent app-style portfolio surface;
-- Insights became a real MDX article system;
-- the GTM Agent Starter Pack was migrated into the new article template;
-- this case study was added as a second article;
-- SEO files, RSS, sitemap, robots, redirects, and schema became part of the codebase;
-- contact and booking became calmer and more product-like;
-- light/dark theming became more consistent;
-- footer and toggle patterns converged across surfaces;
-- deploys became repeatable;
-- production verification became part of the workflow.
+Agentic building does not remove judgment.
 
-This is a real use case because it combines things most AI demos avoid:
-
-- legacy site migration;
-- DNS cutover;
-- production hosting decisions;
-- content strategy;
-- UI taste problems;
-- design-system drift;
-- static/dynamic boundary decisions;
-- real deploy checks;
-- human rejection of bad AI output.
-
-That is closer to actual work than a one-shot landing page demo.
-
----
-
-## The agentic build pattern
-
-This is the pattern I would reuse.
-
-### 1. Start with docs, not code
-
-Before opening the editor, define:
-
-- what the site is for;
-- what the old site should keep;
-- what should be retired;
-- what the design direction is;
-- what proof needs to be shown;
-- what launch checks matter.
-
-### 2. Split agents by job
-
-Do not ask every model to do everything.
-
-Use:
-
-- Claude Code for large implementation batches;
-- Codex for engineering review, QA, conflicts, deploys, and patches;
-- GPT strategy layer for positioning and editorial structure;
-- the human for taste, judgment, and go/no-go decisions.
-
-### 3. Work in batches
-
-Do not ask for "make the site better."
-
-Ask for:
-
-- fix the contact scheduler state;
-- normalize Stack card radius and width;
-- make Timeline consistent with Apps;
-- close CV roles by default;
-- verify Cloudflare headers;
-- check RSS contains the article.
-
-Small batches produce better agent work.
-
-### 4. Verify visually
-
-No frontend work is done until screenshots say it is done.
-
-A build can pass while the product looks wrong.
-
-### 5. Verify production
-
-A deploy URL is not enough.
-
-The custom domain has to serve the right HTML, from the right platform, with the right headers.
-
-### 6. Keep critique concrete
-
-The best human feedback in this process was direct:
-
-- too large;
-- too gray;
-- too cheap;
-- wrong direction;
-- not coherent with Apps;
-- looks like imported PDF;
-- white slab does not belong here.
-
-The more concrete the critique, the better the patch.
-
----
-
-## The short version
-
-We did not build this with one AI tool.
-
-We built it with an operating loop:
-
-- Framer as the old surface;
-- Astro as the new public architecture;
-- Tailwind and tokens as the UI system;
-- MDX as the article layer;
-- GitHub as the source of truth;
-- Claude Code as the larger implementation agent;
-- Codex as the engineering, QA, and deployment agent;
-- Playwright as visual verification;
-- Cloudflare Pages as production;
-- Wrangler as deploy tooling;
-- `curl` and `rg` as boring but essential inspection tools;
-- human judgment as the thing that kept the result from becoming generic.
-
-That last one is the real stack.
-
-Agentic building does not remove taste, judgment, or ownership.
-
-It punishes you faster when you do not have them.
+It makes judgment more important.
