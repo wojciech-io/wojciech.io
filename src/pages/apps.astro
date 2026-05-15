@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import CTABand from '../components/ui/CTABand.astro';
+import { SITE } from '../data/site';
 
 const apps = [
   {
@@ -9,7 +10,7 @@ const apps = [
     tagline: 'macOS notch, made useful.',
     description: 'A native macOS utility that turns the MacBook notch into a live workspace — system stats, quick actions, and clipboard history in the dead space above your screen.',
     tags: 'macOS · Swift · Native',
-    href: 'https://notch.wojciech.io',
+    href: SITE.notchUrl,
     status: 'Live',
     art: 'notch',
   },
@@ -27,7 +28,7 @@ const apps = [
     tagline: "Every tool I've shipped.",
     description: "Działka+, Paczka+, Resume+, and more. Small focused apps built to solve a specific problem and shipped. The full catalogue lives at app.wojciech.io.",
     tags: 'Web apps · Mobile · Utilities',
-    href: 'https://app.wojciech.io/apps',
+    href: `${SITE.appUrl}/apps`,
     status: 'Growing',
     art: 'portfolio',
   },
@@ -62,7 +63,7 @@ const apps = [
 
         <!-- Notch -->
         <a
-          href="https://notch.wojciech.io"
+          href={SITE.notchUrl}
           target="_blank"
           rel="noopener noreferrer"
           class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/40 flex flex-col"
@@ -158,7 +159,7 @@ const apps = [
 
         <!-- App portfolio -->
         <a
-          href="https://app.wojciech.io/apps"
+          href={`${SITE.appUrl}/apps`}
           target="_blank"
           rel="noopener noreferrer"
           class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/40 flex flex-col"
@@ -234,8 +235,12 @@ const apps = [
   </section>
 
   <CTABand
-    heading="Need something built that doesn't exist yet?"
-    subtext="That's usually where I start. Let's talk about the gap."
+    heading="Need the full app workspace?"
+    subtext="The canonical catalogue, CV, stack, and contact flows live in the app workspace. This page is the public bridge from wojciech.io."
+    cta="Open app workspace"
+    ctaHref={SITE.appUrl}
+    ctaSecondary="Book a call"
+    ctaSecondaryHref="/contact#book-call"
   />
 
 </Layout>

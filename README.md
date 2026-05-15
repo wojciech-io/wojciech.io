@@ -1,47 +1,28 @@
-# Astro Starter Kit: Basics
+# wojciech.io
+
+Public portfolio for Wojciech Luszczynski, built with Astro and deployed on Cloudflare Pages.
+
+## Local work
 
 ```sh
-npm create astro@latest -- --template basics
+npm install
+npm run dev
+npm run build
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Deployment
 
-## 🚀 Project Structure
+Cloudflare Pages builds from `main`.
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+```sh
+git add -A
+git commit -m "Describe the change"
+git push origin main
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Related surfaces
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-# wojciech-io
+- `https://wojciech.io` - public portfolio, writing, work, contact
+- `https://app.wojciech.io` - app workspace, CV, stack, timeline
+- `https://subscribe.wojciech.io` - newsletter product, separate deployment
+- `https://notch.wojciech.io` - Notch product site, separate deployment
