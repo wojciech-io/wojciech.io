@@ -5,6 +5,20 @@ import Layout from '../../layouts/Layout.astro';
 const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort(
   (a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
 );
+
+const author = {
+  name: 'Wojciech Łuszczyński',
+  role: 'GTM operator · AI-native builder',
+  avatar: '/images/wojciech-avatar-384.webp',
+};
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+const readTime = (body = '') => `${Math.max(4, Math.ceil(body.split(/\s+/).filter(Boolean).length / 220))} min read`;
+
+const visualType = (slug: string) =>
+  slug.includes('framer-to-cloudflare') ? 'portfolio' : 'terminal';
 ---
 
 <Layout
@@ -14,41 +28,148 @@ const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort(
   <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
 
     <!-- Header -->
-    <div class="max-w-2xl mb-16">
+    <div class="grid gap-8 md:grid-cols-[1fr_0.42fr] md:items-end mb-14">
+      <div class="max-w-3xl">
       <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Insights</p>
       <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
-        Articles on growth, AI systems,<br class="hidden md:block" /> and GTM architecture.
+        Field notes on AI systems,<br class="hidden md:block" /> shipped tools, and GTM architecture.
       </h1>
       <p class="text-lg text-[var(--color-text-muted)]">
-        Practical frameworks and systems — not hot takes or tool comparisons.
+        Practical breakdowns from systems I build and run. Architecture, stack choices, deployment notes, and operator lessons.
       </p>
+      </div>
+
+      <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+        <div class="flex items-center gap-3">
+          <img
+            src={author.avatar}
+            alt=""
+            width="44"
+            height="44"
+            loading="eager"
+            decoding="async"
+            class="h-11 w-11 rounded-full border border-[var(--color-border)] object-cover"
+          />
+          <div>
+            <p class="text-sm font-semibold text-[var(--color-text)]">{author.name}</p>
+            <p class="text-xs leading-snug text-[var(--color-text-muted)]">{author.role}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Article list -->
-    <div class="grid gap-5 mb-16">
-      {posts.map((post) => {
+    <div class="grid gap-6 mb-16">
+      {posts.map((post, index) => {
         const slug = post.id.replace(/\.mdx?$/, '');
+        const isFeatured = index === 0;
+        const variant = visualType(slug);
         return (
           <a
             href={`/insights/${slug}/`}
-            class="group block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 card-lift hover:border-[var(--color-accent)]/30"
+            class:list={[
+              'group overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-lift hover:border-[var(--color-accent)]/30',
+              isFeatured ? 'grid lg:grid-cols-[0.95fr_1.05fr]' : 'grid md:grid-cols-[0.42fr_1fr]',
+            ]}
           >
-            <div class="flex flex-wrap items-center gap-3 mb-4">
-              {post.data.tags.slice(0, 3).map((tag) => (
-                <span class="text-xs px-2.5 py-1 rounded-[var(--radius-badge)] border border-[var(--color-border-2)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)]">
-                  {tag}
-                </span>
-              ))}
-              <span class="text-xs text-[var(--color-text-dim)] ml-auto">
-                {post.data.publishedAt.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
-              </span>
+            <div class:list={[
+              'relative overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-surface-2)] md:border-b-0 md:border-r',
+              isFeatured ? 'min-h-[320px]' : 'min-h-[220px]',
+            ]}>
+              <div
+                class="absolute inset-0 opacity-55"
+                style="background-image: radial-gradient(circle, #EBFF0016 1px, transparent 1px); background-size: 24px 24px;"
+                aria-hidden="true"
+              />
+
+              {variant === 'terminal' ? (
+                <div class="absolute inset-6 flex items-center justify-center">
+                  <div class="w-full max-w-[460px] overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_18px_50px_rgb(30_26_18/0.10)]">
+                    <div class="flex h-9 items-center gap-1.5 border-b border-[var(--color-border)] bg-[var(--color-surface-2)] px-3">
+                      <span class="h-2 w-2 rounded-full bg-[#ef4444]/60"></span>
+                      <span class="h-2 w-2 rounded-full bg-[#eab308]/60"></span>
+                      <span class="h-2 w-2 rounded-full bg-[#22c55e]/60"></span>
+                      <span class="ml-3 font-mono text-[10px] text-[var(--color-text-dim)]">gtm-agent — claude code</span>
+                    </div>
+                    <div class="grid gap-2 p-5 font-mono text-[11px] leading-none text-[var(--color-text-dim)]">
+                      <p class="text-[var(--color-text)]">$ claude run outbound</p>
+                      <p>▸ load operator identity</p>
+                      <p>▸ fetch ICP signal</p>
+                      <p class="text-[#22c55e]">✓ enrich and score leads</p>
+                      <p class="text-[#22c55e]">✓ sequences staged</p>
+                      <p class="pt-2 text-[var(--color-text)]">cost: <span class="text-[var(--color-accent)]">$3.40</span> · time: <span class="text-[var(--color-accent)]">4m 12s</span></p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div class="absolute inset-6 grid gap-3">
+                  <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[0_18px_50px_rgb(30_26_18/0.08)]">
+                    <div class="mb-4 flex items-center justify-between">
+                      <span class="text-xs font-semibold text-[var(--color-text)]">Portfolio rebuild</span>
+                      <span class="rounded-full bg-[var(--color-accent)] px-2 py-0.5 text-[10px] font-bold text-[var(--color-accent-text)]">Cloudflare Pages</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                      {['Framer', 'Astro', 'Codex'].map((item) => (
+                        <div class="rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-2 py-3 text-center text-[11px] font-semibold text-[var(--color-text-muted)]">{item}</div>
+                      ))}
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                    <div class="rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 text-xs font-semibold text-[var(--color-text-muted)]">wojciech.io</div>
+                    <span class="text-[var(--color-text-dim)]">→</span>
+                    <div class="rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 text-xs font-semibold text-[var(--color-text-muted)]">app.wojciech.io</div>
+                  </div>
+                </div>
+              )}
             </div>
-            <h2 class="text-xl font-semibold text-[var(--color-text)] mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors duration-150">
-              {post.data.title}
-            </h2>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-              {post.data.description}
-            </p>
+
+            <div class:list={[isFeatured ? 'p-8 md:p-10' : 'p-6 md:p-7']}>
+              <div class="mb-5 flex flex-wrap items-center gap-3">
+                <img
+                  src={author.avatar}
+                  alt=""
+                  width="28"
+                  height="28"
+                  loading="lazy"
+                  decoding="async"
+                  class="h-7 w-7 rounded-full border border-[var(--color-border)] object-cover"
+                />
+                <div class="text-xs text-[var(--color-text-dim)]">
+                  <span class="font-semibold text-[var(--color-text-muted)]">{author.name}</span>
+                  <span class="mx-2">·</span>
+                  <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+                  <span class="mx-2">·</span>
+                  <span>{readTime(post.body)}</span>
+                </div>
+              </div>
+
+              <div class="mb-5 flex flex-wrap gap-2">
+                {post.data.tags.slice(0, 4).map((tag) => (
+                  <span class="rounded-[var(--radius-badge)] border border-[var(--color-border-2)] bg-[var(--color-surface-2)] px-2.5 py-1 text-xs text-[var(--color-text-muted)]">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <h2 class:list={[
+                'font-semibold leading-tight text-[var(--color-text)] transition-colors duration-150 group-hover:text-[var(--color-accent-hi)]',
+                isFeatured ? 'mb-4 text-2xl md:text-3xl' : 'mb-3 text-xl',
+              ]}>
+                {post.data.title}
+              </h2>
+              <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-text-muted)]">
+                {post.data.description}
+              </p>
+
+              <div class="mt-7 border-t border-[var(--color-border)] pt-5">
+                <span class="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-text)]">
+                  Read article
+                  <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
           </a>
         );
       })}
