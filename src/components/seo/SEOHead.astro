@@ -1,4 +1,6 @@
 ---
+import { SITE } from '../../data/site';
+
 interface Props {
   title?: string;
   description?: string;
@@ -23,7 +25,7 @@ const {
   schema,
 } = Astro.props;
 
-const siteTitle = 'Wojciech Łuszczyński';
+const siteTitle = SITE.nameDisplay;
 const fullTitle = title ? `${title}, ${siteTitle}` : siteTitle;
 const canonicalURL = new URL(canonical ?? Astro.url.pathname, Astro.site).href;
 const ogImageURL = new URL(ogImage, Astro.site).href;
@@ -35,18 +37,18 @@ const baseSchema = [
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: siteTitle,
-    url: 'https://wojciech.io/',
+    url: SITE.url + '/',
     sameAs: [
-      'https://linkedin.com/in/wojciechluszczynski',
-      'https://x.com/wluszczynski',
-      'https://github.com/wluszczynski',
+      SITE.linkedin,
+      SITE.twitter.replace('twitter.com', 'x.com'),
+      SITE.github,
     ],
   },
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: siteTitle,
-    url: 'https://wojciech.io/',
+    url: SITE.url + '/',
   },
 ];
 const pageSchema = Array.isArray(schema) ? schema : schema ? [schema] : [];
