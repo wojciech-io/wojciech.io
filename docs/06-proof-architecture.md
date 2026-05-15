@@ -35,7 +35,7 @@ A flat list of projects would understate the real story. The stronger message is
 
 **Candidate proof**
 
-- Kadromierz Q1 / Q2 growth architecture
+- B2B SaaS growth architecture (Q1 / Q2 engagement)
 - CRO, SEO, CRM, winback and analytics systems
 - Brand24 AI Adoption task as a visible operating-model artifact
 
