@@ -4,6 +4,7 @@ import AvatarRing from '../components/ui/AvatarRing.astro';
 import CTABand from '../components/ui/CTABand.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import FAQ from '../components/ui/FAQ.astro';
+import { STACK, STACK_TOTAL } from '../data/stack';
 
 const timeline = [
   {
@@ -94,7 +95,7 @@ const stats = [
   { value: '15+', label: 'years in B2B growth' },
   { value: 'EU · US', label: 'UK · LATAM' },
   { value: 'MBA', label: 'Executive, UBiNS' },
-  { value: '30+', label: 'tools in stack' },
+  { value: `${STACK_TOTAL}+`, label: 'tools in stack' },
 ];
 
 const faq = [
@@ -285,6 +286,50 @@ const faq = [
             </div>
           ))}
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stack -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+        <SectionHeader
+          eyebrow="Stack"
+          heading="How I build."
+          lead="Technology categories I work with and what each one makes possible."
+          class="mb-0"
+        />
+        <a
+          href="https://app.wojciech.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="shrink-0 text-xs font-medium text-[var(--color-text-dim)] hover:text-[var(--color-accent-hi)] transition-colors"
+        >
+          Full workspace →
+        </a>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {STACK.map((cat) => (
+          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 card-lift hover:border-[var(--color-border-2)]">
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent)] mb-3">{cat.name}</p>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              {cat.items.map((item) => (
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)]">
+                  {item.icon
+                    ? <img src={`https://cdn.simpleicons.org/${item.icon}/${item.iconColor}`} width="11" height="11" loading="lazy" alt="" aria-hidden="true" onerror="this.style.display='none'" />
+                    : item.letterMark
+                      ? <span class="text-[9px] font-bold text-[var(--color-accent)] leading-none">{item.letterMark}</span>
+                      : null
+                  }
+                  {item.name}
+                </span>
+              ))}
+            </div>
+            <p class="text-[11px] leading-relaxed text-[var(--color-text-dim)]">{cat.enables}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
