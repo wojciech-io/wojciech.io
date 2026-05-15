@@ -27,55 +27,124 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
       </a>
     </div>
 
-    <!-- Mobile nav -->
-    <details class="nav-dropdown md:hidden relative">
-      <summary
-        class="flex items-center gap-2 cursor-pointer text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-        aria-label="Open navigation"
-      >
-        <!-- Hamburger icon -->
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" class="shrink-0">
-          <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        <!-- Chevron -->
-        <svg class="chevron w-3.5 h-3.5 shrink-0" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-          <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </summary>
-
-      <!-- Animated panel -->
-      <div class="nav-panel absolute right-0 top-10 w-56">
-        <nav
-          class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[0_8px_32px_0_rgb(0,0,0,0.4)]"
-          aria-label="Mobile navigation"
-        >
-          <ul class="list-none m-0 p-0 space-y-1">
-            {links.map(({ label, href, external }) => (
-              <li>
-                <a
-                  href={href}
-                  class="block rounded-[var(--radius-btn)] px-3 py-2 text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors"
-                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-            <li class="pt-2 border-t border-[var(--color-border)] mt-1">
-              <ThemeToggle class="w-full" />
-            </li>
-            <li class="pt-2 border-t border-[var(--color-border)] mt-1">
-              <a
-                href="/contact#book-call"
-                class="btn-press block rounded-[var(--radius-btn)] bg-[var(--color-accent)] px-3 py-2 text-sm font-semibold text-[var(--color-accent-text)] text-center hover:bg-[var(--color-accent-hi)] transition-colors"
-              >
-                Book a call
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </details>
+    <!-- Mobile: hamburger button -->
+    <button
+      id="mobile-nav-open"
+      class="md:hidden flex flex-col gap-[5px] justify-center items-center w-10 h-10 -mr-2 rounded-[var(--radius-btn)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+      aria-label="Open navigation"
+      aria-expanded="false"
+      aria-controls="mobile-nav-overlay"
+    >
+      <span class="hamburger-line block w-5 h-[1.5px] bg-current rounded-full transition-all duration-300 origin-center"></span>
+      <span class="hamburger-line block w-5 h-[1.5px] bg-current rounded-full transition-all duration-300 origin-center"></span>
+      <span class="hamburger-line block w-5 h-[1.5px] bg-current rounded-full transition-all duration-300 origin-center"></span>
+    </button>
 
   </div>
 </header>
+
+<!-- Mobile full-screen overlay -->
+<div
+  id="mobile-nav-overlay"
+  class="fixed inset-0 z-[100] flex flex-col bg-[var(--color-bg)] transition-all duration-300 ease-out translate-x-full opacity-0 pointer-events-none md:hidden"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Navigation"
+>
+  <!-- Top bar -->
+  <div class="flex items-center justify-between px-6 h-16 border-b border-[var(--color-border)] shrink-0">
+    <a href="/" class="inline-flex items-baseline gap-0 group" onclick="closeMobileNav()">
+      <span class="text-sm font-semibold tracking-tight text-[var(--color-text)]">wojciech</span><span class="text-sm font-semibold tracking-tight text-[var(--color-accent)]">.io</span>
+    </a>
+    <button
+      id="mobile-nav-close"
+      class="flex items-center justify-center w-10 h-10 -mr-2 rounded-[var(--radius-btn)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+      aria-label="Close navigation"
+    >
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M2 2l14 14M16 2L2 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Nav links — large, full-height -->
+  <nav class="flex-1 flex flex-col justify-center px-8" aria-label="Mobile navigation">
+    <ul class="list-none m-0 p-0 space-y-1">
+      {links.map(({ label, href, external }) => (
+        <li>
+          <a
+            href={href}
+            class="mobile-nav-link group flex items-center justify-between py-4 border-b border-[var(--color-border)] text-2xl font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-hi)] transition-colors"
+            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >
+            {label}
+            <svg class="w-4 h-4 text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <!-- Bottom bar -->
+  <div class="px-8 pb-10 pt-6 border-t border-[var(--color-border)] shrink-0 space-y-4">
+    <ThemeToggle class="w-full" />
+    <a
+      href="/contact#book-call"
+      class="mobile-nav-link btn-press flex items-center justify-center gap-2 w-full bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold py-3.5 rounded-[var(--radius-btn)] hover:opacity-90 transition-opacity text-sm"
+    >
+      Book a call
+    </a>
+  </div>
+</div>
+
+<script>
+  const overlay  = document.getElementById('mobile-nav-overlay')!;
+  const openBtn  = document.getElementById('mobile-nav-open')!;
+  const closeBtn = document.getElementById('mobile-nav-close')!;
+  const lines    = openBtn.querySelectorAll<HTMLElement>('.hamburger-line');
+
+  function openMobileNav() {
+    overlay.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+    overlay.classList.add('translate-x-0', 'opacity-100');
+    overlay.setAttribute('aria-hidden', 'false');
+    openBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    // Animate to X
+    lines[0].style.transform = 'translateY(6.5px) rotate(45deg)';
+    lines[1].style.opacity = '0';
+    lines[2].style.transform = 'translateY(-6.5px) rotate(-45deg)';
+  }
+
+  function closeMobileNav() {
+    overlay.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+    overlay.classList.remove('translate-x-0', 'opacity-100');
+    overlay.setAttribute('aria-hidden', 'true');
+    openBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    // Reset hamburger
+    lines[0].style.transform = '';
+    lines[1].style.opacity = '';
+    lines[2].style.transform = '';
+  }
+
+  // Make closeMobileNav available globally for the wordmark link
+  (window as any).closeMobileNav = closeMobileNav;
+
+  openBtn.addEventListener('click', openMobileNav);
+  closeBtn.addEventListener('click', closeMobileNav);
+
+  // Close on nav link click (internal links only)
+  overlay.querySelectorAll<HTMLElement>('.mobile-nav-link').forEach((link) => {
+    link.addEventListener('click', closeMobileNav);
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && openBtn.getAttribute('aria-expanded') === 'true') {
+      closeMobileNav();
+    }
+  });
+</script>
