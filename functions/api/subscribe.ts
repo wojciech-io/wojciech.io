@@ -9,7 +9,6 @@ interface PagesFunctionContext {
 
 interface SubscribePayload {
   email?: string;
-  name?: string;
 }
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,14 +34,13 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
   }
 
   const email = payload.email?.trim().toLowerCase();
-  const name = payload.name?.trim() || '';
 
   if (!email || !emailPattern.test(email)) {
     return json({ ok: false, error: 'Please enter a valid email address.' }, { status: 400 });
   }
 
   const subscribeApiUrl = env.SUBSCRIBE_API_URL || DEFAULT_SUBSCRIBE_API_URL;
-  return proxySubscribe(subscribeApiUrl, { email, name });
+  return proxySubscribe(subscribeApiUrl, { email });
 }
 
 async function proxySubscribe(subscribeApiUrl: string, payload: Required<SubscribePayload>) {
@@ -51,7 +49,6 @@ async function proxySubscribe(subscribeApiUrl: string, payload: Required<Subscri
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       email: payload.email,
-      name: payload.name,
       newsletter: true,
       source: 'wojciech.io/subscribe',
     }),
