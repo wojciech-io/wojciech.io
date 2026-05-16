@@ -66,7 +66,7 @@ const testimonials = [
     role: "Head of Marketing",
     company: "GetResponse",
     linkedin: "https://www.linkedin.com/in/robert-sikorski-getresponse/",
-    // avatar: "https://unavatar.io/linkedin/robert-sikorski-getresponse", // uncomment once LinkedIn username is confirmed
+    avatar: "https://unavatar.io/linkedin/robert-sikorski-getresponse",
     avatar: undefined,
   },
   {
@@ -312,9 +312,20 @@ const testimonials = [
                 {projects[0].description}
               </p>
               <div class="flex flex-wrap gap-1.5">
-                {projects[0].tags.map((tag) => (
-                  <span class="text-xs px-2 py-0.5 rounded border border-[var(--color-border-2)] text-[var(--color-text-dim)] bg-[var(--color-surface-2)]">{tag}</span>
-                ))}
+                {projects[0].tags.map((tag) => {
+                  const t = tag.toLowerCase();
+                  const cls =
+                    ['ai', 'ai workflow', 'ai-built', 'automation', 'claude code'].some(k => t.includes(k))
+                      ? 'border-lime-400/40 text-lime-600 bg-lime-400/8 dark:text-lime-300 dark:border-lime-400/30 dark:bg-lime-400/10'
+                    : ['gtm', 'ads', 'growth', 'operator tooling', 'seo'].some(k => t.includes(k))
+                      ? 'border-amber-400/40 text-amber-700 bg-amber-400/8 dark:text-amber-300 dark:border-amber-400/30 dark:bg-amber-400/10'
+                    : ['product', 'booking', 'web app'].some(k => t.includes(k))
+                      ? 'border-sky-400/40 text-sky-700 bg-sky-400/8 dark:text-sky-300 dark:border-sky-400/30 dark:bg-sky-400/10'
+                    : ['crm', 'ops', 'revops'].some(k => t.includes(k))
+                      ? 'border-teal-400/40 text-teal-700 bg-teal-400/8 dark:text-teal-300 dark:border-teal-400/30 dark:bg-teal-400/10'
+                    : 'border-[var(--color-border-2)] text-[var(--color-text-dim)]';
+                  return <span class={`text-xs px-2 py-0.5 rounded-full border font-medium ${cls}`}>{tag}</span>;
+                })}
               </div>
               <dl class="mt-7 grid gap-4 border-t border-[var(--color-border)] pt-6">
                 {[
