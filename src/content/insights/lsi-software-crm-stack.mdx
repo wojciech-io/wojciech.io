@@ -1,0 +1,73 @@
+---
+title: "CRM and SEO operating stack for a B2B software company"
+description: "How I designed and implemented a connected CRM + SEO system for a mid-market software company — architecture, decisions, and the operating model that made it work."
+publishedAt: "2025-10-14"
+tags:
+  - CRM
+  - SEO
+  - GTM
+  - B2B SaaS
+  - Growth
+category: "GTM Architecture"
+coverType: "system"
+featured: false
+draft: false
+tldr:
+  - "CRM and SEO are rarely connected — they should be, because search intent is the best qualification signal"
+  - "The stack: HubSpot + Ahrefs + custom enrichment layer + routing automation"
+  - "SEO strategy was ICP-keyword focused, not traffic-focused — quality over volume"
+  - "The operating model required one person with operator mindset, not a team of specialists"
+---
+
+B2B software companies often treat CRM and SEO as parallel tracks managed by different people with different goals. The CRM team wants clean data and pipeline visibility. The SEO team wants traffic and rankings. Neither team has a clear view of the other's output.
+
+The missed connection: search intent is one of the best qualification signals available. If someone searched "enterprise HR software for manufacturing companies" and landed on your pricing page, you know more about their intent, company profile, and purchase stage than most CRM data would tell you. That signal should flow into the CRM automatically.
+
+Here's how I built a stack that connects these.
+
+## The context
+
+A mid-market B2B software company with 20–50 sales team members, HubSpot as CRM, existing SEO work but no clear ICP-keyword strategy, and a mix of inbound and outbound pipeline. The brief: build systems that make the existing team faster and smarter, not add headcount.
+
+## The architecture
+
+**SEO layer: ICP keyword strategy**
+
+The existing SEO work was traffic-focused: high-volume keywords, some thin content, ranking positions that didn't convert. We rebuilt the keyword strategy around one question: what does our ICP search when they have the problem we solve?
+
+This meant moving from 10,000-monthly-search keywords to 400-monthly-search keywords with high commercial intent. The content mapped to search intent, not to what the marketing team wanted to say about the product.
+
+Three content types:
+- **Problem-aware content** — "how to [solve specific problem]" → converts at top of funnel
+- **Solution-aware content** — "[our category] software for [their industry]" → converts mid-funnel
+- **Competitor-aware content** — "[competitor] alternative", "[competitor] vs us" → converts bottom of funnel
+
+Each piece of content had a defined CTA and a conversion path into HubSpot.
+
+**CRM layer: enrichment and routing**
+
+Every inbound lead entered an enrichment workflow:
+1. Firmographic data pull (Clearbit API)
+2. Landing page + UTM source analysis (which content piece triggered the conversion?)
+3. ICP score calculation (industry, company size, role match)
+4. Routing: ICP fit + high intent → SDR assignment; ICP fit + low intent → nurture; not ICP → discount nurture
+
+The landing page enrichment was the key connection. A lead who converted from a competitor comparison page got a different nurture track than a lead who converted from a generic awareness piece. The routing logic was explicit and documented.
+
+**Operating model: one operator**
+
+The system required one person with an operator mindset to run it. Not a content team, not a data analyst, not a CRM admin. One person who understood the full chain: SEO signal → CRM data → pipeline outcome.
+
+The weekly operating rhythm: check ranking changes on ICP keywords, review conversion rate by content piece, audit routing logic accuracy (did the ICP scores match what AEs were seeing in calls?), one content update or creation task.
+
+## Results shape
+
+The shift from traffic-focused to intent-focused SEO reduced overall traffic by 15% in the first quarter while improving lead quality scores and SQL conversion rate. The connected routing meant SDRs spent time on higher-fit accounts.
+
+The operating model worked because it was one person's job to maintain it, not a shared responsibility distributed across functions who each prioritized their own metrics.
+
+## What transfers
+
+The pattern — ICP keywords → intent-matched content → enriched CRM routing — works for any B2B company where the buyer has a defined search behavior. The implementation details vary (HubSpot vs. Salesforce, Clearbit vs. Apollo, Ahrefs vs. Semrush), but the logic is universal.
+
+The key decision is organizational: someone has to own the full chain. Splitting ownership between SEO and CRM teams means the connection point — intent signal to pipeline treatment — becomes a gap no one is accountable for.
