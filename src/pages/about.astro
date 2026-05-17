@@ -18,6 +18,7 @@ const timeline = [
     period: 'Oct 2025 – Mar 2026',
     role: 'Fractional GTM & Growth Lead',
     company: 'CodiLime',
+    href: 'https://codilime.com',
     description: 'End-to-end GTM execution: AI-driven growth loops across content, SEO, paid and lifecycle; lead magnets, conversion assets, and revenue-linked measurement.',
     contract: true,
   },
@@ -25,6 +26,7 @@ const timeline = [
     period: 'May – Oct 2025',
     role: 'Fractional Head of Marketing',
     company: 'WebWave',
+    href: 'https://webwave.me',
     description: 'Fractional marketing leadership for an AI-powered website builder: GTM, positioning, commercial messaging, paid, SEO, and growth cadence.',
     contract: true,
   },
@@ -32,6 +34,7 @@ const timeline = [
     period: '2024 – Oct 2025',
     role: 'Head of Growth & Web Development',
     company: 'Symfonia',
+    href: 'https://symfonia.pl',
     description: 'Growth, web development, UX/CRO, migration, SEO, lead generation, and integrated campaigns for a large-scale business software brand.',
     contract: false,
   },
@@ -39,6 +42,7 @@ const timeline = [
     period: 'Oct 2023 – Dec 2024',
     role: 'Chief Marketing Officer',
     company: 'Tekhuset AS',
+    href: 'https://tekhuset.no',
     description: 'Marketing strategy across Norway, Denmark, and Sweden. Led SEO and CRO for e-commerce brands, achieving top-3 rankings in Nordic markets and a 25% uplift in conversion rates.',
     contract: false,
   },
@@ -46,6 +50,7 @@ const timeline = [
     period: 'Oct 2020 – Jun 2024',
     role: 'Global Head of Growth & Retention',
     company: 'SentiOne',
+    href: 'https://sentione.com',
     description: 'Built and scaled B2B SaaS growth and retention across Europe, UK, US, and LATAM: demand generation, enterprise GTM, lifecycle, and deal-cycle acceleration.',
     contract: false,
   },
@@ -53,6 +58,7 @@ const timeline = [
     period: '2022',
     role: 'Global AI & Innovation Manager',
     company: 'Gi Group Holding',
+    href: 'https://gigroupholding.com',
     description: 'Project work on AI initiatives, digital process mapping, and innovation roadmap alignment across multiple business units.',
     contract: true,
   },
@@ -60,6 +66,7 @@ const timeline = [
     period: 'Oct 2019 – Oct 2020',
     role: 'Head of Lifecycle Marketing',
     company: 'GetResponse',
+    href: 'https://getresponse.com',
     description: 'Lifecycle marketing, CRM, segmentation, A/B testing, conversion optimisation, and customer engagement programs for a global SaaS product.',
     contract: false,
   },
@@ -67,6 +74,7 @@ const timeline = [
     period: '2018 – 2019',
     role: 'Head of Digital',
     company: 'Marquard Group',
+    href: 'https://marquard.de',
     description: 'Digital strategy, SEO, UX, PPC, and multi-brand publishing growth across a 9-portal media portfolio.',
     contract: false,
   },
@@ -74,6 +82,7 @@ const timeline = [
     period: '2018',
     role: 'Head of Marketing',
     company: 'Lilla House Digital',
+    href: undefined,
     description: 'Full-stack digital marketing: SEO, PPC, email, social, and conversion optimisation. Built and ran campaigns across multiple channels independently.',
     contract: true,
   },
@@ -81,6 +90,7 @@ const timeline = [
     period: '2010 – 2018',
     role: 'Head of MarComm / Sr PR Manager / PR Manager',
     company: 'City of Łódź Office',
+    href: 'https://uml.lodz.pl',
     description: 'Eight-year communications track across PR, senior PR, and MarComm leadership: media relations, public campaigns, crisis communication, and city-wide messaging.',
     contract: false,
   },
@@ -237,14 +247,20 @@ const faq = [
     <div class="mx-auto max-w-6xl px-6">
       <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-10" />
       <div class="divide-y divide-[var(--color-border)] max-w-3xl">
-        {timeline.map(({ period, role, company, description, contract }, i) => (
+        {timeline.map(({ period, role, company, href, description, contract }, i) => (
           <div class:list={['flex flex-col sm:flex-row gap-4 py-7', i === 0 ? 'pt-0' : '']}>
             <div class="sm:w-32 shrink-0 pt-0.5">
               <p class:list={['text-xs font-mono text-[var(--color-text-dim)]', contract ? 'italic' : '']}>{period}</p>
             </div>
             <div>
               <p class="text-base font-semibold text-[var(--color-text)] mb-0.5">{role}</p>
-              <p class="text-sm font-medium text-[var(--color-text-muted)] mb-2">{company}</p>
+              {href
+                ? <a href={href} target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors mb-2 inline-flex items-center gap-1 group">
+                    {company}
+                    <svg class="w-3 h-3 opacity-40 group-hover:opacity-80 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                  </a>
+                : <p class="text-sm font-medium text-[var(--color-text-muted)] mb-2">{company}</p>
+              }
               <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-lg">{description}</p>
             </div>
           </div>
