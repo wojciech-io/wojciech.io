@@ -3,80 +3,113 @@ import { SITE } from '../../data/site';
 
 const year = new Date().getFullYear();
 
-const social = [
-  {
-    label: 'Website',
-    pathD: 'M12 22a10 10 0 100-20 10 10 0 000 20zM2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z',
-    href: SITE.url,
-    fill: 'none',
-  },
-  {
-    label: 'LinkedIn',
-    pathD: 'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 6a2 2 0 100-4 2 2 0 000 4z',
-    href: SITE.linkedin,
-    fill: 'currentColor',
-  },
-  {
-    label: 'GitHub',
-    pathD: 'M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22',
-    href: SITE.github,
-    fill: 'none',
-  },
-  {
-    label: 'Twitter',
-    pathD: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
-    href: SITE.twitter,
-    fill: 'currentColor',
-  },
-  {
-    label: 'Substack',
-    pathD: 'M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z',
-    href: SITE.substack,
-    fill: 'currentColor',
-  },
-  {
-    label: 'Medium',
-    pathD: 'M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z',
-    href: SITE.medium,
-    fill: 'currentColor',
-  },
+const nav = [
+  { label: 'Work', href: '/work', desc: 'Selected proof and case studies' },
+  { label: 'About', href: '/about', desc: 'Operator profile and background' },
+  { label: 'AI Systems', href: '/ai-systems', desc: 'Agents, workflows, and automation' },
+  { label: 'Insights', href: '/insights', desc: 'Writing on GTM, AI, and product' },
+  { label: 'Contact', href: '/contact', desc: 'Book a call or send a message' },
+];
+
+const writing = [
+  { label: 'Claude Code vs Clay', href: '/insights/claude-code-vs-clay', desc: 'AI-native GTM tooling compared' },
+  { label: 'Migrating to Cloudflare', href: '/insights/cloudflare-migration', desc: 'Moving a production site to edge' },
+  { label: 'Niche booking engine', href: '/insights/kamperownia-booking-engine', desc: 'Product decisions in an underserved market' },
+  { label: 'All writing →', href: '/insights', desc: '' },
+];
+
+const connect = [
+  { label: 'LinkedIn', href: SITE.linkedin, desc: 'Wojciech Łuszczyński on LinkedIn' },
+  { label: 'GitHub', href: SITE.github, desc: 'Open-source work and repositories' },
+  { label: 'X / Twitter', href: SITE.twitter, desc: 'Short-form notes and links' },
+  { label: 'Substack', href: SITE.substack, desc: 'Newsletter archive' },
+  { label: 'Subscribe', href: '/subscribe', desc: 'Operator notes from live builds' },
 ];
 ---
 
 <footer class="mt-auto w-full border-t border-[var(--color-border)] bg-[var(--color-bg)]">
-  <div class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2.5 px-6 py-[18px]">
-    <p class="flex-[1_1_320px] text-[11px] font-medium leading-none text-[var(--color-text-dim)]">
-      © {year} <span class="font-bold text-[var(--color-text)]">wojciech</span><span class="ml-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--color-accent-text)]">.io</span>
-    </p>
+  <div class="mx-auto w-full max-w-6xl px-6">
 
-    <nav aria-label="Social links" class="max-[720px]:w-full">
-      <ul class="m-0 ml-auto flex list-none flex-wrap items-center justify-end gap-1.5 p-0 max-[720px]:ml-0 max-[720px]:w-full max-[720px]:justify-between">
-        {social.map(({ label, href, pathD, fill }) => (
-          <li>
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={label}
-              title={label}
-              class="grid h-7 w-7 place-items-center rounded-[7px] border border-[var(--color-border)] bg-[rgb(var(--color-surface-rgb)/0.55)] text-[var(--color-text-dim)] no-underline transition-colors hover:border-[var(--color-accent)]/35 hover:bg-[var(--color-accent)]/10 hover:text-[var(--color-text)]"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                class="h-[13px] w-[13px]"
-                fill={fill}
-                stroke={fill === 'none' ? 'currentColor' : undefined}
-                stroke-width={fill === 'none' ? '2' : undefined}
-                stroke-linecap={fill === 'none' ? 'round' : undefined}
-                stroke-linejoin={fill === 'none' ? 'round' : undefined}
-                aria-hidden="true"
+    <!-- Main columns -->
+    <div class="grid grid-cols-2 gap-x-8 gap-y-10 py-12 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
+
+      <!-- Brand column -->
+      <div class="col-span-2 md:col-span-1">
+        <a href="/" class="mb-4 inline-flex items-center gap-0 no-underline">
+          <span class="text-base font-bold text-[var(--color-text)]">wojciech</span>
+          <span class="ml-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-1.5 py-0.5 text-[10px] font-bold leading-none text-[var(--color-accent-text)]">.io</span>
+        </a>
+        <p class="mb-5 max-w-[260px] text-[13px] leading-relaxed text-[var(--color-text-muted)]">
+          Wojciech Łuszczyński — GTM architect and AI-native builder. I design and ship revenue systems for B2B SaaS and technology companies.
+        </p>
+        <p class="text-[11px] text-[var(--color-text-dim)]">
+          Based in Berlin · <a href="/contact" class="underline underline-offset-2 hover:text-[var(--color-text)] transition-colors">Available for projects</a>
+        </p>
+      </div>
+
+      <!-- Pages -->
+      <div>
+        <p class="mb-4 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Pages</p>
+        <ul class="m-0 list-none space-y-2.5 p-0">
+          {nav.map(({ label, href, desc }) => (
+            <li>
+              <a
+                href={href}
+                title={desc}
+                class="text-[13px] text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]"
               >
-                <path d={pathD} />
-              </svg>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Writing -->
+      <div>
+        <p class="mb-4 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Writing</p>
+        <ul class="m-0 list-none space-y-2.5 p-0">
+          {writing.map(({ label, href, desc }) => (
+            <li>
+              <a
+                href={href}
+                title={desc || undefined}
+                class="text-[13px] text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]"
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Connect -->
+      <div>
+        <p class="mb-4 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Connect</p>
+        <ul class="m-0 list-none space-y-2.5 p-0">
+          {connect.map(({ label, href, desc }) => (
+            <li>
+              <a
+                href={href}
+                title={desc}
+                target={href.startsWith('http') ? '_blank' : undefined}
+                rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                class="text-[13px] text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]"
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--color-border)] py-5 text-[11px] text-[var(--color-text-dim)]">
+      <p>© {year} Wojciech Łuszczyński · <a href="https://wojciech.io" class="hover:text-[var(--color-text)] transition-colors">wojciech.io</a></p>
+      <p class="text-right">
+        GTM architect · AI-native builder · Berlin
+      </p>
+    </div>
   </div>
 </footer>
