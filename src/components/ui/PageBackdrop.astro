@@ -1,0 +1,29 @@
+---
+interface Props {
+  src: string;
+  position?: string;
+  opacity?: number;
+  eager?: boolean;
+}
+
+const {
+  src,
+  position = 'center',
+  opacity = 0.1,
+  eager = false,
+} = Astro.props;
+---
+
+<img
+  src={src}
+  alt=""
+  aria-hidden="true"
+  class="absolute inset-0 h-full w-full object-cover saturate-[0.82]"
+  style={`object-position: ${position}; opacity: ${opacity};`}
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+/>
+<div
+  class="absolute inset-0 bg-gradient-to-b from-[var(--color-bg)]/62 via-[var(--color-bg)]/84 to-[var(--color-bg)]"
+  aria-hidden="true"
+/>
