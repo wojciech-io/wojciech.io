@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ArticleCover from '../../components/ui/ArticleCover.astro';
+import { SITE } from '../../data/site';
 
 export async function getStaticPaths() {
   const posts = await getCollection('insights', ({ data }) => !data.draft);
@@ -17,6 +18,33 @@ const canonicalPath = `/insights/${post.id.replace(/\.mdx?$/, '')}/`;
 const canonicalURL = new URL(canonicalPath, Astro.site).href;
 const publishedAt = post.data.publishedAt.toISOString();
 const updatedAt = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
+const authorSchema = {
+  '@type': 'Person',
+  name: 'Wojciech Łuszczyński',
+  alternateName: 'Wojtek Luszczynski',
+  url: SITE.url + '/',
+  image: SITE.url + '/images/wojciech-avatar-384.webp',
+  jobTitle: 'GTM Architect & Growth Operator',
+  description: 'Growth, GTM and AI-native marketing operator building revenue systems for B2B SaaS and technology companies.',
+  sameAs: [
+    SITE.linkedin,
+    SITE.github,
+    SITE.twitter.replace('twitter.com', 'x.com'),
+    SITE.substack,
+    SITE.medium,
+    SITE.subscribeUrl,
+  ],
+  knowsAbout: [
+    'GTM architecture',
+    'Growth marketing',
+    'AI-native revenue systems',
+    'Performance marketing',
+    'Marketing automation',
+    'CRM and RevOps',
+    'SEO and content systems',
+    'B2B SaaS growth',
+  ],
+};
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -26,8 +54,14 @@ const articleSchema = {
   dateModified: updatedAt,
   mainEntityOfPage: canonicalURL,
   url: canonicalURL,
-  author: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: 'https://wojciech.io/' },
-  publisher: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: 'https://wojciech.io/' },
+  author: authorSchema,
+  publisher: authorSchema,
+  about: [
+    'AI-native GTM systems',
+    'growth operating models',
+    'marketing automation',
+    'revenue architecture',
+  ],
 };
 
 ---
@@ -81,19 +115,23 @@ const articleSchema = {
         {post.data.description}
       </p>
       <div class="flex items-center gap-3 pb-8 border-b border-[var(--color-border)]">
-        <img
-          src="/images/wojciech-avatar-384.webp"
-          alt="Wojciech Łuszczyński"
-          width="36"
-          height="36"
-          loading="eager"
-          decoding="async"
-          class="w-9 h-9 rounded-full object-cover object-top border-2 border-[var(--color-accent)]/40"
-        />
-        <div>
-          <p class="text-sm font-medium text-[var(--color-text)]">Wojciech Łuszczyński</p>
+        <a href="/about/" aria-label="Wojciech Łuszczyński profile">
+          <img
+            src="/images/wojciech-avatar-384.webp"
+            alt="Wojciech Łuszczyński"
+            width="36"
+            height="36"
+            loading="eager"
+            decoding="async"
+            class="w-9 h-9 rounded-full object-cover object-top border-2 border-[var(--color-accent)]/40"
+          />
+        </a>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-[var(--color-text)]">
+            <a href="/about/" class="hover:text-[var(--color-accent)] transition-colors">Wojciech Łuszczyński</a>
+          </p>
           <p class="text-xs text-[var(--color-text-dim)]">
-            {post.data.publishedAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+            GTM Architect & Growth Operator · <a href="/now/" class="hover:text-[var(--color-accent)] transition-colors">Now</a> · {post.data.publishedAt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
         </div>
       </div>
@@ -120,6 +158,35 @@ const articleSchema = {
     </div>
 
   </article>
+
+  <section class="mx-auto max-w-3xl px-6 pb-16">
+    <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] p-6">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">About the author</p>
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+        <img
+          src="/images/wojciech-avatar-384.webp"
+          alt="Wojciech Łuszczyński"
+          width="48"
+          height="48"
+          loading="lazy"
+          decoding="async"
+          class="w-12 h-12 rounded-full object-cover object-top border border-[var(--color-border)]"
+        />
+        <div>
+          <h2 class="text-lg font-semibold text-[var(--color-text)] mb-2">Wojciech Łuszczyński</h2>
+          <p class="text-sm leading-relaxed text-[var(--color-text-muted)] mb-4">
+            GTM Architect and Growth Operator building AI-native revenue systems for B2B SaaS and technology companies. I connect positioning, SEO, content, paid acquisition, CRM, automation, analytics and AI workflows into practical growth infrastructure.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <a href="/now/" class="text-xs px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface)] hover:text-[var(--color-accent)] transition-colors">Now</a>
+            <a href="/about/" class="text-xs px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface)] hover:text-[var(--color-accent)] transition-colors">Profile</a>
+            <a href="/work/" class="text-xs px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface)] hover:text-[var(--color-accent)] transition-colors">Work</a>
+            <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer" class="text-xs px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface)] hover:text-[var(--color-accent)] transition-colors">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Newsletter / Subscribe -->
   <section class="border-t border-[var(--color-border)] py-16">
