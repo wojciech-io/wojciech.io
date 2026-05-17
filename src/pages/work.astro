@@ -98,6 +98,15 @@ const clusters = [
   <!-- Clusters -->
   {clusters.map(({ id, label, eyebrow, n, description, icon }) => {
     const items = allWork.filter((w) => w.data.cluster === id);
+    const cardGridClass = [
+      'grid gap-6',
+      items.length === 1
+        ? 'max-w-xl'
+        : items.length === 2
+          ? 'md:grid-cols-2'
+          : 'md:grid-cols-2 lg:grid-cols-3',
+    ];
+
     return (
       <section id={id} class="scroll-mt-20 py-[var(--space-section)] border-b border-[var(--color-border)]">
         <div class="mx-auto max-w-6xl px-6">
@@ -118,7 +127,7 @@ const clusters = [
             <p class="text-[var(--color-text-muted)] max-w-md text-sm leading-relaxed relative">{description}</p>
           </div>
           <!-- Cards -->
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class:list={cardGridClass}>
             {items.map((item) => (
               <ProjectCard
                 title={item.data.title}
