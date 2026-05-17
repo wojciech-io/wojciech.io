@@ -77,6 +77,42 @@ const {
       document.querySelectorAll('.reveal-up').forEach((el) => observer.observe(el));
     </script>
 
+    <!-- Language toggle logic -->
+    <script is:inline>
+      window.setLang = function(l) {
+        var lang = (l || 'en').toLowerCase();
+        localStorage.setItem('wio_lang', lang);
+        // Update active button state
+        document.querySelectorAll('.lang-btn').forEach(function(btn) {
+          var active = btn.getAttribute('data-lang') === lang;
+          if (active) {
+            btn.style.background = '#ebff00';
+            btn.style.color = '#080808';
+          } else {
+            btn.style.background = '';
+            btn.style.color = '';
+          }
+        });
+        // Update all translatable elements
+        document.querySelectorAll('[data-pl],[data-en],[data-it]').forEach(function(el) {
+          var v = el.getAttribute('data-' + lang);
+          if (v === null) v = el.getAttribute('data-en');
+          if (v !== null) el.textContent = v;
+        });
+        // Update html lang attribute
+        document.documentElement.lang = lang === 'pl' ? 'pl' : lang === 'it' ? 'it' : 'en';
+      };
+      // Auto-init on DOMContentLoaded
+      (function() {
+        var saved = localStorage.getItem('wio_lang');
+        var nav = (navigator.language || '').toLowerCase();
+        var detected = saved || (nav.startsWith('pl') ? 'pl' : nav.startsWith('it') ? 'it' : 'en');
+        document.addEventListener('DOMContentLoaded', function() {
+          window.setLang(detected);
+        });
+      })();
+    </script>
+
     <!-- CF_BEACON_TOKEN: set PUBLIC_CF_BEACON_TOKEN in Cloudflare Pages env vars
          Get the token from CF dashboard → Analytics → Web Analytics → Add site
          (account ID: 39783e1749680bed4039662ab696c3b1) -->

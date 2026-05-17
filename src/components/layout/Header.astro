@@ -19,8 +19,17 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
     <div class="hidden md:flex items-center gap-8">
       <Nav />
       <ThemeToggle />
+      <!-- Language toggle -->
+      <div id="lang-toggle-desktop" class="flex items-center gap-0.5 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5">
+        <button onclick="setLang('en')" data-lang="en" class="lang-btn px-2.5 py-1 text-xs font-semibold rounded-[calc(var(--radius-btn)-2px)] text-[var(--color-text-muted)] transition-colors duration-150 hover:text-[var(--color-text)]">EN</button>
+        <button onclick="setLang('pl')" data-lang="pl" class="lang-btn px-2.5 py-1 text-xs font-semibold rounded-[calc(var(--radius-btn)-2px)] text-[var(--color-text-muted)] transition-colors duration-150 hover:text-[var(--color-text)]">PL</button>
+        <button onclick="setLang('it')" data-lang="it" class="lang-btn px-2.5 py-1 text-xs font-semibold rounded-[calc(var(--radius-btn)-2px)] text-[var(--color-text-muted)] transition-colors duration-150 hover:text-[var(--color-text)]">IT</button>
+      </div>
       <a
         href="/contact#book-call"
+        data-en="Book a call"
+        data-pl="Umow rozmowe"
+        data-it="Prenota una call"
         class="btn-press shrink-0 text-sm font-semibold px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:opacity-90 transition-colors"
       >
         Book a call
@@ -71,10 +80,13 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
   <!-- Nav links — large, full-height -->
   <nav class="flex-1 flex flex-col justify-center px-8" aria-label="Mobile navigation">
     <ul class="list-none m-0 p-0 space-y-1">
-      {links.map(({ label, href, external }) => (
+      {links.map(({ label, href, external, pl, it }) => (
         <li>
           <a
             href={href}
+            data-en={label}
+            data-pl={pl}
+            data-it={it}
             class="mobile-nav-link group flex items-center justify-between py-4 border-b border-[var(--color-border)] text-2xl font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-hi)] transition-colors"
             {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
           >
@@ -91,8 +103,17 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
   <!-- Bottom bar -->
   <div class="px-8 pb-10 pt-6 border-t border-[var(--color-border)] shrink-0 space-y-4">
     <ThemeToggle class="w-full" />
+    <!-- Mobile language toggle -->
+    <div class="flex items-center justify-center gap-1 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] p-1">
+      <button onclick="setLang('en')" data-lang="en" class="lang-btn flex-1 py-2 text-xs font-semibold rounded-[calc(var(--radius-btn)-3px)] text-[var(--color-text-muted)] transition-colors duration-150">EN</button>
+      <button onclick="setLang('pl')" data-lang="pl" class="lang-btn flex-1 py-2 text-xs font-semibold rounded-[calc(var(--radius-btn)-3px)] text-[var(--color-text-muted)] transition-colors duration-150">PL</button>
+      <button onclick="setLang('it')" data-lang="it" class="lang-btn flex-1 py-2 text-xs font-semibold rounded-[calc(var(--radius-btn)-3px)] text-[var(--color-text-muted)] transition-colors duration-150">IT</button>
+    </div>
     <a
       href="/contact#book-call"
+      data-en="Book a call"
+      data-pl="Umow rozmowe"
+      data-it="Prenota una call"
       class="mobile-nav-link btn-press flex items-center justify-center gap-2 w-full bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold py-3.5 rounded-[var(--radius-btn)] hover:opacity-90 transition-opacity text-sm"
     >
       Book a call
