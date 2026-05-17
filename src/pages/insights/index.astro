@@ -11,11 +11,8 @@ const restPosts = allPosts.filter(p => p !== featuredPost);
 
 const categories = ['All', 'AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products'];
 
-const allTags = [...new Set(allPosts.flatMap(p => p.data.tags))].sort();
-
 const author = {
   name: 'Wojciech Łuszczyński',
-  role: 'GTM operator · AI-native builder',
   avatar: '/images/wojciech-avatar-384.webp',
 };
 
@@ -23,20 +20,24 @@ const formatDate = (date: Date) =>
   date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
 const readTime = (body = '') =>
-  `${Math.max(4, Math.ceil(body.split(/\s+/).filter(Boolean).length / 220))} min`;
+  `${Math.max(4, Math.ceil(body.split(/\s+/).filter(Boolean).length / 220))} min read`;
 
-const tagColor = (tag: string): string => {
-  if (['AI', 'Claude Code', 'Codex', 'MCP', 'AI-built', 'AI adoption'].some(t => tag.includes(t) || t === tag)) return 'bg-lime-500/12 text-lime-700 border-lime-500/20 dark:text-lime-400';
-  if (['GTM', 'Ads', 'Outbound', 'CRO'].some(t => tag === t || tag.includes(t))) return 'bg-amber-500/12 text-amber-700 border-amber-500/20 dark:text-amber-400';
-  if (['Product', 'Booking', 'B2C', 'macOS', 'Swift'].some(t => tag === t || tag.includes(t))) return 'bg-sky-500/12 text-sky-700 border-sky-500/20 dark:text-sky-400';
-  if (['CRM', 'Ops', 'Operator tooling'].some(t => tag === t)) return 'bg-teal-500/12 text-teal-700 border-teal-500/20 dark:text-teal-400';
-  return 'bg-[var(--color-surface-2)] text-[var(--color-text-muted)] border-[var(--color-border)]';
+const coverCfg: Record<string, { from: string; to: string; icon: string }> = {
+  'AI Systems':         { from: '#1e1b4b', to: '#4c1d95', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
+  'GTM Architecture':   { from: '#78350f', to: '#b45309', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+  'Operator Playbooks': { from: '#134e4a', to: '#0f766e', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z' },
+  'Products':           { from: '#1e3a5f', to: '#1d4ed8', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4' },
+  'default':            { from: '#1c1917', to: '#44403c', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
 };
 
-const coverVisual = (post: typeof allPosts[0]) => {
-  const ct = post.data.coverType ?? 'default';
-  const slug = post.id.replace(/\.mdx?$/, '');
-  return ct;
+const getCover = (cat?: string) => coverCfg[cat ?? ''] ?? coverCfg['default'];
+
+const tagColor = (tag: string): string => {
+  if (['AI', 'Claude Code', 'Codex', 'MCP', 'AI-built', 'AI adoption', 'AI workflow'].some(t => tag === t || tag.includes(t))) return 'bg-violet-500/10 text-violet-700 border-violet-400/25 dark:text-violet-300';
+  if (['GTM', 'Ads', 'Outbound', 'CRO', 'Growth'].some(t => tag === t)) return 'bg-amber-500/10 text-amber-700 border-amber-400/25 dark:text-amber-300';
+  if (['Product', 'Booking', 'B2C', 'macOS', 'Swift', 'Products'].some(t => tag === t || tag.includes(t))) return 'bg-blue-500/10 text-blue-700 border-blue-400/25 dark:text-blue-300';
+  if (['CRM', 'Ops', 'Operator tooling'].some(t => tag === t)) return 'bg-teal-500/10 text-teal-700 border-teal-400/25 dark:text-teal-300';
+  return 'bg-[var(--color-surface-2)] text-[var(--color-text-muted)] border-[var(--color-border)]';
 };
 ---
 
@@ -47,101 +48,81 @@ const coverVisual = (post: typeof allPosts[0]) => {
   <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
 
     <!-- Header -->
-    <div class="mb-12">
+    <div class="mb-10 max-w-3xl">
       <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Insights</p>
-      <div class="grid md:grid-cols-[1fr_auto] md:items-end gap-6">
-        <div>
-          <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
-            Field notes on AI systems,<br class="hidden md:block" /> GTM, and revenue architecture.
-          </h1>
-          <p class="text-lg text-[var(--color-text-muted)] max-w-2xl">
-            Practical breakdowns from systems I build and run. Not theory — architecture, stack choices, and operator lessons from live deployments.
-          </p>
-        </div>
-        <div class="flex items-center gap-3 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shrink-0">
-          <img src={author.avatar} alt="" width="40" height="40" loading="eager" decoding="async"
-            class="h-10 w-10 rounded-full border border-[var(--color-border)] object-cover" />
-          <div>
-            <p class="text-sm font-semibold text-[var(--color-text)]">{author.name}</p>
-            <p class="text-xs text-[var(--color-text-muted)]">{allPosts.length} articles published</p>
-          </div>
-        </div>
-      </div>
+      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
+        Field notes on AI systems,<br class="hidden md:block" /> GTM, and revenue architecture.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)]">
+        Practical breakdowns from systems I build and run. Not theory — architecture, stack choices, and operator lessons from live deployments.
+      </p>
     </div>
 
     <!-- Featured hero -->
     {featuredPost && (() => {
       const slug = featuredPost.id.replace(/\.mdx?$/, '');
+      const cover = getCover(featuredPost.data.category);
       return (
         <a
           href={`/insights/${slug}/`}
-          class="group mb-12 grid overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-lift hover:border-[var(--color-accent)]/30 lg:grid-cols-[1fr_0.85fr]"
+          class="group mb-10 grid overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-200 hover:shadow-[0_8px_40px_rgb(0_0_0/0.12)] hover:border-[var(--color-border-2)] lg:grid-cols-[0.9fr_1.1fr]"
           data-category={featuredPost.data.category ?? ''}
-          data-tags={JSON.stringify(featuredPost.data.tags)}
         >
           <!-- Cover -->
-          <div class="relative min-h-[280px] overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-surface-2)] lg:border-b-0 lg:border-r">
-            <div class="absolute inset-0 opacity-40" aria-hidden="true"
-              style="background-image: radial-gradient(circle, #EBFF0018 1px, transparent 1px); background-size: 22px 22px;" />
-            <div class="absolute inset-8 flex items-center justify-center">
-              <div class="w-full max-w-[480px] overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_20px_60px_rgb(30_26_18/0.12)]">
-                <div class="flex h-9 items-center gap-1.5 border-b border-[var(--color-border)] bg-[var(--color-surface-2)] px-3">
-                  <span class="h-2 w-2 rounded-full bg-red-400/70"></span>
-                  <span class="h-2 w-2 rounded-full bg-yellow-400/70"></span>
-                  <span class="h-2 w-2 rounded-full bg-green-400/70"></span>
-                  <span class="ml-3 font-mono text-[10px] text-[var(--color-text-dim)]">gtm-agent — claude code</span>
-                </div>
-                <div class="grid gap-2 p-5 font-mono text-[11px] leading-snug text-[var(--color-text-dim)]">
-                  <p class="text-[var(--color-text)]">$ claude run outbound --client acme</p>
-                  <p>▸ loading operator identity <span class="text-[var(--color-text-dim)]">CLAUDE.md</span></p>
-                  <p>▸ reading ICP definition</p>
-                  <p>▸ enriching 24 target accounts</p>
-                  <p class="text-green-500">✓ sequences staged for review</p>
-                  <p class="pt-2 text-[var(--color-text)]">
-                    cost: <span class="text-[var(--color-accent)]">$3.40</span>
-                    <span class="mx-2 text-[var(--color-text-dim)]">·</span>
-                    time: <span class="text-[var(--color-accent)]">4m 12s</span>
-                    <span class="mx-2 text-[var(--color-text-dim)]">·</span>
-                    leads: <span class="text-[var(--color-accent)]">24</span>
-                  </p>
-                </div>
+          <div
+            class="relative min-h-[300px] overflow-hidden"
+            style={`background: linear-gradient(135deg, ${cover.from} 0%, ${cover.to} 100%);`}
+          >
+            <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 32px 32px;" aria-hidden="true" />
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="rounded-2xl bg-white/8 p-6 ring-1 ring-white/12">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.82)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d={cover.icon} />
+                </svg>
               </div>
             </div>
             <div class="absolute top-4 left-4">
-              <span class="rounded-full bg-[var(--color-accent)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[var(--color-accent-text)]">Featured</span>
+              <span class="rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white/90 ring-1 ring-white/20">Featured</span>
+            </div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <p class="text-xs font-medium text-white/45">{featuredPost.data.category ?? 'Article'}</p>
             </div>
           </div>
 
           <!-- Content -->
-          <div class="p-8 md:p-10 flex flex-col justify-center">
-            <div class="mb-5 flex flex-wrap gap-2">
+          <div class="flex flex-col justify-center p-8 md:p-10">
+            <div class="mb-4 flex flex-wrap gap-1.5">
               {featuredPost.data.tags.slice(0, 4).map(tag => (
-                <span class={`rounded-[var(--radius-badge)] border px-2.5 py-1 text-xs font-medium ${tagColor(tag)}`}>{tag}</span>
+                <span class={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${tagColor(tag)}`}>{tag}</span>
               ))}
             </div>
-            <h2 class="mb-4 text-2xl md:text-3xl font-semibold leading-tight text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors">
+            <h2 class="mb-3 text-2xl md:text-[1.75rem] font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors duration-150">
               {featuredPost.data.title}
             </h2>
             <p class="mb-6 text-[var(--color-text-muted)] leading-relaxed">
               {featuredPost.data.description}
             </p>
             {featuredPost.data.tldr && (
-              <ul class="mb-6 grid gap-1.5">
+              <ul class="mb-6 grid gap-2">
                 {featuredPost.data.tldr.slice(0, 3).map(item => (
-                  <li class="flex gap-2 text-sm text-[var(--color-text-muted)]">
-                    <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent)]"></span>
-                    {item}
+                  <li class="flex gap-2.5 text-sm text-[var(--color-text-muted)]">
+                    <span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent)]"></span>
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
             )}
             <div class="mt-auto flex items-center justify-between border-t border-[var(--color-border)] pt-5">
-              <div class="flex items-center gap-2 text-xs text-[var(--color-text-dim)]">
-                <time datetime={featuredPost.data.publishedAt.toISOString()}>{formatDate(featuredPost.data.publishedAt)}</time>
-                <span>·</span>
-                <span>{readTime(featuredPost.body)}</span> read
+              <div class="flex items-center gap-2.5">
+                <img src={author.avatar} alt="" width="28" height="28" loading="lazy" decoding="async"
+                  class="h-7 w-7 rounded-full border border-[var(--color-border)] object-cover" />
+                <div class="text-xs text-[var(--color-text-dim)]">
+                  <time datetime={featuredPost.data.publishedAt.toISOString()}>{formatDate(featuredPost.data.publishedAt)}</time>
+                  <span class="mx-1.5">·</span>
+                  <span>{readTime(featuredPost.body)}</span>
+                </div>
               </div>
-              <span class="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-text)]">
+              <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-text)]">
                 Read article
                 <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                   <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -153,156 +134,74 @@ const coverVisual = (post: typeof allPosts[0]) => {
       );
     })()}
 
-    <!-- Category nav + tag filters -->
-    <div class="mb-8 flex flex-col gap-4">
-      <!-- Category tabs -->
-      <div class="flex flex-wrap gap-2" id="cat-nav">
-        {categories.map((cat, i) => (
-          <button
-            data-cat={cat}
-            class:list={[
-              'cat-btn rounded-full border px-4 py-1.5 text-sm font-medium transition-colors',
-              i === 0
-                ? 'border-[var(--color-text)] bg-[var(--color-text)] text-[var(--color-bg)]'
-                : 'border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-text-muted)]',
-            ]}
-          >{cat}</button>
-        ))}
-      </div>
-
-      <!-- Tag pills -->
-      <div class="flex flex-wrap gap-2" id="tag-filter">
-        <button data-tag="__all__" class="tag-btn active rounded-full border border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-1 text-xs text-[var(--color-text-muted)] hover:border-[var(--color-text-muted)] transition-colors">
-          All tags
-        </button>
-        {allTags.map(tag => (
-          <button
-            data-tag={tag}
-            class={`tag-btn rounded-full border px-3 py-1 text-xs font-medium transition-colors ${tagColor(tag)} hover:opacity-80`}
-          >{tag}</button>
-        ))}
-      </div>
+    <!-- Category filter — single clean row -->
+    <div class="mb-2 flex flex-wrap gap-2" id="cat-nav" role="tablist" aria-label="Filter by category">
+      {categories.map((cat, i) => (
+        <button
+          role="tab"
+          data-cat={cat}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          class:list={[
+            'cat-btn rounded-full px-4 py-2 text-sm font-medium transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]',
+            i === 0
+              ? 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm'
+              : 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]',
+          ]}
+        >{cat}</button>
+      ))}
     </div>
+
+    <p class="mb-6 mt-3 text-sm text-[var(--color-text-dim)]" id="article-count">{restPosts.length} articles</p>
 
     <!-- Article grid -->
     <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 mb-16" id="article-grid">
       {restPosts.map(post => {
         const slug = post.id.replace(/\.mdx?$/, '');
-        const ct = post.data.coverType ?? 'default';
+        const cover = getCover(post.data.category);
         return (
           <a
             href={`/insights/${slug}/`}
-            class="article-card group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-lift hover:border-[var(--color-accent)]/30"
+            class="article-card group flex flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-200 hover:shadow-[0_6px_28px_rgb(0_0_0/0.10)] hover:border-[var(--color-border-2)] hover:-translate-y-px"
             data-category={post.data.category ?? ''}
-            data-tags={JSON.stringify(post.data.tags)}
           >
-            <!-- Card cover -->
-            <div class="relative h-44 overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-surface-2)] shrink-0">
-              <div class="absolute inset-0 opacity-35" aria-hidden="true"
-                style="background-image: radial-gradient(circle, #EBFF0015 1px, transparent 1px); background-size: 20px 20px;" />
-
-              {ct === 'terminal' && (
-                <div class="absolute inset-4 flex items-center justify-center">
-                  <div class="w-full max-w-xs overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
-                    <div class="flex h-7 items-center gap-1 border-b border-[var(--color-border)] bg-[var(--color-surface-2)] px-2.5">
-                      <span class="h-1.5 w-1.5 rounded-full bg-red-400/60"></span>
-                      <span class="h-1.5 w-1.5 rounded-full bg-yellow-400/60"></span>
-                      <span class="h-1.5 w-1.5 rounded-full bg-green-400/60"></span>
-                    </div>
-                    <div class="p-3 font-mono text-[10px] leading-snug text-[var(--color-text-dim)]">
-                      <p class="text-[var(--color-text)] mb-1">$ claude run skill</p>
-                      <p class="text-green-500">✓ output ready</p>
-                      <p class="mt-1">cost: <span class="text-[var(--color-accent)]">$2.10</span></p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {ct === 'chart' && (
-                <div class="absolute inset-4 flex items-end justify-center gap-1.5 pb-2">
-                  {[40, 65, 45, 80, 55, 90, 70, 95].map((h, i) => (
-                    <div class="w-6 rounded-t-sm opacity-70" style={`height: ${h}%; background: ${i === 7 ? 'var(--color-accent)' : 'var(--color-border-2)'};`}></div>
-                  ))}
-                </div>
-              )}
-
-              {ct === 'product' && (
-                <div class="absolute inset-4 flex flex-col gap-2">
-                  <div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-sm">
-                    <div class="mb-2 h-2 w-20 rounded bg-[var(--color-border-2)]"></div>
-                    <div class="grid grid-cols-3 gap-1.5">
-                      {[1,2,3].map(() => <div class="h-8 rounded bg-[var(--color-surface-2)] border border-[var(--color-border)]"></div>)}
-                    </div>
-                  </div>
-                  <div class="flex gap-2">
-                    <div class="h-6 flex-1 rounded bg-[var(--color-surface)] border border-[var(--color-border)]"></div>
-                    <div class="h-6 w-12 rounded bg-[var(--color-accent)]/30 border border-[var(--color-accent)]/40"></div>
-                  </div>
-                </div>
-              )}
-
-              {ct === 'system' && (
-                <div class="absolute inset-4 flex items-center justify-center">
-                  <svg width="200" height="100" viewBox="0 0 200 100" class="opacity-60">
-                    <rect x="10" y="35" width="40" height="28" rx="4" fill="none" stroke="var(--color-border-2)" stroke-width="1.5"/>
-                    <rect x="80" y="15" width="40" height="28" rx="4" fill="none" stroke="var(--color-accent)" stroke-width="1.5" opacity="0.6"/>
-                    <rect x="80" y="57" width="40" height="28" rx="4" fill="none" stroke="var(--color-border-2)" stroke-width="1.5"/>
-                    <rect x="150" y="35" width="40" height="28" rx="4" fill="none" stroke="var(--color-border-2)" stroke-width="1.5"/>
-                    <path d="M50 49 H80" stroke="var(--color-border-2)" stroke-width="1" stroke-dasharray="3 2"/>
-                    <path d="M50 49 H80" stroke="var(--color-border-2)" stroke-width="1" stroke-dasharray="3 2" transform="translate(0 22)"/>
-                    <path d="M120 29 H150" stroke="var(--color-border-2)" stroke-width="1" stroke-dasharray="3 2"/>
-                    <path d="M120 71 H150" stroke="var(--color-border-2)" stroke-width="1" stroke-dasharray="3 2"/>
-                    <text x="30" y="52" text-anchor="middle" font-size="7" fill="var(--color-text-dim)" font-family="monospace">IN</text>
-                    <text x="100" y="32" text-anchor="middle" font-size="7" fill="var(--color-accent)" font-family="monospace" opacity="0.8">CORE</text>
-                    <text x="170" y="52" text-anchor="middle" font-size="7" fill="var(--color-text-dim)" font-family="monospace">OUT</text>
+            <!-- Cover -->
+            <div
+              class="relative h-44 shrink-0 overflow-hidden"
+              style={`background: linear-gradient(135deg, ${cover.from} 0%, ${cover.to} 100%);`}
+            >
+              <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 28px 28px;" aria-hidden="true" />
+              <div class="absolute top-3.5 left-3.5">
+                <span class="rounded-full bg-white/12 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/65 ring-1 ring-white/15">
+                  {post.data.category ?? 'Article'}
+                </span>
+              </div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="rounded-xl bg-white/8 p-4 ring-1 ring-white/10 transition-colors duration-200 group-hover:bg-white/12">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.78)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d={cover.icon} />
                   </svg>
                 </div>
-              )}
-
-              {ct === 'builder' && (
-                <div class="absolute inset-4 grid gap-2">
-                  <div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-sm">
-                    <div class="grid grid-cols-3 gap-1.5">
-                      {['Framer', 'Astro', 'CF'].map(item => (
-                        <div class="rounded border border-[var(--color-border)] bg-[var(--color-surface-2)] px-1.5 py-2 text-center text-[9px] font-semibold text-[var(--color-text-muted)]">{item}</div>
-                      ))}
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2 text-[10px] font-mono text-[var(--color-text-dim)]">
-                    <div class="h-6 flex-1 rounded border border-[var(--color-border)] bg-[var(--color-surface)] px-2 flex items-center">wojciech.io</div>
-                    <span>→</span>
-                    <div class="h-6 flex-1 rounded border border-[var(--color-border)] bg-[var(--color-surface)] px-2 flex items-center">app.wojciech.io</div>
-                  </div>
-                </div>
-              )}
-
-              {ct === 'default' && (
-                <div class="absolute inset-4 flex items-center justify-center">
-                  <div class="grid gap-2 w-full max-w-xs">
-                    {[90, 75, 60].map(w => <div class="h-2 rounded-full bg-[var(--color-border-2)]" style={`width: ${w}%`}></div>)}
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
 
-            <!-- Card body -->
+            <!-- Body -->
             <div class="flex flex-1 flex-col p-5">
               <div class="mb-3 flex flex-wrap gap-1.5">
                 {post.data.tags.slice(0, 3).map(tag => (
-                  <span class={`rounded-[var(--radius-badge)] border px-2 py-0.5 text-[11px] font-medium ${tagColor(tag)}`}>{tag}</span>
+                  <span class={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${tagColor(tag)}`}>{tag}</span>
                 ))}
               </div>
-              <h2 class="mb-2 text-base font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors line-clamp-3">
+              <h2 class="mb-2 text-[0.95rem] font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors duration-150 line-clamp-3">
                 {post.data.title}
               </h2>
-              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed line-clamp-2 mb-4">
+              <p class="mb-4 text-sm text-[var(--color-text-muted)] leading-relaxed line-clamp-2">
                 {post.data.description}
               </p>
               <div class="mt-auto flex items-center justify-between border-t border-[var(--color-border)] pt-3">
-                <time class="text-xs text-[var(--color-text-dim)]" datetime={post.data.publishedAt.toISOString()}>
+                <time class="text-[11px] text-[var(--color-text-dim)]" datetime={post.data.publishedAt.toISOString()}>
                   {formatDate(post.data.publishedAt)}
                 </time>
-                <span class="text-xs text-[var(--color-text-dim)]">{readTime(post.body)} read</span>
+                <span class="text-[11px] text-[var(--color-text-dim)]">{readTime(post.body)}</span>
               </div>
             </div>
           </a>
@@ -311,13 +210,13 @@ const coverVisual = (post: typeof allPosts[0]) => {
     </div>
 
     <!-- Empty state -->
-    <div id="no-results" class="hidden mb-16 text-center py-16 text-[var(--color-text-muted)]">
-      <p class="text-lg font-semibold mb-2">No articles match this filter.</p>
-      <p class="text-sm">Try a different category or tag.</p>
+    <div id="no-results" class="hidden mb-16 py-20 text-center">
+      <p class="text-lg font-semibold text-[var(--color-text)] mb-1">No articles in this category yet.</p>
+      <p class="text-sm text-[var(--color-text-muted)]">Try a different filter.</p>
     </div>
 
     <!-- Newsletter CTA -->
-    <div class="rounded-[var(--radius-card)] border border-[var(--color-accent)]/25 bg-[var(--color-accent)]/5 px-8 py-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+    <div class="rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 px-8 py-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
       <div class="flex-1">
         <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Newsletter</p>
         <h2 class="text-2xl font-semibold text-[var(--color-text)] mb-2">Want to know more first?</h2>
@@ -330,7 +229,7 @@ const coverVisual = (post: typeof allPosts[0]) => {
           href="https://subscribe.wojciech.io"
           target="_blank"
           rel="noopener noreferrer"
-          class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-7 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
+          class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-7 py-3.5 rounded-full hover:bg-[var(--color-accent-hi)] transition-colors"
         >
           Subscribe
           <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -345,54 +244,33 @@ const coverVisual = (post: typeof allPosts[0]) => {
 
 <script>
   const catBtns = document.querySelectorAll<HTMLButtonElement>('.cat-btn');
-  const tagBtns = document.querySelectorAll<HTMLButtonElement>('.tag-btn');
   const cards = document.querySelectorAll<HTMLElement>('.article-card');
   const noResults = document.getElementById('no-results')!;
+  const countEl = document.getElementById('article-count')!;
 
-  let activeCategory = 'All';
-  let activeTag = '__all__';
+  const ACTIVE = 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm';
+  const INACTIVE = 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]';
 
-  function applyFilters() {
+  function applyFilter(cat: string) {
     let visible = 0;
     cards.forEach(card => {
-      const cat = card.dataset.category ?? '';
-      const tags: string[] = JSON.parse(card.dataset.tags ?? '[]');
-
-      const catMatch = activeCategory === 'All' || cat === activeCategory;
-      const tagMatch = activeTag === '__all__' || tags.includes(activeTag);
-
-      if (catMatch && tagMatch) {
-        card.style.display = '';
-        visible++;
-      } else {
-        card.style.display = 'none';
-      }
+      const match = cat === 'All' || (card.dataset.category ?? '') === cat;
+      (card as HTMLElement).style.display = match ? '' : 'none';
+      if (match) visible++;
     });
     noResults.classList.toggle('hidden', visible > 0);
+    countEl.textContent = `${visible} article${visible !== 1 ? 's' : ''}`;
   }
 
   catBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      activeCategory = btn.dataset.cat ?? 'All';
       catBtns.forEach(b => {
-        b.classList.toggle('border-[var(--color-text)]', false);
-        b.classList.toggle('bg-[var(--color-text)]', false);
-        b.classList.toggle('text-[var(--color-bg)]', false);
-        b.classList.remove('border-[var(--color-text)]', 'bg-[var(--color-text)]', 'text-[var(--color-bg)]');
-        b.classList.add('border-[var(--color-border)]', 'bg-[var(--color-surface)]', 'text-[var(--color-text-muted)]');
+        const active = b === btn;
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+        b.classList.remove(...ACTIVE.split(' '), ...INACTIVE.split(' '));
+        b.classList.add(...(active ? ACTIVE : INACTIVE).split(' '));
       });
-      btn.classList.remove('border-[var(--color-border)]', 'bg-[var(--color-surface)]', 'text-[var(--color-text-muted)]');
-      btn.classList.add('border-[var(--color-text)]', 'bg-[var(--color-text)]', 'text-[var(--color-bg)]');
-      applyFilters();
-    });
-  });
-
-  tagBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeTag = btn.dataset.tag ?? '__all__';
-      tagBtns.forEach(b => b.classList.remove('ring-2', 'ring-[var(--color-accent)]'));
-      btn.classList.add('ring-2', 'ring-[var(--color-accent)]');
-      applyFilters();
+      applyFilter(btn.dataset.cat ?? 'All');
     });
   });
 </script>
