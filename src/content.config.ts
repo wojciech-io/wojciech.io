@@ -13,7 +13,8 @@ const insights = defineCollection({
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
     ogImage: z.string().optional(),
-    coverType: z.enum(['terminal', 'builder', 'default']).default('default'),
+    coverType: z.enum(['terminal', 'builder', 'chart', 'product', 'system', 'default']).default('default'),
+    category: z.enum(['AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products']).optional(),
   }),
 });
 
