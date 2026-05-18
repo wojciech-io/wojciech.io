@@ -33,10 +33,14 @@ const coverCfg: Record<string, { from: string; to: string; icon: string }> = {
 const getCover = (cat?: string) => coverCfg[cat ?? ''] ?? coverCfg['default'];
 
 const tagColor = (tag: string): string => {
-  if (['AI', 'Claude Code', 'Codex', 'MCP', 'AI-built', 'AI adoption', 'AI workflow'].some(t => tag === t || tag.includes(t))) return 'bg-violet-500/10 text-violet-700 border-violet-400/25 dark:text-violet-300';
-  if (['GTM', 'Ads', 'Outbound', 'CRO', 'Growth'].some(t => tag === t)) return 'bg-amber-500/10 text-amber-700 border-amber-400/25 dark:text-amber-300';
-  if (['Product', 'Booking', 'B2C', 'macOS', 'Swift', 'Products'].some(t => tag === t || tag.includes(t))) return 'bg-blue-500/10 text-blue-700 border-blue-400/25 dark:text-blue-300';
-  if (['CRM', 'Ops', 'Operator tooling'].some(t => tag === t)) return 'bg-teal-500/10 text-teal-700 border-teal-400/25 dark:text-teal-300';
+  if (['AI', 'Claude Code', 'Codex', 'MCP', 'AI-built', 'AI adoption', 'AI workflow', 'Terraform', 'Astro', 'Cloudflare'].some(t => tag === t || tag.includes(t)))
+    return 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-400/30';
+  if (['GTM', 'Ads', 'Outbound', 'CRO', 'Growth'].some(t => tag === t))
+    return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-400/30';
+  if (['Product', 'Booking', 'B2C', 'macOS', 'Swift', 'Products', 'SaaS'].some(t => tag === t || tag.includes(t)))
+    return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-400/30';
+  if (['CRM', 'Ops', 'Operator tooling', 'Revenue'].some(t => tag === t))
+    return 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-400/30';
   return 'bg-[var(--color-surface-2)] text-[var(--color-text-muted)] border-[var(--color-border)]';
 };
 ---
