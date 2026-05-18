@@ -1,0 +1,112 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import PageBackdrop from '../../components/ui/PageBackdrop.astro';
+
+const resources = [
+  {
+    title: 'Claude Code GTM Agent Starter Pack',
+    description: 'CLAUDE.md template, Skills definitions, folder structure, and scoring MCP source for building an AI-powered outbound GTM agent. Built for operators who want the system, not the SaaS wrapper.',
+    tags: ['Claude Code', 'MCP', 'GTM', 'AI'],
+    href: 'https://github.com/wojciechluszczynski/gtm-agent-repo',
+    label: 'View on GitHub',
+    external: true,
+  },
+  {
+    title: 'GTM Agent: architecture breakdown',
+    description: 'The four-layer Claude Code stack explained: operator identity, MCP tools, client memory files, and reusable skills. Covers the full run from research to staged HubSpot sequences. Cost per run: $2–8.',
+    tags: ['Article', 'Architecture', 'Claude Code'],
+    href: '/insights/how-to-build-gtm-ai-agent-outbound-crm/',
+    label: 'Read the breakdown',
+    external: false,
+  },
+  {
+    title: 'Agentic portfolio build: case study',
+    description: 'How this site was rebuilt with Claude Code, Codex, Astro, and Cloudflare Pages. Stack decisions, sprint model, human review loop, and deployment verification documented in full.',
+    tags: ['Case study', 'Astro', 'Cloudflare', 'AI'],
+    href: '/insights/astro-cloudflare-pages-portfolio-ai-workflow/',
+    label: 'Read the case study',
+    external: false,
+  },
+  {
+    title: 'Shipped apps: live reference',
+    description: 'A portfolio of independently shipped apps: AdsAI, Relora, a camper rental booking engine, Notch macOS app, and mini-utilities. Practical proof of range across operator tooling, product, and native dev.',
+    tags: ['Apps', 'Portfolio', 'Reference'],
+    href: 'https://app.wojciech.io/apps',
+    label: 'Browse the apps',
+    external: true,
+  },
+  {
+    title: 'Operator notes: newsletter',
+    description: 'Dispatches on AI GTM systems, growth architecture, and shipped tools. When a new article or resource is ready, subscribers get it first. No cadence commitments. Only when there is something worth sending.',
+    tags: ['Newsletter', 'AI', 'GTM'],
+    href: '/subscribe',
+    label: 'Subscribe',
+    external: false,
+  },
+];
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'pl' } },
+    { params: { lang: 'it' } },
+  ];
+}
+
+const { lang } = Astro.params;
+---
+
+<Layout
+  initialLang={lang}
+  title="Resources"
+  description="Starter packs, repositories, and downloadable assets for growth operators and AI builders."
+>
+
+  <!-- Header -->
+  <section class="relative overflow-hidden pt-20 pb-16 border-b border-[var(--color-border)]">
+    <PageBackdrop src="/images/office-bg.jpg" position="center 52%" opacity={0.07} eager />
+    <div class="relative mx-auto max-w-6xl px-6">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Resources</p>
+      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5 max-w-2xl">
+        Tools and templates, not content.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+        Starter packs, MCP configs, and operator frameworks. Built for people who ship, not people who evaluate.
+      </p>
+    </div>
+  </section>
+
+  <!-- Resources grid -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {resources.map(({ title, description, tags, href, label, external }) => (
+          <a
+            href={href}
+            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col gap-4 hover:border-[var(--color-accent)]/40 hover:shadow-[var(--shadow-card-hover)] transition-all"
+          >
+            <div class="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span class="text-xs font-medium px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)]">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div class="flex-1">
+              <h2 class="text-base font-semibold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors">{title}</h2>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{description}</p>
+            </div>
+            <span class="text-xs font-medium text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
+              {label} →
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+
+</Layout>
