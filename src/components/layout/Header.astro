@@ -1,6 +1,10 @@
 ---
 import Nav, { links } from './Nav.astro';
 import ThemeToggle from '../ui/ThemeToggle.astro';
+
+interface Props { langPrefix?: string; }
+const { langPrefix = '' } = Astro.props;
+const home = langPrefix ? langPrefix + '/' : '/';
 ---
 
 <header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgb(var(--color-bg-rgb)/0.86)] backdrop-blur-md">
@@ -8,7 +12,7 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
 
     <!-- Wordmark -->
     <a
-      href="/"
+      href={home}
       class="inline-flex items-center gap-0 shrink-0 group"
       aria-label="wojciech.io, home"
     >
@@ -17,7 +21,7 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
 
     <!-- Desktop nav -->
     <div class="hidden md:flex items-center gap-8">
-      <Nav />
+      <Nav prefix={langPrefix} />
       <ThemeToggle />
       <!-- Language dropdown -->
       <div class="relative" id="lang-dd-desktop">
@@ -48,7 +52,7 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
         </div>
       </div>
       <a
-        href="/contact#book-call"
+        href={langPrefix + '/contact#book-call'}
         data-en="Book a call"
         data-pl="Umów rozmowę"
         data-it="Prenota una call"
@@ -85,7 +89,7 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
 >
   <!-- Top bar -->
   <div class="flex items-center justify-between px-6 h-16 border-b border-[var(--color-border)] shrink-0">
-    <a href="/" class="inline-flex items-center gap-0 group" onclick="closeMobileNav()">
+    <a href={home} class="inline-flex items-center gap-0 group" onclick="closeMobileNav()">
       <span class="text-sm font-bold tracking-tight text-[var(--color-text)]">wojciech</span><span class="ml-0.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-1.5 py-0.5 text-[11px] font-bold tracking-tight text-[var(--color-accent-text)]">.io</span>
     </a>
     <button
@@ -105,7 +109,7 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
       {links.map(({ label, href, external, pl, it }) => (
         <li>
           <a
-            href={href}
+            href={external ? href : langPrefix + href}
             data-en={label}
             data-pl={pl}
             data-it={it}
@@ -264,17 +268,17 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
   });
   document.addEventListener('click', closeAllDropdowns);
 
-  // Language URL navigation — switchLang navigates to lang-prefixed URL
+  // Language URL navigation — switchLang always navigates to lang-prefixed URL
   (window as any).switchLang = function(lang: string) {
     const supportedLangs = ['en', 'pl', 'it'];
     if (!supportedLangs.includes(lang)) return;
     closeAllDropdowns();
     const currentPath = window.location.pathname;
-    // Strip existing lang prefix
-    const basePath = currentPath.replace(/^\/(pl|it)(\/|$)/, '/') || '/';
-    const targetUrl = lang === 'en' ? basePath : `/${lang}${basePath === '/' ? '/' : basePath}`;
+    // Strip any existing lang prefix
+    const basePath = currentPath.replace(/^\/(en|pl|it)(\/|$)/, '/') || '/';
+    const targetUrl = `/${lang}${basePath === '/' ? '/' : basePath}`;
     localStorage.setItem('wio_lang', lang);
-    window.location.href = targetUrl || '/';
+    window.location.href = targetUrl;
   };
 
   // Hook into setLang to update display (for pages that still call setLang directly)

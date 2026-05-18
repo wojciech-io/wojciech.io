@@ -1,4 +1,7 @@
 ---
+interface Props { prefix?: string; }
+const { prefix = '' } = Astro.props;
+
 export const links = [
   { label: 'Work',     href: '/work',       pl: 'Projekty',  it: 'Progetti'  },
   { label: 'Apps',     href: '/apps',       pl: 'Aplikacje', it: 'App'       },
@@ -14,11 +17,12 @@ const current = Astro.url.pathname;
 <nav aria-label="Primary navigation">
   <ul class="flex items-center gap-6 list-none m-0 p-0">
     {links.map(({ label, href, external, pl, it }) => {
-      const isActive = !external && (href === '/' ? current === '/' : current.startsWith(href));
+      const dest = external ? href : prefix + href;
+      const isActive = !external && (href === '/' ? current === dest + '/' || current === dest : current.startsWith(dest));
       return (
         <li>
           <a
-            href={href}
+            href={dest}
             data-en={label}
             data-pl={pl}
             data-it={it}
