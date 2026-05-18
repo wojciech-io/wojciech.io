@@ -5,14 +5,18 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
 
-const sentryDsn = process.env.PUBLIC_SENTRY_DSN;
+const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 
 export default defineConfig({
   site: 'https://wojciech.io',
   integrations: [
     mdx(),
     sitemap(),
-    ...(sentryDsn ? [sentry({ sourceMapsUploadOptions: { enabled: false } })] : []),
+    sentry({
+      sourceMapsUploadOptions: sentryAuthToken
+        ? { org: 'wojciechio', project: 'javascript-astro', authToken: sentryAuthToken }
+        : { enabled: false },
+    }),
   ],
   vite: {
     plugins: [tailwindcss()],
