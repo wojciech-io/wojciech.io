@@ -8,21 +8,55 @@
 - Cloudflare Pages staging: `https://wojciech-io.pages.dev`
 - Production: `https://wojciech.io` (custom domain in CF Pages)
 
-## Branch strategy
+## Branch strategy and contributor workflow
 
-- `main` → production deploy (Cloudflare Pages auto-deploy)
-- `claude/*` → worktree branches created by Claude Code sessions. Remove after merge.
-- Feature branches: `feat/<name>` or `fix/<name>`. Open PR → merge → delete.
+### The rule: nothing goes directly to `main`
 
-Only one `claude/*` branch should exist at a time (the active session).
+`main` deploys to production automatically. Every change — whether from Wojciech, Claude Code, or Codex — must go through a branch and be merged via GitHub PR.
 
-### Cleanup worktrees after a Claude session
+### Branch naming by source
+
+| Who | Prefix | Example |
+|---|---|---|
+| Claude Code (hello@) | `claude/` | `claude/serene-joliot-904970` (auto-generated) |
+| Claude Code (w.luszczynski@) | `claude/` | same auto pattern |
+| Codex (either account) | `codex/` | `codex/fix-footer-links` |
+| Wojciech manually | `feat/` or `fix/` | `feat/work-page-redesign` |
+
+Claude Code creates branches automatically via worktrees — no manual naming needed.  
+Codex should be configured to use `codex/<short-description>` as the branch prefix.
+
+### Two-account model (hello@ and w.luszczynski@)
+
+Both accounts push to the same repo. To avoid conflicts:
+
+- Work on different branches at the same time — never on the same branch simultaneously.
+- If both sessions touch the same file, the second merge will need to resolve conflicts. This is expected — resolve in the PR, not locally.
+- After any session ends: merge or close the branch. Do not leave long-lived feature branches — they accumulate drift.
+- git author identity: make sure both accounts have correct `user.email` set in their git config. GitHub matches the email to the account for attribution.
+
+### Merge and cleanup
+
+After a branch is merged:
+1. Delete the branch on GitHub (GitHub shows a "Delete branch" button after merge).
+2. If it was a Claude Code worktree, also remove it locally:
 
 ```bash
-git worktree list                              # see all worktrees
+git worktree list
 git worktree remove --force .claude/worktrees/<name>
 git branch -D claude/<name>
 ```
+
+### Commit message convention
+
+```
+feat: add insights tag color system
+fix: correct Polish diacritics in footer
+ops: update CI workflow
+content: add new insight on GTM agent architecture
+```
+
+Prefix options: `feat`, `fix`, `ops`, `content`, `refactor`, `docs`.
 
 ## Deployment
 
