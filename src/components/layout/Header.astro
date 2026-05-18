@@ -19,11 +19,33 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
     <div class="hidden md:flex items-center gap-8">
       <Nav />
       <ThemeToggle />
-      <!-- Language toggle -->
-      <div id="lang-toggle-desktop" class="flex items-center gap-0.5 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5">
-        <button onclick="setLang('en')" data-lang="en" class="lang-btn px-2.5 py-1 text-xs font-semibold rounded-[calc(var(--radius-btn)-2px)] text-[var(--color-text-muted)] transition-colors duration-150 hover:text-[var(--color-text)]">EN</button>
-        <button onclick="setLang('pl')" data-lang="pl" class="lang-btn px-2.5 py-1 text-xs font-semibold rounded-[calc(var(--radius-btn)-2px)] text-[var(--color-text-muted)] transition-colors duration-150 hover:text-[var(--color-text)]">PL</button>
-        <button onclick="setLang('it')" data-lang="it" class="lang-btn px-2.5 py-1 text-xs font-semibold rounded-[calc(var(--radius-btn)-2px)] text-[var(--color-text-muted)] transition-colors duration-150 hover:text-[var(--color-text)]">IT</button>
+      <!-- Language dropdown -->
+      <div class="relative" id="lang-dd-desktop">
+        <button
+          id="lang-dd-btn-desktop"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          class="flex items-center gap-1.5 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 py-1.5 text-xs font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:border-[var(--color-border-2)] transition-colors duration-150"
+        >
+          <span id="lang-flag-desktop" class="text-sm leading-none">🇺🇸</span>
+          <span id="lang-code-desktop">EN</span>
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true" class="opacity-50 transition-transform duration-150" id="lang-chevron-desktop">
+            <path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div
+          id="lang-dd-menu-desktop"
+          role="listbox"
+          aria-label="Select language"
+          class="lang-dd-menu absolute right-0 top-[calc(100%+6px)] z-50 hidden min-w-[7.5rem] overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_8px_24px_rgb(0_0_0/0.14)] py-1"
+        >
+          <button onclick="setLang('en')" data-lang="en" role="option" class="lang-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors"><span class="text-sm">🇺🇸</span> EN</button>
+          <button onclick="setLang('pl')" data-lang="pl" role="option" class="lang-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors"><span class="text-sm">🇵🇱</span> PL</button>
+          <button onclick="setLang('it')" data-lang="it" role="option" class="lang-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors"><span class="text-sm">🇮🇹</span> IT</button>
+          <div class="my-1 h-px bg-[var(--color-border)]" aria-hidden="true"></div>
+          <div class="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold opacity-35 cursor-not-allowed select-none"><span class="text-sm">🇩🇪</span> DE <span class="ml-auto text-[9px] font-medium tracking-wide uppercase opacity-70">soon</span></div>
+          <div class="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold opacity-35 cursor-not-allowed select-none"><span class="text-sm">🇪🇸</span> ES <span class="ml-auto text-[9px] font-medium tracking-wide uppercase opacity-70">soon</span></div>
+        </div>
       </div>
       <a
         href="/contact#book-call"
@@ -103,11 +125,34 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
   <!-- Bottom bar -->
   <div class="px-8 pb-10 pt-6 border-t border-[var(--color-border)] shrink-0 space-y-4">
     <ThemeToggle class="w-full" />
-    <!-- Mobile language toggle -->
-    <div class="flex items-center justify-center gap-1 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] p-1">
-      <button onclick="setLang('en')" data-lang="en" class="lang-btn flex-1 py-2 text-xs font-semibold rounded-[calc(var(--radius-btn)-3px)] text-[var(--color-text-muted)] transition-colors duration-150">EN</button>
-      <button onclick="setLang('pl')" data-lang="pl" class="lang-btn flex-1 py-2 text-xs font-semibold rounded-[calc(var(--radius-btn)-3px)] text-[var(--color-text-muted)] transition-colors duration-150">PL</button>
-      <button onclick="setLang('it')" data-lang="it" class="lang-btn flex-1 py-2 text-xs font-semibold rounded-[calc(var(--radius-btn)-3px)] text-[var(--color-text-muted)] transition-colors duration-150">IT</button>
+    <!-- Mobile language dropdown -->
+    <div class="relative" id="lang-dd-mobile">
+      <button
+        id="lang-dd-btn-mobile"
+        aria-haspopup="listbox"
+        aria-expanded="false"
+        class="w-full flex items-center justify-between gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2.5 text-xs font-semibold text-[var(--color-text-muted)]"
+      >
+        <span class="flex items-center gap-2">
+          <span id="lang-flag-mobile" class="text-base leading-none">🇺🇸</span>
+          <span id="lang-code-mobile">English</span>
+        </span>
+        <svg width="12" height="12" viewBox="0 0 10 10" fill="none" aria-hidden="true" class="opacity-50" id="lang-chevron-mobile">
+          <path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div
+        id="lang-dd-menu-mobile"
+        role="listbox"
+        class="lang-dd-menu hidden absolute bottom-[calc(100%+6px)] left-0 right-0 z-50 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_-8px_24px_rgb(0_0_0/0.14)] py-1"
+      >
+        <button onclick="setLang('en')" data-lang="en" role="option" class="lang-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors"><span class="text-base">🇺🇸</span> English</button>
+        <button onclick="setLang('pl')" data-lang="pl" role="option" class="lang-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors"><span class="text-base">🇵🇱</span> Polski</button>
+        <button onclick="setLang('it')" data-lang="it" role="option" class="lang-opt w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors"><span class="text-base">🇮🇹</span> Italiano</button>
+        <div class="my-1 h-px bg-[var(--color-border)]"></div>
+        <div class="flex items-center gap-3 px-4 py-3 text-sm font-semibold opacity-35 cursor-not-allowed"><span class="text-base">🇩🇪</span> Deutsch <span class="ml-auto text-[9px] uppercase tracking-wide">soon</span></div>
+        <div class="flex items-center gap-3 px-4 py-3 text-sm font-semibold opacity-35 cursor-not-allowed"><span class="text-base">🇪🇸</span> Español <span class="ml-auto text-[9px] uppercase tracking-wide">soon</span></div>
+      </div>
     </div>
     <a
       href="/contact#book-call"
@@ -153,6 +198,77 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
 
   // Make closeMobileNav available globally for the wordmark link
   (window as any).closeMobileNav = closeMobileNav;
+
+  // ── Language dropdown ──────────────────────────────────────────────
+  const LANGS: Record<string, { flag: string; code: string; label: string }> = {
+    en: { flag: '🇺🇸', code: 'EN', label: 'English' },
+    pl: { flag: '🇵🇱', code: 'PL', label: 'Polski' },
+    it: { flag: '🇮🇹', code: 'IT', label: 'Italiano' },
+  };
+
+  function updateLangDisplay(lang: string) {
+    const l = LANGS[lang] ?? LANGS['en'];
+    const dFlag = document.getElementById('lang-flag-desktop');
+    const dCode = document.getElementById('lang-code-desktop');
+    const mFlag = document.getElementById('lang-flag-mobile');
+    const mCode = document.getElementById('lang-code-mobile');
+    if (dFlag) dFlag.textContent = l.flag;
+    if (dCode) dCode.textContent = l.code;
+    if (mFlag) mFlag.textContent = l.flag;
+    if (mCode) mCode.textContent = l.label;
+    // Highlight active option
+    document.querySelectorAll<HTMLButtonElement>('.lang-opt').forEach(btn => {
+      const active = btn.dataset.lang === lang;
+      btn.classList.toggle('text-[var(--color-text)]', active);
+      btn.classList.toggle('bg-[var(--color-surface-2)]', active);
+    });
+  }
+
+  function toggleDropdown(menuId: string, btnId: string, chevronId: string) {
+    const menu = document.getElementById(menuId)!;
+    const btn  = document.getElementById(btnId)!;
+    const chev = document.getElementById(chevronId)!;
+    const open = !menu.classList.contains('hidden');
+    closeAllDropdowns();
+    if (!open) {
+      menu.classList.remove('hidden');
+      btn.setAttribute('aria-expanded', 'true');
+      chev.style.transform = 'rotate(180deg)';
+    }
+  }
+
+  function closeAllDropdowns() {
+    document.querySelectorAll<HTMLElement>('.lang-dd-menu').forEach(m => m.classList.add('hidden'));
+    ['lang-dd-btn-desktop','lang-dd-btn-mobile'].forEach(id => {
+      document.getElementById(id)?.setAttribute('aria-expanded', 'false');
+    });
+    ['lang-chevron-desktop','lang-chevron-mobile'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.transform = '';
+    });
+  }
+
+  document.getElementById('lang-dd-btn-desktop')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown('lang-dd-menu-desktop', 'lang-dd-btn-desktop', 'lang-chevron-desktop');
+  });
+  document.getElementById('lang-dd-btn-mobile')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown('lang-dd-menu-mobile', 'lang-dd-btn-mobile', 'lang-chevron-mobile');
+  });
+  document.addEventListener('click', closeAllDropdowns);
+
+  // Hook into setLang to update display
+  const _origSetLang = (window as any).setLang;
+  (window as any).setLang = function(lang: string) {
+    _origSetLang?.(lang);
+    updateLangDisplay(lang);
+    closeAllDropdowns();
+  };
+
+  // Init display on page load
+  const initLang = localStorage.getItem('wio_lang') ?? 'en';
+  updateLangDisplay(initLang);
 
   openBtn.addEventListener('click', openMobileNav);
   closeBtn.addEventListener('click', closeMobileNav);
