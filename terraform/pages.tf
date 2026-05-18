@@ -27,11 +27,17 @@ resource "cloudflare_pages_project" "wojciech_io" {
   deployment_configs {
     preview {
       environment_variables = {}
-      compatibility_date    = "2024-01-01"
+      compatibility_date    = "2026-05-10"
+      usage_model           = "standard"
+      fail_open             = true
     }
     production {
-      environment_variables = {}
-      compatibility_date    = "2024-01-01"
+      environment_variables = {
+        PUBLIC_CF_BEACON_TOKEN = "26d8fe58addc4d2aa30f80f03f4c13c0"
+      }
+      compatibility_date    = "2026-05-10"
+      usage_model           = "standard"
+      fail_open             = true
     }
   }
 }
