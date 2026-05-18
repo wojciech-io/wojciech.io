@@ -1,0 +1,49 @@
+---
+interface Props {
+  lang: 'en' | 'pl' | 'it' | 'de' | 'es';
+  size?: number;
+  class?: string;
+}
+const { lang, size = 20, class: className = '' } = Astro.props;
+const height = Math.round(size * 0.7); // 2:1.4 ratio
+---
+<svg width={size} height={height} viewBox="0 0 20 14" class={`inline-block rounded-[1px] ${className}`} aria-hidden="true">
+  {lang === 'en' && (
+    <>
+      <rect width="20" height="14" fill="#B22234"/>
+      <rect width="20" height="1.08" y="1.08" fill="white"/>
+      <rect width="20" height="1.08" y="3.23" fill="white"/>
+      <rect width="20" height="1.08" y="5.38" fill="white"/>
+      <rect width="20" height="1.08" y="7.54" fill="white"/>
+      <rect width="20" height="1.08" y="9.69" fill="white"/>
+      <rect width="20" height="1.08" y="11.85" fill="white"/>
+      <rect width="8" height="7.54" fill="#3C3B6E"/>
+    </>
+  )}
+  {lang === 'pl' && (
+    <>
+      <rect width="20" height="7" fill="white"/>
+      <rect y="7" width="20" height="7" fill="#DC143C"/>
+    </>
+  )}
+  {lang === 'it' && (
+    <>
+      <rect width="6.67" height="14" fill="#009246"/>
+      <rect x="6.67" width="6.67" height="14" fill="white"/>
+      <rect x="13.33" width="6.67" height="14" fill="#CE2B37"/>
+    </>
+  )}
+  {lang === 'de' && (
+    <>
+      <rect width="20" height="4.67" fill="#000"/>
+      <rect y="4.67" width="20" height="4.67" fill="#DD0000"/>
+      <rect y="9.33" width="20" height="4.67" fill="#FFCE00"/>
+    </>
+  )}
+  {lang === 'es' && (
+    <>
+      <rect width="20" height="14" fill="#C60B1E"/>
+      <rect y="3.5" width="20" height="7" fill="#FFC400"/>
+    </>
+  )}
+</svg>
