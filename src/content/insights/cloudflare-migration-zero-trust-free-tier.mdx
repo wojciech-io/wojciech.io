@@ -34,6 +34,43 @@ The catch is that none of it is automatic. You get access to these capabilities 
 
 ---
 
+## Hosting and deployment
+
+Before the security stack, the baseline: Cloudflare Pages is the hosting layer. The site is a static Astro build. Every push to the `main` branch on GitHub triggers a build on Cloudflare's side and a deploy to the global edge network. Branch pushes get their own preview URL, so a change can be reviewed on a real domain before it reaches production.
+
+<Flow
+  steps={[
+    { label: 'Commit', sub: 'git push' },
+    { label: 'GitHub', sub: 'main branch' },
+    { label: 'Cloudflare Pages', sub: 'build + deploy', active: true },
+    { label: 'Live', sub: 'edge CDN' },
+  ]}
+  caption="Push to main is the entire deploy process — build and global rollout are automatic."
+/>
+
+There was a real choice here. Vercel and Netlify are the obvious alternatives, and both are excellent products. The deciding factor was consolidation.
+
+<Compare labelA="Cloudflare Pages" labelB="Vercel" tagA="chosen" tagB="alternative">
+<Fragment slot="a">
+
+- One platform: hosting, DNS, WAF, Zero Trust, Tunnels — one API, one bill
+- Free tier covers unlimited bandwidth and the full security stack
+- Same edge network as the CDN already proxying the domain
+
+</Fragment>
+<Fragment slot="b">
+
+- Best-in-class framework DX and the most polished preview workflow
+- First-class Next.js support and serverless/edge functions
+- A separate platform — DNS and security would live elsewhere
+
+</Fragment>
+</Compare>
+
+Keeping hosting on Cloudflare means DNS, CDN, WAF, Zero Trust Access, and the deployment target are all the same platform, configured through the same API. For a site that leans on the security stack described below, splitting hosting onto a separate provider would mean managing the edge in two places. Vercel is the stronger product for framework-heavy applications; for a static site that already routes through Cloudflare's network, Pages is the lower-friction choice.
+
+---
+
 ## Cloudflare WAF and DDoS
 
 When a domain is proxied through Cloudflare (the orange-cloud setting in the DNS dashboard), L3 and L4 DDoS protection activates immediately. This is not configurable or optional — it is on by default for all proxied traffic. Cloudflare's network absorbs volumetric attacks before they reach the origin.
@@ -134,6 +171,22 @@ For a personal site or small internal toolset, this is an acceptable tradeoff. T
 For an organisation with compliance requirements, or one that needs multi-cloud portability, the lock-in is a real cost. Infrastructure-as-code (Terraform with the Cloudflare provider) at least keeps your config version-controlled and reviewable — but it still only runs against Cloudflare's API.
 
 The practical rule: use Terraform for all Cloudflare config from day one. Dashboard-only configuration is invisible drift that becomes a migration liability.
+
+---
+
+## Observability
+
+WAF and DDoS protection tell you the site is reachable and shielded. They do not tell you whether the code running in a visitor's browser is throwing errors. That is a separate concern, and it is not one Cloudflare covers.
+
+For wojciech.io, that layer is Sentry. It is not a Cloudflare product — but observability pairs naturally with the hosting and security stack, and the free tier is enough for a site this size. The SDK initialises only in production builds, captures unhandled errors and a sample of performance traces, and reports them to a dashboard with full stack traces.
+
+<Callout type="tip" title="The DSN is not a secret">
+
+A Sentry DSN identifies the project for incoming events — it is designed to ship in the client bundle. What does need protecting is the build-time auth token used for source map uploads: that belongs in an environment variable, never in the repository.
+
+</Callout>
+
+The practical value is signal quality. For a static site there is not much that can break, so an error in Sentry is a real event rather than background noise. When something does break — a third-party script, a browser-specific API, a bad deploy — it surfaces with a stack trace instead of waiting for a visitor to report it.
 
 ---
 

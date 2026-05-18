@@ -2,7 +2,14 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ArticleCover from '../../components/ui/ArticleCover.astro';
+import Callout from '../../components/insights/Callout.astro';
+import VideoEmbed from '../../components/insights/VideoEmbed.astro';
+import Screenshot from '../../components/insights/Screenshot.astro';
+import Compare from '../../components/insights/Compare.astro';
+import Flow from '../../components/insights/Flow.astro';
 import { SITE } from '../../data/site';
+
+const mdxComponents = { Callout, VideoEmbed, Screenshot, Compare, Flow };
 
 export async function getStaticPaths() {
   const posts = await getCollection('insights', ({ data }) => !data.draft);
@@ -154,7 +161,7 @@ const articleSchema = {
 
     <!-- Article body -->
     <div class="prose-content">
-      <Content />
+      <Content components={mdxComponents} />
     </div>
 
   </article>
