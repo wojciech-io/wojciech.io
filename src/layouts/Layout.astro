@@ -15,6 +15,7 @@ interface Props {
   publishedAt?: Date | string;
   updatedAt?: Date | string;
   schema?: Record<string, unknown> | Record<string, unknown>[];
+  initialLang?: string;
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   publishedAt,
   updatedAt,
   schema,
+  initialLang,
 } = Astro.props;
 ---
 
@@ -52,6 +54,11 @@ const {
         document.documentElement.style.colorScheme = theme;
       })();
     </script>
+    {/* hreflang alternate links */}
+    <link rel="alternate" hreflang="en" href={`https://wojciech.io${Astro.url.pathname.replace(/^\/(pl|it)(\/|$)/, '/').replace(/\/\//g, '/') || '/'}`} />
+    <link rel="alternate" hreflang="pl" href={`https://wojciech.io/pl${Astro.url.pathname.replace(/^\/(pl|it)/, '') || '/'}`} />
+    <link rel="alternate" hreflang="it" href={`https://wojciech.io/it${Astro.url.pathname.replace(/^\/(pl|it)/, '') || '/'}`} />
+    <link rel="alternate" hreflang="x-default" href="https://wojciech.io/" />
   </head>
   <body class="min-h-dvh flex flex-col">
     <Header />
@@ -78,7 +85,7 @@ const {
     </script>
 
     <!-- Language toggle logic -->
-    <script is:inline>
+    <script is:inline define:vars={{ _initLang: initialLang ?? '' }}>
       window.setLang = function(l) {
         var lang = (l || 'en').toLowerCase();
         localStorage.setItem('wio_lang', lang);
@@ -106,7 +113,9 @@ const {
       (function() {
         var saved = localStorage.getItem('wio_lang');
         var nav = (navigator.language || '').toLowerCase();
-        var detected = saved || (nav.startsWith('pl') ? 'pl' : nav.startsWith('it') ? 'it' : 'en');
+        // URL-provided lang takes highest priority
+        var detected = _initLang || saved || (nav.startsWith('pl') ? 'pl' : nav.startsWith('it') ? 'it' : 'en');
+        if (_initLang) localStorage.setItem('wio_lang', _initLang); // persist URL lang
         document.addEventListener('DOMContentLoaded', function() {
           window.setLang(detected);
         });
