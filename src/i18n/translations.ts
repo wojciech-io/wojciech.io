@@ -1,6 +1,6 @@
 // Source-of-truth translations for wojciech.io
-// Usage: data-en="..." data-pl="..." data-it="..." on HTML elements,
-// toggled by setLang() in Layout.astro
+// Used by src/pages/[lang]/index.astro to render the homepage server-side per locale.
+// Voice: B+A blend per docs/10-tone-of-voice.md (Sadowski base, Flanagan edge).
 
 export const pl = {
   // ── Navigation ──────────────────────────────────────────────────────
@@ -28,9 +28,9 @@ export const pl = {
   // ── Homepage ─────────────────────────────────────────────────────────
   hero: {
     badge:          'GTM Architect · Growth Operator',
-    headline1:      'Buduję systemy przychodowe',
-    headline2:      'które się nawarstwiają.',
-    subcopy:        'Większość firm B2B nie ma problemu z ruchem. Ma problem z systemem. Buduję ten system: GTM, marketing, CRM, automatyzację i AI jako jeden model operacyjny, nie zbiór osobnych kampanii.',
+    headline1:      'Buduję systemy przychodowe.',
+    headline2:      'Zostaję, aż działają.',
+    subcopy:        'Większość firm B2B nie ma problemu z ruchem — ma problem z systemem. Piętnaście lat w zespołach growth pokazało mi tę samą lukę wszędzie: świetny ruch i dziurawy CRM, AI w decku i Excel w realnej robocie. Składam to w jeden model operacyjny — GTM, CRM, automatyzacja i AI jako jedna maszyna — i nie odpuszczam, gdy robi się trudno.',
     cta1:           'Zobacz projekty',
     cta2:           'Zapisz się na newsletter',
     statusLabel:    'Status',
@@ -280,9 +280,9 @@ export const it = {
   // ── Homepage ─────────────────────────────────────────────────────────
   hero: {
     badge:          'GTM Architect · Growth Operator',
-    headline1:      'Costruisco sistemi di revenue',
-    headline2:      'che si accumulano.',
-    subcopy:        'La maggior parte delle aziende B2B non ha un problema di traffico. Ha un problema di sistema. Costruisco quel sistema: GTM, marketing, CRM, automazione e AI come unico modello operativo, non una serie di campagne separate.',
+    headline1:      'Costruisco sistemi di revenue.',
+    headline2:      'Resto finché funzionano.',
+    subcopy:        'La maggior parte delle aziende B2B non ha un problema di traffico — ha un problema di sistema. Quindici anni nei team growth mi hanno mostrato la stessa lacuna ovunque: traffico ottimo con CRM bucato, AI nei deck ed Excel nel lavoro vero. Lo rimetto insieme come un unico modello operativo — GTM, CRM, automazione e AI come una sola macchina — e non mollo quando si fa dura.',
     cta1:           'Guarda i progetti',
     cta2:           'Iscriviti alla newsletter',
     statusLabel:    'Stato',
@@ -503,5 +503,88 @@ export const it = {
     nlHeading:   'Vuoi saperlo prima degli altri?',
     nlBody:      'Nuovi articoli su sistemi AI, architettura GTM e modelli operativi di crescita - consegnati quando vengono pubblicati.',
     subscribe:   'Iscriviti',
+  },
+};
+
+export const en = {
+  hero: {
+    badge:          'GTM Architect · Growth Operator',
+    headline1:      'I build revenue systems.',
+    headline2:      'Then I stay until they work.',
+    subcopy:        "Most B2B companies don't have a traffic problem — they have a system problem. Fifteen years inside growth teams showed me the same gap everywhere: great traffic with a leaky CRM, AI in the deck but Excel in the actual work. I rebuild it as one operating model — GTM, CRM, automation and AI as a single machine — and I don't leave when it gets hard.",
+    cta1:           'See the work',
+    cta2:           'Get the newsletter',
+    statusLabel:    'Status',
+    statusValue:    'Available',
+    statusDetail:   'Fractional',
+    marketsLabel:   'Markets',
+    marketsValue:   'EU / UK / US',
+    marketsDetail:  'plus LATAM',
+    modeLabel:      'Mode',
+    modeValue:      'Strategy',
+    modeDetail:     'Build / ship',
+  },
+  metrics: {
+    years:    'years B2B SaaS',
+    systems:  'systems shipped',
+    pipeline: 'pipeline influenced',
+    lift:     'avg. pipeline lift',
+  },
+  trustedBy: 'Worked with',
+  howIWork: {
+    eyebrow:   'How I work',
+    headline1: 'Not a consultant. An operator.',
+    headline2: 'I stay until it runs.',
+    steps: [
+      { title: 'Diagnose',     body: 'Revenue architecture audit: pipeline, CRM, GTM motions, attribution. I map where the signal breaks before touching anything.' },
+      { title: 'Design',       body: 'System design: what connects to what, what gets measured, what gets automated, and in what order it gets built.' },
+      { title: 'Implement',    body: 'I build it: sequences, dashboards, CRM operating model, tooling. Or I embed with your team and build alongside them.' },
+      { title: 'Ship the gap', body: "When the right tool doesn't exist, I write it. AI agents, custom apps, MCP workflows. The system gets what it needs." },
+    ],
+  },
+  selectedWork: {
+    eyebrow:      'Selected work',
+    headline1:    'Projects that shipped.',
+    headline2:    'Systems that still run.',
+    allWork:      'All work',
+    featured:     'Featured',
+    liveArtifact: 'Live product artifact',
+    viewProject:  'View project',
+    seeCaseStudy: 'See case study',
+    workWithMe:   'Work with me',
+    cta1:         'Have a revenue problem worth solving?',
+    cta2:         "Book a 30-minute call. We figure out what's broken and whether it's worth working together.",
+    bookCall:     'Book a call',
+    problem:      'Problem',
+    system:       'System',
+    artifact:     'Artifact',
+    outcome:      'Outcome',
+  },
+  aiSystems: {
+    eyebrow:   'AI systems',
+    headline1: 'AI in the architecture.',
+    headline2: 'Not bolted on at the end.',
+    body:      'Not for faster copy. For a different operating model. AI goes into prospecting, enrichment, sequencing, and scoring. The whole motion runs faster. Not just one task on the list.',
+    link:      'How I build with AI',
+    rows: [
+      { label: 'Ad creation loop',    before: 'Days',             after: 'Minutes' },
+      { label: 'CRM enrichment',      before: 'Manual / BDR time', after: 'Automated' },
+      { label: 'SEO brief → draft',   before: 'Week',             after: 'Hours' },
+      { label: 'Outbound sequencing', before: 'Templates',        after: 'AI-personalised' },
+    ],
+    allSystems: 'See all AI systems',
+  },
+  testimonials: {
+    eyebrow:   'Testimonials',
+    headline1: "What it's like",
+    headline2: 'to work with me.',
+  },
+  writing: {
+    eyebrow:   'Writing',
+    headline:  'Operator notes.',
+    subtext:   'Practical writing on AI GTM systems, agent tooling, portfolio builds, and case studies from shipped apps.',
+    read:      'Read',
+    allWriting:'All writing',
+    newNotes:  'New notes on AI systems, GTM architecture, and shipped products, published as they are ready.',
   },
 };

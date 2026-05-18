@@ -1,0 +1,530 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import ProjectCard from '../../components/ui/ProjectCard.astro';
+import TestimonialSlider from '../../components/ui/TestimonialSlider.astro';
+import { en, pl, it } from '../../i18n/translations';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'pl' } },
+    { params: { lang: 'it' } },
+  ];
+}
+
+const translations = { en, pl, it } as const;
+type Lang = keyof typeof translations;
+const lang = Astro.params.lang as Lang;
+const t = translations[lang];
+
+const projects = [
+  {
+    cover: 'relora' as const,
+    title: 'Relora',
+    description: 'A relationship operating system for local-government property teams. One place for contacts, owner context, communication status, and next actions.',
+    tags: ['AI workflow', 'CRM-lite', 'Ops dashboard'],
+    href: 'https://relora-jet.vercel.app/',
+    screenshot: '/images/work/relora-preview.jpg',
+    problem: 'Important owner conversations lived across inboxes, notes, and memory.',
+    system: 'Contacts, relationships, briefs, status, and follow-up in one operator view.',
+    artifact: 'Live demo app with dashboard, relation map, and task flow.',
+    outcome: 'Manual relationship tracking becomes a structured operating queue.',
+    external: true,
+  },
+  {
+    cover: 'ads-ai' as const,
+    title: 'AdsAI / Ad Assistant',
+    description: 'An AI-native Google Ads cockpit: spend, ROAS, ICP fit, campaign priorities, and next-best actions in one workspace.',
+    tags: ['AI', 'Ads', 'GTM', 'Operator tooling'],
+    href: 'https://ads-assistant-three.vercel.app/',
+    screenshot: '/images/work/ads-assistant-preview.jpg',
+    problem: 'Ad optimization work was split between reports, intuition, and repeated checks.',
+    system: 'Budget, ICP, ROAS, alerts, and actions are pulled into one decision loop.',
+    artifact: 'Live dashboard with campaign priorities and optimization queue.',
+    outcome: 'Operator sees what to pause, analyze, or optimize without hunting through reports.',
+    external: true,
+  },
+  {
+    cover: 'kamperownia' as const,
+    title: 'Camper Rental Booking Engine',
+    description: 'A self-serve camper rental site for browsing vehicles, checking dates, and moving from interest to reservation quickly.',
+    tags: ['Product', 'Booking', 'Web app'],
+    href: 'https://camper-rental-weld.vercel.app/',
+    screenshot: '/images/work/kamperownia-preview.jpg',
+    problem: 'Rental demand needed a clearer path from browsing to booking.',
+    system: 'Inventory, dates, offer framing, and reservation CTA in one front-end flow.',
+    artifact: 'Responsive booking website with vehicle cards and search entry point.',
+    outcome: 'A manual inquiry motion becomes a productized booking experience.',
+    external: true,
+  },
+  {
+    cover: 'notch' as const,
+    title: 'NotchCue',
+    description: 'A macOS teleprompter concept for calls, demos, and recordings. Keeps notes close to the camera so delivery stays natural.',
+    tags: ['macOS', 'Swift', 'AI-built'],
+    href: 'https://notch.wojciech.io/',
+    screenshot: '/images/work/notch-preview.jpg',
+    problem: 'Notes sit away from the camera, which breaks eye contact during calls and demos.',
+    system: 'Prompts live around the MacBook notch with a focused reading surface.',
+    artifact: 'Product site and app concept built around the camera area.',
+    outcome: 'Speakers keep structure without sounding like they are reading.',
+    external: true,
+  },
+];
+
+const testimonials = [
+  {
+    quote: "Wojciech is passionate and knowledgeable about digital marketing and all that it entails but very much in tune with the broader marketing and sales challenges. Wojtek contributed to defining and delivering several digital marketing initiatives that helped with customer retention and building a sales pipeline.",
+    name: "Robert Sikorski",
+    role: "Head of Marketing",
+    company: "GetResponse",
+    linkedin: "https://www.linkedin.com/in/robert-sikorski-getresponse/",
+    avatar: undefined,
+  },
+  {
+    quote: "Wojciech is a man of particular tasks, for whom an obstacle is another challenge. He learned quickly, often exceeded expectations, and was able to carry out several tasks at the same time. Competent, helpful, but at the same time specific and tenacious.",
+    name: "Dariusz Gołębiewski",
+    role: "Director",
+    company: "mBank SA",
+    linkedin: "https://pl.linkedin.com/in/dariusz-go%C5%82%C4%99biewski-he-him-412371120",
+    avatar: "https://unavatar.io/linkedin/dariusz-go%C5%82%C4%99biewski-he-him-412371120",
+  },
+  {
+    quote: "I've been working with Wojciech for several months now. The cooperation goes smoothly, and we always know what we're responsible for. I recommend Wojciech as a good coworker and business partner.",
+    name: "Mike Zoladkowski",
+    role: "Founder",
+    company: "Type2Sell",
+    linkedin: "https://ca.linkedin.com/in/mikezoladkowski",
+    avatar: "https://unavatar.io/linkedin/mikezoladkowski",
+  },
+];
+
+const aiArrow = lang === 'en' ? 'How I build with AI →' : lang === 'pl' ? 'Jak buduję z AI →' : "Come costruisco con l'AI →";
+const allAiLink = `${t.aiSystems.allSystems} →`;
+const readMore = lang === 'en' ? 'Read →' : lang === 'pl' ? 'Czytaj →' : 'Leggi →';
+const allWritingLink = `${t.writing.allWriting} →`;
+const allWorkLink = `${t.selectedWork.allWork} →`;
+const viewOrCase = (external: boolean) =>
+  external ? `${t.selectedWork.viewProject} ↗` : `${t.selectedWork.seeCaseStudy} →`;
+const bookCallLink = `${t.selectedWork.bookCall} →`;
+const featured = projects[0];
+const proofLabels = [
+  { en: 'Problem', pl: 'Problem', it: 'Problema' },
+  { en: 'System', pl: 'System', it: 'Sistema' },
+  { en: 'Artifact', pl: 'Artefakt', it: 'Artefatto' },
+  { en: 'Outcome', pl: 'Wynik', it: 'Risultato' },
+];
+const proofValues = [featured.problem, featured.system, featured.artifact, featured.outcome];
+---
+
+<Layout initialLang={lang}>
+
+  <!-- ─── 1. HERO ─────────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden" style="min-height: 620px;">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
+    <div class="pointer-events-none absolute left-[-160px] top-[-180px] h-[520px] w-[640px] rounded-full bg-[var(--color-surface)] blur-[150px] opacity-70" aria-hidden="true" />
+
+    <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[46%] overflow-hidden" aria-hidden="true">
+      <img
+        src="/images/wojciech-hero.webp"
+        alt=""
+        width="920"
+        height="1380"
+        loading="eager"
+        decoding="async"
+        class="absolute inset-0 w-full h-full object-cover object-top"
+      />
+      <div class="absolute inset-y-0 left-0 w-[30%] pointer-events-none" style="background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);" />
+      <div class="absolute inset-x-0 bottom-0 h-[18%] pointer-events-none" style="background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%);" />
+
+      <div class="absolute bottom-10 left-8 z-10 w-[min(420px,calc(100%-4rem))] overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-glass)] shadow-[var(--shadow-card)] backdrop-blur-md">
+        <div class="grid grid-cols-3 divide-x divide-[var(--color-border)]">
+          <div class="px-4 py-3.5">
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{t.hero.statusLabel}</p>
+            <p class="mt-1 text-sm font-semibold text-[var(--color-text)]">{t.hero.statusValue}</p>
+            <p class="text-[11px] text-[var(--color-text-muted)]">{t.hero.statusDetail}</p>
+          </div>
+          <div class="px-4 py-3.5">
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{t.hero.marketsLabel}</p>
+            <p class="mt-1 text-sm font-semibold text-[var(--color-text)]">{t.hero.marketsValue}</p>
+            <p class="text-[11px] text-[var(--color-text-muted)]">{t.hero.marketsDetail}</p>
+          </div>
+          <div class="px-4 py-3.5">
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{t.hero.modeLabel}</p>
+            <p class="mt-1 text-sm font-semibold text-[var(--color-text)]">{t.hero.modeValue}</p>
+            <p class="text-[11px] text-[var(--color-text-muted)]">{t.hero.modeDetail}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative mx-auto max-w-6xl px-6">
+
+      <div class="animate-fade-up flex flex-col justify-center py-24 lg:py-32 lg:max-w-[54%]">
+
+        <div class="inline-flex self-start items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] px-3.5 py-2 mb-8 shadow-[var(--shadow-card)] backdrop-blur">
+          <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_14px_rgb(235_255_0/0.55)]"></span>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text)]">{t.hero.badge}</span>
+        </div>
+
+        <div class="lg:hidden flex items-center gap-3 mb-8">
+          <img
+            src="/images/wojciech-avatar-384.webp"
+            alt="Wojciech Łuszczyński"
+            width="56"
+            height="56"
+            loading="eager"
+            decoding="async"
+            class="w-14 h-14 rounded-full object-cover border border-[var(--color-accent)]/35 shrink-0"
+          />
+          <div>
+            <p class="text-sm font-semibold text-[var(--color-text)]">Wojciech Łuszczyński</p>
+            <p class="text-xs text-[var(--color-text-muted)]">{t.hero.badge}</p>
+          </div>
+        </div>
+
+        <h1 class="text-[2rem] sm:text-4xl md:text-5xl lg:text-[3.8rem] font-bold leading-[1.08] tracking-tight mb-6">
+          <span class="text-[var(--color-text)]">{t.hero.headline1}</span><br class="hidden md:block" /> <span class="text-[var(--color-text-muted)]">{t.hero.headline2}</span>
+        </h1>
+
+        <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed mb-10 max-w-lg">
+          {t.hero.subcopy}
+        </p>
+
+        <div class="flex flex-wrap gap-3 mb-5">
+          <a
+            href={`/${lang}/work`}
+            class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-7 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors"
+          >
+            {t.hero.cta1}
+          </a>
+          <a
+            href={`/${lang}/subscribe`}
+            class="btn-press inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-bg)] text-[var(--color-text)] font-medium px-7 py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors"
+          >
+            {t.hero.cta2}
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── METRICS STRIP ─────────────────────────────────────────── -->
+  <section class="relative bg-[var(--color-surface-2)]">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border)] to-transparent" aria-hidden="true"></div>
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[var(--color-border)]">
+        {[
+          { value: '15+',  label: t.metrics.years },
+          { value: '20+',  label: t.metrics.systems },
+          { value: '$2M+', label: t.metrics.pipeline },
+          { value: '3×',   label: t.metrics.lift },
+        ].map(({ value, label }) => (
+          <div class="flex flex-col items-center py-8 px-4 text-center">
+            <p class="text-3xl font-bold text-[var(--color-text)] mb-1">{value}</p>
+            <p class="text-xs text-[var(--color-text-dim)] uppercase tracking-widest">{label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TRUSTED BY ────────────────────────────────────────────── -->
+  <section class="relative bg-[var(--color-surface-2)] py-7">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border)]/60 to-transparent" aria-hidden="true"></div>
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="text-center text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--color-text-dim)] mb-6">{t.trustedBy}</p>
+      <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+        {['GetResponse', 'SentiOne', 'WebWave', 'CodiLime', 'Gi Group', 'mBank'].map((name) => (
+          <span class="text-sm font-semibold text-[var(--color-text-dim)] opacity-50 hover:opacity-80 transition-opacity tracking-wide">{name}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 2. HOW I WORK ───────────────────────────────────────────── -->
+  <section class="relative py-[var(--space-section)] bg-[var(--color-bg)] overflow-hidden">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/20 to-transparent" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,var(--color-border)_1px,transparent_1px)] bg-[size:36px_36px] opacity-[0.35]" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-6xl px-6">
+      <div class="mb-12">
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5"><span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span><span>{t.howIWork.eyebrow}</span></p>
+        <h2 class="text-3xl md:text-4xl font-semibold leading-[1.15] tracking-tight max-w-xl">
+          <span class="text-[var(--color-text)]">{t.howIWork.headline1}</span><br />
+          <span class="text-[var(--color-text-muted)]">{t.howIWork.headline2}</span>
+        </h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {t.howIWork.steps.map(({ title, body }, i) => (
+          <div class="reveal-up relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 card-lift hover:border-[var(--color-accent)]/30 group">
+            <span class="pointer-events-none absolute -right-2 -top-4 text-[7rem] font-bold leading-none select-none text-[var(--color-border)] opacity-60 group-hover:opacity-90 transition-opacity">{String(i + 1).padStart(2, '0')}</span>
+            <p class="relative text-xs font-semibold text-[var(--color-accent)] uppercase tracking-widest mb-5">{String(i + 1).padStart(2, '0')}</p>
+            <h3 class="relative text-base font-semibold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors">{title}</h3>
+            <p class="relative text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 5. PROJECTS ────────────────────────────────────────────── -->
+  <section class="relative py-[var(--space-section)] bg-[var(--color-surface-2)]">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/20 to-transparent" aria-hidden="true"></div>
+    <div class="mx-auto max-w-6xl px-6">
+
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5"><span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span><span>{t.selectedWork.eyebrow}</span></p>
+          <h2 class="text-3xl md:text-4xl font-semibold leading-[1.15] tracking-tight">
+            <span class="text-[var(--color-text)]">{t.selectedWork.headline1}</span><br />
+            <span class="text-[var(--color-text-muted)]">{t.selectedWork.headline2}</span>
+          </h2>
+        </div>
+        <a href={`/${lang}/work`} class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
+          {allWorkLink}
+        </a>
+      </div>
+
+      <a
+        href={featured.href}
+        target={featured.external ? '_blank' : undefined}
+        rel={featured.external ? 'noopener noreferrer' : undefined}
+        class="group block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/30 transition-colors mb-5"
+      >
+        <div class="grid min-h-[360px] lg:grid-cols-2">
+          <div class="artifact-stage relative min-h-[260px] overflow-hidden p-5 md:p-8">
+            <div class="artifact-shot h-full min-h-[220px] overflow-hidden rounded-[14px] bg-[var(--color-surface)] transition-transform duration-500 group-hover:scale-[1.012]">
+              <img
+                src={featured.screenshot}
+                alt={`${featured.title} product screenshot`}
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover object-top"
+              />
+            </div>
+            <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>
+            <div class="artifact-label absolute left-5 top-5 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-semibold backdrop-blur-md">
+              <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
+              {t.selectedWork.liveArtifact}
+            </div>
+          </div>
+
+          <div class="p-8 md:p-10 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-6">
+                <svg viewBox="0 0 24 24" class="w-5 h-5 text-[var(--color-accent)]" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <path d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21a48.25 48.25 0 01-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-widest">{t.selectedWork.featured}</span>
+              </div>
+              <h3 class="text-xl md:text-2xl font-semibold text-[var(--color-text)] leading-snug mb-4 group-hover:text-[var(--color-accent-hi)] transition-colors">
+                {featured.title}
+              </h3>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-6">
+                {featured.description}
+              </p>
+              <div class="flex flex-wrap gap-1.5">
+                {featured.tags.map((tag) => (
+                  <span class="text-xs px-2 py-0.5 rounded-full border font-medium bg-[var(--color-surface-2)] text-[var(--color-text-muted)] border-[var(--color-border)]">{tag}</span>
+                ))}
+              </div>
+              <dl class="mt-7 grid gap-4 border-t border-[var(--color-border)] pt-6">
+                {proofLabels.map((label, idx) => (
+                  <div class="grid grid-cols-[88px_1fr] gap-4">
+                    <dt class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{label[lang]}</dt>
+                    <dd class="text-sm leading-snug text-[var(--color-text-muted)]">{proofValues[idx]}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+            <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+              <span class="text-sm font-medium text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
+                {viewOrCase(featured.external)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {projects.slice(1).map((p) => (
+          <ProjectCard
+            cover={p.cover}
+            title={p.title}
+            description={p.description}
+            tags={p.tags}
+            href={p.href}
+            screenshot={p.screenshot}
+            problem={p.problem}
+            system={p.system}
+            artifact={p.artifact}
+            outcome={p.outcome}
+            external={p.external}
+          />
+        ))}
+
+        <a
+          href={`/${lang}/contact#book-call`}
+          class="group flex flex-col justify-between rounded-[var(--radius-card)] border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 p-8 card-lift hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/8 transition-colors sm:col-span-2 lg:col-span-3 lg:flex-row lg:items-end lg:gap-8"
+        >
+          <div class="max-w-xl">
+            <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">{t.selectedWork.workWithMe}</p>
+            <h3 class="text-lg font-semibold text-[var(--color-text)] leading-snug mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors">
+              {t.selectedWork.cta1}
+            </h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-snug">
+              {t.selectedWork.cta2}
+            </p>
+          </div>
+          <div class="mt-8 flex shrink-0 items-center gap-2 text-sm font-semibold text-[var(--color-accent)] group-hover:text-[var(--color-accent-hi)] transition-colors lg:mt-0">
+            {bookCallLink}
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── 7. AI LEVERAGE ──────────────────────────────────────────── -->
+  <section class="relative py-[var(--space-section)] bg-[var(--color-bg)]">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/20 to-transparent" aria-hidden="true"></div>
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5"><span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span><span>{t.aiSystems.eyebrow}</span></p>
+          <h2 class="text-3xl md:text-4xl font-semibold leading-[1.15] tracking-tight mb-5">
+            <span class="text-[var(--color-text)]">{t.aiSystems.headline1}</span><br />
+            <span class="text-[var(--color-text-muted)]">{t.aiSystems.headline2}</span>
+          </h2>
+          <p class="text-sm text-[var(--color-text-muted)] leading-snug mb-4">
+            {t.aiSystems.body}
+          </p>
+          <a href={`/${lang}/ai-systems`} class="text-sm text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors font-medium">
+            {aiArrow}
+          </a>
+        </div>
+        <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 space-y-1 card-lift hover:border-[var(--color-accent)]/30">
+          {t.aiSystems.rows.map(({ label, before, after }) => (
+            <div class="flex items-center justify-between py-3.5 border-b border-[var(--color-border)] last:border-0 group">
+              <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors duration-150">{label}</p>
+              <div class="flex items-center gap-3 text-xs shrink-0 ml-4">
+                <span class="text-[var(--color-text-dim)] line-through">{before}</span>
+                <span class="text-[var(--color-accent)] font-semibold">{after}</span>
+              </div>
+            </div>
+          ))}
+          <a href={`/${lang}/ai-systems`} class="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors pt-4">
+            {allAiLink}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 8. TESTIMONIALS — dark band ──────────────────────────────── -->
+  <section class="py-[var(--space-section)] bg-[#0c0c0c] border-t border-white/8">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="relative mb-12">
+        <span class="pointer-events-none absolute -top-6 left-0 text-[8rem] font-bold leading-none select-none text-white opacity-5" aria-hidden="true">"</span>
+        <p class="relative text-xs font-semibold tracking-widest uppercase text-[#ebff00] mb-4">{t.testimonials.eyebrow}</p>
+        <h2 class="relative text-3xl md:text-4xl font-semibold leading-[1.15] tracking-tight">
+          <span class="text-white">{t.testimonials.headline1}</span><br />
+          <span class="text-white/50">{t.testimonials.headline2}</span>
+        </h2>
+      </div>
+      <TestimonialSlider testimonials={testimonials} />
+    </div>
+  </section>
+
+  <!-- ─── 9. INSIGHTS ──────────────────────────────────────────────── -->
+  <section class="relative py-[var(--space-section)] bg-gradient-to-b from-[var(--color-bg)] to-[var(--color-surface-2)]">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/20 to-transparent" aria-hidden="true"></div>
+    <div class="mx-auto max-w-6xl px-6">
+
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5"><span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span><span>{t.writing.eyebrow}</span></p>
+          <h2 class="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-[var(--color-text)]">
+            {t.writing.headline}
+          </h2>
+        </div>
+        <p class="text-sm text-[var(--color-text-muted)] max-w-sm leading-relaxed md:text-right">
+          {t.writing.subtext}
+        </p>
+      </div>
+
+      <div class="divide-y divide-[var(--color-border)]">
+
+        <a
+          href={`/${lang}/insights/how-to-build-gtm-ai-agent-outbound-crm`}
+          class="group flex flex-col md:flex-row md:items-start gap-6 py-8 transition-colors hover:text-[var(--color-accent-hi)]"
+        >
+          <div class="md:w-28 shrink-0">
+            <span class="text-xs text-[var(--color-text-dim)]">Apr 2025</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors mb-2">
+              The Claude Code GTM Agent Starter Pack
+            </h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-4">
+              How I built a four-layer AI system: outbound research, sequence drafting, CRM enrichment. No Clay. No Apollo credits. Cost per full run: <span class="whitespace-nowrap">$2&#8209;8.</span>
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {['AI', 'GTM', 'Claude Code'].map(tag => (
+                <span class="text-xs px-2 py-0.5 rounded-full border bg-[var(--color-surface-2)] text-[var(--color-text-muted)] border-[var(--color-border)]">{tag}</span>
+              ))}
+            </div>
+          </div>
+          <div class="md:self-center shrink-0">
+            <span class="text-sm font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent-hi)] transition-colors whitespace-nowrap">{readMore}</span>
+          </div>
+        </a>
+
+        <a
+          href={`/${lang}/insights/astro-cloudflare-pages-portfolio-ai-workflow`}
+          class="group flex flex-col md:flex-row md:items-start gap-6 py-8 transition-colors hover:text-[var(--color-accent-hi)]"
+        >
+          <div class="md:w-28 shrink-0">
+            <span class="text-xs text-[var(--color-text-dim)]">May 2026</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors mb-2">
+              From WordPress and Framer to an agent-assisted portfolio on Cloudflare
+            </h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-4">
+              Why the stack moved, how the deployment works now, and what changed once the site became code-first.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {['Portfolio', 'Cloudflare Pages', 'Codex'].map(tag => (
+                <span class="text-xs px-2 py-0.5 rounded-full border bg-[var(--color-surface-2)] text-[var(--color-text-muted)] border-[var(--color-border)]">{tag}</span>
+              ))}
+            </div>
+          </div>
+          <div class="md:self-center shrink-0">
+            <span class="text-sm font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent-hi)] transition-colors whitespace-nowrap">{readMore}</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="mt-8 pt-8 border-t border-[var(--color-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <p class="text-sm text-[var(--color-text-muted)]">
+          {t.writing.newNotes}
+        </p>
+        <a
+          href={`/${lang}/insights`}
+          class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text)] border border-[var(--color-border)] rounded-[var(--radius-btn)] px-5 py-2 hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors whitespace-nowrap"
+        >
+          {allWritingLink}
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── 10. FINAL CTA ───────────────────────────────────────────── -->
+  <CTABand />
+
+</Layout>
