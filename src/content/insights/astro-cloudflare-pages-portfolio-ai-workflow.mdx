@@ -2,18 +2,21 @@
 title: "Astro and Cloudflare Pages Portfolio Build with AI Workflow: how I rebuilt my site"
 description: "How I rebuilt my portfolio with Claude Code, Codex, Astro, and Cloudflare Pages using a human-in-the-loop AI workflow that kept the work sharp."
 publishedAt: "2026-05-14"
-updatedAt: "2026-05-15"
+updatedAt: "2026-05-18"
 tags:
   - AI
   - Codex
   - Claude Code
   - Cloudflare
   - Astro
+  - Terraform
 tldr:
   - "This was a real migration from a Framer-era portfolio into a versioned Astro + Cloudflare Pages system."
   - "The work was driven by a human product owner loop: direction, taste, scope, critique, approvals, and final decisions stayed with me."
   - "Claude Code handled larger build batches; Codex handled focused patches, QA, deployment checks, and production verification."
   - "Cloudflare Pages fit because the site is static, DNS and hosting needed to be simple, and deploy verification had to be repeatable."
+  - "Infrastructure config (CF Pages, branch rules, domain) is managed via Terraform — not dashboards."
+  - "Multiple agents working in parallel on separate branches require a coordination layer. Naming conventions, CI, and CODEOWNERS form that layer."
   - "The output is a maintainable portfolio system: public site, app surface, articles, proof, contact flow, and a foundation for future iteration."
 featured: false
 draft: false
@@ -116,19 +119,23 @@ For this case, that meant Cloudflare Pages.
 The final stack is deliberately simple:
 
 ```text
-Astro
-Tailwind CSS
-MDX content collections
-GitHub
-Cloudflare Pages
-Cloudflare DNS
-Cloudflare Web Analytics
-Playwright
-Claude Code
-Codex
+Astro                        — framework
+Tailwind CSS                 — styling and design tokens
+MDX content collections      — articles and structured content
+GitHub                       — source of truth, CI, CODEOWNERS
+GitHub Actions               — build validation on every push and PR
+Cloudflare Pages             — hosting, branch previews, custom domain
+Cloudflare DNS               — DNS, HTTPS, edge performance
+Cloudflare Web Analytics     — lightweight analytics
+Terraform (CF provider v4)   — infrastructure as code for all CF config
+Playwright                   — browser-level verification post-deploy
+Claude Code                  — large implementation batches, agent sessions
+Codex                        — focused patches, QA, conflict resolution
 ```
 
 Astro handles the public site and article system. Tailwind and design tokens handle the UI system. GitHub is the source of truth. Cloudflare Pages serves production. Playwright checks what the browser actually renders.
+
+Terraform manages the Cloudflare configuration — Pages project settings, branch deploy rules, custom domain. That is the layer that is easy to skip in a solo project and expensive to reconstruct later.
 
 The AI tools are part of the workflow, not the architecture itself.
 
@@ -175,6 +182,148 @@ My role was to decide:
 - whether the system was ready to publish.
 
 The agents produced and adjusted. I directed and accepted.
+
+---
+
+## Multi-agent coordination
+
+This project ran with multiple agents working concurrently: Claude Code on two separate accounts, Codex, and occasional manual commits. That combination introduced a coordination problem that a single-developer workflow does not have.
+
+The solution was a coordination layer built from three components:
+
+### Branch naming by source
+
+Every agent writes to its own branch, never directly to `main`.
+
+```text
+claude/serene-joliot-904970   ← Claude Code (auto-generated, from either account)
+codex/fix-footer-links        ← Codex (short description prefix)
+feat/work-page-redesign       ← manual commits from Wojciech
+```
+
+Claude Code creates worktrees automatically. Codex is configured to use the `codex/` prefix. This makes the source of every change visible in the branch list without inspecting commits.
+
+### How the agents interact without conflict
+
+The key rule: never two agents on the same branch simultaneously.
+
+In practice:
+- Claude Code opens a worktree on a new branch, completes a batch, raises a PR.
+- Codex works on a separate branch for QA, patches, or focused changes.
+- If both sessions touched the same file, the second merge resolves the conflict in the PR — not locally, and not interactively.
+
+```mermaid
+flowchart TD
+    CC1["Claude Code\n(account 1)"] -->|"claude/branch-a"| GH
+    CC2["Claude Code\n(account 2)"] -->|"claude/branch-b"| GH
+    CX["Codex"] -->|"codex/patch-x"| GH
+    WL["Wojciech\n(manual)"] -->|"feat/some-change"| GH
+
+    GH["GitHub\n(main branch)"] --> CI["GitHub Actions CI\nnpm ci + npm run build"]
+    CI -->|"pass"| PR["Pull Request\nreview + merge"]
+    PR --> MAIN["main"]
+    MAIN --> CF["Cloudflare Pages\nproduction deploy"]
+
+    TF["Terraform"] -->|"manages config"| CF
+    TF -->|"state in repo"| GH
+```
+
+### What keeps it clean between sessions
+
+- Each session ends with a merged or closed branch. No long-lived feature branches.
+- After merge, the worktree is removed locally: `git worktree remove`.
+- `terraform plan` after any CF dashboard change shows drift before it becomes a problem.
+
+---
+
+## Infrastructure layer
+
+Cloudflare Pages configuration is managed entirely by Terraform, not the dashboard.
+
+This matters for a few reasons that only become obvious after the first time dashboard settings diverge from what you thought was configured.
+
+The Terraform config covers:
+
+```hcl
+resource "cloudflare_pages_project" "wojciech_io" {
+  name              = "wojciech-io"
+  production_branch = "main"
+
+  source {
+    config {
+      preview_deployment_setting = "custom"
+      preview_branch_includes    = ["claude/**"]  # only agent branches get previews
+    }
+  }
+
+  deployment_configs {
+    production {
+      environment_variables = {
+        PUBLIC_CF_BEACON_TOKEN = "..."
+      }
+      compatibility_date = "2026-05-10"
+      usage_model        = "standard"
+      fail_open          = true
+    }
+  }
+}
+
+resource "cloudflare_pages_domain" "wojciech_io_custom" {
+  domain = "wojciech.io"
+}
+```
+
+The pattern is:
+
+```text
+terraform plan    ← shows what would change
+terraform apply   ← applies it
+git commit        ← the config change is now in version history
+```
+
+If the CF dashboard drifts — through a manual click, a CF platform update, or a careless change — `terraform plan` shows the diff before it becomes invisible. The state is committed in the repo. The config is reviewable in a PR.
+
+One specific fix this caught: after the first apply, Cloudflare's API silently downgraded `usage_model` from `standard` to `bundled`, reset `compatibility_date` to `2024-01-01`, and flipped `fail_open` to `false`. Without Terraform, those changes would have been invisible. With it, `terraform plan` showed the drift and `terraform apply` restored the correct state in two seconds.
+
+---
+
+## Security and process hardening
+
+Agentic builds introduce surface area that solo builds do not have. Multiple agents, multiple accounts, and automated pushes mean the repository needs explicit process controls.
+
+### What was put in place
+
+**CODEOWNERS**
+
+```
+* @wojciechluszczynski
+```
+
+All files in the repo are owned by one person. GitHub routes PR review requests accordingly. Simple, but it means nothing merges to `main` without that owner being in the loop.
+
+**CI on every push and PR**
+
+```yaml
+on:
+  push:
+    branches: ["main", "claude/**"]
+  pull_request:
+    branches: ["main"]
+```
+
+Every agent push triggers a build. If Claude Code or Codex produces a broken Astro build, CI catches it before the PR can proceed. The build artifact from `main` merges is retained for seven days.
+
+**Branch protection**
+
+Branch protection on private GitHub repos requires GitHub Pro. The alternative was a naming convention enforced by habit: agents use their prefix, humans use `feat/` or `fix/`. This is good enough for a project with one human decision-maker. If the repo ever goes public or the team grows, branch protection becomes worth the cost.
+
+**AI crawler access**
+
+Cloudflare's "Block AI bots" setting, if enabled from the dashboard, injects `Disallow` rules for ClaudeBot, GPTBot, Google-Extended, and others into a synthetic robots.txt. That setting was enabled and was silently blocking AI indexing.
+
+The fix was to disable it and switch to "Content Signals Policy" — which respects the `robots.txt` in the repo instead of overriding it. The repo's `robots.txt` explicitly allows all crawlers.
+
+That one setting was the reason the site was not visible in AI assistant search results despite ranking fine on Google.
 
 ---
 
@@ -276,16 +425,17 @@ The rebuild produced a maintainable portfolio system:
 
 - [wojciech.io](https://wojciech.io/) is now a code-first Astro site on Cloudflare Pages;
 - [app.wojciech.io](https://app.wojciech.io/) is aligned more closely with the public site;
-- Insights are real MDX articles;
-- the GTM Agent Starter Pack is the first article;
-- this rebuild case study is the second;
-- deployment is repeatable;
-- the design system is easier to iterate;
-- future agent-assisted work has a clearer structure.
+- Insights are real MDX articles with structured metadata, RSS, sitemap, and canonical URLs;
+- infrastructure config (Pages project, branch previews, domain, env vars) is managed by Terraform and version-controlled;
+- CI runs on every push from any agent — no broken builds reach `main` undetected;
+- CODEOWNERS routes all PR reviews to the right person regardless of which agent opened the PR;
+- AI crawlers can access the site — the Cloudflare dashboard setting that was blocking them is disabled;
+- multiple agents can work on separate branches concurrently without stepping on each other;
+- deployment is repeatable and verifiable at the custom domain level.
 
 The real value is not that AI made a website.
 
-The real value is that the site now has a workflow behind it.
+The real value is that the site now has a workflow behind it — and the workflow is also under version control.
 
 ---
 
@@ -299,11 +449,15 @@ The pattern is simple:
 4. Give Codex review, QA, patching, and deployment verification.
 5. Use screenshots, not opinions, to settle UI questions.
 6. Keep production verification as part of the workflow.
-7. Remove unnecessary moving parts instead of adding infrastructure for its own sake.
+7. Add Terraform from day one. Dashboard config is invisible drift waiting to happen.
+8. Use branch naming conventions to make agent authorship legible at a glance.
+9. Turn on CI before you add the second agent. A broken build from an automated session is harder to catch than a broken build from a human.
+10. Check crawler access explicitly. CF's "Block AI bots" dashboard toggle is on by default for many accounts and silently disables AI indexing.
+11. Remove unnecessary moving parts instead of adding infrastructure for its own sake.
 
 Agentic building does not remove judgment.
 
-It makes judgment more important.
+It makes judgment more important — and process hygiene matters more, not less, when agents are pushing to your repo.
 
 ---
 
