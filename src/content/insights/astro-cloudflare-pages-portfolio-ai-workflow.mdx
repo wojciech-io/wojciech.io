@@ -10,6 +10,7 @@ tags:
   - Cloudflare
   - Astro
   - Terraform
+  - i18n
 tldr:
   - "This was a real migration from a Framer-era portfolio into a versioned Astro + Cloudflare Pages system."
   - "The work was driven by a human product owner loop: direction, taste, scope, critique, approvals, and final decisions stayed with me."
@@ -284,6 +285,24 @@ git commit        ← the config change is now in version history
 If the CF dashboard drifts — through a manual click, a CF platform update, or a careless change — `terraform plan` shows the diff before it becomes invisible. The state is committed in the repo. The config is reviewable in a PR.
 
 One specific fix this caught: after the first apply, Cloudflare's API silently downgraded `usage_model` from `standard` to `bundled`, reset `compatibility_date` to `2024-01-01`, and flipped `fail_open` to `false`. Without Terraform, those changes would have been invisible. With it, `terraform plan` showed the drift and `terraform apply` restored the correct state in two seconds.
+
+---
+
+## Internationalisation as a system decision
+
+The site ships in three languages: English, Polish, and Italian. The implementation decision was deliberate and worth documenting as a system choice — not just a UI feature.
+
+**The URL vs localStorage problem.** Storing the active language in `localStorage` is quick to implement, but it breaks sharing. If a user sets the language to Polish and shares a link, the recipient sees whatever their `localStorage` says — likely English. URL-based routing solves this: `/pl/` and `/it/` are real routes, shareable and indexable. This matters for SEO and for link sharing through channels where you cannot control the recipient's browser state.
+
+**How the implementation works.** Rather than full Astro i18n with `defineConfig`, each language variant is a thin static wrapper page: `/pl/index.astro`, `/it/index.astro`, each importing the same Layout and components. On the component level, translatable strings are stored as `data-en`, `data-pl`, and `data-it` attributes on HTML elements. A small `setLang()` function reads the active language from the URL path, then swaps `textContent` on every attributed element. No framework routing, no virtual DOM re-render — just a targeted attribute scan on page load.
+
+**Why not `defineConfig` i18n.** For a personal site with five to ten pages, restructuring the content directory into locale subfolders (`/en/`, `/pl/`, `/it/`) would create more overhead than it solves. Thin wrapper pages are easier to maintain and require no Astro version constraints. The tradeoff: this approach does not scale cleanly past fifteen or twenty pages.
+
+**`initialLang` and `define:vars`.** The Layout component accepts an `initialLang` prop. This is injected via Astro's `define:vars` directive so the URL-detected language has priority over any `localStorage` value. This prevents the flash-of-wrong-language on first load of a localised URL.
+
+**SEO.** Each language variant includes `<link rel="alternate" hreflang="...">` tags pointing to the canonical URLs for all three languages. This is the minimum required for Google to correctly associate language variants.
+
+**The size tradeoff.** All three language strings are embedded in the HTML of every page. For landing pages, this is acceptable — the overhead is small and the deployment is simpler. For a content platform with hundreds of articles, this would not be the right architecture.
 
 ---
 
