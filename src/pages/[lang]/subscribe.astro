@@ -1,0 +1,185 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'pl' } },
+    { params: { lang: 'it' } },
+  ];
+}
+
+const { lang } = Astro.params;
+---
+
+<Layout
+  initialLang={lang}
+  title="Subscribe"
+  description="Get weekly notes on AI systems, GTM architecture, and what I'm building, straight to your inbox."
+  canonical="https://wojciech.io/subscribe"
+>
+
+  <section class="subscribe-page relative overflow-hidden border-b border-[var(--color-border)]">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
+    <div class="pointer-events-none absolute left-1/2 top-[-220px] h-[520px] w-[720px] -translate-x-1/2 rounded-full bg-[var(--color-accent)]/10 blur-[150px]" aria-hidden="true" />
+
+    <div class="relative mx-auto grid min-h-[calc(100dvh-154px)] max-w-6xl items-center gap-8 px-6 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(380px,0.72fr)] lg:py-20">
+      <div class="max-w-2xl animate-fade-up">
+        <div class="mb-7 inline-flex items-center gap-2 rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-glass)] px-3 py-1.5 backdrop-blur">
+          <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_18px_rgb(235_255_0/0.55)]"></span>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)]">AI Espresso</span>
+        </div>
+
+        <h1 class="max-w-[760px] text-[clamp(2.7rem,7vw,5.8rem)] font-semibold leading-[0.94] tracking-tight text-[var(--color-text)]">
+          Notes for people who ship.
+        </h1>
+
+        <p class="mt-7 max-w-xl text-base leading-relaxed text-[var(--color-text-muted)] md:text-lg">
+          A short operator note on AI systems, GTM architecture, automation, and software workflows. Practical, written from the builds, and sent from hello@wojciech.io.
+        </p>
+
+        <div class="mt-9 flex flex-wrap gap-2" aria-label="Newsletter details">
+          {['Free', 'Under 3 minutes', 'No surprise sequences', 'Unsubscribe anytime'].map((pill) => (
+            <span class="rounded-[var(--radius-badge)] border border-[var(--color-border-2)] bg-[var(--color-surface)]/70 px-3 py-1.5 text-xs font-medium text-[var(--color-text-muted)]">{pill}</span>
+          ))}
+        </div>
+      </div>
+
+      <aside class="animate-fade-up rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)]/92 p-5 shadow-[var(--shadow-card)] backdrop-blur md:p-7" style="animation-delay:100ms" aria-label="Subscribe to AI Espresso">
+        <div class="mb-6 border-b border-[var(--color-border)] pb-5">
+          <p class="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-dim)]">Subscribe</p>
+          <h2 class="text-2xl font-semibold leading-tight text-[var(--color-text)]">Get the next issue</h2>
+          <p class="mt-2 text-sm leading-relaxed text-[var(--color-text-muted)]">
+            Confirm your email once. No name needed.
+          </p>
+        </div>
+
+        <form id="subscribe-form" class="space-y-4" novalidate>
+          <div>
+            <label for="sub-email" class="mb-2 block text-xs font-medium text-[var(--color-text-muted)]">Email address</label>
+            <input
+              type="email"
+              id="sub-email"
+              name="email"
+              required
+              autocomplete="email"
+              inputmode="email"
+              placeholder="you@company.com"
+              class="h-12 w-full rounded-[var(--radius-btn)] border border-[var(--color-border-2)] bg-[var(--color-surface-2)] px-4 text-sm font-medium text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/15"
+            />
+          </div>
+
+          <div>
+            <label for="sub-email-confirm" class="mb-2 block text-xs font-medium text-[var(--color-text-muted)]">Confirm email address</label>
+            <input
+              type="email"
+              id="sub-email-confirm"
+              name="email-confirm"
+              required
+              autocomplete="email"
+              inputmode="email"
+              placeholder="you@company.com"
+              class="h-12 w-full rounded-[var(--radius-btn)] border border-[var(--color-border-2)] bg-[var(--color-surface-2)] px-4 text-sm font-medium text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)] focus:ring-2 focus:ring-[var(--color-accent)]/15"
+            />
+          </div>
+
+          <button
+            type="submit"
+            id="sub-btn"
+            class="btn-press mt-2 inline-flex h-12 w-full items-center justify-center rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Subscribe free →
+          </button>
+
+          <p id="sub-status" class="min-h-5 text-center text-xs text-[var(--color-text-dim)]" role="status" aria-live="polite"></p>
+        </form>
+
+        <p class="mt-4 text-xs leading-relaxed text-[var(--color-text-dim)]">
+          By subscribing, you agree to receive email notes from <a class="font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)]" href="mailto:hello@wojciech.io">hello@wojciech.io</a>.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
+    <div class="mx-auto grid max-w-6xl gap-8 px-6 md:grid-cols-[0.72fr_1.28fr]">
+      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)]">Inside the notes</p>
+      <div class="grid gap-3 md:grid-cols-3">
+        {[
+          ['AI systems', 'Agents, automations, product workflows, and what survives real usage.'],
+          ['GTM architecture', 'Revenue systems, messaging, growth loops, outbound, and operating cadence.'],
+          ['Build log', 'What shipped across wojciech.io, app.wojciech.io, and the tools around them.'],
+        ].map(([title, copy]) => (
+          <article class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+            <div class="mb-4 h-px w-10 bg-[var(--color-accent)]"></div>
+            <h3 class="text-sm font-semibold text-[var(--color-text)]">{title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[var(--color-text-muted)]">{copy}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<script>
+  const form = document.getElementById('subscribe-form') as HTMLFormElement;
+  const status = document.getElementById('sub-status') as HTMLElement;
+  const btn = document.getElementById('sub-btn') as HTMLButtonElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const emailInput = form.querySelector('#sub-email') as HTMLInputElement;
+    const emailConfirmInput = form.querySelector('#sub-email-confirm') as HTMLInputElement;
+    const email = emailInput.value.trim().toLowerCase();
+    const emailConfirm = emailConfirmInput.value.trim().toLowerCase();
+
+    if (!emailInput.value || !emailInput.validity.valid) {
+      status.textContent = 'Please enter a valid email address.';
+      status.className = 'min-h-5 text-center text-xs text-red-400';
+      emailInput.focus();
+      return;
+    }
+
+    if (!emailConfirmInput.value || !emailConfirmInput.validity.valid || email !== emailConfirm) {
+      status.textContent = 'Email confirmation does not match.';
+      status.className = 'min-h-5 text-center text-xs text-red-400';
+      emailConfirmInput.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Subscribing...';
+    status.textContent = '';
+    status.className = 'min-h-5 text-center text-xs text-[var(--color-text-dim)]';
+
+    try {
+      const data = {
+        email,
+      };
+
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        form.reset();
+        btn.textContent = 'Subscribed';
+        btn.classList.add('bg-[var(--color-success)]');
+        status.textContent = "You're in. Check your inbox if confirmation is required.";
+        status.className = 'min-h-5 text-center text-xs text-[var(--color-text-muted)]';
+      } else {
+        const json = await res.json().catch(() => ({}));
+        throw new Error((json as any)?.error || 'Failed');
+      }
+    } catch (err: any) {
+      btn.disabled = false;
+      btn.textContent = 'Subscribe free →';
+      status.textContent = err?.message === 'Failed' ? 'Something went wrong. Try again.' : (err?.message || 'Something went wrong.');
+      status.className = 'min-h-5 text-center text-xs text-red-400';
+    }
+  });
+</script>
