@@ -1,0 +1,68 @@
+---
+title: MDX components showcase
+description: Living reference for rich MDX components available in insights articles.
+publishedAt: 2026-05-19
+tags: [internal, reference]
+tldr:
+  - Stat and StatRow give numbers their own weight
+  - DoDont replaces wishy-washy advice with two columns of opinion
+  - Drop-in site UI components work in MDX now
+draft: true
+coverType: default
+category: Operator Playbooks
+---
+
+The TL;DR above is auto-rendered from frontmatter. Below — every rich component, in one place.
+
+## Stat + StatRow
+
+Use for proof-led storytelling. Tabular nums, big lime numbers.
+
+<StatRow cols={3}>
+  <Stat value="47%" label="Pipeline lift" sub="Quarter over quarter" />
+  <Stat value="3 wks" label="From idea to shipped" />
+  <Stat value="€0" label="Tooling cost" sub="Cloudflare + Astro stack" />
+</StatRow>
+
+## DoDont
+
+Sadowski-style. No hedging.
+
+<DoDont
+  do={[
+    "Hire an operator who already shipped this",
+    "Wire CRM, SEO and paid into one system",
+    "Measure pipeline, not impressions",
+  ]}
+  dont={[
+    "Hire an agency to 'do growth'",
+    "Buy six tools that don't talk to each other",
+    "Optimize for vanity metrics",
+  ]}
+/>
+
+## Callout (existing)
+
+<Callout type="tip" title="Pro tip">
+  These components are wired into `src/pages/insights/[slug].astro` — adding new ones means editing the `mdxComponents` map.
+</Callout>
+
+## Drop-in site components
+
+Now usable in MDX. Inline `<Badge>AI-native</Badge>` works in text flow.
+
+<Button href="/work/" variant="primary">See the work</Button>
+
+<SectionHeader eyebrow="Reference" title="Use anywhere" />
+
+<FAQ items={[
+  { question: "Can I use Badge inline?", answer: "Yes — wrap any text with <Badge>label</Badge>." },
+  { question: "Do these respect dark mode?", answer: "All use design tokens, so themes follow automatically." },
+]} />
+
+<CTABand
+  heading="Want this stack?"
+  subtext="The whole site runs on Astro + Cloudflare Pages + MDX. Open source-ish."
+  cta="See the article"
+  ctaHref="/insights/astro-cloudflare-pages-portfolio-ai-workflow/"
+/>
