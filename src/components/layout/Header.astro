@@ -292,7 +292,7 @@ const home = langPrefix ? langPrefix + '/' : '/';
   });
   document.addEventListener('click', closeLangMenus);
 
-  // Language URL navigation — switchLang always navigates to lang-prefixed URL
+  // Language URL navigation
   (window as any).switchLang = function(lang: string) {
     const supportedLangs = ['en', 'pl', 'it'];
     if (!supportedLangs.includes(lang)) return;
@@ -300,7 +300,8 @@ const home = langPrefix ? langPrefix + '/' : '/';
     const currentPath = window.location.pathname;
     // Strip any existing lang prefix
     const basePath = currentPath.replace(/^\/(en|pl|it)(\/|$)/, '/') || '/';
-    const targetUrl = `/${lang}${basePath === '/' ? '/' : basePath}`;
+    // EN pages live at root (/about), PL/IT get a prefix (/pl/about)
+    const targetUrl = lang === 'en' ? basePath : `/${lang}${basePath}`;
     localStorage.setItem('wio_lang', lang);
     window.location.href = targetUrl;
   };
