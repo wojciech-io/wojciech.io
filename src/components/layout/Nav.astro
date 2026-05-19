@@ -3,12 +3,12 @@ interface Props { prefix?: string; }
 const { prefix = '' } = Astro.props;
 
 export const links = [
-  { label: 'Work',     href: '/work',       pl: 'Projekty',  it: 'Progetti'  },
-  { label: 'Apps',     href: '/apps',       pl: 'Aplikacje', it: 'App'       },
-  { label: 'AI',       href: '/ai-systems', pl: 'AI',        it: 'AI'        },
-  { label: 'Insights', href: '/insights',   pl: 'Artykuly',  it: 'Articoli'  },
-  { label: 'About',    href: '/about',      pl: 'O mnie',    it: 'Chi sono'  },
-  { label: 'Contact',  href: '/contact',    pl: 'Kontakt',   it: 'Contatti'  },
+  { label: 'Work',     href: '/work',       pl: 'Projekty',  it: 'Progetti',  minWidth: '4rem'   },
+  { label: 'Apps',     href: '/apps',       pl: 'Aplikacje', it: 'App',       minWidth: '4.5rem' },
+  { label: 'AI',       href: '/ai-systems', pl: 'AI',        it: 'AI',        minWidth: '1.25rem' },
+  { label: 'Insights', href: '/insights',   pl: 'Artykuły',  it: 'Articoli',  minWidth: '4rem'   },
+  { label: 'About',    href: '/about',      pl: 'O mnie',    it: 'Chi sono',  minWidth: '4rem'   },
+  { label: 'Contact',  href: '/contact',    pl: 'Kontakt',   it: 'Contatti',  minWidth: '4rem'   },
 ];
 
 const current = Astro.url.pathname;
@@ -16,7 +16,7 @@ const current = Astro.url.pathname;
 
 <nav aria-label="Primary navigation">
   <ul class="flex items-center gap-6 list-none m-0 p-0">
-    {links.map(({ label, href, external, pl, it }) => {
+    {links.map(({ label, href, external, pl, it, minWidth }) => {
       const dest = external ? href : prefix + href;
       const isActive = !external && (href === '/' ? current === dest + '/' || current === dest : current.startsWith(dest));
       return (
@@ -27,8 +27,9 @@ const current = Astro.url.pathname;
             data-pl={pl}
             data-it={it}
             aria-current={isActive ? 'page' : undefined}
+            style={`min-width:${minWidth};text-align:center`}
             class:list={[
-              'nav-link text-sm font-medium tracking-wide transition-colors duration-150 pb-0.5',
+              'nav-link inline-block text-sm font-medium tracking-wide transition-colors duration-150 pb-0.5',
               isActive
                 ? 'text-[var(--color-text)]'
                 : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
