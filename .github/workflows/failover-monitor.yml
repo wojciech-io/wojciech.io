@@ -1,0 +1,108 @@
+name: Failover Monitor
+
+# Runs every 5 minutes. On site down → switches DNS to Azure SWA.
+# On site recovery → restores DNS to Cloudflare Pages.
+# Manual override available via workflow_dispatch.
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force action (check = auto-detect only)'
+        required: false
+        default: 'check'
+        type: choice
+        options: [check, failover, restore]
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Health check (3 attempts × 20 s)
+        id: health
+        run: |
+          HEALTHY=false
+          for i in 1 2 3; do
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+              --max-time 15 --connect-timeout 10 \
+              https://wojciech.io 2>/dev/null || echo "000")
+            echo "Attempt $i: HTTP $CODE"
+            if [[ "$CODE" =~ ^[23] ]]; then
+              HEALTHY=true
+              break
+            fi
+            [ $i -lt 3 ] && sleep 20
+          done
+          echo "healthy=$HEALTHY" >> $GITHUB_OUTPUT
+
+      - name: Get current DNS state
+        id: dns
+        run: |
+          TARGET=$(curl -s \
+            "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/dns_records/${{ secrets.CF_ROOT_RECORD_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
+            | jq -r '.result.content // "unknown"')
+
+          if   [ "$TARGET" = "wojciech-io.pages.dev" ]; then STATE=primary
+          elif [ "$TARGET" = "unknown" ];                then STATE=unknown
+          else                                               STATE=azure
+          fi
+
+          echo "state=$STATE" >> $GITHUB_OUTPUT
+          echo "DNS currently → $TARGET  (state: $STATE)"
+
+      - name: Failover → Azure Static Web Apps
+        if: |
+          (steps.health.outputs.healthy == 'false' && steps.dns.outputs.state == 'primary') ||
+          inputs.force == 'failover'
+        run: |
+          RESULT=$(curl -s -X PATCH \
+            "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/dns_records/${{ secrets.CF_ROOT_RECORD_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"content\": \"${{ secrets.AZURE_SWA_HOSTNAME }}\", \"proxied\": true}")
+
+          SUCCESS=$(echo "$RESULT" | jq -r '.success')
+          ERRORS=$(echo "$RESULT" | jq -c '.errors')
+
+          if [ "$SUCCESS" = "true" ]; then
+            echo "::warning::FAILOVER — wojciech.io DNS switched to Azure Static Web Apps"
+            echo "### ⚠️ FAILOVER active" >> $GITHUB_STEP_SUMMARY
+            echo "wojciech.io → Azure Static Web Apps" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "::error::Failover DNS update failed: $ERRORS"
+            exit 1
+          fi
+
+      - name: Restore → Cloudflare Pages
+        if: |
+          (steps.health.outputs.healthy == 'true' && steps.dns.outputs.state == 'azure') ||
+          inputs.force == 'restore'
+        run: |
+          RESULT=$(curl -s -X PATCH \
+            "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/dns_records/${{ secrets.CF_ROOT_RECORD_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"content": "wojciech-io.pages.dev", "proxied": true}')
+
+          SUCCESS=$(echo "$RESULT" | jq -r '.success')
+          ERRORS=$(echo "$RESULT" | jq -c '.errors')
+
+          if [ "$SUCCESS" = "true" ]; then
+            echo "::notice::RESTORE — wojciech.io DNS back to Cloudflare Pages"
+            echo "### ✅ Restored to Cloudflare Pages" >> $GITHUB_STEP_SUMMARY
+            echo "wojciech.io → wojciech-io.pages.dev" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "::error::Restore DNS update failed: $ERRORS"
+            exit 1
+          fi
+
+      - name: Status — no action needed
+        if: |
+          steps.health.outputs.healthy == 'true' && steps.dns.outputs.state == 'primary' ||
+          steps.health.outputs.healthy == 'false' && steps.dns.outputs.state == 'azure'
+        run: |
+          echo "OK — no DNS change needed (healthy=${{ steps.health.outputs.healthy }}, state=${{ steps.dns.outputs.state }})"
