@@ -6,6 +6,7 @@ tags: [internal, reference]
 tldr:
   - Stat and StatRow give numbers their own weight
   - DoDont replaces wishy-washy advice with two columns of opinion
+  - Steps, PullQuote, TechStack and TOC cover the second MDX component batch
   - Drop-in site UI components work in MDX now
 draft: true
 coverType: default
@@ -13,6 +14,8 @@ category: Operator Playbooks
 ---
 
 The TL;DR above is auto-rendered from frontmatter. Below — every rich component, in one place.
+
+<TOC title="Component index" />
 
 ## Stat + StatRow
 
@@ -41,6 +44,50 @@ Sadowski-style. No hedging.
   ]}
 />
 
+## Steps
+
+Use for process sections where the order matters more than paragraph rhythm.
+
+<Steps
+  title="Migration loop"
+  items={[
+    { title: "Freeze the source of truth", body: "Decide which repo and route own the canonical page before touching copy.", meta: "01 / scope" },
+    { title: "Move one layer at a time", body: "Routes, content, components and deploy rules should each have a clear verification point.", meta: "02 / build" },
+    { title: "Ship with a rollback path", body: "The migration is done only when production, redirects and analytics agree.", meta: "03 / verify" },
+  ]}
+/>
+
+## PullQuote
+
+<PullQuote source="wojciech.io migration note" role="operator principle">
+  A site rebuild is not a design exercise. It is a decision about who owns the system after launch.
+</PullQuote>
+
+## TechStack
+
+<TechStack
+  title="Publishing stack"
+  caption="The article layer is deliberately boring: files, components, build output, deploy checks."
+  groups={[
+    {
+      label: "Content",
+      items: [
+        { label: "Astro", detail: "routes" },
+        { label: "MDX", detail: "articles" },
+        { label: "Content collections", detail: "schema" },
+      ],
+    },
+    {
+      label: "Delivery",
+      items: [
+        { label: "Cloudflare Pages", detail: "static deploy" },
+        { label: "GitHub", detail: "source" },
+        { label: "Sentry", detail: "runtime signal" },
+      ],
+    },
+  ]}
+/>
+
 ## Callout (existing)
 
 <Callout type="tip" title="Pro tip">
@@ -53,7 +100,7 @@ Now usable in MDX. Inline `<Badge>AI-native</Badge>` works in text flow.
 
 <Button href="/work/" variant="primary">See the work</Button>
 
-<SectionHeader eyebrow="Reference" title="Use anywhere" />
+<SectionHeader eyebrow="Reference" heading="Use anywhere" />
 
 <FAQ items={[
   { question: "Can I use Badge inline?", answer: "Yes — wrap any text with <Badge>label</Badge>." },
