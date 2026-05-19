@@ -1,23 +1,41 @@
 ---
 interface Props {
   heading?: string;
+  headingPl?: string;
+  headingIt?: string;
   subtext?: string;
+  subtextPl?: string;
+  subtextIt?: string;
   cta?: string;
+  ctaPl?: string;
+  ctaIt?: string;
   ctaHref?: string;
   ctaSecondary?: string;
+  ctaSecondaryPl?: string;
+  ctaSecondaryIt?: string;
   ctaSecondaryHref?: string;
 }
 const {
   heading = 'Have a system worth fixing?',
+  headingPl,
+  headingIt,
   subtext = 'Send the context, the current bottleneck, and what already exists. I will tell you where I would start.',
+  subtextPl,
+  subtextIt,
   cta = 'Book a call',
+  ctaPl,
+  ctaIt,
   ctaHref = '/contact#book-call',
   ctaSecondary = 'See the work',
+  ctaSecondaryPl,
+  ctaSecondaryIt,
   ctaSecondaryHref = '/work',
 } = Astro.props;
 const ctaIsExternal = ctaHref.startsWith('http');
 const secondaryIsExternal = ctaSecondaryHref.startsWith('http');
 const headingLines = heading.split('\n');
+const headingPlLines = (headingPl ?? heading).split('\n');
+const headingItLines = (headingIt ?? heading).split('\n');
 ---
 
 <section class="py-14 md:py-20 relative overflow-hidden bg-[var(--color-surface)]">
@@ -26,17 +44,17 @@ const headingLines = heading.split('\n');
 
   <div class="relative mx-auto grid max-w-6xl gap-6 px-6 md:grid-cols-[1fr_auto] md:items-end">
     <div class="max-w-2xl">
-      <p data-en="Next step" data-pl="Nastepny krok" data-it="Prossimo passo" class="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Next step</p>
+      <p data-en="Next step" data-pl="Następny krok" data-it="Prossimo passo" class="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Next step</p>
       <h2 class="text-2xl font-semibold leading-[1.12] tracking-tight text-[var(--color-text)] md:text-3xl">
         {headingLines.map((line, index) => (
           <>
-            <span class={index > 0 ? 'text-[var(--color-text-muted)]' : ''}>{line}</span>
+            <span data-en={line} data-pl={headingPlLines[index] ?? line} data-it={headingItLines[index] ?? line} class={index > 0 ? 'text-[var(--color-text-muted)]' : ''}>{line}</span>
             {index < headingLines.length - 1 && <br />}
           </>
         ))}
       </h2>
 
-      <p class="mt-3 max-w-xl text-sm leading-relaxed text-[var(--color-text-muted)]">
+      <p data-en={subtext} data-pl={subtextPl ?? subtext} data-it={subtextIt ?? subtext} class="mt-3 max-w-xl text-sm leading-relaxed text-[var(--color-text-muted)]">
         {subtext}
       </p>
     </div>
@@ -47,7 +65,7 @@ const headingLines = heading.split('\n');
         {...(ctaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         class="btn-press inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 py-2.5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:opacity-90"
       >
-        {cta}
+        <span data-en={cta} data-pl={ctaPl ?? cta} data-it={ctaIt ?? cta}>{cta}</span>
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
           <path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -55,6 +73,7 @@ const headingLines = heading.split('\n');
       <a
         href={ctaSecondaryHref}
         {...(secondaryIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        data-en={ctaSecondary} data-pl={ctaSecondaryPl ?? ctaSecondary} data-it={ctaSecondaryIt ?? ctaSecondary}
         class="btn-press inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-5 py-2.5 text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:border-[var(--color-border)] hover:text-[var(--color-text)]"
       >
         {ctaSecondary}

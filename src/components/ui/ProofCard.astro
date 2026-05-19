@@ -6,7 +6,11 @@ interface Metric {
 
 interface Props {
   title: string;
+  titlePl?: string;
+  titleIt?: string;
   description: string;
+  descriptionPl?: string;
+  descriptionIt?: string;
   tags?: string[];
   metrics?: Metric[];
   href?: string;
@@ -16,7 +20,7 @@ interface Props {
   featured?: boolean;
 }
 
-const { title, description, tags = [], metrics = [], href, image, icon, featured = false } = Astro.props;
+const { title, titlePl, titleIt, description, descriptionPl, descriptionIt, tags = [], metrics = [], href, image, icon, featured = false } = Astro.props;
 ---
 
 <div class:list={[
@@ -75,19 +79,21 @@ const { title, description, tags = [], metrics = [], href, image, icon, featured
     {/* Title */}
     <h3 class="text-base font-semibold text-[var(--color-text)] mb-2 leading-snug group-hover:text-[var(--color-accent-hi)] transition-colors duration-150">
       {href ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" class="after:absolute after:inset-0">
+        <a href={href} target="_blank" rel="noopener noreferrer" data-en={title} data-pl={titlePl ?? title} data-it={titleIt ?? title} class="after:absolute after:inset-0">
           {title}
         </a>
-      ) : title}
+      ) : (
+        <span data-en={title} data-pl={titlePl ?? title} data-it={titleIt ?? title}>{title}</span>
+      )}
     </h3>
 
     {/* Description */}
-    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5">{description}</p>
+    <p data-en={description} data-pl={descriptionPl ?? description} data-it={descriptionIt ?? description} class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5">{description}</p>
 
     {/* Arrow if has link */}
     {href && (
       <div class="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors duration-150">
-        <span>View</span>
+        <span data-en="View" data-pl="Zobacz" data-it="Vedi">View</span>
         <svg class="w-3 h-3 translate-x-0 group-hover:translate-x-1 transition-transform duration-150" viewBox="0 0 12 12" fill="none" aria-hidden="true">
           <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
