@@ -1,0 +1,71 @@
+---
+interface Props {
+  label?: string;
+  dashed?: boolean;
+  direction?: 'right' | 'left' | 'both' | 'down';
+}
+
+const { label, dashed = false, direction = 'right' } = Astro.props;
+const isVertical = direction === 'down';
+---
+
+<div class={`diagram-arrow ${isVertical ? 'diagram-arrow-vertical' : ''}`} data-dashed={dashed}>
+  <svg
+    viewBox={isVertical ? '0 0 24 60' : '0 0 60 24'}
+    width={isVertical ? '24' : '60'}
+    height={isVertical ? '60' : '24'}
+    fill="none"
+    aria-hidden="true"
+  >
+    {direction === 'right' && (
+      <>
+        <line x1="2" y1="12" x2="52" y2="12" stroke="currentColor" stroke-width="1.5" stroke-dasharray={dashed ? '4 3' : '0'} stroke-linecap="round" />
+        <polyline points="46,6 54,12 46,18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </>
+    )}
+    {direction === 'left' && (
+      <>
+        <line x1="8" y1="12" x2="58" y2="12" stroke="currentColor" stroke-width="1.5" stroke-dasharray={dashed ? '4 3' : '0'} stroke-linecap="round" />
+        <polyline points="14,6 6,12 14,18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </>
+    )}
+    {direction === 'both' && (
+      <>
+        <line x1="8" y1="12" x2="52" y2="12" stroke="currentColor" stroke-width="1.5" stroke-dasharray={dashed ? '4 3' : '0'} stroke-linecap="round" />
+        <polyline points="14,6 6,12 14,18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        <polyline points="46,6 54,12 46,18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </>
+    )}
+    {direction === 'down' && (
+      <>
+        <line x1="12" y1="2" x2="12" y2="52" stroke="currentColor" stroke-width="1.5" stroke-dasharray={dashed ? '4 3' : '0'} stroke-linecap="round" />
+        <polyline points="6,46 12,54 18,46" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </>
+    )}
+  </svg>
+  {label && <span class="diagram-arrow-label">{label}</span>}
+</div>
+
+<style>
+  .diagram-arrow {
+    display: inline-flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.125rem;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    min-width: 3.75rem;
+  }
+  .diagram-arrow-label {
+    font-size: 0.625rem;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    margin-top: -0.25rem;
+  }
+  .diagram-arrow-vertical {
+    min-width: 1.5rem;
+    align-self: center;
+  }
+</style>
