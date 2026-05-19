@@ -66,3 +66,43 @@ Now usable in MDX. Inline `<Badge>AI-native</Badge>` works in text flow.
   cta="See the article"
   ctaHref="/insights/astro-cloudflare-pages-portfolio-ai-workflow/"
 />
+
+## Diagrams — Box + Arrow + Stack
+
+Declarative primitives. No Mermaid, no SVG editor — just nested components.
+
+**Linear flow** (most common):
+
+<Diagram caption="Request flow through Cloudflare edge">
+  <Box label="Browser" />
+  <Arrow label="HTTPS" />
+  <Box label="CF edge" sub="cache hit" variant="accent" />
+  <Arrow label="miss" dashed />
+  <Box label="Origin" />
+</Diagram>
+
+**Branching** (fan-out via Stack):
+
+<Diagram caption="Auth gate → multiple downstream services">
+  <Box label="Request" />
+  <Arrow />
+  <Box label="Worker" sub="middleware" variant="accent" />
+  <Arrow />
+  <Stack gap="sm">
+    <Box label="KV" sub="sessions" />
+    <Box label="D1" sub="users" />
+    <Box label="Email" sub="OTP" variant="muted" />
+  </Stack>
+</Diagram>
+
+**Layered architecture** (vertical):
+
+<Diagram direction="column" caption="Four-layer GTM AI architecture">
+  <Box label="Layer 4 — Action" sub="CRM sync, sequences" variant="accent" />
+  <Arrow direction="down" />
+  <Box label="Layer 3 — Decision" sub="scoring, routing" />
+  <Arrow direction="down" />
+  <Box label="Layer 2 — Enrichment" sub="firmographic, signal" />
+  <Arrow direction="down" />
+  <Box label="Layer 1 — Source" sub="forms, intent, ICP list" variant="muted" />
+</Diagram>

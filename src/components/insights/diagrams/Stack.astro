@@ -1,0 +1,25 @@
+---
+interface Props {
+  direction?: 'row' | 'column';
+  gap?: 'sm' | 'md' | 'lg';
+  align?: 'start' | 'center' | 'stretch';
+}
+
+const { direction = 'column', gap = 'md', align = 'center' } = Astro.props;
+const gapMap = { sm: '0.25rem', md: '0.5rem', lg: '1rem' };
+---
+
+<div
+  class="diagram-stack"
+  style={`flex-direction:${direction}; gap:${gapMap[gap]}; align-items:${align === 'stretch' ? 'stretch' : align === 'start' ? 'flex-start' : 'center'}`}
+>
+  <slot />
+</div>
+
+<style>
+  .diagram-stack {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>
