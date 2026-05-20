@@ -1,0 +1,113 @@
+---
+// MDX component — Before/After comparison block.
+// Usage:
+//   <BeforeAfter
+//     before={{ title: "Before", body: "Old way" }}
+//     after={{ title: "After",  body: "New way" }}
+//   />
+// Use for transformations: process changes, system before/after, stack moves.
+
+interface Side {
+  title: string;
+  body: string;
+  caption?: string;
+}
+interface Props {
+  before: Side;
+  after: Side;
+  label?: string;     // optional eyebrow above the block
+}
+const { before, after, label } = Astro.props;
+---
+
+<figure class="ba-block">
+  {label && <p class="ba-eyebrow">{label}</p>}
+  <div class="ba-grid">
+    <div class="ba-side ba-before">
+      <span class="ba-tag">{before.title}</span>
+      <p class="ba-body">{before.body}</p>
+      {before.caption && <p class="ba-caption">{before.caption}</p>}
+    </div>
+    <div class="ba-arrow" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
+    </div>
+    <div class="ba-side ba-after">
+      <span class="ba-tag ba-tag-accent">{after.title}</span>
+      <p class="ba-body">{after.body}</p>
+      {after.caption && <p class="ba-caption">{after.caption}</p>}
+    </div>
+  </div>
+</figure>
+
+<style>
+  .ba-block { margin: 2rem 0; }
+  .ba-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: 0.75rem;
+  }
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  @media (max-width: 640px) {
+    .ba-grid { grid-template-columns: 1fr; }
+    .ba-arrow { display: none; }
+  }
+  .ba-side {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    display: flex; flex-direction: column;
+  }
+  .ba-after {
+    border-color: var(--color-accent);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 5%, var(--color-surface)), var(--color-surface));
+  }
+  .ba-tag {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: 0.75rem;
+  }
+  .ba-tag-accent {
+    color: var(--color-bg);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .ba-body {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--color-text);
+    margin: 0;
+  }
+  .ba-caption {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--color-border);
+    font-size: 0.8rem;
+    color: var(--color-text-dim);
+  }
+  .ba-arrow {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-accent);
+    width: 32px;
+  }
+  .ba-arrow svg { width: 24px; height: 24px; }
+</style>
