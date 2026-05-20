@@ -9,16 +9,16 @@ import {
   topLeads,
 } from '../lib/dummy-data';
 
-// v1.0: real data adapters live in src/lib/{ga4,crm,scoring}.ts (TODO).
-// Until D1 schema lands and nightly cron pulls populate it, the gated
-// "real" view falls back to the same dataset as /demo. The middleware
-// still requires auth on /, so this is private — just unpopulated.
-//
-// Swap order in v1.1:
-//   1. Read from D1 via env.GROWTHHUB_DB
-//   2. If no rows or stale (>48h), fall back to dummy data with a stale banner
+// Gated route. Initial render uses dummy data so the page paints fast.
+// After hydration we fetch /api/dashboard — if D1 has rows, we swap in
+// real values (and hide the "no data" banner). Empty DB → keep dummy +
+// show banner so the operator knows what they're looking at.
 ---
 <Layout title="GrowthHub" activePage="review" isDemo={false}>
+  <div id="gh-empty-banner" style="display:none;margin:-12px 0 16px;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--bg2);font-size:12px;color:var(--text-2);align-items:center;gap:10px">
+    <span style="font-weight:700;color:var(--text)">Brak danych z D1.</span>
+    <span> GA4 / Pipedrive nie skonfigurowane jeszcze — pokazuję syntetyczne dane (te same co /demo). Wpadnie real-data po pierwszym sync.</span>
+  </div>
   <WeeklyReview
     headline={headlineMetrics}
     acquisition={acquisitionLast14}
@@ -26,4 +26,44 @@ import {
     pipeline={pipeline}
     topLeads={topLeads}
   />
+
+  <script is:inline>
+  (async () => {
+    try {
+      const r = await fetch('/api/dashboard', { credentials: 'same-origin' });
+      if (!r.ok) return;
+      const data = await r.json();
+      const banner = document.getElementById('gh-empty-banner');
+      if (data.source === 'empty') {
+        if (banner) banner.style.display = 'flex';
+        return;
+      }
+      if (data.source === 'd1') {
+        // Hot-swap headline metric values + delta classes.
+        const set = (selector, value, delta, isGood) => {
+          const el = document.querySelector(selector);
+          if (!el) return;
+          el.querySelector('.gh-metric-value').textContent = value;
+          const d = el.querySelector('.gh-metric-delta');
+          if (d) {
+            d.textContent = (delta >= 0 ? '+' : '') + (delta * 100).toFixed(1) + '% wow';
+            d.className = 'gh-metric-delta ' + (isGood(delta) ? 'up' : 'down');
+          }
+        };
+        const fc = (cents) => {
+          if (cents >= 100_000_000) return '$' + (cents / 100_000_000).toFixed(2) + 'M';
+          if (cents >= 100_000) return '$' + (cents / 100_000).toFixed(1) + 'k';
+          return '$' + (cents / 100).toFixed(0);
+        };
+        const h = data.headline;
+        const cards = document.querySelectorAll('.gh-metric');
+        if (cards[0]) cards[0].querySelector('.gh-metric-value').textContent = h.sessions_7d.toLocaleString();
+        if (cards[1]) cards[1].querySelector('.gh-metric-value').textContent = h.signups_7d.toString();
+        if (cards[2]) cards[2].querySelector('.gh-metric-value').textContent = h.leads_7d.toString();
+        if (cards[3]) cards[3].querySelector('.gh-metric-value').textContent = fc(h.cpl_7d_cents);
+        // Delta swaps left for v1.2 when we have a proper client component.
+      }
+    } catch {}
+  })();
+  </script>
 </Layout>
