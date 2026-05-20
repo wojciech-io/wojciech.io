@@ -1,0 +1,366 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const previewItems = [
+  {
+    tag: 'GTM',
+    title: 'Copilot idzie w usage based billing, policz to na raportach.',
+    body: 'GitHub udostępnia raporty, żeby przygotować się do AI Credits. Warto teraz wpiąć to do budżetu i zasad użycia.',
+    link: 'github.blog',
+  },
+  {
+    tag: 'SDK',
+    title: 'Vercel publikuje SDK, które działa też jako MCP server.',
+    body: 'Mniej własnych wrapperów na API. Szybciej dodasz: deploy, env vars, projekty, logi.',
+    link: 'github.com/vercel/sdk',
+  },
+  {
+    tag: 'SEC',
+    title: 'OpenAI Privacy Filter — open weight model do redakcji PII.',
+    body: 'Wykrywa dane wrażliwe zanim trafią do modelu. Przydaje się gdy agent czyta tickety, maile, logi.',
+    link: 'openai.com',
+  },
+];
+---
+
+<Layout>
+  <main id="top">
+
+    <!-- ─── HERO ───────────────────────────────────────────────────── -->
+    <section class="relative overflow-hidden" style="min-height: 640px; border-bottom: 1px solid var(--color-border);">
+
+      <!-- Subtle grid -->
+      <div class="pointer-events-none absolute inset-0" style="background-image: linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px); background-size: 48px 48px;" aria-hidden="true"></div>
+      <!-- Depth blob -->
+      <div class="pointer-events-none absolute" style="left: -120px; top: -200px; height: 520px; width: 620px; border-radius: 9999px; background: var(--color-surface); filter: blur(140px); opacity: 0.65;" aria-hidden="true"></div>
+
+      <!-- Photo: desktop right half, absolute -->
+      <div class="hidden lg:block absolute right-0 top-0 bottom-0" style="width: 46%; overflow: hidden;" aria-hidden="true">
+        <img
+          src="/wojciech.jpg"
+          alt=""
+          width="860"
+          height="1100"
+          loading="eager"
+          decoding="async"
+          style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center;"
+        />
+        <!-- Left fade: blends photo into warm bg -->
+        <div class="absolute inset-y-0 left-0 pointer-events-none" style="width: 32%; background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);"></div>
+        <!-- Bottom fade -->
+        <div class="absolute inset-x-0 bottom-0 pointer-events-none" style="height: 22%; background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%);"></div>
+
+        <!-- Proof rail -->
+        <div class="absolute" style="bottom: 2.5rem; left: 2rem; right: 1rem; z-index: 10;">
+          <div style="width: min(380px, 100%); overflow: hidden; border-radius: 1rem; border: 1px solid var(--color-border); background: var(--color-glass); box-shadow: var(--shadow-card); backdrop-filter: blur(12px);">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); divide-x: 1px solid var(--color-border);">
+              {[
+                { label: 'Cadence', value: 'Daily', note: 'weekdays' },
+                { label: 'Read time', value: '3 min', note: 'or less' },
+                { label: 'Cost', value: 'Free', note: 'always' },
+              ].map(({ label, value, note }) => (
+                <div style="padding: 0.875rem 1rem; border-right: 1px solid var(--color-border);">
+                  <p style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim);">{label}</p>
+                  <p style="margin-top: 0.25rem; font-size: 0.875rem; font-weight: 600; color: var(--color-text);">{value}</p>
+                  <p style="font-size: 11px; color: var(--color-text-muted);">{note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left column: copy + form -->
+      <div class="relative mx-auto px-6" style="max-width: 72rem;">
+        <div class="animate-fade-up flex flex-col justify-center" style="padding-top: clamp(4rem, 7vw, 7rem); padding-bottom: clamp(5rem, 9vw, 9rem); max-width: 100%;" id="form-col">
+
+          <!-- Mobile: avatar + name -->
+          <div class="flex items-center gap-3 mb-7" style="display: flex;">
+            <img
+              src="/wojciech-avatar.webp"
+              alt="Wojciech Łuszczyński"
+              width="44"
+              height="44"
+              loading="eager"
+              style="width: 44px; height: 44px; border-radius: 9999px; object-fit: cover; object-position: top; border: 2px solid var(--color-border); flex-shrink: 0;"
+            />
+            <div>
+              <p style="font-size: 13px; font-weight: 600; color: var(--color-text); line-height: 1.2;">Wojciech Łuszczyński</p>
+              <p style="font-size: 11px; color: var(--color-text-dim);">Growth / GTM operator &amp; builder</p>
+            </div>
+          </div>
+
+          <!-- Badge -->
+          <div style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; border-radius: 9999px; border: 1px solid var(--color-border); background: var(--color-glass); padding: 0.5rem 0.875rem; margin-bottom: 1.75rem; box-shadow: var(--shadow-card); backdrop-filter: blur(8px);">
+            <span style="width: 6px; height: 6px; border-radius: 9999px; background: var(--color-accent-cta); box-shadow: 0 0 14px rgb(235 255 0 / 0.6); flex-shrink: 0;"></span>
+            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text);" data-en="AI Espresso" data-pl="AI Espresso" data-it="AI Espresso">AI Espresso</span>
+          </div>
+
+          <!-- Headline -->
+          <h1 style="font-size: clamp(2.6rem, 6.5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em; margin-bottom: 1.5rem;">
+            <span style="color: var(--color-text);" data-en="Notes for people" data-pl="Notatki dla ludzi," data-it="Note per chi">Notes for people</span><br />
+            <span style="color: var(--color-text-muted);" data-en="who ship." data-pl="którzy shipują." data-it="che spedisce.">who ship.</span>
+          </h1>
+
+          <!-- Copy -->
+          <p style="max-width: 34rem; font-size: 1.0625rem; line-height: 1.65; color: var(--color-text-muted); margin-bottom: 2rem;">
+            <span data-en="Short operator notes on AI systems, GTM architecture, automation, and software workflows. Practical, written from the builds, sent from" data-pl="Krótkie notatki operatora o systemach AI, architekturze GTM, automatyzacji i workflow'ach. Praktyczne, pisane z buildów, wysyłane z" data-it="Brevi note operative su sistemi AI, architettura GTM, automazione e workflow del software. Pratiche, scritte dai build, inviate da">Short operator notes on AI systems, GTM architecture, automation, and software workflows. Practical, written from the builds, sent from</span> <a href="mailto:hello@wojciech.io" style="color: var(--color-text); font-weight: 500;">hello@wojciech.io</a>.
+          </p>
+
+          <!-- Subscribe form -->
+          <form id="subscribe-form" style="display: flex; flex-direction: column; gap: 0.5rem; max-width: 26rem;" novalidate>
+              <input
+                type="email"
+                id="sub-email"
+                name="email"
+                required
+                autocomplete="email"
+                inputmode="email"
+                placeholder="you@company.com"
+                style="width: 100%; height: 3rem; border-radius: var(--radius-btn); border: 1px solid var(--color-border-2); background: var(--color-surface); padding: 0 1rem; font-size: 0.9375rem; font-weight: 500; color: var(--color-text); outline: none; transition: border-color 0.15s, box-shadow 0.15s;"
+              />
+              <button
+                type="submit"
+                id="sub-btn"
+                style="width: 100%; height: 3rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); font-size: 0.9375rem; font-weight: 700; color: var(--color-accent-text); border: none; cursor: pointer; transition: opacity 0.15s; letter-spacing: -0.01em;"
+                data-en="Subscribe free →"
+                data-pl="Zapisz się za darmo →"
+                data-it="Iscriviti gratis →"
+              >
+                Subscribe free →
+              </button>
+            </div>
+            <p id="sub-status" style="min-height: 1.25rem; font-size: 0.75rem; color: var(--color-text-dim);" role="status" aria-live="polite"></p>
+          </form>
+
+          <div id="confirmed-state" style="display: none; max-width: 22rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
+              <div style="width: 2rem; height: 2rem; border-radius: 9999px; background: #dcfce7; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M4 10l4.5 4.5L16 6" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text);" data-en="You're confirmed." data-pl="Potwierdzono." data-it="Confermato.">You're confirmed.</p>
+                <p style="font-size: 0.8125rem; color: var(--color-text-muted);" data-en="First issue on the way." data-pl="Pierwsze wydanie już w drodze." data-it="Il primo numero è in arrivo.">First issue on the way.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pills -->
+          <div class="flex flex-wrap gap-2 mt-5" aria-label="Newsletter details">
+            <span style="border-radius: 9999px; border: 1px solid var(--color-border-2); background: rgb(255 255 255 / 0.7); padding: 0.3125rem 0.75rem; font-size: 0.75rem; font-weight: 500; color: var(--color-text-muted);" data-en="Free" data-pl="Bezpłatny" data-it="Gratuito">Free</span>
+            <span style="border-radius: 9999px; border: 1px solid var(--color-border-2); background: rgb(255 255 255 / 0.7); padding: 0.3125rem 0.75rem; font-size: 0.75rem; font-weight: 500; color: var(--color-text-muted);" data-en="Under 3 minutes" data-pl="Poniżej 3 minut" data-it="Meno di 3 minuti">Under 3 minutes</span>
+            <span style="border-radius: 9999px; border: 1px solid var(--color-border-2); background: rgb(255 255 255 / 0.7); padding: 0.3125rem 0.75rem; font-size: 0.75rem; font-weight: 500; color: var(--color-text-muted);" data-en="No surprise sequences" data-pl="Bez niespodziewanych sekwencji" data-it="Nessuna sequenza a sorpresa">No surprise sequences</span>
+            <span style="border-radius: 9999px; border: 1px solid var(--color-border-2); background: rgb(255 255 255 / 0.7); padding: 0.3125rem 0.75rem; font-size: 0.75rem; font-weight: 500; color: var(--color-text-muted);" data-en="Unsubscribe anytime" data-pl="Wypisz się kiedy chcesz" data-it="Cancellati in qualsiasi momento">Unsubscribe anytime</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── LATEST ISSUE + INSIDE THE NOTES ───────────────────────── -->
+    <section style="border-bottom: 1px solid var(--color-border); padding: clamp(3rem, 5vw, 5rem) 0;">
+      <div style="max-width: 72rem; margin: 0 auto; padding: 0 1.5rem;">
+
+        <div class="preview-notes-grid">
+
+        <!-- Left: mockup + header -->
+        <div class="preview-col">
+        <div style="margin-bottom: 2.5rem;">
+          <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;" data-en="Latest issue" data-pl="Ostatnie wydanie" data-it="Ultimo numero">Latest issue</p>
+          <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);" data-en="What the note looks like." data-pl="Jak wygląda notatka." data-it="Come appare la nota.">What the note looks like.</h2>
+        </div>
+
+        <!-- Email client mockup -->
+        <div style="border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; box-shadow: 0 24px 80px rgb(59 51 39 / 0.10), 0 4px 16px rgb(59 51 39 / 0.06); max-width: 760px;">
+
+          <!-- Window chrome -->
+          <div style="background: #e8e4dc; padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #d8d4cb;">
+            <div style="display: flex; gap: 6px; flex-shrink: 0;">
+              <div style="width: 11px; height: 11px; border-radius: 50%; background: #ff5f57;"></div>
+              <div style="width: 11px; height: 11px; border-radius: 50%; background: #ffbd2e;"></div>
+              <div style="width: 11px; height: 11px; border-radius: 50%; background: #28ca41;"></div>
+            </div>
+            <div style="flex: 1; background: #d8d4cb; border-radius: 5px; height: 22px; display: flex; align-items: center; padding: 0 10px; min-width: 0;">
+              <span style="font-size: 11px; color: #555; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">AI Espresso — 15 maja 2026 · hello@wojciech.io</span>
+            </div>
+          </div>
+
+          <!-- Email body -->
+          <div style="background: #f3f2ef; padding: 24px 16px; position: relative; overflow: hidden;">
+
+            <!-- Email header pill -->
+            <div style="max-width: 680px; margin: 0 auto 14px;">
+              <div style="background: #fff; border: 1px solid #e2e2df; border-radius: 999px; display: flex; align-items: center; justify-content: space-between; padding: 9px 16px; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 9px; min-width: 0;">
+                  <img src="/ai-espresso-avatar.png" width="24" height="24" alt="" style="border-radius: 12px; display: block; flex-shrink: 0;" />
+                  <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #111; white-space: nowrap;">AI Espresso</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+                  <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8a86;">15 maja 2026</span>
+                  <img src="/wojciech-avatar.webp" width="30" height="30" alt="Wojciech" style="border-radius: 50%; display: block; object-fit: cover; object-position: top; flex-shrink: 0;" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Headline card -->
+            <div style="max-width: 680px; margin: 0 auto 10px; background: #fff; border-radius: 20px; padding: 24px 28px; text-align: center;">
+              <span style="display: inline-block; background: #ebff00; color: #080808; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;">Poranny skrót</span>
+              <h3 style="margin: 0 0 10px; font-size: 22px; line-height: 1.15; font-weight: 700; color: #080808; letter-spacing: -0.01em;">Koszt agenta staje się policzalny.</h3>
+              <p style="margin: 0 auto; max-width: 480px; font-size: 14px; line-height: 1.5; color: #3d3d3d;">Billing, metryki i polityki narzędzi wchodzą do agent stacku. Dobra wiadomość — dopiero wtedy automaty da się skalować w firmie.</p>
+            </div>
+
+            <!-- Article cards -->
+            {previewItems.map((item) => (
+              <div style="max-width: 680px; margin: 0 auto 8px; background: #fff; border-radius: 20px; padding: 18px 24px;">
+                <div style="margin-bottom: 7px;">
+                  <span style="display: inline-block; background: #ebff00; color: #080808; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px;">{item.tag}</span>
+                </div>
+                <p style="margin: 0 0 6px; font-size: 15px; line-height: 1.25; font-weight: 700; color: #080808;">{item.title}</p>
+                <p style="margin: 0 0 6px; font-size: 13px; line-height: 1.5; color: #555;">{item.body}</p>
+                <span style="font-size: 11px; color: #aaa; font-weight: 500;">↗ {item.link}</span>
+              </div>
+            ))}
+
+            <!-- Fade out -->
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, transparent, #f3f2ef);"></div>
+          </div>
+
+          <!-- Bottom bar -->
+          <div style="background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+            <p style="margin: 0; font-size: 12px; color: var(--color-text-muted);">Nowe wydanie co rano. Po polsku, do rzeczy.</p>
+            <a href="#top" style="display: inline-flex; align-items: center; height: 2rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); padding: 0 0.875rem; font-size: 0.75rem; font-weight: 600; color: var(--color-accent-text); text-decoration: none; white-space: nowrap;">
+              Zapisz się →
+            </a>
+          </div>
+        </div>
+        </div><!-- end preview-col -->
+
+        <!-- Right: inside the notes -->
+        <aside class="notes-col">
+          <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 1.5rem;" data-en="Inside the notes" data-pl="Co jest w środku" data-it="Dentro le note">Inside the notes</p>
+          <div style="display: flex; flex-direction: column; gap: 0;">
+            <div style="padding: 1.125rem 0; border-bottom: 1px solid var(--color-border);">
+              <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem;">
+                <span style="width: 1.5rem; height: 1px; background: var(--color-accent-cta); flex-shrink: 0; display: inline-block; margin-bottom: 2px;"></span>
+                <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text);" data-en="AI systems" data-pl="Systemy AI" data-it="Sistemi AI">AI systems</h3>
+              </div>
+              <p style="margin: 0; padding-left: 2.25rem; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);" data-en="Agents, automations, product workflows, and what survives real usage." data-pl="Agenty, automatyzacje, workflow produktowe i co przeżywa realne użycie." data-it="Agenti, automazioni, workflow di prodotto e cosa sopravvive all'uso reale.">Agents, automations, product workflows, and what survives real usage.</p>
+            </div>
+            <div style="padding: 1.125rem 0; border-bottom: 1px solid var(--color-border);">
+              <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem;">
+                <span style="width: 1.5rem; height: 1px; background: var(--color-accent-cta); flex-shrink: 0; display: inline-block; margin-bottom: 2px;"></span>
+                <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text);" data-en="GTM architecture" data-pl="Architektura GTM" data-it="Architettura GTM">GTM architecture</h3>
+              </div>
+              <p style="margin: 0; padding-left: 2.25rem; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);" data-en="Revenue systems, messaging, growth loops, outbound, and operating cadence." data-pl="Systemy revenue, messaging, pętle wzrostu, outbound i rytm operacyjny." data-it="Sistemi revenue, messaging, loop di crescita, outbound e cadenza operativa.">Revenue systems, messaging, growth loops, outbound, and operating cadence.</p>
+            </div>
+            <div style="padding: 1.125rem 0; border-bottom: 1px solid var(--color-border);">
+              <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem;">
+                <span style="width: 1.5rem; height: 1px; background: var(--color-accent-cta); flex-shrink: 0; display: inline-block; margin-bottom: 2px;"></span>
+                <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text);" data-en="Build log" data-pl="Dziennik budowania" data-it="Diario di build">Build log</h3>
+              </div>
+              <p style="margin: 0; padding-left: 2.25rem; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);" data-en="What shipped across wojciech.io, app.wojciech.io, and the tools around them." data-pl="Co zostało dostarczone na wojciech.io, app.wojciech.io i w narzędziach wokół nich." data-it="Cosa è stato rilasciato su wojciech.io, app.wojciech.io e gli strumenti attorno a loro.">What shipped across wojciech.io, app.wojciech.io, and the tools around them.</p>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div style="margin-top: 2rem; padding: 1.25rem; border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
+            <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.375rem;" data-en="New issue every morning." data-pl="Nowe wydanie co rano." data-it="Nuovo numero ogni mattina.">New issue every morning.</p>
+            <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;" data-en="In English, to the point. Free." data-pl="Po polsku, do rzeczy. Darmowy." data-it="In italiano, al punto. Gratuito.">In English, to the point. Free.</p>
+            <a href="#top" style="display: inline-flex; align-items: center; height: 2.5rem; width: 100%; justify-content: center; border-radius: var(--radius-btn); background: var(--color-accent-cta); font-size: 0.875rem; font-weight: 700; color: var(--color-accent-text); text-decoration: none; letter-spacing: -0.01em;" data-en="Subscribe →" data-pl="Zapisz się →" data-it="Iscriviti →">
+              Subscribe →
+            </a>
+          </div>
+        </aside>
+
+        </div><!-- end grid -->
+
+      </div>
+    </section>
+
+    <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
+
+  </main>
+</Layout>
+
+<script>
+  if (new URLSearchParams(location.search).get('confirmed') === '1') {
+    (document.getElementById('subscribe-form') as HTMLElement).style.display = 'none';
+    (document.getElementById('confirmed-state') as HTMLElement).style.display = 'block';
+    history.replaceState({}, '', '/');
+  }
+
+  const form = document.getElementById('subscribe-form') as HTMLFormElement;
+  const status = document.getElementById('sub-status') as HTMLElement;
+  const btn = document.getElementById('sub-btn') as HTMLButtonElement;
+  const emailInput = document.getElementById('sub-email') as HTMLInputElement;
+
+  emailInput?.addEventListener('focus', () => {
+    emailInput.style.borderColor = 'var(--color-accent-cta)';
+    emailInput.style.boxShadow = '0 0 0 2px rgb(235 255 0 / 0.15)';
+  });
+  emailInput?.addEventListener('blur', () => {
+    emailInput.style.borderColor = 'var(--color-border-2)';
+    emailInput.style.boxShadow = 'none';
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim().toLowerCase();
+    if (!email || !emailInput.validity.valid) {
+      status.textContent = 'Please enter a valid email address.';
+      status.style.color = '#f87171';
+      emailInput.focus();
+      return;
+    }
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'not-allowed';
+    btn.textContent = 'Sending...';
+    status.textContent = '';
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        form.style.display = 'none';
+        const confirmed = document.getElementById('confirmed-state') as HTMLElement;
+        confirmed.style.display = 'block';
+      } else {
+        throw new Error((data as any)?.error || 'Failed');
+      }
+    } catch (err: any) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+      btn.textContent = 'Subscribe free →';
+      status.textContent = err?.message === 'Failed' ? 'Something went wrong. Try again.' : (err?.message || 'Something went wrong.');
+      status.style.color = '#f87171';
+    }
+  });
+</script>
+
+<style>
+  /* Left column width constraint on lg+ — mirrors wojciech.io hero pattern */
+  @media (min-width: 1024px) {
+    #form-col {
+      max-width: 54%;
+    }
+  }
+
+  /* Latest issue + inside the notes: 2-col layout */
+  .preview-notes-grid {
+    display: grid;
+    gap: 3rem;
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 860px) {
+    .preview-notes-grid {
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 2.5rem;
+    }
+  }
+</style>
