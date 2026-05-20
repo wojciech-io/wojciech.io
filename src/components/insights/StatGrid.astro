@@ -1,0 +1,87 @@
+---
+// MDX component — 2x2 or 4-column grid of headline stats.
+// Usage:
+//   <StatGrid stats={[
+//     { value: "9 970", label: "Sessions · 7d", delta: "+8.2%", good: true },
+//     { value: "168",   label: "Signups · 7d", delta: "+14.4%", good: true },
+//     ...
+//   ]} />
+
+interface Stat {
+  value: string;
+  label: string;
+  delta?: string;
+  good?: boolean;     // colors delta green when true
+  sub?: string;
+}
+interface Props {
+  stats: Stat[];
+  columns?: 2 | 3 | 4;
+}
+const { stats, columns = 4 } = Astro.props;
+---
+
+<div class={`sg-grid sg-cols-${columns}`}>
+  {stats.map(({ value, label, delta, good, sub }) => (
+    <div class="sg-card">
+      <p class="sg-label">{label}</p>
+      <div class="sg-value">{value}</div>
+      {delta && <p class={`sg-delta${good ? ' sg-good' : ''}${good === false ? ' sg-bad' : ''}`}>{delta}</p>}
+      {sub && <p class="sg-sub">{sub}</p>}
+    </div>
+  ))}
+</div>
+
+<style>
+  .sg-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin: 2rem 0;
+  }
+  .sg-cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .sg-cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .sg-cols-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 720px) {
+    .sg-cols-3, .sg-cols-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 420px) {
+    .sg-grid { grid-template-columns: 1fr; }
+  }
+  .sg-card {
+    padding: 1.25rem 1.4rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .sg-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-dim);
+    margin: 0 0 0.5rem;
+  }
+  .sg-value {
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+  .sg-delta {
+    margin: 0.35rem 0 0;
+    font-size: 0.8rem;
+    color: var(--color-text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .sg-delta.sg-good { color: #18a058; }
+  .sg-delta.sg-bad  { color: #d03050; }
+  [data-theme="dark"] .sg-delta.sg-good { color: #4ade80; }
+  [data-theme="dark"] .sg-delta.sg-bad  { color: #f87171; }
+  .sg-sub {
+    margin: 0.5rem 0 0;
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+  }
+</style>
