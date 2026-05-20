@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WeeklyReview from '../components/WeeklyReview.astro';
+import {
+  headlineMetrics,
+  acquisitionLast14,
+  sourceBreakdown,
+  pipeline,
+  topLeads,
+} from '../lib/dummy-data';
+
+// v1.0: real data adapters live in src/lib/{ga4,crm,scoring}.ts (TODO).
+// Until D1 schema lands and nightly cron pulls populate it, the gated
+// "real" view falls back to the same dataset as /demo. The middleware
+// still requires auth on /, so this is private — just unpopulated.
+//
+// Swap order in v1.1:
+//   1. Read from D1 via env.GROWTHHUB_DB
+//   2. If no rows or stale (>48h), fall back to dummy data with a stale banner
+---
+<Layout title="GrowthHub" activePage="review" isDemo={false}>
+  <WeeklyReview
+    headline={headlineMetrics}
+    acquisition={acquisitionLast14}
+    sources={sourceBreakdown}
+    pipeline={pipeline}
+    topLeads={topLeads}
+  />
+</Layout>

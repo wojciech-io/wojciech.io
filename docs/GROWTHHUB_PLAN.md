@@ -192,30 +192,43 @@ Before any line of code lands:
 
 ---
 
-## 7. Open decisions — need Wojtek before kickoff
+## 7. Decisions — locked 2026-05-20
 
-These block actual implementation.
+| # | Decision | Locked value |
+|---|---|---|
+| 1 | Tech stack | **Astro + CF D1** in monorepo (`apps/growthhub/`) |
+| 2 | Domain | **gh.wojciech.io** (gated) + public `/demo` route |
+| 3 | CRM | **Multi-CRM reader interface**, defaults: Pipedrive / HubSpot / Firmao |
+| 4 | Ad accounts | **Google Ads + Meta + LinkedIn** — all three (v1.5 scope, +3 days) |
+| 5 | Traffic | **GA4 primary, Plausible secondary** (cross-check, not source of truth) |
+| 6 | Scoring | **Explicit** — new ICP-fit rules from scratch in v2 |
+| 7 | Timeline | **v1.0 MVP in 3-5 days**: GA4 + 1 CRM + weekly review + demo. v1.5 adds ads + 3 more pages |
+| 8 | Auth | **Single user** (Wojtek), shared password like `app.wojciech.io` |
 
-1. **Tech stack confirmation.** Recommendation is Option A (Astro + CF
-   D1 in the monorepo). Override?
-2. **Domain.** Proposed: `growthhub.wojciech.io`. OK or different?
-3. **CRM source.** Which CRM does the new dashboard read from?
-   Pipedrive / HubSpot / Close / something else? Need to pick one to
-   build against; can add others later.
-4. **Ad accounts.** Which platforms in scope for v1? Google Ads only,
-   or also Meta and LinkedIn? Each adds ~1 day of integration work.
-5. **GA4 vs Plausible.** What is currently the source of truth for
-   site traffic? If both, which is primary?
-6. **Scoring model — explicit or inherited?**
-   - Explicit: define new ICP-fit rules from scratch in v2.
-   - Inherited: re-implement the rules from memory (no copy-paste,
-     just intent) of what worked on the previous build.
-   - Recommend explicit, because it's faster and cleaner from a brand
-     sanitisation POV.
-7. **Timeline.** Is GrowthHub blocking anything else, or is this a
-   "ship in the next month" item? Affects scope cuts in v1.
-8. **Real users beyond Wojtek?** If yes, add auth layer for invited
-   users (currently single shared password). If no, keep simple.
+### Demo mode (new, non-negotiable)
+
+Public `/demo` route on `gh.wojciech.io` that renders the full dashboard UI
+with **synthetic data**. No auth required. Acts as:
+- Sales asset / portfolio piece (linkable from CV, /work, social)
+- UI playground (test layout changes without real data)
+- Brand sanitisation proof (literally no real client data visible)
+
+Implementation contract:
+- `/demo*` paths bypass the auth middleware (whitelisted)
+- Banner at top: *"DEMO MODE — synthetic data, not real metrics."*
+- All views read from `src/lib/dummy-data.ts` (single import swap vs. D1 client)
+- Search engines: `noindex,nofollow` on demo pages (don't pollute SEO)
+- No `<script>` calls to real APIs from demo routes
+
+### Scope split
+
+- **v1.0 (3-5 days, this session + next):** Scaffold, auth gate, demo route,
+  weekly review UI with synthetic + real data swap. D1 schema applied. One
+  CRM adapter (Pipedrive default). GA4 nightly pull stub. No ads yet.
+- **v1.5 (+3-4 days):** Google Ads + Meta + LinkedIn adapters. Demand-gen,
+  leads, revenue pages (4 total). Plausible cross-check. Scoring rules live.
+- **v2 (backlog):** Stripe revenue, saved views, exports, Slack/Resend
+  notifications, HubSpot/Firmao adapters live.
 
 ---
 
