@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const proof = [
+  { n: '20', unit: 'lat', l: 'marketingu i digitalu' },
+  { n: '10', unit: 'lat', l: 'B2B SaaS growth' },
+  { n: '10', unit: 'lat', l: 'GTM i revenue ops' },
+  { n: '200+', unit: '',  l: 'aplikacji i systemów' },
+];
+
+const workflow = [
+  { tag: 'Step 01', title: 'Diagnoza', body: 'Audyt jak twój zespół realnie używa AI. Co przyspiesza, co bawi się w demo, co duplikuje pracę.' },
+  { tag: 'Step 02', title: 'Architektura', body: 'Operacyjny stos AI dla GTM: gdzie modele, gdzie agenty, gdzie automatyzacja, co zostaje człowiekiem.' },
+  { tag: 'Step 03', title: 'Wdrożenie', body: 'Konkretne workflow w outbound, contencie, lifecycle, dashboardach. Nie demo — produkcyjne procesy.' },
+  { tag: 'Step 04', title: 'Adopcja', body: 'Twój team używa tego codziennie. Mierzymy SQL velocity, CPL, time-to-content, nie liczbę użytych promptów.' },
+];
+
+const series = [
+  { n: '1', title: 'AI jako narzędzie operatora', meta: '12 odcinków · ~5h audio',
+    body: 'Od mental modelu po wybór modeli: kiedy Claude vs GPT vs lokalny, jak nie palić tokenów, gdzie kończy się demo a zaczyna produkcja.',
+    chips: ['Claude', 'GPT', 'Mental models', 'Cost ops'] },
+  { n: '2', title: 'Outbound jak system, nie spam', meta: '12 odcinków · ~6h audio',
+    body: 'ICP → SQL quality. Buduję system, który znajduje właściwe firmy, wzbogaca dane, rozpoznaje sygnały zakupowe, kwalifikuje fit i pisze personalizację bez SDR-a.',
+    chips: ['Clay', 'Pipedrive', 'Signal stack', 'ICP'] },
+  { n: '3', title: 'Content jako infrastruktura',  meta: '12 odcinków · ~5h audio',
+    body: 'Treść nie jako kalendarz publikacji, ale jako asset dystrybucji i zaufania. Pipeline od research → draft → publikacja → loop SEO/social/email — całość operowana przez AI z człowiekiem na końcu.',
+    chips: ['LLM workflows', 'SEO', 'Distribution', 'Repurposing'] },
+  { n: '4', title: 'Operating system dla GTM',     meta: '12 odcinków · ~6h audio',
+    body: 'Spinanie wszystkiego w jeden operacyjny system: dashboardy z D1, scoring, automatyzacje, agenty MCP, ownership rytmów. AI nie jako warstwa, ale jako codzienna praktyka teamu.',
+    chips: ['MCP agents', 'Dashboards', 'Scoring', 'Team rhythm'] },
+];
+---
+<Layout>
+
+  <!-- Hero -->
+  <section class="ac-hero">
+    <span class="ac-hero-eyebrow">Akademia operatorów · v2</span>
+    <h1>AI w GTM bez wpadania w hype. <br /><em>Operacyjnie, nie influencersko.</em></h1>
+    <p class="ac-hero-sub">
+      36 odcinków, playbooki, blueprinty i sesje cohort dla zespołów B2B SaaS,
+      które używają AI codziennie w marketingu, sales i revenue ops — albo
+      chcą zacząć bez przepalania budżetów na demo i kursy z YouTube'a.
+    </p>
+    <div class="ac-hero-ctas">
+      <a href="#pricing" class="ac-btn ac-btn-primary">Zobacz cennik →</a>
+      <a href="#program" class="ac-btn ac-btn-ghost">Co dostaję w środku</a>
+    </div>
+
+    <div class="ac-proof">
+      {proof.map(({ n, unit, l }) => (
+        <div class="ac-proof-cell">
+          <div class="ac-proof-n">{n}{unit && <span>{unit}</span>}</div>
+          <p class="ac-proof-l">{l}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="ac-section" id="workflow">
+    <p class="ac-section-eyebrow">Jak to działa</p>
+    <h2>Nie kurs YouTube. Operacyjna ścieżka dla teamu, który już używa AI w pracy.</h2>
+    <p class="ac-section-sub">Każdy z 36 odcinków składa się na operacyjny system — diagnoza → architektura → wdrożenie → adopcja. Same playbooki, prompty produkcyjne i blueprinty workflow. Bez „pobaw się ChatGPT na lunchu”.</p>
+
+    <div class="ac-workflow-grid">
+      {workflow.map(({ tag, title, body }, i) => (
+        <article class="ac-card">
+          <span class="ac-card-num">{String(i + 1).padStart(2, '0')}</span>
+          <span class="ac-card-tag">{tag}</span>
+          <h3>{title}</h3>
+          <p>{body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Program -->
+  <section class="ac-section" id="program">
+    <p class="ac-section-eyebrow">Program</p>
+    <h2>4 serie · 36 odcinków · ~22 godziny audio · 100+ plików w Vault.</h2>
+    <p class="ac-section-sub">Każda seria to operacyjna ścieżka, którą realny zespół GTM przechodzi w 2-3 tygodnie. Audio do słuchania w drodze, blueprinty i prompty do implementacji w teamie.</p>
+
+    <div class="ac-series-grid">
+      {series.map(({ n, title, meta, body, chips }) => (
+        <article class="ac-series">
+          <div class="ac-series-head">
+            <div class="ac-series-num">{n}</div>
+            <div>
+              <h3>{title}</h3>
+              <p class="ac-series-meta">Seria {n} · {meta}</p>
+            </div>
+          </div>
+          <p class="ac-series-body">{body}</p>
+          <div class="ac-series-foot">
+            {chips.map(c => <span class="ac-series-chip">{c}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Pricing teaser (full pricing on Day 2) -->
+  <section class="ac-section" id="pricing">
+    <p class="ac-section-eyebrow">Cennik</p>
+    <h2>Cztery sposoby na dostęp. Dla indywidualnego operatora, teamu, lub całej firmy.</h2>
+    <p class="ac-section-sub">Pełna tabela cen wraz z kalkulatorem seatów dla team license oraz datą najbliższego cohortu — ląduje tu w Day 2 sprintu. Na razie sygnały:</p>
+
+    <div class="ac-workflow-grid">
+      <article class="ac-card"><span class="ac-card-tag">Individual</span><h3>1 900 zł</h3><p>Pełny dostęp do 36 odcinków, Vault, certyfikat. Self-paced.</p></article>
+      <article class="ac-card"><span class="ac-card-tag">Team license</span><h3>9 900 zł</h3><p>5-10 seatów dla zespołu GTM, team dashboard, godzina Q&amp;A.</p></article>
+      <article class="ac-card"><span class="ac-card-tag">Cohort</span><h3>4 900 zł / os.</h3><p>6 tygodni live + case-work + community. Następny termin: TBD.</p></article>
+      <article class="ac-card"><span class="ac-card-tag">Enterprise</span><h3>od 39 900 zł</h3><p>Custom curriculum, onsite/zdalnie, konsultacja architektury.</p></article>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="ac-cta">
+    <h2>Zanim kupisz, posłuchaj.</h2>
+    <p>Pierwszy odcinek (S1E01 — wybór modelu pod task) jest bezpłatny. Nie musisz zostawiać karty. Daję cały odcinek + plik bonusowy, żebyś zobaczył jak wygląda format.</p>
+    <a href="https://academy.wojciech.io/audio/s1e01.mp3" class="ac-btn ac-btn-primary">Posłuchaj S1E01 ↗</a>
+  </div>
+
+</Layout>
