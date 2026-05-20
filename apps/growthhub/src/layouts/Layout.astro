@@ -1,0 +1,76 @@
+---
+import '../styles/global.css';
+interface Props {
+  title?: string;
+  activePage?: string;
+  isDemo?: boolean;
+}
+const { title = 'GrowthHub', activePage = 'review', isDemo = false } = Astro.props;
+const fullTitle = isDemo ? `${title} — Demo` : `${title} — gh.wojciech.io`;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{fullTitle}</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <script is:inline>
+    (function(){
+      try {
+        var saved = localStorage.getItem('theme');
+        var mode = saved ? saved : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', mode);
+        document.documentElement.style.colorScheme = mode;
+      } catch(e) { document.documentElement.setAttribute('data-theme','light'); }
+    })();
+  </script>
+</head>
+<body>
+<div class="gh-shell">
+  <header class="gh-header">
+    <div class="gh-header-inner">
+      <a href={isDemo ? '/demo' : '/'} class="gh-wordmark" aria-label="GrowthHub">
+        GrowthHub<span class="gh-wordmark-tag">.</span>
+      </a>
+      <nav class="gh-nav" aria-label="Primary">
+        <a href={isDemo ? '/demo' : '/'} class={`gh-nav-link${activePage === 'review' ? ' active' : ''}`}>Weekly review</a>
+        <span class="gh-nav-link" style="opacity:.4;cursor:not-allowed" title="v1.5">Demand-gen</span>
+        <span class="gh-nav-link" style="opacity:.4;cursor:not-allowed" title="v1.5">Leads</span>
+        <span class="gh-nav-link" style="opacity:.4;cursor:not-allowed" title="v1.5">Revenue</span>
+      </nav>
+      <div class="gh-header-right">
+        {isDemo ? (
+          <span>Demo mode</span>
+        ) : (
+          <>
+            <span>Single user</span>
+            <a href="/api/auth?logout=1" style="color:var(--text-3)">Sign out</a>
+          </>
+        )}
+      </div>
+    </div>
+  </header>
+
+  <main class="gh-main">
+    {isDemo && (
+      <div class="gh-demo-banner">
+        <span class="gh-demo-tag">DEMO</span>
+        <span>Synthetic data — not real client metrics. A live preview of the dashboard a single B2B SaaS growth team would see.</span>
+      </div>
+    )}
+    <slot />
+  </main>
+
+  <footer class="gh-footer">
+    GrowthHub — operator-grade demand & revenue dashboard. Single tenant, edge-native.
+    {isDemo && (
+      <span> · <a href="https://wojciech.io" style="color:var(--text-2);text-decoration:underline">wojciech.io</a></span>
+    )}
+  </footer>
+</div>
+</body>
+</html>

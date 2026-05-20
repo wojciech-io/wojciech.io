@@ -1,0 +1,137 @@
+---
+import {
+  type AcquisitionDay,
+  type Lead,
+  type PipelineStage,
+  type SourceBreakdown,
+  formatCurrency,
+  formatPct,
+} from '../lib/dummy-data';
+
+interface Props {
+  headline: {
+    sessions_7d: number;
+    sessions_7d_delta: number;
+    signups_7d: number;
+    signups_7d_delta: number;
+    leads_7d: number;
+    leads_7d_delta: number;
+    cpl_7d_cents: number;
+    cpl_7d_delta: number;
+    pipeline_total_cents: number;
+    pipeline_delta: number;
+    won_mtd_cents: number;
+    won_count_mtd: number;
+  };
+  acquisition: AcquisitionDay[];
+  sources: SourceBreakdown[];
+  pipeline: PipelineStage[];
+  topLeads: Lead[];
+}
+
+const { headline, sources, pipeline, topLeads } = Astro.props;
+const maxStage = Math.max(...pipeline.map(s => s.count));
+const maxSource = Math.max(...sources.map(s => s.sessions));
+
+function scoreClass(n: number): string {
+  if (n >= 85) return 's-90';
+  if (n >= 75) return 's-80';
+  return 's-60';
+}
+---
+
+<h1 class="gh-h1">Weekly review</h1>
+<p class="gh-sub">Acquisition · pipeline · revenue, one screen. Week of 2026-05-14 → 2026-05-20.</p>
+
+<section class="gh-metrics">
+  <div class="gh-card gh-metric">
+    <p class="gh-metric-label">Sessions · 7d</p>
+    <div class="gh-metric-value">{headline.sessions_7d.toLocaleString()}</div>
+    <div class={`gh-metric-delta ${headline.sessions_7d_delta >= 0 ? 'up' : 'down'}`}>{formatPct(headline.sessions_7d_delta)} wow</div>
+  </div>
+  <div class="gh-card gh-metric">
+    <p class="gh-metric-label">Signups · 7d</p>
+    <div class="gh-metric-value">{headline.signups_7d}</div>
+    <div class={`gh-metric-delta ${headline.signups_7d_delta >= 0 ? 'up' : 'down'}`}>{formatPct(headline.signups_7d_delta)} wow</div>
+  </div>
+  <div class="gh-card gh-metric">
+    <p class="gh-metric-label">Leads · 7d</p>
+    <div class="gh-metric-value">{headline.leads_7d}</div>
+    <div class={`gh-metric-delta ${headline.leads_7d_delta >= 0 ? 'up' : 'down'}`}>{formatPct(headline.leads_7d_delta)} wow</div>
+  </div>
+  <div class="gh-card gh-metric">
+    <p class="gh-metric-label">CPL · 7d</p>
+    <div class="gh-metric-value">{formatCurrency(headline.cpl_7d_cents)}</div>
+    <div class={`gh-metric-delta ${headline.cpl_7d_delta <= 0 ? 'up' : 'down'}`}>{formatPct(headline.cpl_7d_delta)} wow</div>
+  </div>
+</section>
+
+<section class="gh-grid-2">
+  <div class="gh-card">
+    <h2 class="gh-h2" style="margin-top:0">Pipeline by stage</h2>
+    <div class="gh-pipeline">
+      {pipeline.map(s => (
+        <div class="gh-stage">
+          <div>{s.stage} · <span style="color:var(--text-3)">{s.count}</span></div>
+          <div class="gh-stage-bar"><span style={`width:${(s.count / maxStage) * 100}%`}></span></div>
+          <div class="gh-stage-amt">{formatCurrency(s.amount_cents)}</div>
+        </div>
+      ))}
+    </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--text-2)">Total pipeline</span>
+      <span style="font-weight:600">{formatCurrency(headline.pipeline_total_cents)} <span class={`gh-metric-delta ${headline.pipeline_delta >= 0 ? 'up' : 'down'}`} style="margin-left:6px">{formatPct(headline.pipeline_delta)}</span></span>
+    </div>
+    <div style="margin-top:8px;display:flex;justify-content:space-between;font-size:13px">
+      <span style="color:var(--text-2)">Won · MTD</span>
+      <span style="font-weight:600">{formatCurrency(headline.won_mtd_cents)} <span style="color:var(--text-3);font-weight:400">({headline.won_count_mtd} deals)</span></span>
+    </div>
+  </div>
+
+  <div class="gh-card">
+    <h2 class="gh-h2" style="margin-top:0">Traffic sources · 7d</h2>
+    <div class="gh-sources">
+      {sources.map(s => (
+        <div class="gh-source">
+          <div>{s.source}</div>
+          <div class="gh-source-bar"><span style={`width:${(s.sessions / maxSource) * 100}%`}></span></div>
+          <div class="gh-source-pct">{(s.share * 100).toFixed(0)}%</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section style="margin-top:24px">
+  <div class="gh-card">
+    <h2 class="gh-h2" style="margin-top:0">Top scoring leads</h2>
+    <table class="gh-table">
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>Source</th>
+          <th>Industry</th>
+          <th>Role</th>
+          <th>Size</th>
+          <th>Stage</th>
+          <th class="num">Amount</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        {topLeads.map(l => (
+          <tr>
+            <td><span class={`gh-score ${scoreClass(l.total_score)}`}>{l.total_score}</span></td>
+            <td>{l.source}</td>
+            <td>{l.industry}</td>
+            <td>{l.role}</td>
+            <td>{l.company_size}</td>
+            <td>{l.stage}</td>
+            <td class="num">{formatCurrency(l.amount_cents)}</td>
+            <td style="color:var(--text-3)">{l.created_at}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
