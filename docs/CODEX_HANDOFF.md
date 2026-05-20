@@ -19,7 +19,9 @@ Functions at repo root, gated by hostname.
 ```
 wojciech-io/
 ├── apps/
-│   └── app/                # app.wojciech.io — gated workspace
+│   ├── app/                # app.wojciech.io — gated workspace
+│   ├── subscribe/          # subscribe.wojciech.io — newsletter signup with double-opt-in (KV + Resend)
+│   └── notch/              # notch.wojciech.io — NotchCue product site (Swift macOS app landing)
 │       ├── public/         # _headers, robots.txt, login.html, wojciech-photo.png
 │       ├── src/
 │       │   ├── components/Footer.astro      # app-specific footer (mirrors wojciech.io)
@@ -57,8 +59,16 @@ wojciech-io/
 ```bash
 npm install                                   # one-time, hoists workspaces
 npx astro build                               # build wojciech.io → dist/
-npm run build:app                             # build apps/app → apps/app/dist/
+npm run build:app                             # build apps/app       → apps/app/dist/
+npm run build:subscribe                       # build apps/subscribe → apps/subscribe/dist/
+npm run build:notch                           # build apps/notch     → apps/notch/dist/
 ```
+
+Dev ports (in `.claude/launch.json`):
+- wojciech.io: 4399
+- app.wojciech.io: 4322
+- subscribe.wojciech.io: 4323
+- notch.wojciech.io: 4324
 
 ---
 
@@ -150,9 +160,21 @@ Scope:
 
 - **Azure SWA failover** — Worker failover code in `workers/health-check.ts`
   exists but has nowhere to fail over to until Wojtek sets up an Azure SWA.
-- **Apps inventory unification** — Wojtek explicitly wants to manage
-  this before any unification.
+  Defense-in-depth, not currently urgent.
 - **/now page** — explicitly skipped for v1.
+- **academy.wojciech.io** — `akademia-wojciech-io` CF Pages project has no
+  git source (direct upload). Skipped until source is found or recreated.
+
+### CF Pages dashboard actions still pending (user only)
+
+- **Swap subscribe-wojciech-io project source** to wojciech.io repo, Root
+  directory `apps/subscribe`. Zero downtime — custom domain stays bound
+  to the project. Then `gh api repos/wojciechluszczynski/subscribe-wojciech-io -X PATCH -F archived=true`.
+- **Swap notch-wojciech-io project source** to wojciech.io repo, Root
+  directory `apps/notch`. Same flow.
+- **app-wojciech-io secrets** already set (APP_PASSWORD, COOKIE_SECRET).
+- **wojciech-app project** can be deleted from CF Pages once rollback
+  capability is no longer needed. GitHub repo already archived.
 
 ---
 
