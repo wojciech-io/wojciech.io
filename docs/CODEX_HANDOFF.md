@@ -165,16 +165,33 @@ Scope:
 - **academy.wojciech.io** — `akademia-wojciech-io` CF Pages project has no
   git source (direct upload). Skipped until source is found or recreated.
 
-### CF Pages dashboard actions still pending (user only)
+### Subdomain deploys (subscribe + notch)
 
-- **Swap subscribe-wojciech-io project source** to wojciech.io repo, Root
-  directory `apps/subscribe`. Zero downtime — custom domain stays bound
-  to the project. Then `gh api repos/wojciechluszczynski/subscribe-wojciech-io -X PATCH -F archived=true`.
-- **Swap notch-wojciech-io project source** to wojciech.io repo, Root
-  directory `apps/notch`. Same flow.
+Both projects are **direct-upload CF Pages** (no Git Provider). They deploy
+via wrangler from the monorepo. Standalone GH repos
+`subscribe-wojciech-io` and `notch-wojciech-io` are **archived** (2026-05-20).
+
+```bash
+npm run deploy:subscribe   # builds apps/subscribe, copies functions/ into dist, uploads
+npm run deploy:notch       # builds apps/notch, uploads
+```
+
+Existing bindings on `subscribe-wojciech-io` project (already configured,
+do not touch unless rotating):
+
+- `RESEND_API_KEY` (secret_text)
+- `SUBSCRIBE_KV` → namespace `8d296760d97c4419aa1a85243fc9fd0c`
+- custom domain: `subscribe.wojciech.io`
+
+`notch-wojciech-io`: static, no secrets, no KV. Domain: `notch.wojciech.io`.
+
+### Still pending (user only)
+
 - **app-wojciech-io secrets** already set (APP_PASSWORD, COOKIE_SECRET).
 - **wojciech-app project** can be deleted from CF Pages once rollback
   capability is no longer needed. GitHub repo already archived.
+- **academy.wojciech.io** — `akademia-wojciech-io` CF Pages project has no
+  git source. Direct-upload only, source not yet pulled into monorepo.
 
 ---
 
