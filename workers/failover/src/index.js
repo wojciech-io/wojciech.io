@@ -29,6 +29,10 @@ async function monitor(env) {
   const onPrimary = target === CF_PAGES_HOSTNAME;
 
   if (!healthy && onPrimary) {
+    if (!env.AZURE_SWA_HOSTNAME) {
+      console.warn('Site is DOWN but AZURE_SWA_HOSTNAME not set — cannot failover');
+      return;
+    }
     await updateDns(env, env.AZURE_SWA_HOSTNAME);
     console.log(`FAILOVER → Azure: ${env.AZURE_SWA_HOSTNAME}`);
   } else if (healthy && !onPrimary) {
