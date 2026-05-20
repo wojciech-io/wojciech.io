@@ -1,0 +1,153 @@
+---
+type CoverType = 'ads-ai' | 'gtm-pack' | 'notch' | 'kamperownia' | 'ai-adoption' | 'growth-system' | 'mini-apps' | 'relora';
+
+interface Props {
+  title: string;
+  description: string;
+  tags: string[];
+  href: string;
+  cover?: CoverType;
+  screenshot?: string;
+  problem?: string;
+  system?: string;
+  artifact?: string;
+  outcome?: string;
+  external?: boolean;
+}
+
+const {
+  title,
+  description,
+  tags,
+  href,
+  cover = 'growth-system',
+  screenshot,
+  problem,
+  system,
+  artifact,
+  outcome,
+  external = false,
+} = Astro.props;
+
+const coverLabels: Record<CoverType, string> = {
+  'ads-ai': 'Ads intelligence',
+  'gtm-pack': 'Agent repo',
+  notch: 'macOS app',
+  kamperownia: 'Booking flow',
+  'ai-adoption': 'AI adoption',
+  'growth-system': 'GTM system',
+  'mini-apps': 'Product lab',
+  relora: 'Operating system',
+};
+
+const tagColor = (_tag: string) => 'border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text-muted)]';
+
+const proof = [
+  { label: 'Problem', value: problem },
+  { label: 'System', value: system },
+  { label: 'Artifact', value: artifact },
+  { label: 'Outcome', value: outcome },
+].filter((item) => item.value);
+
+const isAgentRepo = cover === 'gtm-pack';
+---
+
+<a
+  href={href}
+  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+  class="group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-lift hover:border-[var(--color-accent)]/40"
+>
+  <div class="artifact-stage relative aspect-[16/9] overflow-hidden p-3.5">
+    {screenshot ? (
+      <div class="artifact-shot h-full w-full overflow-hidden rounded-[14px] bg-[var(--color-surface)] transition-transform duration-500 group-hover:scale-[1.012]">
+        <img
+          src={screenshot}
+          alt={`${title} product screenshot`}
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover object-top"
+        />
+      </div>
+    ) : isAgentRepo ? (
+      <div class="absolute inset-3.5 overflow-hidden rounded-[14px] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[0_14px_34px_rgb(30_26_18/0.08)]">
+        <div class="flex h-8 items-center gap-1.5 border-b border-[var(--color-border)] bg-[var(--color-surface-2)] px-3">
+          <span class="h-2 w-2 rounded-full bg-[#ef4444]/60"></span>
+          <span class="h-2 w-2 rounded-full bg-[#eab308]/60"></span>
+          <span class="h-2 w-2 rounded-full bg-[#22c55e]/60"></span>
+          <span class="ml-2 font-mono text-[10px] text-[var(--color-text-dim)]">gtm-agent</span>
+        </div>
+        <div class="grid h-[calc(100%-2rem)] grid-cols-[1fr_0.72fr]">
+          <div class="space-y-2 p-4 font-mono text-[10px] leading-none text-[var(--color-text-dim)]">
+            <p class="text-[var(--color-text)]">$ claude run outbound</p>
+            <p>▸ read CLAUDE.md</p>
+            <p>▸ load ICP context</p>
+            <p class="text-[#22c55e]">✓ score prospects</p>
+            <p class="text-[#22c55e]">✓ draft sequence</p>
+            <p class="pt-2 text-[var(--color-text)]">cost: <span class="text-[var(--color-accent)]">$3.40</span></p>
+          </div>
+          <div class="border-l border-[var(--color-border)] bg-[var(--color-bg)]/55 p-4">
+            <div class="mb-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-[10px] font-semibold text-[var(--color-text)]">CLAUDE.md</div>
+            <div class="mb-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-[10px] font-semibold text-[var(--color-text-muted)]">MCP tools</div>
+            <div class="rounded-[var(--radius-sm)] border border-[var(--color-accent)]/35 bg-[var(--color-accent)]/10 px-2 py-1 text-[10px] font-semibold text-[var(--color-text)]">GTM skills</div>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div class="absolute inset-3.5 overflow-hidden rounded-[14px] border border-[var(--color-border)] bg-[var(--color-surface)]">
+        <div
+          class="absolute inset-0 opacity-80"
+          style="background-image: radial-gradient(circle, #EBFF0018 1px, transparent 1px); background-size: 24px 24px;"
+          aria-hidden="true"
+        />
+        <div class="absolute left-4 top-4 right-4 grid gap-2">
+          <div class="h-2 rounded-full bg-[var(--color-border)]"></div>
+          <div class="h-2 w-2/3 rounded-full bg-[var(--color-border)]"></div>
+        </div>
+        <div class="absolute bottom-4 left-4 right-4 grid grid-cols-3 gap-2">
+          <span class="h-10 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)]"></span>
+          <span class="h-10 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)]"></span>
+          <span class="h-10 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)]"></span>
+        </div>
+      </div>
+    )}
+
+    {!screenshot && <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>}
+
+    <div class="artifact-label absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-semibold backdrop-blur-md">
+      <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
+      {coverLabels[cover]}
+    </div>
+  </div>
+
+  <div class="flex flex-1 flex-col p-5 pt-4">
+    <div class="mb-3 flex flex-wrap gap-1.5">
+      {tags.slice(0, 3).map((tag) => (
+        <span class={`rounded-full border px-2 py-0.5 text-xs font-medium ${tagColor(tag)}`}>{tag}</span>
+      ))}
+    </div>
+
+    <h3 class="mb-2 text-base font-semibold leading-snug text-[var(--color-text)] transition-colors duration-150 group-hover:text-[var(--color-accent-hi)]">
+      {title}
+    </h3>
+
+    <p class="mb-5 line-clamp-3 text-xs leading-relaxed text-[var(--color-text-muted)]">{description}</p>
+
+    {proof.length > 0 && (
+      <dl class="mb-5 grid gap-3 border-t border-[var(--color-border)] pt-4">
+        {proof.slice(0, 3).map(({ label, value }) => (
+          <div class="grid grid-cols-[76px_1fr] gap-3">
+            <dt class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{label}</dt>
+            <dd class="line-clamp-2 text-xs leading-snug text-[var(--color-text-muted)]">{value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+
+    <span class="mt-auto flex items-center gap-1 text-xs font-medium text-[var(--color-text-dim)] transition-colors duration-150 group-hover:text-[var(--color-accent)]">
+      {external ? 'View project' : 'Explore'}
+      <svg class="h-3 w-3 transition-transform duration-150 group-hover:translate-x-1" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </div>
+</a>

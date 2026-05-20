@@ -1,0 +1,54 @@
+---
+interface Props {
+  class?: string;
+}
+
+const className = Astro.props.class ?? '';
+---
+
+<button
+  type="button"
+  class:list={[
+    'theme-toggle btn-press relative inline-flex items-center rounded-[var(--radius-btn)] p-0',
+    className,
+  ]}
+  data-theme-toggle
+  aria-label="Toggle light and dark theme"
+  aria-pressed="false"
+>
+  <span class="theme-toggle__thumb" aria-hidden="true"></span>
+  <span class="theme-toggle__label theme-toggle__label--light" aria-hidden="true">
+    <!-- Sun -->
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  </span>
+  <span class="theme-toggle__label theme-toggle__label--dark" aria-hidden="true">
+    <!-- Moon -->
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </span>
+</button>
+
+<script>
+  const root = document.documentElement;
+  const toggles = () => document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+
+  function setTheme(theme: 'light' | 'dark') {
+    root.dataset.theme = theme;
+    root.style.colorScheme = theme;
+    localStorage.setItem('theme', theme);
+    toggles().forEach((toggle) => {
+      toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    });
+  }
+
+  const initial = root.dataset.theme === 'dark' ? 'dark' : 'light';
+  setTheme(initial);
+
+  if (!root.dataset.themeToggleReady) {
+    root.dataset.themeToggleReady = 'true';
+    document.addEventListener('click', (event) => {
+      const toggle = (event.target as HTMLElement).closest('[data-theme-toggle]');
+      if (!toggle) return;
+      setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+    });
+  }
+</script>

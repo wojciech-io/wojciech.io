@@ -1,0 +1,41 @@
+---
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'ghost' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
+  external?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  external = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base = 'inline-flex items-center justify-center font-medium rounded-[var(--radius-btn)] transition-colors focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none';
+
+const variants = {
+  primary: 'bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:opacity-90',
+  ghost:   'text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-2)]',
+  outline: 'border border-[var(--color-border-2)] text-[var(--color-text)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent-hi)]',
+};
+
+const sizes = {
+  sm: 'text-xs px-3 py-1.5 gap-1.5',
+  md: 'text-sm px-4 py-2 gap-2',
+  lg: 'text-base px-6 py-3 gap-2.5',
+};
+
+const classes = [base, variants[variant], sizes[size], className].filter(Boolean).join(' ');
+const externalProps = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag href={href} class={classes} {...externalProps} {...rest}>
+  <slot />
+</Tag>
