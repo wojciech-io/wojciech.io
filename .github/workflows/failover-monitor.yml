@@ -1,12 +1,10 @@
-name: Failover Monitor
+name: Failover — manual DNS override
 
-# Runs every 5 minutes. On site down → switches DNS to Azure SWA.
-# On site recovery → restores DNS to Cloudflare Pages.
-# Manual override available via workflow_dispatch.
+# Primary monitoring runs in the Cloudflare Worker (workers/failover/).
+# This workflow is a manual escape hatch: force failover or restore DNS
+# without waiting for the Worker's next 5-minute tick.
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       force:
