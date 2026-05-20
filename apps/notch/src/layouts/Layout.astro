@@ -1,0 +1,218 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'NotchCue — macOS teleprompter for the camera notch',
+  description = 'Keep notes close to the camera. NotchCue puts your prompts around the MacBook notch so delivery stays natural during calls, demos, and recordings.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href="https://notch.wojciech.io" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content="https://notch.wojciech.io" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://notch.wojciech.io/og-default.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://notch.wojciech.io/og-default.png" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script is:inline>
+      (() => {
+        const t = localStorage.getItem('theme');
+        document.documentElement.dataset.theme = t === 'dark' ? 'dark' : 'light';
+        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+      })();
+    </script>
+    <script is:inline>
+      window.setLang = function(l) {
+        var lang = (l || 'en').toLowerCase();
+        localStorage.setItem('wio_lang', lang);
+        document.querySelectorAll('[data-pl],[data-en],[data-it]').forEach(function(el) {
+          var v = el.getAttribute('data-' + lang);
+          if (v === null) v = el.getAttribute('data-en');
+          if (v !== null) el.textContent = v;
+        });
+        document.documentElement.lang = lang === 'pl' ? 'pl' : lang === 'it' ? 'it' : 'en';
+      };
+      window.switchLang = function(lang) {
+        localStorage.setItem('wio_lang', lang);
+        window.setLang(lang);
+        var flagMap = {
+          en: '<svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px]"><rect width="20" height="14" fill="#B22234"/><rect width="20" height="1.08" y="1.08" fill="white"/><rect width="20" height="1.08" y="3.23" fill="white"/><rect width="20" height="1.08" y="5.38" fill="white"/><rect width="20" height="1.08" y="7.54" fill="white"/><rect width="20" height="1.08" y="9.69" fill="white"/><rect width="20" height="1.08" y="11.85" fill="white"/><rect width="8" height="7.54" fill="#3C3B6E"/></svg>',
+          pl: '<svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px]"><rect width="20" height="7" fill="white"/><rect y="7" width="20" height="7" fill="#DC143C"/></svg>',
+          it: '<svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px]"><rect width="6.67" height="14" fill="#009246"/><rect x="6.67" width="6.67" height="14" fill="white"/><rect x="13.33" width="6.67" height="14" fill="#CE2B37"/></svg>'
+        };
+        var codeMap = { en: 'EN', pl: 'PL', it: 'IT' };
+        var flagEl = document.getElementById('lang-flag-current');
+        var codeEl = document.getElementById('lang-code-current');
+        if (flagEl) flagEl.innerHTML = flagMap[lang] || flagMap.en;
+        if (codeEl) codeEl.textContent = codeMap[lang] || 'EN';
+        document.querySelectorAll('[data-lang-opt]').forEach(function(el) {
+          el.classList.toggle('text-[var(--color-text)]', el.dataset.langOpt === lang);
+          el.classList.toggle('bg-[var(--color-surface-2)]', el.dataset.langOpt === lang);
+        });
+        document.getElementById('lang-menu')?.classList.add('hidden');
+        document.getElementById('lang-trigger')?.setAttribute('aria-expanded', 'false');
+        var chev = document.getElementById('lang-chevron');
+        if (chev) chev.style.transform = '';
+      };
+      (function() {
+        var saved = localStorage.getItem('wio_lang');
+        var nav = (navigator.language || '').toLowerCase();
+        var detected = saved || (nav.startsWith('pl') ? 'pl' : nav.startsWith('it') ? 'it' : 'en');
+        document.addEventListener('DOMContentLoaded', function() { window.setLang(detected); });
+      })();
+    </script>
+  </head>
+  <body class="min-h-dvh flex flex-col">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgb(var(--color-bg-rgb)/0.86)] backdrop-blur-md">
+      <div class="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-6">
+        <!-- Wordmark -->
+        <div class="flex items-center gap-2.5">
+          <span class="text-sm font-semibold tracking-tight text-[var(--color-text)]">NotchCue</span>
+          <span class="text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--color-text-dim)] border border-[var(--color-border)] rounded-full px-2 py-0.5">macOS</span>
+        </div>
+        <!-- Nav right: lang toggle + back link -->
+        <div class="flex items-center gap-4">
+          <div id="lang-bar" class="flex gap-0.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5">
+            <button onclick="nLang('pl')" id="nlPL" class="nl-btn">PL</button>
+            <button onclick="nLang('en')" id="nlEN" class="nl-btn nl-active">EN</button>
+            <button onclick="nLang('it')" id="nlIT" class="nl-btn">IT</button>
+          </div>
+          <a
+            href="https://wojciech.io"
+            class="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+          >
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            wojciech.io
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto w-full border-t border-[var(--color-border)] bg-[var(--color-bg)]">
+      <div class="mx-auto w-full max-w-6xl px-[clamp(14px,4vw,48px)]">
+        <div class="nft-grid">
+          <!-- Brand -->
+          <div>
+            <a href="https://wojciech.io" target="_blank" rel="noopener" class="nft-logo">wojciech<span class="nft-badge">.io</span></a>
+            <p class="nft-tagline" data-en="GTM architect and AI-native builder. Revenue systems for B2B SaaS and technology companies." data-pl="GTM architect i AI-native builder. Systemy revenue dla B2B SaaS i firm technologicznych." data-it="GTM architect e AI-native builder. Sistemi revenue per B2B SaaS e aziende tecnologiche.">GTM architect and AI-native builder. Revenue systems for B2B SaaS and technology companies.</p>
+          </div>
+          <!-- Network -->
+          <div>
+            <p class="nft-head" data-en="Network" data-pl="Sieć" data-it="Rete">Network</p>
+            <ul class="nft-list">
+              <li><a href="https://wojciech.io" target="_blank" rel="noopener">wojciech.io</a></li>
+              <li><a href="https://app.wojciech.io" target="_blank" rel="noopener">app.wojciech.io</a></li>
+              <li><a href="https://subscribe.wojciech.io" target="_blank" rel="noopener">subscribe.wojciech.io</a></li>
+              <li><a href="https://academy.wojciech.io" target="_blank" rel="noopener">academy.wojciech.io</a></li>
+            </ul>
+          </div>
+          <!-- Connect -->
+          <div>
+            <p class="nft-head" data-en="Connect" data-pl="Kontakt" data-it="Contatti">Connect</p>
+            <ul class="nft-list">
+              <li><a href="https://www.linkedin.com/in/wojciech-luszczynski/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+              <li><a href="https://github.com/wojciechluszczynski" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><a href="https://twitter.com/w_luszczynski" target="_blank" rel="noopener noreferrer">X / Twitter</a></li>
+              <li><a href="https://substack.com/@luscinetti" target="_blank" rel="noopener noreferrer">Substack</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="nft-bottom">
+          <p>© {new Date().getFullYear()} Wojciech Łuszczyński · <a href="https://wojciech.io/now" target="_blank" rel="noopener" data-en="What I'm doing now" data-pl="Co teraz robię" data-it="Cosa faccio ora">What I'm doing now</a></p>
+          <p>GTM architect · AI-native builder</p>
+        </div>
+      </div>
+    </footer>
+
+    <style>
+      .nl-btn { font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 5px; border: none; background: transparent; cursor: pointer; color: var(--color-text-muted); transition: background .12s, color .12s; }
+      .nl-active { background: #ebff00; color: #080808; }
+      .nft-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 2rem; padding: 1.75rem 0 1.25rem; }
+      .nft-logo { display: inline-flex; align-items: baseline; text-decoration: none; margin-bottom: 0.625rem; font-size: 14px; font-weight: 700; color: var(--color-text); }
+      .nft-badge { background: #ebff00; color: #080808; border-radius: 5px; padding: 1px 5px; font-size: 10px; font-weight: 700; margin-left: 2px; }
+      .nft-tagline { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; max-width: 220px; margin-top: 6px; }
+      .nft-head { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-dim); margin-bottom: 0.625rem; }
+      .nft-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+      .nft-list a { font-size: 12px; color: var(--color-text-muted); text-decoration: none; transition: color .15s; }
+      .nft-list a:hover { color: var(--color-text); }
+      .nft-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--color-border); padding: 14px 0; font-size: 11px; color: var(--color-text-dim); }
+      .nft-bottom a { color: var(--color-text-muted); text-decoration: none; }
+      @media (max-width: 700px) { .nft-grid { grid-template-columns: 1fr 1fr; } .nft-grid > div:first-child { grid-column: 1 / -1; } }
+      @media (max-width: 440px) { .nft-grid { grid-template-columns: 1fr; } .nft-bottom { flex-direction: column; align-items: center; text-align: center; gap: 4px; } }
+    </style>
+
+    <script is:inline>
+      var _nL = 'en';
+      function nLang(l) {
+        _nL = l;
+        ['PL','EN','IT'].forEach(function(x) {
+          var b = document.getElementById('nl' + x);
+          if (b) { b.classList.toggle('nl-active', x === l.toUpperCase()); }
+        });
+        if (typeof window.setLang === 'function') {
+          window.setLang(l);
+        } else {
+          try { localStorage.setItem('wio_lang', l); } catch(e) {}
+          document.querySelectorAll('[data-pl],[data-en],[data-it]').forEach(function(el) {
+            var v = el.getAttribute('data-' + l) || el.getAttribute('data-en');
+            if (v !== null) el.textContent = v;
+          });
+        }
+      }
+      (function() {
+        var sl = localStorage.getItem('wio_lang') || localStorage.getItem('notchLang');
+        var detected;
+        if (sl && ['pl','en','it'].indexOf(sl) > -1) { detected = sl; }
+        else {
+          var bl = (navigator.language || 'en').toLowerCase();
+          if (bl.startsWith('pl')) detected = 'pl';
+          else if (bl.startsWith('it')) detected = 'it';
+          else detected = 'en';
+        }
+        document.addEventListener('DOMContentLoaded', function() { nLang(detected); });
+      })();
+    </script>
+
+    <script>
+      // Mark JS as ready — reveal-up animation only activates now
+      document.documentElement.classList.add('js-ready');
+
+      const obs = new IntersectionObserver(
+        (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); } }),
+        { threshold: 0.08, rootMargin: '0px 0px -20px 0px' }
+      );
+      document.querySelectorAll('.reveal-up').forEach((el) => obs.observe(el));
+    </script>
+  </body>
+</html>
