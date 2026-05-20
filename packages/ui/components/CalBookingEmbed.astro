@@ -1,0 +1,461 @@
+---
+import { SITE } from '../../data/site';
+
+const calLink = SITE.cal;
+const calTimezone = 'Europe/Berlin';
+---
+
+<div
+  id="book-call"
+  data-slots-endpoint="/api/cal/slots"
+  data-book-endpoint="/api/cal/book"
+  data-direct-link={calLink}
+  data-timezone={calTimezone}
+  class="scroll-mt-20 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)]"
+>
+  <div class="border-b border-[var(--color-border)] px-5 py-4">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <p class="mb-2 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent)]">
+          Private scheduler
+        </p>
+        <h2 class="text-xl font-semibold leading-tight text-[var(--color-text)]">
+          30 minutes virtual coffee
+        </h2>
+      </div>
+      <div class="flex flex-wrap gap-2 text-[11px] font-medium text-[var(--color-text-muted)]">
+        <span class="rounded-full border border-[var(--color-border)] px-3 py-1">30m</span>
+        <span class="rounded-full border border-[var(--color-border)] px-3 py-1">Google Meet</span>
+        <span class="rounded-full border border-[var(--color-border)] px-3 py-1">Europe/Berlin</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)]">
+    <div class="border-b border-[var(--color-border)] p-5 lg:border-b-0 lg:border-r">
+      <div class="mb-4 flex items-end justify-between gap-3">
+        <div>
+          <p class="text-xs font-medium text-[var(--color-text-muted)]">Choose a day</p>
+          <p id="cal-month-label" class="text-lg font-semibold leading-tight text-[var(--color-text)]">Loading</p>
+        </div>
+        <p id="cal-status" class="text-right text-[11px] text-[var(--color-text-dim)]">Checking Cal.com...</p>
+      </div>
+
+      <div id="cal-date-options" class="grid grid-cols-2 gap-2 sm:grid-cols-4" aria-label="Available days">
+        <div class="h-[58px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] opacity-60"></div>
+        <div class="h-[58px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] opacity-40"></div>
+        <div class="h-[58px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] opacity-25"></div>
+        <div class="h-[58px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] opacity-15"></div>
+      </div>
+
+      <div class="mt-5">
+        <div class="mb-3 flex items-center justify-between gap-3">
+          <p class="text-xs font-medium text-[var(--color-text-muted)]">Choose a time</p>
+          <p id="cal-slot-count" class="text-[11px] text-[var(--color-text-dim)]"></p>
+        </div>
+        <div id="cal-slot-options" class="grid grid-cols-2 gap-2 sm:grid-cols-3" aria-label="Available times"></div>
+      </div>
+    </div>
+
+    <div class="bg-[var(--color-bg)]/45 p-5">
+      <div
+        id="cal-selected-card"
+        class="mb-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-3"
+      >
+        <p class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Selected slot</p>
+        <p id="cal-selected-label" class="mt-1 text-base font-semibold leading-snug text-[var(--color-text)]">
+          Pick a day and time
+        </p>
+      </div>
+
+      <form id="cal-booking-form" class="hidden" novalidate>
+        <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
+        <input type="hidden" name="start" id="cal-selected-start" />
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          <label class="grid min-w-0 gap-1.5">
+            <span class="text-xs font-medium text-[var(--color-text-muted)]">Name</span>
+            <input
+              name="name"
+              required
+              autocomplete="name"
+              class="h-10 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+              placeholder="Your name"
+            />
+          </label>
+
+          <label class="grid min-w-0 gap-1.5">
+            <span class="text-xs font-medium text-[var(--color-text-muted)]">Email</span>
+            <input
+              name="email"
+              required
+              type="email"
+              autocomplete="email"
+              class="h-10 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+              placeholder="you@company.com"
+            />
+          </label>
+
+          <label class="grid min-w-0 gap-1.5 sm:col-span-2">
+            <span class="text-xs font-medium text-[var(--color-text-muted)]">Company</span>
+            <input
+              name="company"
+              autocomplete="organization"
+              class="h-10 min-w-0 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+              placeholder="Optional"
+            />
+          </label>
+
+          <label class="grid gap-1.5 sm:col-span-2">
+            <span class="text-xs font-medium text-[var(--color-text-muted)]">Context</span>
+            <textarea
+              name="message"
+              rows="3"
+              class="resize-none rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text)] outline-none transition-colors placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)]"
+              placeholder="What should we cover?"
+            ></textarea>
+          </label>
+        </div>
+
+        <button
+          id="cal-submit-button"
+          type="submit"
+          disabled
+          class="btn-press mt-4 inline-flex h-11 w-full items-center justify-center rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          Confirm booking
+        </button>
+      </form>
+
+      <div id="cal-empty-state" class="rounded-[var(--radius-card)] border border-dashed border-[var(--color-border)] px-4 py-5">
+        <p class="text-sm font-medium text-[var(--color-text)]">Select a time to continue.</p>
+        <p class="mt-1 text-sm leading-relaxed text-[var(--color-text-muted)]">
+          Availability is managed in the private scheduler and already respects blocked German public holidays.
+        </p>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <p id="cal-form-status" class="min-h-5 text-xs text-[var(--color-text-dim)]" role="status" aria-live="polite"></p>
+        <a
+          id="cal-direct-link"
+          href={calLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-press inline-flex h-9 items-center justify-center rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-4 text-xs font-semibold text-[var(--color-accent-text)] transition-colors hover:opacity-90"
+        >
+          Open scheduler
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (() => {
+    const root = document.querySelector('#book-call');
+    if (!root) return;
+
+    const slotsEndpoint = root.getAttribute('data-slots-endpoint');
+    const bookEndpoint = root.getAttribute('data-book-endpoint');
+    const timezone = root.getAttribute('data-timezone') || 'Europe/Berlin';
+    const dateOptions = root.querySelector('#cal-date-options');
+    const slotOptions = root.querySelector('#cal-slot-options');
+    const monthLabel = root.querySelector('#cal-month-label');
+    const status = root.querySelector('#cal-status');
+    const slotCount = root.querySelector('#cal-slot-count');
+    const form = root.querySelector('#cal-booking-form');
+    const emptyState = root.querySelector('#cal-empty-state');
+    const submitButton = root.querySelector('#cal-submit-button');
+    const selectedStart = root.querySelector('#cal-selected-start');
+    const selectedLabel = root.querySelector('#cal-selected-label');
+    const selectedCard = root.querySelector('#cal-selected-card');
+    const formStatus = root.querySelector('#cal-form-status');
+
+    const state = {
+      days: [],
+      selectedDate: '',
+      selectedSlot: null,
+    };
+
+    const dateParts = (date) => {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).formatToParts(date);
+      const get = (type) => parts.find((part) => part.type === type)?.value;
+      return { year: get('year'), month: get('month'), day: get('day') };
+    };
+
+    const dateKey = (date) => {
+      const parts = dateParts(date);
+      return `${parts.year}-${parts.month}-${parts.day}`;
+    };
+
+    const addDays = (date, days) => {
+      const next = new Date(date);
+      next.setUTCDate(next.getUTCDate() + days);
+      return next;
+    };
+
+    const dateFromKey = (key) => new Date(`${key}T12:00:00Z`);
+
+    const dayLabel = (key) =>
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        weekday: 'short',
+      }).format(dateFromKey(key));
+
+    const dayMonthLabel = (key) =>
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        month: 'short',
+        day: 'numeric',
+      }).format(dateFromKey(key));
+
+    const monthText = (key) =>
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        month: 'long',
+        year: 'numeric',
+      }).format(dateFromKey(key));
+
+    const slotTime = (value) =>
+      new Intl.DateTimeFormat('en-GB', {
+        timeZone: timezone,
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(new Date(value));
+
+    const slotDateTime = (value) =>
+      new Intl.DateTimeFormat('en-GB', {
+        timeZone: timezone,
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      }).format(new Date(value));
+
+    const setStatus = (message) => {
+      if (status) status.textContent = message;
+    };
+
+    const setFormStatus = (message, tone = 'muted') => {
+      if (!formStatus) return;
+      formStatus.textContent = message;
+      formStatus.className = `min-h-5 text-xs ${
+        tone === 'error'
+          ? 'text-red-300'
+          : tone === 'success'
+            ? 'text-[var(--color-accent-hi)]'
+            : 'text-[var(--color-text-dim)]'
+      }`;
+    };
+
+    const renderDates = () => {
+      if (!dateOptions) return;
+      dateOptions.innerHTML = '';
+
+      const availableDays = state.days.filter((day) => day.slots.length > 0).slice(0, 8);
+
+      if (availableDays.length === 0) {
+        dateOptions.innerHTML = `
+          <div class="col-span-full rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-5 text-sm text-[var(--color-text-muted)]">
+            Use the private scheduler to pick a day.
+          </div>
+        `;
+        return;
+      }
+
+      availableDays.forEach((day) => {
+        const active = day.date === state.selectedDate;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = [
+          'btn-press min-h-[58px] rounded-[var(--radius-card)] border px-3 py-2 text-left transition-colors',
+          active
+            ? 'border-[var(--color-accent-cta)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)]'
+            : 'border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] hover:border-[var(--color-accent)]/50',
+        ].join(' ');
+        button.setAttribute('aria-pressed', String(active));
+        button.innerHTML = `
+          <span class="block text-[10px] font-semibold uppercase tracking-wider">${dayLabel(day.date)}</span>
+          <span class="mt-0.5 block text-sm font-semibold leading-tight">${dayMonthLabel(day.date)}</span>
+          <span class="mt-1 block text-[10px] opacity-70">${day.slots.length} slots</span>
+        `;
+        button.addEventListener('click', () => {
+          state.selectedDate = day.date;
+          state.selectedSlot = null;
+          render();
+        });
+        dateOptions.appendChild(button);
+      });
+    };
+
+    const renderSlots = () => {
+      if (!slotOptions) return;
+      slotOptions.innerHTML = '';
+
+      const day = state.days.find((item) => item.date === state.selectedDate);
+      if (!day || day.slots.length === 0) {
+        if (slotCount) slotCount.textContent = '';
+        slotOptions.innerHTML = `
+          <div class="col-span-full rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] px-4 py-5 text-sm text-[var(--color-text-muted)]">
+            Open the scheduler to choose a time.
+          </div>
+        `;
+        return;
+      }
+
+      if (slotCount) {
+        slotCount.textContent = `${Math.min(day.slots.length, 12)} shown`;
+      }
+
+      day.slots.slice(0, 12).forEach((slot) => {
+        const active = state.selectedSlot?.start === slot.start;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = [
+          'btn-press h-10 rounded-[var(--radius-btn)] border px-3 text-center text-sm font-semibold transition-colors',
+          active
+            ? 'border-[var(--color-accent-cta)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)]'
+            : 'border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] hover:border-[var(--color-accent)]/50',
+        ].join(' ');
+        button.textContent = slotTime(slot.start);
+        button.setAttribute('aria-pressed', String(active));
+        button.addEventListener('click', () => {
+          state.selectedSlot = slot;
+          render();
+          form?.querySelector('input[name="name"]')?.focus();
+        });
+        slotOptions.appendChild(button);
+      });
+    };
+
+    const renderSelectedSlot = () => {
+      const hasSlot = Boolean(state.selectedSlot?.start);
+      if (selectedStart) selectedStart.value = hasSlot ? state.selectedSlot.start : '';
+      if (submitButton) submitButton.disabled = !hasSlot;
+      form?.classList.toggle('hidden', !hasSlot);
+      emptyState?.classList.toggle('hidden', hasSlot);
+      selectedCard?.classList.toggle('border-[var(--color-accent)]', hasSlot);
+      selectedCard?.classList.toggle('shadow-[0_0_0_1px_rgb(235_255_0/0.15)]', hasSlot);
+      if (selectedLabel) {
+        selectedLabel.textContent = hasSlot ? `${slotDateTime(state.selectedSlot.start)} (${timezone})` : 'Pick a day and time';
+      }
+    };
+
+    const render = () => {
+      if (monthLabel) monthLabel.textContent = monthText(state.selectedDate || dateKey(new Date()));
+      renderDates();
+      renderSlots();
+      renderSelectedSlot();
+    };
+
+    const loadSlots = async () => {
+      const today = new Date();
+      const start = dateKey(today);
+      const end = dateKey(addDays(today, 14));
+
+      if (!slotsEndpoint) {
+        state.days = Array.from({ length: 14 }, (_, index) => ({
+          date: dateKey(addDays(today, index)),
+          slots: [],
+        }));
+        state.selectedDate = state.days[0]?.date || start;
+        state.selectedSlot = null;
+        setStatus('Private scheduler');
+        setFormStatus('Use the scheduler link to pick a time.');
+        render();
+        return;
+      }
+
+      setStatus('Checking availability...');
+
+      try {
+        const url = new URL(slotsEndpoint, window.location.origin);
+        url.searchParams.set('start', start);
+        url.searchParams.set('end', end);
+        const response = await fetch(url, { headers: { accept: 'application/json' } });
+        const payload = await response.json();
+
+        const daysByDate = new Map((payload.days || []).map((day) => [day.date, day.slots || []]));
+        state.days = Array.from({ length: 14 }, (_, index) => {
+          const date = dateKey(addDays(today, index));
+          return {
+            date,
+            slots: daysByDate.get(date) || [],
+          };
+        });
+
+        state.selectedDate = state.days.find((day) => day.slots.length > 0)?.date || state.days[0]?.date || start;
+        state.selectedSlot = null;
+
+        if (payload.directLink && root.querySelector('#cal-direct-link')) {
+          root.querySelector('#cal-direct-link').setAttribute('href', payload.directLink);
+        }
+
+        setStatus(payload.status === 'success' ? 'Live availability' : 'Private scheduler');
+      } catch {
+        state.days = Array.from({ length: 14 }, (_, index) => ({
+          date: dateKey(addDays(today, index)),
+          slots: [],
+        }));
+        state.selectedDate = state.days[0]?.date || start;
+        setStatus('Private scheduler');
+        setFormStatus('Use the scheduler link to pick a time.');
+      }
+
+      render();
+    };
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!state.selectedSlot?.start || !bookEndpoint) return;
+
+      setFormStatus('Booking...');
+      if (submitButton) submitButton.disabled = true;
+
+      const formData = new FormData(form);
+      const payload = {
+        start: state.selectedSlot.start,
+        name: formData.get('name'),
+        email: formData.get('email'),
+        company: formData.get('company'),
+        message: formData.get('message'),
+        website: formData.get('website'),
+      };
+
+      try {
+        const response = await fetch(bookEndpoint, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || data.status !== 'success') {
+          throw new Error(data.message || 'Booking failed.');
+        }
+
+        setFormStatus('Booked. You will get a calendar invite by email.', 'success');
+        form.querySelectorAll('input, textarea, button').forEach((field) => {
+          if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLButtonElement) {
+            field.disabled = true;
+          }
+        });
+      } catch (error) {
+        setFormStatus(error instanceof Error ? error.message : 'Booking failed. Open the scheduler.', 'error');
+        if (submitButton) submitButton.disabled = false;
+      }
+    });
+
+    loadSlots();
+  })();
+</script>

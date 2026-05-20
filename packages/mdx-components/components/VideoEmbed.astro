@@ -1,0 +1,56 @@
+---
+interface Props {
+  id: string;
+  provider?: 'youtube' | 'loom';
+  title?: string;
+  caption?: string;
+}
+
+const { id, provider = 'youtube', title = 'Embedded video', caption } = Astro.props;
+
+const src =
+  provider === 'loom'
+    ? `https://www.loom.com/embed/${id}`
+    : `https://www.youtube-nocookie.com/embed/${id}`;
+---
+
+<figure class="video-embed">
+  <div class="video-embed__frame">
+    <iframe
+      src={src}
+      title={title}
+      loading="lazy"
+      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+    />
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .video-embed {
+    margin-block: 1.75rem;
+  }
+  .video-embed__frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+  .video-embed__frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  figcaption {
+    margin-top: 0.625rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-text-dim);
+    text-align: center;
+  }
+</style>
