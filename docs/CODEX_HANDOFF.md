@@ -24,8 +24,16 @@ wojciech-io/
 │       ├── src/
 │       │   ├── components/Footer.astro      # app-specific footer (mirrors wojciech.io)
 │       │   ├── layouts/Layout.astro          # header + nav + footer wrapper
-│       │   ├── pages/{apps,cv,stack,timeline,contact}.astro
-│       │   └── styles/global.css             # ~1000 lines, all tokens + components
+│       │   ├── pages/{apps,cv,stack,timeline,contact,status}.astro
+│       │   └── styles/global.css             # ~1600 lines, all tokens + components
+│       │
+│       │   # NOTE: /status auto-generates from `git log` at build time.
+│       │   # It calls execSync('git log -80 ...') in the page frontmatter,
+│       │   # groups commits by date, classifies them by conventional-commit
+│       │   # prefix (feat/fix/chore/docs/refactor/style/test → coloured badges).
+│       │   # CF Pages does a shallow clone by default; the page calls
+│       │   # `git fetch --unshallow` first if needed.
+│       │   # The page is behind the same auth gate as everything else in apps/app.
 │       ├── package.json    # @wojciech/app
 │       └── astro.config.mjs
 ├── packages/

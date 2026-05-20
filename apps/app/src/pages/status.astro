@@ -1,0 +1,404 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { execSync } from 'node:child_process';
+
+// ── Read commit history at build time ─────────────────────────────────
+// On Cloudflare Pages the repo is typically shallow-cloned; unshallow once
+// so we can show meaningful history. Wrapped in try/catch so the build
+// never fails because of git access issues.
+type Commit = {
+  hash: string;
+  shortHash: string;
+  iso: string;
+  date: string;     // YYYY-MM-DD
+  time: string;     // HH:MM
+  subject: string;
+  category: 'feat' | 'fix' | 'chore' | 'docs' | 'refactor' | 'style' | 'test' | 'other';
+  scope: string;
+  stat: string;     // " 3 files changed, 20 insertions(+), 5 deletions(-)"
+};
+
+function unshallowIfNeeded(): void {
+  try {
+    const isShallow = execSync('git rev-parse --is-shallow-repository', { encoding: 'utf8' }).trim();
+    if (isShallow === 'true') {
+      try {
+        execSync('git fetch --unshallow --quiet 2>&1', { encoding: 'utf8' });
+      } catch {
+        // Already unshallowed or remote not configured — fine.
+      }
+    }
+  } catch {
+    // Not a git repo or git missing — fall through.
+  }
+}
+
+function classify(subject: string): { category: Commit['category']; scope: string } {
+  const m = subject.match(/^(feat|fix|chore|docs|refactor|style|test|perf|ci|build|revert)(?:\(([^)]+)\))?:/i);
+  if (!m) return { category: 'other', scope: '' };
+  const cat = m[1].toLowerCase();
+  const known: Commit['category'][] = ['feat','fix','chore','docs','refactor','style','test'];
+  const category = (known as string[]).includes(cat) ? (cat as Commit['category']) : 'other';
+  return { category, scope: m[2] ?? '' };
+}
+
+function loadCommits(limit: number): Commit[] {
+  unshallowIfNeeded();
+  const sep = '<<<COMMIT>>>';
+  const fieldSep = '|||';
+  let raw = '';
+  try {
+    raw = execSync(
+      `git log -${limit} --pretty=format:'${sep}%H${fieldSep}%h${fieldSep}%aI${fieldSep}%s' --shortstat`,
+      { encoding: 'utf8' }
+    );
+  } catch {
+    return [];
+  }
+
+  const out: Commit[] = [];
+  const chunks = raw.split(sep).filter(c => c.trim().length > 0);
+  for (const chunk of chunks) {
+    const lines = chunk.split('\n');
+    const headerLine = lines[0];
+    const [hash, shortHash, iso, ...subjectParts] = headerLine.split(fieldSep);
+    if (!hash || !iso) continue;
+    const subject = subjectParts.join(fieldSep);
+    const stat = lines.find(l => /files? changed|file changed/.test(l))?.trim() ?? '';
+    const d = new Date(iso);
+    const date = iso.slice(0, 10);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    const { category, scope } = classify(subject);
+    out.push({ hash, shortHash, iso, date, time: `${hh}:${mm}`, subject, stat, category, scope });
+  }
+  return out;
+}
+
+const commits = loadCommits(80);
+
+// Group commits by date
+const groups = new Map<string, Commit[]>();
+for (const c of commits) {
+  const arr = groups.get(c.date) ?? [];
+  arr.push(c);
+  groups.set(c.date, arr);
+}
+const dateGroups = Array.from(groups.entries()).sort((a, b) => b[0].localeCompare(a[0]));
+
+// Headline summary
+const lastCommit = commits[0];
+const total = commits.length;
+const last7Days = (() => {
+  if (!lastCommit) return 0;
+  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  return commits.filter(c => new Date(c.iso) >= cutoff).length;
+})();
+const buildDate = new Date().toISOString();
+const REPO_URL = 'https://github.com/wojciechluszczynski/wojciech-io';
+
+// Strip "feat:", "fix:", etc. from subject for display (the badge shows it)
+function displaySubject(c: Commit): string {
+  return c.subject.replace(/^(feat|fix|chore|docs|refactor|style|test|perf|ci|build|revert)(?:\([^)]+\))?:\s*/i, '');
+}
+
+const catLabel: Record<Commit['category'], string> = {
+  feat:     'Feature',
+  fix:      'Fix',
+  chore:    'Chore',
+  docs:     'Docs',
+  refactor: 'Refactor',
+  style:    'Style',
+  test:     'Test',
+  other:    'Change',
+};
+---
+
+<Layout title="Status · workspace" activePage="">
+
+<div class="status-page">
+
+  <header class="status-head">
+    <div class="eyebrow">Status &amp; changelog</div>
+    <h1 class="status-h1">What shipped, when</h1>
+    <p class="status-sub">
+      Auto-generated from <code>git log</code> on every push to <code>main</code>.
+      The newest commit at the top is the deploy you are looking at now.
+    </p>
+
+    <div class="status-stats">
+      <div class="status-stat">
+        <div class="status-stat-val">{total}</div>
+        <div class="status-stat-lbl">commits shown</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-val">{last7Days}</div>
+        <div class="status-stat-lbl">in last 7 days</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-val">{lastCommit ? lastCommit.shortHash : '–'}</div>
+        <div class="status-stat-lbl">live deploy</div>
+      </div>
+      <div class="status-stat">
+        <div class="status-stat-val" style="font-size:14px;font-weight:700;letter-spacing:0">{buildDate.slice(0, 10)}</div>
+        <div class="status-stat-lbl">build date</div>
+      </div>
+    </div>
+  </header>
+
+  {dateGroups.length === 0 && (
+    <div class="status-empty">
+      No git history available at build time. This usually means the build
+      environment has a shallow clone without full history. Trigger a fresh
+      deployment with full fetch depth or check the build logs.
+    </div>
+  )}
+
+  {dateGroups.map(([date, items]) => (
+    <section class="status-day">
+      <div class="status-day-head">
+        <div class="status-day-date">{date}</div>
+        <div class="status-day-line"></div>
+        <div class="status-day-count">{items.length} {items.length === 1 ? 'commit' : 'commits'}</div>
+      </div>
+
+      <ul class="status-commit-list">
+        {items.map(c => (
+          <li class={`status-commit cat-${c.category}`}>
+            <div class="status-commit-meta">
+              <span class={`status-cat-badge cat-${c.category}`}>{catLabel[c.category]}</span>
+              {c.scope && <span class="status-scope">{c.scope}</span>}
+              <span class="status-time">{c.time}</span>
+            </div>
+            <div class="status-commit-subject">{displaySubject(c)}</div>
+            {c.stat && <div class="status-stat-line">{c.stat}</div>}
+            <a class="status-commit-hash" href={`${REPO_URL}/commit/${c.hash}`} target="_blank" rel="noopener noreferrer">
+              {c.shortHash}
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+
+  <footer class="status-foot">
+    <p>
+      Showing the most recent {total} commits.
+      Full history on <a href={REPO_URL} target="_blank" rel="noopener noreferrer">GitHub</a>.
+    </p>
+  </footer>
+
+</div>
+
+</Layout>
+
+<style>
+  .status-page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+
+  .status-head {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+  }
+  .status-h1 {
+    font-size: clamp(28px, 4.5vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    color: var(--color-text);
+    margin: 0 0 8px;
+  }
+  .status-sub {
+    color: var(--color-text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 640px;
+    margin: 0 0 24px;
+  }
+  .status-sub code {
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  .status-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+  }
+  @media (max-width: 640px) { .status-stats { grid-template-columns: repeat(2, 1fr); } }
+  .status-stat {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .status-stat-val {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--color-text);
+    letter-spacing: -0.5px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .status-stat-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+  }
+
+  .status-empty {
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+    padding: 24px;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .status-day { margin-bottom: 28px; }
+  .status-day-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .status-day-date {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+  .status-day-line {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+  .status-day-count {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text-dim);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .status-commit-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .status-commit {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .status-commit-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 11px;
+  }
+  .status-cat-badge {
+    font-size: 9.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    line-height: 1;
+  }
+  .status-cat-badge.cat-feat { background: rgba(235,255,0,0.16); color: #6a7600; border: 1px solid rgba(235,255,0,0.32); }
+  .status-cat-badge.cat-fix { background: rgba(16,179,108,0.14); color: #0a7a4a; border: 1px solid rgba(16,179,108,0.28); }
+  .status-cat-badge.cat-docs { background: rgba(99,102,241,0.12); color: #4f46e5; border: 1px solid rgba(99,102,241,0.28); }
+  .status-cat-badge.cat-chore { background: rgba(0,0,0,0.06); color: var(--color-text-muted); border: 1px solid var(--color-border); }
+  .status-cat-badge.cat-refactor { background: rgba(180,83,9,0.12); color: #b45309; border: 1px solid rgba(180,83,9,0.28); }
+  .status-cat-badge.cat-style { background: rgba(236,72,153,0.10); color: #be185d; border: 1px solid rgba(236,72,153,0.26); }
+  .status-cat-badge.cat-test { background: rgba(20,184,166,0.12); color: #0f766e; border: 1px solid rgba(20,184,166,0.28); }
+  .status-cat-badge.cat-other { background: var(--color-surface-2); color: var(--color-text-muted); border: 1px solid var(--color-border); }
+
+  [data-theme=dark] .status-cat-badge.cat-feat { color: #ebff00; }
+  [data-theme=dark] .status-cat-badge.cat-fix { color: #34d399; }
+  [data-theme=dark] .status-cat-badge.cat-docs { color: #a5b4fc; }
+  [data-theme=dark] .status-cat-badge.cat-refactor { color: #fbbf24; }
+  [data-theme=dark] .status-cat-badge.cat-style { color: #f9a8d4; }
+  [data-theme=dark] .status-cat-badge.cat-test { color: #5eead4; }
+
+  .status-scope {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10.5px;
+    color: var(--color-text-muted);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+  .status-time {
+    font-size: 10.5px;
+    color: var(--color-text-dim);
+    font-variant-numeric: tabular-nums;
+    margin-left: auto;
+  }
+  .status-commit-subject {
+    font-size: 14px;
+    color: var(--color-text);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .status-stat-line {
+    font-size: 11px;
+    color: var(--color-text-dim);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    line-height: 1.4;
+  }
+  .status-commit-hash {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--color-text-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .status-commit-hash:hover { color: var(--color-text); }
+
+  .status-foot {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-dim);
+    font-size: 12px;
+  }
+  .status-foot a {
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .status-foot a:hover { color: var(--color-text); }
+</style>
