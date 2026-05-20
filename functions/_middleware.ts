@@ -1,5 +1,7 @@
-// Cloudflare Pages Functions middleware — gates every request behind the auth cookie.
-// Unauthenticated requests receive login.html instead of the protected app.
+// Cloudflare Pages Functions middleware — gates every request behind the auth cookie
+// ONLY for app.wojciech.io traffic. Same functions/ directory is deployed by both
+// wojciech.io and app-wojciech-io CF Pages projects; we discriminate by hostname so
+// public wojciech.io traffic always passes through.
 
 import { verifyToken } from './_utils/crypto';
 
@@ -12,11 +14,16 @@ interface Env {
 
 const COOKIE_NAME = 'wapp_auth';
 
-// Paths that bypass auth check.
-// /api/auth — login endpoint itself
-// /login.html — the login page (served by middleware too, but kept allowed for direct access)
-// /favicon*, /apple-touch-icon*, /robots.txt, /bimi.svg — browser/crawler default fetches
-// /og-default.png, /manifest.json — discoverable metadata, no sensitive content
+// Hostnames that should be gated. Anything else (wojciech.io, *.wojciech-io.pages.dev,
+// preview deploys of the public site, custom localhost dev) passes through untouched.
+function isGatedHost(hostname: string): boolean {
+  if (hostname === 'app.wojciech.io') return true;
+  if (hostname === 'app-wojciech-io.pages.dev') return true;
+  if (hostname.endsWith('.app-wojciech-io.pages.dev')) return true;
+  return false;
+}
+
+// Paths that bypass auth check (even on gated hosts).
 const ALLOWED = [
   '/api/auth',
   '/login.html',
@@ -35,6 +42,11 @@ const ALLOWED = [
 export const onRequest: PagesFunction<Env> = async (ctx) => {
   const { request, env, next } = ctx;
   const url = new URL(request.url);
+
+  // Pass-through for the public wojciech.io project deploys.
+  if (!isGatedHost(url.hostname)) {
+    return next();
+  }
 
   if (ALLOWED.includes(url.pathname)) {
     return next();

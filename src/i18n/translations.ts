@@ -282,7 +282,7 @@ export const it = {
     badge:          'GTM Architect · Growth Operator',
     headline1:      'Costruisco sistemi di revenue.',
     headline2:      'Resto finché funzionano.',
-    subcopy:        'La maggior parte delle aziende B2B non ha un problema di traffico — ha un problema di sistema. Vent'anni nei team marketing e growth mi hanno mostrato la stessa lacuna ovunque: traffico ottimo con CRM bucato, AI nelle presentazioni ed Excel nel lavoro vero. Lo ricostruisco come un unico modello operativo: GTM, CRM, automazione e AI come una sola macchina. E non mollo quando si fa dura.',
+    subcopy:        "La maggior parte delle aziende B2B non ha un problema di traffico — ha un problema di sistema. Vent'anni nei team marketing e growth mi hanno mostrato la stessa lacuna ovunque: traffico ottimo con CRM bucato, AI nelle presentazioni ed Excel nel lavoro vero. Lo ricostruisco come un unico modello operativo: GTM, CRM, automazione e AI come una sola macchina. E non mollo quando si fa dura.",
     cta1:           'Guarda i progetti',
     cta2:           'Iscriviti alla newsletter',
     statusLabel:    'Stato',
