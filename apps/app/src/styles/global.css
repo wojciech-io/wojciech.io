@@ -1038,45 +1038,39 @@ body {
   box-shadow: 0 26px 70px rgba(0,0,0,.16), 0 0 0 1px rgba(235,255,0,.10), inset 0 1px 0 rgba(255,255,255,.52);
 }
 
-/* ─── COVER: retina glass 3D pass ─────────────────────────
-   Goal: covers feel like physical glass tiles, icons feel like
-   pressed metal under the surface, color farm muted by a unifying
-   vignette + saturation curve. */
-
 .card-screen {
   height: 208px;
   isolation: isolate;
-  filter: saturate(0.82);     /* tone down per-card neon */
 }
 
-/* Diagonal sheen across the whole cover — moves on hover */
-.card-screen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    115deg,
-    rgba(255,255,255,0.10) 0%,
-    rgba(255,255,255,0.03) 22%,
-    rgba(255,255,255,0) 45%,
-    rgba(255,255,255,0) 70%,
-    rgba(255,255,255,0.05) 100%
-  );
-  z-index: 1;
-  transition: background-position 0.6s ease;
-}
-
-/* Vignette: darkens edges, unifies all the per-card colors */
+.card-screen::before,
 .card-screen::after {
   content: '';
   position: absolute;
-  inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(ellipse at 50% 20%, transparent 30%, rgba(0,0,0,0.28) 100%),
-    linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.18) 100%);
+  border: 1px solid rgba(255,255,255,.13);
+  background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.04));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 14px 32px rgba(0,0,0,.16);
   z-index: 1;
+}
+
+.card-screen::before {
+  width: 42%;
+  height: 42%;
+  right: 18px;
+  top: 20px;
+  border-radius: 16px;
+  transform: rotate(6deg);
+}
+
+.card-screen::after {
+  width: 30%;
+  height: 24%;
+  left: 18px;
+  bottom: 34px;
+  border-radius: 14px;
+  transform: rotate(-5deg);
+  opacity: .74;
 }
 
 .cs-body,
@@ -1084,106 +1078,12 @@ body {
   z-index: 2;
 }
 
-/* Glow halo behind the icon — soft, large, on every card */
-.cs-body::before {
-  content: '';
-  position: absolute;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 65%);
-  filter: blur(8px);
-  z-index: 0;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, calc(-50% - 14px));
-  pointer-events: none;
-}
-
-/* The icon box: physical glass tile */
 .cs-icon-box {
-  width: 84px !important;
-  height: 84px !important;
-  border-radius: 24px !important;
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
   transform: translateZ(0);
-  isolation: isolate;
-  transition: transform 0.28s cubic-bezier(.2,.7,.2,1), box-shadow 0.28s ease;
-  /* Multi-layer shadow for real depth */
-  box-shadow:
-    0 24px 48px rgba(0,0,0,0.45),                /* deep ambient */
-    0 8px 16px rgba(0,0,0,0.30),                 /* mid grounding */
-    0 1px 2px rgba(0,0,0,0.40),                  /* close edge */
-    inset 0 1.5px 0 rgba(255,255,255,0.55),      /* top inner highlight */
-    inset 0 -2px 4px rgba(0,0,0,0.30),           /* bottom inner shadow */
-    inset 0 0 0 1px rgba(255,255,255,0.10)       /* edge gloss */
-    !important;
-}
-
-/* Glassy diagonal reflection ON the icon-box */
-.cs-icon-box::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.30) 0%,
-    rgba(255,255,255,0.08) 30%,
-    rgba(255,255,255,0) 55%,
-    rgba(0,0,0,0.08) 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Outer halo ring around the icon-box */
-.cs-icon-box::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border-radius: 32px;
-  background:
-    radial-gradient(circle, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 70%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.cs-icon-box svg {
-  width: 38px;
-  height: 38px;
-  stroke: rgba(255,255,255,0.96);
-  fill: none;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45)) drop-shadow(0 1px 0 rgba(255,255,255,0.15));
-  position: relative;
-  z-index: 2;
-}
-
-/* Hover: icon lifts and grows, halo intensifies */
-.app-card:hover .cs-icon-box {
-  transform: translateY(-3px) scale(1.04);
-  box-shadow:
-    0 32px 60px rgba(0,0,0,0.55),
-    0 10px 20px rgba(0,0,0,0.34),
-    0 1px 2px rgba(0,0,0,0.45),
-    inset 0 1.5px 0 rgba(255,255,255,0.65),
-    inset 0 -2px 4px rgba(0,0,0,0.32),
-    inset 0 0 0 1px rgba(255,255,255,0.14)
-    !important;
-}
-.app-card:hover .card-screen::before {
-  background-position: 100% 0;
-}
-
-/* Tone down the category txt for unified look */
-.cs-cat-txt {
-  position: relative;
-  z-index: 2;
-  margin-top: 14px;
-  opacity: 0.55;
+  box-shadow: 0 18px 36px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.26), inset 0 -12px 24px rgba(0,0,0,.12) !important;
 }
 
 .screen-meta {
