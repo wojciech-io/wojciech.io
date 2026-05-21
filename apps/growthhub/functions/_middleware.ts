@@ -45,8 +45,13 @@ async function isAuthenticated(request: Request, env: Env): Promise<boolean> {
   const cookie = request.headers.get('Cookie') || '';
   const match = cookie.match(new RegExp(`(?:^|;\\s*)${COOKIE_NAME}=([^;]+)`));
   if (!match) return false;
+  // Enforce server-side token expiry (defaults to 30 days). Without the
+  // maxAgeMs arg the age check silently passes (compares against undefined),
+  // so a leaked cookie value would be replayable forever.
+  const maxAgeDays = Math.max(1, parseInt(env.COOKIE_MAX_AGE_DAYS || '30', 10));
+  const maxAgeMs = maxAgeDays * 24 * 60 * 60 * 1000;
   try {
-    return await verifyToken(decodeURIComponent(match[1]), env.COOKIE_SECRET);
+    return await verifyToken(decodeURIComponent(match[1]), env.COOKIE_SECRET, maxAgeMs);
   } catch {
     return false;
   }
