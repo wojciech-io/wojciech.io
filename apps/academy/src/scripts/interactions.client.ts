@@ -156,6 +156,59 @@
     }
   }
 
+  // --- 4c. Landing audio sample -----------------------------------------
+  document.querySelectorAll<HTMLElement>('[data-ac-audio]').forEach(player => {
+    if (player.dataset.bound) return;
+    player.dataset.bound = '1';
+    const audio = player.querySelector<HTMLAudioElement>('audio');
+    const toggle = player.querySelector<HTMLButtonElement>('[data-ac-audio-toggle]');
+    const progress = player.querySelector<HTMLElement>('[data-ac-audio-progress]');
+    const time = player.querySelector<HTMLElement>('[data-ac-audio-time]');
+    const rate = player.querySelector<HTMLButtonElement>('[data-ac-audio-rate]');
+    if (!audio || !toggle) return;
+
+    const fmt = (sec: number) => {
+      if (!Number.isFinite(sec) || sec < 0) return '0:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    };
+    const render = () => {
+      const pct = audio.duration ? Math.min(100, (audio.currentTime / audio.duration) * 100) : 0;
+      if (progress) progress.style.width = `${pct}%`;
+      if (time) time.textContent = `${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;
+      player.classList.toggle('is-playing', !audio.paused);
+      toggle.setAttribute('aria-label', audio.paused ? 'Odtwórz próbkę' : 'Pauza');
+    };
+
+    toggle.addEventListener('click', async () => {
+      if (audio.paused) {
+        try { await audio.play(); } catch {}
+      } else {
+        audio.pause();
+      }
+      render();
+    });
+    player.querySelectorAll<HTMLButtonElement>('[data-ac-audio-skip]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const delta = Number(btn.dataset.acAudioSkip || 0);
+        audio.currentTime = Math.max(0, Math.min(audio.duration || 0, audio.currentTime + delta));
+        render();
+      });
+    });
+    rate?.addEventListener('click', () => {
+      const next = audio.playbackRate >= 1.5 ? 1 : audio.playbackRate + 0.25;
+      audio.playbackRate = next;
+      rate.textContent = `${next.toFixed(2).replace(/\.00$/, '.0')}x`;
+    });
+    audio.addEventListener('loadedmetadata', render);
+    audio.addEventListener('timeupdate', render);
+    audio.addEventListener('play', render);
+    audio.addEventListener('pause', render);
+    audio.addEventListener('ended', render);
+    render();
+  });
+
   // --- 5. Enterprise + cohort form submit (Resend audience + email) ------
   document.querySelectorAll<HTMLFormElement>('form[data-ac-form]').forEach(form => {
     if (form.dataset.bound) return;

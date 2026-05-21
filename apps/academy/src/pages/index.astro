@@ -3,6 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import CodeScene from '../components/CodeScene.astro';
 import StackFlow from '../components/StackFlow.astro';
 import EpisodeBrowser from '../components/EpisodeBrowser.astro';
+import ModelRanker from '../components/ModelRanker.astro';
+import ToolMarquee from '../components/ToolMarquee.astro';
+import AudioSample from '../components/AudioSample.astro';
+import LearningFlow from '../components/LearningFlow.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
 
 const proof = [
   { n: '20', unit: 'lat', l: 'marketingu i digitalu' },
@@ -12,10 +17,10 @@ const proof = [
 ];
 
 const workflow = [
-  { tag: 'Step 01', title: 'Diagnoza', body: 'Audyt jak twój zespół realnie używa AI. Co przyspiesza, co bawi się w demo, co duplikuje pracę.' },
-  { tag: 'Step 02', title: 'Architektura', body: 'Operacyjny stos AI dla GTM: gdzie modele, gdzie agenty, gdzie automatyzacja, co zostaje człowiekiem.' },
-  { tag: 'Step 03', title: 'Wdrożenie', body: 'Konkretne workflow w outbound, contencie, lifecycle, dashboardach. Nie demo — produkcyjne procesy.' },
-  { tag: 'Step 04', title: 'Adopcja', body: 'Twój team używa tego codziennie. Mierzymy SQL velocity, CPL, time-to-content, nie liczbę użytych promptów.' },
+  { tag: '01', title: 'Wybierasz model', body: 'Nie “najlepszy model na rynku”, tylko właściwy model do zadania. Inaczej research, inaczej kod, inaczej outbound.' },
+  { tag: '02', title: 'Układasz workflow', body: 'Prompt nie jest strategią. Łączysz źródła danych, model, decyzję człowieka i miejsce, gdzie wynik trafia dalej.' },
+  { tag: '03', title: 'Wdrażasz w stacku', body: 'Claude, Clay, Pipedrive, n8n, Notion, D1. Pracujemy na narzędziach, które da się zostawić zespołowi.' },
+  { tag: '04', title: 'Mierzysz efekt', body: 'Mniej zachwytu nad outputem, więcej pytań: czy szybciej mamy SQL, lepszy brief, krótszy research, mniej ręcznej roboty.' },
 ];
 
 const series = [
@@ -37,18 +42,16 @@ const series = [
 
   <!-- Hero -->
   <section class="ac-hero ac-hero-coded">
-    <span class="ac-hero-eyebrow reveal-up">Program wdrożenia AI · zespoły GTM</span>
-    <h1 class="reveal-up delay-1">Twój zespół już używa AI.<br /><em>Pytanie, czy z tego coś wynika.</em></h1>
+    <span class="ac-hero-eyebrow reveal-up">Program wdrożenia AI · dla ludzi, którzy robią GTM</span>
+    <h1 class="reveal-up delay-1">Naucz zespół AI od praktyka. <br /><em>Nie od slajdów.</em></h1>
     <p class="ac-hero-sub reveal-up delay-2">
-      W większości zespołów B2B SaaS AI działa chaotycznie: każdy promptuje
-      inaczej, nikt nie wie co realnie skraca czas do SQL, a budżet idzie na
-      narzędzia, których nikt nie wdrożył do końca. Ten program zamienia to
-      w powtarzalny proces — outbound, content, revenue ops — z konkretnymi
-      playbookami, które zostają w zespole.
+      36 krótkich odcinków o tym, jak realnie używać AI w marketingu,
+      sprzedaży i pracy founderów B2B. Modele, workflow, prompty,
+      automatyzacje i pliki do wdrożenia. Bez teorii z konferencji.
     </p>
     <div class="ac-hero-ctas reveal-up delay-3">
-      <a href="/pricing" class="ac-btn ac-btn-primary">Zobacz formaty wdrożenia →</a>
-      <a href="#program" class="ac-btn ac-btn-ghost">Co jest w środku</a>
+      <a href="#sample" class="ac-btn ac-btn-primary">Posłuchaj za darmo →</a>
+      <a href="#program" class="ac-btn ac-btn-ghost">Zobacz program</a>
     </div>
 
     <div class="ac-proof reveal-zoom delay-4">
@@ -64,20 +67,26 @@ const series = [
       })}
     </div>
 
+    <ModelRanker />
     <CodeScene />
+    <ToolMarquee />
   </section>
+
+  <AudioSample />
+  <LearningFlow />
+  <FeatureGrid />
 
   <!-- How it works -->
   <section class="ac-section" id="workflow">
-    <p class="ac-section-eyebrow reveal-up">Jak to działa</p>
-    <h2 class="reveal-up delay-1">Nie kolejny kurs do odhaczenia. Operacyjny system, który zostaje w zespole.</h2>
-    <p class="ac-section-sub reveal-up delay-2">36 odcinków układa się w jedną ścieżkę: diagnoza → architektura → wdrożenie → adopcja. Każdy kończy się playbookiem, promptem produkcyjnym albo blueprintem workflow, który Twój zespół wdraża u siebie — nie notatkami do szuflady.</p>
+    <p class="ac-section-eyebrow reveal-up">System pracy</p>
+    <h2 class="reveal-up delay-1">Nie chodzi o to, żeby znać więcej narzędzi. Chodzi o to, żeby przestać robić AI na wyczucie.</h2>
+    <p class="ac-section-sub reveal-up delay-2">Program prowadzi od wyboru modelu do procesów, które ktoś w firmie może powtarzać. Każdy blok kończy się konkretną decyzją albo artefaktem, nie inspiracją do zapisania w Notion.</p>
 
     <div class="ac-workflow-grid">
       {workflow.map(({ tag, title, body }, i) => (
         <article class={`ac-card reveal-up delay-${i + 1}`}>
           <span class="ac-card-num">{String(i + 1).padStart(2, '0')}</span>
-          <span class="ac-card-tag">{tag}</span>
+          <span class="ac-card-tag">Krok {tag}</span>
           <h3>{title}</h3>
           <p>{body}</p>
         </article>
@@ -85,15 +94,15 @@ const series = [
     </div>
 
     <!-- Pipeline the program builds -->
-    <p class="reveal-up" style="margin:56px 0 6px;font-size:13px;font-weight:600;color:var(--text-2);text-align:center">Pipeline, który układasz przez 4 serie:</p>
+    <p class="reveal-up" style="margin:56px 0 6px;font-size:13px;font-weight:600;color:var(--text-2);text-align:center">Pipeline, który składasz przez 4 serie:</p>
     <StackFlow />
   </section>
 
   <!-- Program -->
   <section class="ac-section" id="program">
     <p class="ac-section-eyebrow reveal-up">Program</p>
-    <h2 class="reveal-up delay-1">4 serie · 36 odcinków · ~22 godziny audio · 100+ plików w Vault.</h2>
-    <p class="ac-section-sub reveal-up delay-2">Każda seria to operacyjna ścieżka, którą realny zespół GTM przechodzi w 2-3 tygodnie. Audio do słuchania w drodze, blueprinty i prompty do implementacji w teamie.</p>
+    <h2 class="reveal-up delay-1">4 serie. 36 odcinków. Zero waty.</h2>
+    <p class="ac-section-sub reveal-up delay-2">Możesz przerobić jedną serię albo cały program. W każdym module jest audio, quiz i materiał do użycia od razu po odcinku.</p>
 
     <div class="ac-series-grid">
       {series.map(({ n, title, meta, body, chips }, i) => (
@@ -122,13 +131,13 @@ const series = [
   <!-- Pricing teaser -->
   <section class="ac-section" id="pricing">
     <p class="ac-section-eyebrow reveal-up">Dostęp</p>
-    <h2 class="reveal-up delay-1">Trzy formaty. Dla operatora, zespołu, albo grupy w cohorcie.</h2>
-    <p class="ac-section-sub reveal-up delay-2">Cennik dla Ciebie i zespołu dopasowuję do zakresu — odsyłam w 24 h po krótkim formularzu. Cohort live ma cenę otwartą.</p>
+    <h2 class="reveal-up delay-1">Najpierw sprawdzasz format. Potem wybierasz dostęp.</h2>
+    <p class="ac-section-sub reveal-up delay-2">Dla jednej osoby i zespołu cennik dobieram do zakresu. Cohort live ma cenę otwartą, bo to konkretna grupa i konkretna praca na procesach uczestników.</p>
 
-    <div class="ac-workflow-grid" style="grid-template-columns:repeat(3,1fr)">
-      <a href="/pricing#cennik" class="ac-card reveal-up delay-1" style="display:block"><span class="ac-card-tag">Dla Ciebie</span><h3>Cennik na zapytanie</h3><p>36 odcinków, Vault, certyfikat. 12 mies. dostępu. 2 raty 0%.</p></a>
-      <a href="/pricing#cennik" class="ac-card reveal-up delay-2" style="display:block"><span class="ac-card-tag">Dla zespołu</span><h3>Cennik na zapytanie</h3><p>Cały zespół GTM, team dashboard, godzina Q&amp;A, rabat ilościowy.</p></a>
-      <a href="/cohort" class="ac-card reveal-up delay-3" style="display:block"><span class="ac-card-tag"><span class="ac-pulse"></span>Cohort live</span><h3>2 900 zł / os.</h3><p>6 tygodni live + case-work + community. Termin pod zebraną grupę.</p></a>
+    <div class="ac-workflow-grid ac-pricing-teaser-grid">
+      <a href="/pricing#cennik" class="ac-card reveal-up delay-1" style="display:block"><span class="ac-card-tag">Dla Ciebie</span><h3>Cennik na zapytanie</h3><p>Dostęp do programu, Vault i certyfikat. Dla osoby, która chce poukładać własny warsztat.</p></a>
+      <a href="/pricing#cennik" class="ac-card reveal-up delay-2" style="display:block"><span class="ac-card-tag">Dla zespołu</span><h3>Cennik na zapytanie</h3><p>Ten sam język pracy dla marketingu, sprzedaży i founderów. Z wdrożeniem, nie samym dostępem.</p></a>
+      <a href="/cohort" class="ac-card reveal-up delay-3" style="display:block"><span class="ac-card-tag"><span class="ac-pulse"></span>Cohort live</span><h3>2 900 zł / os.</h3><p>6 tygodni live, case-work i praca na prawdziwych procesach uczestników.</p></a>
     </div>
     <div style="text-align:center;margin-top:32px" class="reveal-up">
       <a href="/pricing" class="ac-btn ac-btn-primary">Otrzymaj cennik →</a>
@@ -137,9 +146,9 @@ const series = [
 
   <!-- CTA -->
   <div class="ac-cta reveal-zoom">
-    <h2>Zanim wpiszesz zespół, posłuchaj sam.</h2>
-    <p>Pierwszy odcinek (S1E01 — wybór modelu pod konkretny task) jest otwarty. Bez karty, bez zapisu. Cały odcinek + plik bonusowy, żebyś ocenił format zanim zdecydujesz dla teamu.</p>
-    <a href="https://academy.wojciech.io/audio/s1e01.mp3" class="ac-btn ac-btn-primary">Posłuchaj S1E01 ↗</a>
+    <h2>Jeśli po pierwszym odcinku nie czujesz konkretu, nie kupuj.</h2>
+    <p>To ma być roboczy program dla ludzi, którzy muszą dowieźć marketing, sprzedaż albo content. Nie kolekcja ciekawostek o AI.</p>
+    <a href="#sample" class="ac-btn ac-btn-primary">Wróć do próbki audio →</a>
   </div>
 
 </Layout>
