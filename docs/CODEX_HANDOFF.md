@@ -342,6 +342,24 @@ In commit order on main:
   (`.gh-table-wrap`) so it scrolls instead of breaking the card on mobile;
   deferred v1.5 nav tabs marked `aria-disabled`. Deployed `1b2e8162`, verified
   live on `/demo` (gh-wojciech-io is direct-upload).
+- `b0251b2` — **GrowthHub v1.2 playground.** Per Wojtek (2026-05-21): no
+  access to old company resources, so GrowthHub runs as a synthetic playground
+  architected for FUTURE integration. Added: paid-acquisition data (Google Ads
+  / Meta Ads / LinkedIn — spend/clicks/leads/CPL/ROAS) in `lib/dummy-data.ts`,
+  a `dataSources` provenance model + integrations status strip (GA4, Google
+  Ads, Meta Ads, CRM — all "Demo"), a `Paid acquisition · 7d` table in
+  `WeeklyReview.astro`, and future-integration adapter stubs
+  `lib/adapters/{googleads,meta,hubspot}.ts` mirroring the GA4/Pipedrive
+  pattern (return `*-not-configured` until env vars set). All data fictional;
+  no client identification. Adapters document the real API + target D1 table
+  in their header comments.
+- `8166dcf` — **GrowthHub gate fix (important):** `functions/_middleware.ts`
+  did not allow `/_astro/` build assets, so once the stylesheet grew past
+  Astro's inline threshold the externalised CSS/JS 302'd to `/login` and the
+  public `/demo` rendered UNSTYLED. Now `/_astro/*` is allowlisted (public,
+  content-hashed, no gated data). Deployed `68f2d645`, verified: CSS returns
+  200 text/css, demo renders fully styled. **If you add gated apps with the
+  same middleware pattern, remember `/_astro/` must pass.**
 
 ### QA / verification done this session (Claude Code, 2026-05-21 eve)
 
@@ -351,9 +369,12 @@ In commit order on main:
 - SEO/OG sweep: subscribe + notch already had canonical+OG (og-default.png
   live 200); gh + app are intentionally `noindex,nofollow` (gated). Only
   Academy needed the meta — now shipped.
-- GrowthHub still has zero Kadromierz references (grep clean). Real v1.2
-  GA4/Pipedrive sync remains blocked on Wojtek's data/secrets; v1.5 tabs
-  (Demand-gen/Leads/Revenue) deliberately deferred, now clearly marked.
+- GrowthHub still has zero Kadromierz references (grep clean). Direction
+  changed: it is now a **synthetic playground** (Wojtek has no access to old
+  company resources). Real GA4/Google Ads/Meta Ads/CRM integration is wired as
+  FUTURE work via adapter stubs; flip `dataSources[].status` to `connected`
+  once an adapter writes real rows to D1. Provide env vars to activate (see
+  each adapter header). v1.5 tabs (Demand-gen/Leads/Revenue) still deferred.
 - Old `wojciech-app` Pages project deleted (see pending list above).
 - Did NOT restore the old site's testimonials / attributed expert quotes:
   Academy hasn't launched (waitlist), so that would be fabricated social proof
