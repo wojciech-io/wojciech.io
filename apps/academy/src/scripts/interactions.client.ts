@@ -105,6 +105,70 @@
     update();
   }
 
+  // --- 4b. Terminal typing demo -----------------------------------------
+  const term = document.querySelector<HTMLElement>('[data-ac-terminal]');
+  const typed = term?.querySelector<HTMLElement>('[data-ac-typed]');
+  const body  = term?.querySelector<HTMLElement>('[data-ac-terminal-body]');
+  if (term && typed && body && !term.dataset.bound) {
+    term.dataset.bound = '1';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const cmd = 'score-leads --source=clay --icp=b2b-saas --window=7d';
+    const out = [
+      '<span class="ac-term-comment"># wzbogacam 248 rekordów, liczę ICP fit + sygnały…</span>',
+      '<span class="ac-term-out">{ <span class="k">"sql_ready"</span>: <span class="n">12</span>, <span class="k">"nurture"</span>: <span class="n">34</span>, <span class="k">"drop"</span>: <span class="n">8</span> }</span>',
+      '<span class="ac-term-comment"># top lead: <span class="s">"Head of Growth · B2B SaaS · 50-200"</span> &rarr; score <span class="n">90</span></span>',
+      '<span class="ac-term-out"><span class="k">→</span> sekwencja outbound wygenerowana · personalizacja gotowa</span>',
+    ];
+
+    const cursor = body.querySelector('.ac-term-cursor') as HTMLElement | null;
+
+    const writeOut = () => {
+      out.forEach((line, i) => {
+        const el = document.createElement('span');
+        el.className = 'ac-term-line';
+        el.style.opacity = '0';
+        el.innerHTML = line;
+        body.appendChild(el);
+        setTimeout(() => {
+          el.style.transition = 'opacity .3s';
+          el.style.opacity = '1';
+        }, reduce ? 0 : 380 * (i + 1));
+      });
+    };
+
+    const run = () => {
+      if (reduce) {
+        typed.textContent = cmd;
+        if (cursor) cursor.style.display = 'none';
+        writeOut();
+        return;
+      }
+      let i = 0;
+      const tick = () => {
+        typed.textContent = cmd.slice(0, i);
+        if (i++ <= cmd.length) {
+          setTimeout(tick, 34 + Math.random() * 40);
+        } else {
+          if (cursor) cursor.style.display = 'none';
+          setTimeout(writeOut, 300);
+        }
+      };
+      tick();
+    };
+
+    if ('IntersectionObserver' in window) {
+      const to = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) { run(); to.disconnect(); }
+        }
+      }, { threshold: 0.4 });
+      to.observe(term);
+    } else {
+      run();
+    }
+  }
+
   // --- 5. Enterprise + cohort form submit (Resend audience + email) ------
   document.querySelectorAll<HTMLFormElement>('form[data-ac-form]').forEach(form => {
     if (form.dataset.bound) return;
