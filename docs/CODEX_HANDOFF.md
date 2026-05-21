@@ -17,8 +17,8 @@ Current live state verified 2026-05-21:
 - `notch.wojciech.io` — live, direct-upload from `apps/notch`.
 - `gh-wojciech-io.pages.dev/demo` — live GrowthHub demo; `gh.wojciech.io`
   DNS/custom domain still not set.
-- `academy-v2-wojciech-io.pages.dev` — live Academy v2 preview with Stripe
-  cohort checkout fallback, D1-backed magic-link auth, and gated `/app`
+- `academy-v2-wojciech-io.pages.dev` — live Academy v2 preview with
+  reservation/waitlist flow, D1-backed magic-link auth, and gated `/app`
   member area. Production `academy.wojciech.io` still points to old
   `akademia-wojciech-io`.
 
@@ -214,10 +214,9 @@ not a repo value.
 `academy-v2-wojciech-io`: Academy v2 preview with `academy-db` D1 binding,
 `RATE_LIMIT` KV, `AUTH_SECRET`, `ACADEMY_ADMIN_TOKEN`, `ACADEMY_BASE_URL`,
 `STRIPE_PRICE_COHORT`, and `STRIPE_COHORT_PAYMENT_LINK` configured. Current
-checkout uses the Payment Link fallback and pre-fills the buyer email. Do
-**not** cut over `academy.wojciech.io` until `STRIPE_SECRET_KEY`,
-`STRIPE_WEBHOOK_SECRET`, and `RESEND_API_KEY` are configured and a live test
-purchase has activated `/app`.
+public cohort flow is reservation/waitlist first; payment system is deliberately
+parked as a last, optional backlog item per Wojtek's 2026-05-21 decision. Do
+**not** make Stripe the next workstream unless Wojtek explicitly asks for it.
 
 Academy v2 has an admin-only fallback endpoint:
 `POST /api/admin/grant-access` with `Authorization: Bearer <ACADEMY_ADMIN_TOKEN>`.
@@ -238,7 +237,8 @@ manual activation is needed.
   read, so DNS changes are not available from this CLI session.
 - **Cloudflare WAF rate-limit rule** on `/api/*` still needs dashboard or
   a token with Zone edit. App-level KV rate limits are already in code.
-- **Stripe webhook for Academy v2** still needs dashboard setup. Add
+- **Payment system for Academy v2** is parked as the last optional task, not
+  the current blocker. When Wojtek explicitly returns to it: add
   `STRIPE_SECRET_KEY`, create a webhook endpoint for
   `https://academy-v2-wojciech-io.pages.dev/api/stripe/webhook`, listen to
   `checkout.session.completed` and
@@ -298,24 +298,29 @@ In commit order on main:
 - (this commit) — CV + contact CSS port, handoff doc updated.
 - `76eae58` — Academy v2 rich landing visuals restored: model ranker,
   tool marquee, audio sample player, learning flow, and "Co dostajesz" kit.
-- pending commit — Academy purchase/access hardening: Stripe checkout params,
+- `3e114fb` — Academy purchase/access hardening: Stripe checkout params,
   idempotent webhook, 12-month access expiry, clearer login/thanks copy, and
   admin-only manual access fallback.
+- pending commit — Academy public flow changed from Stripe-first checkout to
+  reservation/waitlist; payments explicitly moved to the end of the backlog.
 
 ---
 
 ## What an agent should pick up next
 
-1. **Academy Stripe closeout** — add `STRIPE_SECRET_KEY`,
-   `STRIPE_WEBHOOK_SECRET`, and `RESEND_API_KEY`, run a live cohort purchase,
-   confirm the webhook creates the member and magic-link email opens `/app`.
+1. **Academy visual/copy polish** — continue matching the rich old Academy
+   reference: real interface mockups, audio/player feel, diagrams, Polish
+   diacritics, and less generic copy.
 2. **GrowthHub v1.2** — wire real GA4/Pipedrive sync into Functions/shared
    package, then configure D1 + secrets. Public `/demo` already works.
 3. **Cloudflare ops** — configure `gh.wojciech.io`, add WAF rate limit
    `/api/*`, decide whether to delete old `wojciech-app` Pages rollback.
-4. **Academy cutover** — only after payment/auth/member flow is verified:
-   deploy to `akademia-wojciech-io` or move `academy.wojciech.io` to
-   `academy-v2-wojciech-io`.
+4. **Academy cutover decision** — show Wojtek v2 and ask before moving
+   `academy.wojciech.io` from old `akademia-wojciech-io`.
+5. **Payment system closeout (last optional task)** — add
+   `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `RESEND_API_KEY`, run a
+   live cohort purchase, confirm the webhook creates the member and magic-link
+   email opens `/app`.
 
 ---
 

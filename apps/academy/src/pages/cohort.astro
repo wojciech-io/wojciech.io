@@ -60,28 +60,32 @@ const cohortSize = 18;
     </div>
   </section>
 
-  <!-- Checkout -->
-  <section class="ac-section" id="checkout" style="padding-top: 0">
+  <!-- Reservation -->
+  <section class="ac-section" id="reservation" style="padding-top: 0">
     <div class="ac-checkout-shell reveal-up">
       <div>
-        <p class="ac-section-eyebrow">Stripe Checkout</p>
-        <h2>Cohort live · 2 900 zł / osoba</h2>
+        <p class="ac-section-eyebrow">Wstępna rezerwacja</p>
+        <h2>Zarezerwuj miejsce bez płatności.</h2>
         <p class="ac-section-sub" style="margin-bottom:0">
-          Kupujesz miejsce przez Stripe. Po płatności dostajesz magic-link do panelu `/app`, gdzie jest player, vault i materiały wdrożeniowe. Jeśli termin cohortu nie zbierze się w rozsądnym czasie — zostaje zwrot albo przeniesienie na kolejny termin.
+          Zostaw kontakt i krótki kontekst. Gdy grupa będzie gotowa, dostaniesz termin, finalne warunki i dopiero wtedy decyzję o płatności. Bez karty teraz, bez automatu, bez presji.
         </p>
       </div>
-      <form class="ac-form ac-checkout-form" data-checkout-form action="/api/stripe/checkout">
-        <input type="hidden" name="plan" value="cohort" />
+      <form class="ac-form ac-checkout-form" data-ac-form action="/api/contact">
+        <input type="hidden" name="kind" value="cohort-reservation" />
         <div>
           <label class="ac-form-label">Imię i nazwisko</label>
           <input class="ac-input" name="name" type="text" required autocomplete="name" />
         </div>
         <div>
-          <label class="ac-form-label">Email do dostępu</label>
+          <label class="ac-form-label">Email</label>
           <input class="ac-input" name="email" type="email" required autocomplete="email" />
         </div>
-        <button type="submit" class="ac-btn ac-btn-primary" data-label="Przejdź do Stripe →">Przejdź do Stripe →</button>
-        <p class="ac-form-help">Bez przechowywania karty u nas. Dostęp aktywuje webhook Stripe po potwierdzeniu płatności.</p>
+        <div>
+          <label class="ac-form-label">Co chcesz wdrożyć w trakcie cohortu?</label>
+          <textarea class="ac-textarea" name="brief" placeholder="Np. outbound z Clay + Pipedrive, content workflow, scoring leadów, team adoption."></textarea>
+        </div>
+        <button type="submit" class="ac-btn ac-btn-primary" data-label="Zarezerwuj miejsce →">Zarezerwuj miejsce →</button>
+        <p class="ac-form-help">Cena orientacyjna zostaje 2 900 zł / osoba. Płatność dopracujemy na końcu, gdy termin i grupa będą potwierdzone.</p>
         <div class="ac-form-status"></div>
       </form>
     </div>
