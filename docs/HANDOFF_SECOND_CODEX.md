@@ -26,7 +26,7 @@ Aktualny kierunek: iść szybko do przodu z Academy/GrowthHub, **nie zaczynać o
 
 Zrobione:
 
-- Rich landing: hero, CodeScene, ranking modeli, tool marquee, audio sample/player, flow nauki, sekcja „Co dostajesz”, StackFlow, EpisodeBrowser.
+- Rich landing: hero, CodeScene, ranking modeli, tool marquee, audio sample/player, flow nauki, sekcja „Co dostajesz”, OutcomeBoard, StackFlow, EpisodeBrowser.
 - Cennik gated, cohort 2900 zł/os, brak daty, waitlist.
 - `/app` member area, `/login` magic-link, D1 `academy-db`.
 - Publiczny cohort ma teraz rezerwację/listę zamiast Stripe-first checkout.
@@ -84,4 +84,3 @@ Priorytet to Academy v2 polish względem starego PDF:
 /Users/wojciech/Downloads/screencapture-academy-wojciech-io-2026-05-21-14_24_54.pdf
 Styl ma być bogaty, interfejsowy, ludzki, nie płaski. Nie przepinaj academy.wojciech.io bez zgody. Nie ruszaj workers/failover/package-lock.json.
 ```
-

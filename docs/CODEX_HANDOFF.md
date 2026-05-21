@@ -301,8 +301,10 @@ In commit order on main:
 - `3e114fb` — Academy purchase/access hardening: Stripe checkout params,
   idempotent webhook, 12-month access expiry, clearer login/thanks copy, and
   admin-only manual access fallback.
-- pending commit — Academy public flow changed from Stripe-first checkout to
+- `cae6607` — Academy public flow changed from Stripe-first checkout to
   reservation/waitlist; payments explicitly moved to the end of the backlog.
+- pending commit — Academy visual/copy polish: added OutcomeBoard with
+  before/after implementation deltas and a GTM operating dashboard mockup.
 
 ---
 
