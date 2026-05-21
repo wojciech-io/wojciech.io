@@ -1,9 +1,11 @@
 import { confirmationEmail } from '../../src/email/confirmation';
+import { rateLimit, clientIp } from '../_utils/ratelimit';
 
 interface Env {
   SUBSCRIBE_KV: KVNamespace;
   RESEND_API_KEY: string;
   RESEND_FROM?: string;
+  RATE_LIMIT?: KVNamespace;
 }
 
 interface PagesFunctionContext {
@@ -23,6 +25,10 @@ function json(data: unknown, init: ResponseInit = {}) {
 }
 
 export async function onRequestPost({ request, env }: PagesFunctionContext) {
+  // Anti-abuse: 5 signups / 10 min / IP (protects Resend quota).
+  const rl = await rateLimit(env.RATE_LIMIT, `subscribe:${clientIp(request)}`, 5, 600);
+  if (!rl.ok) return rl.response!;
+
   let email: string | undefined;
 
   try {
