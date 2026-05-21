@@ -52,7 +52,9 @@ Wojtek chce klimat starej wersji: bogato, interfejsowo, nowocześnie, z flow i m
 
 3. GrowthHub / Cloudflare ops.
    - `gh.wojciech.io`: DNS CNAME już utworzony, custom domain active. Jeśli lokalnie nie działa, sprawdzić publiczny resolver (`dig @1.1.1.1 gh.wojciech.io A`) przed proszeniem Wojtka.
-   - WAF `/api/*` wymaga dashboardu albo tokenu z WAF/Rulesets edit. Aktualny token DNS działa, ale Rulesets API zwraca authentication error.
+   - WAF `/api/*` wymaga dashboardu albo tokenu z `Zone › Rulesets › Edit`. Token wrangler ma `pages:write` ale tylko `zone:read`. App-level KV rate-limit jest aktywny (auth 8/10min, checkout 10/10min, contact 5/10min) — WAF to dodatkowa warstwa, nie brakująca ochrona.
+   - Stary projekt `wojciech-app` (rollback) USUNIĘTY 2026-05-21 za zgodą Wojtka. Nie miał custom domeny.
+   - Academy SEO domknięte: per-page canonical + OG/Twitter meta + branded `og-cover.png` 1200×630, wdrożone na produkcję.
 
 4. Academy cutover.
    - Wykonany 2026-05-21.

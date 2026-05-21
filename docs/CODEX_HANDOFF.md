@@ -243,18 +243,21 @@ manual activation is needed.
 
 ### Still pending (user only)
 
-- **Cloudflare old `wojciech-app` Pages project** still exists as rollback
-  at `wojciech-app.pages.dev`. Cloudflare has no "archive" state for Pages
-  projects; the only CLI action is deletion. Do not delete unless Wojtek
-  explicitly accepts losing that rollback.
+- **Cloudflare old `wojciech-app` Pages project** — **DELETED 2026-05-21**
+  per Wojtek's go-ahead. It had no custom domain (only `wojciech-app.pages.dev`),
+  so deletion touched no production hostname. Rollback to that old build is no
+  longer possible; git history + the archived GitHub repo remain.
 - **`gh.wojciech.io` DNS/custom domain** was created 2026-05-21 and is active.
   If a later agent sees a local DNS failure, first check
   `dig @1.1.1.1 gh.wojciech.io A` before asking Wojtek; it may just be local
   NXDOMAIN cache.
 - **Cloudflare WAF rate-limit rule** on `/api/*` still needs dashboard access
-  or a token with WAF/Rulesets edit. The available token can edit DNS, but the
-  Rulesets API returned `Authentication error`. App-level KV rate limits are
-  already in code.
+  or a token with `Zone › Rulesets › Edit`. The wrangler OAuth token has
+  `pages:write` but only `zone:read`, so the Rulesets API is refused. NOTE:
+  app-level KV rate limits are already enforced and verified active —
+  `academy-auth` 8/10min, `stripe-checkout` 10/10min, `contact` 5/10min per IP
+  (`apps/academy/functions/_utils/ratelimit.ts`). WAF would be edge-level
+  defense-in-depth on top, not a missing protection.
 - **Payment system for Academy** is parked as the last optional task, not
   the current blocker. When Wojtek explicitly returns to it: add
   `STRIPE_SECRET_KEY`, create a webhook endpoint for
@@ -322,8 +325,26 @@ In commit order on main:
   admin-only manual access fallback.
 - `cae6607` — Academy public flow changed from Stripe-first checkout to
   reservation/waitlist; payments explicitly moved to the end of the backlog.
-- pending commit — Academy visual/copy polish: added OutcomeBoard with
+- `6a038cb` — Academy visual/copy polish: added OutcomeBoard with
   before/after implementation deltas and a GTM operating dashboard mockup.
+- `c1f9048` — Academy SEO: per-page `<link rel=canonical>` + full OG/Twitter
+  meta in `apps/academy/src/layouts/Layout.astro` (canonical/og:url derive from
+  request path, not a hardcoded homepage URL).
+- `14a1460` — Academy branded 1200×630 social share image
+  (`apps/academy/public/og-cover.png`, SVG source in `apps/academy/scripts/`),
+  Twitter card upgraded to `summary_large_image`. Deployed to academy prod
+  (`akademia-wojciech-io`, deploy `ad428eb5`) and verified live: canonical
+  per-page, `og-cover.png` returns 200 image/png.
+
+### QA / verification done this session (Claude Code, 2026-05-21 eve)
+
+- Live smoke all subdomains green (app gated 401, rest 200).
+- Academy v2 QA: no console errors, no mobile horizontal overflow on
+  `/ /pricing /cohort /login`, zero mojibake, Polish diacritics intact.
+- Old `wojciech-app` Pages project deleted (see pending list above).
+- Did NOT restore the old site's testimonials / attributed expert quotes:
+  Academy hasn't launched (waitlist), so that would be fabricated social proof
+  — against CLAUDE.md. Revisit only with real, attributable quotes/testimonials.
 
 ---
 
@@ -331,11 +352,13 @@ In commit order on main:
 
 1. **Academy visual/copy polish** — continue matching the rich old Academy
    reference: real interface mockups, audio/player feel, diagrams, Polish
-   diacritics, and less generic copy.
+   diacritics, and less generic copy. (Social-proof sections need REAL
+   testimonials/quotes before they go back — do not fabricate.)
 2. **GrowthHub v1.2** — wire real GA4/Pipedrive sync into Functions/shared
    package, then configure D1 + secrets. Public `/demo` already works.
-3. **Cloudflare ops** — configure `gh.wojciech.io`, add WAF rate limit
-   `/api/*`, decide whether to delete old `wojciech-app` Pages rollback.
+3. **Cloudflare ops** — WAF rate limit `/api/*` still needs a token with
+   `Zone › Rulesets › Edit` (current token is `zone:read`). `gh.wojciech.io`
+   is live; old `wojciech-app` rollback already deleted.
 4. **Academy post-cutover polish** — continue visual/copy polish directly on
    production and keep `academy-v2-wojciech-io.pages.dev` as preview/staging.
 5. **Payment system closeout (last optional task)** — add
