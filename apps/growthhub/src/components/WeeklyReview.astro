@@ -4,6 +4,8 @@ import {
   type Lead,
   type PipelineStage,
   type SourceBreakdown,
+  type PaidChannel,
+  type DataSource,
   formatCurrency,
   formatPct,
 } from '../lib/dummy-data';
@@ -27,11 +29,20 @@ interface Props {
   sources: SourceBreakdown[];
   pipeline: PipelineStage[];
   topLeads: Lead[];
+  paid?: PaidChannel[];
+  dataSources?: DataSource[];
 }
 
-const { headline, sources, pipeline, topLeads } = Astro.props;
+const { headline, sources, pipeline, topLeads, paid = [], dataSources = [] } = Astro.props;
 const maxStage = Math.max(...pipeline.map(s => s.count));
 const maxSource = Math.max(...sources.map(s => s.sessions));
+const maxSpend = paid.length ? Math.max(...paid.map(p => p.spend_cents)) : 0;
+const paidSpend = paid.reduce((a, b) => a + b.spend_cents, 0);
+const paidLeads = paid.reduce((a, b) => a + b.leads, 0);
+const blendedCpl = paidLeads ? Math.round(paidSpend / paidLeads) : 0;
+const statusLabel: Record<DataSource['status'], string> = {
+  demo: 'Demo', connected: 'Live', 'not-configured': 'Off',
+};
 
 function scoreClass(n: number): string {
   if (n >= 85) return 's-90';
@@ -42,6 +53,19 @@ function scoreClass(n: number): string {
 
 <h1 class="gh-h1">Weekly review</h1>
 <p class="gh-sub">Acquisition · pipeline · revenue, one screen. Week of 2026-05-14 → 2026-05-20.</p>
+
+{dataSources.length > 0 && (
+  <div class="gh-sources-strip" role="list" aria-label="Connected data sources">
+    {dataSources.map(d => (
+      <span class="gh-src-chip" role="listitem" data-status={d.status}>
+        <span class={`gh-src-dot s-${d.status}`} aria-hidden="true"></span>
+        <span class="gh-src-name">{d.name}</span>
+        <span class="gh-src-badge">{statusLabel[d.status]}</span>
+        <span class="gh-src-detail">{d.detail}</span>
+      </span>
+    ))}
+  </div>
+)}
 
 <section class="gh-metrics">
   <div class="gh-card gh-metric">
@@ -101,6 +125,50 @@ function scoreClass(n: number): string {
     </div>
   </div>
 </section>
+
+{paid.length > 0 && (
+  <section style="margin-top:24px">
+    <div class="gh-card">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <h2 class="gh-h2" style="margin-top:0">Paid acquisition · 7d</h2>
+        <div style="font-size:13px;color:var(--text-2)">
+          Spend <span style="font-weight:600;color:var(--text)">{formatCurrency(paidSpend)}</span>
+          · {paidLeads} leads · blended CPL <span style="font-weight:600;color:var(--text)">{formatCurrency(blendedCpl)}</span>
+        </div>
+      </div>
+      <div class="gh-table-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px">
+        <table class="gh-table">
+          <thead>
+            <tr>
+              <th>Channel</th>
+              <th class="num">Spend</th>
+              <th>Share of spend</th>
+              <th class="num">Clicks</th>
+              <th class="num">Leads</th>
+              <th class="num">CPL</th>
+              <th class="num">ROAS</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paid.map(p => (
+              <tr>
+                <td>{p.channel}</td>
+                <td class="num">{formatCurrency(p.spend_cents)}</td>
+                <td>
+                  <div class="gh-source-bar" style="min-width:90px"><span style={`width:${maxSpend ? (p.spend_cents / maxSpend) * 100 : 0}%`}></span></div>
+                </td>
+                <td class="num">{p.clicks.toLocaleString()}</td>
+                <td class="num">{p.leads}</td>
+                <td class="num">{formatCurrency(p.cpl_cents)}</td>
+                <td class="num"><span class={`gh-score ${p.roas >= 3 ? 's-90' : p.roas >= 2 ? 's-80' : 's-60'}`}>{p.roas.toFixed(1)}x</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+)}
 
 <section style="margin-top:24px">
   <div class="gh-card">

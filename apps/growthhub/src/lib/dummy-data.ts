@@ -89,6 +89,42 @@ export const pipeline: PipelineStage[] = [
   { stage: 'Negotiation', count: 3, amount_cents: 4200000 },
 ];
 
+// --- Paid acquisition (Google Ads + Meta Ads + LinkedIn) -------------------
+// Synthetic. Wired to real platforms via lib/adapters/{googleads,meta}.ts when
+// their env vars are set; until then the playground renders these.
+export interface PaidChannel {
+  channel: string;
+  platform: 'google-ads' | 'meta-ads' | 'linkedin-ads';
+  spend_cents: number;
+  clicks: number;
+  leads: number;
+  cpl_cents: number;   // cost per lead
+  roas: number;        // pipeline-attributed return on ad spend (x)
+}
+
+export const paidChannels: PaidChannel[] = [
+  { channel: 'Google Ads',   platform: 'google-ads',   spend_cents: 420000, clicks: 3980, leads: 38, cpl_cents: 11052, roas: 3.4 },
+  { channel: 'Meta Ads',     platform: 'meta-ads',     spend_cents: 265000, clicks: 5210, leads: 22, cpl_cents: 12045, roas: 2.1 },
+  { channel: 'LinkedIn Ads', platform: 'linkedin-ads', spend_cents: 310000, clicks: 1240, leads: 17, cpl_cents: 18235, roas: 2.8 },
+];
+
+// --- Data-source provenance (integrations status strip) --------------------
+// In the playground every source is "demo" (synthetic). Real integrations flip
+// the status to "connected" once their adapter has written rows to D1.
+export interface DataSource {
+  name: string;
+  kind: 'analytics' | 'ads' | 'crm';
+  status: 'demo' | 'connected' | 'not-configured';
+  detail: string;
+}
+
+export const dataSources: DataSource[] = [
+  { name: 'Google Analytics 4',        kind: 'analytics', status: 'demo', detail: 'Sessions · channels · conversions' },
+  { name: 'Google Ads',                kind: 'ads',       status: 'demo', detail: 'Spend · clicks · CPL · ROAS' },
+  { name: 'Meta Ads',                  kind: 'ads',       status: 'demo', detail: 'Spend · clicks · CPL · ROAS' },
+  { name: 'CRM (Pipedrive / HubSpot)', kind: 'crm',       status: 'demo', detail: 'Leads · pipeline · closed-won' },
+];
+
 export const headlineMetrics = {
   sessions_7d: 9970,
   sessions_7d_delta: 0.082,        // +8.2% wow
