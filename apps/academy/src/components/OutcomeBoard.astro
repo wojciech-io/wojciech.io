@@ -1,0 +1,78 @@
+---
+const deltas = [
+  ['Brief do researchu', 'z luźnej prośby w gotowy prompt z kryteriami oceny'],
+  ['Lead scoring', 'z arkusza “na później” w reguły ICP + sygnały zakupowe'],
+  ['Outbound', 'z generycznej sekwencji w personalizację opartą o dane'],
+  ['Content', 'z listy tematów w pipeline research → draft → dystrybucja'],
+];
+
+const signals = [
+  { company: 'Acme SaaS', fit: 91, note: 'Hiring Head of RevOps · ICP 50-200' },
+  { company: 'Northstar CRM', fit: 84, note: 'Nowe finansowanie · zmiana pricingu' },
+  { company: 'Vector Analytics', fit: 78, note: 'Intent: AI sales automation' },
+];
+---
+<section class="ac-section ac-outcome-section" id="outcomes">
+  <p class="ac-section-eyebrow reveal-up">Po co to jest</p>
+  <h2 class="reveal-up delay-1">Po odcinku ma zostać decyzja, plik albo proces. Nie notatka z inspiracją.</h2>
+  <p class="ac-section-sub reveal-up delay-2">
+    Każdy moduł kończy się czymś, co można dać do pracy zespołowi: promptem,
+    SOP-em, scoringiem, checklistą albo dashboardem. To jest program dla ludzi,
+    którzy muszą dowozić pipeline, content i rytm pracy, nie tylko “znać AI”.
+  </p>
+
+  <div class="ac-outcome-grid">
+    <div class="ac-outcome-panel reveal-up">
+      <div class="ac-outcome-head">
+        <span>Przed</span>
+        <strong>Po wdrożeniu</strong>
+      </div>
+      <div class="ac-delta-list">
+        {deltas.map(([before, after], i) => (
+          <div class="ac-delta-row" style={`transition-delay:${i * 70}ms`}>
+            <div>
+              <small>było</small>
+              <b>{before}</b>
+            </div>
+            <span aria-hidden="true">→</span>
+            <p>{after}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="ac-workbench reveal-up delay-2" aria-label="Mockup dashboardu operacyjnego">
+      <div class="ac-workbench-top">
+        <div>
+          <span></span><span></span><span></span>
+        </div>
+        <strong>growth-os / weekly-review</strong>
+        <em>live</em>
+      </div>
+      <div class="ac-workbench-body">
+        <div class="ac-workbench-column">
+          <p>Signal inbox</p>
+          {signals.map((signal) => (
+            <div class="ac-signal-row">
+              <div>
+                <strong>{signal.company}</strong>
+                <small>{signal.note}</small>
+              </div>
+              <b>{signal.fit}</b>
+            </div>
+          ))}
+        </div>
+        <div class="ac-workbench-column">
+          <p>Next actions</p>
+          <div class="ac-action-row active"><span>1</span>Przenieś do Pipedrive: SQL review</div>
+          <div class="ac-action-row"><span>2</span>Wygeneruj 3 warianty intro</div>
+          <div class="ac-action-row"><span>3</span>Zapisz insight do content backlogu</div>
+          <div class="ac-mini-terminal">
+            <code>agent.run("enrich + route")</code>
+            <code>status: ready for human review</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
