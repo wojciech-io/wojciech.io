@@ -106,7 +106,9 @@ async function activeMember(db: D1Database, email: string): Promise<{ customer_i
     `SELECT c.id AS customer_id, m.plan
      FROM customers c
      JOIN memberships m ON m.customer_id = c.id
-     WHERE c.email = ? AND m.status IN ('active', 'trialing')
+     WHERE c.email = ?
+       AND m.status IN ('active', 'trialing')
+       AND (m.access_expires_at IS NULL OR datetime(m.access_expires_at) > CURRENT_TIMESTAMP)
      ORDER BY m.created_at DESC
      LIMIT 1`
   ).bind(email).first<{ customer_id: string; plan: string }>();
