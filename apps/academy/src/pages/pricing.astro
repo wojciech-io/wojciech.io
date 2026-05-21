@@ -1,0 +1,158 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const tiers = [
+  {
+    mode: 'individual',
+    tier: 'Free',
+    price: '0',
+    period: 'zł · bez karty',
+    cta: { label: 'Posłuchaj S1E01', href: 'https://academy.wojciech.io/audio/s1e01.mp3' },
+    features: [
+      '1 odcinek demo (S1E01)',
+      'Plik bonusowy do odcinka',
+      'Dostęp do newslettera',
+    ],
+  },
+  {
+    mode: 'individual',
+    tier: 'Individual',
+    price: '1 900',
+    period: 'zł · jednorazowo · dożywotni dostęp',
+    featured: true,
+    label: 'Najczęściej wybierane',
+    cta: { label: 'Wybierz Individual →', href: '#enterprise' },
+    features: [
+      'Wszystkie 36 odcinków (4 serie)',
+      'Vault — 100+ plików (prompty, blueprinty, PDF)',
+      'Certyfikat po quizach (PDF + LinkedIn)',
+      '1 cohort review na rok (60-min Q&A)',
+      'Update odcinków przez 12 mies.',
+    ],
+  },
+  {
+    mode: 'team',
+    tier: 'Team license · 10 seatów',
+    price: '9 900',
+    period: 'zł · 12 mies. dla całego teamu',
+    featured: true,
+    label: 'Najlepszy ratio',
+    cta: { label: 'Wybierz Team →', href: '#enterprise' },
+    features: [
+      '10 seatów dla zespołu GTM',
+      'Team dashboard (kto co odsłuchał, kto zdał quizy)',
+      'Shared Vault z notatkami zespołu',
+      '1 h Q&A z Wojtkiem dla całego zespołu',
+      'Centralny billing, jeden seat owner',
+    ],
+  },
+  {
+    mode: 'team',
+    tier: 'Cohort · live 6 tygodni',
+    price: '4 900',
+    period: 'zł / os. · następny termin: 2026-06-15',
+    cta: { label: 'Zapisz się na cohort →', href: '/cohort' },
+    features: [
+      'Wszystko z Individual',
+      '6 tyg. live cohortu (1 godz/tyg, wt 19:00 CEST)',
+      'Office hours (środa, 60 min)',
+      'Case-work na własnym lejku',
+      'Prywatny Discord cohortu',
+      'Cert ukończenia cohortu (dyplom + LinkedIn)',
+    ],
+  },
+];
+---
+<Layout title="Cennik · AI Growth OS · Academy" description="Cztery sposoby na dostęp do AI Growth OS — od bezpłatnego demo, przez self-paced Individual, po live cohort i Team license dla zespołów B2B SaaS.">
+
+  <section class="ac-hero" style="padding-bottom: 40px">
+    <span class="ac-hero-eyebrow reveal-up">Cennik</span>
+    <h1 class="reveal-up delay-1">Cztery sposoby na dostęp.<br /><em>Wybierasz na 30 sekund.</em></h1>
+    <p class="ac-hero-sub reveal-up delay-2">Pierwsza wersja była dla indywidualnego operatora za 249 PLN. Druga jest dla zespołów B2B SaaS, które chcą AI w GTM jako codzienną praktykę, nie kolejny pilot.</p>
+
+    <div class="ac-toggle reveal-up delay-3" data-pricing-toggle style="margin-top: 28px">
+      <button class="active" data-mode="individual">Indywidualnie</button>
+      <button data-mode="team">Dla zespołu</button>
+    </div>
+  </section>
+
+  <section class="ac-section" style="padding-top: 24px">
+    <div class="ac-price-grid">
+      {tiers.map((t, i) => (
+        <article
+          class:list={['ac-price', `reveal-up delay-${(i % 4) + 1}`, t.featured && 'featured']}
+          data-pricing-mode={t.mode}
+        >
+          {t.label && <span class="ac-price-top-label">{t.label}</span>}
+          <p class="ac-price-tier">{t.tier}</p>
+          <div class="ac-price-amount">{t.price}<span>{t.period.split('·')[0]}</span></div>
+          <p class="ac-price-period">{t.period.split('·').slice(1).join('·').trim()}</p>
+          <ul class="ac-price-list">
+            {t.features.map(f => (
+              <li><span class="ac-check">✓</span><span>{f}</span></li>
+            ))}
+          </ul>
+          <a href={t.cta.href} class="ac-btn ac-btn-primary" style="margin-top: auto; justify-content: center">{t.cta.label}</a>
+        </article>
+      ))}
+    </div>
+
+    <div class="ac-calc reveal-up">
+      <div class="ac-calc-label">
+        <strong style="color: var(--text)">Kalkulator seatów</strong><br />
+        <span style="font-size: 12px; color: var(--text-3)">Ile osób w teamie ma dostać AI Growth OS?</span>
+      </div>
+      <div>
+        <input class="ac-calc-slider" id="ac-seat-slider" type="range" min="1" max="25" value="10" step="1" />
+        <p style="font-size: 12px; color: var(--text-3); margin: 6px 0 0;">
+          <span id="ac-seat-count">10</span> seatów
+        </p>
+      </div>
+      <div class="ac-calc-out">
+        <div class="ac-calc-price" id="ac-seat-price">9 900 zł</div>
+        <div class="ac-calc-detail" id="ac-seat-detail">Team license — 10 seatów (płacisz tyle samo od 6 do 10)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enterprise -->
+  <section class="ac-section" id="enterprise" style="padding-top: 0">
+    <p class="ac-section-eyebrow reveal-up">Enterprise · od 39 900 zł</p>
+    <h2 class="reveal-up delay-1">Custom curriculum dla 50+ osób, onsite lub zdalnie.</h2>
+    <p class="ac-section-sub reveal-up delay-2">
+      Jeśli macie zespół 50+ osób, własny stack i specyficzne use case'y (np. enterprise sales, regulated industry, multi-product), pisz przez formularz — odpowiadam w 48 h z propozycją kontentu, harmonogramu i wyceny. Robię tylko tyle wdrożeń ile mogę osobiście poprowadzić.
+    </p>
+
+    <form class="ac-form reveal-up delay-3" data-ac-form action="/api/contact">
+      <input type="hidden" name="kind" value="enterprise" />
+      <div class="ac-form-row">
+        <div>
+          <label class="ac-form-label">Imię i nazwisko</label>
+          <input class="ac-input" name="name" type="text" required autocomplete="name" />
+        </div>
+        <div>
+          <label class="ac-form-label">Firma</label>
+          <input class="ac-input" name="company" type="text" required autocomplete="organization" />
+        </div>
+      </div>
+      <div class="ac-form-row">
+        <div>
+          <label class="ac-form-label">Email</label>
+          <input class="ac-input" name="email" type="email" required autocomplete="email" />
+        </div>
+        <div>
+          <label class="ac-form-label">Ile osób w teamie?</label>
+          <input class="ac-input" name="team_size" type="text" placeholder="np. 60 GTM + 40 product" required />
+        </div>
+      </div>
+      <div>
+        <label class="ac-form-label">Krótko: co jest celem wdrożenia?</label>
+        <textarea class="ac-textarea" name="brief" required placeholder="Np. AI w outbound — chcemy podnieść SQL/SDR i skrócić ramp-time dla nowych sprzedawców. 12 SDR + 4 AE."></textarea>
+      </div>
+      <p class="ac-form-help">Wysyłka idzie bezpośrednio na hello@wojciech.io. Bez CRM. Bez automatyzacji. Odpowiadam osobiście w 48 h.</p>
+      <button type="submit" class="ac-btn ac-btn-primary" data-label="Wyślij brief →">Wyślij brief →</button>
+      <div class="ac-form-status"></div>
+    </form>
+  </section>
+
+</Layout>
