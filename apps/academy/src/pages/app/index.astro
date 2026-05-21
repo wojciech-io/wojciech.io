@@ -1,0 +1,96 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import { episodes, series, vaultItems } from '../../lib/academy-content';
+
+const completed = 7;
+const active = episodes[2];
+const progress = Math.round((completed / episodes.length) * 100);
+---
+<AppLayout title="Dashboard · AI Growth OS Academy">
+  <section class="ac-app-hero">
+    <div>
+      <p class="ac-app-kicker">Member area · operator console</p>
+      <h1>Nie kurs. System pracy zespołu GTM.</h1>
+      <p>Odcinki, playbooki, vault i rytm review w jednym panelu. Tu ma być codzienna praktyka, nie biblioteka filmów do odhaczenia.</p>
+      <div class="ac-app-actions">
+        <a href={`/app/episode/${active.id}`} class="ac-btn ac-btn-primary">Kontynuuj S1E03</a>
+        <a href="/app/vault" class="ac-btn ac-btn-ghost">Otwórz Vault</a>
+      </div>
+    </div>
+    <div class="ac-orbit-card" aria-label={`${progress}% programu`}>
+      <div class="ac-orbit" style={`--p:${progress * 3.6}deg`}>
+        <span>{progress}%</span>
+      </div>
+      <p>postęp programu</p>
+      <strong>{completed}/{episodes.length}</strong>
+      <small>odcinków zamkniętych</small>
+    </div>
+  </section>
+
+  <section class="ac-app-grid">
+    <article class="ac-app-panel ac-span-2">
+      <div class="ac-panel-head">
+        <div>
+          <p class="ac-app-kicker">Program</p>
+          <h2>4 serie · 36 odcinków</h2>
+        </div>
+        <span class="ac-live-pill">live workspace</span>
+      </div>
+      <div class="ac-module-rail">
+        {series.map((item, index) => (
+          <a class="ac-module-card" href={`/app/episode/s${item.n}e01`} style={`--module:${item.color}`}>
+            <span class="ac-module-num">S{item.n}</span>
+            <h3>{item.title}</h3>
+            <p>{item.short}</p>
+            <div class="ac-module-progress"><span style={`width:${index === 0 ? 64 : index === 1 ? 18 : 0}%`}></span></div>
+          </a>
+        ))}
+      </div>
+    </article>
+
+    <article class="ac-app-panel">
+      <p class="ac-app-kicker">Next action</p>
+      <h2>Scorecard outputu</h2>
+      <p class="ac-muted">Po S1E03 robisz pierwszy production prompt i oceniasz go bez gustologii.</p>
+      <a href={`/app/episode/${active.id}`} class="ac-small-link">Przejdź do playera -></a>
+    </article>
+  </section>
+
+  <section class="ac-app-grid">
+    <article class="ac-app-panel ac-span-2">
+      <div class="ac-panel-head">
+        <div>
+          <p class="ac-app-kicker">Episode interface</p>
+          <h2>Odcinki jako produkt, nie lista linków</h2>
+        </div>
+      </div>
+      <div class="ac-episode-list">
+        {episodes.slice(0, 12).map((episode, index) => (
+          <a class="ac-episode-row" href={`/app/episode/${episode.id}`}>
+            <span class:list={['ac-episode-state', index < completed && 'done', index === completed && 'active']}>
+              {index < completed ? '✓' : index === completed ? '▶' : String(index + 1).padStart(2, '0')}
+            </span>
+            <div>
+              <strong>{episode.title}</strong>
+              <p>{episode.outcome}</p>
+            </div>
+            <span>{episode.duration}</span>
+          </a>
+        ))}
+      </div>
+    </article>
+
+    <article class="ac-app-panel">
+      <p class="ac-app-kicker">Vault</p>
+      <h2>Materiały do wdrożenia</h2>
+      <div class="ac-vault-mini">
+        {vaultItems.slice(0, 4).map((item) => (
+          <a href="/app/vault">
+            <span>{item.tag}</span>
+            <strong>{item.title}</strong>
+          </a>
+        ))}
+      </div>
+    </article>
+  </section>
+</AppLayout>

@@ -1,0 +1,44 @@
+---
+import '../styles/global.css';
+interface Props {
+  title?: string;
+}
+const { title = 'Panel · AI Growth OS Academy' } = Astro.props;
+---
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script is:inline>
+    document.documentElement.setAttribute('data-theme', 'dark');
+  </script>
+</head>
+<body class="ac-app-body">
+  <div class="ac-app-bg" aria-hidden="true"></div>
+  <header class="ac-app-topbar">
+    <a href="/app" class="ac-app-brand">
+      <span class="ac-app-brand-mark">AI</span>
+      <span>Growth OS</span>
+    </a>
+    <nav class="ac-app-nav" aria-label="Academy panel">
+      <a href="/app">Dashboard</a>
+      <a href="/app/episode/s1e01">Player</a>
+      <a href="/app/vault">Vault</a>
+    </nav>
+    <button class="ac-app-logout" data-logout>Wyloguj</button>
+  </header>
+  <main class="ac-app-main">
+    <slot />
+  </main>
+  <script>
+    import('../scripts/interactions.client.ts');
+  </script>
+</body>
+</html>

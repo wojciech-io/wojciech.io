@@ -1,0 +1,71 @@
+---
+import AppLayout from '../../../layouts/AppLayout.astro';
+import { episodeById, episodes, seriesById } from '../../../lib/academy-content';
+
+export function getStaticPaths() {
+  return episodes.map((episode) => ({ params: { id: episode.id }, props: { episode } }));
+}
+
+const { episode } = Astro.props;
+const item = episode || episodeById(Astro.params.id || '') || episodes[0];
+const module = seriesById(item.seriesId);
+---
+<AppLayout title={`${item.title} · AI Growth OS Academy`}>
+  <section class="ac-player-grid">
+    <article class="ac-player">
+      <div class="ac-player-screen">
+        <div class="ac-wave" aria-hidden="true">
+          {Array.from({ length: 42 }).map((_, i) => <span style={`height:${18 + ((i * 13) % 54)}%`}></span>)}
+        </div>
+        <div class="ac-play-button">▶</div>
+      </div>
+      <div class="ac-player-meta">
+        <p class="ac-app-kicker">Seria {module?.n} · odcinek {item.number}</p>
+        <h1>{item.title}</h1>
+        <p>{item.outcome}</p>
+      </div>
+      <div class="ac-player-bar">
+        <span style="width:64%"></span>
+      </div>
+      <div class="ac-player-controls">
+        <button>15s</button>
+        <button class="primary">Pauza</button>
+        <button>1.25x</button>
+        <strong>{item.duration}</strong>
+      </div>
+    </article>
+
+    <aside class="ac-app-panel">
+      <p class="ac-app-kicker">Evidence of work</p>
+      <h2>Po tym odcinku masz dowieźć</h2>
+      <ul class="ac-work-list">
+        <li>Jeden artefakt: {item.outcome}</li>
+        <li>Screenshot albo link do wdrożenia w stacku teamu</li>
+        <li>Ocena jakości według scorecardu</li>
+      </ul>
+      <div class="ac-quiz-card">
+        <span>Quiz</span>
+        <strong>4 pytania · 80% pass</strong>
+        <p>Certyfikat liczy tylko odcinki z dowodem pracy, nie samo odtworzenie audio.</p>
+      </div>
+    </aside>
+  </section>
+
+  <section class="ac-app-grid">
+    <article class="ac-app-panel ac-span-2">
+      <p class="ac-app-kicker">Transcript notes</p>
+      <h2>Najważniejsze operacyjne punkty</h2>
+      <div class="ac-transcript">
+        <p><span>00:00</span> Problem, który ten odcinek zamyka w pracy zespołu.</p>
+        <p><span>06:40</span> Decyzja architektoniczna: kiedy automatyzować, a kiedy zostawić człowieka.</p>
+        <p><span>13:20</span> Minimalny artefakt, który powinien trafić do firmowego systemu.</p>
+        <p><span>21:10</span> Jak sprawdzić, czy to realnie skraca pracę, a nie tylko wygląda dobrze na demo.</p>
+      </div>
+    </article>
+    <article class="ac-app-panel">
+      <p class="ac-app-kicker">Tool focus</p>
+      <h2>{item.tool}</h2>
+      <p class="ac-muted">Ten odcinek kończy się wdrożeniem w tym fragmencie stacku. Nie przeskakuj dalej bez artefaktu.</p>
+    </article>
+  </section>
+</AppLayout>
