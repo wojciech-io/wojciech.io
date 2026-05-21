@@ -38,6 +38,10 @@ const series = [
     body: 'Spinanie wszystkiego w jeden operacyjny system: dashboardy z D1, scoring, automatyzacje, agenty MCP, ownership rytmów. AI nie jako warstwa, ale jako codzienna praktyka teamu.',
     chips: ['MCP agents', 'Dashboards', 'Scoring', 'Team rhythm'] },
 ];
+
+// Opinie — TYLKO prawdziwe. Pusta do pierwszego cohortu; zero zmyślonych
+// cytatów (CLAUDE.md). Dodajesz wpis: { quote, name, role }.
+const testimonials: { quote: string; name: string; role: string }[] = [];
 ---
 <Layout>
 
@@ -145,6 +149,33 @@ const series = [
     <div style="text-align:center;margin-top:32px" class="reveal-up">
       <a href="/pricing" class="ac-btn ac-btn-primary">Otrzymaj cennik →</a>
     </div>
+  </section>
+
+  <!-- Opinie (honest empty state until first cohort) -->
+  <section class="ac-section" id="opinie">
+    <p class="ac-section-eyebrow reveal-up">Opinie</p>
+    {testimonials.length > 0 ? (
+      <>
+        <h2 class="reveal-up delay-1">Co mówią uczestnicy.</h2>
+        <div class="ac-workflow-grid">
+          {testimonials.map(t => (
+            <article class="ac-card reveal-up">
+              <p style="font-size:16px;line-height:1.55;color:var(--text-1)">„{t.quote}"</p>
+              <p style="margin-top:14px;font-size:13px;color:var(--text-3)"><strong style="color:var(--text-2)">{t.name}</strong> · {t.role}</p>
+            </article>
+          ))}
+        </div>
+      </>
+    ) : (
+      <>
+        <h2 class="reveal-up delay-1">Nie ma tu jeszcze ani jednej opinii.</h2>
+        <p class="ac-section-sub reveal-up delay-2">Bo program startuje. Nie wkleję kupionych cytatów ani „uczestników", których nie było. Zamiast social proofu na zapas — pierwszy odcinek jest za darmo i oceniasz sam. Prawdziwe opinie wrócą tutaj po pierwszym cohorcie.</p>
+        <div class="ac-hero-ctas reveal-up delay-3">
+          <a href="#sample" class="ac-btn ac-btn-primary">Posłuchaj próbki →</a>
+          <a href="/cohort" class="ac-btn ac-btn-ghost">Wejdź do cohortu #1</a>
+        </div>
+      </>
+    )}
   </section>
 
   <!-- CTA -->
