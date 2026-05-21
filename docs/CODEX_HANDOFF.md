@@ -1,14 +1,24 @@
 # Codex handoff — wojciech.io monorepo
 
-Last update: 2026-05-20. Latest commit on `main`: see `git log --oneline -10`.
+Last update: 2026-05-21. Latest commit on `main`: see `git log --oneline -10`.
 
 ## TL;DR
 
-Monorepo with two Astro apps sharing design tokens. Public site
-`wojciech.io` lives at repo root. Private workspace `apps/app` lives in
-`apps/app/` and deploys to `app.wojciech.io`. Both deploy to Cloudflare
-Pages from the same repo. Server-side auth on `app.wojciech.io` via Pages
-Functions at repo root, gated by hostname.
+Monorepo with public `wojciech.io` at repo root plus subdomain apps in
+`apps/*`: `app`, `subscribe`, `notch`, `growthhub`, `academy`. Main
+`wojciech.io` and `app.wojciech.io` deploy from Git-connected Cloudflare
+Pages projects. `subscribe`, `notch`, `growthhub`, and `academy-v2` are
+direct-upload Cloudflare Pages projects deployed via wrangler scripts.
+
+Current live state verified 2026-05-21:
+- `wojciech.io` — live from `origin/main`.
+- `app.wojciech.io` — gated, custom domain on `app-wojciech-io`.
+- `subscribe.wojciech.io` — live, direct-upload from `apps/subscribe`.
+- `notch.wojciech.io` — live, direct-upload from `apps/notch`.
+- `gh-wojciech-io.pages.dev/demo` — live GrowthHub demo; `gh.wojciech.io`
+  DNS/custom domain still not set.
+- `academy-v2-wojciech-io.pages.dev` — live Academy v2 preview; production
+  `academy.wojciech.io` still points to old `akademia-wojciech-io`.
 
 **You should read this whole doc before touching anything.**
 
@@ -21,7 +31,9 @@ wojciech-io/
 ├── apps/
 │   ├── app/                # app.wojciech.io — gated workspace
 │   ├── subscribe/          # subscribe.wojciech.io — newsletter signup with double-opt-in (KV + Resend)
-│   └── notch/              # notch.wojciech.io — NotchCue product site (Swift macOS app landing)
+│   ├── notch/              # notch.wojciech.io — NotchCue product site
+│   ├── growthhub/          # gh-wojciech-io.pages.dev — gated GrowthHub + public /demo
+│   └── academy/            # academy-v2-wojciech-io.pages.dev — Academy v2 preview
 │       ├── public/         # _headers, robots.txt, login.html, wojciech-photo.png
 │       ├── src/
 │       │   ├── components/Footer.astro      # app-specific footer (mirrors wojciech.io)
@@ -62,6 +74,8 @@ npx astro build                               # build wojciech.io → dist/
 npm run build:app                             # build apps/app       → apps/app/dist/
 npm run build:subscribe                       # build apps/subscribe → apps/subscribe/dist/
 npm run build:notch                           # build apps/notch     → apps/notch/dist/
+npm run build:growthhub                       # build apps/growthhub → apps/growthhub/dist/
+npm run build:academy                         # build apps/academy   → apps/academy/dist/
 ```
 
 Dev ports (in `.claude/launch.json`):
@@ -69,6 +83,8 @@ Dev ports (in `.claude/launch.json`):
 - app.wojciech.io: 4322
 - subscribe.wojciech.io: 4323
 - notch.wojciech.io: 4324
+- gh.wojciech.io: 4325
+- academy.wojciech.io: 4326
 
 ---
 
@@ -165,15 +181,18 @@ Scope:
 - **academy.wojciech.io** — `akademia-wojciech-io` CF Pages project has no
   git source (direct upload). Skipped until source is found or recreated.
 
-### Subdomain deploys (subscribe + notch)
+### Subdomain deploys (direct upload)
 
-Both projects are **direct-upload CF Pages** (no Git Provider). They deploy
+These projects are **direct-upload CF Pages** (no Git Provider). They deploy
 via wrangler from the monorepo. Standalone GH repos
-`subscribe-wojciech-io` and `notch-wojciech-io` are **archived** (2026-05-20).
+`subscribe-wojciech-io`, `notch-wojciech-io`, and `wojciech-app` are
+**archived** on GitHub.
 
 ```bash
-npm run deploy:subscribe   # builds apps/subscribe, copies functions/ into dist, uploads
+npm run deploy:subscribe   # builds apps/subscribe, uploads
 npm run deploy:notch       # builds apps/notch, uploads
+npm run deploy:growthhub   # builds apps/growthhub, uploads to gh-wojciech-io
+npm run deploy:academy     # builds apps/academy, uploads to academy-v2-wojciech-io
 ```
 
 Existing bindings on `subscribe-wojciech-io` project (already configured,
@@ -185,13 +204,25 @@ do not touch unless rotating):
 
 `notch-wojciech-io`: static, no secrets, no KV. Domain: `notch.wojciech.io`.
 
+`gh-wojciech-io`: gated dashboard + public `/demo`. Domain
+`gh.wojciech.io` is not configured yet; pages.dev works.
+
+`academy-v2-wojciech-io`: Academy v2 preview. Do **not** cut over
+`academy.wojciech.io` until Stripe/member area decisions are closed.
+
 ### Still pending (user only)
 
-- **app-wojciech-io secrets** already set (APP_PASSWORD, COOKIE_SECRET).
-- **wojciech-app project** can be deleted from CF Pages once rollback
-  capability is no longer needed. GitHub repo already archived.
-- **academy.wojciech.io** — `akademia-wojciech-io` CF Pages project has no
-  git source. Direct-upload only, source not yet pulled into monorepo.
+- **Cloudflare old `wojciech-app` Pages project** still exists as rollback
+  at `wojciech-app.pages.dev`. Cloudflare has no "archive" state for Pages
+  projects; the only CLI action is deletion. Do not delete unless Wojtek
+  explicitly accepts losing that rollback.
+- **`gh.wojciech.io` custom domain/DNS** still needs Cloudflare DNS/custom
+  domain setup. Current wrangler OAuth token has Pages write but only Zone
+  read, so DNS changes are not available from this CLI session.
+- **Cloudflare WAF rate-limit rule** on `/api/*` still needs dashboard or
+  a token with Zone edit. App-level KV rate limits are already in code.
+- **Academy v2 production cutover** is intentionally held. Preview is live,
+  but Stripe Checkout, magic-link auth, and member area are not complete.
 
 ---
 
@@ -246,19 +277,15 @@ In commit order on main:
 
 ## What an agent should pick up next
 
-1. **GrowthHub rewrite** (Task #1 above) — biggest open product item.
-2. **Custom domain swap (manual)** — Wojtek needs to remove
-   `app.wojciech.io` from the old `wojciech-app` CF Pages project and
-   add it to `app-wojciech-io`. Once swapped, the old `wojciech-app`
-   project + standalone `wojciechluszczynski/wojciech-app` GitHub repo
-   can be archived.
-3. **Polish pass on apps/app** — after domain swap, run a full visual
-   QA across all 5 pages (apps/cv/stack/timeline/contact) in EN/PL/IT
-   and both light/dark themes.
-4. **Decide on subdomain expansion** — Wojtek wants subscribe, notch,
-   academy as next monorepo apps. Pattern: copy `apps/app/` as
-   `apps/<name>/`, adapt CSS/content, create CF Pages project pointing
-   at `apps/<name>/dist`.
+1. **Academy Day 3** — Stripe Checkout, magic-link auth, member area `/app`.
+   Needs Stripe keys/account decision before real purchase flow.
+2. **GrowthHub v1.2** — wire real GA4/Pipedrive sync into Functions/shared
+   package, then configure D1 + secrets. Public `/demo` already works.
+3. **Cloudflare ops** — configure `gh.wojciech.io`, add WAF rate limit
+   `/api/*`, decide whether to delete old `wojciech-app` Pages rollback.
+4. **Academy cutover** — only after payment/auth/member flow is ready:
+   deploy to `akademia-wojciech-io` or move `academy.wojciech.io` to
+   `academy-v2-wojciech-io`.
 
 ---
 
