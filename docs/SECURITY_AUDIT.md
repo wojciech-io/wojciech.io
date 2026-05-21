@@ -41,7 +41,16 @@ Note: `_headers` apply to **static asset** responses. Responses generated
 *inside* middleware (302 redirects, login.html via `ASSETS.fetch`) do not
 inherit them — acceptable, since those are redirects/login shells.
 
-### 🟡 OPEN — No rate-limiting on auth / contact / subscribe endpoints
+### 🟡 PARTIALLY FIXED — Rate-limiting on auth / contact / subscribe endpoints
+**Update 2026-05-21:** added app-level KV-backed rate limiting (defense-in-depth):
+gh `/api/auth` 10/min/IP, academy `/api/contact` 5/10min/IP, subscribe
+`/api/subscribe` 5/10min/IP. Verified live (10×401 → 429). Turnstile wired on
+academy forms (gated on env keys). **Still recommended:** the platform-level
+Cloudflare WAF rate-limit rule on `/api/*` across the zone — needs a token
+with `zone:edit` or a dashboard action (current automation token is read-only
+for zones). Original finding below for context.
+
+
 `/api/auth` (password), `/api/contact` (academy, sends email), and
 `/api/subscribe` have no app-level rate limit or bot challenge.
 - `/api/auth`: brute-force is impractical (16-char high-entropy password,
@@ -83,9 +92,12 @@ content is ever introduced. Not worth the effort for the current static stack.
 1. **Cloudflare Rate Limiting rule** on `/api/*` across the zone (10-20
    req/min/IP). One rule, no code. Highest ROI.
 2. **Turnstile** on `/api/contact` + subscribe form (free, ~15 min wiring).
-3. **Rotate the GrowthHub password** if the auto-generated one
-   (`KUHtAdRWiQKKhbRy`) was shared anywhere; set a memorable one via
+3. **GrowthHub password — ROTATED 2026-05-21.** The original auto-generated
+   value was printed in an earlier revision of this doc and is therefore
+   treated as compromised; it has been rotated via
    `wrangler pages secret put APP_PASSWORD --project-name=gh-wojciech-io`.
+   The new value is not stored in the repo. To set a memorable one, run the
+   same command again. (Old value verified rejected: 401; new value: 200.)
 4. **HSTS preload** (optional): once comfortable, add `; preload` and submit
    to hstspreload.org. Currently omitted to keep it reversible.
 5. **Verify CSP on live wojciech.io** after this deploy: open DevTools console,
