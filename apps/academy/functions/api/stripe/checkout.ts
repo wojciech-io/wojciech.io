@@ -42,7 +42,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (!/^\S+@\S+\.\S+$/.test(email)) return json({ ok: false, error: 'invalid-email' }, 400);
 
   if (!env.STRIPE_SECRET_KEY && plan === 'cohort' && env.STRIPE_COHORT_PAYMENT_LINK) {
-    return json({ ok: true, url: env.STRIPE_COHORT_PAYMENT_LINK });
+    return json({
+      ok: true,
+      mode: 'payment-link',
+      url: paymentLinkUrl(env.STRIPE_COHORT_PAYMENT_LINK, email),
+    });
   }
   if (!env.STRIPE_SECRET_KEY) {
     return json({ ok: false, error: 'stripe-not-configured' }, 500);
@@ -55,10 +59,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   const params = new URLSearchParams();
   params.set('mode', 'payment');
+  params.set('client_reference_id', email);
+  params.set('allow_promotion_codes', 'true');
+  params.set('invoice_creation[enabled]', 'true');
   params.set('success_url', `${base}/thanks?session_id={CHECKOUT_SESSION_ID}`);
   params.set('cancel_url', `${base}/${plan === 'cohort' ? 'cohort' : 'pricing'}?checkout=cancelled`);
   params.set('metadata[plan]', plan);
   params.set('metadata[source]', 'academy-v2');
+  params.set('metadata[email]', email);
   if (email) params.set('customer_email', email);
   if (name) params.set('metadata[name]', name);
 
@@ -96,4 +104,15 @@ function json(obj: unknown, status = 200): Response {
     status,
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
+}
+
+function paymentLinkUrl(rawUrl: string, email: string): string {
+  try {
+    const url = new URL(rawUrl);
+    url.searchParams.set('prefilled_email', email);
+    url.searchParams.set('client_reference_id', email);
+    return url.toString();
+  } catch {
+    return rawUrl;
+  }
 }

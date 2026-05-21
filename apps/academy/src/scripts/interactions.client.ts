@@ -293,15 +293,17 @@
         const data = await r.json();
         if (r.ok) {
           if (status) {
-            status.className = 'ac-form-status ok';
+            status.className = data.sent === false ? 'ac-form-status err' : 'ac-form-status ok';
             status.innerHTML = data.debug_link
               ? `Link testowy: <a href="${data.debug_link}">otwórz panel</a>`
-              : 'Wysłane. Sprawdź email i kliknij magic link.';
+              : data.sent === false
+                ? 'Dostęp jest aktywny, ale wysyłka emaili nie jest jeszcze skonfigurowana. Napisz na hello@wojciech.io, aktywuję wejście ręcznie.'
+                : 'Wysłane. Sprawdź email i kliknij link do panelu.';
           }
         } else if (status) {
           status.className = 'ac-form-status err';
           status.textContent = data.error === 'not-a-member'
-            ? 'Nie widzę aktywnego dostępu dla tego emaila.'
+            ? 'Nie widzę aktywnego dostępu dla tego emaila. Jeśli właśnie płaciłeś, odczekaj chwilę albo napisz na hello@wojciech.io.'
             : 'Nie udało się wysłać linku. Napisz na hello@wojciech.io.';
         }
       } catch {

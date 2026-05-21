@@ -11,10 +11,11 @@ interface Env {
 interface StripeSession {
   id: string;
   customer?: string;
+  client_reference_id?: string;
   customer_email?: string;
   customer_details?: { email?: string; name?: string };
   payment_status?: string;
-  metadata?: { plan?: string; name?: string };
+  metadata?: { plan?: string; name?: string; email?: string };
 }
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
@@ -29,18 +30,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 
   const event = JSON.parse(raw) as { id: string; type: string; data: { object: unknown } };
-  await env.DB.prepare(
+  const inserted = await env.DB.prepare(
     `INSERT OR IGNORE INTO stripe_events (id, type, payload_json)
      VALUES (?, ?, ?)`
   ).bind(event.id, event.type, raw).run();
+  const isNewEvent = (inserted.meta as { changes?: number } | undefined)?.changes !== 0;
+  if (!isNewEvent) return json({ received: true, duplicate: true });
 
-  if (event.type === 'checkout.session.completed') {
+  if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
     await handleCheckoutCompleted(env, event.data.object as StripeSession, request);
   }
 
-  return new Response(JSON.stringify({ received: true }), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return json({ received: true });
 };
 
 async function verifyStripeSignature(raw: string, signature: string, secret: string): Promise<boolean> {
@@ -56,7 +57,7 @@ async function verifyStripeSignature(raw: string, signature: string, secret: str
 }
 
 async function handleCheckoutCompleted(env: Env, session: StripeSession, request: Request): Promise<void> {
-  const email = (session.customer_details?.email || session.customer_email || '').trim().toLowerCase();
+  const email = (session.customer_details?.email || session.customer_email || session.metadata?.email || session.client_reference_id || '').trim().toLowerCase();
   if (!email || !env.DB) return;
 
   const customerId = `cus_${crypto.randomUUID()}`;
@@ -64,6 +65,8 @@ async function handleCheckoutCompleted(env: Env, session: StripeSession, request
   const id = existing?.id || customerId;
   const name = session.customer_details?.name || session.metadata?.name || null;
   const plan = session.metadata?.plan || 'cohort';
+  const paid = session.payment_status === 'paid' || session.payment_status === 'no_payment_required';
+  const accessExpiresAt = addMonthsIso(new Date(), 12);
 
   await env.DB.prepare(
     `INSERT INTO customers (id, email, name, stripe_customer_id, created_at, updated_at)
@@ -75,14 +78,24 @@ async function handleCheckoutCompleted(env: Env, session: StripeSession, request
   ).bind(id, email, name, session.customer || null).run();
 
   await env.DB.prepare(
-    `INSERT INTO memberships (id, customer_id, plan, status, stripe_checkout_session_id, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    `INSERT INTO memberships (id, customer_id, plan, status, stripe_checkout_session_id, access_expires_at, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
      ON CONFLICT(stripe_checkout_session_id) DO UPDATE SET
+       plan=excluded.plan,
        status=excluded.status,
+       access_expires_at=?,
        updated_at=CURRENT_TIMESTAMP`
-  ).bind(`mem_${crypto.randomUUID()}`, id, plan, session.payment_status === 'paid' ? 'active' : 'pending', session.id).run();
+  ).bind(
+    `mem_${crypto.randomUUID()}`,
+    id,
+    plan,
+    paid ? 'active' : 'pending',
+    session.id,
+    paid ? accessExpiresAt : null,
+    paid ? accessExpiresAt : null,
+  ).run();
 
-  if (session.payment_status === 'paid') {
+  if (paid) {
     await sendWelcomeMagicLink(env, email, request);
   }
 }
@@ -113,10 +126,24 @@ async function sendWelcomeMagicLink(env: Env, email: string, request: Request): 
       to: email,
       subject: 'Dostęp do AI Growth OS Academy',
       html: `<div style="font-family:-apple-system,system-ui,sans-serif;max-width:560px">
-        <h2 style="margin:0 0 12px;color:#0a0a0a">Dostęp aktywny</h2>
-        <p style="color:#3f3f46;line-height:1.55">Płatność przeszła. Kliknij link, żeby wejść do panelu Academy.</p>
+        <h2 style="margin:0 0 12px;color:#0a0a0a">Dostęp do Academy jest aktywny</h2>
+        <p style="color:#3f3f46;line-height:1.55">Płatność przeszła. Kliknij link, żeby wejść do panelu z odcinkami, vaultem i materiałami wdrożeniowymi.</p>
         <p><a href="${magicUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" style="display:inline-block;background:#ff7a1c;color:#0a0a0c;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none">Otwórz panel</a></p>
+        <p style="font-size:12px;color:#71717a">Link działa 48 godzin i jest jednorazowy. Później zawsze możesz wygenerować nowy przez stronę logowania.</p>
       </div>`,
     }),
+  });
+}
+
+function addMonthsIso(date: Date, months: number): string {
+  const next = new Date(date);
+  next.setMonth(next.getMonth() + months);
+  return next.toISOString();
+}
+
+function json(obj: unknown, status = 200): Response {
+  return new Response(JSON.stringify(obj), {
+    status,
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
 }

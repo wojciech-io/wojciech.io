@@ -212,10 +212,20 @@ rotated 2026-05-21 per Wojtek's request and remains a Cloudflare Pages secret,
 not a repo value.
 
 `academy-v2-wojciech-io`: Academy v2 preview with `academy-db` D1 binding,
-`RATE_LIMIT` KV, `AUTH_SECRET`, `ACADEMY_BASE_URL`, `STRIPE_PRICE_COHORT`,
-and `STRIPE_COHORT_PAYMENT_LINK` configured. Do **not** cut over
-`academy.wojciech.io` until the Stripe webhook secret is configured and a live
-test purchase has activated `/app`.
+`RATE_LIMIT` KV, `AUTH_SECRET`, `ACADEMY_ADMIN_TOKEN`, `ACADEMY_BASE_URL`,
+`STRIPE_PRICE_COHORT`, and `STRIPE_COHORT_PAYMENT_LINK` configured. Current
+checkout uses the Payment Link fallback and pre-fills the buyer email. Do
+**not** cut over `academy.wojciech.io` until `STRIPE_SECRET_KEY`,
+`STRIPE_WEBHOOK_SECRET`, and `RESEND_API_KEY` are configured and a live test
+purchase has activated `/app`.
+
+Academy v2 has an admin-only fallback endpoint:
+`POST /api/admin/grant-access` with `Authorization: Bearer <ACADEMY_ADMIN_TOKEN>`.
+It upserts a customer, creates a 12-month active membership, creates a magic
+link, and sends it if `RESEND_API_KEY` exists. Without Resend it returns
+`magic_url` only to the authenticated admin caller. The token is a Cloudflare
+secret only; reset it via `wrangler pages secret put ACADEMY_ADMIN_TOKEN` when
+manual activation is needed.
 
 ### Still pending (user only)
 
@@ -228,11 +238,13 @@ test purchase has activated `/app`.
   read, so DNS changes are not available from this CLI session.
 - **Cloudflare WAF rate-limit rule** on `/api/*` still needs dashboard or
   a token with Zone edit. App-level KV rate limits are already in code.
-- **Stripe webhook for Academy v2** still needs dashboard setup. Create a
-  webhook endpoint for
+- **Stripe webhook for Academy v2** still needs dashboard setup. Add
+  `STRIPE_SECRET_KEY`, create a webhook endpoint for
   `https://academy-v2-wojciech-io.pages.dev/api/stripe/webhook`, listen to
-  `checkout.session.completed`, then save its signing secret as the
-  `STRIPE_WEBHOOK_SECRET` Pages secret and redeploy.
+  `checkout.session.completed` and
+  `checkout.session.async_payment_succeeded`, then save its signing secret as
+  the `STRIPE_WEBHOOK_SECRET` Pages secret and redeploy. Add
+  `RESEND_API_KEY`/`RESEND_FROM` before expecting login emails to deliver.
 - **Academy v2 production cutover** is intentionally held. Preview is live,
   but do one live test purchase before moving `academy.wojciech.io`.
 
@@ -262,7 +274,7 @@ test purchase has activated `/app`.
 
 ---
 
-## What was shipped in this session (2026-05-20)
+## What was shipped in this session (2026-05-21)
 
 In commit order on main:
 
@@ -284,14 +296,19 @@ In commit order on main:
 - `1d40904` — timeline + stack CSS port (200+ lines), wojciech.io-style
   footer added, header restyled with `app.wojciech.io` wordmark.
 - (this commit) — CV + contact CSS port, handoff doc updated.
+- `76eae58` — Academy v2 rich landing visuals restored: model ranker,
+  tool marquee, audio sample player, learning flow, and "Co dostajesz" kit.
+- pending commit — Academy purchase/access hardening: Stripe checkout params,
+  idempotent webhook, 12-month access expiry, clearer login/thanks copy, and
+  admin-only manual access fallback.
 
 ---
 
 ## What an agent should pick up next
 
-1. **Academy Stripe closeout** — add `STRIPE_WEBHOOK_SECRET`, run a live
-   cohort purchase through the Payment Link, confirm the webhook creates the
-   member and magic-link email opens `/app`.
+1. **Academy Stripe closeout** — add `STRIPE_SECRET_KEY`,
+   `STRIPE_WEBHOOK_SECRET`, and `RESEND_API_KEY`, run a live cohort purchase,
+   confirm the webhook creates the member and magic-link email opens `/app`.
 2. **GrowthHub v1.2** — wire real GA4/Pipedrive sync into Functions/shared
    package, then configure D1 + secrets. Public `/demo` already works.
 3. **Cloudflare ops** — configure `gh.wojciech.io`, add WAF rate limit
