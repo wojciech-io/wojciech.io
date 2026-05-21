@@ -1,0 +1,86 @@
+---
+// Builder-flavoured visual identity for academy: drifting code columns
+// behind the hero + an interactive terminal that types an operator prompt
+// and reveals a structured result. Differentiates academy from the
+// editorial wojciech.io look. Typing logic lives in interactions.client.ts.
+
+// Each column repeats its content twice so the -50% drift loops seamlessly.
+const colA = `<span class="c">// scoring.ts — ICP fit (explicit)</span>
+<span class="k">const</span> fit = w.industry*<span class="n">.4</span>
+  + w.size*<span class="n">.3</span> + w.role*<span class="n">.3</span>
+<span class="k">if</span> (signal.intent &gt; <span class="n">0.8</span>)
+  route(<span class="s">'SDR'</span>)
+
+<span class="c"># clay enrichment</span>
+enrich(domain) -&gt; {
+  tech_stack, headcount,
+  funding_stage, signals
+}
+
+<span class="k">await</span> claude.run(prompt, {
+  tools, max_tokens: <span class="n">4096</span>
+})`;
+
+const colB = `<span class="c">// mcp agent — research</span>
+agent.tool(<span class="s">'search'</span>,
+  <span class="k">async</span> (q) =&gt; web(q))
+
+<span class="k">const</span> leads = rows
+  .map(scoreLead)
+  .filter(l =&gt; l.total &gt; <span class="n">70</span>)
+  .sort(byScore)
+
+<span class="c"># outbound sequence</span>
+seq.step(<span class="s">'day_0'</span>, draft)
+seq.step(<span class="s">'day_3'</span>, nudge)
+seq.wait_for(<span class="s">'reply'</span>)`;
+
+const colC = `prompt: <span class="s">"Zsumuj sygnały</span>
+<span class="s">zakupowe z 7 dni i</span>
+<span class="s">zaproponuj segment"</span>
+&rarr; {
+  sql_ready: <span class="n">12</span>,
+  nurture: <span class="n">34</span>,
+  drop: <span class="n">8</span>
+}
+
+<span class="c">// content loop</span>
+research &rarr; draft
+&rarr; edit(human)
+&rarr; publish &rarr; repurpose(<span class="n">8</span>)`;
+
+const colD = `<span class="c"># revenue ops · D1</span>
+SELECT stage, SUM(amount)
+FROM pipeline_snapshot
+GROUP BY stage
+
+<span class="k">export const</span> cpl =
+  spend / leads
+
+<span class="c">// weekly review</span>
+dash.metric(<span class="s">'SQL velocity'</span>)
+dash.metric(<span class="s">'time-to-content'</span>)
+dash.alert(<span class="k">if</span> cpl &gt; cap)`;
+
+const cols = [colA, colB, colC, colD];
+---
+
+<div class="ac-codebg" aria-hidden="true">
+  <div class="ac-codebg-cols">
+    {cols.map((c) => (
+      <div class="ac-codecol" set:html={`${c}\n\n${c}`} />
+    ))}
+  </div>
+</div>
+
+<div class="ac-terminal" data-ac-terminal>
+  <div class="ac-terminal-bar">
+    <span class="ac-terminal-dot r"></span>
+    <span class="ac-terminal-dot y"></span>
+    <span class="ac-terminal-dot g"></span>
+    <span class="ac-terminal-title">ai-growth-os — operator@gtm</span>
+  </div>
+  <div class="ac-terminal-body" data-ac-terminal-body>
+    <span class="ac-term-line"><span class="ac-term-prompt">operator $</span> <span class="ac-term-cmd" data-ac-typed></span><span class="ac-term-cursor"></span></span>
+  </div>
+</div>
