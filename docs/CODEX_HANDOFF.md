@@ -335,12 +335,25 @@ In commit order on main:
   Twitter card upgraded to `summary_large_image`. Deployed to academy prod
   (`akademia-wojciech-io`, deploy `ad428eb5`) and verified live: canonical
   per-page, `og-cover.png` returns 200 image/png.
+- `e880ee6` — Academy forms a11y: every `<label>` tied to its input via
+  `for`/`id` (login + cohort ×2 + pricing), status regions `role=status
+  aria-live=polite`. Deployed prod `d61c2dc4`, verified live.
+- `75259b7` — GrowthHub fix: leads table wrapped in `overflow-x:auto`
+  (`.gh-table-wrap`) so it scrolls instead of breaking the card on mobile;
+  deferred v1.5 nav tabs marked `aria-disabled`. Deployed `1b2e8162`, verified
+  live on `/demo` (gh-wojciech-io is direct-upload).
 
 ### QA / verification done this session (Claude Code, 2026-05-21 eve)
 
 - Live smoke all subdomains green (app gated 401, rest 200).
 - Academy v2 QA: no console errors, no mobile horizontal overflow on
   `/ /pricing /cohort /login`, zero mojibake, Polish diacritics intact.
+- SEO/OG sweep: subscribe + notch already had canonical+OG (og-default.png
+  live 200); gh + app are intentionally `noindex,nofollow` (gated). Only
+  Academy needed the meta — now shipped.
+- GrowthHub still has zero Kadromierz references (grep clean). Real v1.2
+  GA4/Pipedrive sync remains blocked on Wojtek's data/secrets; v1.5 tabs
+  (Demand-gen/Leads/Revenue) deliberately deferred, now clearly marked.
 - Old `wojciech-app` Pages project deleted (see pending list above).
 - Did NOT restore the old site's testimonials / attributed expert quotes:
   Academy hasn't launched (waitlist), so that would be fabricated social proof
