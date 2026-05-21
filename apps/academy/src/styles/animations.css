@@ -424,12 +424,21 @@
   border-right: 1px solid var(--border); padding: 16px 12px;
   display: flex; flex-direction: column; gap: 4px;
 }
-@media (max-width: 720px) { .ac-browser-side { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--border); } }
+@media (max-width: 720px) {
+  .ac-browser-side {
+    display: grid;
+    grid-template-columns: 1fr;
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+}
 .ac-browser-serie {
   padding: 10px 12px; border-radius: 10px;
   font-size: 13px; color: var(--text-2); cursor: default;
   display: flex; align-items: center; gap: 10px;
-  white-space: nowrap; transition: background .15s, color .15s;
+  min-width: 0;
+  transition: background .15s, color .15s;
 }
 .ac-browser-serie .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-3); flex-shrink: 0; }
 .ac-browser-serie.active { background: var(--orange-dim); color: var(--text); }

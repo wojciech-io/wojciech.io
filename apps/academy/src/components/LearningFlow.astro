@@ -1,0 +1,38 @@
+---
+const steps = [
+  { title: 'Słuchasz', meta: '10-15 min audio', icon: 'headphones' },
+  { title: 'Quiz', meta: '3 pytania, 80% pass', icon: 'check' },
+  { title: 'Pobierasz', meta: 'JSON, PDF, blueprint', icon: 'download' },
+  { title: 'Wdrażasz', meta: 'w Claude, Clay, n8n albo CRM', icon: 'bolt' },
+  { title: 'Certyfikat', meta: 'PDF z unikalnym ID', icon: 'award' },
+];
+
+const icons: Record<string, string> = {
+  headphones: '<path d="M4 14a8 8 0 0 1 16 0"/><path d="M4 14v4a2 2 0 0 0 2 2h1v-7H6a2 2 0 0 0-2 2z"/><path d="M20 14v4a2 2 0 0 1-2 2h-1v-7h1a2 2 0 0 1 2 2z"/>',
+  check: '<path d="M9 11l2 2 4-5"/><rect x="4" y="3" width="16" height="18" rx="2"/>',
+  download: '<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/>',
+  bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>',
+  award: '<circle cx="12" cy="8" r="5"/><path d="M8.5 12.5L7 22l5-3 5 3-1.5-9.5"/>',
+};
+---
+<section class="ac-section ac-flow-section" id="how">
+  <p class="ac-section-eyebrow reveal-up">Jak to działa</p>
+  <h2 class="reveal-up delay-1">Od słuchania do działania. Bez odcinków, które dobrze brzmią i niczego nie zmieniają.</h2>
+  <p class="ac-section-sub reveal-up delay-2">
+    Każda lekcja kończy się małym artefaktem: promptem, checklistą, blueprintem albo decyzją do wpisania w proces zespołu.
+  </p>
+  <div class="ac-learning-flow">
+    {steps.map((step, i) => (
+      <>
+        {i > 0 && <span class="ac-learning-line" aria-hidden="true"></span>}
+        <div class="ac-learning-step reveal-zoom" style={`transition-delay:${i * 70}ms`}>
+          <div class="ac-learning-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={icons[step.icon]} />
+          </div>
+          <strong>{step.title}</strong>
+          <span>{step.meta}</span>
+        </div>
+      </>
+    ))}
+  </div>
+</section>

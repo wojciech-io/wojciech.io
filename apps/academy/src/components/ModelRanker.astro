@@ -1,0 +1,32 @@
+---
+const rows = [
+  { name: 'Claude Opus 4.7', note: 'Kodowanie, długie konteksty, teksty jakościowe', score: 95, hot: true },
+  { name: 'Perplexity', note: 'Research w czasie rzeczywistym', score: 97, hot: true },
+  { name: 'GPT-5.5 Thinking', note: 'Strategia, analiza, reasoning, praca projektowa', score: 88 },
+  { name: 'Gemini 3.1 Pro', note: 'Google Workspace, multimodal, 1M context', score: 81 },
+  { name: 'Grok 4.3', note: 'Real-time X, sygnały rynkowe, social leady', score: 74 },
+];
+---
+<div class="ac-ranker reveal-up">
+  <div class="ac-ranker-head">
+    <span>W 2026 nie wygrywa jeden model</span>
+    <strong>Wygrywa routing zadań</strong>
+  </div>
+  <div class="ac-ranker-list">
+    {rows.map((row) => (
+      <div class:list={['ac-ranker-row', row.hot && 'hot']}>
+        <div class="ac-ranker-model">
+          <span>{row.name.split(' ')[0].slice(0, 2)}</span>
+          <div>
+            <strong>{row.name}</strong>
+            <small>{row.note}</small>
+          </div>
+        </div>
+        <div class="ac-ranker-bar" aria-label={`${row.score} punktów`}>
+          <span style={`width:${row.score}%`}></span>
+        </div>
+        <b>{row.score}</b>
+      </div>
+    ))}
+  </div>
+</div>
