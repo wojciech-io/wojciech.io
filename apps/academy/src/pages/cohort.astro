@@ -1,11 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-const cohortStart = new Date('2026-06-15');
-const cohortMonth = cohortStart.toLocaleDateString('pl-PL', { month: 'long' });
-const cohortDay = cohortStart.getDate();
-const cohortYear = cohortStart.getFullYear();
-
 const weeks = [
   { title: 'Mental model i wybór modelu', body: 'Kiedy Claude vs GPT vs lokalny model. Kalkulacja kosztów per task, prompty produkcyjne vs demo, ustawianie własnej "AI baseline" dla teamu.' },
   { title: 'Outbound jako system',         body: 'Clay + Pipedrive + signal stack. ICP → enrichment → scoring → personalizacja. Praca na waszym CRM, nie zabawka. Kończymy działającym pipeline.' },
@@ -15,40 +10,39 @@ const weeks = [
   { title: 'Adopcja i rytm teamu',         body: 'Jak utrwalić te narzędzia w codziennej praktyce. Rytmy review, ownership, mierzenie ROI (SQL velocity, time-to-content, CPL). Cert na koniec.' },
 ];
 
-const seats = { total: 18, taken: 11 };
-const seatsLeft = seats.total - seats.taken;
+const cohortSize = 18;
 ---
 <Layout title="Cohort · AI Growth OS · Academy" description="Live cohort — 6 tygodni, 1 godz/tyg, case-work na waszym lejku. Następny termin: 2026-06-15. Limit 18 osób.">
 
   <section class="ac-hero" style="padding-bottom: 60px">
-    <span class="ac-hero-eyebrow reveal-up"><span class="ac-pulse"></span>Cohort #1 · zapisy otwarte</span>
+    <span class="ac-hero-eyebrow reveal-up"><span class="ac-pulse"></span>Cohort #1 · lista zainteresowanych otwarta</span>
     <h1 class="reveal-up delay-1">Sześć tygodni live.<br /><em>Twoje konto. Twój lejek. Mój kod.</em></h1>
     <p class="ac-hero-sub reveal-up delay-2">
       Nie kolejna lista live'ów do nadrobienia weekendem. Co tydzień jedna godzina warsztatów, druga office hours, i case-work na waszym własnym CRM. Wychodzicie z systemem, nie ze slajdami.
     </p>
     <div class="ac-hero-ctas reveal-up delay-3">
-      <a href="#waitlist" class="ac-btn ac-btn-primary">Zapisz się →</a>
-      <a href="/pricing" class="ac-btn ac-btn-ghost">Zobacz cennik</a>
+      <a href="#waitlist" class="ac-btn ac-btn-primary">Dołącz do listy →</a>
+      <a href="/pricing" class="ac-btn ac-btn-ghost">Pozostałe formaty</a>
     </div>
   </section>
 
   <section class="ac-section" style="padding-top: 0">
     <div class="ac-cohort-grid">
       <aside class="ac-cohort-date reveal-zoom">
-        <p class="ac-cohort-month">{cohortMonth}</p>
-        <p class="ac-cohort-day" data-count-target={cohortDay}>{cohortDay}</p>
-        <p class="ac-cohort-year">{cohortYear}</p>
-        <span class="ac-cohort-tag">Start cohortu</span>
+        <p class="ac-cohort-month">Termin</p>
+        <p class="ac-cohort-day" style="font-size:32px;line-height:1.1;margin:10px 0">wkrótce</p>
+        <span class="ac-cohort-tag">Rusza po zebraniu grupy</span>
         <p style="margin-top: 18px; font-size: 12px; color: var(--text-3); line-height: 1.55">
           Wtorki 19:00 CEST · 6 tygodni<br />
           Office hours: środy 18:00<br />
           Discord 24/7 dla cohortu
         </p>
         <div style="margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--border)">
-          <p style="font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px;">Wolne seaty</p>
+          <p style="font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px;">Limit grupy</p>
           <p style="font-size: 28px; font-weight: 800; color: var(--orange); margin: 0;">
-            <span data-count-target={seatsLeft}>{seatsLeft}</span> / <span data-count-target={seats.total}>{seats.total}</span>
+            <span data-count-target={cohortSize}>{cohortSize}</span> osób
           </p>
+          <p style="font-size: 11px; color: var(--text-3); margin: 6px 0 0;">2 900 zł / osoba</p>
         </div>
       </aside>
 
@@ -68,10 +62,10 @@ const seatsLeft = seats.total - seats.taken;
 
   <!-- Waitlist -->
   <section class="ac-section" id="waitlist" style="padding-top: 0">
-    <p class="ac-section-eyebrow reveal-up">Zapis na cohort</p>
-    <h2 class="reveal-up delay-1">{seatsLeft} miejsc, 4 900 zł / osoba.</h2>
+    <p class="ac-section-eyebrow reveal-up">Lista zainteresowanych</p>
+    <h2 class="reveal-up delay-1">Grupa {cohortSize} osób · 2 900 zł / osoba.</h2>
     <p class="ac-section-sub reveal-up delay-2">
-      Wpisz email — odeślę link do Stripe Checkout. Po opłacie dostajesz natychmiast Vault, materiały do odsłuchania przed kick-offem, i invite na Discord cohortu.
+      Cohort rusza, gdy zbierze się grupa — wpisz email, a dam Ci znać z wyprzedzeniem o terminie i wyślę link do zapisu. Bez zobowiązania. Pierwszeństwo wejścia mają osoby z listy.
     </p>
 
     <form class="ac-form reveal-up delay-3" data-ac-form action="/api/contact">
@@ -90,7 +84,7 @@ const seatsLeft = seats.total - seats.taken;
         <label class="ac-form-label">W którym B2B SaaS pracujesz? (opcjonalne)</label>
         <input class="ac-input" name="company" type="text" placeholder="np. Acme SaaS, Head of Demand Gen" />
       </div>
-      <p class="ac-form-help">Wpis trafia do akademia audience w Resend. Bez spamu. Link do Stripe Checkout idzie w pierwszej wiadomości.</p>
+      <p class="ac-form-help">Bez spamu. Dam znać z wyprzedzeniem o terminie i wyślę link do zapisu, gdy grupa będzie gotowa.</p>
       {import.meta.env.PUBLIC_TURNSTILE_SITEKEY && (
         <div class="cf-turnstile" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITEKEY} data-theme="dark"></div>
       )}
