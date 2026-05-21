@@ -1,0 +1,247 @@
+/* Reveal on scroll — opt-in via class="reveal" or class="reveal-up". JS hook in scripts/reveal.client.ts toggles 'in'. */
+
+.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-zoom {
+  opacity: 0;
+  transition: opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
+  will-change: opacity, transform;
+}
+.reveal-up { transform: translateY(28px); }
+.reveal-left { transform: translateX(-28px); }
+.reveal-right { transform: translateX(28px); }
+.reveal-zoom { transform: scale(0.94); }
+.reveal.in, .reveal-up.in, .reveal-left.in, .reveal-right.in, .reveal-zoom.in {
+  opacity: 1; transform: none;
+}
+.delay-1 { transition-delay: .08s; }
+.delay-2 { transition-delay: .16s; }
+.delay-3 { transition-delay: .24s; }
+.delay-4 { transition-delay: .32s; }
+.delay-5 { transition-delay: .40s; }
+
+/* Subtle marquee for partner / stack chips */
+@keyframes ac-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-50% - 8px)); }
+}
+.ac-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.ac-marquee-track {
+  display: inline-flex; gap: 28px;
+  animation: ac-marquee 38s linear infinite;
+  white-space: nowrap;
+  padding-left: 8px;
+}
+.ac-marquee:hover .ac-marquee-track { animation-play-state: paused; }
+.ac-marquee-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px; color: var(--text-2);
+  background: var(--bg1);
+}
+
+/* Count-up numbers — JS hook attaches IntersectionObserver and tweens textContent. */
+[data-count-target] { font-variant-numeric: tabular-nums; }
+
+/* Pricing toggle (Individual / Team) */
+.ac-toggle {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  gap: 4px;
+}
+.ac-toggle button {
+  padding: 8px 18px;
+  border: 0; background: transparent;
+  font-size: 13px; font-weight: 600;
+  color: var(--text-2);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.ac-toggle button.active {
+  background: var(--orange);
+  color: #0a0a0c;
+}
+
+/* Pricing card — interactive */
+.ac-price-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+}
+@media (max-width: 1000px) { .ac-price-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px)  { .ac-price-grid { grid-template-columns: 1fr; } }
+.ac-price {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 24px 26px;
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative; overflow: hidden;
+  transition: border-color .2s, transform .2s;
+}
+.ac-price:hover { border-color: var(--orange); transform: translateY(-3px); }
+.ac-price.featured {
+  border-color: var(--orange);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--orange) 8%, var(--bg1)), var(--bg1));
+}
+.ac-price-top-label {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--orange); color: #0a0a0c;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.1em;
+  padding: 4px 12px; border-radius: 999px;
+  text-transform: uppercase;
+}
+.ac-price-tier {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text-3);
+}
+.ac-price-amount {
+  font-size: 36px; font-weight: 800;
+  letter-spacing: -0.02em; line-height: 1;
+  color: var(--text);
+}
+.ac-price-amount span {
+  font-size: 14px; font-weight: 500;
+  color: var(--text-2); margin-left: 4px;
+}
+.ac-price-period {
+  font-size: 12px; color: var(--text-3); margin-top: -4px;
+}
+.ac-price-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 10px;
+  font-size: 13px; color: var(--text-2);
+}
+.ac-price-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  line-height: 1.45;
+}
+.ac-check {
+  flex-shrink: 0;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--orange-dim);
+  color: var(--orange);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800;
+}
+
+/* Seat calculator */
+.ac-calc {
+  margin: 32px 0 0;
+  padding: 24px;
+  background: var(--bg1);
+  border: 1px dashed var(--border-hi);
+  border-radius: 16px;
+  display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center;
+}
+@media (max-width: 700px) { .ac-calc { grid-template-columns: 1fr; } }
+.ac-calc-label { font-size: 13px; color: var(--text-2); }
+.ac-calc-slider { width: 100%; }
+.ac-calc-out {
+  display: flex; flex-direction: column; align-items: flex-end;
+  min-width: 160px;
+}
+.ac-calc-price {
+  font-size: 24px; font-weight: 800; color: var(--orange);
+  font-variant-numeric: tabular-nums;
+}
+.ac-calc-detail {
+  font-size: 12px; color: var(--text-3);
+}
+
+/* Inputs (forms) */
+.ac-form { display: grid; gap: 14px; max-width: 560px; }
+.ac-input, .ac-textarea {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: inherit; font-size: 14px;
+  outline: none;
+  transition: border-color .15s;
+}
+.ac-input:focus, .ac-textarea:focus { border-color: var(--orange); }
+.ac-textarea { min-height: 120px; resize: vertical; }
+.ac-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .ac-form-row { grid-template-columns: 1fr; } }
+.ac-form-label { font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+.ac-form-help { font-size: 12px; color: var(--text-3); }
+.ac-form-status {
+  display: none;
+  padding: 12px 14px; border-radius: 10px;
+  font-size: 13px;
+}
+.ac-form-status.ok  { display: block; background: rgba(34,197,94,0.08); color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+.ac-form-status.err { display: block; background: rgba(248,113,113,0.08); color: #fca5a5; border: 1px solid rgba(248,113,113,0.3); }
+
+/* Cohort timeline */
+.ac-cohort-grid {
+  display: grid; grid-template-columns: 200px 1fr; gap: 24px;
+}
+@media (max-width: 760px) { .ac-cohort-grid { grid-template-columns: 1fr; } }
+.ac-cohort-date {
+  background: var(--bg1);
+  border: 1px solid var(--orange);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  align-self: start;
+  position: sticky; top: 92px;
+}
+.ac-cohort-month { font-size: 12px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.12em; }
+.ac-cohort-day { font-size: 48px; font-weight: 800; color: var(--text); line-height: 1; margin: 8px 0; }
+.ac-cohort-year { font-size: 13px; color: var(--text-3); }
+.ac-cohort-tag {
+  margin-top: 14px;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--orange-dim);
+  color: var(--orange);
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.ac-cohort-weeks {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.ac-week {
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 22px;
+  display: grid; grid-template-columns: auto 1fr; gap: 18px;
+  align-items: start;
+  transition: border-color .2s, transform .2s;
+}
+.ac-week:hover { border-color: var(--orange); transform: translateX(4px); }
+.ac-week-num {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--orange-dim);
+  color: var(--orange);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+}
+.ac-week h4 { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--text); }
+.ac-week p  { margin: 0; font-size: 13px; color: var(--text-2); line-height: 1.5; }
+
+/* Pulse dot for "live" indicator */
+@keyframes ac-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,122,28,0.6); }
+  50%      { box-shadow: 0 0 0 8px rgba(255,122,28,0); }
+}
+.ac-pulse {
+  display: inline-block; width: 8px; height: 8px;
+  background: var(--orange); border-radius: 50%;
+  animation: ac-pulse 1.8s ease-out infinite;
+  margin-right: 6px;
+}

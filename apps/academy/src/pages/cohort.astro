@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const cohortStart = new Date('2026-06-15');
+const cohortMonth = cohortStart.toLocaleDateString('pl-PL', { month: 'long' });
+const cohortDay = cohortStart.getDate();
+const cohortYear = cohortStart.getFullYear();
+
+const weeks = [
+  { title: 'Mental model i wybór modelu', body: 'Kiedy Claude vs GPT vs lokalny model. Kalkulacja kosztów per task, prompty produkcyjne vs demo, ustawianie własnej "AI baseline" dla teamu.' },
+  { title: 'Outbound jako system',         body: 'Clay + Pipedrive + signal stack. ICP → enrichment → scoring → personalizacja. Praca na waszym CRM, nie zabawka. Kończymy działającym pipeline.' },
+  { title: 'Content jako infrastruktura',  body: 'Research → draft → publikacja → loop. Dystrybucja przez SEO/social/email. AI w roli edytora, nie autora. Repurposing 1 → 8 formatów.' },
+  { title: 'Revenue ops i dashboardy',     body: 'D1, scoring leadów, weekly review na 1 ekranie. Operator wie co odpada, co wraca, co skaluje. Budujemy waszą wersję GrowthHub w realnym tempie.' },
+  { title: 'MCP agents w operacji',        body: 'Custom agenty pod wasze workflow: research, outreach, internal Q&A. Co realnie zostawiacie ludziom, a co automatyzujecie.' },
+  { title: 'Adopcja i rytm teamu',         body: 'Jak utrwalić te narzędzia w codziennej praktyce. Rytmy review, ownership, mierzenie ROI (SQL velocity, time-to-content, CPL). Cert na koniec.' },
+];
+
+const seats = { total: 18, taken: 11 };
+const seatsLeft = seats.total - seats.taken;
+---
+<Layout title="Cohort · AI Growth OS · Academy" description="Live cohort — 6 tygodni, 1 godz/tyg, case-work na waszym lejku. Następny termin: 2026-06-15. Limit 18 osób.">
+
+  <section class="ac-hero" style="padding-bottom: 60px">
+    <span class="ac-hero-eyebrow reveal-up"><span class="ac-pulse"></span>Cohort #1 · zapisy otwarte</span>
+    <h1 class="reveal-up delay-1">Sześć tygodni live.<br /><em>Twoje konto. Twój lejek. Mój kod.</em></h1>
+    <p class="ac-hero-sub reveal-up delay-2">
+      Nie kolejna lista live'ów do nadrobienia weekendem. Co tydzień jedna godzina warsztatów, druga office hours, i case-work na waszym własnym CRM. Wychodzicie z systemem, nie ze slajdami.
+    </p>
+    <div class="ac-hero-ctas reveal-up delay-3">
+      <a href="#waitlist" class="ac-btn ac-btn-primary">Zapisz się →</a>
+      <a href="/pricing" class="ac-btn ac-btn-ghost">Zobacz cennik</a>
+    </div>
+  </section>
+
+  <section class="ac-section" style="padding-top: 0">
+    <div class="ac-cohort-grid">
+      <aside class="ac-cohort-date reveal-zoom">
+        <p class="ac-cohort-month">{cohortMonth}</p>
+        <p class="ac-cohort-day" data-count-target={cohortDay}>{cohortDay}</p>
+        <p class="ac-cohort-year">{cohortYear}</p>
+        <span class="ac-cohort-tag">Start cohortu</span>
+        <p style="margin-top: 18px; font-size: 12px; color: var(--text-3); line-height: 1.55">
+          Wtorki 19:00 CEST · 6 tygodni<br />
+          Office hours: środy 18:00<br />
+          Discord 24/7 dla cohortu
+        </p>
+        <div style="margin-top: 18px; padding-top: 18px; border-top: 1px dashed var(--border)">
+          <p style="font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px;">Wolne seaty</p>
+          <p style="font-size: 28px; font-weight: 800; color: var(--orange); margin: 0;">
+            <span data-count-target={seatsLeft}>{seatsLeft}</span> / <span data-count-target={seats.total}>{seats.total}</span>
+          </p>
+        </div>
+      </aside>
+
+      <div class="ac-cohort-weeks">
+        {weeks.map((w, i) => (
+          <article class="ac-week reveal-up" style={`transition-delay: ${i * 60}ms`}>
+            <div class="ac-week-num">W{i + 1}</div>
+            <div>
+              <h4>{w.title}</h4>
+              <p>{w.body}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Waitlist -->
+  <section class="ac-section" id="waitlist" style="padding-top: 0">
+    <p class="ac-section-eyebrow reveal-up">Zapis na cohort</p>
+    <h2 class="reveal-up delay-1">{seatsLeft} miejsc, 4 900 zł / osoba.</h2>
+    <p class="ac-section-sub reveal-up delay-2">
+      Wpisz email — odeślę link do Stripe Checkout. Po opłacie dostajesz natychmiast Vault, materiały do odsłuchania przed kick-offem, i invite na Discord cohortu.
+    </p>
+
+    <form class="ac-form reveal-up delay-3" data-ac-form action="/api/contact">
+      <input type="hidden" name="kind" value="cohort" />
+      <div class="ac-form-row">
+        <div>
+          <label class="ac-form-label">Imię</label>
+          <input class="ac-input" name="name" type="text" required autocomplete="given-name" />
+        </div>
+        <div>
+          <label class="ac-form-label">Email</label>
+          <input class="ac-input" name="email" type="email" required autocomplete="email" />
+        </div>
+      </div>
+      <div>
+        <label class="ac-form-label">W którym B2B SaaS pracujesz? (opcjonalne)</label>
+        <input class="ac-input" name="company" type="text" placeholder="np. Acme SaaS, Head of Demand Gen" />
+      </div>
+      <p class="ac-form-help">Wpis trafia do akademia audience w Resend. Bez spamu. Link do Stripe Checkout idzie w pierwszej wiadomości.</p>
+      <button type="submit" class="ac-btn ac-btn-primary" data-label="Zapisz mnie →">Zapisz mnie →</button>
+      <div class="ac-form-status"></div>
+    </form>
+  </section>
+
+</Layout>
