@@ -12,7 +12,7 @@ const weeks = [
 
 const cohortSize = 18;
 ---
-<Layout title="Cohort · AI Growth OS · Academy" description="Live cohort — 6 tygodni, 1 godz/tyg, case-work na waszym lejku. Następny termin: 2026-06-15. Limit 18 osób.">
+<Layout title="Cohort · AI Growth OS · Academy" description="Live cohort — 6 tygodni, case-work na waszym lejku. Termin po zebraniu grupy. Limit 18 osób.">
 
   <section class="ac-hero" style="padding-bottom: 60px">
     <span class="ac-hero-eyebrow reveal-up"><span class="ac-pulse"></span>Cohort #1 · lista zainteresowanych otwarta</span>
@@ -57,6 +57,33 @@ const cohortSize = 18;
           </article>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- Checkout -->
+  <section class="ac-section" id="checkout" style="padding-top: 0">
+    <div class="ac-checkout-shell reveal-up">
+      <div>
+        <p class="ac-section-eyebrow">Stripe Checkout</p>
+        <h2>Cohort live · 2 900 zł / osoba</h2>
+        <p class="ac-section-sub" style="margin-bottom:0">
+          Kupujesz miejsce przez Stripe. Po płatności dostajesz magic-link do panelu `/app`, gdzie jest player, vault i materiały wdrożeniowe. Jeśli termin cohortu nie zbierze się w rozsądnym czasie — zostaje zwrot albo przeniesienie na kolejny termin.
+        </p>
+      </div>
+      <form class="ac-form ac-checkout-form" data-checkout-form action="/api/stripe/checkout">
+        <input type="hidden" name="plan" value="cohort" />
+        <div>
+          <label class="ac-form-label">Imię i nazwisko</label>
+          <input class="ac-input" name="name" type="text" required autocomplete="name" />
+        </div>
+        <div>
+          <label class="ac-form-label">Email do dostępu</label>
+          <input class="ac-input" name="email" type="email" required autocomplete="email" />
+        </div>
+        <button type="submit" class="ac-btn ac-btn-primary" data-label="Przejdź do Stripe →">Przejdź do Stripe →</button>
+        <p class="ac-form-help">Bez przechowywania karty u nas. Dostęp aktywuje webhook Stripe po potwierdzeniu płatności.</p>
+        <div class="ac-form-status"></div>
+      </form>
     </div>
   </section>
 

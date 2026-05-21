@@ -17,8 +17,10 @@ Current live state verified 2026-05-21:
 - `notch.wojciech.io` — live, direct-upload from `apps/notch`.
 - `gh-wojciech-io.pages.dev/demo` — live GrowthHub demo; `gh.wojciech.io`
   DNS/custom domain still not set.
-- `academy-v2-wojciech-io.pages.dev` — live Academy v2 preview; production
-  `academy.wojciech.io` still points to old `akademia-wojciech-io`.
+- `academy-v2-wojciech-io.pages.dev` — live Academy v2 preview with Stripe
+  cohort checkout fallback, D1-backed magic-link auth, and gated `/app`
+  member area. Production `academy.wojciech.io` still points to old
+  `akademia-wojciech-io`.
 
 **You should read this whole doc before touching anything.**
 
@@ -205,10 +207,15 @@ do not touch unless rotating):
 `notch-wojciech-io`: static, no secrets, no KV. Domain: `notch.wojciech.io`.
 
 `gh-wojciech-io`: gated dashboard + public `/demo`. Domain
-`gh.wojciech.io` is not configured yet; pages.dev works.
+`gh.wojciech.io` is not configured yet; pages.dev works. `APP_PASSWORD` was
+rotated 2026-05-21 per Wojtek's request and remains a Cloudflare Pages secret,
+not a repo value.
 
-`academy-v2-wojciech-io`: Academy v2 preview. Do **not** cut over
-`academy.wojciech.io` until Stripe/member area decisions are closed.
+`academy-v2-wojciech-io`: Academy v2 preview with `academy-db` D1 binding,
+`RATE_LIMIT` KV, `AUTH_SECRET`, `ACADEMY_BASE_URL`, `STRIPE_PRICE_COHORT`,
+and `STRIPE_COHORT_PAYMENT_LINK` configured. Do **not** cut over
+`academy.wojciech.io` until the Stripe webhook secret is configured and a live
+test purchase has activated `/app`.
 
 ### Still pending (user only)
 
@@ -221,8 +228,13 @@ do not touch unless rotating):
   read, so DNS changes are not available from this CLI session.
 - **Cloudflare WAF rate-limit rule** on `/api/*` still needs dashboard or
   a token with Zone edit. App-level KV rate limits are already in code.
+- **Stripe webhook for Academy v2** still needs dashboard setup. Create a
+  webhook endpoint for
+  `https://academy-v2-wojciech-io.pages.dev/api/stripe/webhook`, listen to
+  `checkout.session.completed`, then save its signing secret as the
+  `STRIPE_WEBHOOK_SECRET` Pages secret and redeploy.
 - **Academy v2 production cutover** is intentionally held. Preview is live,
-  but Stripe Checkout, magic-link auth, and member area are not complete.
+  but do one live test purchase before moving `academy.wojciech.io`.
 
 ---
 
@@ -277,13 +289,14 @@ In commit order on main:
 
 ## What an agent should pick up next
 
-1. **Academy Day 3** — Stripe Checkout, magic-link auth, member area `/app`.
-   Needs Stripe keys/account decision before real purchase flow.
+1. **Academy Stripe closeout** — add `STRIPE_WEBHOOK_SECRET`, run a live
+   cohort purchase through the Payment Link, confirm the webhook creates the
+   member and magic-link email opens `/app`.
 2. **GrowthHub v1.2** — wire real GA4/Pipedrive sync into Functions/shared
    package, then configure D1 + secrets. Public `/demo` already works.
 3. **Cloudflare ops** — configure `gh.wojciech.io`, add WAF rate limit
    `/api/*`, decide whether to delete old `wojciech-app` Pages rollback.
-4. **Academy cutover** — only after payment/auth/member flow is ready:
+4. **Academy cutover** — only after payment/auth/member flow is verified:
    deploy to `akademia-wojciech-io` or move `academy.wojciech.io` to
    `academy-v2-wojciech-io`.
 

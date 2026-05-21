@@ -198,4 +198,87 @@
       }
     });
   });
+
+  // --- 6. Stripe Checkout ------------------------------------------------
+  document.querySelectorAll<HTMLFormElement>('form[data-checkout-form]').forEach(form => {
+    if (form.dataset.bound) return;
+    form.dataset.bound = '1';
+    const status = form.querySelector<HTMLElement>('.ac-form-status');
+    const submit = form.querySelector<HTMLButtonElement>('button[type=submit]');
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      if (submit) { submit.disabled = true; submit.textContent = 'Tworzę checkout…'; }
+      const body = Object.fromEntries(new FormData(form));
+      try {
+        const r = await fetch(form.action || '/api/stripe/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await r.json();
+        if (r.ok && data.url) {
+          window.location.href = data.url;
+          return;
+        }
+        if (status) {
+          status.className = 'ac-form-status err';
+          status.textContent = data.error === 'stripe-not-configured'
+            ? 'Stripe nie jest jeszcze skonfigurowany w Cloudflare.'
+            : 'Nie udało się utworzyć checkoutu. Napisz na hello@wojciech.io.';
+        }
+      } catch {
+        if (status) { status.className = 'ac-form-status err'; status.textContent = 'Brak połączenia. Spróbuj jeszcze raz.'; }
+      } finally {
+        if (submit) { submit.disabled = false; submit.textContent = submit.dataset.label || 'Przejdź do Stripe'; }
+      }
+    });
+  });
+
+  // --- 7. Magic-link login ----------------------------------------------
+  document.querySelectorAll<HTMLFormElement>('form[data-login-form]').forEach(form => {
+    if (form.dataset.bound) return;
+    form.dataset.bound = '1';
+    const status = form.querySelector<HTMLElement>('.ac-form-status');
+    const submit = form.querySelector<HTMLButtonElement>('button[type=submit]');
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      if (submit) { submit.disabled = true; submit.textContent = 'Wysyłam…'; }
+      const body = Object.fromEntries(new FormData(form));
+      try {
+        const r = await fetch(form.action || '/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await r.json();
+        if (r.ok) {
+          if (status) {
+            status.className = 'ac-form-status ok';
+            status.innerHTML = data.debug_link
+              ? `Link testowy: <a href="${data.debug_link}">otwórz panel</a>`
+              : 'Wysłane. Sprawdź email i kliknij magic link.';
+          }
+        } else if (status) {
+          status.className = 'ac-form-status err';
+          status.textContent = data.error === 'not-a-member'
+            ? 'Nie widzę aktywnego dostępu dla tego emaila.'
+            : 'Nie udało się wysłać linku. Napisz na hello@wojciech.io.';
+        }
+      } catch {
+        if (status) { status.className = 'ac-form-status err'; status.textContent = 'Brak połączenia. Spróbuj jeszcze raz.'; }
+      } finally {
+        if (submit) { submit.disabled = false; submit.textContent = submit.dataset.label || 'Wyślij'; }
+      }
+    });
+  });
+
+  // --- 8. Logout ---------------------------------------------------------
+  document.querySelectorAll<HTMLButtonElement>('[data-logout]').forEach(btn => {
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', async () => {
+      await fetch('/api/auth', { method: 'DELETE' });
+      window.location.href = '/login';
+    });
+  });
 })();

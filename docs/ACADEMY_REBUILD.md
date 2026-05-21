@@ -151,19 +151,22 @@ review + akceptuje wartości pricing po dniu 1.
 - **Deliverable:** wszystkie publiczne strony deployowalne
 
 ### Day 3 — Stripe + auth
-- [ ] CF D1 `academy-db` provisioning + migracje
-- [ ] Stripe Checkout integration (Test mode): produkty + webhook
-- [ ] `functions/api/stripe/checkout.ts` — tworzy Session, redirect
-- [ ] `functions/api/stripe/webhook.ts` — `checkout.session.completed` →
+- [x] CF D1 `academy-db` provisioning + migracje
+- [x] Stripe product/price/payment link on existing live account
+- [x] `functions/api/stripe/checkout.ts` — tworzy Session when
+      `STRIPE_SECRET_KEY` exists; otherwise returns configured cohort Payment
+      Link
+- [x] `functions/api/stripe/webhook.ts` — `checkout.session.completed` →
       D1 `customers` row + Resend magic-link email
-- [ ] `functions/api/auth.ts` — magic link verify + cookie
-- [ ] `functions/_middleware.ts` — gate `/app/*`
-- **Deliverable:** test purchase flow end-to-end na test cards
+- [x] `functions/api/auth.ts` — magic link verify + cookie
+- [x] `functions/_middleware.ts` — gate `/app/*`
+- [ ] Stripe Dashboard webhook endpoint + `STRIPE_WEBHOOK_SECRET`
+- **Deliverable:** test purchase flow end-to-end on live Payment Link
 
 ### Day 4 — member area (gated)
-- [ ] `/app` team dashboard — lista odcinków, progress, vault link
-- [ ] `/app/episode/[id]` player + quiz + transcript stub
-- [ ] `/app/vault` — protected file list (sygnowane URLs z D1)
+- [x] `/app` team dashboard — lista odcinków, progress, vault link
+- [x] `/app/episode/[id]` player + quiz + transcript stub
+- [x] `/app/vault` — protected file list
 - [ ] Certificate generation hook (PDF gen via @resvg/resvg-js, już mamy w stacku)
 - **Deliverable:** member area dla single customer
 

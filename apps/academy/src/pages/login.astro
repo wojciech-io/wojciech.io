@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+const next = Astro.url.searchParams.get('next') || '/app';
+---
+<Layout title="Login · AI Growth OS Academy" description="Magic-link login do panelu AI Growth OS Academy.">
+  <section class="ac-login-wrap">
+    <div class="ac-login-visual" aria-hidden="true">
+      <div class="ac-login-orb"></div>
+      <div class="ac-login-console">
+        <span>academy.auth()</span>
+        <span>{'{'}</span>
+        <span>&nbsp;&nbsp;method: "magic_link",</span>
+        <span>&nbsp;&nbsp;access: "member_area",</span>
+        <span>&nbsp;&nbsp;expires: "30min"</span>
+        <span>{'}'}</span>
+      </div>
+    </div>
+    <form class="ac-form ac-login-card" data-login-form action="/api/auth">
+      <input type="hidden" name="next" value={next} />
+      <p class="ac-section-eyebrow">Member access</p>
+      <h1>Wejdź do panelu.</h1>
+      <p>Podaj email z zakupu. Wyślemy jednorazowy link do panelu Academy.</p>
+      <label class="ac-form-label">Email</label>
+      <input class="ac-input" name="email" type="email" required autocomplete="email" />
+      <button type="submit" class="ac-btn ac-btn-primary" data-label="Wyślij magic link">Wyślij magic link</button>
+      <div class="ac-form-status"></div>
+    </form>
+  </section>
+</Layout>
