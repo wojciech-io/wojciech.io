@@ -124,7 +124,7 @@ manual invoice). Webhook handler → D1 sync.
 
 CF Pages project: `akademia-wojciech-io` (istnieje, direct upload). Deploy z
 monorepo via wrangler tak jak growthhub. Custom domena `academy.wojciech.io`
-już przypięta — zero DNS roboty.
+jest przypięta. Cutover do nowej Academy v2 wykonany 2026-05-21.
 
 ## 4-5 day plan
 
@@ -132,22 +132,21 @@ Każdy dzień = jeden push, deployable end-of-day. Zakładamy że Wojtek robi
 review + akceptuje wartości pricing po dniu 1.
 
 ### Day 1 — scaffold + landing (B2B copy)
-- [ ] `apps/academy/` workspace (mirror growthhub setup)
-- [ ] Layout + global.css (port z akademia style.css, zachowane Inter / JetBrains
+- [x] `apps/academy/` workspace (mirror growthhub setup)
+- [x] Layout + global.css (port z akademia style.css, zachowane Inter / JetBrains
       Mono / --orange palette)
-- [ ] `/` landing — przepisana sekcja po sekcji pod B2B copy (operator tone)
-- [ ] Hero + 4-tile proof (lat marketingu / B2B SaaS / GTM / shipped)
-- [ ] Workflow section (jak działa AI Growth OS w teamie)
-- [ ] Audio podcast — `/audio/*` URLs zachowane (do ściągnięcia ze starego deploy)
-- [ ] Build pass + dev preview
+- [x] `/` landing — przepisana sekcja po sekcji pod B2B copy (operator tone)
+- [x] Hero + 4-tile proof (lat marketingu / B2B SaaS / GTM / shipped)
+- [x] Workflow section (jak działa AI Growth OS w teamie)
+- [x] Audio podcast — sample/player restored with old-deploy media fallback
+- [x] Build pass + dev preview
 - **Deliverable:** `apps/academy/dist` builduje, landing widać
 
 ### Day 2 — pricing + cohort/enterprise pages
-- [ ] `pricing.astro` — 4 tiers (Individual / Team / Cohort / Enterprise) +
-      team seat calculator
-- [ ] `cohort.astro` — najbliższa data + waitlist (Resend → akademia audience)
-- [ ] `enterprise.astro` — form (POST → email do Wojtka, Resend)
-- [ ] OG image template + meta SEO (academy.wojciech.io)
+- [x] `pricing.astro` — gated Individual/Team, cohort visible at 2900 zł/os
+- [x] `cohort.astro` — waitlist/rezerwacja bez daty i bez payment-first flow
+- [x] Enterprise/team inquiry flow via contact endpoint
+- [x] Meta SEO for `academy.wojciech.io`
 - **Deliverable:** wszystkie publiczne strony deployowalne
 
 ### Day 3 — Stripe + auth
@@ -176,11 +175,11 @@ review + akceptuje wartości pricing po dniu 1.
       do `apps/academy/public/audio/` (lub R2 jeśli za duże dla Pages)
 - [ ] Vault scrape (100+ files)
 - [ ] Live test purchase z prawdziwym kontem Stripe (real card, jeden tier)
-- [ ] Cutover: deploy do `akademia-wojciech-io` CF Pages project,
+- [x] Cutover: deploy do `akademia-wojciech-io` CF Pages project,
       domena `academy.wojciech.io` przepina się automatycznie
-- [ ] Archive standalone repo jeśli istnieje, dodać `deploy:academy` do root package.json
+- [x] Dodać deploy scripts do root package.json (`deploy:academy`, `deploy:academy:prod`)
 - **Deliverable:** academy.wojciech.io żyje z nowego źródła, B2B copy live,
-      Stripe płatny
+      płatności zaparkowane jako ostatni opcjonalny backlog
 
 ## Open decisions — need Wojtek before kickoff
 

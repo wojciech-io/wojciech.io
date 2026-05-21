@@ -119,9 +119,10 @@ Do not use `wrangler deploy` — this is a static Astro site on Cloudflare Pages
 | Subdomain | Platform | Repo / source |
 |---|---|---|
 | wojciech.io | Cloudflare Pages | this repo |
-| app.wojciech.io | Vercel | separate repo (Next.js) |
-| subscribe.wojciech.io | Beehiiv | external service |
-| academy.wojciech.io | external | external service |
-| notch.wojciech.io | Vercel | separate repo |
+| app.wojciech.io | Cloudflare Pages | this repo, `apps/app` |
+| subscribe.wojciech.io | Cloudflare Pages | this repo, `apps/subscribe` direct upload |
+| academy.wojciech.io | Cloudflare Pages | this repo, `apps/academy` direct upload to `akademia-wojciech-io` |
+| notch.wojciech.io | Cloudflare Pages | this repo, `apps/notch` direct upload |
+| gh.wojciech.io | Cloudflare Pages | this repo, `apps/growthhub` direct upload |
 
-Migration of app.wojciech.io to Cloudflare is planned (separate sprint).
+Older standalone repos for app/subscribe/notch are archived or kept only as rollback context.

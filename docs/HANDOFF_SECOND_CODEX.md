@@ -6,8 +6,8 @@ Aktualny kierunek: iść szybko do przodu z Academy/GrowthHub, **nie zaczynać o
 
 ## Najważniejsze
 
-- `main` po ostatnich pracach ma Academy v2 na `academy-v2-wojciech-io.pages.dev`.
-- `academy.wojciech.io` nadal pokazuje starą stronę. Nie przepinać bez zgody Wojtka.
+- `main` po ostatnich pracach ma Academy v2 na `academy.wojciech.io` oraz preview na `academy-v2-wojciech-io.pages.dev`.
+- Cutover `academy.wojciech.io` został wykonany 2026-05-21 przez deploy do projektu `akademia-wojciech-io`.
 - Płatności/Stripe są teraz **ostatnim dodatkowym zadaniem w backlogu**, nie blockerem i nie następnym frontem.
 - Nie ruszać `workers/failover/package-lock.json`; to zastany nieśledzony plik.
 - Nie commitować sekretów ani linków magic-login.
@@ -20,7 +20,8 @@ Aktualny kierunek: iść szybko do przodu z Academy/GrowthHub, **nie zaczynać o
 - `subscribe.wojciech.io` — newsletter/double opt-in.
 - `notch.wojciech.io` — NotchCue.
 - `gh-wojciech-io.pages.dev/demo` — GrowthHub demo; `gh.wojciech.io` CNAME został utworzony 2026-05-21 i custom domain ma status active. Jeśli lokalnie nie działa, to najpewniej cache NXDOMAIN.
-- `academy-v2-wojciech-io.pages.dev` — Academy v2 preview.
+- `academy.wojciech.io` — Academy v2 production.
+- `academy-v2-wojciech-io.pages.dev` — Academy v2 preview/staging.
 
 ## Academy v2: stan
 
@@ -54,8 +55,9 @@ Wojtek chce klimat starej wersji: bogato, interfejsowo, nowocześnie, z flow i m
    - WAF `/api/*` wymaga dashboardu albo tokenu z WAF/Rulesets edit. Aktualny token DNS działa, ale Rulesets API zwraca authentication error.
 
 4. Academy cutover.
-   - Dopiero po akceptacji Wojtka.
-   - Nie przepinać samodzielnie.
+   - Wykonany 2026-05-21.
+   - Produkcyjny projekt `akademia-wojciech-io` ma D1 `academy-db`, KV `RATE_LIMIT`, `AUTH_SECRET`, `ACADEMY_ADMIN_TOKEN`, `ACADEMY_BASE_URL` i istniejący `RESEND_API_KEY`.
+   - Dalej pracować już z założeniem, że `academy.wojciech.io` jest produkcją.
 
 5. Płatności.
    - Tylko jeśli Wojtek wróci do tematu.
@@ -80,7 +82,7 @@ npm run deploy:growthhub
 ```text
 Pracujemy w /Users/wojciech/wojciech.io. Przeczytaj docs/CODEX_HANDOFF.md i docs/HANDOFF_SECOND_CODEX.md.
 Najważniejsze: płatności zostawiamy na koniec jako dodatkowy backlog. Nie zaczynaj od Stripe.
-Priorytet to Academy v2 polish względem starego PDF:
+Priorytet to Academy polish względem starego PDF:
 /Users/wojciech/Downloads/screencapture-academy-wojciech-io-2026-05-21-14_24_54.pdf
-Styl ma być bogaty, interfejsowy, ludzki, nie płaski. Nie przepinaj academy.wojciech.io bez zgody. Nie ruszaj workers/failover/package-lock.json.
+Styl ma być bogaty, interfejsowy, ludzki, nie płaski. academy.wojciech.io jest już na v2 po cutoverze. Nie ruszaj workers/failover/package-lock.json.
 ```

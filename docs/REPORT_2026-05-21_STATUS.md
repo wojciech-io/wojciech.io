@@ -16,6 +16,11 @@ Repo: `/Users/wojciech/wojciech.io`
   - `notch-wojciech-io`
   - `gh-wojciech-io`
   - `academy-v2-wojciech-io`
+- Po Twojej akceptacji wykonałem cutover `academy.wojciech.io`:
+  deploy nowej Academy v2 do projektu `akademia-wojciech-io`.
+- Skonfigurowałem produkcyjny projekt Academy pod nowe funkcje:
+  D1 `DB`, KV `RATE_LIMIT`, `AUTH_SECRET`, `ACADEMY_ADMIN_TOKEN`,
+  `ACADEMY_BASE_URL`.
 - Utworzyłem DNS dla GrowthHub:
   `gh.wojciech.io` → `gh-wojciech-io.pages.dev`, CNAME proxied ON.
 - Sprawdziłem hasło GrowthHub przez `/api/auth`; bramka działa.
@@ -36,17 +41,25 @@ Repo: `/Users/wojciech/wojciech.io`
 - `https://gh.wojciech.io/` — CNAME utworzony, custom domain active. Publiczne
   resolvery widzą rekord, a test z wymuszonym świeżym DNS daje HTTP 200.
   Lokalny resolver może jeszcze przez chwilę trzymać stary NXDOMAIN.
-- `https://academy-v2-wojciech-io.pages.dev/` — działa, HTTP 200.
+- `https://academy.wojciech.io/` — nowa Academy v2 działa, HTTP 200.
+- `https://academy.wojciech.io/pricing` — działa, HTTP 200.
+- `https://academy.wojciech.io/cohort` — działa, flow rezerwacji bez płatności
+  jest aktywny.
+- `https://academy.wojciech.io/app` — poprawnie odsyła do loginu bez sesji.
+- `https://academy.wojciech.io/api/auth` — dla nie-członka zwraca
+  `not-a-member`, więc D1/Auth są podpięte.
+- `https://academy-v2-wojciech-io.pages.dev/` — działa jako preview/staging,
+  HTTP 200.
 - `https://academy-v2-wojciech-io.pages.dev/cohort` — działa, flow rezerwacji
   bez płatności jest aktywny.
 - `https://academy-v2-wojciech-io.pages.dev/app` — poprawnie odsyła do loginu
   bez sesji.
-- `https://academy.wojciech.io/` — nadal stara wersja. Nie przepinałem bez zgody.
 
 ## Deploymenty wykonane teraz
 
 - GrowthHub: `https://9be7f714.gh-wojciech-io.pages.dev`
 - Academy v2: `https://72669ecc.academy-v2-wojciech-io.pages.dev`
+- Academy production cutover: `https://1589cbf7.akademia-wojciech-io.pages.dev`
 - Subscribe: `https://082ad2c0.subscribe-wojciech-io.pages.dev`
 - Notch: `https://54183586.notch-wojciech-io.pages.dev`
 
@@ -58,23 +71,17 @@ Repo: `/Users/wojciech/wojciech.io`
      akcja `Managed Challenge` albo `Block`.
    - Alternatywa: token Cloudflare z uprawnieniem WAF/Rulesets edit.
 
-2. Decyzja o `academy.wojciech.io`
-   - Nowa Academy v2 działa na preview.
-   - Stara produkcja nadal żyje.
-   - Cutover robić dopiero po Twojej akceptacji.
-
-3. Stary rollback `wojciech-app.pages.dev`
+2. Stary rollback `wojciech-app.pages.dev`
    - GitHub repo jest zarchiwizowane.
    - CF Pages project nadal istnieje jako rollback.
    - Cloudflare nie ma opcji archive dla Pages; można tylko zostawić albo usunąć.
 
-4. Płatności Academy
+3. Płatności Academy
    - Zostawione na koniec, zgodnie z Twoją decyzją.
    - Nie są blockerem dla obecnego polishu i subdomen.
 
 ## Rekomendowana kolejność
 
 1. Dodać WAF `/api/*` w dashboardzie Cloudflare.
-2. Obejrzeć Academy v2 na desktopie i telefonie.
-3. Jeśli wizualnie jest OK, dopiero wtedy przepiąć `academy.wojciech.io`.
-4. Płatności zostawić jako ostatnie dodatkowe zadanie.
+2. Dalej polerować Academy już na produkcji, z preview jako staging.
+3. Płatności zostawić jako ostatnie dodatkowe zadanie.

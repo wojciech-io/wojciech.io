@@ -7,8 +7,9 @@ Last update: 2026-05-21. Latest commit on `main`: see `git log --oneline -10`.
 Monorepo with public `wojciech.io` at repo root plus subdomain apps in
 `apps/*`: `app`, `subscribe`, `notch`, `growthhub`, `academy`. Main
 `wojciech.io` and `app.wojciech.io` deploy from Git-connected Cloudflare
-Pages projects. `subscribe`, `notch`, `growthhub`, and `academy-v2` are
-direct-upload Cloudflare Pages projects deployed via wrangler scripts.
+Pages projects. `subscribe`, `notch`, `growthhub`, `academy-v2`, and
+`akademia-wojciech-io` are direct-upload Cloudflare Pages projects deployed via
+wrangler scripts.
 
 Current live state verified 2026-05-21:
 - `wojciech.io` — live from `origin/main`.
@@ -18,10 +19,11 @@ Current live state verified 2026-05-21:
 - `gh-wojciech-io.pages.dev/demo` — live GrowthHub demo. `gh.wojciech.io`
   CNAME was created 2026-05-21 and the Pages custom domain is active; allow for
   local resolver caches to expire if one machine still sees NXDOMAIN.
-- `academy-v2-wojciech-io.pages.dev` — live Academy v2 preview with
-  reservation/waitlist flow, D1-backed magic-link auth, and gated `/app`
-  member area. Production `academy.wojciech.io` still points to old
-  `akademia-wojciech-io`.
+- `academy.wojciech.io` — production cutover completed 2026-05-21. It now runs
+  the new Academy v2 from `akademia-wojciech-io` with reservation/waitlist
+  flow, D1-backed magic-link auth, and gated `/app` member area.
+- `academy-v2-wojciech-io.pages.dev` — still available as the preview/staging
+  project for Academy v2.
 
 **You should read this whole doc before touching anything.**
 
@@ -36,7 +38,7 @@ wojciech-io/
 │   ├── subscribe/          # subscribe.wojciech.io — newsletter signup with double-opt-in (KV + Resend)
 │   ├── notch/              # notch.wojciech.io — NotchCue product site
 │   ├── growthhub/          # gh-wojciech-io.pages.dev — gated GrowthHub + public /demo
-│   └── academy/            # academy-v2-wojciech-io.pages.dev — Academy v2 preview
+│   └── academy/            # academy.wojciech.io prod + academy-v2 preview
 │       ├── public/         # _headers, robots.txt, login.html, wojciech-photo.png
 │       ├── src/
 │       │   ├── components/Footer.astro      # app-specific footer (mirrors wojciech.io)
@@ -181,8 +183,9 @@ Scope:
   exists but has nowhere to fail over to until Wojtek sets up an Azure SWA.
   Defense-in-depth, not currently urgent.
 - **/now page** — explicitly skipped for v1.
-- **academy.wojciech.io** — `akademia-wojciech-io` CF Pages project has no
-  git source (direct upload). Skipped until source is found or recreated.
+- **academy.wojciech.io** — cutover completed 2026-05-21. It is still a
+  direct-upload CF Pages project (`akademia-wojciech-io`), now deployed from
+  `apps/academy` in this monorepo.
 
 ### Subdomain deploys (direct upload)
 
@@ -196,6 +199,7 @@ npm run deploy:subscribe   # builds apps/subscribe, uploads
 npm run deploy:notch       # builds apps/notch, uploads
 npm run deploy:growthhub   # builds apps/growthhub, uploads to gh-wojciech-io
 npm run deploy:academy     # builds apps/academy, uploads to academy-v2-wojciech-io
+npm run deploy:academy:prod # builds apps/academy, uploads to akademia-wojciech-io / academy.wojciech.io
 ```
 
 Existing bindings on `subscribe-wojciech-io` project (already configured,
@@ -221,6 +225,14 @@ public cohort flow is reservation/waitlist first; payment system is deliberately
 parked as a last, optional backlog item per Wojtek's 2026-05-21 decision. Do
 **not** make Stripe the next workstream unless Wojtek explicitly asks for it.
 
+`akademia-wojciech-io`: production Academy project for `academy.wojciech.io`.
+Cutover deployment: `https://1589cbf7.akademia-wojciech-io.pages.dev`.
+Configured 2026-05-21 with the same `academy-db` D1 binding and `RATE_LIMIT`
+KV as preview, plus fresh `AUTH_SECRET`, `ACADEMY_ADMIN_TOKEN`, and
+`ACADEMY_BASE_URL=https://academy.wojciech.io` secrets. Existing production
+`RESEND_API_KEY` remains in place for magic-link/admin emails. Do not copy or
+log these secret values.
+
 Academy v2 has an admin-only fallback endpoint:
 `POST /api/admin/grant-access` with `Authorization: Bearer <ACADEMY_ADMIN_TOKEN>`.
 It upserts a customer, creates a 12-month active membership, creates a magic
@@ -243,16 +255,17 @@ manual activation is needed.
   or a token with WAF/Rulesets edit. The available token can edit DNS, but the
   Rulesets API returned `Authentication error`. App-level KV rate limits are
   already in code.
-- **Payment system for Academy v2** is parked as the last optional task, not
+- **Payment system for Academy** is parked as the last optional task, not
   the current blocker. When Wojtek explicitly returns to it: add
   `STRIPE_SECRET_KEY`, create a webhook endpoint for
-  `https://academy-v2-wojciech-io.pages.dev/api/stripe/webhook`, listen to
+  `https://academy.wojciech.io/api/stripe/webhook`, listen to
   `checkout.session.completed` and
   `checkout.session.async_payment_succeeded`, then save its signing secret as
   the `STRIPE_WEBHOOK_SECRET` Pages secret and redeploy. Add
   `RESEND_API_KEY`/`RESEND_FROM` before expecting login emails to deliver.
-- **Academy v2 production cutover** is intentionally held. Preview is live,
-  but do one live test purchase before moving `academy.wojciech.io`.
+- **Academy production cutover** is done. Verified: home/pricing/cohort/login
+  return 200, `/app` redirects to `/login`, `/api/auth` returns `not-a-member`
+  for a non-member, and desktop/mobile screenshots render the new v2 hero.
 
 ---
 
@@ -323,8 +336,8 @@ In commit order on main:
    package, then configure D1 + secrets. Public `/demo` already works.
 3. **Cloudflare ops** — configure `gh.wojciech.io`, add WAF rate limit
    `/api/*`, decide whether to delete old `wojciech-app` Pages rollback.
-4. **Academy cutover decision** — show Wojtek v2 and ask before moving
-   `academy.wojciech.io` from old `akademia-wojciech-io`.
+4. **Academy post-cutover polish** — continue visual/copy polish directly on
+   production and keep `academy-v2-wojciech-io.pages.dev` as preview/staging.
 5. **Payment system closeout (last optional task)** — add
    `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `RESEND_API_KEY`, run a
    live cohort purchase, confirm the webhook creates the member and magic-link
