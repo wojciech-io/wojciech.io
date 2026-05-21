@@ -19,7 +19,7 @@ Aktualny kierunek: iść szybko do przodu z Academy/GrowthHub, **nie zaczynać o
 - `app.wojciech.io` — gated workspace.
 - `subscribe.wojciech.io` — newsletter/double opt-in.
 - `notch.wojciech.io` — NotchCue.
-- `gh-wojciech-io.pages.dev/demo` — GrowthHub demo; `gh.wojciech.io` DNS nie jest ustawiony.
+- `gh-wojciech-io.pages.dev/demo` — GrowthHub demo; `gh.wojciech.io` CNAME został utworzony 2026-05-21 i custom domain ma status active. Jeśli lokalnie nie działa, to najpewniej cache NXDOMAIN.
 - `academy-v2-wojciech-io.pages.dev` — Academy v2 preview.
 
 ## Academy v2: stan
@@ -50,8 +50,8 @@ Wojtek chce klimat starej wersji: bogato, interfejsowo, nowocześnie, z flow i m
    - „Cennik dla zespołu” → pricing request.
 
 3. GrowthHub / Cloudflare ops.
-   - `gh.wojciech.io`: Cloudflare DNS CNAME `gh` → `gh-wojciech-io.pages.dev`, proxy ON, potem Custom domain w Pages.
-   - WAF `/api/*` wymaga dashboardu lub tokenu Zone edit.
+   - `gh.wojciech.io`: DNS CNAME już utworzony, custom domain active. Jeśli lokalnie nie działa, sprawdzić publiczny resolver (`dig @1.1.1.1 gh.wojciech.io A`) przed proszeniem Wojtka.
+   - WAF `/api/*` wymaga dashboardu albo tokenu z WAF/Rulesets edit. Aktualny token DNS działa, ale Rulesets API zwraca authentication error.
 
 4. Academy cutover.
    - Dopiero po akceptacji Wojtka.

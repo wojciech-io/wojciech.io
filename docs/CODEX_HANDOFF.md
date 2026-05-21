@@ -15,8 +15,9 @@ Current live state verified 2026-05-21:
 - `app.wojciech.io` — gated, custom domain on `app-wojciech-io`.
 - `subscribe.wojciech.io` — live, direct-upload from `apps/subscribe`.
 - `notch.wojciech.io` — live, direct-upload from `apps/notch`.
-- `gh-wojciech-io.pages.dev/demo` — live GrowthHub demo; `gh.wojciech.io`
-  DNS/custom domain still not set.
+- `gh-wojciech-io.pages.dev/demo` — live GrowthHub demo. `gh.wojciech.io`
+  CNAME was created 2026-05-21 and the Pages custom domain is active; allow for
+  local resolver caches to expire if one machine still sees NXDOMAIN.
 - `academy-v2-wojciech-io.pages.dev` — live Academy v2 preview with
   reservation/waitlist flow, D1-backed magic-link auth, and gated `/app`
   member area. Production `academy.wojciech.io` still points to old
@@ -206,10 +207,12 @@ do not touch unless rotating):
 
 `notch-wojciech-io`: static, no secrets, no KV. Domain: `notch.wojciech.io`.
 
-`gh-wojciech-io`: gated dashboard + public `/demo`. Domain
-`gh.wojciech.io` is not configured yet; pages.dev works. `APP_PASSWORD` was
-rotated 2026-05-21 per Wojtek's request and remains a Cloudflare Pages secret,
-not a repo value.
+`gh-wojciech-io`: gated dashboard + public `/demo`. Domain `gh.wojciech.io`
+has a proxied CNAME to `gh-wojciech-io.pages.dev` created via Cloudflare API on
+2026-05-21, and the Pages custom-domain status is active. Public resolvers
+return Cloudflare edge IPs; local resolvers may briefly cache the previous
+NXDOMAIN response. `APP_PASSWORD` was rotated 2026-05-21 per Wojtek's request
+and remains a Cloudflare Pages secret, not a repo value.
 
 `academy-v2-wojciech-io`: Academy v2 preview with `academy-db` D1 binding,
 `RATE_LIMIT` KV, `AUTH_SECRET`, `ACADEMY_ADMIN_TOKEN`, `ACADEMY_BASE_URL`,
@@ -232,11 +235,14 @@ manual activation is needed.
   at `wojciech-app.pages.dev`. Cloudflare has no "archive" state for Pages
   projects; the only CLI action is deletion. Do not delete unless Wojtek
   explicitly accepts losing that rollback.
-- **`gh.wojciech.io` custom domain/DNS** still needs Cloudflare DNS/custom
-  domain setup. Current wrangler OAuth token has Pages write but only Zone
-  read, so DNS changes are not available from this CLI session.
-- **Cloudflare WAF rate-limit rule** on `/api/*` still needs dashboard or
-  a token with Zone edit. App-level KV rate limits are already in code.
+- **`gh.wojciech.io` DNS/custom domain** was created 2026-05-21 and is active.
+  If a later agent sees a local DNS failure, first check
+  `dig @1.1.1.1 gh.wojciech.io A` before asking Wojtek; it may just be local
+  NXDOMAIN cache.
+- **Cloudflare WAF rate-limit rule** on `/api/*` still needs dashboard access
+  or a token with WAF/Rulesets edit. The available token can edit DNS, but the
+  Rulesets API returned `Authentication error`. App-level KV rate limits are
+  already in code.
 - **Payment system for Academy v2** is parked as the last optional task, not
   the current blocker. When Wojtek explicitly returns to it: add
   `STRIPE_SECRET_KEY`, create a webhook endpoint for

@@ -1,97 +1,80 @@
-# Raport Codex — wojciech.io, subdomeny i Academy v2
+# Raport Codex — wojciech.io i subdomeny
 
 Data: 2026-05-21  
-Repo: `/Users/wojciech/wojciech.io`  
-Ostatni commit na `main`: `6a038cb feat(academy): add outcome dashboard section`
+Repo: `/Users/wojciech/wojciech.io`
 
-## Status ogólny
+## Co zrobiłem samodzielnie
 
-- `wojciech.io` — działa.
-- `app.wojciech.io` — działa jako gated app.
-- `subscribe.wojciech.io` — działa.
-- `notch.wojciech.io` — działa.
-- `gh-wojciech-io.pages.dev/demo` — działa; `gh.wojciech.io` nie jest jeszcze podpięte.
-- `academy-v2-wojciech-io.pages.dev` — działa jako nowa Academy v2.
-- `academy.wojciech.io` — nadal pokazuje starą wersję; nie przepinałem bez zgody.
+- Domknąłem audyt wszystkich aktualnych subdomen i projektów Cloudflare Pages.
+- Naprawiłem lokalną instalację workspace przez `npm install`, bo `build:app`
+  nie widział symlinku `@wojciech/tokens`. Kod był poprawny; brakowało lokalnych
+  linków w `node_modules`.
+- Uruchomiłem pełny zestaw buildów: `npm run build`, `build:app`,
+  `build:subscribe`, `build:notch`, `build:growthhub`, `build:academy`.
+- Ręcznie redeploynąłem projekty direct-upload:
+  - `subscribe-wojciech-io`
+  - `notch-wojciech-io`
+  - `gh-wojciech-io`
+  - `academy-v2-wojciech-io`
+- Utworzyłem DNS dla GrowthHub:
+  `gh.wojciech.io` → `gh-wojciech-io.pages.dev`, CNAME proxied ON.
+- Sprawdziłem hasło GrowthHub przez `/api/auth`; bramka działa.
+- Spróbowałem dodać Cloudflare WAF/rate limit `/api/*`, ale aktualny token nie
+  ma uprawnień do Rulesets/WAF. DNS API działa, Rulesets API zwraca
+  `Authentication error`.
+- Zaktualizowałem handoffy:
+  - `docs/CODEX_HANDOFF.md`
+  - `docs/HANDOFF_SECOND_CODEX.md`
 
-## Co zrobiłem
+## Status live
 
-### Academy v2 — visual polish
+- `https://wojciech.io/` — działa, HTTP 200.
+- `https://app.wojciech.io/` — działa jako gated app, HTTP 401 bez sesji.
+- `https://subscribe.wojciech.io/` — działa, HTTP 200.
+- `https://notch.wojciech.io/` — działa, HTTP 200.
+- `https://gh-wojciech-io.pages.dev/demo/` — działa, HTTP 200.
+- `https://gh.wojciech.io/` — CNAME utworzony, custom domain active. Publiczne
+  resolvery widzą rekord, a test z wymuszonym świeżym DNS daje HTTP 200.
+  Lokalny resolver może jeszcze przez chwilę trzymać stary NXDOMAIN.
+- `https://academy-v2-wojciech-io.pages.dev/` — działa, HTTP 200.
+- `https://academy-v2-wojciech-io.pages.dev/cohort` — działa, flow rezerwacji
+  bez płatności jest aktywny.
+- `https://academy-v2-wojciech-io.pages.dev/app` — poprawnie odsyła do loginu
+  bez sesji.
+- `https://academy.wojciech.io/` — nadal stara wersja. Nie przepinałem bez zgody.
 
-Dodałem kolejną warstwę, żeby strona bardziej wyglądała jak produkt/system pracy, a nie płaski landing:
+## Deploymenty wykonane teraz
 
-- nowa sekcja `OutcomeBoard`,
-- przed/po: co zmienia się po odcinku,
-- mockup dashboardu `growth-os / weekly-review`,
-- signal inbox,
-- next actions,
-- mini terminal,
-- doprecyzowane hero copy.
+- GrowthHub: `https://9be7f714.gh-wojciech-io.pages.dev`
+- Academy v2: `https://72669ecc.academy-v2-wojciech-io.pages.dev`
+- Subscribe: `https://082ad2c0.subscribe-wojciech-io.pages.dev`
+- Notch: `https://54183586.notch-wojciech-io.pages.dev`
 
-### Academy cohort
+## Co zostaje naprawdę po Twojej stronie
 
-Zgodnie z decyzją użytkownika płatności są przesunięte na koniec backlogu:
+1. Cloudflare WAF `/api/*`
+   - Dashboard: Security → WAF → Rate limiting rules.
+   - Reguła: path starts with `/api/`, limit około 20 requestów/min/IP,
+     akcja `Managed Challenge` albo `Block`.
+   - Alternatywa: token Cloudflare z uprawnieniem WAF/Rulesets edit.
 
-- publiczny cohort nie prowadzi już do Stripe Checkout,
-- flow jest jako wstępna rezerwacja bez płatności,
-- pricing i login kierują do rezerwacji, nie do checkoutu.
+2. Decyzja o `academy.wojciech.io`
+   - Nowa Academy v2 działa na preview.
+   - Stara produkcja nadal żyje.
+   - Cutover robić dopiero po Twojej akceptacji.
 
-### Handoffy
+3. Stary rollback `wojciech-app.pages.dev`
+   - GitHub repo jest zarchiwizowane.
+   - CF Pages project nadal istnieje jako rollback.
+   - Cloudflare nie ma opcji archive dla Pages; można tylko zostawić albo usunąć.
 
-Zaktualizowane:
-
-- `docs/CODEX_HANDOFF.md`
-- `docs/HANDOFF_SECOND_CODEX.md`
-
-W obu dokumentach jasno zaznaczone jest, że płatności są ostatnim dodatkowym zadaniem, a nie następnym głównym frontem.
-
-## Weryfikacja
-
-Sprawdzone:
-
-- `npm run build:academy` — przechodzi.
-- Deploy Academy v2 — przeszedł.
-- Playwright desktop/mobile — brak poziomego scrolla.
-- Console warnings — 0.
-- `/app` bez sesji dalej redirectuje do loginu.
-
-## Czego nie ruszałem
-
-- Nie przepinałem `academy.wojciech.io` na v2.
-- Nie usuwałem starego `wojciech-app.pages.dev` rollbacku.
-- Nie ruszałem `workers/failover/package-lock.json`.
-- Nie wracałem do płatności/Stripe poza przeniesieniem ich do backlogu.
-
-## Punkty wymagające decyzji Wojtka
-
-1. **Academy cutover**  
-   Czy przepinać `academy.wojciech.io` na nową Academy v2, czy jeszcze polerować?
-
-2. **GrowthHub DNS**  
-   Żeby działało `gh.wojciech.io`, trzeba w Cloudflare dodać:
-   `CNAME gh → gh-wojciech-io.pages.dev`, proxy ON.  
-   Potem w Pages dodać custom domain `gh.wojciech.io`.
-
-3. **Cloudflare WAF `/api/*`**  
-   Jeśli ma być druga warstwa ochrony poza app-level rate limitingiem, trzeba dodać WAF/rate limit w dashboardzie Cloudflare albo dać token z Zone edit.
-
-4. **Stary rollback**  
-   Czy zostawić `wojciech-app.pages.dev` jako rollback, czy usunąć stary CF Pages project?
-
-5. **Płatności Academy — na końcu**  
-   Ostatnie dodatkowe zadanie, nie blocker teraz.  
-   Do pełnej automatyzacji będą potrzebne:
-   - `STRIPE_SECRET_KEY`
-   - `STRIPE_WEBHOOK_SECRET`
-   - `RESEND_API_KEY`
+4. Płatności Academy
+   - Zostawione na koniec, zgodnie z Twoją decyzją.
+   - Nie są blockerem dla obecnego polishu i subdomen.
 
 ## Rekomendowana kolejność
 
-1. Obejrzeć Academy v2 na telefonie i desktopie.
-2. Jeśli wizualnie jest OK — przepiąć `academy.wojciech.io`.
-3. Potem ogarnąć `gh.wojciech.io` DNS.
-4. Płatności zostawić na sam koniec.
-
-Link do nowej Academy v2:  
-https://academy-v2-wojciech-io.pages.dev
-
+1. Dodać WAF `/api/*` w dashboardzie Cloudflare.
+2. Obejrzeć Academy v2 na desktopie i telefonie.
+3. Jeśli wizualnie jest OK, dopiero wtedy przepiąć `academy.wojciech.io`.
+4. Płatności zostawić jako ostatnie dodatkowe zadanie.
