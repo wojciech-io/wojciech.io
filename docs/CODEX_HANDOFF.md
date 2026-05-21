@@ -284,6 +284,10 @@ manual activation is needed.
 - **i18n:** every user-facing string has `data-en`, `data-pl`, `data-it`
   attributes. PL is Wojtek's native, EN is canonical, IT is for audience
   reach. Don't use literary/archaic PL words (e.g. "zrecenzuj" → "oceń").
+  **EXCEPTION — Academy is intentionally PL-only** (`<html lang="pl">`, no
+  data-en/pl/it, no switcher). Decided 2026-05-21: the program audio is in
+  Polish, so the marketing language matches the product. Do NOT add i18n to
+  `apps/academy` unless Wojtek ships an English-language version of the course.
 - **Stack pinned:** Astro + Tailwind + CSS tokens. No new component
   frameworks. No new CSS systems. apps/app uses plain CSS, not Tailwind.
 - **Deploys:** push to main auto-deploys both CF Pages projects.
