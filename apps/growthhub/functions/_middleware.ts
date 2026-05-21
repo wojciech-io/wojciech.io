@@ -37,6 +37,10 @@ const ALLOWED_EXACT = [
 
 function isAllowed(pathname: string): boolean {
   if (ALLOWED_EXACT.includes(pathname)) return true;
+  // Content-hashed, immutable build assets (CSS/JS/fonts). Public by design —
+  // they carry no gated data, and the public /demo page needs them to render.
+  // Gating these left /demo unstyled (assets 302'd to /login).
+  if (pathname.startsWith('/_astro/')) return true;
   if (pathname === '/demo' || pathname.startsWith('/demo/')) return true;
   return false;
 }
