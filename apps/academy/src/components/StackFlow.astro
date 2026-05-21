@@ -1,0 +1,34 @@
+---
+// Animated GTM-AI pipeline: 5 nodes connected by links with a travelling
+// pulse, visualising the flow the program teaches (sources → enrich →
+// score → outreach → revenue). Inline SVG icons, no external deps.
+const nodes = [
+  { label: 'Źródła', sub: 'ICP, formularze, sygnały', icon: 'db' },
+  { label: 'Wzbogacenie', sub: 'Clay, enrichment, dane firmy', icon: 'filter' },
+  { label: 'Scoring AI', sub: 'Claude ocenia fit + intencję', icon: 'spark' },
+  { label: 'Outreach', sub: 'Sekwencja, personalizacja', icon: 'send' },
+  { label: 'Revenue ops', sub: 'Pipeline, dashboard, ROI', icon: 'chart' },
+];
+
+const icons: Record<string, string> = {
+  db: '<path d="M12 3c4.97 0 9 1.34 9 3s-4.03 3-9 3-9-1.34-9-3 4.03-3 9-3z"/><path d="M3 6v6c0 1.66 4.03 3 9 3s9-1.34 9-3V6"/><path d="M3 12v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6"/>',
+  filter: '<path d="M3 4h18l-7 8v6l-4 2v-8L3 4z"/>',
+  spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2z"/>',
+  send: '<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>',
+  chart: '<path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-6"/>',
+};
+---
+<div class="ac-flow">
+  {nodes.map((n, i) => (
+    <>
+      {i > 0 && <div class="ac-flow-link" aria-hidden="true"></div>}
+      <div class="ac-flow-node reveal-zoom" style={`transition-delay:${i * 90}ms`}>
+        <div class="ac-flow-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" set:html={icons[n.icon]} />
+        </div>
+        <div class="ac-flow-label">{n.label}</div>
+        <div class="ac-flow-sub">{n.sub}</div>
+      </div>
+    </>
+  ))}
+</div>
