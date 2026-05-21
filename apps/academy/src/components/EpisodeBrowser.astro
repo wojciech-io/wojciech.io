@@ -1,0 +1,55 @@
+---
+// Modern product-interface mockup visualising the 36 episodes as a real
+// app: sidebar of series + episode rows with play state, duration, progress.
+const series = [
+  { n: 1, title: 'AI jako narzędzie operatora', active: true },
+  { n: 2, title: 'Outbound jak system' },
+  { n: 3, title: 'Content jako infrastruktura' },
+  { n: 4, title: 'Operating system dla GTM' },
+];
+
+const episodes = [
+  { t: 'S1E01 · Wybór modelu pod konkretny task', d: '14:20', prog: 100, done: true },
+  { t: 'S1E02 · Prompty produkcyjne vs demo', d: '18:05', prog: 100, done: true },
+  { t: 'S1E03 · Koszty: jak nie palić tokenów', d: '12:48', prog: 64 },
+  { t: 'S1E04 · Kontekst, pamięć, narzędzia', d: '21:32', prog: 0 },
+  { t: 'S1E05 · AI baseline dla zespołu', d: '16:11', prog: 0 },
+  { t: 'S1E06 · Gdzie kończy się demo', d: '13:57', prog: 0 },
+];
+---
+<div class="ac-browser reveal-up">
+  <div class="ac-browser-bar">
+    <span class="ac-terminal-dot r"></span>
+    <span class="ac-terminal-dot y"></span>
+    <span class="ac-terminal-dot g"></span>
+    <span class="ac-browser-pill">academy.wojciech.io / app / seria-1</span>
+  </div>
+  <div class="ac-browser-body">
+    <aside class="ac-browser-side">
+      {series.map((s) => (
+        <div class:list={['ac-browser-serie', s.active && 'active']}>
+          <span class="dot"></span>Seria {s.n} · {s.title.split(' ').slice(0,2).join(' ')}
+        </div>
+      ))}
+    </aside>
+    <div class="ac-browser-main">
+      {episodes.map((e) => (
+        <div class:list={['ac-ep', e.done && 'done']}>
+          <span class="ac-ep-play">
+            {e.done
+              ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              : <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>}
+          </span>
+          <span class="ac-ep-title">{e.t}</span>
+          <span class="ac-ep-meta">{e.d}</span>
+          {e.prog > 0 && e.prog < 100 && (
+            <span class="ac-ep-prog"><span style={`width:${e.prog}%`}></span></span>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+<p style="text-align:center;font-size:12px;color:var(--text-3);margin-top:14px">
+  Podgląd interfejsu · pełny dostęp po dołączeniu · 36 odcinków w 4 seriach
+</p>
