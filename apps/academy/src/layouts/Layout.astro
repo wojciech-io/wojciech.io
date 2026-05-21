@@ -31,6 +31,9 @@ const {
   )}
   <script is:inline>
     (function(){
+      // Mark JS available BEFORE first paint so reveal animations only hide
+      // content when we can actually reveal it. No-JS users see everything.
+      document.documentElement.classList.add('js');
       try {
         var saved = localStorage.getItem('theme');
         var mode = saved ? saved : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'dark');
@@ -62,6 +65,26 @@ const {
     <a href="https://wojciech.io">wojciech.io</a> ·
     <a href="mailto:hello@wojciech.io">hello@wojciech.io</a>
   </footer>
+  <!-- Reveal bootstrap runs inline (no network fetch) so above-the-fold
+       content is never stuck invisible while the module loads. A safety
+       timer force-reveals everything after 1.2s in case anything slips. -->
+  <script is:inline>
+    (function(){
+      var els = document.querySelectorAll('.reveal,.reveal-up,.reveal-left,.reveal-right,.reveal-zoom');
+      if (!els.length) return;
+      var show = function(el){ el.classList.add('in'); };
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(e){ if (e.isIntersecting){ show(e.target); io.unobserve(e.target); } });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.04 });
+        els.forEach(function(el){ io.observe(el); });
+        // Safety: nothing should stay hidden longer than 1.2s.
+        setTimeout(function(){ els.forEach(show); }, 1200);
+      } else {
+        els.forEach(show);
+      }
+    })();
+  </script>
   <script>
     import('../scripts/interactions.client.ts');
   </script>

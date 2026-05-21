@@ -1,16 +1,25 @@
 /* Reveal on scroll — opt-in via class="reveal" or class="reveal-up". JS hook in scripts/reveal.client.ts toggles 'in'. */
 
-.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-zoom {
-  opacity: 0;
+/* Reveal-on-scroll. Content is hidden ONLY when (a) JS is available
+   (html.js set before paint) and (b) the element has not yet been revealed
+   (:not(.in)). The instant the inline bootstrap adds .in, the hide rule stops
+   matching and the element animates to its default (visible) state — no
+   specificity battle, and no way for content to stay permanently hidden.
+   Without JS, nothing is hidden at all. */
+.js .reveal, .js .reveal-up, .js .reveal-left, .js .reveal-right, .js .reveal-zoom {
   transition: opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
   will-change: opacity, transform;
 }
-.reveal-up { transform: translateY(28px); }
-.reveal-left { transform: translateX(-28px); }
-.reveal-right { transform: translateX(28px); }
-.reveal-zoom { transform: scale(0.94); }
-.reveal.in, .reveal-up.in, .reveal-left.in, .reveal-right.in, .reveal-zoom.in {
-  opacity: 1; transform: none;
+.js .reveal:not(.in)       { opacity: 0; }
+.js .reveal-up:not(.in)    { opacity: 0; transform: translateY(28px); }
+.js .reveal-left:not(.in)  { opacity: 0; transform: translateX(-28px); }
+.js .reveal-right:not(.in) { opacity: 0; transform: translateX(28px); }
+.js .reveal-zoom:not(.in)  { opacity: 0; transform: scale(0.94); }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal:not(.in), .js .reveal-up:not(.in), .js .reveal-left:not(.in),
+  .js .reveal-right:not(.in), .js .reveal-zoom:not(.in) {
+    opacity: 1; transform: none;
+  }
 }
 .delay-1 { transition-delay: .08s; }
 .delay-2 { transition-delay: .16s; }

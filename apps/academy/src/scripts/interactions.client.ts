@@ -4,22 +4,9 @@
 
 (() => {
   // --- 1. Reveal on scroll -----------------------------------------------
-  const revealEls = document.querySelectorAll<HTMLElement>(
-    '.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-zoom',
-  );
-  if ('IntersectionObserver' in window && revealEls.length) {
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          io.unobserve(e.target);
-        }
-      }
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
-    revealEls.forEach(el => io.observe(el));
-  } else {
-    revealEls.forEach(el => el.classList.add('in'));
-  }
+  // Handled entirely by the inline bootstrap in Layout.astro (runs without a
+  // network fetch so above-the-fold content never flashes blank, with a 1.2s
+  // safety force-reveal). Intentionally not duplicated here.
 
   // --- 2. Count-up numbers -----------------------------------------------
   const countEls = document.querySelectorAll<HTMLElement>('[data-count-target]');

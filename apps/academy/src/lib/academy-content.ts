@@ -83,12 +83,12 @@ export const episodes: Episode[] = episodeTopics.flatMap((items, seriesIndex) =>
 );
 
 export const vaultItems = [
-  { tag: 'Prompt pack', title: 'Outbound personalisation guardrails', meta: '12 promptów + QA checklist' },
-  { tag: 'Blueprint', title: 'AI GTM operating cadence', meta: 'weekly review, owners, KPIs' },
-  { tag: 'Template', title: 'ICP scoring worksheet', meta: 'fit, intent, source confidence' },
-  { tag: 'Playbook', title: 'Content repurpose loop', meta: '1 idea -> 8 kanałów' },
-  { tag: 'Policy', title: 'Data safety rules for GTM teams', meta: 'co wolno modelowi widzieć' },
-  { tag: 'Dashboard', title: 'GrowthHub metric map', meta: 'GA4 + CRM + revenue review' },
+  { tag: 'Prompty', title: 'Personalizacja outbound, która nie brzmi jak bot', meta: '12 promptów + checklist, zanim wyślesz „Cześć {imię}”' },
+  { tag: 'Blueprint', title: 'Rytm pracy zespołu z AI', meta: 'weekly review, kto za co odpowiada, co realnie mierzysz' },
+  { tag: 'Arkusz', title: 'Scoring ICP: dopasowanie plus intencja', meta: 'model 0–100, podmieniasz wagi pod swój rynek' },
+  { tag: 'Playbook', title: 'Jedna treść, osiem formatów', meta: 'research → draft → 8 kanałów, człowiek na końcu' },
+  { tag: 'Zasady', title: 'Co wolno modelowi zobaczyć', meta: 'granice danych, zanim ktoś wklei cały CRM do czatu' },
+  { tag: 'Dashboard', title: 'Mapa metryk GrowthHub', meta: 'GA4 plus CRM plus przychód na jednym ekranie' },
 ];
 
 export function episodeById(id: string): Episode | undefined {
