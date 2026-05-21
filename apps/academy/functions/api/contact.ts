@@ -8,11 +8,15 @@
 //   RESEND_TO       (Plain, defaults to hello@wojciech.io)
 //   CONTACT_KV      (KV binding, optional)
 
+import { rateLimit, clientIp } from '../_utils/ratelimit';
+
 interface Env {
   RESEND_API_KEY?: string;
   RESEND_FROM?: string;
   RESEND_TO?: string;
   CONTACT_KV?: KVNamespace;
+  RATE_LIMIT?: KVNamespace;
+  TURNSTILE_SECRET?: string;
 }
 
 const ALLOWED_ORIGINS = [
@@ -27,6 +31,10 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   // Permissive CORS — same-origin POST or known preview origin.
   const cors = ALLOWED_ORIGINS.includes(origin) || origin.endsWith('.academy-v2-wojciech-io.pages.dev');
 
+  // Anti-spam: 5 submissions / 10 min / IP.
+  const rl = await rateLimit(env.RATE_LIMIT, `contact:${clientIp(request)}`, 5, 600);
+  if (!rl.ok) return rl.response!;
+
   let body: Record<string, unknown> = {};
   try { body = await request.json(); } catch {}
   const email = String(body.email || '').trim().toLowerCase();
@@ -35,6 +43,21 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
 
   if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
     return json({ ok: false, error: 'invalid-email' }, 400, cors, origin);
+  }
+
+  // Turnstile verification — enforced only when TURNSTILE_SECRET is set, so
+  // the form keeps working until keys are provisioned in the dashboard.
+  if (env.TURNSTILE_SECRET) {
+    const token = String(body['cf-turnstile-response'] || body.turnstile || '');
+    const verify = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret: env.TURNSTILE_SECRET, response: token, remoteip: clientIp(request) }),
+    });
+    const outcome = await verify.json() as { success: boolean };
+    if (!outcome.success) {
+      return json({ ok: false, error: 'turnstile-failed' }, 403, cors, origin);
+    }
   }
 
   // Persist to KV first (best-effort, never blocks email send).
