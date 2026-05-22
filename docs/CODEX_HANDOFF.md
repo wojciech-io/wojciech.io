@@ -376,6 +376,13 @@ In commit order on main:
   auto-deploys from main (git-connected) — allow a few min for CF build.
   NOTE: Academy stays PL-only (see Conventions); these hreflang changes are
   the main wojciech.io site only.
+- `9bd1712` — hreflang follow-up: `/insights/` index IS localized
+  (/pl/insights/, /it/insights/) so it was added to `LOCALIZED_PATHS`;
+  individual articles `/insights/<slug>/` stay EN-only (no hreflang). Verified
+  in build. Localized base paths total 11: the 10 `[lang]` pages + `/insights/`.
+- Link audit (live): all main-site routes 200 across EN/PL/IT incl. the
+  migrated article `/insights/claude-code-vs-clay`; app.wojciech.io 401 (gated);
+  academy/subscribe/notch/gh-demo all 200. No broken nav/footer links.
 
 ### QA / verification done this session (Claude Code, 2026-05-21 eve)
 
