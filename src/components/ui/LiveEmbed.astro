@@ -1,0 +1,61 @@
+---
+// Click-to-load live app embed. Shows a screenshot facade in a browser frame;
+// on click it swaps in a real <iframe> (no heavy auto-load on page render).
+interface Props {
+  src: string;            // live app URL (must allow framing)
+  screenshot: string;     // facade image path
+  alt: string;
+  label?: string;         // EN button label
+  labelPl?: string;
+  labelIt?: string;
+}
+const {
+  src,
+  screenshot,
+  alt,
+  label = 'Load live demo',
+  labelPl = 'Załaduj demo na żywo',
+  labelIt = 'Carica la demo live',
+} = Astro.props;
+const host = new URL(src).host;
+---
+<figure class="m-0 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden shadow-2xl" data-live-embed data-src={src}>
+  <div class="flex items-center gap-2 px-4 py-2.5 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
+    <span class="w-3 h-3 rounded-full bg-red-500/60" aria-hidden="true"></span>
+    <span class="w-3 h-3 rounded-full bg-yellow-500/60" aria-hidden="true"></span>
+    <span class="w-3 h-3 rounded-full bg-green-500/60" aria-hidden="true"></span>
+    <span class="mx-auto max-w-[60%] truncate font-mono text-xs text-[var(--color-text-dim)]">{host}</span>
+    <a href={src} target="_blank" rel="noopener noreferrer" class="text-xs text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors" aria-label="Open in new tab">↗</a>
+  </div>
+  <div class="relative bg-[var(--color-surface-2)]" style="aspect-ratio: 16 / 10;" data-embed-stage>
+    <img src={screenshot} alt={alt} loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover object-top" data-embed-facade />
+    <button type="button" data-embed-load class="group absolute inset-0 flex items-center justify-center bg-black/35 transition-colors hover:bg-black/45 cursor-pointer">
+      <span class="inline-flex items-center gap-2.5 rounded-full bg-[var(--color-accent-cta)] px-6 py-3.5 text-sm font-semibold text-[var(--color-accent-text)] shadow-lg transition-transform group-hover:scale-[1.03]">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 2.5l8 4.5-8 4.5z"/></svg>
+        <span data-en={label} data-pl={labelPl} data-it={labelIt}>{label}</span>
+      </span>
+    </button>
+  </div>
+</figure>
+
+<script>
+  document.querySelectorAll('[data-live-embed]').forEach((el) => {
+    if ((el as HTMLElement).dataset.bound) return;
+    (el as HTMLElement).dataset.bound = '1';
+    const btn = el.querySelector<HTMLButtonElement>('[data-embed-load]');
+    const stage = el.querySelector<HTMLElement>('[data-embed-stage]');
+    const src = el.getAttribute('data-src');
+    btn?.addEventListener('click', () => {
+      if (!stage || !src) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.loading = 'lazy';
+      iframe.title = 'Live demo';
+      iframe.className = 'absolute inset-0 h-full w-full border-0';
+      iframe.setAttribute('allow', 'clipboard-write');
+      el.querySelector('[data-embed-facade]')?.remove();
+      btn.remove();
+      stage.appendChild(iframe);
+    });
+  });
+</script>
