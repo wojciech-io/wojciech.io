@@ -101,14 +101,28 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
             btn.style.color = '';
           }
         });
-        // Update all translatable elements
+        // Update all translatable elements (textContent)
         document.querySelectorAll('[data-pl],[data-en],[data-it]').forEach(function(el) {
           var v = el.getAttribute('data-' + lang);
           if (v === null) v = el.getAttribute('data-en');
           if (v !== null) el.textContent = v;
         });
+        // Placeholder + aria-label swaps (data-placeholder-{lang}, data-aria-{lang})
+        document.querySelectorAll('[data-placeholder-en],[data-placeholder-pl],[data-placeholder-it]').forEach(function(el) {
+          var v = el.getAttribute('data-placeholder-' + lang);
+          if (v === null) v = el.getAttribute('data-placeholder-en');
+          if (v !== null) el.setAttribute('placeholder', v);
+        });
+        document.querySelectorAll('[data-aria-en],[data-aria-pl],[data-aria-it]').forEach(function(el) {
+          var v = el.getAttribute('data-aria-' + lang);
+          if (v === null) v = el.getAttribute('data-aria-en');
+          if (v !== null) el.setAttribute('aria-label', v);
+        });
         // Update html lang attribute
         document.documentElement.lang = lang === 'pl' ? 'pl' : lang === 'it' ? 'it' : 'en';
+        // Notify dynamic scripts (e.g. scheduler) so they can re-render their
+        // JS-rendered strings with the new locale.
+        try { window.dispatchEvent(new CustomEvent('wio:langchange', { detail: { lang: lang } })); } catch (e) {}
       };
       // Auto-init on DOMContentLoaded
       (function() {
