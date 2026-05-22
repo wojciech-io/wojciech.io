@@ -1,8 +1,14 @@
 ---
-// CV page — styled identically to wojciech.io
+// CV page (EN canonical, noindex). Content is sourced from src/data/cv.ts
+// so /cv, /pl/cv and /it/cv stay in lock-step. Update the data file, not
+// the markup, when adding a role or editing a bullet.
 // Print to PDF: Cmd+P → Save as PDF, margins: None, background graphics: ON
 import '../styles/global.css';
 import '../styles/tokens.css';
+import { cvData } from '../data/cv';
+const lang = 'en' as const;
+const t = cvData;
+const localizePeriod = (period: string) => period.replace('present', t.presentLabel[lang]);
 ---
 
 <!doctype html>
@@ -14,6 +20,9 @@ import '../styles/tokens.css';
   <meta name="description" content="CV of Wojciech Łuszczyński — GTM Architect and Growth Operator. AI-native revenue systems for B2B SaaS. 20 years marketing, 10 years B2B SaaS growth." />
   <meta name="robots" content="noindex" />
   <link rel="canonical" href="https://wojciech.io/cv" />
+  <link rel="alternate" hreflang="en" href="https://wojciech.io/cv" />
+  <link rel="alternate" hreflang="pl" href="https://wojciech.io/pl/cv" />
+  <link rel="alternate" hreflang="it" href="https://wojciech.io/it/cv" />
   <meta property="og:title" content="Wojciech Łuszczyński — CV" />
   <meta property="og:description" content="GTM Architect and Growth Operator building AI-native revenue systems for B2B SaaS. 20 years marketing, 10 years B2B SaaS growth, 200+ apps and systems shipped." />
   <meta property="og:url" content="https://wojciech.io/cv" />
@@ -168,6 +177,7 @@ import '../styles/tokens.css';
       color: var(--color-text-dim);
       padding-top: 2px;
       line-height: 1.4;
+      white-space: pre-line;
     }
     .exp-period.contract { font-style: italic; color: var(--color-text-dim); }
 
@@ -327,16 +337,16 @@ import '../styles/tokens.css';
   <header class="cv-header">
     <img class="cv-avatar" src="/images/wojciech-avatar-384.webp" srcset="/images/wojciech-avatar-384.webp 384w, /images/wojciech-avatar-768.webp 768w" sizes="112px" alt="Wojciech Łuszczyński" width="112" height="112" loading="eager" />
     <div>
-      <p class="cv-wordmark">wojciech<span>.io</span> · <a href="https://app.wojciech.io" target="_blank" style="font-weight:400;opacity:0.55;font-size:0.72em;">interactive version</a></p>
+      <p class="cv-wordmark">wojciech<span>.io</span> · <a href="https://app.wojciech.io" target="_blank" style="font-weight:400;opacity:0.55;font-size:0.72em;">{t.header.interactiveVersion[lang]}</a></p>
       <h1 class="cv-name">Wojciech<br />Łuszczyński</h1>
-      <p class="cv-tagline">Growth operator · GTM architect · AI-native builder</p>
+      <p class="cv-tagline">{t.header.tagline[lang]}</p>
     </div>
     <div class="cv-contact">
       <a href="mailto:hello@wojciech.io">hello@wojciech.io</a>
       <a href="tel:+48504498146">+48 504 498 146</a>
       <a href="https://wojciech.io" target="_blank">wojciech.io</a>
       <a href="https://www.linkedin.com/in/wojciech-luszczynski/" target="_blank">linkedin.com/in/wojciech-luszczynski</a>
-      <span>Remote · Open to relocation</span>
+      <span>{t.header.openToRelocation[lang]}</span>
     </div>
   </header>
 
@@ -345,233 +355,70 @@ import '../styles/tokens.css';
 
     <!-- ── Left: Experience ────────────────────────────────── -->
     <main>
-
       <div class="exp-section">
-        <p class="section-label">Experience</p>
+        <p class="section-label">{t.sections.experience[lang]}</p>
 
-        <!-- WebWave -->
-        <div class="exp-item">
-          <span class="exp-period">2025 –<br />present</span>
-          <div>
-            <p class="exp-role">Head of Marketing</p>
-            <p class="exp-company">WebWave / WeNet Group</p>
-            <ul class="exp-bullets">
-              <li>Leading global marketing and growth for an AI-powered no-code website builder</li>
-              <li>GTM strategy, commercial messaging, and data-driven growth engine</li>
-              <li>Full-funnel ownership: SEO, content, paid, automation, and lifecycle</li>
-            </ul>
+        {t.experience.map((exp) => (
+          <div class="exp-item">
+            <span class={`exp-period${exp.contract ? ' contract' : ''}`}>
+              {exp.contract ? t.contractLabel[lang] : localizePeriod(exp.period)}
+            </span>
+            <div>
+              <p class="exp-role">{exp.role[lang]}</p>
+              <p class={`exp-company${exp.contract ? ' contract' : ''}`}>{exp.company}</p>
+              <ul class="exp-bullets">
+                {exp.bullets[lang].map((b) => <li>{b}</li>)}
+              </ul>
+            </div>
           </div>
-        </div>
-
-        <!-- Symfonia -->
-        <div class="exp-item">
-          <span class="exp-period">2024 –<br />2025</span>
-          <div>
-            <p class="exp-role">Head of Growth & Web Development</p>
-            <p class="exp-company">Symfonia</p>
-            <ul class="exp-bullets">
-              <li>Increased organic traffic by 40% through SEO and technical improvements</li>
-              <li>Increased lead generation by 30% with high-converting landing pages and A/B testing</li>
-              <li>Grew blog traffic by 50% through automation-driven content strategies</li>
-              <li>Optimised website speed by 25%, enhancing user experience and engagement</li>
-              <li>Streamlined workflows integrating marketing, product, and web development</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- SentiOne -->
-        <div class="exp-item">
-          <span class="exp-period">2020 –<br />2024</span>
-          <div>
-            <p class="exp-role">Global Head of Growth</p>
-            <p class="exp-company">SentiOne</p>
-            <ul class="exp-bullets">
-              <li>Built B2B SaaS GTM across Europe, UK, US, UAE, and LATAM</li>
-              <li>50% surge in website traffic via SEO, redesign, and content strategy</li>
-              <li>Accelerated customer acquisition by 80% using precision-targeted communications</li>
-              <li>20% lift in sales leads through strategic collaboration with sales teams</li>
-              <li>Amplified brand recognition by 60% through tailored global strategies</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- GetResponse -->
-        <div class="exp-item">
-          <span class="exp-period">2019 –<br />2020</span>
-          <div>
-            <p class="exp-role">Head of Lifecycle Marketing</p>
-            <p class="exp-company">GetResponse</p>
-            <ul class="exp-bullets">
-              <li>Elevated customer engagement and revenue by 30% through CRM-led lifecycle marketing</li>
-              <li>Implemented CRM for 25% conversion uplift via customer insights and segmentation</li>
-              <li>Led A/B tests achieving a 20% increase in conversion rates</li>
-              <li>Orchestrated global campaigns with successful market penetration in US, LATAM, EU</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Contract block -->
-        <div class="exp-item">
-          <span class="exp-period contract">Contract</span>
-          <div>
-            <p class="exp-role">AI & Innovation Manager · Fractional CMO · Head of Marketing</p>
-            <p class="exp-company contract">Gi Group Holding · Tekhuset · Lilla House Digital</p>
-            <ul class="exp-bullets">
-              <li>AI-driven workflow transformation and ATS unification at Gi Group (2k+ employees)</li>
-              <li>AR / metaverse project exploration and action planning</li>
-              <li>Growth, SEO, and A/B testing optimisation at Tekhuset</li>
-              <li>Digital marketing and revenue campaigns at Lilla House Digital</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Marquard -->
-        <div class="exp-item">
-          <span class="exp-period">2018 –<br />2019</span>
-          <div>
-            <p class="exp-role">Head of Digital</p>
-            <p class="exp-company">Marquard Media Group</p>
-            <ul class="exp-bullets">
-              <li>Led digital strategy for 9 portals with a 21-person team across EU markets</li>
-              <li>Launched a mobile app expanding B2C and B2B reach</li>
-              <li>Optimised SEO, PPC, UX/UI, and conversion funnels</li>
-              <li>Developed product roadmaps aligned with market trends</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- City of Łódź — Head of Mktg Comms -->
-        <div class="exp-item">
-          <span class="exp-period">2015 –<br />2018</span>
-          <div>
-            <p class="exp-role">Head of Marketing Communications</p>
-            <p class="exp-company">City of Łódź Office</p>
-            <ul class="exp-bullets">
-              <li>Surpassed marketing communication goals by 25% within budget constraints</li>
-              <li>Exceeded marketing targets by 30% through strategic planning and execution</li>
-              <li>Secured 50+ media placements across broadcast, print, and digital channels</li>
-              <li>15% rise in operational efficiency through team integration initiatives</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- City of Łódź — PR Manager -->
-        <div class="exp-item">
-          <span class="exp-period">2010 –<br />2015</span>
-          <div>
-            <p class="exp-role">PR Manager</p>
-            <p class="exp-company">City of Łódź Office</p>
-            <ul class="exp-bullets">
-              <li>20% growth in social media audience through team leadership and brand strategy</li>
-              <li>40% spike in media coverage through engaging content production</li>
-              <li>95% adherence to PR campaign KPIs; 95% success rate in project execution</li>
-              <li>Five strategic partnerships boosting brand and community engagement</li>
-            </ul>
-          </div>
-        </div>
-
+        ))}
       </div>
     </main>
 
     <!-- ── Right: Sidebar ──────────────────────────────────── -->
     <aside class="sidebar">
 
-      <!-- Key skills -->
       <div class="sidebar-block">
-        <p class="section-label">Key skills</p>
+        <p class="section-label">{t.sections.keySkills[lang]}</p>
         <div class="chips">
-          {[
-            'Revenue architecture',
-            'GTM systems',
-            'AI workflows',
-            'B2B SaaS',
-            'Growth strategy',
-            'SEO',
-            'CRO',
-            'CRM',
-            'Outbound',
-            'Lifecycle marketing',
-            'PPC',
-            'UX / UI',
-            'Data analysis',
-            'Leadership',
-            'Project management',
-            'Brand management',
-            'Media monitoring',
-            'Crisis comms',
-          ].map((s) => <span class="chip">{s}</span>)}
+          {t.skills[lang].map((s) => <span class="chip">{s}</span>)}
         </div>
       </div>
 
-      <!-- Tools -->
       <div class="sidebar-block">
-        <p class="section-label">Tools & platforms</p>
+        <p class="section-label">{t.sections.tools[lang]}</p>
         <div class="chips">
-          {[
-            'HubSpot', 'Salesforce', 'Klaviyo', 'Intercom',
-            'GA4', 'Looker Studio', 'Mixpanel', 'Hotjar', 'VWO',
-            'Ahrefs', 'SEMrush', 'Brand24', 'Brandwatch', 'Meltwater',
-            'Google Ads', 'Figma', 'Notion', 'Jira', 'Zapier',
-            'Claude', 'Jasper', 'Make',
-          ].map((t) => <span class="chip">{t}</span>)}
+          {t.tools.map((toolName) => <span class="chip">{toolName}</span>)}
         </div>
       </div>
 
-      <!-- Education -->
       <div class="sidebar-block">
-        <p class="section-label">Education</p>
-
-        <div class="edu-item">
-          <p class="edu-degree">Executive MBA</p>
-          <p class="edu-school">Collegium Humanum</p>
-          <p class="edu-year">2021</p>
-        </div>
-
-        <div class="edu-item">
-          <p class="edu-degree">MSc Journalism & Social Comms</p>
-          <p class="edu-school">University of Łódź</p>
-          <p class="edu-year">2021 – 2022</p>
-        </div>
-
-        <div class="edu-item">
-          <p class="edu-degree">Post-graduate — Public Relations</p>
-          <p class="edu-school">Warsaw School of Economics</p>
-          <p class="edu-year">2016 – 2017</p>
-        </div>
-
-        <div class="edu-item">
-          <p class="edu-degree">BSc International Relations</p>
-          <p class="edu-school">University of Łódź</p>
-          <p class="edu-year">2007 – 2010</p>
-        </div>
+        <p class="section-label">{t.sections.education[lang]}</p>
+        {t.education.map((e) => (
+          <div class="edu-item">
+            <p class="edu-degree">{e.degree[lang]}</p>
+            <p class="edu-school">{e.school}</p>
+            <p class="edu-year">{e.year}</p>
+          </div>
+        ))}
       </div>
 
-      <!-- Languages -->
       <div class="sidebar-block">
-        <p class="section-label">Languages</p>
-        <div class="lang-item"><span class="lang-name">Polish</span><span class="lang-level">Native</span></div>
-        <div class="lang-item"><span class="lang-name">English</span><span class="lang-level">Native</span></div>
-        <div class="lang-item"><span class="lang-name">German</span><span class="lang-level">Basic</span></div>
-        <div class="lang-item"><span class="lang-name">French</span><span class="lang-level">Basic</span></div>
+        <p class="section-label">{t.sections.languages[lang]}</p>
+        {t.languages.map((l) => (
+          <div class="lang-item">
+            <span class="lang-name">{l.name[lang]}</span>
+            <span class="lang-level">{l.level[lang]}</span>
+          </div>
+        ))}
       </div>
 
-      <!-- Certifications -->
       <div class="sidebar-block">
-        <p class="section-label">Certifications</p>
-        {[
-          ['GA4 Advanced Academy', 'Google'],
-          ['Fundamentals of Digital Marketing', 'Google'],
-          ['Growth-Driven Design Academy', 'HubSpot'],
-          ['Inbound Marketing Academy', 'HubSpot'],
-          ['Bing Ads Accredited Professional', 'Microsoft'],
-          ['Advanced Growth Series', 'Reforge'],
-          ['Content Marketing & SEO', 'SEMrush'],
-          ['PPC Automation Academy', 'SEMrush'],
-          ['Elements of AI Certificate', 'Univ. Helsinki'],
-        ].map(([cert, issuer]) => (
+        <p class="section-label">{t.sections.certifications[lang]}</p>
+        {t.certifications.map((c) => (
           <div class="cert-item">
-            <span>{cert}</span>
-            <span class="cert-issuer">{issuer}</span>
+            <span>{c.name}</span>
+            <span class="cert-issuer">{c.issuer}</span>
           </div>
         ))}
       </div>
@@ -582,7 +429,7 @@ import '../styles/tokens.css';
 
 <!-- Print button (screen only) -->
 <div class="print-bar">
-  <button class="print-btn" onclick="window.print()">Save as PDF →</button>
+  <button class="print-btn" onclick="window.print()">{t.printButton[lang]}</button>
 </div>
 
 </body>
