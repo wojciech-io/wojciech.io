@@ -24,6 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # need full history for git tag + log in release-status section
 
       - name: Build digest body
         id: build
@@ -45,6 +47,31 @@ jobs:
             echo "### 🟢 Merged (24h)"
             { gh pr list --state merged --search "merged:>=$(date -u -d '1 day ago' +%Y-%m-%d 2>/dev/null || date -u -v-1d +%Y-%m-%d)" \
               --json number,title --jq '.[] | "- #\(.number) \(.title)"' | grep . || echo "_(brak)_"; }
+            echo ""
+            echo "### 🚀 Release & deploy status"
+            latest_tag=$(git tag --sort=-creatordate | head -1)
+            if [ -n "$latest_tag" ]; then
+              tag_date=$(git log -1 --format=%cI "$latest_tag" 2>/dev/null || echo "")
+              echo "- Last release: \`$latest_tag\` ($tag_date)"
+            else
+              echo "- Last release: _(no tag yet — release-please not enabled)_"
+            fi
+            head_sha=$(git rev-parse --short HEAD)
+            head_subject=$(git log -1 --format=%s HEAD)
+            head_date=$(git log -1 --format=%cI HEAD)
+            echo "- main HEAD: \`$head_sha\` $head_subject ($head_date)"
+            echo ""
+            echo "Last smoke-prod runs:"
+            { gh run list --workflow=smoke-prod.yml --limit 3 \
+              --json status,conclusion,createdAt,headSha \
+              --jq '.[] | "- \(.createdAt) · \(.headSha[0:7]) · \(.status)/\(.conclusion // "—")"' \
+              | grep . || echo "_(no runs yet)_"; }
+            echo ""
+            echo "Open severity:critical Issues:"
+            { gh issue list --state open --label "severity:critical" \
+              --json number,title,url \
+              --jq '.[] | "- #\(.number) \(.title) — \(.url)"' \
+              | grep . || echo "_(none — green)_"; }
             echo ""
             echo "### Agent health"
             for s in .agent-state/*/state.md; do
