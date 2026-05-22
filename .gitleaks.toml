@@ -6,13 +6,19 @@ useDefault = true
 # client-side beacon on every page load. PUBLIC_ prefix is Astro's convention
 # for client-exposed vars. Not a secret; no rotation needed.
 #
-# Allowlist by SECRET VALUE (not line) — gitleaks `regexes` match the detected
-# secret, not the full line. Both regex AND path AND commit must match.
+# Earlier attempts used `regexes` (default target = secret, not line) and
+# `regexTarget = "line"` — both failed on full-history scans, because the
+# detected secret value (just the 32 hex chars) didn't match the line-anchored
+# pattern, and the previous PR-mode runs only scanned diffs (so allowlist was
+# never actually exercised).
+#
+# Surgical fix: allowlist the EXACT commit where the token was introduced.
+# The value cannot change without rotation; if we rotate, this entry expires
+# naturally (new finding in new commit, triage anew).
 # Triaged by security-auditor, see:
 #   - .agent-reports/2026-05-22-security-auditor.md
 #   - .agent-reports/2026-05-22-security-auditor-triage-002.md
 [[allowlists]]
-description = "PUBLIC_CF_BEACON_TOKEN — public-by-design Cloudflare Analytics beacon"
-regexTarget = "line"
-regexes = ['''PUBLIC_CF_BEACON_TOKEN\s*=\s*"[0-9a-f]{32}"''']
+description = "PUBLIC_CF_BEACON_TOKEN — public-by-design Cloudflare Analytics beacon (introduced in a4a831b)"
+commits = ["a4a831b69168f633b5640d4f8d47f40ac4ad7b28"]
 paths = ['''terraform/pages\.tf''']
