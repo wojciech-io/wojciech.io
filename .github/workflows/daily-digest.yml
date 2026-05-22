@@ -34,17 +34,17 @@ jobs:
             echo "## Standup — $(date -u +%Y-%m-%d)"
             echo ""
             echo "### 🔴 Wymaga decyzji"
-            gh pr list --state open --label "needs-decision" \
+            { gh pr list --state open --label "needs-decision" \
               --json number,title,url \
-              --jq '.[] | "- PR #\(.number) \(.title) — \(.url)"' || echo "_(brak)_"
+              --jq '.[] | "- PR #\(.number) \(.title) — \(.url)"' | grep . || echo "_(brak)_"; }
             echo ""
             echo "### 🟡 Open PRs"
-            gh pr list --state open --json number,title,url \
-              --jq '.[] | "- #\(.number) \(.title) — \(.url)"' || echo "_(brak)_"
+            { gh pr list --state open --json number,title,url \
+              --jq '.[] | "- #\(.number) \(.title) — \(.url)"' | grep . || echo "_(brak)_"; }
             echo ""
             echo "### 🟢 Merged (24h)"
-            gh pr list --state merged --search "merged:>=$(date -u -d '1 day ago' +%Y-%m-%d 2>/dev/null || date -u -v-1d +%Y-%m-%d)" \
-              --json number,title --jq '.[] | "- #\(.number) \(.title)"' || echo "_(brak)_"
+            { gh pr list --state merged --search "merged:>=$(date -u -d '1 day ago' +%Y-%m-%d 2>/dev/null || date -u -v-1d +%Y-%m-%d)" \
+              --json number,title --jq '.[] | "- #\(.number) \(.title)"' | grep . || echo "_(brak)_"; }
             echo ""
             echo "### Agent health"
             for s in .agent-state/*/state.md; do
