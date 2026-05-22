@@ -1,6 +1,7 @@
 name: Smoke (prod)
 
-# Sprint 0: manual. Wire to a deployment-success event once smoke specs exist.
+# Sprint 1: runs the real Playwright smoke spec against prod.
+# Auto-trigger via deployment_status / CF Pages webhook ships in a follow-up.
 on:
   workflow_dispatch:
     inputs:
@@ -11,11 +12,13 @@ on:
 
 permissions:
   contents: read
+  issues: write   # to open a severity:critical Issue on failure
 
 jobs:
   smoke:
     name: Playwright smoke
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,12 +28,31 @@ jobs:
       - run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps chromium
-      - name: Smoke (homepage reachable + 200)
+
+      - name: Run smoke against ${{ github.event.inputs.base_url }}
+        id: smoke
         env:
           BASE_URL: ${{ github.event.inputs.base_url }}
+          CI: "true"
+        run: npx playwright test smoke
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-prod-report
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Open URGENT Issue on smoke failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_URL: ${{ github.event.inputs.base_url }}
         run: |
-          # Sprint 0 stub: replace with a real Playwright smoke spec.
-          # Until specs land, assert the homepage returns 200.
-          code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL")
-          echo "GET $BASE_URL -> $code"
-          test "$code" = "200"
+          gh issue create \
+            --title "[URGENT] smoke-prod failed against $BASE_URL" \
+            --label "severity:critical,agent:test" \
+            --body "Post-deploy smoke failed. See workflow run for the Playwright report.
+
+          Suggested next step: \`gh workflow run rollback.yml\` (auto-rollback wiring lands in Sprint 1 Tier 5)."
