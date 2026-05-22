@@ -1,0 +1,36 @@
+name: Smoke (prod)
+
+# Sprint 0: manual. Wire to a deployment-success event once smoke specs exist.
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Prod base URL to smoke"
+        required: false
+        default: "https://wojciech.io"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Playwright smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Smoke (homepage reachable + 200)
+        env:
+          BASE_URL: ${{ github.event.inputs.base_url }}
+        run: |
+          # Sprint 0 stub: replace with a real Playwright smoke spec.
+          # Until specs land, assert the homepage returns 200.
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL")
+          echo "GET $BASE_URL -> $code"
+          test "$code" = "200"
