@@ -408,9 +408,11 @@ In commit order on main:
   once an adapter writes real rows to D1. Provide env vars to activate (see
   each adapter header). v1.5 tabs (Demand-gen/Leads/Revenue) still deferred.
 - Old `wojciech-app` Pages project deleted (see pending list above).
-- Did NOT restore the old site's testimonials / attributed expert quotes:
-  Academy hasn't launched (waitlist), so that would be fabricated social proof
-  — against CLAUDE.md. Revisit only with real, attributable quotes/testimonials.
+- Academy testimonials: **Wojtek confirmed 2026-05-22 — none planned for now.**
+  Keep the Opinie section ABSENT. The `testimonials` array in
+  `apps/academy/src/pages/index.astro` stays empty (renders nothing — no
+  empty-state copy). Do NOT re-add a placeholder or fabricate quotes. Only fill
+  the array if/when Wojtek provides real, attributable testimonials.
 
 ---
 
