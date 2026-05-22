@@ -1,20 +1,60 @@
-# Code owners. NOT enforced until branch protection is enabled on main
-# (Sprint 2, after explicit ACK). Mirrors docs/agent-ownership.md.
+# Code owners. Single source of truth — `.github/CODEOWNERS` removed in this
+# same change to avoid precedence override. NOT enforced until branch
+# protection enables on `main` (Sprint 2, after explicit ACK + 2 weeks clean
+# CI history).
+#
+# Mirrors `docs/agent-ownership.md`. GitHub only enforces with user/team
+# handles — all paths map to @wojciechluszczynski because there is no
+# multi-human team yet. Comments document which AUTONOMOUS AGENT owns each
+# path (see `.claude/agents/`).
 
-# Default: everything needs Wojciech's review.
-* @wojciechluszczynski
+# ───── Default — Wojciech reviews anything not matched below ─────
+*                                       @wojciechluszczynski
 
-# Production source — human-driven only.
-/src/ @wojciechluszczynski
+# ───── Production source — human-driven only (per AGENTS.md) ─────
+/src/                                   @wojciechluszczynski
+/apps/                                  @wojciechluszczynski
+/packages/                              @wojciechluszczynski
 
-# Pipeline / workflows / agent definitions — Tech Lead domain (human reviews).
-/.github/workflows/ @wojciechluszczynski
-/.claude/agents/ @wojciechluszczynski
-/CODEOWNERS @wojciechluszczynski
-/renovate.json @wojciechluszczynski
+# ───── Pipeline / workflows — Tech Lead ─────
+/.github/workflows/                     @wojciechluszczynski
+/.github/                               @wojciechluszczynski
+/CODEOWNERS                             @wojciechluszczynski
+/renovate.json                          @wojciechluszczynski
 
-# Security docs / posture.
-/docs/security/ @wojciechluszczynski
+# ───── Agent definitions + ownership map — Tech Lead ─────
+/.claude/agents/                        @wojciechluszczynski
+/docs/agent-ownership.md                @wojciechluszczynski
+/docs/agent-comms.md                    @wojciechluszczynski
+/docs/agent-session-lifecycle.md        @wojciechluszczynski
 
-# Agent state is owned by its agent; human reviews any externally-proposed change.
-/.agent-state/ @wojciechluszczynski
+# ───── Test Engineer (Sprint 1+) ─────
+/tests/                                 @wojciechluszczynski
+/playwright.config.ts                   @wojciechluszczynski
+/.commitlintrc.json                     @wojciechluszczynski
+/lighthouserc.json                      @wojciechluszczynski
+/.github/workflows/lighthouse.yml       @wojciechluszczynski
+/.github/workflows/smoke-prod.yml       @wojciechluszczynski
+/.github/workflows/ci.yml               @wojciechluszczynski
+/.github/workflows/commitlint.yml       @wojciechluszczynski
+
+# ───── Release Manager (Sprint 1+, scaffold) ─────
+/CHANGELOG.md                           @wojciechluszczynski
+/.github/workflows/release-please.yml   @wojciechluszczynski
+
+# ───── Security Auditor ─────
+/docs/security/                         @wojciechluszczynski
+/.gitleaks.toml                         @wojciechluszczynski
+/.gitleaksignore                        @wojciechluszczynski
+/.github/workflows/security.yml         @wojciechluszczynski
+
+# ───── dev.wojciech.io dashboard (Tier 6, scaffold pending CF Access) ─────
+/apps/dev/                              @wojciechluszczynski
+
+# ───── Agent state — listed so PRs touching another agent's state require
+# human review (the "shouldn't this go through that agent's inbox?" gate). ─
+/.agent-state/                          @wojciechluszczynski
+/.agent-reports/                        @wojciechluszczynski
+
+# ───── Codex closed tasks — Tech Lead writes, Codex consumes ─────
+/.codex-tasks/                          @wojciechluszczynski
