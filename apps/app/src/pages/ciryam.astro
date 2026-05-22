@@ -20,10 +20,10 @@ const regions = Array.from(new Set(priorityEvents.map((event) => event.region).f
 const segments = Array.from(new Set(priorityEvents.map((event) => event.segment).filter(Boolean))).slice(0, 8);
 
 const metricCards = [
-  { label: 'Raw records', value: summary.raw_records, detail: 'zebrane rekordy źródłowe' },
-  { label: 'Deduped events', value: summary.deduped_records, detail: 'wydarzenia po deduplikacji' },
-  { label: 'Top events', value: summary.top_500_created, detail: 'rekordy w XLSX i dashboardzie' },
-  { label: 'BIP accounts', value: summary.bip_accounts, detail: 'JST, domy kultury, OSiR' },
+  { label: 'Okazje w bazie', value: summary.deduped_records, detail: 'wydarzenia 2026/2027 po deduplikacji' },
+  { label: 'Hotlista', value: highFitEvents.length, detail: 'najmocniejsze cele bookingowe' },
+  { label: 'Konta publiczne', value: summary.bip_accounts, detail: 'JST, domy kultury, OSiR' },
+  { label: 'Top XLSX', value: summary.top_500_created, detail: 'rekordy gotowe do pracy' },
 ];
 
 const campaignLanes = [
@@ -107,21 +107,35 @@ const phasePlan = [
   },
 ];
 
-const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lost'];
+const statusOptions = [
+  { value: 'new', label: 'nowe' },
+  { value: 'verify', label: 'do weryfikacji' },
+  { value: 'contacted', label: 'mail wysłany' },
+  { value: 'call', label: 'telefon' },
+  { value: 'offer', label: 'oferta' },
+  { value: 'won', label: 'booking' },
+  { value: 'lost', label: 'brak fitu' },
+];
+
+const sourceTypeLabel = (adapter: string) => {
+  if (adapter.includes('bip')) return 'BIP / konta publiczne';
+  if (adapter.includes('ticketmaster') || adapter.includes('ticketclub') || adapter.includes('ebilet')) return 'bilety i koncerty';
+  if (adapter.includes('imprezowo') || adapter.includes('iwenty') || adapter.includes('muzilla')) return 'dni miast i plenery';
+  return 'kalendarz wydarzeń';
+};
 ---
 
-<Layout title="CIRYAM Booking Engine · app.wojciech.io" activePage="apps">
+<Layout title="CIRYAM Command Center · app.wojciech.io" activePage="apps">
   <section class="ciryam-page">
     <div class="ciryam-hero">
-      <div class="ciryam-kicker">Private GTM workspace · 2026/2027</div>
+      <div class="ciryam-kicker">Booking command center · 2026/2027</div>
       <div class="ciryam-hero-grid">
         <div>
-          <h1>CIRYAM Booking & Marketing Engine</h1>
+          <h1>CIRYAM Booking Command Center</h1>
           <p>
-            Osobna aplikacja operacyjna do researchu wydarzeń, zarządzania statusem kontaktów,
-            roadmapy kampanii i podziału pracy między modele AI. Oparta o publiczne źródła danych,
-            aktualną stylistykę ciryam.eu: ciemne tło, mocny kontrast, koncertowy charakter i zwarte,
-            robocze panele zamiast marketingowej dekoracji.
+            Pulpit do zarządzania bookingiem: wydarzenia, kalendarz, konta, status komunikacji,
+            prawdopodobieństwo występu, skala imprezy i następny ruch bookera. Ma wspierać rozmowę
+            z zespołem i pokazać, jak research zamieniamy w realny pipeline koncertów.
           </p>
           <div class="ciryam-actions">
             <a class="ciryam-primary" href="/ciryam/ciryam_events_2026_2027_research.xlsx" download>Pobierz XLSX</a>
@@ -129,11 +143,11 @@ const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lo
           </div>
         </div>
         <div class="ciryam-system-card">
-          <div class="system-label">System status</div>
-          <div class="system-row"><span>Production root</span><strong>nie ruszane</strong></div>
-          <div class="system-row"><span>Route</span><strong>/ciryam</strong></div>
-          <div class="system-row"><span>Verification date</span><strong>{summary.verification_date}</strong></div>
-          <div class="system-row"><span>Sources</span><strong>{sources.length}</strong></div>
+          <div class="system-label">Topline operacyjny</div>
+          <div class="system-row"><span>Okazje</span><strong>{summary.deduped_records.toLocaleString('pl-PL')}</strong></div>
+          <div class="system-row"><span>Konta</span><strong>{summary.bip_accounts.toLocaleString('pl-PL')}</strong></div>
+          <div class="system-row"><span>Hotlista</span><strong>{highFitEvents.length}</strong></div>
+          <div class="system-row"><span>Weryfikacja</span><strong>{summary.verification_date}</strong></div>
         </div>
       </div>
     </div>
@@ -196,7 +210,7 @@ const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lo
 
     <div class="ciryam-section-head">
       <div>
-        <span>AI orchestration</span>
+        <span>AI workflow</span>
         <h2>Podział pracy między LLM-y</h2>
       </div>
       <p>Jeden source of truth, osobne role, spójny format outputu.</p>
@@ -217,8 +231,8 @@ const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lo
 
     <div class="ciryam-section-head">
       <div>
-        <span>Data engine</span>
-        <h2>Źródła scraperów i monitoring</h2>
+        <span>Źródła danych</span>
+        <h2>Monitoring wydarzeń i kont</h2>
       </div>
       <p>Ticketmaster/Ticketpro, eBilet, TicketClub, Ticketle, BIP/Gov, kalendarze plenerowe i portale dni miast.</p>
     </div>
@@ -228,7 +242,7 @@ const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lo
         <thead>
           <tr>
             <th>Source</th>
-            <th>Adapter</th>
+            <th>Typ źródła</th>
             <th>Coverage</th>
             <th>Fields</th>
             <th>Action</th>
@@ -238,10 +252,10 @@ const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lo
           {sources.map((source) => (
             <tr>
               <td><a href={source.source_url} target="_blank" rel="noreferrer">{source.source_name}</a></td>
-              <td>{source.adapter}</td>
+              <td>{sourceTypeLabel(source.adapter)}</td>
               <td>{source.coverage}</td>
               <td>{source.fields.join(', ')}</td>
-              <td><span class="status-pill">monitor</span></td>
+              <td><span class="status-pill">obserwuj</span></td>
             </tr>
           ))}
         </tbody>
@@ -286,7 +300,7 @@ const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lo
             <tr data-event-row data-region={event.region} data-segment={event.segment} data-search={`${event.name} ${event.city} ${event.region} ${event.segment} ${event.source_name}`.toLowerCase()}>
               <td>
                 <select class="stage-select" data-stage-control={`event:${event.event_id}`} aria-label={`Status ${event.name}`}>
-                  {statusOptions.map((status) => <option value={status}>{status}</option>)}
+                  {statusOptions.map((status) => <option value={status.value}>{status.label}</option>)}
                 </select>
               </td>
               <td>{event.date_start || 'do weryfikacji'}</td>
@@ -338,7 +352,7 @@ const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lo
             <tr data-account-row data-search={`${account.name} ${account.city} ${account.region} ${account.account_type} ${account.email} ${account.phone}`.toLowerCase()}>
               <td>
                 <select class="stage-select" data-stage-control={`account:${account.account_id}`} aria-label={`Status ${account.name}`}>
-                  {statusOptions.map((status) => <option value={status}>{status}</option>)}
+                  {statusOptions.map((status) => <option value={status.value}>{status.label}</option>)}
                 </select>
               </td>
               <td>
@@ -358,7 +372,7 @@ const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lo
 
     <div class="ciryam-section-head">
       <div>
-        <span>Assets & outreach</span>
+        <span>Materiały i outreach</span>
         <h2>EPK, komunikacja i status przygotowania</h2>
       </div>
       <p>Materiały mają skracać decyzję organizatora: jedno kliknięcie, jasny format, kontakt do bookera.</p>
@@ -394,10 +408,10 @@ const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lo
 
     <div class="ciryam-section-head">
       <div>
-        <span>Internal roadmap</span>
-        <h2>Statusy z poprzedniego engine’u</h2>
+        <span>Roadmapa</span>
+        <h2>Plan pracy bookera</h2>
       </div>
-      <p>Roboczy plan z wcześniejszej aplikacji przeniesiony do bezpiecznej trasy.</p>
+      <p>Plan operacyjny: od uporządkowania materiałów do stałego procesu ofertowania i follow-upu.</p>
     </div>
 
     <div class="roadmap-grid">
