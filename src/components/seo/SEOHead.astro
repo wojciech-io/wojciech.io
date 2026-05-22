@@ -26,7 +26,10 @@ const {
 } = Astro.props;
 
 const siteTitle = SITE.nameDisplay;
-const fullTitle = title ? `${title}, ${siteTitle}` : siteTitle;
+// Shorter brand suffix keeps SERP titles closer to Google's ~60ch
+// truncation point; the full author name still lives in og:site_name and
+// the Person JSON-LD, so brand signal isn't lost.
+const fullTitle = title ? `${title} · wojciech.io` : siteTitle;
 const canonicalURL = new URL(canonical ?? Astro.url.pathname, Astro.site).href;
 const ogImageURL = new URL(ogImage, Astro.site).href;
 
