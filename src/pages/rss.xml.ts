@@ -6,8 +6,8 @@ import type { APIRoute } from 'astro';
 // not user input. Output context is XML element/attribute text, not HTML —
 // so semgrep's HTML-focused replaceAll rule does not apply here.
 // See .agent-reports/2026-05-22-security-auditor-triage-002.md for full triage.
-// nosemgrep: javascript.audit.detect-replaceall-sanitization.detect-replaceall-sanitization
 const escapeXml = (value: string) =>
+  // nosemgrep: javascript.audit.detect-replaceall-sanitization.detect-replaceall-sanitization
   value
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
