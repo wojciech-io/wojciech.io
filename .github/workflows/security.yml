@@ -95,10 +95,7 @@ jobs:
           # Gated apps — probe their login surface (gate response itself is bare).
           check_url "gh.wojciech.io/login"  "https://gh.wojciech.io/login"   blocking
 
-          # Known gap: app.wojciech.io login.html served as static asset
-          # bypasses Layout.astro and therefore the header middleware. Tracked
-          # separately — not blocking until follow-up fix lands.
-          check_url "app.wojciech.io/login" "https://app.wojciech.io/login"  warning
+          check_url "app.wojciech.io/login" "https://app.wojciech.io/login"  blocking
 
           if [ "$FAILED" -ne 0 ]; then
             echo "::error::One or more subdomains missing required security headers"
