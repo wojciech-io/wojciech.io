@@ -1,0 +1,39 @@
+name: Lighthouse CI
+
+# Sprint 1 Tier 5d — Test Engineer performance baseline.
+# Runs Lighthouse against production URLs and uploads HTML reports as artifacts.
+# Starts in warning-only mode (no merge gating) — tighten budgets after baseline stabilizes.
+#
+# Triggers:
+# - workflow_dispatch (manual)
+# - weekly cron (Mon 06:00 UTC, before daily digest at 08:00 so results show up)
+#
+# Future (Sprint 2+): add on: pull_request once preview-URL resolution is wired in.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    name: Lighthouse against prod
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            https://wojciech.io/
+            https://wojciech.io/about
+            https://wojciech.io/work
+            https://wojciech.io/ai-systems
+            https://wojciech.io/insights
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: false
