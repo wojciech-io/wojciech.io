@@ -146,3 +146,60 @@ Na końcu: `gh pr create` do `main`. Tytuł krótki, body z checklistą użytkow
 | PR otwarty | ⬜ todo | |
 
 **Ostatnia aktualizacja:** 2026-05-22. Wszystkie slice'y plików gotowe i zacommitowane. Zostaje: push branch + `gh pr create` do `main`. Po PR — checklist użytkownika (sekcja "Po merge"). Settings per-agent: świadomie pominięte (patrz wyżej).
+
+---
+
+## Retrospective addendum — 2026-05-22 (post-merge day 1)
+
+**Status:** Sprint 0 PR #2 MERGED. 6 follow-up PRs landed same day (#3-#8). Security gate fully green on full-history scan. Cron activation PR #7 in DRAFT awaiting user-side Resend setup.
+
+### What worked
+
+- **HANDOFF doc → another agent took it and finished without conversation context.** Sesja `distracted-wescoff-337d45` przejęła brief i wykonała 22-plikowy bootstrap. Doc-as-protocol działa.
+- **Security loop pattern (audit → triage → fix → verify) caught real noise:** PUBLIC_CF_BEACON_TOKEN FP triaged on day 1 (TRIAGE-001), then second wave of FPs (semgrep replaceAll + non-literal-regexp) triaged on day 1 follow-up (TRIAGE-002). System works AS DESIGNED — gate fails loud, auditor classifies, fix lands.
+- **No-cron-on-day-1 discipline.** All schedules stayed commented until manually smoked. Prevented "first cron fires at 2 AM on findings nobody triaged" failure mode.
+- **Conventional commits + small slice commits** made the 4-iteration security gate triage easy to bisect.
+
+### What didn't work (lessons that future sprints inherit)
+
+1. **gitleaks top-level `[[allowlists]]` does NOT reliably suppress findings from extended default ruleset.** 3 attempts (regex matching line, `regexTarget = "line"`, commit SHA) all failed on full-history `workflow_dispatch` scans even though config loaded per debug logs. **Use `.gitleaksignore` fingerprint** at repo root instead — surgical, well-documented, self-expiring (fingerprint changes when secret rotates, forces re-triage).
+   - Format: `<commit>:<file>:<rule-id>:<line>` per line
+   - Reference: PR #6
+
+2. **Semgrep `// nosemgrep: <rule-id>` must be on the SAME line as the match OR the line IMMEDIATELY preceding it.** A nosem two lines above (after docblock + function signature) is ignored. Move the annotation directly above the matched expression.
+   - Reference: PR #4
+
+3. **PR-mode (`pull_request` event) scans use baseline comparison.** Only NEW findings vs base branch are reported, so historical FPs go silent in PR checks. Always smoke `workflow_dispatch` on main AFTER merge before declaring a security fix complete. PR-green ≠ main-green.
+   - Reference: PR #3 went green; same code failed on workflow_dispatch against main → led to PRs #4-#6.
+
+4. **`app.wojciech.io/login` lacks security headers** — login.html served as static asset bypasses Layout. Discovered while building headers-check job (PR #8). Currently warning-mode in CI, queued as Sprint 1 fix.
+
+### What changed since original handoff
+
+- `.claude/settings.local.json` per-agent allowlist: still pominięte intentionally. Restrictions enforced by agent frontmatter + (future) CODEOWNERS branch protection.
+- Daily digest uses Resend API instead of Gmail SMTP (better choice — no app password dance, better deliverability).
+- Headers check job ADDED to `security.yml` (4 jobs total: gitleaks, deps, semgrep, headers). Was not in original spec but closed a known gap from baseline-checklist.
+- `.gitleaksignore` ADDED to repo root (file not anticipated in original brief).
+
+### Sprint 0 effective scope (final)
+
+22 planned files + 4 follow-up PR changes = ~26 deliverables on main.
+
+### Open carryover to Sprint 1
+
+1. `app.wojciech.io/login` headers fix
+2. Cron activation PR #7 merge (blocked: user Resend setup)
+3. GitHub Project board creation (blocked: user `gh auth refresh -s project,read:project`)
+4. Cloudflare Access setup for `dev.wojciech.io` (blocked: user CF dashboard action)
+5. Better Stack uptime monitor (blocked: user account)
+
+See `.codex-tasks/sprint-1-bootstrap/HANDOFF.md` for full Sprint 1 plan.
+
+### Sprint 0 verdict
+
+✅ **System works end-to-end.** Loop caught noise, triage docs match what actually happened, no destructive surprises. Foundation is solid for Sprint 1.
+
+---
+
+**Last retro update:** 2026-05-22 (post-PR-#8 merge) by Claude (continuation session).
+
