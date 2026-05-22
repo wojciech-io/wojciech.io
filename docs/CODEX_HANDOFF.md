@@ -365,6 +365,18 @@ In commit order on main:
   200 text/css, demo renders fully styled. **If you add gated apps with the
   same middleware pattern, remember `/_astro/` must pass.**
 
+- `bbbf146` — Academy honest "Opinie" section: empty-state copy until the
+  first cohort, editable `testimonials` array ({quote,name,role}) renders cards
+  when filled. No fabricated social proof. Deployed `51aa8bf4`.
+- `ba6dc07` — **Main site hreflang centralised in SEOHead.** Was in
+  `Layout.astro`, emitting alternates for EN-only pages (privacy/404 → broken
+  /pl,/it URLs) with x-default hardcoded to home. Now in `SEOHead.astro` as the
+  single source: restricted to the 10 localized paths, per-page x-default,
+  dynamic `og:locale` + `og:locale:alternate`. Verified in dist; flagship
+  auto-deploys from main (git-connected) — allow a few min for CF build.
+  NOTE: Academy stays PL-only (see Conventions); these hreflang changes are
+  the main wojciech.io site only.
+
 ### QA / verification done this session (Claude Code, 2026-05-21 eve)
 
 - Live smoke all subdomains green (app gated 401, rest 200).
