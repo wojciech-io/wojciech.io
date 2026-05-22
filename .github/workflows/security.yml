@@ -47,3 +47,61 @@ jobs:
       - run: semgrep ci --config auto
         env:
           SEMGREP_RULES: "p/default p/javascript p/typescript"
+
+  headers:
+    name: Security headers
+    runs-on: ubuntu-latest
+    # No checkout needed — pure HTTP probing.
+    steps:
+      - name: Verify required headers per subdomain
+        run: |
+          set -u
+          REQUIRED="content-security-policy strict-transport-security x-frame-options x-content-type-options referrer-policy permissions-policy"
+          FAILED=0
+
+          check_url() {
+            local label="$1"
+            local url="$2"
+            local mode="$3"   # blocking | warning
+
+            echo "::group::$label ($url, mode=$mode)"
+            headers=$(curl -sIL --max-time 15 -A "wojciech-io-headers-check/1.0" "$url" | tr '[:upper:]' '[:lower:]')
+            missing=""
+            for h in $REQUIRED; do
+              if ! echo "$headers" | grep -q "^$h:"; then
+                missing="$missing $h"
+              fi
+            done
+
+            if [ -n "$missing" ]; then
+              if [ "$mode" = "blocking" ]; then
+                echo "::error::$label missing required headers:$missing"
+                FAILED=1
+              else
+                echo "::warning::$label missing headers:$missing (non-blocking — known gap, see .agent-reports/)"
+              fi
+            else
+              echo "$label ✓ all required headers present"
+            fi
+            echo "::endgroup::"
+          }
+
+          # Public surfaces — strict blocking.
+          check_url "wojciech.io"           "https://wojciech.io/"           blocking
+          check_url "academy.wojciech.io"   "https://academy.wojciech.io/"   blocking
+          check_url "notch.wojciech.io"     "https://notch.wojciech.io/"     blocking
+          check_url "subscribe.wojciech.io" "https://subscribe.wojciech.io/" blocking
+
+          # Gated apps — probe their login surface (gate response itself is bare).
+          check_url "gh.wojciech.io/login"  "https://gh.wojciech.io/login"   blocking
+
+          # Known gap: app.wojciech.io login.html served as static asset
+          # bypasses Layout.astro and therefore the header middleware. Tracked
+          # separately — not blocking until follow-up fix lands.
+          check_url "app.wojciech.io/login" "https://app.wojciech.io/login"  warning
+
+          if [ "$FAILED" -ne 0 ]; then
+            echo "::error::One or more subdomains missing required security headers"
+            exit 1
+          fi
+          echo "All blocking-mode subdomains green."
