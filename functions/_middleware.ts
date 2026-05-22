@@ -70,6 +70,13 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
     headers: {
       'content-type': loginResponse.headers.get('content-type') || 'text/html; charset=utf-8',
       'cache-control': 'no-store',
+      'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+      'content-security-policy':
+        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+      'x-frame-options': 'DENY',
+      'x-content-type-options': 'nosniff',
+      'referrer-policy': 'strict-origin-when-cross-origin',
+      'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
     },
   });
 };
