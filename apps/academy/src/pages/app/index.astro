@@ -93,4 +93,107 @@ const progress = Math.round((completed / episodes.length) * 100);
       </div>
     </article>
   </section>
+
+  <section class="ac-app-grid">
+    <article class="ac-app-panel" id="ac-cert-panel">
+      <p class="ac-app-kicker">Certyfikat</p>
+      <h2>Certyfikat ukończenia</h2>
+      <p class="ac-muted" id="ac-cert-status">Sprawdzam postęp…</p>
+      <a href="/api/certificate" id="ac-cert-download" class="ac-btn ac-btn-primary" hidden download>Pobierz certyfikat (PDF)</a>
+    </article>
+
+    <article class="ac-app-panel ac-span-2" id="ac-team-panel" hidden>
+      <div class="ac-panel-head">
+        <div>
+          <p class="ac-app-kicker">Licencja zespołowa</p>
+          <h2>Miejsca w zespole</h2>
+        </div>
+        <span class="ac-live-pill" id="ac-team-seats">–</span>
+      </div>
+      <ul class="ac-team-list" id="ac-team-list"></ul>
+      <form class="ac-team-invite" id="ac-team-form">
+        <input type="email" name="email" placeholder="email@firma.pl" required aria-label="Email do zaproszenia" />
+        <button type="submit" class="ac-btn ac-btn-ghost">Zaproś</button>
+      </form>
+      <p class="ac-muted" id="ac-team-msg" role="status"></p>
+    </article>
+  </section>
 </AppLayout>
+
+<script>
+  // Certificate readiness + download.
+  const certStatus = document.getElementById('ac-cert-status');
+  const certBtn = document.getElementById('ac-cert-download') as HTMLAnchorElement | null;
+  fetch('/api/certificate?check=1')
+    .then((r) => r.json())
+    .then((d) => {
+      if (!certStatus) return;
+      if (d.ready) {
+        certStatus.textContent = 'Program ukończony. Certyfikat gotowy do pobrania.';
+        certBtn?.removeAttribute('hidden');
+      } else {
+        certStatus.textContent = `Ukończ wszystkie odcinki, żeby odblokować certyfikat (${d.completed_count ?? 0}/${d.required ?? 36}).`;
+      }
+    })
+    .catch(() => { if (certStatus) certStatus.textContent = 'Nie udało się sprawdzić postępu.'; });
+
+  // Team panel — only renders for team owners.
+  const teamPanel = document.getElementById('ac-team-panel');
+  const teamSeats = document.getElementById('ac-team-seats');
+  const teamList = document.getElementById('ac-team-list');
+  const teamForm = document.getElementById('ac-team-form') as HTMLFormElement | null;
+  const teamMsg = document.getElementById('ac-team-msg');
+
+  function renderSeats(data: any) {
+    if (!teamList || !teamSeats) return;
+    teamSeats.textContent = `${data.seats_used}/${data.team.seat_limit} miejsc`;
+    teamList.innerHTML = '';
+    for (const seat of data.seats) {
+      const li = document.createElement('li');
+      const label = seat.status === 'accepted' ? 'aktywny' : 'zaproszony';
+      li.textContent = `${seat.email} — ${label}`;
+      teamList.appendChild(li);
+    }
+  }
+
+  async function loadTeam() {
+    try {
+      const res = await fetch('/api/team');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.is_owner) return;
+      teamPanel?.removeAttribute('hidden');
+      renderSeats(data);
+    } catch {}
+  }
+  loadTeam();
+
+  teamForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = new FormData(teamForm).get('email');
+    if (teamMsg) teamMsg.textContent = 'Wysyłam zaproszenie…';
+    try {
+      const res = await fetch('/api/team/invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        if (teamMsg) teamMsg.textContent = data.sent ? 'Zaproszenie wysłane.' : 'Zaproszenie utworzone.';
+        teamForm.reset();
+        loadTeam();
+      } else {
+        const errs: Record<string, string> = {
+          'seat-limit-reached': 'Brak wolnych miejsc w licencji.',
+          'already-accepted': 'Ten email ma już aktywny dostęp.',
+          'invalid-email': 'Nieprawidłowy email.',
+          'cannot-invite-self': 'Nie możesz zaprosić własnego adresu.',
+        };
+        if (teamMsg) teamMsg.textContent = errs[data.error] || 'Nie udało się wysłać zaproszenia.';
+      }
+    } catch {
+      if (teamMsg) teamMsg.textContent = 'Błąd połączenia.';
+    }
+  });
+</script>

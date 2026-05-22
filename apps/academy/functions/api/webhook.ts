@@ -15,7 +15,7 @@ interface StripeSession {
   customer_email?: string;
   customer_details?: { email?: string; name?: string };
   payment_status?: string;
-  metadata?: { plan?: string; name?: string; email?: string };
+  metadata?: { plan?: string; name?: string; email?: string; seat_limit?: string };
 }
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
@@ -95,9 +95,43 @@ async function handleCheckoutCompleted(env: Env, session: StripeSession, request
     paid ? accessExpiresAt : null,
   ).run();
 
+  if (paid && plan.startsWith('team')) {
+    await ensureTeam(env, id, plan, session);
+  }
+
   if (paid) {
     await sendWelcomeMagicLink(env, email, request);
   }
+}
+
+// On a Team-plan purchase, create the team the buyer owns (idempotent on the
+// checkout session). Seat limit comes from metadata, else the plan suffix, else 5.
+async function ensureTeam(env: Env, ownerCustomerId: string, plan: string, session: StripeSession): Promise<void> {
+  if (!env.DB) return;
+  const seatLimit = deriveSeatLimit(plan, session.metadata?.seat_limit);
+  await env.DB.prepare(
+    `INSERT INTO teams (id, name, owner_customer_id, plan, seat_limit, stripe_checkout_session_id, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+     ON CONFLICT(stripe_checkout_session_id) DO UPDATE SET
+       plan=excluded.plan,
+       seat_limit=excluded.seat_limit,
+       updated_at=CURRENT_TIMESTAMP`
+  ).bind(
+    `team_${crypto.randomUUID()}`,
+    session.metadata?.name || null,
+    ownerCustomerId,
+    plan,
+    seatLimit,
+    session.id,
+  ).run();
+}
+
+function deriveSeatLimit(plan: string, metaSeatLimit: string | undefined): number {
+  const fromMeta = Number(metaSeatLimit);
+  if (Number.isFinite(fromMeta) && fromMeta >= 1) return Math.min(Math.floor(fromMeta), 500);
+  const fromPlan = Number(plan.replace(/[^0-9]/g, ''));
+  if (Number.isFinite(fromPlan) && fromPlan >= 1) return fromPlan;
+  return 5;
 }
 
 async function sendWelcomeMagicLink(env: Env, email: string, request: Request): Promise<void> {
