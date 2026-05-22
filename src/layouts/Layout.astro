@@ -34,10 +34,8 @@ const {
 // Normalize /en/* canonical to /* (strip /en/ prefix for dedup)
 const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/, (_, s) => s || '/');
 
-// Hreflang: strip any lang prefix to get the clean path
-const _cleanPath = Astro.url.pathname.replace(/^\/(en|pl|it)(\/|$)/, '/').replace(/\/\//g, '/') || '/';
-// Articles are EN-only — skip /pl and /it hreflang alternates for those
-const _isArticle = /^\/insights\/.+/.test(_cleanPath);
+// hreflang + og:locale alternates are emitted centrally by SEOHead
+// (single source of truth, restricted to actually-localized pages).
 ---
 
 <!doctype html>
@@ -62,15 +60,6 @@ const _isArticle = /^\/insights\/.+/.test(_cleanPath);
         document.documentElement.style.colorScheme = theme;
       })();
     </script>
-    {/* hreflang alternate links — skipped for EN-only article pages */}
-    {!_isArticle && (
-      <>
-        <link rel="alternate" hreflang="en" href={`https://wojciech.io${_cleanPath}`} />
-        <link rel="alternate" hreflang="pl" href={`https://wojciech.io/pl${_cleanPath}`} />
-        <link rel="alternate" hreflang="it" href={`https://wojciech.io/it${_cleanPath}`} />
-        <link rel="alternate" hreflang="x-default" href="https://wojciech.io/" />
-      </>
-    )}
   </head>
   <body class="min-h-dvh flex flex-col">
     <Header langPrefix={initialLang === 'pl' ? '/pl' : initialLang === 'it' ? '/it' : ''} />

@@ -29,6 +29,22 @@ const siteTitle = SITE.nameDisplay;
 const fullTitle = title ? `${title}, ${siteTitle}` : siteTitle;
 const canonicalURL = new URL(canonical ?? Astro.url.pathname, Astro.site).href;
 const ogImageURL = new URL(ogImage, Astro.site).href;
+
+// --- hreflang + og:locale (trilingual: EN at root, PL/IT under /pl, /it) ----
+// Only pages that exist in all three locales get alternates; EN-only pages
+// (privacy, 404, insights) emit none. Paths keep the site's trailing slash.
+const OG_LOCALE: Record<string, string> = { en: 'en_US', pl: 'pl_PL', it: 'it_IT' };
+const LOCALIZED_PATHS = new Set([
+  '/', '/about/', '/ai-systems/', '/apps/', '/contact/',
+  '/cv/', '/now/', '/resources/', '/subscribe/', '/work/',
+]);
+const _seg = Astro.url.pathname.split('/').filter(Boolean);
+const curLang = _seg[0] === 'pl' || _seg[0] === 'it' ? _seg[0] : 'en';
+const _baseSeg = curLang === 'en' ? _seg : _seg.slice(1);
+const basePath = _baseSeg.length ? `/${_baseSeg.join('/')}/` : '/';
+const isLocalized = LOCALIZED_PATHS.has(basePath);
+const altURL = (l: string) =>
+  l === 'en' ? `${SITE.url}${basePath}` : `${SITE.url}/${l}${basePath}`;
 const shouldNoindex = noindex || import.meta.env.PUBLIC_SITE_NOINDEX === 'true';
 const publishedISO = publishedAt ? new Date(publishedAt).toISOString() : undefined;
 const updatedISO = updatedAt ? new Date(updatedAt).toISOString() : undefined;
@@ -92,6 +108,15 @@ const schemaItems = [...baseSchema, ...pageSchema];
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
 
+{isLocalized && (
+  <>
+    <link rel="alternate" hreflang="en" href={altURL('en')} />
+    <link rel="alternate" hreflang="pl" href={altURL('pl')} />
+    <link rel="alternate" hreflang="it" href={altURL('it')} />
+    <link rel="alternate" hreflang="x-default" href={altURL('en')} />
+  </>
+)}
+
 {shouldNoindex && <meta name="robots" content="noindex, nofollow" />}
 
 <!-- Open Graph -->
@@ -100,7 +125,10 @@ const schemaItems = [...baseSchema, ...pageSchema];
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImageURL} />
-<meta property="og:locale" content="en_US" />
+<meta property="og:locale" content={OG_LOCALE[curLang]} />
+{isLocalized && ['en', 'pl', 'it'].filter((l) => l !== curLang).map((l) => (
+  <meta property="og:locale:alternate" content={OG_LOCALE[l]} />
+))}
 <meta property="og:site_name" content={siteTitle} />
 {publishedISO && <meta property="article:published_time" content={publishedISO} />}
 {updatedISO && <meta property="article:modified_time" content={updatedISO} />}
