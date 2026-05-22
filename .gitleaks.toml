@@ -1,0 +1,8 @@
+# Gitleaks config for wojciech.io. Extends the default ruleset.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Cloudflare Web Analytics beacon token is PUBLIC by design — it ships in the client-side beacon on every page load. The PUBLIC_ prefix is Astro's convention for client-exposed vars. Not a secret; no rotation needed. Triaged by security-auditor, see .agent-reports/2026-05-22-security-auditor.md"
+regexes = ['''PUBLIC_CF_BEACON_TOKEN\s*=\s*"[0-9a-f]{32}"''']
+paths = ['''terraform/pages\.tf''']

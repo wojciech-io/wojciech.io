@@ -1,0 +1,49 @@
+name: Security
+
+# Sprint 0: manual + PR. Sunday cron stays commented until deliberately enabled.
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["main"]
+  # schedule:
+  #   - cron: "0 22 * * 0"   # Sun 22:00 UTC — enable in Sprint 0 day 4
+
+permissions:
+  contents: read
+  pull-requests: read   # gitleaks-action lists PR commits via the PRs API
+
+jobs:
+  secrets:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deps:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: npm audit (fail on high/critical)
+        run: npm audit --audit-level=high
+
+  sast:
+    name: SAST (semgrep)
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep
+    steps:
+      - uses: actions/checkout@v4
+      - run: semgrep ci --config auto
+        env:
+          SEMGREP_RULES: "p/default p/javascript p/typescript"

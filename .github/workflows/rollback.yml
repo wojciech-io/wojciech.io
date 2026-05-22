@@ -1,0 +1,40 @@
+name: Rollback
+
+# Manual, auditable rollback. See docs/deployment/rollback-runbook.md.
+# Prefer the Cloudflare Pages dashboard rollback for instant recovery;
+# this workflow is the git-source-of-truth path (revert + re-deploy).
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Commit SHA or tag to revert TO (the last known-good)"
+        required: true
+      reason:
+        description: "Why are we rolling back?"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  revert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configure git
+        run: |
+          git config user.name "rollback-bot"
+          git config user.email "noreply@wojciech.io"
+      - name: Revert to target (non-destructive)
+        env:
+          TARGET: ${{ github.event.inputs.target }}
+          REASON: ${{ github.event.inputs.reason }}
+        run: |
+          echo "Rolling back to $TARGET — reason: $REASON"
+          # Non-destructive: revert everything after TARGET, no force-push.
+          git revert --no-edit "$TARGET"..HEAD
+          git push origin HEAD:main
+      - name: Reminder
+        run: echo "Re-run smoke-prod.yml and file an incident note in .agent-reports/"
