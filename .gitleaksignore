@@ -1,0 +1,17 @@
+# gitleaks fingerprint allowlist
+# Format: <commit>:<file>:<rule-id>:<line>
+# Auto-detected by gitleaks if placed at repo root.
+#
+# Each entry suppresses one specific finding by fingerprint. Surgical;
+# survives full-history scans where top-level [[allowlists]] in .gitleaks.toml
+# did not effectively suppress findings from default ruleset rules.
+#
+# When the underlying secret legitimately rotates, the fingerprint changes,
+# the suppression stops applying, and triage runs again — desired behavior.
+
+# PUBLIC_CF_BEACON_TOKEN — public-by-design Cloudflare Analytics beacon token.
+# Embedded in the client-side beacon script on every page load; PUBLIC_ prefix
+# is Astro's convention for client-exposed env vars. Not a secret, no rotation
+# needed. Triaged in .agent-reports/2026-05-22-security-auditor.md
+# and .agent-reports/2026-05-22-security-auditor-triage-002.md
+a4a831b69168f633b5640d4f8d47f40ac4ad7b28:terraform/pages.tf:generic-api-key:36
