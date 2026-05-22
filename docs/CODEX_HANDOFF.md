@@ -284,6 +284,15 @@ manual activation is needed.
 - **i18n:** every user-facing string has `data-en`, `data-pl`, `data-it`
   attributes. PL is Wojtek's native, EN is canonical, IT is for audience
   reach. Don't use literary/archaic PL words (e.g. "zrecenzuj" → "oceń").
+  **i18n QA RULE (learned the hard way):** balanced data-en/pl/it counts are
+  NOT enough — hardcoded text nodes (no data-* wrapper) silently stay in one
+  language and produce mixed strings (e.g. notch "Notes that stay blisko
+  obiektywu", fixed in `e3b5936`). ALWAYS render each client-switch site
+  (notch, subscribe) in EN+PL+IT before shipping. Headless trick:
+  `chrome --headless --user-data-dir=/tmp/x --lang=en-US --virtual-time-budget=7000
+  --screenshot=out.png <url>` (fresh profile + lang forces the client swap).
+  Email mockup on subscribe is intentionally Polish (samples the PL newsletter);
+  only the page chrome around it switches.
   **EXCEPTION — Academy is intentionally PL-only** (`<html lang="pl">`, no
   data-en/pl/it, no switcher). Decided 2026-05-21: the program audio is in
   Polish, so the marketing language matches the product. Do NOT add i18n to
