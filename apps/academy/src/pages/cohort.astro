@@ -11,8 +11,47 @@ const weeks = [
 ];
 
 const cohortSize = 18;
+
+const cohortSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: 'AI Growth OS — cohort live',
+  description:
+    'Live cohort: 6 tygodni warsztatów + office hours + case-work na własnym CRM/lejku zespołu. Limit 18 osób per kohorta.',
+  provider: {
+    '@type': 'EducationalOrganization',
+    name: 'AI Growth OS Academy',
+    url: 'https://academy.wojciech.io/',
+  },
+  url: 'https://academy.wojciech.io/cohort',
+  inLanguage: 'pl',
+  educationalLevel: 'Professional',
+  courseMode: 'online',
+  hasCourseInstance: {
+    '@type': 'CourseInstance',
+    courseMode: 'online',
+    courseWorkload: 'PT12H',
+    inLanguage: 'pl',
+    maximumAttendeeCapacity: cohortSize,
+    instructor: {
+      '@type': 'Person',
+      name: 'Wojciech Łuszczyński',
+      url: 'https://wojciech.io/',
+      jobTitle: 'GTM Architect & Growth Operator',
+    },
+  },
+  syllabusSections: weeks.map((w, i) => ({
+    '@type': 'Syllabus',
+    name: `Tydzień ${i + 1}: ${w.title}`,
+    description: w.body,
+  })),
+};
 ---
-<Layout title="Cohort · AI Growth OS · Academy" description="Live cohort — 6 tygodni, case-work na waszym lejku. Termin po zebraniu grupy. Limit 18 osób.">
+<Layout
+  title="Cohort · AI Growth OS · Academy"
+  description="Live cohort — 6 tygodni, case-work na waszym lejku. Termin po zebraniu grupy. Limit 18 osób."
+  schema={cohortSchema}
+>
 
   <section class="ac-hero" style="padding-bottom: 60px">
     <span class="ac-hero-eyebrow reveal-up"><span class="ac-pulse"></span>Cohort #1 · lista zainteresowanych otwarta</span>
