@@ -6,9 +6,15 @@ interface Env {
 
 const COOKIE_NAME = 'academy_auth';
 
-function cookieValue(request: Request, name: string): string | null {
+// Literal regex (not `new RegExp(template)`) so semgrep's
+// detect-non-literal-regexp rule does not fire on a hard-coded cookie name.
+// If COOKIE_NAME changes, update the literal below too.
+// See .agent-reports/2026-05-22-security-auditor-triage-002.md for full triage.
+const COOKIE_RX = /(?:^|;\s*)academy_auth=([^;]+)/;
+
+function cookieValue(request: Request): string | null {
   const cookie = request.headers.get('Cookie') || '';
-  const match = cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
+  const match = cookie.match(COOKIE_RX);
   return match ? decodeURIComponent(match[1]) : null;
 }
 
@@ -18,7 +24,7 @@ export const onRequest: PagesFunction<Env> = async ({ request, env, next }) => {
   if (!url.pathname.startsWith('/app')) return next();
   if (url.pathname.startsWith('/app/public')) return next();
 
-  const token = cookieValue(request, COOKIE_NAME);
+  const token = cookieValue(request);
   if (token && env.AUTH_SECRET) {
     const session = await verifySession(token, env.AUTH_SECRET);
     if (session) return next();

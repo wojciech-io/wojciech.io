@@ -13,6 +13,12 @@ interface Env {
 
 const COOKIE_NAME = 'wapp_auth';
 
+// Literal regex (not `new RegExp(template)`) so semgrep's
+// detect-non-literal-regexp rule does not fire on a hard-coded cookie name.
+// If COOKIE_NAME changes, update the literal below too.
+// See .agent-reports/2026-05-22-security-auditor-triage-002.md for full triage.
+const COOKIE_RX = /(?:^|;\s*)wapp_auth=([^;]+)/;
+
 function isGatedHost(hostname: string): boolean {
   if (hostname === 'gh.wojciech.io') return true;
   if (hostname === 'gh-wojciech-io.pages.dev') return true;
@@ -47,7 +53,7 @@ function isAllowed(pathname: string): boolean {
 
 async function isAuthenticated(request: Request, env: Env): Promise<boolean> {
   const cookie = request.headers.get('Cookie') || '';
-  const match = cookie.match(new RegExp(`(?:^|;\\s*)${COOKIE_NAME}=([^;]+)`));
+  const match = cookie.match(COOKIE_RX);
   if (!match) return false;
   // Enforce server-side token expiry (defaults to 30 days). Without the
   // maxAgeMs arg the age check silently passes (compares against undefined),
