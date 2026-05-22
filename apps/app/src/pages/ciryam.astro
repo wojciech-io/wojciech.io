@@ -1,0 +1,856 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { appData } from '../data/ciryam-generated';
+
+const summary = appData.summary;
+const events = appData.events;
+const highFitEvents = appData.highFitEvents;
+const plenerEvents = appData.plenerEvents;
+const accounts = appData.accounts;
+const sources = appData.sources;
+const roadmap = appData.roadmap;
+
+const priorityEvents = highFitEvents.slice(0, 180);
+
+const focusAccounts = accounts
+  .filter((account) => account.priority === 'wysoki')
+  .slice(0, 90);
+
+const regions = Array.from(new Set(priorityEvents.map((event) => event.region).filter(Boolean))).slice(0, 12);
+const segments = Array.from(new Set(priorityEvents.map((event) => event.segment).filter(Boolean))).slice(0, 8);
+
+const metricCards = [
+  { label: 'Raw records', value: summary.raw_records, detail: 'zebrane rekordy źródłowe' },
+  { label: 'Deduped events', value: summary.deduped_records, detail: 'wydarzenia po deduplikacji' },
+  { label: 'Top events', value: summary.top_500_created, detail: 'rekordy w XLSX i dashboardzie' },
+  { label: 'BIP accounts', value: summary.bip_accounts, detail: 'JST, domy kultury, OSiR' },
+];
+
+const campaignLanes = [
+  {
+    lane: 'Booking JST i instytucje',
+    cadence: 'codzienny scoring, tygodniowy outreach',
+    goal: 'Dni Miast, dni gmin, dożynki, imprezy miejskie i plenerowe',
+    actions: ['top 100 kont', 'kontakt do osoby od programu', 'mail + telefon + follow-up', 'oferta 60/90 min'],
+  },
+  {
+    lane: 'Festiwale i organizatorzy',
+    cadence: 'monitoring dat i line-upów co 48 h',
+    goal: 'rock, metal, alternatywa, juwenalia, sceny klubowe i plenerowe',
+    actions: ['benchmark slotów', 'mapa promotorów', 'EPK live proof', 'zgłoszenia i warm intro'],
+  },
+  {
+    lane: 'Fan growth',
+    cadence: '3-5 shortów tygodniowo, newsletter 2x miesiąc',
+    goal: 'dowód popytu przed rozmową z bookerem',
+    actions: ['Reels/TikTok live energy', 'geo-posty przed koncertami', 'pre-save', 'fan capture na stronie'],
+  },
+  {
+    lane: 'Granty i showcase',
+    cadence: 'dwutygodniowy research naborów',
+    goal: 'finansowanie publiczne, projekty kulturalne, Europa',
+    actions: ['open calle', 'terminy aplikacji', 'partnerzy lokalni', 'wersja EPK po angielsku'],
+  },
+];
+
+const llmTasks = [
+  {
+    owner: 'Perplexity',
+    role: 'Research i weryfikacja rynku',
+    deliverables: ['nowe źródła wydarzeń', 'open calle i granty', 'potwierdzenie dat', 'źródła z linkami'],
+    guardrail: 'Tylko dane publicznie potwierdzone, brakujące pola jako do weryfikacji.',
+  },
+  {
+    owner: 'Gemini',
+    role: 'Klasyfikacja dużych list',
+    deliverables: ['segment', 'fit score', 'priorytet', 'data gaps', 'rekomendowany next step'],
+    guardrail: 'Nie pisze outreachu, tylko normalizuje i porządkuje dane.',
+  },
+  {
+    owner: 'ChatGPT / Codex',
+    role: 'Aplikacja, scrapers, CRM i automaty',
+    deliverables: ['adaptery źródeł', 'XLSX/CSV', 'dashboard', 'statusy CRM', 'roadmapa techniczna'],
+    guardrail: 'Nie robi masowej wysyłki bez ręcznej kontroli i zgody.',
+  },
+  {
+    owner: 'Claude / Claude Code',
+    role: 'Narracja, EPK, teksty i prezentacja',
+    deliverables: ['master brief', 'EPK copy', 'szablony maili', 'skrypty rozmów', 'strona prezentacyjna'],
+    guardrail: 'Język krótki, bookerski, oparty o konkretny format występu.',
+  },
+];
+
+const phasePlan = [
+  {
+    window: '0-7 dni',
+    title: 'Source of truth i asset room',
+    output: 'Brief, EPK checklist, statusy CRM, top 100 eventów i kont do walidacji',
+    work: ['uzupełnić live video', 'spiąć PDF EPK', 'zweryfikować top 30 kontaktów', 'ustawić monitoring źródeł'],
+  },
+  {
+    window: '8-30 dni',
+    title: 'Pierwszy pipeline bookingowy',
+    output: 'Top 200 kont, pierwsze rozmowy, oferty pilotażowe pod sezon 2026/2027',
+    work: ['segment JST', 'segment festiwale', 'telefony do wysokiego fitu', 'follow-up po wejściu w EPK'],
+  },
+  {
+    window: '31-60 dni',
+    title: 'Automatyzacja i skalowanie',
+    output: 'Stały refresh danych, dashboard tygodniowy, biblioteka wariantów oferty',
+    work: ['Apollo/GetResponse', 'manual QA danych', 'scoring odpowiedzi', 'raport przyczyn braku fitu'],
+  },
+  {
+    window: '61-90 dni',
+    title: 'Repeatable booking engine',
+    output: 'Proces: okazja -> osoba -> oferta -> follow-up -> booking',
+    work: ['rytm weekly review', 'kolejne województwa', 'showcase Europa', 'case study z pierwszych wygranych'],
+  },
+];
+
+const statusOptions = ['new', 'verify', 'contacted', 'call', 'offer', 'won', 'lost'];
+---
+
+<Layout title="CIRYAM Booking Engine · app.wojciech.io" activePage="apps">
+  <section class="ciryam-page">
+    <div class="ciryam-hero">
+      <div class="ciryam-kicker">Private GTM workspace · 2026/2027</div>
+      <div class="ciryam-hero-grid">
+        <div>
+          <h1>CIRYAM Booking & Marketing Engine</h1>
+          <p>
+            Osobna aplikacja operacyjna do researchu wydarzeń, zarządzania statusem kontaktów,
+            roadmapy kampanii i podziału pracy między modele AI. Oparta o publiczne źródła danych,
+            aktualną stylistykę ciryam.eu: ciemne tło, mocny kontrast, koncertowy charakter i zwarte,
+            robocze panele zamiast marketingowej dekoracji.
+          </p>
+          <div class="ciryam-actions">
+            <a class="ciryam-primary" href="/ciryam/ciryam_events_2026_2027_research.xlsx" download>Pobierz XLSX</a>
+            <a class="ciryam-secondary" href="https://ciryam.eu" target="_blank" rel="noreferrer">CIRYAM live site</a>
+          </div>
+        </div>
+        <div class="ciryam-system-card">
+          <div class="system-label">System status</div>
+          <div class="system-row"><span>Production root</span><strong>nie ruszane</strong></div>
+          <div class="system-row"><span>Route</span><strong>/ciryam</strong></div>
+          <div class="system-row"><span>Verification date</span><strong>{summary.verification_date}</strong></div>
+          <div class="system-row"><span>Sources</span><strong>{sources.length}</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      {metricCards.map((metric) => (
+        <div class="metric-card">
+          <div class="metric-label">{metric.label}</div>
+          <div class="metric-value">{metric.value.toLocaleString('pl-PL')}</div>
+          <div class="metric-detail">{metric.detail}</div>
+        </div>
+      ))}
+    </div>
+
+    <div class="ciryam-section-head">
+      <div>
+        <span>Campaign OS</span>
+        <h2>Plan kampanii i kanały działania</h2>
+      </div>
+      <p>Cel: maksymalizować liczbę sensownych okazji bookingowych, a nie spamować cały rynek.</p>
+    </div>
+
+    <div class="lane-grid">
+      {campaignLanes.map((lane) => (
+        <article class="lane-card">
+          <div class="lane-top">
+            <h3>{lane.lane}</h3>
+            <span>{lane.cadence}</span>
+          </div>
+          <p>{lane.goal}</p>
+          <ul>
+            {lane.actions.map((action) => <li>{action}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+
+    <div class="ciryam-section-head">
+      <div>
+        <span>Roadmap</span>
+        <h2>0-90 dni operacyjnie</h2>
+      </div>
+      <p>Każdy etap ma konkretny output, który da się pokazać zespołowi albo bookerowi.</p>
+    </div>
+
+    <div class="phase-list">
+      {phasePlan.map((phase) => (
+        <article class="phase-row">
+          <div class="phase-window">{phase.window}</div>
+          <div>
+            <h3>{phase.title}</h3>
+            <p>{phase.output}</p>
+            <div class="phase-tags">
+              {phase.work.map((item) => <span>{item}</span>)}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="ciryam-section-head">
+      <div>
+        <span>AI orchestration</span>
+        <h2>Podział pracy między LLM-y</h2>
+      </div>
+      <p>Jeden source of truth, osobne role, spójny format outputu.</p>
+    </div>
+
+    <div class="llm-grid">
+      {llmTasks.map((task) => (
+        <article class="llm-card">
+          <h3>{task.owner}</h3>
+          <p>{task.role}</p>
+          <div class="llm-deliverables">
+            {task.deliverables.map((item) => <span>{item}</span>)}
+          </div>
+          <div class="guardrail">{task.guardrail}</div>
+        </article>
+      ))}
+    </div>
+
+    <div class="ciryam-section-head">
+      <div>
+        <span>Data engine</span>
+        <h2>Źródła scraperów i monitoring</h2>
+      </div>
+      <p>Ticketmaster/Ticketpro, eBilet, TicketClub, Ticketle, BIP/Gov, kalendarze plenerowe i portale dni miast.</p>
+    </div>
+
+    <div class="source-table-wrap">
+      <table class="source-table">
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Adapter</th>
+            <th>Coverage</th>
+            <th>Fields</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sources.map((source) => (
+            <tr>
+              <td><a href={source.source_url} target="_blank" rel="noreferrer">{source.source_name}</a></td>
+              <td>{source.adapter}</td>
+              <td>{source.coverage}</td>
+              <td>{source.fields.join(', ')}</td>
+              <td><span class="status-pill">monitor</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ciryam-section-head">
+      <div>
+        <span>CRM pipeline</span>
+        <h2>Wydarzenia z wysokim priorytetem</h2>
+      </div>
+      <p>{priorityEvents.length} rekordów w widoku roboczym. Pełne top 500 jest w XLSX.</p>
+    </div>
+
+    <div class="toolbar" data-filter-scope="events">
+      <div class="apps-search-inner ciryam-search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="eventSearch" type="search" placeholder="Szukaj wydarzenia, miasta, źródła..." autocomplete="off" />
+      </div>
+      <div class="chip-row" aria-label="Region filters">
+        <button class="chip active" data-event-filter="all">All</button>
+        {regions.map((region) => <button class="chip" data-event-filter={region}>{region}</button>)}
+      </div>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table" id="eventsTable">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Data</th>
+            <th>Wydarzenie</th>
+            <th>Miasto</th>
+            <th>Segment</th>
+            <th>Fit</th>
+            <th>Źródło</th>
+            <th>Next step</th>
+          </tr>
+        </thead>
+        <tbody>
+          {priorityEvents.map((event) => (
+            <tr data-event-row data-region={event.region} data-segment={event.segment} data-search={`${event.name} ${event.city} ${event.region} ${event.segment} ${event.source_name}`.toLowerCase()}>
+              <td>
+                <select class="stage-select" data-stage-control={`event:${event.event_id}`} aria-label={`Status ${event.name}`}>
+                  {statusOptions.map((status) => <option value={status}>{status}</option>)}
+                </select>
+              </td>
+              <td>{event.date_start || 'do weryfikacji'}</td>
+              <td>
+                <a class="event-link" href={event.source_url || event.ticket_url} target="_blank" rel="noreferrer">{event.name}</a>
+                <small>{event.venue || event.organizer || event.price_text}</small>
+              </td>
+              <td>{event.city}<small>{event.region}</small></td>
+              <td>{event.segment}</td>
+              <td><span class="fit-score">{event.fit_score}</span></td>
+              <td>{event.source_name}</td>
+              <td>{event.next_step}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ciryam-section-head">
+      <div>
+        <span>Accounts</span>
+        <h2>JST, domy kultury, OSiR i BIP</h2>
+      </div>
+      <p>{focusAccounts.length} kont w podglądzie wysokiego priorytetu. Pełna baza: {summary.bip_accounts.toLocaleString('pl-PL')} rekordów.</p>
+    </div>
+
+    <div class="toolbar" data-filter-scope="accounts">
+      <div class="apps-search-inner ciryam-search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="accountSearch" type="search" placeholder="Szukaj instytucji, miasta, województwa..." autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="data-table-wrap">
+      <table class="data-table" id="accountsTable">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Account</th>
+            <th>Typ</th>
+            <th>Miasto</th>
+            <th>Email</th>
+            <th>Telefon</th>
+            <th>Next step</th>
+          </tr>
+        </thead>
+        <tbody>
+          {focusAccounts.map((account) => (
+            <tr data-account-row data-search={`${account.name} ${account.city} ${account.region} ${account.account_type} ${account.email} ${account.phone}`.toLowerCase()}>
+              <td>
+                <select class="stage-select" data-stage-control={`account:${account.account_id}`} aria-label={`Status ${account.name}`}>
+                  {statusOptions.map((status) => <option value={status}>{status}</option>)}
+                </select>
+              </td>
+              <td>
+                <a class="event-link" href={account.source_url || account.website} target="_blank" rel="noreferrer">{account.name}</a>
+                <small>{account.website}</small>
+              </td>
+              <td>{account.account_type}</td>
+              <td>{account.city}<small>{account.region}</small></td>
+              <td>{account.email || 'do weryfikacji'}</td>
+              <td>{account.phone || 'do weryfikacji'}</td>
+              <td>{account.next_step || account.why_relevant}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ciryam-section-head">
+      <div>
+        <span>Assets & outreach</span>
+        <h2>EPK, komunikacja i status przygotowania</h2>
+      </div>
+      <p>Materiały mają skracać decyzję organizatora: jedno kliknięcie, jasny format, kontakt do bookera.</p>
+    </div>
+
+    <div class="outreach-grid">
+      <article class="outreach-card">
+        <h3>EPK minimalne</h3>
+        <ul>
+          <li>hero photo + logo, press pack, bio 50/150/300 słów</li>
+          <li>najlepsze live video, SoundCloud/YouTube, link do ciryam.eu</li>
+          <li>formaty występu 60/90 minut, rider, stage plot, kontakt bookera</li>
+        </ul>
+      </article>
+      <article class="outreach-card">
+        <h3>14-dniowa sekwencja</h3>
+        <ul>
+          <li>D1: krótki mail z EPK i pytaniem o właściwą osobę</li>
+          <li>D3: telefon i weryfikacja procesu programowania</li>
+          <li>D7: follow-up z formatem pod Dni Miasta / plener / festiwal</li>
+          <li>D14: zamknięcie pętli i zgoda na powrót przed kolejną edycją</li>
+        </ul>
+      </article>
+      <article class="outreach-card">
+        <h3>Local targeting</h3>
+        <ul>
+          <li>50-100 km od miejsca wydarzenia, 10 dni przed ogłoszeniem lub koncertem</li>
+          <li>UGC z koncertów, krótkie live proof, posty z geo-hashtagami</li>
+          <li>retargeting odwiedzających EPK i linkujących do materiałów</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="ciryam-section-head">
+      <div>
+        <span>Internal roadmap</span>
+        <h2>Statusy z poprzedniego engine’u</h2>
+      </div>
+      <p>Roboczy plan z wcześniejszej aplikacji przeniesiony do bezpiecznej trasy.</p>
+    </div>
+
+    <div class="roadmap-grid">
+      {roadmap.map((item) => (
+        <article class="roadmap-card">
+          <div class="roadmap-top">
+            <span>{item.horizon}</span>
+            <strong>{item.status}</strong>
+          </div>
+          <h3>{item.title}</h3>
+          <p>{item.owner}</p>
+          <div class="progress-track"><div style={`width:${item.progress}%`}></div></div>
+          <div class="phase-tags">
+            {item.items.map((entry) => <span>{entry}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .ciryam-page {
+    --ci-bg: #0d0d0d;
+    --ci-panel: #151515;
+    --ci-panel-2: #1d1b19;
+    --ci-border: rgba(235, 235, 235, 0.13);
+    --ci-text: #ebebeb;
+    --ci-muted: rgba(235, 235, 235, 0.62);
+    --ci-dim: rgba(235, 235, 235, 0.42);
+    --ci-accent: #9f7633;
+    --ci-accent-2: #e11d48;
+    color: var(--ci-text);
+    background: var(--ci-bg);
+    border: 1px solid var(--ci-border);
+    border-radius: 8px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .ciryam-page h1,
+  .ciryam-page h2,
+  .ciryam-page h3 {
+    letter-spacing: 0;
+  }
+  .ciryam-hero {
+    border: 1px solid var(--ci-border);
+    background:
+      linear-gradient(135deg, rgba(225, 29, 72, 0.16), transparent 32%),
+      radial-gradient(circle at 80% 15%, rgba(159, 118, 51, 0.26), transparent 34%),
+      var(--ci-bg);
+    border-radius: 8px;
+    padding: 26px;
+    overflow: hidden;
+  }
+  .ciryam-kicker,
+  .ciryam-section-head span,
+  .system-label,
+  .metric-label,
+  .phase-window {
+    color: var(--ci-accent);
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+  }
+  .ciryam-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 24px;
+    align-items: end;
+    margin-top: 18px;
+  }
+  .ciryam-hero h1 {
+    font-size: clamp(36px, 7vw, 76px);
+    line-height: 0.92;
+    font-weight: 900;
+    text-transform: uppercase;
+    max-width: 780px;
+  }
+  .ciryam-hero p {
+    color: var(--ci-muted);
+    max-width: 760px;
+    font-size: 14px;
+    line-height: 1.65;
+    margin-top: 14px;
+  }
+  .ciryam-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .ciryam-primary,
+  .ciryam-secondary {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    border-radius: 999px;
+    padding: 0 16px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .ciryam-primary {
+    background: var(--ci-accent);
+    color: #0d0d0d;
+  }
+  .ciryam-secondary {
+    border: 1px solid var(--ci-border);
+    color: var(--ci-text);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .ciryam-system-card,
+  .metric-card,
+  .lane-card,
+  .llm-card,
+  .outreach-card,
+  .roadmap-card {
+    border: 1px solid var(--ci-border);
+    background: var(--ci-panel);
+    border-radius: 8px;
+  }
+  .ciryam-system-card {
+    padding: 16px;
+  }
+  .system-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--ci-border);
+    color: var(--ci-muted);
+    font-size: 12px;
+  }
+  .system-row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .system-row strong {
+    color: var(--ci-text);
+    text-align: right;
+  }
+  .metric-grid,
+  .lane-grid,
+  .llm-grid,
+  .outreach-grid,
+  .roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .metric-card {
+    padding: 16px;
+  }
+  .metric-value {
+    font-size: 28px;
+    font-weight: 900;
+    margin-top: 8px;
+  }
+  .metric-detail,
+  .lane-card p,
+  .llm-card p,
+  .roadmap-card p,
+  .ciryam-section-head p {
+    color: var(--ci-muted);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .ciryam-section-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: end;
+    border-bottom: 1px solid var(--ci-border);
+    padding: 18px 0 12px;
+  }
+  .ciryam-section-head h2 {
+    font-size: 24px;
+    font-weight: 900;
+    margin-top: 4px;
+  }
+  .ciryam-section-head p {
+    max-width: 410px;
+  }
+  .lane-grid,
+  .llm-grid,
+  .outreach-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lane-card,
+  .llm-card,
+  .outreach-card,
+  .roadmap-card {
+    padding: 18px;
+  }
+  .lane-top,
+  .roadmap-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: start;
+    margin-bottom: 10px;
+  }
+  .lane-card h3,
+  .llm-card h3,
+  .phase-row h3,
+  .outreach-card h3,
+  .roadmap-card h3 {
+    font-size: 16px;
+    font-weight: 900;
+  }
+  .lane-top span,
+  .roadmap-top span,
+  .roadmap-top strong {
+    color: var(--ci-dim);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .lane-card ul,
+  .outreach-card ul {
+    display: grid;
+    gap: 7px;
+    margin-top: 14px;
+  }
+  .lane-card li,
+  .outreach-card li {
+    color: var(--ci-muted);
+    font-size: 12px;
+    line-height: 1.45;
+    padding-left: 12px;
+    position: relative;
+  }
+  .lane-card li::before,
+  .outreach-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 4px;
+    height: 4px;
+    background: var(--ci-accent);
+    border-radius: 50%;
+  }
+  .phase-list {
+    display: grid;
+    gap: 10px;
+  }
+  .phase-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 18px;
+    padding: 18px;
+    border: 1px solid var(--ci-border);
+    background: var(--ci-panel);
+    border-radius: 8px;
+  }
+  .phase-row p {
+    color: var(--ci-muted);
+    font-size: 13px;
+    line-height: 1.55;
+    margin-top: 4px;
+  }
+  .phase-tags,
+  .llm-deliverables {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .phase-tags span,
+  .llm-deliverables span,
+  .status-pill {
+    border: 1px solid var(--ci-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--ci-muted);
+    border-radius: 999px;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .guardrail {
+    border-top: 1px solid var(--ci-border);
+    color: var(--ci-dim);
+    font-size: 11px;
+    line-height: 1.45;
+    margin-top: 14px;
+    padding-top: 12px;
+  }
+  .source-table-wrap,
+  .data-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--ci-border);
+    border-radius: 8px;
+    background: var(--ci-panel);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th {
+    color: var(--ci-dim);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.035);
+  }
+  th,
+  td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--ci-border);
+    vertical-align: top;
+  }
+  td {
+    color: var(--ci-muted);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  .event-link {
+    color: var(--ci-text);
+    font-weight: 800;
+  }
+  td small {
+    display: block;
+    color: var(--ci-dim);
+    font-size: 10px;
+    margin-top: 3px;
+  }
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .ciryam-search {
+    max-width: 420px;
+    background: var(--ci-panel);
+    border-color: var(--ci-border);
+  }
+  .chip-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .stage-select {
+    background: #101010;
+    border: 1px solid var(--ci-border);
+    color: var(--ci-text);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 11px;
+    min-width: 92px;
+  }
+  .fit-score {
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: #0d0d0d;
+    background: var(--ci-accent);
+    font-weight: 900;
+  }
+  .roadmap-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .progress-track {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 14px;
+  }
+  .progress-track div {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ci-accent), var(--ci-accent-2));
+  }
+  @media (max-width: 980px) {
+    .ciryam-hero-grid,
+    .phase-row {
+      grid-template-columns: 1fr;
+    }
+    .metric-grid,
+    .lane-grid,
+    .llm-grid,
+    .outreach-grid,
+    .roadmap-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 640px) {
+    .ciryam-hero {
+      padding: 18px;
+    }
+    .metric-grid,
+    .lane-grid,
+    .llm-grid,
+    .outreach-grid,
+    .roadmap-grid {
+      grid-template-columns: 1fr;
+    }
+    .ciryam-section-head {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script is:inline>
+  const statusPrefix = 'ciryam-pipeline-status:';
+  document.querySelectorAll('[data-stage-control]').forEach((control) => {
+    const key = statusPrefix + control.dataset.stageControl;
+    const saved = localStorage.getItem(key);
+    if (saved) control.value = saved;
+    control.addEventListener('change', () => localStorage.setItem(key, control.value));
+  });
+
+  const eventSearch = document.getElementById('eventSearch');
+  const accountSearch = document.getElementById('accountSearch');
+  let activeRegion = 'all';
+
+  function filterEvents() {
+    const query = (eventSearch?.value || '').toLowerCase().trim();
+    document.querySelectorAll('[data-event-row]').forEach((row) => {
+      const matchesQuery = !query || row.dataset.search.includes(query);
+      const matchesRegion = activeRegion === 'all' || row.dataset.region === activeRegion;
+      row.hidden = !(matchesQuery && matchesRegion);
+    });
+  }
+
+  function filterAccounts() {
+    const query = (accountSearch?.value || '').toLowerCase().trim();
+    document.querySelectorAll('[data-account-row]').forEach((row) => {
+      row.hidden = query && !row.dataset.search.includes(query);
+    });
+  }
+
+  eventSearch?.addEventListener('input', filterEvents);
+  accountSearch?.addEventListener('input', filterAccounts);
+  document.querySelectorAll('[data-event-filter]').forEach((button) => {
+    button.addEventListener('click', () => {
+      activeRegion = button.dataset.eventFilter || 'all';
+      document.querySelectorAll('[data-event-filter]').forEach((btn) => btn.classList.remove('active'));
+      button.classList.add('active');
+      filterEvents();
+    });
+  });
+</script>
