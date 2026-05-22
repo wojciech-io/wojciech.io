@@ -25,7 +25,13 @@
     "deploy:academy": "npm run build:academy && cd apps/academy && npx wrangler pages deploy dist --project-name=academy-v2-wojciech-io --branch=main --commit-dirty=true --commit-message=academy-v2-deploy",
     "deploy:academy:prod": "npm run build:academy && cd apps/academy && npx wrangler pages deploy dist --project-name=akademia-wojciech-io --branch=main --commit-dirty=true --commit-message=academy-prod-cutover",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "playwright test",
+    "test:smoke": "playwright test smoke",
+    "test:a11y": "playwright test a11y",
+    "test:ui": "playwright test --ui",
+    "test:update": "playwright test --update-snapshots",
+    "test:prod": "BASE_URL=https://wojciech.io playwright test smoke"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
@@ -37,5 +43,9 @@
     "geist": "^1.7.0",
     "satori": "^0.26.0",
     "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.49.0"
   }
 }
