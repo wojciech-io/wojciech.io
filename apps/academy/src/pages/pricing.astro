@@ -31,8 +31,65 @@ const gatedTiers = [
     ],
   },
 ];
+
+// Cohort has a published price (open); individual/team are gated behind a
+// pricing request (so no price field on those offers — schema.org allows
+// PriceSpecification omission with "InStock"/"PreOrder" flags).
+const pricingSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Offer',
+    name: 'AI Growth OS — cohort live (1 miejsce)',
+    description:
+      'Pojedyncze miejsce w live cohort: 6 tygodni warsztatów, office hours, case-work na waszym CRM.',
+    price: '2900',
+    priceCurrency: 'PLN',
+    availability: 'https://schema.org/PreOrder',
+    category: 'Course',
+    url: 'https://academy.wojciech.io/cohort',
+    seller: {
+      '@type': 'EducationalOrganization',
+      name: 'AI Growth OS Academy',
+      url: 'https://academy.wojciech.io/',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Offer',
+    name: 'AI Growth OS — dostęp indywidualny',
+    description:
+      'Indywidualny dostęp do 36 odcinków, vaultu i certyfikatu. Cena na zapytanie.',
+    availability: 'https://schema.org/InStock',
+    category: 'OnlineCourse',
+    url: 'https://academy.wojciech.io/pricing',
+    seller: {
+      '@type': 'EducationalOrganization',
+      name: 'AI Growth OS Academy',
+      url: 'https://academy.wojciech.io/',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Offer',
+    name: 'AI Growth OS — dostęp zespołowy (Team)',
+    description:
+      'Dostęp dla całego zespołu GTM: team dashboard, wspólny vault, godzina Q&A z Wojciechem. Cena na zapytanie.',
+    availability: 'https://schema.org/InStock',
+    category: 'OnlineCourse',
+    url: 'https://academy.wojciech.io/pricing',
+    seller: {
+      '@type': 'EducationalOrganization',
+      name: 'AI Growth OS Academy',
+      url: 'https://academy.wojciech.io/',
+    },
+  },
+];
 ---
-<Layout title="Cennik · AI Growth OS · Academy" description="Dostęp do programu wdrożenia AI dla zespołów GTM — indywidualnie lub dla całego zespołu. Cennik i warunki po krótkim formularzu. Cohort live z otwartą ceną.">
+<Layout
+  title="Cennik · AI Growth OS · Academy"
+  description="Dostęp do programu wdrożenia AI dla zespołów GTM — indywidualnie albo zespołowo. Cennik na zapytanie, cohort live z otwartą ceną 2 900 zł/os."
+  schema={pricingSchema}
+>
 
   <section class="ac-hero" style="padding-bottom: 40px">
     <span class="ac-hero-eyebrow reveal-up">Dostęp do programu</span>

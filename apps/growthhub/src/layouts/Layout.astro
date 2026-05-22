@@ -4,9 +4,24 @@ interface Props {
   title?: string;
   activePage?: string;
   isDemo?: boolean;
+  description?: string;
+  noindex?: boolean;
 }
-const { title = 'GrowthHub', activePage = 'review', isDemo = false } = Astro.props;
-const fullTitle = isDemo ? `${title} — Demo` : `${title} — gh.wojciech.io`;
+const {
+  title = 'GrowthHub',
+  activePage = 'review',
+  isDemo = false,
+  description = isDemo
+    ? 'GrowthHub demo — operator-grade weekly review for B2B SaaS growth teams: acquisition, pipeline, lead scoring, paid channels. Synthetic dataset, full UX.'
+    : 'GrowthHub — operator-grade dashboard for B2B SaaS growth (D1 + Cloudflare). Weekly review for growth/GTM teams on a single screen.',
+  // Gated dashboard is noindex by default; /demo overrides this since it
+  // is the public showcase route (the only one in robots Allow + sitemap).
+  noindex = !isDemo,
+} = Astro.props;
+const fullTitle = isDemo ? `${title} Demo — operator dashboard for B2B SaaS growth` : `${title} — gh.wojciech.io`;
+const SITE = 'https://gh.wojciech.io';
+const canonical = new URL(Astro.url.pathname, SITE).href.replace(/\/$/, '') || SITE;
+const ogImage = `${SITE}/og-default.png`;
 ---
 <!doctype html>
 <html lang="en">
@@ -14,7 +29,18 @@ const fullTitle = isDemo ? `${title} — Demo` : `${title} — gh.wojciech.io`;
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{fullTitle}</title>
-  <meta name="robots" content="noindex,nofollow" />
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex ? <meta name="robots" content="noindex,nofollow" /> : <meta name="robots" content="index,follow" />}
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

@@ -80,15 +80,20 @@ const authorSchema = {
     'B2B SaaS growth',
   ],
 };
+const ogImageURL = new URL(ogImage, Astro.site).href;
 const articleSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Article',
+  '@type': 'TechArticle',
   headline: post.data.title,
   description: post.data.description,
   datePublished: publishedAt,
   dateModified: updatedAt,
   mainEntityOfPage: canonicalURL,
   url: canonicalURL,
+  image: ogImageURL,
+  inLanguage: 'en',
+  keywords: post.data.tags.join(', '),
+  articleSection: post.data.tags[0] ?? 'Insights',
   author: authorSchema,
   publisher: authorSchema,
   about: [
@@ -98,6 +103,16 @@ const articleSchema = {
     'revenue architecture',
   ],
 };
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Insights', item: SITE.url + '/insights/' },
+    { '@type': 'ListItem', position: 3, name: post.data.title, item: canonicalURL },
+  ],
+};
+const insightsSchema = [articleSchema, breadcrumbSchema];
 
 ---
 
@@ -109,7 +124,7 @@ const articleSchema = {
   type="article"
   publishedAt={publishedAt}
   updatedAt={updatedAt}
-  schema={articleSchema}
+  schema={insightsSchema}
 >
   <!-- Reading progress bar -->
   <div

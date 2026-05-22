@@ -3,15 +3,74 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
 }
 const {
   title = 'AI Growth OS — program wdrożenia AI dla zespołów GTM w B2B SaaS',
-  description = 'Program, który zamienia przypadkowe użycie AI w powtarzalny proces GTM: outbound, content, revenue ops. 36 odcinków, playbooki i blueprinty wdrożeniowe od praktyka. Dla zespołów B2B SaaS.',
+  description = 'Program wdrożenia AI dla zespołów GTM w B2B SaaS — outbound, content, revenue ops jako powtarzalny proces. 36 odcinków, playbooki, blueprinty od praktyka.',
+  ogImage,
+  noindex = false,
+  schema,
 } = Astro.props;
 
 const SITE = 'https://academy.wojciech.io';
 const canonical = new URL(Astro.url.pathname, SITE).href.replace(/\/$/, '') || SITE;
-const ogImage = `${SITE}/og-cover.png`;
+const ogImageURL = ogImage ? new URL(ogImage, SITE).href : `${SITE}/og-cover.png`;
+
+// Base JSON-LD: identifies the Academy and its anchor program for LLMs and
+// rich-result crawlers. Per-page schema is appended via the `schema` prop.
+const baseSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'EducationalOrganization',
+    name: 'AI Growth OS Academy',
+    alternateName: 'AI Growth OS',
+    url: SITE + '/',
+    logo: SITE + '/og-cover.png',
+    description:
+      'Polskojęzyczna akademia AI dla operatorów, marketerów i builderów B2B SaaS. Cohort live + biblioteka odcinków audio, ranking modeli, workflow do realnej roboty.',
+    inLanguage: 'pl',
+    founder: {
+      '@type': 'Person',
+      name: 'Wojciech Łuszczyński',
+      url: 'https://wojciech.io/',
+      jobTitle: 'GTM Architect & Growth Operator',
+      sameAs: [
+        'https://www.linkedin.com/in/wojciech-luszczynski/',
+        'https://x.com/w_luszczynski',
+        'https://github.com/wojciechluszczynski',
+      ],
+    },
+    sameAs: ['https://wojciech.io/'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: 'AI Growth OS',
+    description:
+      'Operator-grade AI dla zespołów GTM w B2B SaaS. 6 tygodni live cohortu plus biblioteka 36 odcinków audio, blueprinty i vault z promptami.',
+    provider: {
+      '@type': 'EducationalOrganization',
+      name: 'AI Growth OS Academy',
+      url: SITE + '/',
+    },
+    url: SITE + '/',
+    inLanguage: 'pl',
+    educationalLevel: 'Professional',
+    teaches: [
+      'Wybór modelu AI do zadania (Claude, GPT, modele lokalne)',
+      'Outbound jako system: Clay + Pipedrive + signal stack',
+      'Content jako infrastruktura: research, draft, dystrybucja',
+      'Revenue operations i dashboardy operatorskie',
+      'MCP agents i custom workflow automation',
+      'Adopcja AI w zespole, mierzenie ROI',
+    ],
+  },
+];
+const pageSchema = Array.isArray(schema) ? schema : schema ? [schema] : [];
+const schemaItems = [...baseSchema, ...pageSchema];
 ---
 <!doctype html>
 <html lang="pl">
@@ -21,18 +80,23 @@ const ogImage = `${SITE}/og-cover.png`;
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AI Growth OS" />
-  <meta property="og:image" content={ogImage} />
+  <meta property="og:locale" content="pl_PL" />
+  <meta property="og:image" content={ogImageURL} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content={ogImage} />
+  <meta name="twitter:image" content={ogImageURL} />
+  {schemaItems.map((item) => (
+    <script type="application/ld+json" set:html={JSON.stringify(item)} />
+  ))}
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
