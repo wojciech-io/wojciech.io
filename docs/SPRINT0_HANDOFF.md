@@ -103,7 +103,7 @@ Użytkownik (Wojciech) zaakceptował budowę "Sprint 0" — fundamentu pod multi
 ### Config (3)
 - [ ] `CODEOWNERS` — zdefiniowany, NIE enforced dopóki branch protection wyłączone
 - [ ] `renovate.json` — auto dep updates, grouped weekly
-- [ ] `.claude/settings.local.json` — permission allowlist per agent (Security Auditor NIE może `gh pr merge`, tylko Tech Lead). UWAGA: jeśli plik istnieje, merge zamiast nadpisać.
+- [x] ~~`.claude/settings.local.json` — permission allowlist per agent~~ → **NIE commitujemy.** Plik jest gitignorowany (personalny) i `settings.json` nie ma per-agent reguł. Restrykcja "Security Auditor nie merguje, tylko Tech Lead" jest egzekwowana przez: (a) frontmatter agenta (security-auditor nie dostaje narzędzia do merge w praktyce + zakaz w definicji), (b) CODEOWNERS + human review po włączeniu branch protection. Udokumentowane w `.claude/agents/security-auditor.md` i `docs/security/baseline-checklist.md`.
 
 ---
 
@@ -137,12 +137,12 @@ Na końcu: `gh pr create` do `main`. Tytuł krótki, body z checklistą użytkow
 
 | Slice | Status | Commit |
 |---|---|---|
-| 0. SPRINT0_HANDOFF.md | ✅ done | (ten commit) |
-| 1. process docs (11) | ⬜ todo | |
-| 2. agent definitions (2) | ⬜ todo | |
-| 3. agent state scaffold | ⬜ todo | |
-| 4. workflows (5–6) | ⬜ todo | |
-| 5. config (3) | ⬜ todo | |
+| 0. SPRINT0_HANDOFF.md | ✅ done | 2f121b8 |
+| 1. process docs (11) | ✅ done | 2f121b8 |
+| 2. agent definitions (2) | ✅ done | (feat/agents) |
+| 3. agent state scaffold | ✅ done | (chore/agents) |
+| 4. workflows (5) | ✅ done | (ci/sprint0) |
+| 5. config (CODEOWNERS, renovate) | ✅ done | (chore/sprint0) |
 | PR otwarty | ⬜ todo | |
 
-**Ostatnia aktualizacja:** 2026-05-22, handoff utworzony jako pierwszy plik. Reszta Sprint 0 do wyprodukowania.
+**Ostatnia aktualizacja:** 2026-05-22. Wszystkie slice'y plików gotowe i zacommitowane. Zostaje: push branch + `gh pr create` do `main`. Po PR — checklist użytkownika (sekcja "Po merge"). Settings per-agent: świadomie pominięte (patrz wyżej).
