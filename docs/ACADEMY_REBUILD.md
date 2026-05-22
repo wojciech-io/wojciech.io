@@ -94,7 +94,7 @@ apps/academy/
 ├── functions/
 │   ├── _middleware.ts            # gate dla /app/* (członkowie po loginie)
 │   ├── api/auth.ts               # email + magic link → Resend
-│   ├── api/stripe/webhook.ts     # Stripe events → D1
+│   ├── api/webhook.ts            # Stripe events → D1 (Stripe endpoint URL: /api/webhook)
 │   └── api/stripe/checkout.ts    # tworzy Checkout Session
 ├── src/
 │   ├── layouts/Layout.astro
@@ -155,8 +155,8 @@ review + akceptuje wartości pricing po dniu 1.
 - [x] `functions/api/stripe/checkout.ts` — tworzy Session when
       `STRIPE_SECRET_KEY` exists; otherwise returns configured cohort Payment
       Link
-- [x] `functions/api/stripe/webhook.ts` — `checkout.session.completed` →
-      D1 `customers` row + Resend magic-link email
+- [x] `functions/api/webhook.ts` — `checkout.session.completed` →
+      D1 `customers` row + Resend magic-link email (Stripe endpoint URL: `/api/webhook`)
 - [x] `functions/api/auth.ts` — magic link verify + cookie
 - [x] `functions/_middleware.ts` — gate `/app/*`
 - [ ] Stripe Dashboard webhook endpoint + `STRIPE_WEBHOOK_SECRET`

@@ -1,4 +1,4 @@
-import { createOpaqueToken, hmacHex, sha256 } from '../../_utils/crypto';
+import { createOpaqueToken, hmacHex, sha256 } from '../_utils/crypto';
 
 interface Env {
   DB?: D1Database;

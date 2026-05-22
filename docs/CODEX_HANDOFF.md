@@ -261,7 +261,7 @@ manual activation is needed.
 - **Payment system for Academy** is parked as the last optional task, not
   the current blocker. When Wojtek explicitly returns to it: add
   `STRIPE_SECRET_KEY`, create a webhook endpoint for
-  `https://academy.wojciech.io/api/stripe/webhook`, listen to
+  `https://academy.wojciech.io/api/webhook`, listen to
   `checkout.session.completed` and
   `checkout.session.async_payment_succeeded`, then save its signing secret as
   the `STRIPE_WEBHOOK_SECRET` Pages secret and redeploy. Add
