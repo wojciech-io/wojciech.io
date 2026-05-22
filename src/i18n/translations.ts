@@ -158,8 +158,8 @@ export const pl = {
   // ── Contact ──────────────────────────────────────────────────────────
   contact: {
     eyebrow:        'Kontakt',
-    headline:       'Zbuduj, napraw lub zrecenzuj system.',
-    body:           'Używaj tego do aplikacji, GTM, automatyzacji, audytów lub szybkiej recenzji. Podaj cel, aktualny stan i przydatne linki. Odpowiadam w ciągu 24h.',
+    headline:       'Zbuduj, napraw lub oceń system.',
+    body:           'Pisz w sprawie aplikacji, GTM, automatyzacji, audytu albo szybkiej oceny. Podaj cel, obecny stan i przydatne linki. Odpowiadam w 24h.',
     bookCall:       'Umów rozmowę',
     bookDetail:     '30 min · prywatny scheduler',
     linkedinDetail: 'linkedin.com/in/wojciech-luszczynski',
