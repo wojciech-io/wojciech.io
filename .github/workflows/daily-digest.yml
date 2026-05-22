@@ -1,0 +1,80 @@
+name: Daily digest
+
+# Sprint 0: MANUAL ONLY. Confirm the mail looks right via workflow_dispatch,
+# THEN uncomment the 8:00 cron (deliberate enable, Sprint 0 day 5).
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 6 * * 1-5"   # 08:00 Europe/Warsaw (CEST=UTC+2), Mon–Fri
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+env:
+  DIGEST_TO: w.luszczynski@gmail.com
+  # Resend "from" must be on a domain verified in Resend. Override via
+  # secrets.DIGEST_FROM once the domain is verified; default assumes wojciech.io.
+  DIGEST_FROM: ${{ secrets.DIGEST_FROM != '' && secrets.DIGEST_FROM || 'wojciech.io agents <agents@wojciech.io>' }}
+  RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build digest body
+        id: build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "## Standup — $(date -u +%Y-%m-%d)"
+            echo ""
+            echo "### 🔴 Wymaga decyzji"
+            gh pr list --state open --label "needs-decision" \
+              --json number,title,url \
+              --jq '.[] | "- PR #\(.number) \(.title) — \(.url)"' || echo "_(brak)_"
+            echo ""
+            echo "### 🟡 Open PRs"
+            gh pr list --state open --json number,title,url \
+              --jq '.[] | "- #\(.number) \(.title) — \(.url)"' || echo "_(brak)_"
+            echo ""
+            echo "### 🟢 Merged (24h)"
+            gh pr list --state merged --search "merged:>=$(date -u -d '1 day ago' +%Y-%m-%d 2>/dev/null || date -u -v-1d +%Y-%m-%d)" \
+              --json number,title --jq '.[] | "- #\(.number) \(.title)"' || echo "_(brak)_"
+            echo ""
+            echo "### Agent health"
+            for s in .agent-state/*/state.md; do
+              echo "- $s:"; grep -E 'Last run|Health' "$s" | sed 's/^/    /'
+            done
+            echo ""
+            echo "→ dev.wojciech.io (Sprint 1)"
+          } > digest.md
+          cat digest.md
+
+      - name: Send mail (Resend)
+        if: ${{ env.RESEND_API_KEY != '' }}
+        run: |
+          # Resend sends HTML; convert the Markdown body to a <pre> block so it
+          # renders readably without a Markdown step.
+          body=$(jq -Rs . < digest.md)
+          payload=$(jq -n \
+            --arg from "$DIGEST_FROM" \
+            --arg to "$DIGEST_TO" \
+            --arg subject "[wojciech.io] Daily digest — $(date -u +%Y-%m-%d)" \
+            --argjson text "$body" \
+            '{from:$from, to:[$to], subject:$subject, text:$text}')
+          http=$(curl -s -o /tmp/resend.out -w "%{http_code}" \
+            -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer $RESEND_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$payload")
+          echo "Resend HTTP $http"; cat /tmp/resend.out
+          test "$http" = "200" || test "$http" = "201"
+
+      - name: No RESEND_API_KEY configured
+        if: ${{ secrets.RESEND_API_KEY == '' }}
+        run: echo "RESEND_API_KEY not set — digest built (see above) but not mailed. Add the secret to enable mail."
