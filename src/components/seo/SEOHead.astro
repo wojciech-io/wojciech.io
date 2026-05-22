@@ -34,9 +34,12 @@ const ogImageURL = new URL(ogImage, Astro.site).href;
 // Only pages that exist in all three locales get alternates; EN-only pages
 // (privacy, 404, insights) emit none. Paths keep the site's trailing slash.
 const OG_LOCALE: Record<string, string> = { en: 'en_US', pl: 'pl_PL', it: 'it_IT' };
+// Localized in all three locales. The insights INDEX is localized
+// (/pl/insights/, /it/insights/); individual articles /insights/<slug>/ are
+// EN-only, so they are intentionally absent here.
 const LOCALIZED_PATHS = new Set([
   '/', '/about/', '/ai-systems/', '/apps/', '/contact/',
-  '/cv/', '/now/', '/resources/', '/subscribe/', '/work/',
+  '/cv/', '/now/', '/resources/', '/subscribe/', '/work/', '/insights/',
 ]);
 const _seg = Astro.url.pathname.split('/').filter(Boolean);
 const curLang = _seg[0] === 'pl' || _seg[0] === 'it' ? _seg[0] : 'en';
