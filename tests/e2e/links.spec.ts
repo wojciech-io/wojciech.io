@@ -1,13 +1,16 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Internal link audit + lang switcher correctness.
+ * Internal link audit.
  *
- * Catches broken /privacy links (historical CookieBanner bug) and
- * lang-switcher pointing at /en/* instead of root.
+ * Catches broken /privacy links (historical CookieBanner bug) and any
+ * regressions in cross-page navigation.
+ *
+ * PL/IT routes + lang-switcher tests removed Sprint 2 B1 (English-only
+ * launch per CLAUDE.md). Re-add when localization sprint reinstates them.
  */
 
-const PAGES_TO_AUDIT = ['/', '/about/', '/work/', '/insights/', '/pl/', '/it/'];
+const PAGES_TO_AUDIT = ['/', '/about/', '/work/', '/insights/'];
 
 test('cookie banner /privacy link resolves (was 404 historically)', async ({ page }) => {
   await page.goto('/');
@@ -16,17 +19,6 @@ test('cookie banner /privacy link resolves (was 404 historically)', async ({ pag
     const href = await privacyLink.getAttribute('href');
     const r = await page.request.get(href!);
     expect(r.status(), 'privacy page must not 404').toBeLessThan(400);
-  }
-});
-
-test('lang switcher EN target is root, never /en/', async ({ page }) => {
-  await page.goto('/pl/about/');
-  const enLink = page
-    .locator('a[hreflang="en"], [data-lang-switch="en"], a[data-locale="en"]')
-    .first();
-  if (await enLink.count()) {
-    const href = await enLink.getAttribute('href');
-    expect(href, 'EN switcher href').not.toMatch(/\/en\//);
   }
 });
 
