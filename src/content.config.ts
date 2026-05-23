@@ -42,4 +42,31 @@ const work = defineCollection({
   }),
 });
 
-export const collections = { insights, work };
+// Sprint 2 — Testimonials collection (B4 decision).
+// Featured subset criteria (locked in docs/03-content-decisions.md):
+//   primary: tightest claims (specific numbers, not generic praise) + voice fit
+//   tiebreaker: recognizable names
+// Use `featured: true` for homepage subset (3-5 entries), `draft: true` while curating.
+const testimonials = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/testimonials' }),
+  schema: z.object({
+    // Author identity
+    author: z.string(),                              // full name
+    role: z.string(),                                // job title at the time of quote
+    company: z.string(),                             // company at the time of quote
+    avatar: z.string().optional(),                   // /images/testimonials/<slug>.jpg
+    href: z.string().url().optional(),               // link to LinkedIn post / source
+    // Quote
+    quote: z.string(),                               // the actual testimonial body
+    // Curation metadata
+    featured: z.boolean().default(false),            // surface on homepage
+    order: z.number().default(99),                   // sort within featured subset
+    date: z.coerce.date().optional(),                // when given
+    voiceFit: z.enum(['high', 'medium', 'low']).default('medium'), // tone alignment with docs/10
+    claimTightness: z.enum(['specific-numbers', 'specific-outcome', 'generic']).default('generic'),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(true),                // default true — explicit opt-in to surface
+  }),
+});
+
+export const collections = { insights, work, testimonials };
