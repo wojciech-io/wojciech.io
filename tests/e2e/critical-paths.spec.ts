@@ -1,20 +1,19 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Per-locale reachability + SEO surface assets.
+ * Per-page reachability + SEO surface assets.
  *
  * Complements smoke.spec.ts (which only covers EN main pages) by adding
- * PL/IT localized variants and the SEO/feed surface.
+ * supporting pages + the SEO/feed surface.
+ *
+ * PL/IT routes removed Sprint 2 B1 (English-only launch per CLAUDE.md).
+ * Re-add localized paths here when a dedicated localization sprint reinstates
+ * /[lang]/ + /pl/ + /it/ in src/pages/.
  */
 
 const PAGES = [
-  { path: '/pl/', name: 'home (PL)' },
-  { path: '/it/', name: 'home (IT)' },
-  { path: '/pl/about/', name: 'about (PL)' },
   { path: '/contact/', name: 'contact' },
-  { path: '/cv/', name: 'cv (EN)' },
-  { path: '/pl/cv/', name: 'cv (PL)' },
-  { path: '/it/cv/', name: 'cv (IT)' },
+  { path: '/cv/', name: 'cv' },
 ];
 
 for (const p of PAGES) {
