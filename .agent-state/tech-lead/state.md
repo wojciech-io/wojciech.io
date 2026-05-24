@@ -1,39 +1,55 @@
 # Tech Lead — state
 
-- **Last run:** 2026-05-22 (Sprint 1 closing session, nervous-bartik-5a866d)
+- **Last run:** 2026-05-24 (autonomous content roll + cleanup session, nervous-bartik-5a866d)
 - **Health:** OK
-- **Cron:** daily-digest LIVE Mon-Fri 08:00 UTC (activated via PR #7)
+- **Cron:** daily-digest LIVE Mon-Fri 08:00 UTC
 
-## Sprint 1 — closed scope (this session)
+## Sprint 2 — accelerated close (this session, 2026-05-24)
 
 | PR | What | State |
 |---|---|---|
-| #7 | Activate weekly Security + daily digest crons | merged |
-| #14 | Test Engineer agent + Playwright smoke + axe a11y + commitlint | merged |
-| #15 | Release Manager agent scaffold (4th autonomous agent) | merged |
-| #16 | Security headers on app.wojciech.io 401 (correct monorepo path) | merged |
-| #17 | Flip headers-check from warning to blocking | merged |
-| #18 | Lighthouse CI (Tier 5d) + first Codex closed task (SEO foundations) | merged |
-| #12 | Login security headers issue | closed (auto via #16 + #17) |
+| #29 | Hide empty /work cluster sections | merged (rebased to pick up stale-test fix) |
+| #32 | T1 testimonials migration + B5a Tablica pick + 2 Codex tasks | merged |
+| #33 | Delete dead src/i18n/ + 2 more Codex tasks queued | merged |
+| #34 | docs/FUTURE_CULTURAL_LOCALIZATION + docs/FUTURE_REDESIGN_WITH_LOVABLE | merged |
+| #35 | docs/SPRINT012_BLOCKERS refresh after rolls | merged |
 
-## Operational autonomous agents (4/4)
+## Codex pipeline status
 
-- **tech-lead** — daily-digest cron Mon-Fri 08:00 UTC ✅
-- **security-auditor** — security cron Sun 22:00 UTC + on PR ✅
-- **test-engineer** — e2e (smoke + a11y) on PR + nightly ✅
-- **release-manager** — release-please workflow_dispatch (manual until first dry-run) ✅ scaffold
+5 closed tasks ready for consumption in `.codex-tasks/`:
+1. `2026-05-22-seo-foundations-review.md` (oryginalny SEO audit)
+2. `2026-05-23-visual-regression-baseline-capture.md` (Tier 5a)
+3. `2026-05-23-testimonialslider-migrate-to-collection.md` (single source of truth)
+4. `2026-05-24-data-pl-it-attribute-sweep.md` (~200 dead attrs)
+5. `2026-05-24-sitemap-and-redirects-audit.md` (Sprint 2 SEO fallout)
 
-## Pending decisions / handoffs
+Wojciech needs to open Codex session and feed it the first task (others can iterate sequentially).
 
-- **Codex** — first closed task awaiting consumption: `.codex-tasks/2026-05-22-seo-foundations-review.md`. Wojciech opens Codex in a fresh session and points it at that file.
-- **CF Access for dev.wojciech.io** — blocks Tier 6 (dashboard). Setup instructions delivered in chat 2026-05-22.
-- **Linear workspace** — created at luscinetti by Wojciech; integration deferred to Sprint 2 unless raised earlier.
+## Pending Wojciech (single source of truth: docs/SPRINT012_BLOCKERS.md + docs/MORNING_CHECKLIST.md)
 
-## Sprint 1 — deferred to Sprint 2
+🔴 **CF Access for dev.wojciech.io** — blocks PR #21 dashboard. Requires DNS CNAME `dev` first (confirmed via dig: record doesn't exist).
+🟡 **M1 metrics** for 7 work entries — paste template into chat, ja produkuję 1 PR.
+🟡 **S1-1 Codex session** — copy-paste prompt ready in MORNING_CHECKLIST.md.
+🟢 Better Stack monitor (~10 min account create).
+🟢 Renovate GitHub App install (~5 min).
+🟢 Linear integration decision (wire / stay / defer — 2 min).
 
-- **Tier 5a** visual regression baselines — spec scaffolded but `test.skip()`'d; needs operational baseline capture run.
-- **Tier 6** dev.wojciech.io dashboard — code can scaffold now under `apps/dev/`, but deploy gated on CF Access.
+## Autonomous queue (when ready, no input needed)
+
+- After CF Access + DNS landing: mark PR #21 ready, merge, smoke-test dashboard
+- After M1 paste: write 7 .json updates in one PR
+- After Codex PR appears: review + merge per acceptance criteria
+- After Linear decision: wire or close memory note
+
+## Future sprints documented (triggered by Wojciech command)
+
+- Cultural localization sprints — `docs/FUTURE_CULTURAL_LOCALIZATION.md`. Trigger: "start cultural sprint <market>".
+- Redesign w Lovable — `docs/FUTURE_REDESIGN_WITH_LOVABLE.md`. Trigger: share first Lovable URL.
+- Branch protection enable — Trigger: "enable branch protection" (po 2 tyg clean CI).
+- Release Manager v0.1.0 dry-run — Trigger: "cut v0.1.0".
 
 ## Notes
 
-Initialized Sprint 0. Activated Sprint 1. Next session pickup: read this state.md + `docs/SPRINT1_RETRO.md` + recent `.agent-reports/` to reconstruct context.
+Workflow failure emails OFF od 2026-05-24 (Wojciech odznaczył w GitHub settings). Cloudflare bot PR comments — opcjonalnie OFF w CF dashboard. Daily digest 08:00 UTC pon-pt jest jedynym automatycznym mailem.
+
+Next session pickup: read this state.md + `docs/MORNING_CHECKLIST.md` + recent `.agent-reports/` to reconstruct context cold.
