@@ -19,6 +19,14 @@ const coverMap: Record<string, CoverType> = {
 const allWork = (await getCollection('work', ({ data }) => !data.draft))
   .sort((a, b) => a.data.order - b.data.order);
 
+// Sprint 2 polish: hide cluster sections entirely if zero published entries.
+// Prevents the page from rendering an empty header for a cluster that's
+// still being filled in (e.g. growth-architecture during Sprint 2 content
+// phase). Drafts are already excluded above, so the check is "is anything
+// non-draft in this cluster".
+const hasItems = (clusterId: string) =>
+  allWork.some((w) => w.data.cluster === clusterId);
+
 const clusters = [
   {
     id: 'ai-gtm',
@@ -73,9 +81,9 @@ const clusters = [
         Selected work across GTM systems, AI tooling, and product delivery.
         Grouped by what it proves, not by when it happened.
       </p>
-      <!-- Cluster quick-links -->
+      <!-- Cluster quick-links — hide pills for clusters with zero published items -->
       <div class="flex flex-wrap gap-3">
-        {clusters.map(({ id, label, labelPl, labelIt, n }) => (
+        {clusters.filter(({ id }) => hasItems(id)).map(({ id, label, labelPl, labelIt, n }) => (
           <a
             href={`#${id}`}
             class="group inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-surface)] text-sm px-4 py-2 rounded-[var(--radius-btn)] text-[var(--color-text-muted)] hover:border-[var(--color-accent)]/40 hover:text-[var(--color-text)] transition-colors"
@@ -88,8 +96,8 @@ const clusters = [
     </div>
   </section>
 
-  <!-- Clusters -->
-  {clusters.map(({ id, label, labelPl, labelIt, eyebrow, n, description, descriptionPl, descriptionIt, icon }) => {
+  <!-- Clusters — only render sections that have at least one published item -->
+  {clusters.filter(({ id }) => hasItems(id)).map(({ id, label, labelPl, labelIt, eyebrow, n, description, descriptionPl, descriptionIt, icon }) => {
     const items = allWork.filter((w) => w.data.cluster === id);
     const cardGridClass = [
       'grid gap-6',
