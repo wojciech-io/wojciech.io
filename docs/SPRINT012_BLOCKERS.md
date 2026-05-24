@@ -6,23 +6,13 @@ Items ordered by **highest-leverage / lowest-time first**.
 
 ---
 
-## 🔴 BLOCKER B5a — Crewly name is taken (due-diligence failed)
+## ✅ B5a RESOLVED — name = Tablica (default pick, Wojciech override-able)
 
-**What:** Picked fictional name `Crewly` for the Kadromierz proof entry (Sprint 2 B5). Web search confirms `Crewly` exists as a real HR-tech product (listed on OMR Reviews). Using it would impersonate a real product.
+Tech-lead default-picked `Tablica` autonomously 2026-05-23 after `Crewly` failed due-diligence (real product on OMR Reviews). Rename + memory note + docs updates landed in commit alongside this revision.
 
-**Why blocking:** Cannot publish the growth-architecture cluster entry. Cluster #2 stays empty on `/work` (currently hidden via PR #29 logic).
+**Wojciech can override at any time:** write `name = Rotalink` (or anything else) — tech-lead re-checks, renames file, updates docs in <2 min.
 
-**Action (1 min):** Pick from these 3 alternatives, all due-diligence checked:
-
-| Option | Real-company check | Notes |
-|---|---|---|
-| **Tablica** ✅ recommended | No conflict found in HR-tech space; "tablica" = Polish for "board" — works thematically with workforce planning | Safe |
-| **Rotalink** ⚠️ | UK manufacturer of miniature motors (different industry — no confusion risk with HR-tech case) | Safe-ish |
-| Something new | Propose any name; I re-check before writing | TBD |
-
-**Sources:** [Crewly on OMR Reviews](https://omr.com/en/reviews/product/crewly), [Rotalink Ltd](https://www.rotalink.com/), Tablica: no SaaS HR result found.
-
-**Output of your action:** Tell me "name = Tablica" (or whichever) → I update memory note, draft the proof entry with TBD content for your story-fill.
+**Still pending Wojciech:** real content for the entry (`src/content/work/tablica-growth-system.json`). All fields are `TBD` placeholders + `draft: true` until story + metrics land. See M1 below for metrics flow.
 
 ---
 
