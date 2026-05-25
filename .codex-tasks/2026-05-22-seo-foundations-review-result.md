@@ -2,154 +2,56 @@
 task: review/seo-foundations
 brief: 2026-05-22-seo-foundations-review.md
 status: completed
-verified_against: production (https://wojciech.io)
-executed_by: tech-lead (Claude Code, session priceless-cori-5c6e72)
-date: 2026-05-23
+verified_against: local build + Playwright preview
+executed_by: Codex
+date: 2026-05-25
 ---
 
 # SEO foundations review — result
 
-## TL;DR
-
-All nine acceptance criteria from the brief **PASS on production**.
-No code changes were required to the SEO surface itself — Codex's earlier
-canonical/hreflang work (PRs around `ba6dc07` / `9bd1712`) plus the
-`LOCALIZED_PATHS` gate already in `src/components/seo/SEOHead.astro`
-covered everything.
-
-One deliverable added: `tests/e2e/seo.spec.ts` to make the criteria
-that weren't already covered by `hreflang.spec.ts` / `links.spec.ts`
-enforceable in CI.
-
 ## Audit — per criterion
 
-### 1. Canonical URLs correct on all public pages — **PASS**
+1. Canonical URLs correct on all public pages — **PASS for current public pages; N/A for the named article URL.** `SEOHead.astro` builds canonicals from the explicit `canonical` prop or current path against `Astro.site` (`src/components/seo/SEOHead.astro:33`) and emits one canonical tag (`src/components/seo/SEOHead.astro:99`). Playwright now checks `/`, `/about/`, `/work/`, `/ai-systems/`, and `/insights/` (`tests/e2e/seo.spec.ts:35`, `tests/e2e/seo.spec.ts:53`). `/insights/claude-code-vs-clay/` is not a built public page in this checkout because `src/content/insights/` is absent; adding article content or pages is outside this task's hard boundaries.
 
-Probed six representative URLs on prod. Every canonical points at the
-self URL with trailing slash and the production hostname:
+2. OG tags present and resolve on every page — **PASS for current public pages; N/A for the named article URL.** `SEOHead.astro` emits `og:type`, `og:url`, `og:title`, `og:description`, and `og:image` from the same canonical/default image path (`src/components/seo/SEOHead.astro:103`). Playwright verifies required OG tags and fetches the local OG image for the audited pages (`tests/e2e/seo.spec.ts:20`, `tests/e2e/seo.spec.ts:61`, `tests/e2e/seo.spec.ts:71`).
 
-| URL | Canonical |
-|---|---|
-| `/` | `https://wojciech.io/` |
-| `/about/` | `https://wojciech.io/about/` |
-| `/work/` | `https://wojciech.io/work/` |
-| `/ai-systems/` | `https://wojciech.io/ai-systems/` |
-| `/insights/` | `https://wojciech.io/insights/` |
-| `/insights/how-to-build-gtm-ai-agent-outbound-crm/` | `https://wojciech.io/insights/how-to-build-gtm-ai-agent-outbound-crm/` |
+3. Twitter card tags present — **PASS for current public pages; N/A for the named article URL.** `SEOHead.astro` emits `summary_large_image`, title, description, and image tags (`src/components/seo/SEOHead.astro:114`). Playwright verifies every required Twitter tag is present and non-empty, then fetches the referenced image locally (`tests/e2e/seo.spec.ts:28`, `tests/e2e/seo.spec.ts:80`, `tests/e2e/seo.spec.ts:90`).
 
-Note: brief mentions the *old* article slug `claude-code-vs-clay`; that
-URL was migrated and now 301s to `how-to-build-gtm-ai-agent-outbound-crm`
-via `public/_redirects` (verified).
+4. Sitemap references indexable pages and excludes drafts/dev/app subdomains — **PASS.** Astro still emits its standard `/sitemap-index.xml` plus `/sitemap-0.xml`; `robots.txt` points crawlers at that index. I added a sitemap filter that keeps only `wojciech.io`, strips future `/en/`, `/pl/`, and `/it/` paths, and excludes noindex `/cv/` and `/privacy/` (`astro.config.mjs:9`, `astro.config.mjs:11`, `astro.config.mjs:28`). The generated sitemap lists the current indexable pages and excludes dev/app hostnames (`tests/e2e/seo.spec.ts:36`, `tests/e2e/seo.spec.ts:185`).
 
-Source: `src/components/seo/SEOHead.astro:33` — uses `Astro.url.pathname`
-when no explicit canonical is passed.
+5. robots.txt allows public crawl and app/dev posture is blocked where represented — **PASS with dev N/A.** The root `public/robots.txt` allows `wojciech.io` crawling and references the sitemap index; Playwright verifies that response (`tests/e2e/seo.spec.ts:160`). `apps/app/public/robots.txt` blocks all crawling and is now covered by a file-backed test (`tests/e2e/seo.spec.ts:169`). There is no `dev.wojciech.io` project or robots file in this checkout, so dev remains N/A.
 
-### 2. OG tags present and resolve — **PASS**
+6. llms.txt present with current content — **PASS.** `public/llms.txt` is present and substantial, matching the launch-file requirement in `docs/09-seo-migration.md`. Playwright checks `/llms.txt` returns 200 and is non-trivial (`tests/e2e/seo.spec.ts:178`).
 
-Homepage emits the full set required by the brief plus extras:
-`og:title`, `og:description`, `og:image`, `og:url`, `og:type`,
-`og:locale`, `og:site_name`. Spot-checked one article — same coverage,
-plus `article:published_time` / `article:modified_time` when applicable
-(`SEOHead.astro:139-140`).
+7. hreflang on multilingual routes — **PASS.** `CLAUDE.md` says launch is English-only, and there are no `/pl` or `/it` route directories. I removed stale PL/IT alternate output from `SEOHead.astro`; it now emits only `og:locale="en_US"` and no hreflang alternates (`src/components/seo/SEOHead.astro:36`, `src/components/seo/SEOHead.astro:109`). The existing hreflang spec verifies the homepage emits no hreflang alternates.
 
-### 3. Twitter card tags present — **PASS**
+8. No broken internal links across pages — **PASS.** `tests/e2e/links.spec.ts` already covered core internal links; I added `/ai-systems/` to the audited page set so the full brief page list is represented (`tests/e2e/links.spec.ts:13`). The focused Playwright run passed for both desktop Chromium and mobile Safari.
 
-`twitter:card` (= `summary_large_image`), `twitter:title`,
-`twitter:description`, `twitter:image` all present on every audited page.
-
-### 4. Sitemap correct and excludes drafts/subdomains — **PASS**
-
-`/sitemap-index.xml` references `/sitemap-0.xml`, which lists 48 URLs
-covering homepage, all marketing pages, the localized PL/IT variants
-where applicable, and 20+ articles under `/insights/`. App and other
-subdomains naturally absent (separate Pages projects, separate origin).
-
-### 5. robots.txt posture — **PASS (with note on scope)**
-
-Production `/robots.txt`:
-
-```
-User-agent: *
-Allow: /
-Sitemap: https://wojciech.io/sitemap-index.xml
-```
-
-Brief says "blocks dev.wojciech.io and app.wojciech.io" — that's a
-**per-subdomain** concern, not flagship's. Subdomain audit:
-
-| Subdomain | robots.txt | Verdict |
-|---|---|---|
-| `app.wojciech.io` | `Disallow: /` | ✅ correctly blocks all |
-| `dev.wojciech.io` | no DNS yet (Sprint 1 dashboard pending) | N/A |
-| `academy.wojciech.io` | `Allow: /` + `Disallow: /app/` | ✅ panel gated |
-| `notch.wojciech.io` | `Allow: /` + `Disallow: /api/` | ✅ |
-| `subscribe.wojciech.io` | `Allow: /` + `Disallow: /api/` | ✅ |
-| `gh.wojciech.io` | `Allow: /demo` + `Disallow: /api/` | ✅ rest is gated |
-
-### 6. llms.txt present and current — **PASS**
-
-`/llms.txt` returns 200, 87 lines, mirrors `docs/09-seo-migration.md`
-content guidance. No staleness flags.
-
-### 7. hreflang on multilingual routes — **PASS**
-
-CLAUDE.md's "English-only at launch" rule has been superseded — the site
-is now trilingual (EN canonical at root, PL under `/pl/`, IT under
-`/it/`), confirmed by user decisions in prior sessions.
-
-`SEOHead.astro:43-46` defines a `LOCALIZED_PATHS` allowlist of URLs that
-exist in all three locales. Pages in the set emit the full
-`en/pl/it/x-default` cluster. EN-only pages (articles, `/privacy`, 404)
-emit **none** — which is what the brief intends ("self-referencing only"
-when not localized; we just emit nothing, which is equivalent and
-cleaner).
-
-Verified live:
-
-- `/about/` → emits `hreflang="en|pl|it|x-default"` ✅
-- `/insights/how-to-build-gtm-ai-agent-outbound-crm/` → emits **no**
-  hreflang (would otherwise point at `/pl/insights/<slug>/` which 404s) ✅
-
-This is exactly the bug class the brief was guarding against.
-
-### 8. No broken internal links — **PASS**
-
-Already enforced by `tests/e2e/links.spec.ts`. Re-probed live: 13
-flagship pages + 6 PL/IT variants + `/en/about/` redirect chain — all
-return 200 or proper 301 (`/en/*` → root canonical).
-
-### 9. Structured data — **PASS (richer than required)**
-
-| Page | Required | Found |
-|---|---|---|
-| `/` | WebSite | `Person` + `WebSite` ✅ |
-| `/about/` | Person | `Person` + `WebSite` + `SoftwareApplication` ✅ |
-| article | BlogPosting | `TechArticle` + `BreadcrumbList` + `ListItem` + `Person` + `WebSite` + `SoftwareApplication` ✅ |
-
-Article uses `TechArticle` instead of plain `BlogPosting` — that's a
-*more* specific type for technical writeups and is preferred by Google
-for these article types. `BreadcrumbList` is a bonus that improves SERP
-display.
+9. schema.org structured data — **PASS for current pages; article template prepared.** `SEOHead.astro` emits base `Person` and `WebSite` JSON-LD (`src/components/seo/SEOHead.astro:41`, `src/components/seo/SEOHead.astro:81`), and Playwright checks `Person` on `/about/` plus `WebSite` on `/` (`tests/e2e/seo.spec.ts:100`, `tests/e2e/seo.spec.ts:116`). I changed the insight article template from `TechArticle` to the brief-required `BlogPosting` (`src/pages/insights/[slug].astro:84`), and the test will enforce `BlogPosting` when published insight content exists (`tests/e2e/seo.spec.ts:132`).
 
 ## Files changed
 
-- **NEW** `tests/e2e/seo.spec.ts` — 9 test cases covering OG completeness,
-  Twitter card completeness, schema-type presence on `/` and article,
-  robots.txt structure, llms.txt presence, sitemap chain integrity, and
-  app.wojciech.io disallow posture. Patterns mirror
-  `tests/e2e/hreflang.spec.ts` (Playwright `request` for body audits,
-  `page.locator` for DOM).
+- `src/components/seo/SEOHead.astro` — removed stale PL/IT hreflang and `og:locale:alternate` output for the English-only launch.
+- `src/pages/insights/[slug].astro` — changed article JSON-LD type to `BlogPosting`.
+- `astro.config.mjs` — added sitemap filtering for noindex pages, locale paths, and non-root hostnames.
+- `tests/e2e/seo.spec.ts` — expanded SEO acceptance coverage.
+- `tests/e2e/links.spec.ts` — added `/ai-systems/` to internal-link coverage.
+- `.codex-tasks/2026-05-22-seo-foundations-review-result.md` — replaced stale production-era result with this current audit.
 
-No production code touched. SEO surface was already correct.
+## New tests added
 
-## Open questions
+- Canonical assertions for the audited public pages.
+- OG and Twitter metadata completeness checks, including local image fetches.
+- Person/WebSite schema assertions and future BlogPosting assertion for published insight articles.
+- Sitemap inclusion/exclusion checks for indexable, noindex, locale, dev, and app URLs.
+- App subdomain robots disallow check from `apps/app/public/robots.txt`.
+- Internal-link coverage for `/ai-systems/`.
 
-None — all criteria verified against live production.
+## Verification
 
-## Recommendations for follow-up (out of this task's scope)
+- `npm run build` — passed. Build warns that `src/content/insights/` is missing/empty.
+- `npx playwright test tests/e2e/seo.spec.ts tests/e2e/hreflang.spec.ts tests/e2e/links.spec.ts` — passed: 78 passed, 2 skipped. The skipped checks are the article-schema tests because no published insight article exists in this checkout.
 
-- **Sprint 2 candidate:** when `dev.wojciech.io` is provisioned, mirror
-  the `app.wojciech.io` `Disallow: /` posture for that subdomain.
-- **Optional enhancement:** consider adding `og:image:width`/`height` to
-  the SEOHead defaults so Slack/LinkedIn unfurls render at the intended
-  aspect ratio without a re-fetch.
+## Open questions — tech-lead inbox
+
+- The brief names `/insights/claude-code-vs-clay/`, but current source has no `src/content/insights/` directory and builds no insight article pages. Should Sprint 3 restore the `claude-code-vs-clay` article, or should the closed SEO brief be updated to treat article checks as future-content N/A until the migration lands?
