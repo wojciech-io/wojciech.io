@@ -7,11 +7,12 @@
 # ─── Sprint 2 B1: kill multilingual routes (English-only launch) ────────
 # Force redirect so stale CF Pages cache (s-maxage 7d) is superseded.
 # Re-add localized routes here when a future localization sprint reinstates them.
-/pl/*         /:splat        301
-/it/*         /:splat        301
-/en/*         /:splat        301
+/pl/*         /              301
+/it/*         /              301
+/en/*         /              301
 /pl           /              301
 /it           /              301
+/en           /              301
 
 # ─── Legacy retired pages (Sprint 0 IA decision) ────────────────────────
 /solutions    /work/         301
@@ -26,6 +27,11 @@
 # ─── Old blog tree → new /insights/ index ───────────────────────────────
 /blog         /insights/     301
 /blog/        /insights/     301
+
+# ─── Restored Sprint 3 article slug ────────────────────────────────────
+/blog/claude-code-vs-clay        /insights/claude-code-vs-clay/  301
+/blog/claude-code-vs-clay/       /insights/claude-code-vs-clay/  301
+/blog/*                          /insights/:splat               301
 
 # ─── Sprint 2 B2: 15 archived insights → /insights/ index ───────────────
 # Per-slug landing pages will return when articles are rewritten for v2
@@ -60,12 +66,3 @@
 /insights/how-to-build-micro-saas-with-ai-tools/              /insights/  301
 /insights/macos-teleprompter-macbook-notch-native-app         /insights/  301
 /insights/macos-teleprompter-macbook-notch-native-app/        /insights/  301
-
-# ─── claude-code-vs-clay slug guards (broken previously) ────────────────
-# Were pointing at the now-archived gtm-ai-agent article. Both old and new
-# paths route safely to /insights/ index until claude-code-vs-clay article
-# migration ships in Sprint 3.
-/blog/claude-code-vs-clay        /insights/  301
-/blog/claude-code-vs-clay/       /insights/  301
-/insights/claude-code-vs-clay    /insights/  301
-/insights/claude-code-vs-clay/   /insights/  301
