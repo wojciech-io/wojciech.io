@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('insights', (p) => !p.data.draft))
-  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
   .slice(0, 3);
 ---
 
@@ -30,7 +30,7 @@ const posts = (await getCollection('insights', (p) => !p.data.draft))
     <div class="divide-y divide-[var(--color-border)]">
       {posts.map((post) => (
         <a
-          href={`/insights/${post.id}/`}
+          href={`/insights/${post.id.replace(/\.mdx?$/, '')}/`}
           class="group flex flex-col md:flex-row md:items-start gap-6 py-8 transition-colors hover:text-[var(--color-accent-hi)]"
         >
           <div class="md:w-28 shrink-0">
