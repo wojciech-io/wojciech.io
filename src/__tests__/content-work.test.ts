@@ -21,7 +21,7 @@ describe('work content entries', () => {
     expect(entries.length).toBeGreaterThan(0);
   });
 
-  it.each(entries)('$file — required fields present', ({ data }) => {
+  it.each(entries)('$file: required fields present', ({ data }) => {
     expect(typeof data.title).toBe('string');
     expect(data.title.length).toBeGreaterThan(0);
     expect(typeof data.description).toBe('string');
@@ -32,7 +32,7 @@ describe('work content entries', () => {
     expect(typeof data.order).toBe('number');
   });
 
-  it.each(entries)('$file — metrics are valid if present', ({ data }) => {
+  it.each(entries)('$file: metrics are valid if present', ({ data }) => {
     if (!data.metrics) return;
     expect(Array.isArray(data.metrics)).toBe(true);
     for (const m of data.metrics) {
@@ -41,7 +41,7 @@ describe('work content entries', () => {
     }
   });
 
-  it.each(entries)('$file — image path starts with slash if present', ({ data }) => {
+  it.each(entries)('$file: image path starts with slash if present', ({ data }) => {
     if (!data.image) return;
     expect(data.image).toMatch(/^\//);
   });

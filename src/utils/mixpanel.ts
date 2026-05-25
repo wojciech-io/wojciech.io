@@ -1,12 +1,12 @@
 /**
- * Mixpanel analytics helper — wojciech.io
+ * Mixpanel analytics helper: wojciech.io
  *
  * EU data residency: events go to api-eu.mixpanel.com
  * Project: https://eu.mixpanel.com/project/4027656
  *
  * Consent gate: initializes only when cookie-consent === 'accepted'.
  * All events use snake_case property names (Mixpanel is case-sensitive).
- * Anonymous tracking only on the marketing site — no .identify() call here.
+ * Anonymous tracking only on the marketing site: no .identify() call here.
  * Academy / app subdomains: call mp.identify(user_id) after login.
  */
 
@@ -40,10 +40,10 @@ export function optOut() {
   mixpanel.opt_out_tracking();
 }
 
-/** Convenience wrapper — no-ops if not initialised. */
+/** Convenience wrapper: no-ops if not initialised. */
 function track(event: string, props?: Record<string, unknown>) {
   if (!initialised) return;
-  // Omit undefined/null values — Mixpanel doesn't benefit from explicit nulls
+  // Omit undefined/null values: Mixpanel doesn't benefit from explicit nulls
   const clean = props
     ? Object.fromEntries(Object.entries(props).filter(([, v]) => v != null))
     : undefined;
@@ -76,7 +76,7 @@ export function trackArticleViewed(props: {
 
 /**
  * Fires at 25 / 50 / 75 / 100 % scroll depth on article pages.
- * Call once per depth milestone — caller is responsible for deduplication.
+ * Call once per depth milestone: caller is responsible for deduplication.
  */
 export function trackArticleScrollDepth(props: {
   slug: string;

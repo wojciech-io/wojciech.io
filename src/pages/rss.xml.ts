@@ -3,7 +3,7 @@ import type { APIRoute } from 'astro';
 
 // Canonical XML 1.0 entity escape (5 predefined entities: & < > " ').
 // Used on internal MDX content (validated by src/content.config.ts schema),
-// not user input. Output context is XML element/attribute text, not HTML —
+// not user input. Output context is XML element/attribute text, not HTML:
 // so semgrep's HTML-focused replaceAll rule does not apply here.
 // See .agent-reports/2026-05-22-security-auditor-triage-002.md for full triage.
 const escapeXml = (value: string) =>

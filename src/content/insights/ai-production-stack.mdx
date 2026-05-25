@@ -1,6 +1,6 @@
 ---
 title: "The AI stack I actually run in production"
-description: "A complete tour of every AI tool in active use across my client work and products — what earned its place, what got cut, and what the operating logic looks like across the stack."
+description: "A complete tour of every AI tool in active use across my client work and products: what earned its place, what got cut, and what the operating logic looks like across the stack."
 publishedAt: "2026-05-22"
 tags:
   - AI
@@ -20,7 +20,7 @@ tldr:
 
 There's a version of this article I'm not going to write: the one with 47 tools, a comparison matrix, and a score out of ten. You've read that article. It didn't help.
 
-This is a different version: every AI tool currently running in my production stack, the specific job it does, and why it earned the slot. I'll also tell you what got cut — that part is usually more useful than the keep list.
+This is a different version: every AI tool currently running in my production stack, the specific job it does, and why it earned the slot. I'll also tell you what got cut: that part is usually more useful than the keep list.
 
 One framing note: I distinguish between tools that **produce better output** and tools that just **move the work around**. The first kind stays. The second kind burns your time and makes you feel productive while solving nothing.
 
@@ -30,19 +30,19 @@ One framing note: I distinguish between tools that **produce better output** and
 
 ### Layer 1: Reasoning
 
-**Claude Sonnet / Opus** for complex diagnostic work — ICP analysis, GTM architecture reviews, positioning synthesis. Anywhere the task requires holding multiple competing constraints at once and reaching a defensible conclusion, not just pattern-matching to a probable next token.
+**Claude Sonnet / Opus** for complex diagnostic work: ICP analysis, GTM architecture reviews, positioning synthesis. Anywhere the task requires holding multiple competing constraints at once and reaching a defensible conclusion, not just pattern-matching to a probable next token.
 
-I don't reach for Claude for everything. Routine drafting, simple rewrites, straightforward research queries — those don't need the full reasoning layer. Using Opus on a subject line rewrite is like using a torque wrench to hang a picture frame.
+I don't reach for Claude for everything. Routine drafting, simple rewrites, straightforward research queries: those don't need the full reasoning layer. Using Opus on a subject line rewrite is like using a torque wrench to hang a picture frame.
 
-The operative test: *Can I get to the same answer without it?* If yes, I don't use it. If the task genuinely needs reasoning — weighing tradeoffs, synthesising conflicting signals, building a coherent argument from scattered inputs — that's the layer I reach for.
+The operative test: *Can I get to the same answer without it?* If yes, I don't use it. If the task genuinely needs reasoning: weighing tradeoffs, synthesising conflicting signals, building a coherent argument from scattered inputs. That's the layer I reach for.
 
 ### Layer 2: Execution
 
-**Claude Code** runs the agent stack. Research pipelines, enrichment loops, content drafts from audit data, CRM classification — all of it runs here. This is the highest-leverage tool in the stack, not because it's the smartest, but because it's the one that connects the intelligence layer to actual work product.
+**Claude Code** runs the agent stack. Research pipelines, enrichment loops, content drafts from audit data, CRM classification: all of it runs here. This is the highest-leverage tool in the stack, not because it's the smartest, but because it's the one that connects the intelligence layer to actual work product.
 
 The key configuration: `CLAUDE.md` per client, MCP tools for data access, Skills for named sub-tasks. I've written about [the outbound stack in detail](/insights/claude-code-vs-clay) and [how it runs in client engagements](/insights/claude-code-client-gtm). The short version: Claude Code with good operator context produces work that used to require a team.
 
-**Cursor** for code that needs to live in a repo. When I'm building an MCP server, extending a Cloudflare Worker, or shipping a feature for one of my products — Cursor handles the editing layer. Claude Code handles the thinking and the agent work; Cursor handles the IDE integration and the diff review.
+**Cursor** for code that needs to live in a repo. When I'm building an MCP server, extending a Cloudflare Worker, or shipping a feature for one of my products, Cursor handles the editing layer. Claude Code handles the thinking and the agent work; Cursor handles the IDE integration and the diff review.
 
 They're not redundant. Claude Code is an operator; Cursor is an editor. Different jobs, different contexts.
 
@@ -50,15 +50,15 @@ They're not redundant. Claude Code is an operator; Cursor is an editor. Differen
 
 **Exa MCP** for real-time web research inside agent runs. Exa is purpose-built for LLM use: semantic search, clean responses, no crawler blocking drama. It replaced Brave Search in my stack after a few months because the quality of results on company research queries is consistently better.
 
-**Browser automation MCP** (Playwright-based) for pages that block conventional scraping: LinkedIn company pages, some SaaS pricing pages, Glassdoor signals. This is not for bulk crawling — it's for the handful of high-value pages per engagement where static search isn't enough.
+**Browser automation MCP** (Playwright-based) for pages that block conventional scraping: LinkedIn company pages, some SaaS pricing pages, Glassdoor signals. This is not for bulk crawling: it's for the handful of high-value pages per engagement where static search isn't enough.
 
 **Perplexity** for fast background research on industries, markets, or technical topics where I need a synthesised starting point rather than raw search results. I treat it as a research brief generator, not a source. Anything it surfaces that matters, I verify.
 
 ### Layer 4: CRM and data
 
-**HubSpot MCP** for CRM operations — reading contact and company records, classifying against ICP criteria, flagging data quality issues, generating update payloads. Most CRM work used to be manual and inconsistent. With the MCP in the loop, the classification logic is consistent and auditable.
+**HubSpot MCP** for CRM operations: reading contact and company records, classifying against ICP criteria, flagging data quality issues, generating update payloads. Most CRM work used to be manual and inconsistent. With the MCP in the loop, the classification logic is consistent and auditable.
 
-**GA4 / Amplitude** for analytics — not via AI tools, but as the data source for Claude to reason against. I pull report exports or use the GA4 Data API directly, then feed the structured data to the reasoning layer. "Here are the last 90 days of acquisition by channel and conversion by cohort — what's the diagnosis?" That's a task the reasoning layer handles well when the data is clean.
+**GA4 / Amplitude** for analytics, not via AI tools, but as the data source for Claude to reason against. I pull report exports or use the GA4 Data API directly, then feed the structured data to the reasoning layer. "Here are the last 90 days of acquisition by channel and conversion by cohort: what's the diagnosis?" That's a task the reasoning layer handles well when the data is clean.
 
 ---
 
@@ -66,13 +66,13 @@ They're not redundant. Claude Code is an operator; Cursor is an editor. Differen
 
 This is the part that usually doesn't appear in AI stack roundups.
 
-**Zapier** — replaced by MCP servers. Zapier is excellent for connecting apps without code, but every complex workflow I tried to build in it became a maintenance problem. MCP servers require more upfront work and some code, but they're inspectable, versionable, and don't break when an app updates its authentication flow.
+**Zapier**: replaced by MCP servers. Zapier is excellent for connecting apps without code, but every complex workflow I tried to build in it became a maintenance problem. MCP servers require more upfront work and some code, but they're inspectable, versionable, and don't break when an app updates its authentication flow.
 
-**Notion AI** — never justified its slot. The output was generic. The context window was limited to the current page, so it couldn't reason across my actual knowledge structure. I write in Notion, but I think with Claude.
+**Notion AI**: never justified its slot. The output was generic. The context window was limited to the current page, so it couldn't reason across my actual knowledge structure. I write in Notion, but I think with Claude.
 
-**Apollo/Clearbit enrichment** — replaced by the agent research stack for my specific use case. At scale with a sales team, enrichment credits still make sense. For the research quality and personalisation depth I need in client work, the agent stack produces better output at lower cost.
+**Apollo/Clearbit enrichment**: replaced by the agent research stack for my specific use case. At scale with a sales team, enrichment credits still make sense. For the research quality and personalisation depth I need in client work, the agent stack produces better output at lower cost.
 
-**GPT-4 / Gemini** — not in active use. Not because they're bad, but because the stack is already coherent and adding models without a specific job for each one creates decision overhead without adding output quality. The question isn't "is this model good?" It's "does it do something my current stack doesn't?"
+**GPT-4 / Gemini**: not in active use. Not because they're bad, but because the stack is already coherent and adding models without a specific job for each one creates decision overhead without adding output quality. The question isn't "is this model good?" It's "does it do something my current stack doesn't?"
 
 ---
 
@@ -85,7 +85,7 @@ Execution layer: runs the work, produces the output, maintains the context.
 Research layer: feeds real-world data into the other layers.
 Data layer: stores the record of what happened and what it means.
 
-Every tool earns its slot by doing one of those jobs better than the alternative. When a tool stops doing that — when the output is worse, the maintenance cost is higher, or a better option exists — it gets cut.
+Every tool earns its slot by doing one of those jobs better than the alternative. When a tool stops doing that: when the output is worse, the maintenance cost is higher, or a better option exists, it gets cut.
 
 The stack will change. Some of what's listed here will be gone in six months. That's fine. The operating logic stays the same.
 

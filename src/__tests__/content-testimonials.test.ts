@@ -22,7 +22,7 @@ describe('testimonial content entries', () => {
     expect(entries.length).toBeGreaterThan(0);
   });
 
-  it.each(entries)('$file — required fields present', ({ data }) => {
+  it.each(entries)('$file: required fields present', ({ data }) => {
     expect(typeof data.author).toBe('string');
     expect(data.author.length).toBeGreaterThan(0);
     expect(typeof data.role).toBe('string');
@@ -34,15 +34,15 @@ describe('testimonial content entries', () => {
     expect(typeof data.draft).toBe('boolean');
   });
 
-  it.each(entries)('$file — voiceFit is valid', ({ data }) => {
+  it.each(entries)('$file: voiceFit is valid', ({ data }) => {
     expect(VOICE_FIT).toContain(data.voiceFit);
   });
 
-  it.each(entries)('$file — claimTightness is valid', ({ data }) => {
+  it.each(entries)('$file: claimTightness is valid', ({ data }) => {
     expect(CLAIM_TIGHTNESS).toContain(data.claimTightness);
   });
 
-  it.each(entries)('$file — tags is array', ({ data }) => {
+  it.each(entries)('$file: tags is array', ({ data }) => {
     expect(Array.isArray(data.tags)).toBe(true);
   });
 });

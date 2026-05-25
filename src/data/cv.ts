@@ -19,7 +19,7 @@ export interface CvExperience {
    *  via {@link cvData.contractLabel}. */
   contract?: boolean;
   role: I18n;
-  /** Company name — proper noun, no translation. */
+  /** Company name: proper noun, no translation. */
   company: string;
   /** Bullet copy per language. Order matters; same length across langs. */
   bullets: I18nList;
@@ -56,7 +56,7 @@ export interface CvData {
   printButton: I18n;
   experience: CvExperience[];
   skills: I18nList;
-  /** Tools — kept untranslated (brand names). */
+  /** Tools: kept untranslated (brand names). */
   tools: string[];
   education: CvEducation[];
   languages: CvLanguageRow[];
