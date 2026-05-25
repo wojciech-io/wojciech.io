@@ -1,0 +1,192 @@
+---
+import ProjectCard from '../ui/ProjectCard.astro';
+
+const projects = [
+  {
+    cover: 'relora' as const,
+    title: 'Relora',
+    description: 'A relationship operating system for local-government property teams. One place for contacts, owner context, communication status, and next actions.',
+    tags: ['AI workflow', 'CRM-lite', 'Ops dashboard'],
+    href: 'https://relora-jet.vercel.app/',
+    screenshot: '/images/work/relora-preview.jpg',
+    problem: 'Important owner conversations lived across inboxes, notes, and memory.',
+    system: 'Contacts, relationships, briefs, status, and follow-up in one operator view.',
+    artifact: 'Live demo app with dashboard, relation map, and task flow.',
+    outcome: 'Manual relationship tracking becomes a structured operating queue.',
+    external: true,
+  },
+  {
+    cover: 'ads-ai' as const,
+    title: 'AdsAI / Ad Assistant',
+    description: 'An AI-native Google Ads cockpit: spend, ROAS, ICP fit, campaign priorities, and next-best actions in one workspace.',
+    tags: ['AI', 'Ads', 'GTM', 'Operator tooling'],
+    href: 'https://ads-assistant-three.vercel.app/',
+    screenshot: '/images/work/ads-assistant-preview.jpg',
+    problem: 'Ad optimization work was split between reports, intuition, and repeated checks.',
+    system: 'Budget, ICP, ROAS, alerts, and actions are pulled into one decision loop.',
+    artifact: 'Live dashboard with campaign priorities and optimization queue.',
+    outcome: 'Operator sees what to pause, analyze, or optimize without hunting through reports.',
+    external: true,
+  },
+  {
+    cover: 'kamperownia' as const,
+    title: 'Camper Rental Booking Engine',
+    description: 'A self-serve camper rental site for browsing vehicles, checking dates, and moving from interest to reservation quickly.',
+    tags: ['Product', 'Booking', 'Web app'],
+    href: 'https://camper-rental-weld.vercel.app/',
+    screenshot: '/images/work/kamperownia-preview.jpg',
+    problem: 'Rental demand needed a clearer path from browsing to booking.',
+    system: 'Inventory, dates, offer framing, and reservation CTA in one front-end flow.',
+    artifact: 'Responsive booking website with vehicle cards and search entry point.',
+    outcome: 'A manual inquiry motion becomes a productized booking experience.',
+    external: true,
+  },
+  {
+    cover: 'notch' as const,
+    title: 'NotchCue',
+    description: 'A macOS teleprompter concept for calls, demos, and recordings. Keeps notes close to the camera so delivery stays natural.',
+    tags: ['macOS', 'Swift', 'AI-built'],
+    href: 'https://notch.wojciech.io/',
+    screenshot: '/images/work/notch-preview.jpg',
+    problem: 'Notes sit away from the camera, which breaks eye contact during calls and demos.',
+    system: 'Prompts live around the MacBook notch with a focused reading surface.',
+    artifact: 'Product site and app concept built around the camera area.',
+    outcome: 'Speakers keep structure without sounding like they are reading.',
+    external: true,
+  },
+];
+
+const featured = projects[0];
+const rest = projects.slice(1);
+---
+
+<section class="relative py-[var(--space-section)] bg-[var(--color-surface-2)]">
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/20 to-transparent" aria-hidden="true"></div>
+  <div class="mx-auto max-w-6xl px-6">
+
+    <!-- Header -->
+    <div class="flex items-end justify-between mb-12">
+      <div>
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
+          <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
+          <span>Selected work</span>
+        </p>
+        <h2 class="text-3xl md:text-4xl font-semibold leading-[1.15] tracking-tight">
+          <span class="text-[var(--color-text)]">Projects that shipped.</span><br />
+          <span class="text-[var(--color-text-muted)]">Systems that still run.</span>
+        </h2>
+      </div>
+      <a href="/work" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
+        All work →
+      </a>
+    </div>
+
+    <!-- Featured project: proof-led split view -->
+    <a
+      href={featured.href}
+      target={featured.external ? '_blank' : undefined}
+      rel={featured.external ? 'noopener noreferrer' : undefined}
+      class="group block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/30 transition-colors mb-5"
+    >
+      <div class="grid min-h-[360px] lg:grid-cols-2">
+        <!-- Left: real artifact -->
+        <div class="artifact-stage relative min-h-[260px] overflow-hidden p-5 md:p-8">
+          <div class="artifact-shot h-full min-h-[220px] overflow-hidden rounded-[14px] bg-[var(--color-surface)] transition-transform duration-500 group-hover:scale-[1.012]">
+            <img
+              src={featured.screenshot}
+              alt={`${featured.title} product screenshot`}
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover object-top"
+            />
+          </div>
+          <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>
+          <div class="artifact-label absolute left-5 top-5 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-semibold backdrop-blur-md">
+            <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
+            Live product artifact
+          </div>
+        </div>
+
+        <!-- Right: content -->
+        <div class="p-8 md:p-10 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-6">
+              <svg viewBox="0 0 24 24" class="w-5 h-5 text-[var(--color-accent)]" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21a48.25 48.25 0 01-8.135-.687c-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-widest">Featured</span>
+            </div>
+            <h3 class="text-xl md:text-2xl font-semibold text-[var(--color-text)] leading-snug mb-4 group-hover:text-[var(--color-accent-hi)] transition-colors">
+              {featured.title}
+            </h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-6">
+              {featured.description}
+            </p>
+            <div class="flex flex-wrap gap-1.5">
+              {featured.tags.map((tag) => (
+                <span class="text-xs px-2 py-0.5 rounded-full border font-medium bg-[var(--color-surface-2)] text-[var(--color-text-muted)] border-[var(--color-border)]">{tag}</span>
+              ))}
+            </div>
+            <dl class="mt-7 grid gap-4 border-t border-[var(--color-border)] pt-6">
+              {[
+                ['Problem', featured.problem],
+                ['System',  featured.system],
+                ['Artifact', featured.artifact],
+                ['Outcome', featured.outcome],
+              ].map(([label, value]) => (
+                <div class="grid grid-cols-[88px_1fr] gap-4">
+                  <dt class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{label}</dt>
+                  <dd class="text-sm leading-snug text-[var(--color-text-muted)]">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div class="mt-8 pt-6 border-t border-[var(--color-border)]">
+            <span class="text-sm font-medium text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
+              {featured.external ? 'View project ↗' : 'See case study →'}
+            </span>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Remaining projects: 3-column grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {rest.map((p) => (
+        <ProjectCard
+          cover={p.cover}
+          title={p.title}
+          description={p.description}
+          tags={p.tags}
+          href={p.href}
+          screenshot={p.screenshot}
+          problem={p.problem}
+          system={p.system}
+          artifact={p.artifact}
+          outcome={p.outcome}
+          external={p.external}
+        />
+      ))}
+
+      <!-- CTA card -->
+      <a
+        href="/contact#book-call"
+        class="group flex flex-col justify-between rounded-[var(--radius-card)] border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 p-8 card-lift hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/8 transition-colors sm:col-span-2 lg:col-span-3 lg:flex-row lg:items-end lg:gap-8"
+      >
+        <div class="max-w-xl">
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">Work with me</p>
+          <h3 class="text-lg font-semibold text-[var(--color-text)] leading-snug mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors">
+            Have a revenue problem worth solving?
+          </h3>
+          <p class="text-sm text-[var(--color-text-muted)] leading-snug">
+            Book a 30-minute call. We figure out what's broken and whether it's worth working together.
+          </p>
+        </div>
+        <div class="mt-8 flex shrink-0 items-center gap-2 text-sm font-semibold text-[var(--color-accent)] group-hover:text-[var(--color-accent-hi)] transition-colors lg:mt-0">
+          Book a call →
+        </div>
+      </a>
+    </div>
+
+  </div>
+</section>

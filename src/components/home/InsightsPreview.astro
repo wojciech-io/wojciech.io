@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('insights', (p) => !p.data.draft))
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+  .slice(0, 3);
+---
+
+<section class="relative py-[var(--space-section)] bg-gradient-to-b from-[var(--color-bg)] to-[var(--color-surface-2)]">
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/20 to-transparent" aria-hidden="true"></div>
+  <div class="mx-auto max-w-6xl px-6">
+
+    <!-- Section header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div>
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
+          <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
+          <span>Writing</span>
+        </p>
+        <h2 class="text-4xl md:text-5xl font-semibold leading-tight tracking-tight text-[var(--color-text)]">
+          Operator notes.
+        </h2>
+      </div>
+      <p class="text-sm text-[var(--color-text-muted)] max-w-sm leading-relaxed md:text-right">
+        Practical writing on AI GTM systems, agent tooling, portfolio builds, and case studies from shipped apps.
+      </p>
+    </div>
+
+    <!-- Article list -->
+    <div class="divide-y divide-[var(--color-border)]">
+      {posts.map((post) => (
+        <a
+          href={`/insights/${post.id}/`}
+          class="group flex flex-col md:flex-row md:items-start gap-6 py-8 transition-colors hover:text-[var(--color-accent-hi)]"
+        >
+          <div class="md:w-28 shrink-0">
+            <span class="text-xs text-[var(--color-text-dim)]">
+              {new Date(post.data.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors mb-2">
+              {post.data.title}
+            </h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-4">
+              {post.data.description}
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {(post.data.tags ?? []).slice(0, 3).map((t: string) => (
+                <span class="text-xs px-2 py-0.5 rounded-full border bg-[var(--color-surface-2)] text-[var(--color-text-muted)] border-[var(--color-border)]">{t}</span>
+              ))}
+            </div>
+          </div>
+          <div class="md:self-center shrink-0">
+            <span class="text-sm font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent-hi)] transition-colors whitespace-nowrap">Read →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Footer CTA -->
+    <div class="mt-8 pt-8 border-t border-[var(--color-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <p class="text-sm text-[var(--color-text-muted)]">
+        New notes on AI systems, GTM architecture, and shipped products, published as they are ready.
+      </p>
+      <a
+        href="/insights"
+        class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text)] border border-[var(--color-border)] rounded-[var(--radius-btn)] px-5 py-2 hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors whitespace-nowrap"
+      >
+        All writing →
+      </a>
+    </div>
+
+  </div>
+</section>
