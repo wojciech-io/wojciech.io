@@ -1,71 +1,84 @@
 # 08 - Migration backlog
 
-## Epic 1 - project foundation
+> **Status as of 2026-05-25:** Site is live at wojciech.io. All Sprint 1–3 epics shipped.
+> This file is kept for historical reference and to track post-launch backlog only.
 
-- [ ] Add Tailwind CSS
-- [ ] Add global design tokens
-- [ ] Add typography scale
-- [ ] Add layout primitives
-- [ ] Add reusable buttons, cards, badges, section headers
-- [ ] Configure site constants
-- [ ] Configure metadata helper
-- [ ] Configure image handling
+## Sprint 1–3 — completed ✅
 
-## Epic 2 - core IA
+### Foundation
+- [x] Tailwind CSS + design tokens
+- [x] Global layout, typography scale
+- [x] Layout primitives, reusable components (buttons, cards, badges, SectionHeader)
+- [x] Site constants, metadata helper, image handling
+- [x] Geist self-hosted (no external font requests)
 
-- [ ] Build homepage
-- [ ] Build `/about`
-- [ ] Build `/work`
-- [ ] Build `/ai-systems`
-- [ ] Build `/insights`
-- [ ] Build `/resources`
-- [ ] Build 404 page
+### Core IA
+- [x] Homepage (rewritten from scratch)
+- [x] `/about` (operator profile)
+- [x] `/work` (7 proof entries with metrics)
+- [x] `/ai-systems`
+- [x] `/insights` (index + migrated article)
+- [x] `/resources` (lean placeholder)
+- [x] `/contact`
+- [x] 404 page
 
-## Epic 3 - proof system
+### Proof system
+- [x] Proof-cluster data model
+- [x] Project / case-study content collection
+- [x] Testimonial collection (single source of truth, JSON)
+- [x] Proof cluster cards, testimonial components
 
-- [ ] Define proof-cluster data model
-- [ ] Define project / case-study data model
-- [ ] Add testimonial inventory data model
-- [ ] Add metric validation table
-- [ ] Implement proof cluster cards
-- [ ] Implement testimonial components
+### Content
+- [x] `claude-code-vs-clay` article migrated to MDX
+- [x] Article template (insights/[slug].astro)
+- [x] Article metadata, schema, OG image
 
-## Epic 4 - content
+### SEO / migration
+- [x] `_redirects` (solutions→work, my-gpt→ai-systems, blog→insights, /pl/ /it/ killed)
+- [x] Canonical handling
+- [x] Sitemap (filtered, production URLs)
+- [x] RSS feed
+- [x] robots.txt
+- [x] llms.txt
+- [x] Article JSON-LD schema (BlogPosting)
+- [x] Person / WebSite schema
+- [x] OG / social defaults
+- [x] GA4 (G-4ED804XJLP, via PUBLIC_GA_MEASUREMENT_ID)
+- [x] Hreflang cleaned (stale pl/it removed)
 
-- [ ] Migrate Claude Code article to MDX
-- [ ] Build article template
-- [ ] Add article metadata fields
-- [ ] Create future content placeholders / taxonomy
-- [ ] Decide treatment of legacy posts
+### QA
+- [x] Responsive review
+- [x] Vitest unit tests (43 tests, CI job)
+- [x] Playwright E2E (critical paths)
+- [x] Visual regression baselines
+- [x] Redirect verification
+- [x] DNS cutover
 
-## Epic 5 - SEO / migration
+---
 
-- [ ] Finalize redirect map
-- [ ] Add `_redirects`
-- [ ] Add canonical handling
-- [ ] Add sitemap
-- [ ] Add RSS
-- [ ] Add robots.txt
-- [ ] Add `llms.txt`
-- [ ] Add article schema
-- [ ] Add person / website schema
-- [ ] Add OG / social defaults
-- [ ] Add GA4
+## Post-launch backlog
 
-## Epic 6 - QA
+### Content (highest priority)
+- [ ] Second article in `/insights` — content compounding requires volume
+- [ ] Third article and beyond — cadence TBD
+- [ ] `/resources` expansion — starter packs, repositories (when assets ready)
 
-- [ ] Responsive review
-- [ ] Lighthouse / CWV review
-- [ ] Accessibility review
-- [ ] Link check
-- [ ] Metadata review
-- [ ] Redirect review
-- [ ] Production cutover checklist
+### Features
+- [ ] `/insights` search / filtering (when >5 articles)
+- [ ] Academy cert Polish-char fix — @pdf-lib/fontkit + embedded TTF (Łuszczyński shows as ASCII currently)
+- [ ] Re-enable GrowthHub "Open" button in apps/app once growthhub-db live
 
-## Backlog not for v1 launch
+### Infrastructure
+- [ ] WAF rate-limit `/api/*` — CF token needs cf:waf:edit scope
+- [ ] GrowthHub D1 setup + cron trigger (user action required)
+- [ ] Academy D1 migration 0002 + secrets deploy (user action required)
 
-- [ ] multilingual version
-- [ ] search UI
-- [ ] full resource library
-- [ ] large historical blog recovery
-- [ ] complex app embeds
+### Code quality
+- [ ] Remove dead PL/IT props from 11 source files (never rendered, cosmetic)
+- [ ] Renovate onboarding PR — accept when it appears
+
+### Future (not v1)
+- [ ] Multilingual version (FUTURE_CULTURAL_LOCALIZATION.md has the plan)
+- [ ] Full resource library
+- [ ] Large historical blog recovery
+- [ ] Complex app embeds

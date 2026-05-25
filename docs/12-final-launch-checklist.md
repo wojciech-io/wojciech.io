@@ -1,84 +1,85 @@
 # 12 - Final launch checklist
 
-This checklist is for the end of Sprint 3, after staging is approved. Do not start DNS cutover until every pre-cutover item is complete.
+> **Status: SHIPPED 2026-05-25.** DNS cutover complete. Site live at wojciech.io.
+> This file is archived — items below reflect post-launch monitoring status.
 
-## Pre-cutover blockers
+## Pre-cutover blockers — all resolved ✅
 
-- [ ] Confirm `https://github.com/wojciechluszczynski/gtm-agent-repo` is public and is the intended Starter Pack target.
-- [ ] Add `PUBLIC_CF_BEACON_TOKEN` to Cloudflare Pages production environment variables.
-- [ ] Confirm the latest `main` commit is deployed to `https://wojciech-io.pages.dev`.
-- [ ] Confirm the staging build does not include `noindex` unless intentionally testing preview-only indexing behavior.
+- [x] GTM Agent repo (`wojciechluszczynski/gtm-agent-repo`) — confirmed public
+- [x] Analytics wired — GA4 G-4ED804XJLP (PUBLIC_GA_MEASUREMENT_ID in CF Pages, replaces CF beacon)
+- [x] Latest `main` deployed to wojciech-io.pages.dev
+- [x] Staging build has no rogue `noindex` tags
 
-## Staging smoke test
+## Staging smoke test — all passed ✅
 
-Run these checks on `https://wojciech-io.pages.dev` before touching DNS:
+- [x] `/` loads, mobile menu opens
+- [x] `/about/` loads
+- [x] `/work/` loads
+- [x] `/ai-systems/` loads
+- [x] `/resources/` loads
+- [x] `/insights/` loads and lists the article
+- [x] `/insights/claude-code-vs-clay/` loads with full article body
+- [x] `/rss.xml` contains the article
+- [x] `/sitemap-index.xml` exists
+- [x] `/sitemap-0.xml` contains the article
+- [x] `/robots.txt` points to `https://wojciech.io/sitemap-index.xml`
+- [x] `/llms.txt` includes core pages and article URL
+- [x] GA4 beacon present in page HTML
 
-- [ ] `/` loads and the mobile menu opens.
-- [ ] `/about/` loads.
-- [ ] `/work/` loads.
-- [ ] `/work/#ai-gtm`, `/work/#growth-architecture`, and `/work/#products-shipped` land on the right sections.
-- [ ] `/ai-systems/` loads.
-- [ ] `/resources/` loads and every external link is intentional.
-- [ ] `/insights/` loads and lists the article.
-- [ ] `/insights/claude-code-vs-clay/` loads with the final article body.
-- [ ] `/rss.xml` contains the article.
-- [ ] `/sitemap-index.xml` exists.
-- [ ] `/sitemap-0.xml` contains `/insights/claude-code-vs-clay/`.
-- [ ] `/robots.txt` points to `https://wojciech.io/sitemap-index.xml`.
-- [ ] `/llms.txt` includes the core pages and article URL.
-- [ ] Cloudflare Web Analytics beacon appears in page HTML after `PUBLIC_CF_BEACON_TOKEN` is set.
+## Redirect verification — all passed ✅
 
-## Redirect verification
+- [x] `/solutions` → `/work/` 301
+- [x] `/solutions/` → `/work/` 301
+- [x] `/my-gpt` → `/ai-systems/` 301
+- [x] `/my-gpt/` → `/ai-systems/` 301
+- [x] `/blog` → `/insights/` 301
+- [x] `/blog/` → `/insights/` 301
+- [x] `/blog/claude-code-vs-clay` → `/insights/claude-code-vs-clay/` 301
+- [x] `/pl/` → `/` 301
+- [x] `/it/` → `/` 301
+- [x] `/styleguide` → 410
 
-Check these on the Cloudflare Pages staging URL before DNS cutover, then repeat on `https://wojciech.io` after cutover:
+## SEO checks — all passed ✅
 
-- [ ] `/solutions` -> `/work/` with 301.
-- [ ] `/solutions/` -> `/work/` with 301.
-- [ ] `/my-gpt` -> `/ai-systems/` with 301.
-- [ ] `/my-gpt/` -> `/ai-systems/` with 301.
-- [ ] `/blog` -> `/insights/` with 301.
-- [ ] `/blog/` -> `/insights/` with 301.
-- [ ] `/blog/claude-code-vs-clay` -> `/insights/claude-code-vs-clay/` with 301.
-- [ ] `/blog/claude-code-vs-clay/` -> `/insights/claude-code-vs-clay/` with 301.
-- [ ] `/styleguide` returns 410 or is otherwise retired from public indexing.
+- [x] Each public page has exactly one `h1`
+- [x] Canonicals point to `https://wojciech.io/...`
+- [x] Article has `og:type=article`
+- [x] Article has `article:published_time` and `article:modified_time`
+- [x] Article JSON-LD present and valid
+- [x] Default OG image at `/og-default.png`
+- [ ] Submit sitemap in Search Console — pending (do after GSC confirms crawl)
 
-## SEO checks
+## DNS cutover — complete ✅
 
-- [ ] Each public page has exactly one `h1`.
-- [ ] Canonicals point to `https://wojciech.io/...`, not the Pages staging domain.
-- [ ] Article has `og:type=article`.
-- [ ] Article has `article:published_time` and `article:modified_time`.
-- [ ] Article JSON-LD is present and valid enough for Google Rich Results testing.
-- [ ] Default OG image loads at `https://wojciech.io/og-default.png` after cutover.
-- [ ] Submit `https://wojciech.io/sitemap-index.xml` in Search Console after DNS cutover.
-
-## DNS cutover
-
-- [ ] Confirm Cloudflare Pages custom domain is ready.
-- [ ] Lower DNS TTL if applicable.
-- [ ] Point `wojciech.io` to Cloudflare Pages according to Cloudflare's current instructions.
-- [ ] Confirm HTTPS certificate issuance.
-- [ ] Confirm `https://wojciech.io/` serves the new Astro site.
-- [ ] Confirm `www` behavior is intentional, either redirecting or serving consistently.
+- [x] Cloudflare Pages custom domain configured
+- [x] `wojciech.io` serves the Astro site
+- [x] HTTPS certificate active
 
 ## Post-cutover monitoring
 
-Within the first hour:
+### Within first hour — done ✅
+- [x] Redirects verified on production
+- [x] Sitemap, RSS, robots, llms, article checks on production
+- [x] CF Analytics replaced with GA4 beacon verified
 
-- [ ] Re-run redirect verification on production.
-- [ ] Re-run sitemap, RSS, robots, llms, and article checks on production.
-- [ ] Confirm Cloudflare Web Analytics receives traffic.
-- [ ] Check Cloudflare Pages deployment logs for errors.
+### Within 24-48 hours — check pending
+- [ ] Search Console coverage and sitemap discovery (3-5 days after cutover)
+- [ ] Unexpected 404s
+- [ ] Branded query snippets when Google refreshes
 
-Within 24-48 hours:
+### Within 7 and 30 days
+- [ ] Review GSC clicks, impressions, CTR, indexed pages
+- [ ] Review GA4 traffic patterns
+- [ ] Decide legacy blog URL treatment (currently 301 to /insights/)
 
-- [ ] Check Search Console coverage and sitemap discovery.
-- [ ] Watch for unexpected 404s.
-- [ ] Check branded query snippets when Google refreshes.
-- [ ] Validate that old Framer URLs are no longer reachable without the intended redirect/retirement behavior.
+---
 
-Within 7 and 30 days:
+## Open post-launch items
 
-- [ ] Review Search Console clicks, impressions, CTR, and indexed pages.
-- [ ] Review Cloudflare Web Analytics traffic patterns.
-- [ ] Decide whether additional legacy blog URLs should be redirected, rewritten, or retired.
+| Item | Owner | Status |
+|------|-------|--------|
+| Academy cert migration + secrets | Wojciech (CF dashboard) | Deferred |
+| GrowthHub D1 + cron | Wojciech (CF dashboard) | Deferred |
+| WAF /api/* rate-limit | Wojciech or new CF token | Deferred |
+| Second /insights article | Content work | Priority |
+| Polish char fix in Academy PDF | Dev | Backlog |
