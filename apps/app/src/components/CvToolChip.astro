@@ -1,0 +1,21 @@
+---
+import type { Tool } from '../lib/cv-data';
+interface Props { tool: Tool }
+const { tool } = Astro.props;
+const { icon, lime, name } = tool;
+---
+<span class={`cv-tc${lime ? ' lime' : ''}`}>
+  {icon?.type === 'img' && (
+    <img
+      src={`https://cdn.simpleicons.org/${icon.slug}/${icon.color}`}
+      width="14" height="14"
+      loading="lazy"
+      onerror="this.style.display='none'"
+      alt=""
+    />
+  )}
+  {icon?.type === 'initials' && (
+    <span class="cv-tc-icon" style={`background:${icon.bg};color:${icon.textColor ?? '#fff'}`}>{icon.text}</span>
+  )}
+  {name}
+</span>
