@@ -18,8 +18,40 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
     <!-- Desktop nav -->
     <div class="hidden lg:flex items-center gap-8">
       <Nav />
-      <ThemeToggle />
-      <!-- Language selector removed Sprint 2 B1 — English-only launch. Re-add in future localization sprint. -->
+      <div class="flex items-center gap-2">
+        <ThemeToggle />
+        <!-- Language selector -->
+        <div class="relative" id="lang-selector">
+          <button
+            type="button"
+            class="lang-toggle-btn"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-label="Language: English"
+            id="lang-toggle-desktop"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span>EN</span>
+            <svg class="lang-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3.5l3 3 3-3"/></svg>
+          </button>
+          <div
+            id="lang-dropdown-desktop"
+            role="listbox"
+            aria-label="Select language"
+            class="lang-dropdown hidden absolute right-0 top-full mt-1.5 w-36 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-lg py-1 z-50"
+          >
+            <div role="option" aria-selected="true" class="lang-opt lang-opt--active">
+              <span>English</span><span class="lang-opt-code">EN</span>
+            </div>
+            <div role="option" aria-selected="false" aria-disabled="true" class="lang-opt lang-opt--soon">
+              <span>Polski</span><span class="lang-opt-soon-badge">soon</span>
+            </div>
+            <div role="option" aria-selected="false" aria-disabled="true" class="lang-opt lang-opt--soon">
+              <span>Italiano</span><span class="lang-opt-soon-badge">soon</span>
+            </div>
+          </div>
+        </div>
+      </div>
       <a
         href="/contact#book-call"
         class="btn-press shrink-0 inline-block min-w-40 text-center text-sm font-semibold px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:opacity-90 transition-colors"
@@ -92,8 +124,18 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
 
   <!-- Bottom bar -->
   <div class="px-8 pb-10 pt-6 border-t border-[var(--color-border)] shrink-0 space-y-4">
-    <ThemeToggle class="w-full" />
-    <!-- Mobile language selector removed Sprint 2 B1 — English-only launch. -->
+    <div class="flex items-center gap-3">
+      <ThemeToggle class="flex-1" />
+      <button
+        type="button"
+        class="lang-toggle-btn"
+        aria-label="Language: English (more coming soon)"
+        id="lang-toggle-mobile"
+      >
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>EN</span>
+      </button>
+    </div>
     <a
       href="/contact#book-call"
       class="mobile-nav-link btn-press flex items-center justify-center gap-2 w-full bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold py-3.5 rounded-[var(--radius-btn)] hover:opacity-90 transition-opacity text-sm"
@@ -138,9 +180,20 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
   // Make closeMobileNav available globally for the wordmark link
   (window as any).closeMobileNav = closeMobileNav;
 
-  // Language selector JS removed Sprint 2 B1 — English-only launch.
-  // Re-add (along with the markup above) in a future localization sprint
-  // with proper hreflang + per-language proof variants.
+  // Language dropdown (desktop)
+  const langBtn = document.getElementById('lang-toggle-desktop');
+  const langDrop = document.getElementById('lang-dropdown-desktop');
+  if (langBtn && langDrop) {
+    langBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = langDrop.classList.toggle('hidden');
+      langBtn.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
+    document.addEventListener('click', () => {
+      langDrop.classList.add('hidden');
+      langBtn.setAttribute('aria-expanded', 'false');
+    });
+  }
 
   openBtn.addEventListener('click', openMobileNav);
   closeBtn.addEventListener('click', closeMobileNav);
