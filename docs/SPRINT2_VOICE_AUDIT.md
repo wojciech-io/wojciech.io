@@ -88,10 +88,8 @@ None of these require Claude Code to invent positioning. All need Wojciech's dat
 - Hero copy: matches voice doc canonical example (line 166-172 of `src/pages/index.astro`)
 - Anti-pattern absence: confirmed across all user-facing surfaces
 
-## What's deferred to a later voice audit pass
+## What remains deferred to a later voice audit pass
 
-- `data-pl="..."` and `data-it="..."` translation attributes throughout the codebase are now dead (multilingual route directories removed Sprint 2 B1). Their cleanup is a wider sweep — defer to a dedicated PR rather than entangling with content work.
-- `src/i18n/` folder retained for now; can be removed once translation attribute sweep happens.
 - Voice audit on legacy insights articles in `archive/insights-legacy/` was NOT performed — those are outside live content per Sprint 2 B2 decision.
 
 ---

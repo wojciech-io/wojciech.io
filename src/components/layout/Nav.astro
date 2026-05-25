@@ -1,14 +1,11 @@
 ---
-interface Props { prefix?: string; }
-const { prefix = '' } = Astro.props;
-
 export const links = [
-  { label: 'Work',     href: '/work',       pl: 'Projekty',  it: 'Progetti',  minWidth: '4rem'   },
-  { label: 'Apps',     href: '/apps',       pl: 'Aplikacje', it: 'App',       minWidth: '4.5rem' },
-  { label: 'AI',       href: '/ai-systems', pl: 'AI',        it: 'AI',        minWidth: '1.25rem' },
-  { label: 'Insights', href: '/insights',   pl: 'Artykuły',  it: 'Articoli',  minWidth: '4rem'   },
-  { label: 'About',    href: '/about',      pl: 'O mnie',    it: 'Chi sono',  minWidth: '4rem'   },
-  { label: 'Contact',  href: '/contact',    pl: 'Kontakt',   it: 'Contatti',  minWidth: '4rem'   },
+  { label: 'Work',     href: '/work',       minWidth: '4rem'   },
+  { label: 'Apps',     href: '/apps',       minWidth: '4.5rem' },
+  { label: 'AI',       href: '/ai-systems', minWidth: '1.25rem' },
+  { label: 'Insights', href: '/insights',   minWidth: '4rem'   },
+  { label: 'About',    href: '/about',      minWidth: '4rem'   },
+  { label: 'Contact',  href: '/contact',    minWidth: '4rem'   },
 ];
 
 const current = Astro.url.pathname;
@@ -16,16 +13,12 @@ const current = Astro.url.pathname;
 
 <nav aria-label="Primary navigation">
   <ul class="flex items-center gap-6 list-none m-0 p-0">
-    {links.map(({ label, href, external, pl, it, minWidth }) => {
-      const dest = external ? href : prefix + href;
-      const isActive = !external && (href === '/' ? current === dest + '/' || current === dest : current.startsWith(dest));
+    {links.map(({ label, href, minWidth }) => {
+      const isActive = href === '/' ? current === href : current.startsWith(href);
       return (
         <li>
           <a
-            href={dest}
-            data-en={label}
-            data-pl={pl}
-            data-it={it}
+            href={href}
             aria-current={isActive ? 'page' : undefined}
             style={`min-width:${minWidth};text-align:center`}
             class:list={[
@@ -34,7 +27,6 @@ const current = Astro.url.pathname;
                 ? 'text-[var(--color-text)]'
                 : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
             ]}
-            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
           >
             {label}
           </a>

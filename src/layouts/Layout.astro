@@ -15,7 +15,6 @@ interface Props {
   publishedAt?: Date | string;
   updatedAt?: Date | string;
   schema?: Record<string, unknown> | Record<string, unknown>[];
-  initialLang?: string;
 }
 
 const {
@@ -28,7 +27,6 @@ const {
   publishedAt,
   updatedAt,
   schema,
-  initialLang,
 } = Astro.props;
 
 // Normalize /en/* canonical to /* (strip /en/ prefix for dedup)
@@ -39,7 +37,7 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
 ---
 
 <!doctype html>
-<html lang={initialLang === 'pl' ? 'pl' : initialLang === 'it' ? 'it' : 'en'}>
+<html lang="en">
   <head>
     <SEOHead
       title={title}
@@ -62,7 +60,7 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     </script>
   </head>
   <body class="min-h-dvh flex flex-col">
-    <Header langPrefix={initialLang === 'pl' ? '/pl' : initialLang === 'it' ? '/it' : ''} />
+    <Header />
     <main class="flex-1">
       <slot />
     </main>
@@ -83,58 +81,6 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
         { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
       );
       document.querySelectorAll('.reveal-up').forEach((el) => observer.observe(el));
-    </script>
-
-    <!-- Language toggle logic -->
-    <script is:inline define:vars={{ _initLang: initialLang ?? '' }}>
-      window.setLang = function(l) {
-        var lang = (l || 'en').toLowerCase();
-        localStorage.setItem('wio_lang', lang);
-        // Update active button state
-        document.querySelectorAll('.lang-btn').forEach(function(btn) {
-          var active = btn.getAttribute('data-lang') === lang;
-          if (active) {
-            btn.style.background = '#ebff00';
-            btn.style.color = '#080808';
-          } else {
-            btn.style.background = '';
-            btn.style.color = '';
-          }
-        });
-        // Update all translatable elements (textContent)
-        document.querySelectorAll('[data-pl],[data-en],[data-it]').forEach(function(el) {
-          var v = el.getAttribute('data-' + lang);
-          if (v === null) v = el.getAttribute('data-en');
-          if (v !== null) el.textContent = v;
-        });
-        // Placeholder + aria-label swaps (data-placeholder-{lang}, data-aria-{lang})
-        document.querySelectorAll('[data-placeholder-en],[data-placeholder-pl],[data-placeholder-it]').forEach(function(el) {
-          var v = el.getAttribute('data-placeholder-' + lang);
-          if (v === null) v = el.getAttribute('data-placeholder-en');
-          if (v !== null) el.setAttribute('placeholder', v);
-        });
-        document.querySelectorAll('[data-aria-en],[data-aria-pl],[data-aria-it]').forEach(function(el) {
-          var v = el.getAttribute('data-aria-' + lang);
-          if (v === null) v = el.getAttribute('data-aria-en');
-          if (v !== null) el.setAttribute('aria-label', v);
-        });
-        // Update html lang attribute
-        document.documentElement.lang = lang === 'pl' ? 'pl' : lang === 'it' ? 'it' : 'en';
-        // Notify dynamic scripts (e.g. scheduler) so they can re-render their
-        // JS-rendered strings with the new locale.
-        try { window.dispatchEvent(new CustomEvent('wio:langchange', { detail: { lang: lang } })); } catch (e) {}
-      };
-      // Auto-init on DOMContentLoaded
-      (function() {
-        var saved = localStorage.getItem('wio_lang');
-        var nav = (navigator.language || '').toLowerCase();
-        // URL-provided lang takes highest priority
-        var detected = _initLang || saved || (nav.startsWith('pl') ? 'pl' : nav.startsWith('it') ? 'it' : 'en');
-        if (_initLang) localStorage.setItem('wio_lang', _initLang); // persist URL lang
-        document.addEventListener('DOMContentLoaded', function() {
-          window.setLang(detected);
-        });
-      })();
     </script>
 
     <!-- CF_BEACON_TOKEN: set PUBLIC_CF_BEACON_TOKEN in Cloudflare Pages env vars
