@@ -1,0 +1,64 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Read agent state files at BUILD TIME — dashboard is static.
+// Re-deploy to refresh. (Automated via rebuild cron in Sprint 2.)
+
+const stateDir = path.join(process.cwd(), '..', '..', '.agent-state');
+const agents = fs.existsSync(stateDir)
+  ? fs.readdirSync(stateDir).filter((d) => {
+      const p = path.join(stateDir, d);
+      return fs.statSync(p).isDirectory();
+    })
+  : [];
+
+interface AgentEntry {
+  name: string;
+  lastRun: string | null;
+  health: string | null;
+  raw: string;
+}
+
+const entries: AgentEntry[] = agents.map((name) => {
+  const stateFile = path.join(stateDir, name, 'state.md');
+  if (!fs.existsSync(stateFile)) {
+    return { name, lastRun: null, health: null, raw: '(no state.md)' };
+  }
+  const raw = fs.readFileSync(stateFile, 'utf-8');
+  const lastRun = raw.match(/\*\*Last run:\*\*\s*(.+)/)?.[1] ?? null;
+  const health = raw.match(/\*\*Health:\*\*\s*(.+)/)?.[1] ?? null;
+  return { name, lastRun, health, raw };
+});
+---
+
+<section class="mb-8">
+  <h2 class="text-sm font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+    Agent health ({entries.length})
+  </h2>
+  <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    {
+      entries.map((agent) => {
+        const ok = agent.health?.toLowerCase().includes('ok');
+        return (
+          <li class="border border-zinc-800 rounded-lg p-4 bg-zinc-900/40">
+            <div class="flex items-baseline justify-between">
+              <span class="font-mono text-sm">{agent.name}</span>
+              <span
+                class:list={[
+                  'text-xs font-mono px-2 py-0.5 rounded',
+                  ok ? 'bg-emerald-900/50 text-emerald-300' : 'bg-amber-900/50 text-amber-300',
+                ]}
+              >
+                {agent.health ?? '—'}
+              </span>
+            </div>
+            <p class="text-xs text-zinc-500 mt-2">
+              last run: <span class="font-mono">{agent.lastRun ?? 'never'}</span>
+            </p>
+          </li>
+        );
+      })
+    }
+  </ul>
+</section>
