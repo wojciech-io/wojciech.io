@@ -95,9 +95,10 @@ const connect = [
           {nav.map(({ label, href, desc, soon }) => (
             <li class="flex items-center gap-2">
               <a
-                href={href}
+                href={soon ? undefined : href}
                 title={desc}
-                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
+                aria-disabled={soon ? 'true' : undefined}
+                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none cursor-default' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               >
                 {label}
               </a>
@@ -132,11 +133,12 @@ const connect = [
           {network.map(({ label, href, desc, soon }) => (
             <li class="flex items-center gap-2">
               <a
-                href={href}
+                href={soon ? undefined : href}
                 title={desc}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
+                target={soon ? undefined : '_blank'}
+                rel={soon ? undefined : 'noopener noreferrer'}
+                aria-disabled={soon ? 'true' : undefined}
+                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none cursor-default' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               >
                 {label}
               </a>
