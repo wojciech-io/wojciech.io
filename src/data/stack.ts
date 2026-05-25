@@ -40,6 +40,7 @@ export const STACK: StackCategory[] = [
     name: 'AI',
     enables: 'Text generation, document analysis, and voice in any app. Agents that reason, search, and complete tasks without human input.',
     items: [
+      { name: 'Claude Code', icon: 'anthropic',    iconColor: MONO },
       { name: 'OpenAI',      letterMark: 'AI' },
       { name: 'Anthropic',   icon: 'anthropic',    iconColor: MONO },
       { name: 'ElevenLabs',  icon: 'elevenlabs',   iconColor: MONO },
