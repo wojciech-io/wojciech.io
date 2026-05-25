@@ -6,6 +6,8 @@ import {
   type SourceBreakdown,
   type PaidChannel,
   type DataSource,
+  type FunnelStep,
+  type IcpSegment,
   formatCurrency,
   formatPct,
 } from '../lib/dummy-data';
@@ -25,9 +27,29 @@ interface Props {
   topLeads: Lead[];
   paid?: PaidChannel[];
   dataSources?: DataSource[];
+  funnel?: FunnelStep[];
+  icpSegments?: IcpSegment[];
+  icpSummary?: { total_leads: number; in_icp: number; icp_pct: number; avg_score_in_icp: number; avg_score_out_icp: number; pipeline_in_icp_cents: number };
 }
 
-const { headline, acquisition, sources, pipeline, topLeads, paid = [], dataSources = [] } = Astro.props;
+const { headline, acquisition, sources, pipeline, topLeads, paid = [], dataSources = [], funnel = [], icpSegments = [], icpSummary } = Astro.props;
+
+// Funnel
+const funnelMax = funnel.length ? funnel[0].count : 1;
+
+// ICP matrix
+const icpIndustries = [...new Set(icpSegments.map(s => s.industry))];
+const icpSizes      = ['10-50', '50-200', '200-500', '500+'];
+function icpCell(industry: string, size: string) {
+  return icpSegments.find(s => s.industry === industry && s.size === size);
+}
+function icpHeat(pct: number) {
+  if (pct >= 0.85) return 'icp-h4';
+  if (pct >= 0.70) return 'icp-h3';
+  if (pct >= 0.50) return 'icp-h2';
+  if (pct >  0)    return 'icp-h1';
+  return 'icp-h0';
+}
 
 // Sparkline helpers
 const acqSessions = acquisition.map(d => d.sessions);
@@ -175,6 +197,118 @@ const statusLabel: Record<DataSource['status'], string> = {
     </div>
   </div>
 </section>
+
+<!-- ── Marketing funnel ── -->
+{funnel.length > 0 && (
+  <section style="margin-bottom:14px">
+    <div class="gh-card">
+      <div class="gh-card-header">
+        Marketing funnel · 7d
+        <span class="gh-card-meta">sessions → won · conversion rates WoW</span>
+      </div>
+      <div class="gh-funnel-flow">
+        {funnel.map((step, i) => {
+          const barW = Math.round((step.count / funnelMax) * 100);
+          const isLast = i === funnel.length - 1;
+          return (
+            <div class="gh-funnel-row">
+              <div class="gh-funnel-label">{step.label}</div>
+              <div class="gh-funnel-bar-wrap">
+                <div
+                  class={`gh-funnel-bar${isLast ? ' gh-funnel-bar--won' : ''}`}
+                  style={`width:${barW}%`}
+                ></div>
+              </div>
+              <div class="gh-funnel-count">{step.count.toLocaleString()}</div>
+              {step.conv_rate !== null ? (
+                <div class="gh-funnel-conv">
+                  <span class="gh-funnel-rate">{(step.conv_rate * 100).toFixed(1)}%</span>
+                  {step.delta !== null && (
+                    <span class={`gh-funnel-delta ${step.delta >= 0 ? 'gh-up' : 'gh-down'}`}>
+                      {step.delta >= 0 ? '↑' : '↓'} {Math.abs(step.delta * 100).toFixed(0)}pp
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div class="gh-funnel-conv"></div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+)}
+
+<!-- ── ICP cohort matrix ── -->
+{icpSegments.length > 0 && icpSummary && (
+  <section style="margin-bottom:14px">
+    <div class="gh-card">
+      <div class="gh-card-header">
+        ICP cohort matrix
+        <span class="gh-card-meta">
+          {icpSummary.in_icp}/{icpSummary.total_leads} in ICP ({(icpSummary.icp_pct * 100).toFixed(0)}%)
+          · avg score in ICP <strong style="color:var(--lime)">{icpSummary.avg_score_in_icp}</strong>
+          · out of ICP <strong style="color:var(--bad)">{icpSummary.avg_score_out_icp}</strong>
+          · ICP pipeline {formatCurrency(icpSummary.pipeline_in_icp_cents)}
+        </span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="gh-table gh-icp-matrix">
+          <thead>
+            <tr>
+              <th>Industry</th>
+              {icpSizes.map(sz => <th class="gh-num">{sz}</th>)}
+              <th class="gh-num">Total</th>
+              <th class="gh-num">In ICP</th>
+              <th class="gh-num">Pipeline</th>
+            </tr>
+          </thead>
+          <tbody>
+            {icpIndustries.map(industry => {
+              const rowSegs = icpSegments.filter(s => s.industry === industry);
+              const rowTotal = rowSegs.reduce((a, s) => a + s.total_leads, 0);
+              const rowInIcp = rowSegs.reduce((a, s) => a + s.in_icp, 0);
+              const rowPipe  = rowSegs.reduce((a, s) => a + s.pipeline_cents, 0);
+              const rowPct   = rowTotal ? rowInIcp / rowTotal : 0;
+              return (
+                <tr>
+                  <td style="font-weight:500;color:var(--text-1)">{industry}</td>
+                  {icpSizes.map(sz => {
+                    const cell = icpCell(industry, sz);
+                    return cell ? (
+                      <td class={`gh-num gh-icp-cell ${icpHeat(cell.icp_pct)}`}>
+                        <span class="gh-icp-n">{cell.total_leads}</span>
+                        <span class="gh-icp-pct">{(cell.icp_pct * 100).toFixed(0)}%</span>
+                      </td>
+                    ) : (
+                      <td class="gh-num gh-icp-cell icp-h0" style="color:var(--text-3)">—</td>
+                    );
+                  })}
+                  <td class="gh-num" style="color:var(--text-2)">{rowTotal}</td>
+                  <td class="gh-num">
+                    <span class={rowPct >= 0.75 ? 'gh-up' : rowPct >= 0.5 ? '' : 'gh-down'} style="font-weight:600">
+                      {(rowPct * 100).toFixed(0)}%
+                    </span>
+                  </td>
+                  <td class="gh-num" style="color:var(--text-2)">{formatCurrency(rowPipe)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px;align-items:center;font-size:11px;color:var(--text-3)">
+        <span>Heat:</span>
+        {[['icp-h4','≥85%'],['icp-h3','70-84%'],['icp-h2','50-69%'],['icp-h1','<50%']].map(([cls, label]) => (
+          <span style="display:flex;align-items:center;gap:4px">
+            <span class={`gh-icp-swatch ${cls}`}></span>{label}
+          </span>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
 <!-- ── Pipeline + Sources ── -->
 <section class="gh-grid-2" style="margin-bottom:14px">

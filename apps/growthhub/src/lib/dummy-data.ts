@@ -140,6 +140,59 @@ export const headlineMetrics = {
   won_count_mtd: 4,
 };
 
+// --- Marketing funnel (sessions → won) -------------------------------------
+export interface FunnelStep {
+  label: string;
+  count: number;
+  conv_rate: number | null;  // null for first step
+  delta: number | null;      // wow on this step's conv rate
+}
+
+export const marketingFunnel: FunnelStep[] = [
+  { label: 'Sessions',     count: 9970,  conv_rate: null,  delta: null  },
+  { label: 'Signups',      count: 168,   conv_rate: 0.017, delta: 0.14  },
+  { label: 'Leads',        count: 91,    conv_rate: 0.542, delta: 0.09  },
+  { label: 'Qualified',    count: 14,    conv_rate: 0.154, delta: -0.06 },
+  { label: 'Demo',         count: 9,     conv_rate: 0.643, delta: 0.12  },
+  { label: 'Proposal',     count: 5,     conv_rate: 0.556, delta: -0.03 },
+  { label: 'Won (MTD)',    count: 4,     conv_rate: 0.800, delta: 0.33  },
+];
+
+// --- ICP cohort matrix (industry × size) -----------------------------------
+export interface IcpSegment {
+  industry: string;
+  size: string;
+  total_leads: number;
+  in_icp: number;      // score ≥ 75
+  icp_pct: number;
+  avg_score: number;
+  pipeline_cents: number;
+}
+
+export const icpSegments: IcpSegment[] = [
+  { industry: 'B2B SaaS',      size: '50-200',  total_leads: 28, in_icp: 22, icp_pct: 0.79, avg_score: 82, pipeline_cents: 21600000 },
+  { industry: 'B2B SaaS',      size: '200-500', total_leads: 11, in_icp: 10, icp_pct: 0.91, avg_score: 88, pipeline_cents: 12400000 },
+  { industry: 'B2B SaaS',      size: '10-50',   total_leads: 14, in_icp: 7,  icp_pct: 0.50, avg_score: 68, pipeline_cents: 6200000  },
+  { industry: 'Fintech',       size: '200-500', total_leads: 9,  in_icp: 8,  icp_pct: 0.89, avg_score: 85, pipeline_cents: 9800000  },
+  { industry: 'Fintech',       size: '50-200',  total_leads: 7,  in_icp: 5,  icp_pct: 0.71, avg_score: 77, pipeline_cents: 5400000  },
+  { industry: 'DevTools',      size: '50-200',  total_leads: 8,  in_icp: 6,  icp_pct: 0.75, avg_score: 79, pipeline_cents: 6800000  },
+  { industry: 'MarTech',       size: '200-500', total_leads: 6,  in_icp: 5,  icp_pct: 0.83, avg_score: 84, pipeline_cents: 8100000  },
+  { industry: 'Cybersecurity', size: '50-200',  total_leads: 5,  in_icp: 3,  icp_pct: 0.60, avg_score: 72, pipeline_cents: 3200000  },
+  { industry: 'AI / ML',       size: '10-50',   total_leads: 7,  in_icp: 3,  icp_pct: 0.43, avg_score: 63, pipeline_cents: 2800000  },
+  { industry: 'AI / ML',       size: '50-200',  total_leads: 4,  in_icp: 3,  icp_pct: 0.75, avg_score: 78, pipeline_cents: 3600000  },
+  { industry: 'Other',         size: '10-50',   total_leads: 12, in_icp: 3,  icp_pct: 0.25, avg_score: 51, pipeline_cents: 1400000  },
+];
+
+// ICP summary totals
+export const icpSummary = {
+  total_leads: 111,
+  in_icp: 75,
+  icp_pct: 0.676,
+  avg_score_in_icp: 82,
+  avg_score_out_icp: 54,
+  pipeline_in_icp_cents: 79100000,
+};
+
 export function formatCurrency(cents: number): string {
   if (cents >= 100_000_000) return `$${(cents / 100_000_000).toFixed(2)}M`;
   if (cents >= 100_000) return `$${(cents / 100_000).toFixed(1)}k`;
