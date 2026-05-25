@@ -1,7 +1,10 @@
 name: Smoke (prod)
 
-# Sprint 1: runs the real Playwright smoke spec against prod.
-# Auto-trigger via deployment_status / CF Pages webhook ships in a follow-up.
+# Triggers:
+#   - workflow_dispatch: manual run with optional base_url override
+#   - repository_dispatch (type: betterstack-incident): fired by BetterStack
+#     webhook on incident start for the wojciech.io monitor.
+#   - schedule: daily at 07:00 UTC as a passive canary
 on:
   workflow_dispatch:
     inputs:
@@ -9,6 +12,10 @@ on:
         description: "Prod base URL to smoke"
         required: false
         default: "https://wojciech.io"
+  repository_dispatch:
+    types: [betterstack-incident]
+  schedule:
+    - cron: "0 7 * * *"
 
 permissions:
   contents: read
@@ -29,10 +36,10 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps chromium
 
-      - name: Run smoke against ${{ github.event.inputs.base_url }}
+      - name: Run smoke against ${{ github.event.inputs.base_url || 'https://wojciech.io' }}
         id: smoke
         env:
-          BASE_URL: ${{ github.event.inputs.base_url }}
+          BASE_URL: ${{ github.event.inputs.base_url || 'https://wojciech.io' }}
           CI: "true"
         run: npx playwright test smoke
 
@@ -48,11 +55,12 @@ jobs:
         if: failure()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BASE_URL: ${{ github.event.inputs.base_url }}
+          BASE_URL: ${{ github.event.inputs.base_url || 'https://wojciech.io' }}
         run: |
           gh issue create \
             --title "[URGENT] smoke-prod failed against $BASE_URL" \
             --label "severity:critical,agent:test" \
             --body "Post-deploy smoke failed. See workflow run for the Playwright report.
 
-          Suggested next step: \`gh workflow run rollback.yml\` (auto-rollback wiring lands in Sprint 1 Tier 5)."
+          Trigger: ${{ github.event_name }}
+          Suggested next step: \`gh workflow run rollback.yml\`"
