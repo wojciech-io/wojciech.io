@@ -66,14 +66,14 @@ export interface CvData {
 export const cvData: CvData = {
   meta: {
     title: {
-      en: 'Wojciech Łuszczyński — CV',
-      pl: 'Wojciech Łuszczyński — CV',
-      it: 'Wojciech Łuszczyński — CV',
+      en: 'Wojciech Łuszczyński · CV',
+      pl: 'Wojciech Łuszczyński · CV',
+      it: 'Wojciech Łuszczyński · CV',
     },
     description: {
-      en: 'CV of Wojciech Łuszczyński — GTM Architect and Growth Operator. AI-native revenue systems for B2B SaaS. 20 years marketing, 10 years B2B SaaS growth.',
-      pl: 'CV Wojciecha Łuszczyńskiego — GTM Architect i Growth Operator. AI-native systemy przychodowe dla B2B SaaS. 20 lat marketingu, 10 lat growth w B2B SaaS.',
-      it: 'CV di Wojciech Łuszczyński — GTM Architect e Growth Operator. Sistemi di ricavo AI-native per B2B SaaS. 20 anni di marketing, 10 anni di growth in B2B SaaS.',
+      en: 'CV of Wojciech Łuszczyński, GTM Architect and Growth Operator. AI-native revenue systems for B2B SaaS. 20 years marketing, 10 years B2B SaaS growth.',
+      pl: 'CV Wojciecha Łuszczyńskiego, GTM Architect i Growth Operator. AI-native systemy przychodowe dla B2B SaaS. 20 lat marketingu, 10 lat growth w B2B SaaS.',
+      it: 'CV di Wojciech Łuszczyński, GTM Architect e Growth Operator. Sistemi di ricavo AI-native per B2B SaaS. 20 anni di marketing, 10 anni di growth in B2B SaaS.',
     },
   },
   header: {
@@ -146,7 +146,7 @@ export const cvData: CvData = {
         ],
         pl: [
           'Wzrost ruchu organicznego o 40% dzięki SEO i poprawkom technicznym',
-          'Wzrost lead generation o 30% — konwertujące landingi i testy A/B',
+          'Wzrost lead generation o 30%: konwertujące landingi i testy A/B',
           'Wzrost ruchu na blogu o 50% dzięki contentowi opartemu na automatyzacji',
           'Optymalizacja prędkości strony o 25%, lepsze UX i zaangażowanie',
           'Spięcie workflow marketingu, produktu i web developmentu',
@@ -421,9 +421,9 @@ export const cvData: CvData = {
     },
     {
       degree: {
-        en: 'Post-graduate — Public Relations',
-        pl: 'Studia podyplomowe — Public Relations',
-        it: 'Master post-laurea — Public Relations',
+        en: 'Post-graduate · Public Relations',
+        pl: 'Studia podyplomowe · Public Relations',
+        it: 'Master post-laurea · Public Relations',
       },
       school: 'Warsaw School of Economics',
       year: '2016 – 2017',

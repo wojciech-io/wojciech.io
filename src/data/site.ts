@@ -2,7 +2,7 @@ export const SITE = {
   name:        'Wojciech Luszczynski',
   nameDisplay: 'Wojciech Łuszczyński',
   tagline:     'GTM Architect · Growth Operator · AI-native Revenue Systems',
-  bio:         'I build growth systems for B2B SaaS companies that have a real product but not yet a reliable revenue engine — connecting GTM, marketing, CRM, automation and AI into one operating model.',
+  bio:         'I build growth systems for B2B SaaS companies that have a real product but not yet a reliable revenue engine: connecting GTM, marketing, CRM, automation and AI into one operating model.',
   email:       'hello@wojciech.io',
   phone:       '+48 504 498 146',
 
