@@ -1,70 +1,73 @@
 # 08 - Migration backlog
 
+> **Status as of 2026-05-25: ALL launch items DONE. Site is live at wojciech.io.**
+> This file is kept for historical reference. Use Sprint 4 planning for post-launch work.
+
 ## Epic 1 - project foundation
 
-- [ ] Add Tailwind CSS
-- [ ] Add global design tokens
-- [ ] Add typography scale
-- [ ] Add layout primitives
-- [ ] Add reusable buttons, cards, badges, section headers
-- [ ] Configure site constants
-- [ ] Configure metadata helper
-- [ ] Configure image handling
+- [x] Add Tailwind CSS
+- [x] Add global design tokens
+- [x] Add typography scale
+- [x] Add layout primitives
+- [x] Add reusable buttons, cards, badges, section headers
+- [x] Configure site constants
+- [x] Configure metadata helper
+- [x] Configure image handling
 
 ## Epic 2 - core IA
 
-- [ ] Build homepage
-- [ ] Build `/about`
-- [ ] Build `/work`
-- [ ] Build `/ai-systems`
-- [ ] Build `/insights`
-- [ ] Build `/resources`
-- [ ] Build 404 page
+- [x] Build homepage
+- [x] Build `/about`
+- [x] Build `/work`
+- [x] Build `/ai-systems`
+- [x] Build `/insights`
+- [x] Build `/resources`
+- [x] Build 404 page
 
 ## Epic 3 - proof system
 
-- [ ] Define proof-cluster data model
-- [ ] Define project / case-study data model
-- [ ] Add testimonial inventory data model
-- [ ] Add metric validation table
-- [ ] Implement proof cluster cards
-- [ ] Implement testimonial components
+- [x] Define proof-cluster data model
+- [x] Define project / case-study data model
+- [x] Add testimonial inventory data model
+- [x] Add metric validation table
+- [x] Implement proof cluster cards
+- [x] Implement testimonial components
 
 ## Epic 4 - content
 
-- [ ] Migrate Claude Code article to MDX
-- [ ] Build article template
-- [ ] Add article metadata fields
-- [ ] Create future content placeholders / taxonomy
-- [ ] Decide treatment of legacy posts
+- [x] Migrate Claude Code article to MDX (slug: `how-to-build-gtm-ai-agent-outbound-crm`)
+- [x] Build article template
+- [x] Add article metadata fields
+- [x] Create future content placeholders / taxonomy
+- [x] Decide treatment of legacy posts (retired; only the GTM article migrated)
 
 ## Epic 5 - SEO / migration
 
-- [ ] Finalize redirect map
-- [ ] Add `_redirects`
-- [ ] Add canonical handling
-- [ ] Add sitemap
-- [ ] Add RSS
-- [ ] Add robots.txt
-- [ ] Add `llms.txt`
-- [ ] Add article schema
-- [ ] Add person / website schema
-- [ ] Add OG / social defaults
-- [ ] Add GA4
+- [x] Finalize redirect map
+- [x] Add `_redirects` (`/solutions→/work`, `/my-gpt→/ai-systems`, `/blog→/insights`, old slug→new)
+- [x] Add canonical handling
+- [x] Add sitemap (`/sitemap-index.xml`, `/sitemap-0.xml`)
+- [x] Add RSS (`/rss.xml`)
+- [x] Add robots.txt
+- [x] Add `llms.txt`
+- [x] Add article schema (BlogPosting JSON-LD)
+- [x] Add person / website schema
+- [x] Add OG / social defaults + per-article OG images (`/og/[slug].png`)
+- [x] Add GA4 (`G-4ED804XJLP`, via `PUBLIC_GA_MEASUREMENT_ID`)
 
 ## Epic 6 - QA
 
-- [ ] Responsive review
-- [ ] Lighthouse / CWV review
-- [ ] Accessibility review
-- [ ] Link check
-- [ ] Metadata review
-- [ ] Redirect review
-- [ ] Production cutover checklist
+- [x] Responsive review
+- [x] Lighthouse / CWV review
+- [x] Accessibility review
+- [x] Link check
+- [x] Metadata review (hreflang en/pl/it/x-default, canonicals)
+- [x] Redirect review (all 301s verified live)
+- [x] Production cutover checklist (DNS cutover done, site live)
 
-## Backlog not for v1 launch
+## Backlog not for v1 launch (still open)
 
-- [ ] multilingual version
+- [ ] multilingual version (hreflang infra in place; /pl/ /it/ pages retired at launch)
 - [ ] search UI
 - [ ] full resource library
 - [ ] large historical blog recovery
