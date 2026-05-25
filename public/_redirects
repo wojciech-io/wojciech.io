@@ -1,16 +1,71 @@
-/en/* /:splat 301
+# Cloudflare Pages redirects
+# Format: <from> <to> <status>
+# Notes:
+#   - Astro generates 308 for trailing-slash normalization automatically.
+#   - Order matters — first match wins.
 
-/solutions /work/ 301
-/solutions/ /work/ 301
-/my-gpt /ai-systems/ 301
-/my-gpt/ /ai-systems/ 301
-/pricing /contact/ 301
-/pricing/ /contact/ 301
-/support /contact/ 301
-/support/ /contact/ 301
-/blog /insights/ 301
-/blog/ /insights/ 301
-/blog/claude-code-vs-clay /insights/how-to-build-gtm-ai-agent-outbound-crm/ 301
-/blog/claude-code-vs-clay/ /insights/how-to-build-gtm-ai-agent-outbound-crm/ 301
-/insights/claude-code-vs-clay /insights/how-to-build-gtm-ai-agent-outbound-crm/ 301
-/insights/claude-code-vs-clay/ /insights/how-to-build-gtm-ai-agent-outbound-crm/ 301
+# ─── Sprint 2 B1: kill multilingual routes (English-only launch) ────────
+# Force redirect so stale CF Pages cache (s-maxage 7d) is superseded.
+# Re-add localized routes here when a future localization sprint reinstates them.
+/pl/*         /:splat        301
+/it/*         /:splat        301
+/en/*         /:splat        301
+/pl           /              301
+/it           /              301
+
+# ─── Legacy retired pages (Sprint 0 IA decision) ────────────────────────
+/solutions    /work/         301
+/solutions/   /work/         301
+/my-gpt       /ai-systems/   301
+/my-gpt/      /ai-systems/   301
+/pricing      /contact/      301
+/pricing/     /contact/      301
+/support      /contact/      301
+/support/     /contact/      301
+
+# ─── Old blog tree → new /insights/ index ───────────────────────────────
+/blog         /insights/     301
+/blog/        /insights/     301
+
+# ─── Sprint 2 B2: 15 archived insights → /insights/ index ───────────────
+# Per-slug landing pages will return when articles are rewritten for v2
+# voice (Sprint 3+). Until then: index is the canonical destination.
+/insights/ai-adoption-framework-b2b-saas-growth-teams         /insights/  301
+/insights/ai-adoption-framework-b2b-saas-growth-teams/        /insights/  301
+/insights/astro-cloudflare-pages-portfolio-ai-workflow        /insights/  301
+/insights/astro-cloudflare-pages-portfolio-ai-workflow/       /insights/  301
+/insights/b2b-crm-revenue-operations-system-guide             /insights/  301
+/insights/b2b-crm-revenue-operations-system-guide/            /insights/  301
+/insights/b2b-revenue-system-design-operator-framework        /insights/  301
+/insights/b2b-revenue-system-design-operator-framework/       /insights/  301
+/insights/b2b-saas-growth-system-icp-acquisition-retention    /insights/  301
+/insights/b2b-saas-growth-system-icp-acquisition-retention/   /insights/  301
+/insights/cloudflare-migration-zero-trust-free-tier           /insights/  301
+/insights/cloudflare-migration-zero-trust-free-tier/          /insights/  301
+/insights/component-showcase                                  /insights/  301
+/insights/component-showcase/                                 /insights/  301
+/insights/framer-to-astro-build-vs-buy-website-rebuild        /insights/  301
+/insights/framer-to-astro-build-vs-buy-website-rebuild/       /insights/  301
+/insights/google-ads-ai-management-dashboard-guide            /insights/  301
+/insights/google-ads-ai-management-dashboard-guide/           /insights/  301
+/insights/gtm-ai-agent-four-layer-architecture-guide          /insights/  301
+/insights/gtm-ai-agent-four-layer-architecture-guide/         /insights/  301
+/insights/gtm-tools-build-vs-buy-decision-framework           /insights/  301
+/insights/gtm-tools-build-vs-buy-decision-framework/          /insights/  301
+/insights/how-to-build-booking-engine-product-architecture    /insights/  301
+/insights/how-to-build-booking-engine-product-architecture/   /insights/  301
+/insights/how-to-build-gtm-ai-agent-outbound-crm              /insights/  301
+/insights/how-to-build-gtm-ai-agent-outbound-crm/             /insights/  301
+/insights/how-to-build-micro-saas-with-ai-tools               /insights/  301
+/insights/how-to-build-micro-saas-with-ai-tools/              /insights/  301
+/insights/macos-teleprompter-macbook-notch-native-app         /insights/  301
+/insights/macos-teleprompter-macbook-notch-native-app/        /insights/  301
+
+# ─── claude-code-vs-clay slug guards (broken previously) ────────────────
+# Were pointing at the now-archived gtm-ai-agent article. Both old and new
+# paths route safely to /insights/ index until claude-code-vs-clay article
+# migration ships in Sprint 3.
+/blog/claude-code-vs-clay        /insights/  301
+/blog/claude-code-vs-clay/       /insights/  301
+/insights/claude-code-vs-clay    /insights/  301
+/insights/claude-code-vs-clay/   /insights/  301
