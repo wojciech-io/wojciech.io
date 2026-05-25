@@ -78,6 +78,43 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     <Footer />
     <CookieBanner />
 
+    <!-- Mixpanel: fire page_viewed after consent check has run -->
+    <script>
+      import { trackPageViewed } from '../utils/mixpanel';
+      // CookieBanner.astro handles initAfterConsent() — we just fire the event.
+      // Small delay ensures init has run before we track.
+      setTimeout(() => {
+        trackPageViewed({
+          path: window.location.pathname,
+          title: document.title,
+        });
+      }, 300);
+
+      // Track outbound links + internal CTAs globally via event delegation
+      import { trackOutboundClicked, trackCtaClicked, trackNewsletterCtaClicked } from '../utils/mixpanel';
+      document.addEventListener('click', (e) => {
+        const a = (e.target as Element)?.closest('a');
+        if (!a) return;
+        const href = a.getAttribute('href') ?? '';
+
+        // Outbound
+        if (href.startsWith('http') && !href.includes('wojciech.io')) {
+          trackOutboundClicked({ href, label: a.textContent?.trim() || undefined });
+        }
+
+        // Internal CTAs tagged with data-mp-cta
+        const cta = a.dataset.mpCta;
+        if (cta) {
+          const location = a.dataset.mpLocation ?? 'unknown';
+          if (cta === 'newsletter') {
+            trackNewsletterCtaClicked({ location });
+          } else {
+            trackCtaClicked({ label: cta, href, location });
+          }
+        }
+      });
+    </script>
+
     <!-- Scroll-triggered reveal animation -->
     <script>
       const observer = new IntersectionObserver(

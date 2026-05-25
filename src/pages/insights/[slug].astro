@@ -140,7 +140,15 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
   <!-- Article cover — full-width, outside max-w constraint -->
   <ArticleCover coverType={post.data.coverType} tags={post.data.tags} title={post.data.title} />
 
-  <article id="article-content" class="mx-auto max-w-3xl px-6 pt-[var(--space-section)] pb-16">
+  <article
+    id="article-content"
+    class="mx-auto max-w-3xl px-6 pt-[var(--space-section)] pb-16"
+    data-slug={slug}
+    data-title={post.data.title}
+    data-category={post.data.category ?? ''}
+    data-tags={post.data.tags.join(',')}
+    data-read-time={Math.max(4, Math.ceil((post.body?.split(/\s+/).length ?? 0) / 220))}
+  >
 
     <!-- Header -->
     <header class="mb-10">
@@ -252,8 +260,25 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
 </Layout>
 
 <script>
+  import { trackArticleViewed, trackArticleScrollDepth, trackNewsletterCtaClicked } from '../../utils/mixpanel';
+
   const bar = document.getElementById('progress-bar') as HTMLElement;
   const article = document.getElementById('article-content') as HTMLElement;
+
+  // Article metadata injected at build time via data attributes on the article element
+  const slug = article?.dataset.slug ?? '';
+  const title = article?.dataset.title ?? document.title;
+  const category = article?.dataset.category ?? '';
+  const tags = (article?.dataset.tags ?? '').split(',').filter(Boolean);
+  const readTimeMin = parseInt(article?.dataset.readTime ?? '5', 10);
+
+  // fire article_viewed (Layout page_viewed fires first via 300ms timeout)
+  setTimeout(() => {
+    trackArticleViewed({ slug, title, category: category || undefined, tags, read_time_min: readTimeMin });
+  }, 400);
+
+  // Scroll depth milestones — fire once each
+  const milestones = new Set<number>();
 
   function updateProgress() {
     const { top, height } = article.getBoundingClientRect();
@@ -261,10 +286,23 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
     const scrollable = height - windowH;
     const scrolled = Math.max(0, -top);
     const pct = scrollable > 0 ? Math.min(100, (scrolled / scrollable) * 100) : 0;
+
     bar.style.width = pct + '%';
     bar.setAttribute('aria-valuenow', String(Math.round(pct)));
+
+    for (const milestone of [25, 50, 75, 100] as const) {
+      if (pct >= milestone && !milestones.has(milestone)) {
+        milestones.add(milestone);
+        trackArticleScrollDepth({ slug, depth_pct: milestone });
+      }
+    }
   }
 
   window.addEventListener('scroll', updateProgress, { passive: true });
   updateProgress();
+
+  // Newsletter CTA in article footer
+  document.querySelector('a[href="/subscribe"]')?.addEventListener('click', () => {
+    trackNewsletterCtaClicked({ location: 'article_end' });
+  });
 </script>

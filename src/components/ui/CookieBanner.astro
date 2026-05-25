@@ -16,7 +16,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
         </svg>
         <p class="text-xs text-[var(--color-text-muted)] leading-snug">
-          We use <span class="text-[var(--color-text)]">Cloudflare Analytics</span> to understand site usage — no tracking cookies, no profiling.
+          We use <span class="text-[var(--color-text)]">Cloudflare Analytics</span> and <span class="text-[var(--color-text)]">Mixpanel</span> to understand site usage — anonymously, with EU data residency.
           <a href="/privacy" class="text-[var(--color-accent)] hover:text-[var(--color-accent-hi)] underline underline-offset-2 ml-1">Privacy policy</a>
         </p>
       </div>
@@ -39,6 +39,8 @@
 </div>
 
 <script>
+  import { initAfterConsent, optOut } from '../../utils/mixpanel';
+
   const COOKIE_KEY = 'cookie-consent';
   const banner = document.getElementById('cookie-banner') as HTMLElement;
   const acceptBtn = document.getElementById('cookie-accept') as HTMLButtonElement;
@@ -53,18 +55,24 @@
   }
 
   const consent = localStorage.getItem(COOKIE_KEY);
-  if (!consent) {
-    // Small delay so it doesn't flash immediately on load
+
+  // Restore previous consent choice on page load
+  if (consent === 'accepted') {
+    initAfterConsent();
+  } else if (!consent) {
+    // Small delay so banner doesn't flash immediately on load
     setTimeout(showBanner, 800);
   }
 
   acceptBtn?.addEventListener('click', () => {
     localStorage.setItem(COOKIE_KEY, 'accepted');
     hideBanner();
+    initAfterConsent();
   });
 
   declineBtn?.addEventListener('click', () => {
     localStorage.setItem(COOKIE_KEY, 'declined');
     hideBanner();
+    optOut();
   });
 </script>
