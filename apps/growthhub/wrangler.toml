@@ -1,0 +1,17 @@
+# Source of truth for non-secret bindings for the growthhub Pages project.
+# Secrets (PIPEDRIVE_API_TOKEN, GA4_SERVICE_ACCOUNT_JSON) live in CF dashboard.
+name = "growthhub"
+compatibility_date = "2026-05-20"
+pages_build_output_dir = "./dist"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "growthhub-db"
+database_id = "TBD"
+
+# Nightly data pull — fires at 03:00 UTC every day.
+# Bound to the /api/sync handler via CF Pages Cron Triggers.
+# To enable: set the cron in Cloudflare dashboard under Pages → growthhub → Settings → Cron Triggers
+# or wire here after confirming database_id above.
+# [[triggers]]
+# crons = ["0 3 * * *"]
