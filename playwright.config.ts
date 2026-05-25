@@ -28,6 +28,8 @@ export default defineConfig({
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.01,
       animations: 'disabled',
+      pathTemplate:
+        '{testDir}/e2e/__screenshots__/{testFileName}-snapshots/{arg}{-projectName}{-platform}{ext}',
     },
   },
   use: {
