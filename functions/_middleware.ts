@@ -55,7 +55,7 @@ const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org",
+    "img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org https://unavatar.io",
     "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com",
     "font-src 'self'",
     "frame-src https://gh.wojciech.io",
