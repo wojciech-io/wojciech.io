@@ -60,6 +60,17 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
         document.documentElement.style.colorScheme = theme;
       })();
     </script>
+    {import.meta.env.PROD && (
+      <>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4ED804XJLP" />
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-4ED804XJLP');
+        </script>
+      </>
+    )}
   </head>
   <body class="min-h-dvh flex flex-col">
     <Header langPrefix={initialLang === 'pl' ? '/pl' : initialLang === 'it' ? '/it' : ''} />
