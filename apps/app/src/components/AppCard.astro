@@ -1,0 +1,70 @@
+---
+import type { AppEntry } from '../lib/apps-data';
+
+interface Props { app: AppEntry }
+const { app } = Astro.props;
+const { palette: p, status } = app;
+
+const statusConfig = {
+  'live':         { label: { en: 'Live', pl: 'Live', it: 'Live' }, cls: 's-live' },
+  'in-progress':  { label: { en: 'In progress', pl: 'W toku', it: 'In corso' }, cls: 's-progress' },
+  'private-mvp':  { label: { en: 'Private MVP', pl: 'MVP prywatny', it: 'MVP privato' }, cls: 's-progress' },
+  'private-beta': { label: { en: 'Private beta', pl: 'Prywatny', it: 'Beta privata' }, cls: 's-progress' },
+  'soon':         { label: { en: 'Soon', pl: 'Wkrótce', it: 'Presto' }, cls: 's-soon' },
+};
+const sc = statusConfig[status];
+---
+
+<div class="app-card" data-tags={app.tags} data-name={app.searchName}>
+
+  <div class="card-screen" style={`overflow:hidden;position:relative;background:linear-gradient(145deg,${p.screenFrom} 0%,${p.screenTo} 100%)`}>
+    <div style={`position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,${p.glowRgba} 0%,transparent 68%);pointer-events:none`}></div>
+    <div class="cs-grid"></div>
+    <div class="cs-body">
+      <div class="cs-icon-box" style={`background:linear-gradient(145deg,${p.iconFrom},${p.iconTo});border:none;box-shadow:0 8px 28px ${p.shadowRgba},inset 0 1px 0 rgba(255,255,255,0.20)`}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={app.icon} />
+      </div>
+      <div class="cs-cat-txt">{app.category}</div>
+    </div>
+    <div class="screen-ov"></div>
+    <div class="screen-meta">
+      <span class="cat-badge">{app.badge}</span>
+      <div class={sc.cls}>
+        {status !== 'live' && <div class="sdot"></div>}
+        {status === 'live' && <div class="sdot"></div>}
+        <span data-en={sc.label.en} data-pl={sc.label.pl} data-it={sc.label.it}>{sc.label.en}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="card-header-row">
+      <div class="app-icon" style={`background:${p.chipBg}`}>{app.initials}</div>
+      <div class="card-header-text">
+        <div class="card-title">{app.name}</div>
+        <div class="card-header-cat">{app.category}</div>
+      </div>
+    </div>
+
+    <div class="card-tagline"
+      data-en={app.tagline.en}
+      data-pl={app.tagline.pl}
+      data-it={app.tagline.it}
+    >{app.tagline.en}</div>
+
+    <div class="tech-row">
+      {app.tech.map(t => <span class={`tc${t.accent ? ' accent' : ''}`}>{t.label}</span>)}
+    </div>
+
+    <div class="card-actions">
+      {app.url
+        ? <a href={app.url} target="_blank" rel="noopener noreferrer" class="btn-p">
+            <span data-en={app.urlLabel!.en} data-pl={app.urlLabel!.pl} data-it={app.urlLabel!.it}>{app.urlLabel!.en}</span>
+          </a>
+        : <span class="btn-p" style="opacity:.5;cursor:default;pointer-events:none">
+            <span data-en="Soon" data-pl="Wkrótce" data-it="Presto">Soon</span>
+          </span>
+      }
+    </div>
+  </div>
+</div>
