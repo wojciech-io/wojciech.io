@@ -1,39 +1,43 @@
 ---
-// Cookie consent banner — stores choice in localStorage, shown once
+// Analytics consent banner
+// - Compact single-line design, slides up from the bottom
+// - Stores choice in localStorage as 'cookie-consent' = 'accepted' | 'declined'
+// - On accept: fires initAfterConsent() which initialises GA4 + Mixpanel
+// - On decline: fires optOut() so Mixpanel stays in opt-out mode
 ---
 
 <div
   id="cookie-banner"
-  class="fixed bottom-3 left-3 right-3 z-50 hidden"
+  class="fixed bottom-0 left-0 right-0 z-50 translate-y-full transition-transform duration-300 ease-out"
   role="dialog"
-  aria-label="Cookie consent"
+  aria-label="Analytics consent"
   aria-live="polite"
 >
-  <div class="mx-auto max-w-6xl">
-    <div class="flex flex-col gap-3 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 shadow-none backdrop-blur-md sm:flex-row sm:items-center sm:gap-4">
-      <div class="flex items-start gap-2.5 sm:gap-3 flex-1">
-        <svg class="hidden sm:block w-4 h-4 text-[var(--color-accent)] shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
-        </svg>
-        <p class="text-xs text-[var(--color-text-muted)] leading-snug">
-          We use <span class="text-[var(--color-text)]">Cloudflare Analytics</span> and <span class="text-[var(--color-text)]">Mixpanel</span> to understand site usage — anonymously, with EU data residency.
-          <a href="/privacy" class="text-[var(--color-accent)] hover:text-[var(--color-accent-hi)] underline underline-offset-2 ml-1">Privacy policy</a>
-        </p>
-      </div>
-      <div class="flex gap-2 shrink-0 w-full sm:w-auto">
+  <div class="border-t border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-3 sm:flex-row sm:items-center sm:gap-6">
+
+      <!-- Text -->
+      <p class="flex-1 text-xs text-[var(--color-text-muted)] leading-relaxed">
+        I use <strong class="text-[var(--color-text)] font-medium">Mixpanel</strong> and <strong class="text-[var(--color-text)] font-medium">Google Analytics</strong> to understand which content is useful — anonymously, with EU data residency, no advertising.
+        <a href="/privacy/" class="ml-1 text-[var(--color-accent)] hover:text-[var(--color-accent-hi)] underline underline-offset-2 whitespace-nowrap">Full details →</a>
+      </p>
+
+      <!-- Actions -->
+      <div class="flex shrink-0 items-center gap-2">
         <button
           id="cookie-decline"
-          class="flex-1 sm:flex-none text-xs font-medium px-4 py-2 rounded-[var(--radius-btn)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)] transition-colors"
+          class="text-xs text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors px-3 py-1.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-surface-2)]"
         >
-          Decline
+          No thanks
         </button>
         <button
           id="cookie-accept"
-          class="btn-press flex-1 sm:flex-none text-xs font-semibold px-4 py-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:opacity-90 transition-colors"
+          class="btn-press text-xs font-semibold px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:opacity-90 transition-opacity"
         >
-          Accept
+          Accept analytics
         </button>
       </div>
+
     </div>
   </div>
 </div>
@@ -47,21 +51,24 @@
   const declineBtn = document.getElementById('cookie-decline') as HTMLButtonElement;
 
   function hideBanner() {
-    banner.classList.add('hidden');
+    banner.classList.add('translate-y-full');
+    banner.classList.remove('translate-y-0');
   }
 
   function showBanner() {
-    banner.classList.remove('hidden');
+    // Small delay so it slides in after page has settled
+    setTimeout(() => {
+      banner.classList.remove('translate-y-full');
+      banner.classList.add('translate-y-0');
+    }, 1000);
   }
 
   const consent = localStorage.getItem(COOKIE_KEY);
 
-  // Restore previous consent choice on page load
   if (consent === 'accepted') {
     initAfterConsent();
   } else if (!consent) {
-    // Small delay so banner doesn't flash immediately on load
-    setTimeout(showBanner, 800);
+    showBanner();
   }
 
   acceptBtn?.addEventListener('click', () => {
