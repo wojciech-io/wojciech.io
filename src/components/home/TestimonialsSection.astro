@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import TestimonialSlider from '../ui/TestimonialSlider.astro';
+
+const testimonialsCollection = await getCollection('testimonials', ({ data }) => data.featured && !data.draft);
+const testimonials = testimonialsCollection
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((t) => ({
+    quote: t.data.quote,
+    name: t.data.author,
+    role: t.data.role,
+    company: t.data.company,
+    linkedin: t.data.href,
+    avatar: t.data.avatar,
+  }));
+---
+
+<section class="py-[var(--space-section)] bg-[#0c0c0c] border-t border-white/8">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="relative mb-12">
+      <span class="pointer-events-none absolute -top-6 left-0 text-[8rem] font-bold leading-none select-none text-white opacity-5" aria-hidden="true">"</span>
+      <p class="relative text-xs font-semibold tracking-widest uppercase text-[#ebff00] mb-4">Testimonials</p>
+      <h2 class="relative text-3xl md:text-4xl font-semibold leading-[1.15] tracking-tight">
+        <span class="text-white">What it's like</span><br />
+        <span class="text-white/50">to work with me.</span>
+      </h2>
+    </div>
+    <TestimonialSlider testimonials={testimonials} />
+  </div>
+</section>
