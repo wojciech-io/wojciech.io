@@ -18,6 +18,39 @@ The launch should not preserve weak content for vanity reasons, but it should pr
 | `/support` | `/` or 410 | final decision after checking index/backlinks |
 | `/styleguide` | 410 | internal / non-public |
 
+## Sprint 2 redirect map
+
+Sprint 2 removed multilingual route directories and archived legacy insight articles. The redirect policy is intentionally conservative: preserve traffic, avoid 404s, and send retired article equity to the closest stable index until each topic is rewritten.
+
+| Old URL pattern | New URL | Treatment | Rationale |
+|---|---|---|---|
+| `/pl/*` | `/` | 301 | English-only launch; kill stale localized URLs rather than preserving ghost paths. |
+| `/it/*` | `/` | 301 | English-only launch; same rationale as PL. |
+| `/en/*` | `/` | 301 | Catch old language-prefixed route variants. |
+| `/blog` | `/insights/` | 301 | Old blog index maps to the v2 insights index. |
+| `/blog/claude-code-vs-clay` | `/insights/claude-code-vs-clay/` | 301 | Restored Sprint 3 article has a stable v2 URL. |
+| `/blog/*` | `/insights/:splat` | 301 | Preserve old blog slug structure for rewritten articles; archived slugs then fall through to the retired-insight rules below if requested directly. |
+
+Archived insight slugs now redirect to `/insights/` with 301 until individual rewrites land:
+
+- `/insights/ai-adoption-framework-b2b-saas-growth-teams`
+- `/insights/astro-cloudflare-pages-portfolio-ai-workflow`
+- `/insights/b2b-crm-revenue-operations-system-guide`
+- `/insights/b2b-revenue-system-design-operator-framework`
+- `/insights/b2b-saas-growth-system-icp-acquisition-retention`
+- `/insights/cloudflare-migration-zero-trust-free-tier`
+- `/insights/component-showcase`
+- `/insights/framer-to-astro-build-vs-buy-website-rebuild`
+- `/insights/google-ads-ai-management-dashboard-guide`
+- `/insights/gtm-ai-agent-four-layer-architecture-guide`
+- `/insights/gtm-tools-build-vs-buy-decision-framework`
+- `/insights/how-to-build-booking-engine-product-architecture`
+- `/insights/how-to-build-gtm-ai-agent-outbound-crm`
+- `/insights/how-to-build-micro-saas-with-ai-tools`
+- `/insights/macos-teleprompter-macbook-notch-native-app`
+
+The per-slug revival map should be revisited in Sprint 3+ when an archived article is rewritten and intentionally republished.
+
 ## Legacy blog posts
 
 Decision required later per URL:
