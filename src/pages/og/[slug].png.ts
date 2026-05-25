@@ -5,12 +5,8 @@ import { Resvg } from '@resvg/resvg-js';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-const fontRegular = readFileSync(
-  resolve('./node_modules/geist/dist/fonts/geist-sans/Geist-Regular.ttf')
-);
-const fontBold = readFileSync(
-  resolve('./node_modules/geist/dist/fonts/geist-sans/Geist-Bold.ttf')
-);
+const fontRegular = readFileSync(resolve(process.cwd(), 'public/fonts/Geist-Regular.ttf'));
+const fontBold = readFileSync(resolve(process.cwd(), 'public/fonts/Geist-Bold.ttf'));
 
 export async function getStaticPaths() {
   const posts = await getCollection('insights', (p) => !p.data.draft);
