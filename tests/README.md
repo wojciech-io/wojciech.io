@@ -20,8 +20,8 @@ npx playwright test a11y
 # UI mode (debug interactively)
 npx playwright test --ui
 
-# Update visual baselines (intentional — commit the result with explanation)
-npx playwright test --update-snapshots
+# Update visual baselines only for intentional UI changes
+npx playwright test visual --update-snapshots --project=chromium-desktop
 
 # Run against production (smoke only — no test data assumptions)
 BASE_URL=https://wojciech.io npx playwright test smoke
@@ -32,7 +32,8 @@ BASE_URL=https://wojciech.io npx playwright test smoke
 - `playwright.config.ts` — root config; switches between local preview and prod via `BASE_URL`
 - `tests/e2e/smoke.spec.ts` — golden-path 200-checks + heading presence; runs everywhere
 - `tests/e2e/a11y.spec.ts` — axe-core scan per smoke page; warning-mode in Sprint 1
-- `tests/visual/screenshots.spec.ts` — visual regression baseline (added separately)
+- `tests/e2e/visual.spec.ts` — visual regression baselines for 5 pages × 3 viewports
+- `tests/e2e/__screenshots__/` — committed Playwright screenshot baselines
 
 ## Modes
 
@@ -49,13 +50,27 @@ Sprint 2 plan: flip `BLOCKING_MIN_IMPACT = 'serious'` in `a11y.spec.ts`. Before 
 
 ## Visual regression baseline update workflow
 
-1. Make the intentional UI change in `src/`
-2. Run `npx playwright test --update-snapshots`
-3. Inspect diff in `tests/visual/__screenshots__/` — does the new screenshot match the design intent?
-4. Commit the snapshot update WITH the code change in the same commit
-5. Commit message must explain WHY the screenshot changed (e.g., "feat(home): new hero CTA — screenshot updated")
+1. Make the intentional UI change in `src/`.
+2. Run `npx playwright test visual --update-snapshots --project=chromium-desktop`.
+3. Inspect the changed PNGs in `tests/e2e/__screenshots__/visual.spec.ts-snapshots/`.
+4. Commit the snapshot update with the code change in the same commit.
+5. Commit message must explain why the screenshot changed, for example "feat(home): new hero CTA — screenshot updated".
 
 Never update baselines just to make CI green. If you don't know why a baseline changed, investigate — that's the entire point.
+
+Run visual updates when:
+
+- the page UI intentionally changed,
+- typography, spacing, colors, assets, or layout changed by design,
+- a legitimate content change affects a captured page.
+
+Do not update visual baselines when:
+
+- CI fails without a known intentional UI change,
+- only local font rendering or browser state differs,
+- an animated, timestamped, cookie, or live region caused the diff.
+
+Mask regions that are expected to move or vary between runs, using the `mask` option in `tests/e2e/visual.spec.ts`. Current mask: `#testimonial-slider-mobile`, because the mobile/tablet testimonial carousel auto-advances. Add future masks only for dynamic regions; do not mask stable content to hide real regressions.
 
 ## CI integration
 
