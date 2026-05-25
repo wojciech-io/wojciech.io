@@ -10,7 +10,7 @@ const fontBold = readFileSync(resolve(process.cwd(), 'public/fonts/Geist-Bold.tt
 
 export async function getStaticPaths() {
   const posts = await getCollection('insights', (p) => !p.data.draft);
-  return posts.map((p) => ({ params: { slug: p.id }, props: { post: p } }));
+  return posts.map((p) => ({ params: { slug: p.id.replace(/\.mdx?$/, '') }, props: { post: p } }));
 }
 
 export const GET: APIRoute = async ({ props }) => {

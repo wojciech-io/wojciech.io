@@ -50,14 +50,15 @@ const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()',
   // CSP: permit GA, Mixpanel EU, Gravatar, SimpleIcons CDN, self-hosted fonts.
   // unsafe-inline required for Astro's is:inline scripts and Tailwind utilities.
+  // gh.wojciech.io allowed in frame-src for the LiveEmbed demo on /ai-systems/.
   'content-security-policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com",
     "font-src 'self'",
-    "frame-src 'none'",
+    "frame-src https://gh.wojciech.io",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
