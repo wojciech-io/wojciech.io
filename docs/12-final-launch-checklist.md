@@ -1,85 +1,77 @@
 # 12 - Final launch checklist
 
-> **Status: SHIPPED 2026-05-25.** DNS cutover complete. Site live at wojciech.io.
-> This file is archived — items below reflect post-launch monitoring status.
+> **Status as of 2026-05-25: DNS cutover DONE. Site is live at wojciech.io.**
+> All pre-cutover items completed. Checklist below reflects verified production state.
 
-## Pre-cutover blockers — all resolved ✅
+## Pre-cutover blockers — ALL DONE
 
-- [x] GTM Agent repo (`wojciechluszczynski/gtm-agent-repo`) — confirmed public
-- [x] Analytics wired — GA4 G-4ED804XJLP (PUBLIC_GA_MEASUREMENT_ID in CF Pages, replaces CF beacon)
-- [x] Latest `main` deployed to wojciech-io.pages.dev
-- [x] Staging build has no rogue `noindex` tags
+- [x] Confirm `https://github.com/wojciechluszczynski/gtm-agent-repo` is public and is the intended Starter Pack target.
+- [x] `PUBLIC_CF_BEACON_TOKEN` — set in CF Pages; CF Analytics beacon verified in page HTML.
+- [x] GA4 `G-4ED804XJLP` — wired via `PUBLIC_GA_MEASUREMENT_ID`.
+- [x] Latest `main` commit deployed to `https://wojciech-io.pages.dev`.
+- [x] No rogue `noindex` on public pages (CV pages correctly noindexed, all others allow crawl).
 
-## Staging smoke test — all passed ✅
+## Staging smoke test — PASSED (verified live on wojciech.io)
 
-- [x] `/` loads, mobile menu opens
-- [x] `/about/` loads
-- [x] `/work/` loads
-- [x] `/ai-systems/` loads
-- [x] `/resources/` loads
-- [x] `/insights/` loads and lists the article
-- [x] `/insights/claude-code-vs-clay/` loads with full article body
-- [x] `/rss.xml` contains the article
-- [x] `/sitemap-index.xml` exists
-- [x] `/sitemap-0.xml` contains the article
-- [x] `/robots.txt` points to `https://wojciech.io/sitemap-index.xml`
-- [x] `/llms.txt` includes core pages and article URL
-- [x] GA4 beacon present in page HTML
+- [x] `/` loads and the mobile menu opens.
+- [x] `/about/` loads.
+- [x] `/work/` loads.
+- [x] `/ai-systems/` loads.
+- [x] `/resources/` loads.
+- [x] `/insights/` loads and lists articles (multiple, not just one).
+- [x] `/insights/how-to-build-gtm-ai-agent-outbound-crm/` loads with full article body.
+- [x] `/rss.xml` — 200 ✅
+- [x] `/sitemap-index.xml` exists ✅
+- [x] `/robots.txt` points to `https://wojciech.io/sitemap-index.xml` ✅
+- [x] `/llms.txt` — 200 ✅
+- [x] `/og-default.png` — 200 ✅
+- [x] CF Analytics beacon present in HTML ✅
 
-## Redirect verification — all passed ✅
+## Redirect verification — PASSED
 
-- [x] `/solutions` → `/work/` 301
-- [x] `/solutions/` → `/work/` 301
-- [x] `/my-gpt` → `/ai-systems/` 301
-- [x] `/my-gpt/` → `/ai-systems/` 301
-- [x] `/blog` → `/insights/` 301
-- [x] `/blog/` → `/insights/` 301
-- [x] `/blog/claude-code-vs-clay` → `/insights/claude-code-vs-clay/` 301
-- [x] `/pl/` → `/` 301
-- [x] `/it/` → `/` 301
-- [x] `/styleguide` → 410
+- [x] `/solutions` → `/work/` 301 ✅
+- [x] `/my-gpt` → `/ai-systems/` 301 ✅
+- [x] `/blog` → `/insights/` 301 ✅
+- [x] `/blog/claude-code-vs-clay` → `/insights/how-to-build-gtm-ai-agent-outbound-crm/` 301 ✅
+- [x] `/styleguide` → 410 ✅
+- [x] Old article slug → new slug 301 ✅
 
-## SEO checks — all passed ✅
+## SEO checks — PASSED
 
-- [x] Each public page has exactly one `h1`
-- [x] Canonicals point to `https://wojciech.io/...`
-- [x] Article has `og:type=article`
-- [x] Article has `article:published_time` and `article:modified_time`
-- [x] Article JSON-LD present and valid
-- [x] Default OG image at `/og-default.png`
-- [ ] Submit sitemap in Search Console — pending (do after GSC confirms crawl)
+- [x] hreflang en/pl/it/x-default on localized pages ✅
+- [x] Canonicals point to `https://wojciech.io/...` ✅
+- [x] Article `og:type=article` ✅
+- [x] Article `article:published_time` + `article:modified_time` ✅
+- [x] BlogPosting JSON-LD present ✅
+- [x] i18n: CV `/cv/`, `/pl/cv/`, `/it/cv/` → 200, noindex, correct lang ✅
 
-## DNS cutover — complete ✅
+## DNS cutover — DONE
 
-- [x] Cloudflare Pages custom domain configured
-- [x] `wojciech.io` serves the Astro site
-- [x] HTTPS certificate active
+- [x] Cloudflare Pages custom domain configured.
+- [x] `wojciech.io` pointing to Cloudflare Pages.
+- [x] HTTPS certificate active.
+- [x] `www` behavior intentional.
 
-## Post-cutover monitoring
+## Post-cutover monitoring — ONGOING (Sprint 4)
 
-### Within first hour — done ✅
-- [x] Redirects verified on production
-- [x] Sitemap, RSS, robots, llms, article checks on production
-- [x] CF Analytics replaced with GA4 beacon verified
+- [ ] Submit `https://wojciech.io/sitemap-index.xml` in Search Console (if not done).
+- [ ] Monitor GSC coverage after first crawl.
+- [ ] Confirm GA4 receiving live traffic.
+- [ ] Watch for unexpected 404s.
 
-### Within 24-48 hours — check pending
-- [ ] Search Console coverage and sitemap discovery (3-5 days after cutover)
-- [ ] Unexpected 404s
-- [ ] Branded query snippets when Google refreshes
+## Open operational items (not blocking launch, require user action)
 
-### Within 7 and 30 days
-- [ ] Review GSC clicks, impressions, CTR, indexed pages
-- [ ] Review GA4 traffic patterns
-- [ ] Decide legacy blog URL treatment (currently 301 to /insights/)
+### Academy
+- [ ] `wrangler d1 migrations apply academy-db --env production` (migration 0002)
+- [ ] CF Pages secrets: `STRIPE_SECRET_KEY`, `RESEND_API_KEY`, `RESEND_FROM`
+- [ ] After secrets: Deployments → Retry (CF Pages does NOT auto-redeploy)
+- [ ] Audio content (36 episodes) — ElevenLabs TTS, awaiting material
+- [ ] Vault scrape (100+ resources) — not started
 
----
+### GrowthHub
+- [ ] Create D1 `growthhub-db` in CF dashboard → get `database_id` → update `apps/growthhub/wrangler.toml`
+- [ ] CF Pages secrets: `PIPEDRIVE_API_TOKEN`, `PIPEDRIVE_DOMAIN`, `GA4_PROPERTY_ID`, `GA4_SERVICE_ACCOUNT_JSON`
+- [ ] Cron Trigger `0 3 * * *` — CF dashboard → Pages → growthhub → Settings
 
-## Open post-launch items
-
-| Item | Owner | Status |
-|------|-------|--------|
-| Academy cert migration + secrets | Wojciech (CF dashboard) | Deferred |
-| GrowthHub D1 + cron | Wojciech (CF dashboard) | Deferred |
-| WAF /api/* rate-limit | Wojciech or new CF token | Deferred |
-| Second /insights article | Content work | Priority |
-| Polish char fix in Academy PDF | Dev | Backlog |
+### Infra
+- [ ] WAF rate-limit `/api/*` — CF token lacks `cf:waf:edit`; set up in CF dashboard or generate new token
