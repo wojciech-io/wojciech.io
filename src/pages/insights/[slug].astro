@@ -27,6 +27,12 @@ import CTABand from '../../components/ui/CTABand.astro';
 import FAQ from '../../components/ui/FAQ.astro';
 import SectionHeader from '../../components/ui/SectionHeader.astro';
 import ProofCard from '../../components/ui/ProofCard.astro';
+import DataTable from '../../components/insights/DataTable.astro';
+import MetricRow from '../../components/insights/MetricRow.astro';
+import ArticleTimeline from '../../components/insights/ArticleTimeline.astro';
+import KeyPoint from '../../components/insights/KeyPoint.astro';
+import TwoUp from '../../components/insights/TwoUp.astro';
+import Quote from '../../components/insights/Quote.astro';
 import { SITE } from '../../data/site';
 
 const mdxComponents = {
@@ -35,17 +41,25 @@ const mdxComponents = {
   BeforeAfter,
   Diagram, Box, Arrow, Stack,
   Badge, Button, CTABand, FAQ, SectionHeader, ProofCard,
+  DataTable, MetricRow, ArticleTimeline, KeyPoint, TwoUp, Quote,
 };
 
 export async function getStaticPaths() {
   const posts = await getCollection('insights', ({ data }) => !data.draft);
-  return posts.map((post) => ({
+  const sorted = posts.sort((a, b) =>
+    b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
+  );
+  return sorted.map((post, idx) => ({
     params: { slug: post.id.replace(/\.mdx?$/, '') },
-    props: { post },
+    props: {
+      post,
+      prevPost: sorted[idx + 1] ?? null,
+      nextPost: sorted[idx - 1] ?? null,
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, prevPost, nextPost } = Astro.props;
 const { Content } = await render(post);
 const canonicalPath = `/insights/${post.id.replace(/\.mdx?$/, '')}/`;
 const slug = post.id.replace(/\.mdx?$/, '');
@@ -232,6 +246,38 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
       </div>
     </div>
   </section>
+
+  <!-- Prev / Next navigation -->
+  {(prevPost || nextPost) && (
+    <nav class="border-t border-[var(--color-border)]" aria-label="Article navigation">
+      <div class="mx-auto max-w-3xl px-6 py-8 grid grid-cols-2 gap-4">
+        {prevPost ? (
+          <a
+            href={`/insights/${prevPost.id.replace(/\.mdx?$/, '')}/`}
+            class="group flex flex-col gap-1 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:border-[var(--color-accent)]/40 transition-colors"
+          >
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)] flex items-center gap-1.5">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M6 2L3 5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Previous
+            </span>
+            <span class="text-sm font-medium text-[var(--color-text)] leading-snug group-hover:text-[var(--color-accent-hi)] transition-colors line-clamp-2">{prevPost.data.title}</span>
+          </a>
+        ) : <div />}
+        {nextPost ? (
+          <a
+            href={`/insights/${nextPost.id.replace(/\.mdx?$/, '')}/`}
+            class="group flex flex-col gap-1 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:border-[var(--color-accent)]/40 transition-colors text-right"
+          >
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)] flex items-center justify-end gap-1.5">
+              Next
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M4 2l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="text-sm font-medium text-[var(--color-text)] leading-snug group-hover:text-[var(--color-accent-hi)] transition-colors line-clamp-2">{nextPost.data.title}</span>
+          </a>
+        ) : <div />}
+      </div>
+    </nav>
+  )}
 
   <!-- Newsletter / Subscribe -->
   <section class="border-t border-[var(--color-border)] py-16">
