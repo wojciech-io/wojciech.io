@@ -392,11 +392,12 @@ export const cvData: CvData = {
   },
 
   tools: [
+    'Claude', 'Claude Code', 'ChatGPT', 'Perplexity', 'NotebookLM',
+    'n8n', 'Make', 'Zapier', 'Clay',
     'HubSpot', 'Salesforce', 'Klaviyo', 'Intercom',
-    'GA4', 'Looker Studio', 'Mixpanel', 'Hotjar', 'VWO',
-    'Ahrefs', 'SEMrush', 'Brand24', 'Brandwatch', 'Meltwater',
-    'Google Ads', 'Figma', 'Notion', 'Jira', 'Zapier',
-    'Claude', 'Jasper', 'Make',
+    'GA4', 'Mixpanel', 'PostHog', 'Looker Studio', 'Hotjar',
+    'Ahrefs', 'SEMrush', 'Brand24',
+    'Google Ads', 'Linear', 'Figma', 'Notion', 'Cursor',
   ],
 
   education: [
