@@ -1,17 +1,21 @@
 ---
-// Click-to-load live app embed. Shows a screenshot facade in a browser frame;
-// on click it swaps in a real <iframe> (no heavy auto-load on page render).
+// Click-to-load live app embed. Shows a screenshot (or styled gradient facade) in a browser
+// frame; on click it swaps in a real <iframe> (no heavy auto-load on page render).
 interface Props {
-  src: string;            // live app URL (must allow framing)
-  screenshot: string;     // facade image path
-  alt: string;
+  src: string;             // live app URL (must allow framing)
+  screenshot?: string;     // facade image path — optional; gradient fallback used if omitted
+  alt?: string;
   label?: string;
+  appName?: string;        // shown in gradient fallback
+  appDesc?: string;        // tagline shown in gradient fallback
 }
 const {
   src,
   screenshot,
-  alt,
+  alt = 'Live demo preview',
   label = 'Load live demo',
+  appName,
+  appDesc,
 } = Astro.props;
 const host = new URL(src).host;
 ---
@@ -24,7 +28,18 @@ const host = new URL(src).host;
     <a href={src} target="_blank" rel="noopener noreferrer" class="text-xs text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors" aria-label="Open in new tab">↗</a>
   </div>
   <div class="relative bg-[var(--color-surface-2)] aspect-[16/10]" data-embed-stage>
-    <img src={screenshot} alt={alt} loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover object-top" data-embed-facade />
+    {screenshot
+      ? <img src={screenshot} alt={alt} loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover object-top" data-embed-facade />
+      : (
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-[var(--color-surface)] to-[var(--color-surface-2)] border-0" data-embed-facade>
+          {appName && <p class="text-xl font-bold text-[var(--color-text)] tracking-tight">{appName}</p>}
+          {appDesc && <p class="text-sm text-[var(--color-text-muted)] max-w-xs text-center leading-relaxed">{appDesc}</p>}
+          <div class="flex gap-1.5 mt-2">
+            {[...Array(3)].map(() => <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]/40"></span>)}
+          </div>
+        </div>
+      )
+    }
     <button type="button" data-embed-load class="group absolute inset-0 flex items-center justify-center bg-black/35 transition-colors hover:bg-black/45 cursor-pointer">
       <span class="inline-flex items-center gap-2.5 rounded-full bg-[var(--color-accent-cta)] px-6 py-3.5 text-sm font-semibold text-[var(--color-accent-text)] shadow-lg transition-transform group-hover:scale-[1.03]">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 2.5l8 4.5-8 4.5z"/></svg>
