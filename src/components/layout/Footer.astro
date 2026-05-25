@@ -8,6 +8,8 @@ const nav = [
   { label: 'About',      href: '/about',      desc: 'Operator profile and background' },
   { label: 'AI Systems', href: '/ai-systems', desc: 'Agents, workflows, and automation' },
   { label: 'Insights',   href: '/insights',   desc: 'Writing on GTM, AI, and product' },
+  { label: 'Tools',      href: '/resources',  desc: 'Free tools, templates, and starter packs' },
+  { label: 'Bites',      href: '/bites',      desc: 'Short-form operator notes — coming soon', soon: true },
   { label: 'Contact',    href: '/contact',    desc: 'Book a call or send a message' },
 ];
 
@@ -21,7 +23,7 @@ const writing = [
 const network = [
   { label: 'Apps & workspace', href: SITE.appUrl, desc: 'app.wojciech.io — apps, CV, stack' },
   { label: 'AI Espresso', href: SITE.subscribeUrl, desc: 'subscribe.wojciech.io — newsletter on AI and GTM' },
-  { label: 'Audio AI course', href: 'https://academy.wojciech.io', desc: 'academy.wojciech.io — audio-first AI course' },
+  { label: 'Audio AI course', href: 'https://academy.wojciech.io', desc: 'academy.wojciech.io — audio-first AI course', soon: true },
   { label: 'NotchCue', href: SITE.notchUrl, desc: 'notch.wojciech.io — macOS teleprompter app' },
 ];
 
@@ -83,15 +85,16 @@ const connect = [
       <div>
         <p class="mb-4 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Pages</p>
         <ul class="m-0 list-none space-y-2.5 p-0">
-          {nav.map(({ label, href, desc }) => (
-            <li>
+          {nav.map(({ label, href, desc, soon }) => (
+            <li class="flex items-center gap-2">
               <a
                 href={href}
                 title={desc}
-                class="text-[13px] text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]"
+                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               >
                 {label}
               </a>
+              {soon && <span class="rounded px-1 py-px text-[9px] font-semibold uppercase tracking-wider bg-[var(--color-border)] text-[var(--color-text-dim)]">soon</span>}
             </li>
           ))}
         </ul>
@@ -119,17 +122,18 @@ const connect = [
       <div>
         <p class="mb-4 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Network</p>
         <ul class="m-0 list-none space-y-2.5 p-0">
-          {network.map(({ label, href, desc }) => (
-            <li>
+          {network.map(({ label, href, desc, soon }) => (
+            <li class="flex items-center gap-2">
               <a
                 href={href}
                 title={desc}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-[13px] text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]"
+                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               >
                 {label}
               </a>
+              {soon && <span class="rounded px-1 py-px text-[9px] font-semibold uppercase tracking-wider bg-[var(--color-border)] text-[var(--color-text-dim)]">soon</span>}
             </li>
           ))}
         </ul>
