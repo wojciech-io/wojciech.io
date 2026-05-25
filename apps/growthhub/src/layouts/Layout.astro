@@ -54,6 +54,21 @@ const ogImage = `${SITE}/og-default.png`;
       } catch(e) { document.documentElement.setAttribute('data-theme','light'); }
     })();
   </script>
+
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4ED804XJLP"></script>
+  <script is:inline>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date());gtag('config','G-4ED804XJLP',{anonymize_ip:true});
+  </script>
+
+  <!-- Mixpanel EU — consent-gated -->
+  <script is:inline>
+    (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable time_event track track_pageview track_links track_forms register register_once unregister identify name_tag set_config reset people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+    mixpanel.init("efa47f584d961f6fdbe3857da52daf9a",{api_host:"https://api-eu.mixpanel.com",persistence:"localStorage",track_pageview:false,ip:false});
+    if(localStorage.getItem('mp-consent')==='yes'){mixpanel.opt_in_tracking();mixpanel.track("page_viewed",{path:location.pathname,site:"gh.wojciech.io"});}
+    else{mixpanel.opt_out_tracking();}
+  </script>
 </head>
 <body>
 <div class="gh-shell">
@@ -98,5 +113,23 @@ const ogImage = `${SITE}/og-default.png`;
     )}
   </footer>
 </div>
+
+<!-- Analytics consent — minimal bottom bar -->
+<div id="gh-consent" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;border-top:1px solid var(--border);background:var(--surface);padding:10px 20px;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-2)">
+  <span style="flex:1">This site uses Mixpanel (EU) &amp; Google Analytics to understand usage — anonymously, no advertising. <a href="https://wojciech.io/privacy/" target="_blank" rel="noopener noreferrer" style="color:var(--accent);text-decoration:underline">Details</a></span>
+  <button onclick="ghConsent('yes')" style="padding:5px 14px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">Accept</button>
+  <button onclick="ghConsent('no')" style="padding:5px 10px;background:none;border:none;font-size:11px;color:var(--text-2);cursor:pointer">No thanks</button>
+</div>
+<script is:inline>
+  function ghConsent(v){
+    localStorage.setItem('mp-consent',v);
+    document.getElementById('gh-consent').style.display='none';
+    if(v==='yes'){mixpanel.opt_in_tracking();mixpanel.track("page_viewed",{path:location.pathname,site:"gh.wojciech.io"});}
+  }
+  (function(){
+    var c=localStorage.getItem('mp-consent');
+    if(!c) document.getElementById('gh-consent').style.display='flex';
+  })();
+</script>
 </body>
 </html>

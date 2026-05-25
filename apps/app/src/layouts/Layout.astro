@@ -16,6 +16,20 @@ const { title = 'app.wojciech.io', activePage = 'apps' } = Astro.props;
   <title>{title}</title>
   <meta name="robots" content="noindex,nofollow" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- GA4 — auth-gated app, user accepted terms during sign-up -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4ED804XJLP"></script>
+  <script is:inline>
+    window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date());gtag('config','G-4ED804XJLP',{anonymize_ip:true});
+  </script>
+
+  <!-- Mixpanel EU — initialised inline; auth users accepted terms during sign-up -->
+  <script is:inline>
+    (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable time_event track track_pageview track_links track_forms register register_once unregister identify name_tag set_config reset people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+    mixpanel.init("efa47f584d961f6fdbe3857da52daf9a",{api_host:"https://api-eu.mixpanel.com",persistence:"localStorage",track_pageview:false,ip:false});
+    mixpanel.track("page_viewed",{path:location.pathname,title:document.title,site:"app.wojciech.io"});
+  </script>
 </head>
 <body>
 
