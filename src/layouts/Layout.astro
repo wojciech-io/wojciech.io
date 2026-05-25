@@ -50,14 +50,7 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       updatedAt={updatedAt}
       schema={schema}
     />
-    <script is:inline>
-      (() => {
-        const stored = localStorage.getItem('theme');
-        const theme = stored === 'dark' || stored === 'light' ? stored : 'light';
-        document.documentElement.dataset.theme = theme;
-        document.documentElement.style.colorScheme = theme;
-      })();
-    </script>
+    <!-- Theme init lives in SEOHead (system-preference-aware). No duplicate here. -->
     {import.meta.env.PROD && (
       <>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-4ED804XJLP" />
@@ -71,8 +64,12 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     )}
   </head>
   <body class="min-h-dvh flex flex-col">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:rounded-[var(--radius-btn)] focus:bg-[var(--color-accent)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[var(--color-accent-text)] focus:outline-none"
+    >Skip to content</a>
     <Header />
-    <main class="flex-1">
+    <main id="main-content" class="flex-1">
       <slot />
     </main>
     <Footer />
