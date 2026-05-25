@@ -1,10 +1,6 @@
 ---
 import Nav, { links } from './Nav.astro';
 import ThemeToggle from '../ui/ThemeToggle.astro';
-
-interface Props { langPrefix?: string; }
-const { langPrefix = '' } = Astro.props;
-const home = langPrefix ? langPrefix + '/' : '/';
 ---
 
 <header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgb(var(--color-bg-rgb)/0.86)] backdrop-blur-md">
@@ -12,7 +8,7 @@ const home = langPrefix ? langPrefix + '/' : '/';
 
     <!-- Wordmark -->
     <a
-      href={home}
+      href="/"
       class="inline-flex items-center gap-0 shrink-0 group"
       aria-label="wojciech.io, home"
     >
@@ -21,14 +17,11 @@ const home = langPrefix ? langPrefix + '/' : '/';
 
     <!-- Desktop nav -->
     <div class="hidden lg:flex items-center gap-8">
-      <Nav prefix={langPrefix} />
+      <Nav />
       <ThemeToggle />
       <!-- Language selector removed Sprint 2 B1 — English-only launch. Re-add in future localization sprint. -->
       <a
-        href={langPrefix + '/contact#book-call'}
-        data-en="Book a call"
-        data-pl="Umów rozmowę"
-        data-it="Prenota una call"
+        href="/contact#book-call"
         style="min-width:10rem;text-align:center"
         class="btn-press shrink-0 inline-block text-sm font-semibold px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:opacity-90 transition-colors"
       >
@@ -63,7 +56,7 @@ const home = langPrefix ? langPrefix + '/' : '/';
 >
   <!-- Top bar -->
   <div class="flex items-center justify-between px-6 h-16 border-b border-[var(--color-border)] shrink-0">
-    <a href={home} class="inline-flex items-center gap-0 group" onclick="closeMobileNav()">
+    <a href="/" class="inline-flex items-center gap-0 group" onclick="closeMobileNav()">
       <span class="text-sm font-bold tracking-tight text-[var(--color-text)]">wojciech</span><span class="ml-0.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-1.5 py-0.5 text-[11px] font-bold tracking-tight text-[var(--color-accent-text)]">.io</span>
     </a>
     <button
@@ -80,15 +73,11 @@ const home = langPrefix ? langPrefix + '/' : '/';
   <!-- Nav links — large, full-height -->
   <nav class="flex-1 flex flex-col justify-center px-8" aria-label="Mobile navigation">
     <ul class="list-none m-0 p-0 space-y-1">
-      {links.map(({ label, href, external, pl, it }) => (
+      {links.map(({ label, href }) => (
         <li>
           <a
-            href={external ? href : langPrefix + href}
-            data-en={label}
-            data-pl={pl}
-            data-it={it}
+            href={href}
             class="mobile-nav-link group flex items-center justify-between py-4 border-b border-[var(--color-border)] text-2xl font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-hi)] transition-colors"
-            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
           >
             {label}
             <svg class="w-4 h-4 text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -105,10 +94,7 @@ const home = langPrefix ? langPrefix + '/' : '/';
     <ThemeToggle class="w-full" />
     <!-- Mobile language selector removed Sprint 2 B1 — English-only launch. -->
     <a
-      href={langPrefix + '/contact#book-call'}
-      data-en="Book a call"
-      data-pl="Umów rozmowę"
-      data-it="Prenota una call"
+      href="/contact#book-call"
       class="mobile-nav-link btn-press flex items-center justify-center gap-2 w-full bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold py-3.5 rounded-[var(--radius-btn)] hover:opacity-90 transition-opacity text-sm"
     >
       Book a call
