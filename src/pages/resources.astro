@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import CTABand from '../components/ui/CTABand.astro';
 import PageBackdrop from '../components/ui/PageBackdrop.astro';
+import { SITE } from '../data/site';
 
 const resources = [
   {
@@ -45,11 +46,21 @@ const resources = [
     external: false,
   },
 ];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Resources', item: SITE.url + '/resources/' },
+  ],
+};
 ---
 
 <Layout
   title="Resources · Tools and Templates for Operators"
   description="Starter packs, MCP configs, and operator frameworks for AI-native GTM and growth systems. Built for people who ship."
+  schema={breadcrumbSchema}
 >
 
   <!-- Header -->
