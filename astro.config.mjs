@@ -8,7 +8,7 @@ import sentry from '@sentry/astro';
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/subscribe/']);
 
-const isIndexableSitemapUrl = (page) => {
+const isIndexableSitemapUrl = (/** @type {string} */ page) => {
   const url = new URL(page);
   const path = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
 
