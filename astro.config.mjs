@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
 
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
-const noindexSitemapPaths = new Set(['/cv/', '/privacy/']);
+const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/subscribe/']);
 
 const isIndexableSitemapUrl = (page) => {
   const url = new URL(page);
