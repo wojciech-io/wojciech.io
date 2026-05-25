@@ -2,11 +2,18 @@
 import Layout from '../layouts/Layout.astro';
 import { pipeline, paidChannels, headlineMetrics, formatCurrency, formatPct } from '../lib/dummy-data';
 
-const pipelineTotal = pipeline.reduce((s, p) => s + p.amount_cents, 0);
-const totalSpend    = paidChannels.reduce((s, c) => s + c.spend_cents, 0);
-const weightedRoas  = paidChannels.reduce((s, c) => s + c.roas * c.spend_cents, 0) / totalSpend;
+const pipelineTotal  = pipeline.reduce((s, p) => s + p.amount_cents, 0);
+const totalSpend     = paidChannels.reduce((s, c) => s + c.spend_cents, 0);
+const totalClicks    = paidChannels.reduce((s, c) => s + c.clicks, 0);
+const totalPaidLeads = paidChannels.reduce((s, c) => s + c.leads, 0);
+const blendedRoas    = paidChannels.reduce((s, c) => s + c.roas * c.spend_cents, 0) / totalSpend;
+const maxPipe        = Math.max(...pipeline.map(p => p.amount_cents));
 
-// Simulated MoM closed-won for the mini chart (6 months of dummy data)
+const stageHexMap: Record<string, string> = {
+  'New': '#64748b', 'Discovery': '#3b82f6', 'Qualified': '#6366f1',
+  'Demo': '#8b5cf6', 'Proposal': '#a855f7', 'Negotiation': '#ec4899',
+};
+
 const wonMoM = [
   { month: 'Dec', won_cents: 4200000, count: 2 },
   { month: 'Jan', won_cents: 5800000, count: 3 },
@@ -15,7 +22,6 @@ const wonMoM = [
   { month: 'Apr', won_cents: 7900000, count: 4 },
   { month: 'May', won_cents: headlineMetrics.won_mtd_cents, count: headlineMetrics.won_count_mtd },
 ];
-
 const maxWon = Math.max(...wonMoM.map(m => m.won_cents));
 ---
 
@@ -25,65 +31,82 @@ const maxWon = Math.max(...wonMoM.map(m => m.won_cents));
     <p class="gh-page-sub">Pipeline · closed-won · paid ROAS</p>
   </div>
 
-  <!-- Headline row -->
-  <div class="gh-metric-row" style="margin-bottom:24px">
-    <div class="gh-metric">
-      <div class="gh-metric-label">Pipeline total</div>
+  <!-- ── KPI row ── -->
+  <div class="gh-metric-row">
+    <div class="gh-card gh-metric m-violet">
+      <p class="gh-metric-label">Pipeline total</p>
       <div class="gh-metric-value">{formatCurrency(pipelineTotal)}</div>
-      <div class="gh-metric-delta gh-up">{formatPct(headlineMetrics.pipeline_delta)} WoW</div>
+      <div class={`gh-metric-delta ${headlineMetrics.pipeline_delta >= 0 ? 'gh-up' : 'gh-down'}`}>
+        {headlineMetrics.pipeline_delta >= 0 ? '↑' : '↓'} {formatPct(headlineMetrics.pipeline_delta)} WoW
+      </div>
     </div>
-    <div class="gh-metric">
-      <div class="gh-metric-label">Won MTD</div>
+    <div class="gh-card gh-metric m-lime">
+      <p class="gh-metric-label">Won MTD</p>
       <div class="gh-metric-value">{formatCurrency(headlineMetrics.won_mtd_cents)}</div>
-      <div class="gh-metric-delta" style="color:var(--text-3)">{headlineMetrics.won_count_mtd} deals</div>
+      <div class="gh-metric-delta" style="color:var(--text-3)">{headlineMetrics.won_count_mtd} deals closed</div>
     </div>
-    <div class="gh-metric">
-      <div class="gh-metric-label">Total paid spend (14d)</div>
+    <div class="gh-card gh-metric m-amber">
+      <p class="gh-metric-label">Total spend · 14d</p>
       <div class="gh-metric-value">{formatCurrency(totalSpend)}</div>
     </div>
-    <div class="gh-metric">
-      <div class="gh-metric-label">Blended ROAS</div>
-      <div class={`gh-metric-value ${weightedRoas >= 3 ? 'gh-up' : weightedRoas >= 2 ? '' : 'gh-down'}`}>{weightedRoas.toFixed(1)}x</div>
+    <div class="gh-card gh-metric m-green">
+      <p class="gh-metric-label">Blended ROAS</p>
+      <div class={`gh-metric-value ${blendedRoas >= 3 ? 'gh-up' : blendedRoas >= 2 ? '' : 'gh-down'}`}>
+        {blendedRoas.toFixed(1)}x
+      </div>
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-    <!-- Pipeline funnel -->
+  <!-- ── Pipeline funnel + MoM chart ── -->
+  <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-bottom:14px">
+
+    <!-- Pipeline bars -->
     <div class="gh-card">
-      <div class="gh-card-header">Pipeline funnel <span class="gh-card-meta">{formatCurrency(pipelineTotal)} total</span></div>
-      {pipeline.map(p => {
-        const barPct = (p.amount_cents / pipelineTotal * 100).toFixed(1);
-        return (
-          <div style="margin-bottom:10px">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-              <span style="font-size:12px;font-weight:500;color:var(--text-1)">{p.stage}</span>
-              <span style="font-size:11px;color:var(--text-3)">{p.count} leads · {formatCurrency(p.amount_cents)}</span>
+      <div class="gh-card-header">
+        Pipeline funnel
+        <span class="gh-card-meta">{formatCurrency(pipelineTotal)} total</span>
+      </div>
+      <div class="gh-pipeline">
+        {pipeline.map(p => {
+          const barPct = Math.round((p.amount_cents / maxPipe) * 100);
+          const color  = stageHexMap[p.stage] ?? '#888';
+          return (
+            <div class="gh-stage">
+              <div class="gh-stage-name">{p.stage}</div>
+              <div class="gh-stage-track">
+                <div class="gh-stage-fill" style={`width:${barPct}%;background:${color}`}></div>
+              </div>
+              <div class="gh-stage-count">{p.count}</div>
+              <div class="gh-stage-amt">{formatCurrency(p.amount_cents)}</div>
             </div>
-            <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden">
-              <div style={`height:100%;width:${barPct}%;background:var(--accent);border-radius:3px;transition:width .3s`}></div>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+      <div class="gh-funnel-strip" style="margin-top:14px">
+        {pipeline.map(p => (
+          <div class="gh-funnel-seg" style={`background:${stageHexMap[p.stage] ?? '#888'};flex:${p.count}`}></div>
+        ))}
+      </div>
     </div>
 
-    <!-- Closed-won MoM -->
+    <!-- Closed-won MoM bar chart -->
     <div class="gh-card">
       <div class="gh-card-header">Closed-won MoM <span class="gh-card-meta">last 6 months</span></div>
-      <div style="display:flex;align-items:flex-end;gap:8px;height:120px;padding:8px 0">
+      <div class="gh-bar-chart" style="height:110px;align-items:flex-end">
         {wonMoM.map((m, i) => {
-          const heightPct = (m.won_cents / maxWon * 100).toFixed(1);
-          const isLast = i === wonMoM.length - 1;
+          const hPct = Math.max(6, Math.round((m.won_cents / maxWon) * 100));
+          const isCurrent = i === wonMoM.length - 1;
           return (
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%">
+            <div class="gh-bar-col" style="height:100%">
               <div style="flex:1;width:100%;display:flex;align-items:flex-end">
                 <div
-                  style={`width:100%;height:${heightPct}%;background:${isLast ? 'var(--accent)' : 'rgba(99,102,241,.3)'};border-radius:3px 3px 0 0;min-height:4px`}
+                  class={`gh-bar-fill${isCurrent ? ' current' : ''}`}
+                  style={`height:${hPct}%;width:100%`}
                   title={`${m.month}: ${formatCurrency(m.won_cents)}`}
                 ></div>
               </div>
-              <div style="font-size:10px;color:var(--text-3);text-align:center">{m.month}</div>
-              <div style="font-size:10px;font-weight:600;color:var(--text-2);text-align:center">{formatCurrency(m.won_cents)}</div>
+              <div class="gh-bar-label">{m.month}</div>
+              <div class="gh-bar-val" style={isCurrent ? 'color:var(--lime)' : ''}>{formatCurrency(m.won_cents)}</div>
             </div>
           );
         })}
@@ -91,57 +114,75 @@ const maxWon = Math.max(...wonMoM.map(m => m.won_cents));
     </div>
   </div>
 
-  <!-- Paid channel ROAS breakdown -->
+  <!-- ── Paid channel ROAS ── -->
   <div class="gh-card">
-    <div class="gh-card-header">Paid channel performance — 14d <span class="gh-card-meta">Blended ROAS {weightedRoas.toFixed(1)}x · Total spend {formatCurrency(totalSpend)}</span></div>
-    <table class="gh-table">
-      <thead>
-        <tr>
-          <th>Channel</th>
-          <th class="gh-num">Spend</th>
-          <th class="gh-num">Clicks</th>
-          <th class="gh-num">Leads</th>
-          <th class="gh-num">CPL</th>
-          <th class="gh-num">Pipeline attr.</th>
-          <th class="gh-num">ROAS</th>
-          <th class="gh-num">Spend share</th>
-        </tr>
-      </thead>
-      <tbody>
-        {paidChannels.map(c => {
-          const pipelineAttr = c.spend_cents * c.roas;
-          const spendShare = (c.spend_cents / totalSpend * 100).toFixed(0);
-          return (
-            <tr>
-              <td style="font-weight:500">{c.channel}</td>
-              <td class="gh-num">{formatCurrency(c.spend_cents)}</td>
-              <td class="gh-num">{c.clicks.toLocaleString()}</td>
-              <td class="gh-num">{c.leads}</td>
-              <td class="gh-num">{formatCurrency(c.cpl_cents)}</td>
-              <td class="gh-num gh-up">{formatCurrency(Math.round(pipelineAttr))}</td>
-              <td class={`gh-num ${c.roas >= 3 ? 'gh-up' : c.roas >= 2 ? '' : 'gh-down'}`} style="font-weight:700">{c.roas.toFixed(1)}x</td>
-              <td class="gh-num">
-                <div style="display:flex;align-items:center;gap:6px">
-                  <div style={`height:4px;width:${spendShare}px;max-width:60px;background:var(--accent);border-radius:2px`}></div>
-                  <span>{spendShare}%</span>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-      <tfoot>
-        <tr style="border-top:1px solid var(--border)">
-          <td style="font-weight:600;font-size:12px">Total</td>
-          <td class="gh-num" style="font-weight:600">{formatCurrency(totalSpend)}</td>
-          <td class="gh-num" style="color:var(--text-3)">{paidChannels.reduce((s,c) => s+c.clicks, 0).toLocaleString()}</td>
-          <td class="gh-num" style="font-weight:600">{paidChannels.reduce((s,c) => s+c.leads, 0)}</td>
-          <td class="gh-num" style="color:var(--text-3)">—</td>
-          <td class="gh-num gh-up" style="font-weight:600">{formatCurrency(Math.round(totalSpend * weightedRoas))}</td>
-          <td class="gh-num" style={`font-weight:700;${weightedRoas >= 3 ? 'color:var(--up)' : ''}`}>{weightedRoas.toFixed(1)}x</td>
-          <td class="gh-num">100%</td>
-        </tr>
-      </tfoot>
-    </table>
+    <div class="gh-card-header">
+      Paid channel performance · 14d
+      <span class="gh-card-meta">
+        {formatCurrency(totalSpend)} · {totalPaidLeads} leads · {blendedRoas.toFixed(1)}x blended
+      </span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="gh-table">
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th class="gh-num">Spend</th>
+            <th class="gh-num">Clicks</th>
+            <th class="gh-num">Leads</th>
+            <th class="gh-num">CPL</th>
+            <th class="gh-num">Pipeline attr.</th>
+            <th>ROAS</th>
+            <th class="gh-num">Spend %</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paidChannels.map(c => {
+            const pipeAttr   = Math.round(c.spend_cents * c.roas);
+            const spendShare = Math.round((c.spend_cents / totalSpend) * 100);
+            const roasCls    = c.roas >= 3 ? 'gh-up' : c.roas >= 2 ? '' : 'gh-down';
+            const roasColor  = c.roas >= 3 ? 'var(--lime)' : c.roas >= 2 ? '#6366f1' : 'var(--bad)';
+            return (
+              <tr>
+                <td style="font-weight:600;color:var(--text-1)">{c.channel}</td>
+                <td class="gh-num">{formatCurrency(c.spend_cents)}</td>
+                <td class="gh-num">{c.clicks.toLocaleString()}</td>
+                <td class="gh-num">{c.leads}</td>
+                <td class="gh-num">{formatCurrency(c.cpl_cents)}</td>
+                <td class="gh-num gh-up" style="font-weight:600">{formatCurrency(pipeAttr)}</td>
+                <td>
+                  <div class="gh-roas-bar">
+                    <div class="gh-roas-track">
+                      <div class="gh-roas-fill" style={`width:${Math.round((c.roas / 4) * 100)}%;background:${roasColor}`}></div>
+                    </div>
+                    <span class={roasCls} style="font-weight:700;font-size:12px;white-space:nowrap">{c.roas.toFixed(1)}x</span>
+                  </div>
+                </td>
+                <td class="gh-num">
+                  <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px">
+                    <div style={`height:4px;width:${spendShare * 0.6}px;background:var(--text-3);border-radius:2px;opacity:.4`}></div>
+                    {spendShare}%
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td style="font-weight:700;color:var(--text-1)">Total</td>
+            <td class="gh-num" style="font-weight:700">{formatCurrency(totalSpend)}</td>
+            <td class="gh-num" style="color:var(--text-3)">{totalClicks.toLocaleString()}</td>
+            <td class="gh-num" style="font-weight:700">{totalPaidLeads}</td>
+            <td class="gh-num" style="color:var(--text-3)">—</td>
+            <td class="gh-num gh-up" style="font-weight:700">{formatCurrency(Math.round(totalSpend * blendedRoas))}</td>
+            <td>
+              <span class={blendedRoas >= 3 ? 'gh-up' : ''} style="font-weight:800">{blendedRoas.toFixed(1)}x</span>
+            </td>
+            <td class="gh-num">100%</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
 </Layout>

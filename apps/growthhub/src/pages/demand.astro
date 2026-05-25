@@ -8,6 +8,16 @@ const totalSignups  = acquisitionLast14.reduce((s, d) => s + d.signups, 0);
 const avgCpl        = Math.round(acquisitionLast14.reduce((s, d) => s + d.cpl_cents, 0) / acquisitionLast14.length);
 const totalSpend    = paidChannels.reduce((s, c) => s + c.spend_cents, 0);
 const totalPaidLeads = paidChannels.reduce((s, c) => s + c.leads, 0);
+const blendedRoas   = paidChannels.reduce((s, c) => s + c.roas * c.spend_cents, 0) / totalSpend;
+
+const maxSessions = Math.max(...acquisitionLast14.map(d => d.sessions));
+const maxSource   = Math.max(...sourceBreakdown.map(s => s.sessions));
+
+const srcColorMap: Record<string, string> = {
+  'Organic search': 'var(--lime)', 'Direct': '#a0a0a8',
+  'Paid — Google': '#3b82f6', 'Paid — LinkedIn': '#0ea5e9',
+  'Referral': '#8b5cf6', 'Paid — Meta': '#ec4899', 'Email': '#f59e0b',
+};
 ---
 
 <Layout title="Demand-gen" activePage="demand" isDemo={false}>
@@ -16,29 +26,44 @@ const totalPaidLeads = paidChannels.reduce((s, c) => s + c.leads, 0);
     <p class="gh-page-sub">Last 14 days · acquisition, channels, paid performance</p>
   </div>
 
-  <!-- Headline row -->
-  <div class="gh-metric-row" style="margin-bottom:24px">
-    <div class="gh-metric">
-      <div class="gh-metric-label">Sessions (14d)</div>
+  <!-- ── KPI row ── -->
+  <div class="gh-metric-row">
+    <div class="gh-card gh-metric m-lime">
+      <p class="gh-metric-label">Sessions · 14d</p>
       <div class="gh-metric-value">{totalSessions.toLocaleString()}</div>
     </div>
-    <div class="gh-metric">
-      <div class="gh-metric-label">Signups (14d)</div>
+    <div class="gh-card gh-metric m-blue">
+      <p class="gh-metric-label">Signups · 14d</p>
       <div class="gh-metric-value">{totalSignups}</div>
     </div>
-    <div class="gh-metric">
-      <div class="gh-metric-label">Leads (14d)</div>
+    <div class="gh-card gh-metric m-violet">
+      <p class="gh-metric-label">Leads · 14d</p>
       <div class="gh-metric-value">{totalLeads}</div>
     </div>
-    <div class="gh-metric">
-      <div class="gh-metric-label">Avg CPL (14d)</div>
+    <div class="gh-card gh-metric m-amber">
+      <p class="gh-metric-label">Avg CPL · 14d</p>
       <div class="gh-metric-value">{formatCurrency(avgCpl)}</div>
     </div>
   </div>
 
-  <!-- Daily acquisition table -->
-  <div class="gh-card" style="margin-bottom:20px">
-    <div class="gh-card-header">Daily acquisition</div>
+  <!-- ── Daily acquisition + mini bar chart ── -->
+  <div class="gh-card" style="margin-bottom:14px">
+    <div class="gh-card-header">Daily acquisition · sessions</div>
+
+    <!-- Mini bar chart of sessions -->
+    <div style="display:flex;align-items:flex-end;gap:3px;height:48px;margin-bottom:16px">
+      {acquisitionLast14.slice().reverse().map((d, i) => {
+        const h = Math.max(6, Math.round((d.sessions / maxSessions) * 100));
+        const isLast = i === 0;
+        return (
+          <div
+            title={`${d.date}: ${d.sessions.toLocaleString()} sessions`}
+            style={`flex:1;height:${h}%;border-radius:3px 3px 0 0;background:${isLast ? 'var(--lime)' : 'var(--bg3)'};opacity:${isLast ? 1 : 0.55 + i*0.03}`}
+          ></div>
+        );
+      })}
+    </div>
+
     <div style="overflow-x:auto">
       <table class="gh-table">
         <thead>
@@ -54,12 +79,12 @@ const totalPaidLeads = paidChannels.reduce((s, c) => s + c.leads, 0);
         <tbody>
           {acquisitionLast14.slice().reverse().map(d => (
             <tr>
-              <td class="gh-mono">{d.date}</td>
-              <td class="gh-num">{d.sessions.toLocaleString()}</td>
+              <td class="gh-mono" style="color:var(--text-3)">{d.date}</td>
+              <td class="gh-num" style="font-weight:500;color:var(--text-1)">{d.sessions.toLocaleString()}</td>
               <td class="gh-num">{d.signups}</td>
               <td class="gh-num">{d.leads}</td>
               <td class="gh-num">{formatCurrency(d.cpl_cents)}</td>
-              <td class="gh-num">{((d.leads / d.sessions) * 100).toFixed(2)}%</td>
+              <td class="gh-num" style="color:var(--text-3)">{((d.leads / d.sessions) * 100).toFixed(2)}%</td>
             </tr>
           ))}
         </tbody>
@@ -67,25 +92,38 @@ const totalPaidLeads = paidChannels.reduce((s, c) => s + c.leads, 0);
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-    <!-- Source breakdown -->
+  <!-- ── Source + Paid grid ── -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+    <!-- Traffic by source -->
     <div class="gh-card">
-      <div class="gh-card-header">Traffic by source</div>
-      {sourceBreakdown.map(s => (
-        <div class="gh-source-row">
-          <span class="gh-source-name">{s.source}</span>
-          <span class="gh-source-bar-wrap">
-            <span class="gh-source-bar" style={`width:${(s.share * 100).toFixed(0)}%`}></span>
-          </span>
-          <span class="gh-mono" style="font-size:11px;min-width:36px;text-align:right">{(s.share * 100).toFixed(0)}%</span>
-          <span class="gh-mono" style="font-size:11px;color:var(--text-3);min-width:60px;text-align:right">{s.sessions.toLocaleString()}</span>
-        </div>
-      ))}
+      <div class="gh-card-header">Traffic by source · 14d</div>
+      <div class="gh-sources" style="gap:12px">
+        {sourceBreakdown.map(s => {
+          const barPct = Math.round((s.sessions / maxSource) * 100);
+          const color = srcColorMap[s.source] ?? '#888';
+          return (
+            <div class="gh-source">
+              <div class="gh-source-name">{s.source}</div>
+              <div class="gh-source-bar-wrap">
+                <span class="gh-source-bar" style={`width:${barPct}%;background:${color}`}></span>
+              </div>
+              <div class="gh-source-pct">{(s.share * 100).toFixed(0)}%</div>
+              <div class="gh-source-sess">{s.sessions.toLocaleString()}</div>
+            </div>
+          );
+        })}
+      </div>
     </div>
 
     <!-- Paid channels -->
     <div class="gh-card">
-      <div class="gh-card-header">Paid channels — 14d <span class="gh-card-meta">Total spend {formatCurrency(totalSpend)} · {totalPaidLeads} leads</span></div>
+      <div class="gh-card-header">
+        Paid channels · 14d
+        <span class="gh-card-meta">
+          {formatCurrency(totalSpend)} spend · {totalPaidLeads} leads · {blendedRoas.toFixed(1)}x ROAS
+        </span>
+      </div>
       <table class="gh-table">
         <thead>
           <tr>
@@ -97,15 +135,25 @@ const totalPaidLeads = paidChannels.reduce((s, c) => s + c.leads, 0);
           </tr>
         </thead>
         <tbody>
-          {paidChannels.map(c => (
-            <tr>
-              <td>{c.channel}</td>
-              <td class="gh-num">{formatCurrency(c.spend_cents)}</td>
-              <td class="gh-num">{c.leads}</td>
-              <td class="gh-num">{formatCurrency(c.cpl_cents)}</td>
-              <td class="gh-num" class:list={[c.roas >= 3 ? 'gh-up' : c.roas >= 2 ? '' : 'gh-down']}>{c.roas.toFixed(1)}x</td>
-            </tr>
-          ))}
+          {paidChannels.map(c => {
+            const roasCls = c.roas >= 3 ? 'gh-up' : c.roas >= 2 ? '' : 'gh-down';
+            return (
+              <tr>
+                <td style="font-weight:500;color:var(--text-1)">{c.channel}</td>
+                <td class="gh-num">{formatCurrency(c.spend_cents)}</td>
+                <td class="gh-num">{c.leads}</td>
+                <td class="gh-num">{formatCurrency(c.cpl_cents)}</td>
+                <td class="gh-num">
+                  <div class="gh-roas-bar" style="justify-content:flex-end">
+                    <div class="gh-roas-track" style="max-width:40px">
+                      <div class="gh-roas-fill" style={`width:${Math.round((c.roas/4)*100)}%;background:${c.roas >= 3 ? 'var(--lime)' : c.roas >= 2 ? '#6366f1' : 'var(--bad)'}`}></div>
+                    </div>
+                    <span class={roasCls} style="font-weight:700;white-space:nowrap">{c.roas.toFixed(1)}x</span>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

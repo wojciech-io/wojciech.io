@@ -12,18 +12,12 @@ import {
 
 interface Props {
   headline: {
-    sessions_7d: number;
-    sessions_7d_delta: number;
-    signups_7d: number;
-    signups_7d_delta: number;
-    leads_7d: number;
-    leads_7d_delta: number;
-    cpl_7d_cents: number;
-    cpl_7d_delta: number;
-    pipeline_total_cents: number;
-    pipeline_delta: number;
-    won_mtd_cents: number;
-    won_count_mtd: number;
+    sessions_7d: number;     sessions_7d_delta: number;
+    signups_7d: number;      signups_7d_delta: number;
+    leads_7d: number;        leads_7d_delta: number;
+    cpl_7d_cents: number;    cpl_7d_delta: number;
+    pipeline_total_cents: number; pipeline_delta: number;
+    won_mtd_cents: number;   won_count_mtd: number;
   };
   acquisition: AcquisitionDay[];
   sources: SourceBreakdown[];
@@ -33,27 +27,71 @@ interface Props {
   dataSources?: DataSource[];
 }
 
-const { headline, sources, pipeline, topLeads, paid = [], dataSources = [] } = Astro.props;
-const maxStage = Math.max(...pipeline.map(s => s.count));
-const maxSource = Math.max(...sources.map(s => s.sessions));
-const maxSpend = paid.length ? Math.max(...paid.map(p => p.spend_cents)) : 0;
-const paidSpend = paid.reduce((a, b) => a + b.spend_cents, 0);
-const paidLeads = paid.reduce((a, b) => a + b.leads, 0);
-const blendedCpl = paidLeads ? Math.round(paidSpend / paidLeads) : 0;
-const statusLabel: Record<DataSource['status'], string> = {
-  demo: 'Demo', connected: 'Live', 'not-configured': 'Off',
+const { headline, acquisition, sources, pipeline, topLeads, paid = [], dataSources = [] } = Astro.props;
+
+// Sparkline helpers
+const acqSessions = acquisition.map(d => d.sessions);
+const acqLeads    = acquisition.map(d => d.leads);
+const acqSignups  = acquisition.map(d => d.signups);
+const acqCpl      = acquisition.map(d => d.cpl_cents);
+function sparkPct(vals: number[], i: number) {
+  const mx = Math.max(...vals), mn = Math.min(...vals);
+  return mx === mn ? 50 : Math.round(((vals[i] - mn) / (mx - mn)) * 100);
+}
+
+// Pipeline
+const maxStageCount = Math.max(...pipeline.map(s => s.count));
+const stageColorMap: Record<string, string> = {
+  'New': 's-new', 'Discovery': 's-discovery', 'Qualified': 's-qualified',
+  'Demo': 's-demo', 'Proposal': 's-proposal', 'Negotiation': 's-negotiation',
+};
+const stageHexMap: Record<string, string> = {
+  'New': '#64748b', 'Discovery': '#3b82f6', 'Qualified': '#6366f1',
+  'Demo': '#8b5cf6', 'Proposal': '#a855f7', 'Negotiation': '#ec4899',
+};
+const pipelineTotal = pipeline.reduce((s, p) => s + p.amount_cents, 0);
+
+// Sources
+const maxSessions = Math.max(...sources.map(s => s.sessions));
+const srcColorMap: Record<string, string> = {
+  'Organic search': 'src-organic', 'Direct': 'src-direct',
+  'Paid — Google': 'src-google', 'Paid — LinkedIn': 'src-linkedin',
+  'Referral': 'src-referral', 'Paid — Meta': 'src-meta', 'Email': 'src-email',
 };
 
-function scoreClass(n: number): string {
+// Paid
+const paidSpend  = paid.reduce((a, b) => a + b.spend_cents, 0);
+const paidLeads  = paid.reduce((a, b) => a + b.leads, 0);
+const blendedCpl = paidLeads ? Math.round(paidSpend / paidLeads) : 0;
+const maxRoas    = paid.length ? Math.max(...paid.map(p => p.roas)) : 4;
+
+// Lead scoring
+function scoreClass(n: number) {
   if (n >= 85) return 's-90';
   if (n >= 75) return 's-80';
   return 's-60';
 }
+const stageBadgeStyle: Record<string, string> = {
+  'New':          'background:rgba(100,116,139,.15);color:#94a3b8',
+  'Discovery':    'background:rgba(59,130,246,.15);color:#60a5fa',
+  'Qualified':    'background:rgba(99,102,241,.15);color:#818cf8',
+  'Demo':         'background:rgba(139,92,246,.15);color:#c084fc',
+  'Proposal':     'background:rgba(168,85,247,.15);color:#d8b4fe',
+  'Negotiation':  'background:rgba(236,72,153,.15);color:#f9a8d4',
+};
+
+const statusLabel: Record<DataSource['status'], string> = {
+  demo: 'Demo', connected: 'Live', 'not-configured': 'Off',
+};
 ---
 
-<h1 class="gh-h1">Weekly review</h1>
-<p class="gh-sub">Acquisition · pipeline · revenue, one screen. Week of 2026-05-14 → 2026-05-20.</p>
+<!-- Page title -->
+<div class="gh-page-header">
+  <h1 class="gh-page-title">Weekly review</h1>
+  <p class="gh-page-sub">Acquisition · pipeline · revenue — week of 2026-05-14 → 2026-05-20</p>
+</div>
 
+<!-- Data source strip -->
 {dataSources.length > 0 && (
   <div class="gh-sources-strip" role="list" aria-label="Connected data sources">
     {dataSources.map(d => (
@@ -67,102 +105,201 @@ function scoreClass(n: number): string {
   </div>
 )}
 
-<section class="gh-metrics">
-  <div class="gh-card gh-metric">
+<!-- ── Headline KPI cards ── -->
+<section class="gh-metrics" style="margin-bottom:16px">
+  <!-- Sessions -->
+  <div class="gh-card gh-metric m-lime">
     <p class="gh-metric-label">Sessions · 7d</p>
+    <div class="gh-spark" aria-hidden="true">
+      {acqSessions.map((_, i) => (
+        <div
+          class={`gh-spark-bar${i === acqSessions.length-1 ? ' last' : ''}`}
+          style={`height:${Math.max(12, sparkPct(acqSessions, i))}%`}
+        ></div>
+      ))}
+    </div>
     <div class="gh-metric-value">{headline.sessions_7d.toLocaleString()}</div>
-    <div class={`gh-metric-delta ${headline.sessions_7d_delta >= 0 ? 'up' : 'down'}`}>{formatPct(headline.sessions_7d_delta)} wow</div>
+    <div class={`gh-metric-delta ${headline.sessions_7d_delta >= 0 ? 'gh-up' : 'gh-down'}`}>
+      {headline.sessions_7d_delta >= 0 ? '↑' : '↓'} {formatPct(headline.sessions_7d_delta)} WoW
+    </div>
   </div>
-  <div class="gh-card gh-metric">
+
+  <!-- Signups -->
+  <div class="gh-card gh-metric m-blue">
     <p class="gh-metric-label">Signups · 7d</p>
+    <div class="gh-spark" aria-hidden="true">
+      {acqSignups.map((_, i) => (
+        <div
+          class={`gh-spark-bar${i === acqSignups.length-1 ? ' last' : ''}`}
+          style={`height:${Math.max(12, sparkPct(acqSignups, i))}%`}
+        ></div>
+      ))}
+    </div>
     <div class="gh-metric-value">{headline.signups_7d}</div>
-    <div class={`gh-metric-delta ${headline.signups_7d_delta >= 0 ? 'up' : 'down'}`}>{formatPct(headline.signups_7d_delta)} wow</div>
+    <div class={`gh-metric-delta ${headline.signups_7d_delta >= 0 ? 'gh-up' : 'gh-down'}`}>
+      {headline.signups_7d_delta >= 0 ? '↑' : '↓'} {formatPct(headline.signups_7d_delta)} WoW
+    </div>
   </div>
-  <div class="gh-card gh-metric">
+
+  <!-- Leads -->
+  <div class="gh-card gh-metric m-violet">
     <p class="gh-metric-label">Leads · 7d</p>
+    <div class="gh-spark" aria-hidden="true">
+      {acqLeads.map((_, i) => (
+        <div
+          class={`gh-spark-bar${i === acqLeads.length-1 ? ' last' : ''}`}
+          style={`height:${Math.max(12, sparkPct(acqLeads, i))}%`}
+        ></div>
+      ))}
+    </div>
     <div class="gh-metric-value">{headline.leads_7d}</div>
-    <div class={`gh-metric-delta ${headline.leads_7d_delta >= 0 ? 'up' : 'down'}`}>{formatPct(headline.leads_7d_delta)} wow</div>
+    <div class={`gh-metric-delta ${headline.leads_7d_delta >= 0 ? 'gh-up' : 'gh-down'}`}>
+      {headline.leads_7d_delta >= 0 ? '↑' : '↓'} {formatPct(headline.leads_7d_delta)} WoW
+    </div>
   </div>
-  <div class="gh-card gh-metric">
+
+  <!-- CPL (down = good) -->
+  <div class="gh-card gh-metric m-amber">
     <p class="gh-metric-label">CPL · 7d</p>
+    <div class="gh-spark" aria-hidden="true">
+      {acqCpl.map((_, i) => (
+        <div
+          class={`gh-spark-bar${i === acqCpl.length-1 ? ' last' : ''}`}
+          style={`height:${Math.max(12, sparkPct(acqCpl, i))}%`}
+        ></div>
+      ))}
+    </div>
     <div class="gh-metric-value">{formatCurrency(headline.cpl_7d_cents)}</div>
-    <div class={`gh-metric-delta ${headline.cpl_7d_delta <= 0 ? 'up' : 'down'}`}>{formatPct(headline.cpl_7d_delta)} wow</div>
+    <div class={`gh-metric-delta ${headline.cpl_7d_delta <= 0 ? 'gh-up' : 'gh-down'}`}>
+      {headline.cpl_7d_delta <= 0 ? '↓' : '↑'} {formatPct(headline.cpl_7d_delta)} WoW
+    </div>
   </div>
 </section>
 
-<section class="gh-grid-2">
+<!-- ── Pipeline + Sources ── -->
+<section class="gh-grid-2" style="margin-bottom:14px">
+
+  <!-- Pipeline by stage -->
   <div class="gh-card">
-    <h2 class="gh-h2" style="margin-top:0">Pipeline by stage</h2>
+    <div class="gh-card-header">Pipeline by stage</div>
     <div class="gh-pipeline">
+      {pipeline.map(s => {
+        const cls = stageColorMap[s.stage] ?? '';
+        const pct = Math.round((s.count / maxStageCount) * 100);
+        return (
+          <div class={`gh-stage ${cls}`}>
+            <div class="gh-stage-name">{s.stage}</div>
+            <div class="gh-stage-track">
+              <div class="gh-stage-fill" style={`width:${pct}%;background:${stageHexMap[s.stage] ?? 'var(--lime)'}`}></div>
+            </div>
+            <div class="gh-stage-count">{s.count}</div>
+            <div class="gh-stage-amt">{formatCurrency(s.amount_cents)}</div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Rainbow funnel strip -->
+    <div class="gh-funnel-strip" aria-hidden="true">
       {pipeline.map(s => (
-        <div class="gh-stage">
-          <div>{s.stage} · <span style="color:var(--text-3)">{s.count}</span></div>
-          <div class="gh-stage-bar"><span style={`width:${(s.count / maxStage) * 100}%`}></span></div>
-          <div class="gh-stage-amt">{formatCurrency(s.amount_cents)}</div>
-        </div>
+        <div class="gh-funnel-seg" style={`background:${stageHexMap[s.stage] ?? '#888'};flex:${s.count}`}></div>
       ))}
     </div>
-    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
-      <span style="color:var(--text-2)">Total pipeline</span>
-      <span style="font-weight:600">{formatCurrency(headline.pipeline_total_cents)} <span class={`gh-metric-delta ${headline.pipeline_delta >= 0 ? 'up' : 'down'}`} style="margin-left:6px">{formatPct(headline.pipeline_delta)}</span></span>
+
+    <div class="gh-pipeline-total">
+      <span style="color:var(--text-3)">Total pipeline</span>
+      <span>
+        <strong>{formatCurrency(pipelineTotal)}</strong>
+        <span class={`gh-metric-delta ${headline.pipeline_delta >= 0 ? 'gh-up' : 'gh-down'}`} style="display:inline;margin-left:6px;font-size:11px">
+          {headline.pipeline_delta >= 0 ? '↑' : '↓'} {formatPct(headline.pipeline_delta)}
+        </span>
+      </span>
     </div>
-    <div style="margin-top:8px;display:flex;justify-content:space-between;font-size:13px">
-      <span style="color:var(--text-2)">Won · MTD</span>
-      <span style="font-weight:600">{formatCurrency(headline.won_mtd_cents)} <span style="color:var(--text-3);font-weight:400">({headline.won_count_mtd} deals)</span></span>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:8px;color:var(--text-3)">
+      <span>Won MTD</span>
+      <span style="color:var(--text-1);font-weight:600">
+        {formatCurrency(headline.won_mtd_cents)}
+        <span style="color:var(--text-3);font-weight:400"> · {headline.won_count_mtd} deals</span>
+      </span>
     </div>
   </div>
 
+  <!-- Traffic sources -->
   <div class="gh-card">
-    <h2 class="gh-h2" style="margin-top:0">Traffic sources · 7d</h2>
+    <div class="gh-card-header">Traffic sources · 7d</div>
     <div class="gh-sources">
-      {sources.map(s => (
-        <div class="gh-source">
-          <div>{s.source}</div>
-          <div class="gh-source-bar"><span style={`width:${(s.sessions / maxSource) * 100}%`}></span></div>
-          <div class="gh-source-pct">{(s.share * 100).toFixed(0)}%</div>
-        </div>
-      ))}
+      {sources.map(s => {
+        const colorCls = srcColorMap[s.source] ?? '';
+        const barPct = Math.round((s.sessions / maxSessions) * 100);
+        return (
+          <div class="gh-source">
+            <div class="gh-source-name">{s.source}</div>
+            <div class="gh-source-bar-wrap">
+              <span class={`gh-source-bar ${colorCls}`} style={`width:${barPct}%`}></span>
+            </div>
+            <div class="gh-source-pct">{(s.share * 100).toFixed(0)}%</div>
+            <div class="gh-source-sess" style="color:var(--text-3)">{s.sessions.toLocaleString()}</div>
+          </div>
+        );
+      })}
     </div>
   </div>
 </section>
 
+<!-- ── Paid acquisition ── -->
 {paid.length > 0 && (
-  <section style="margin-top:24px">
+  <section style="margin-bottom:14px">
     <div class="gh-card">
-      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap">
-        <h2 class="gh-h2" style="margin-top:0">Paid acquisition · 7d</h2>
-        <div style="font-size:13px;color:var(--text-2)">
-          Spend <span style="font-weight:600;color:var(--text)">{formatCurrency(paidSpend)}</span>
-          · {paidLeads} leads · blended CPL <span style="font-weight:600;color:var(--text)">{formatCurrency(blendedCpl)}</span>
-        </div>
+      <div class="gh-card-header">
+        Paid acquisition · 7d
+        <span class="gh-card-meta">
+          Spend <strong style="color:var(--text-1)">{formatCurrency(paidSpend)}</strong>
+          · {paidLeads} leads
+          · blended CPL <strong style="color:var(--text-1)">{formatCurrency(blendedCpl)}</strong>
+        </span>
       </div>
-      <div class="gh-table-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px">
+      <div style="overflow-x:auto">
         <table class="gh-table">
           <thead>
             <tr>
               <th>Channel</th>
-              <th class="num">Spend</th>
-              <th>Share of spend</th>
-              <th class="num">Clicks</th>
-              <th class="num">Leads</th>
-              <th class="num">CPL</th>
-              <th class="num">ROAS</th>
+              <th class="gh-num">Spend</th>
+              <th>Share</th>
+              <th class="gh-num">Clicks</th>
+              <th class="gh-num">Leads</th>
+              <th class="gh-num">CPL</th>
+              <th class="gh-num">ROAS</th>
             </tr>
           </thead>
           <tbody>
-            {paid.map(p => (
-              <tr>
-                <td>{p.channel}</td>
-                <td class="num">{formatCurrency(p.spend_cents)}</td>
-                <td>
-                  <div class="gh-source-bar" style="min-width:90px"><span style={`width:${maxSpend ? (p.spend_cents / maxSpend) * 100 : 0}%`}></span></div>
-                </td>
-                <td class="num">{p.clicks.toLocaleString()}</td>
-                <td class="num">{p.leads}</td>
-                <td class="num">{formatCurrency(p.cpl_cents)}</td>
-                <td class="num"><span class={`gh-score ${p.roas >= 3 ? 's-90' : p.roas >= 2 ? 's-80' : 's-60'}`}>{p.roas.toFixed(1)}x</span></td>
-              </tr>
-            ))}
+            {paid.map(p => {
+              const shareW = Math.round((p.spend_cents / paidSpend) * 100);
+              const roasW  = Math.round((p.roas / maxRoas) * 100);
+              const roasCls = p.roas >= 3 ? 'gh-up' : p.roas >= 2 ? '' : 'gh-down';
+              return (
+                <tr>
+                  <td style="font-weight:500;color:var(--text-1)">{p.channel}</td>
+                  <td class="gh-num">{formatCurrency(p.spend_cents)}</td>
+                  <td style="min-width:80px">
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <div style={`height:5px;width:${shareW}%;max-width:60px;background:var(--text-3);border-radius:3px;opacity:.5`}></div>
+                      <span style="font-size:11px;color:var(--text-3)">{shareW}%</span>
+                    </div>
+                  </td>
+                  <td class="gh-num">{p.clicks.toLocaleString()}</td>
+                  <td class="gh-num">{p.leads}</td>
+                  <td class="gh-num">{formatCurrency(p.cpl_cents)}</td>
+                  <td class="gh-num">
+                    <div class="gh-roas-bar">
+                      <div class="gh-roas-track">
+                        <div class="gh-roas-fill" style={`width:${roasW}%;background:${p.roas >= 3 ? 'var(--lime)' : p.roas >= 2 ? '#6366f1' : 'var(--bad)'}`}></div>
+                      </div>
+                      <span class={roasCls} style="font-weight:700;font-size:12px;white-space:nowrap">{p.roas.toFixed(1)}x</span>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -170,38 +307,43 @@ function scoreClass(n: number): string {
   </section>
 )}
 
-<section style="margin-top:24px">
+<!-- ── Top leads ── -->
+<section>
   <div class="gh-card">
-    <h2 class="gh-h2" style="margin-top:0">Top scoring leads</h2>
-    <div class="gh-table-wrap" style="overflow-x:auto;-webkit-overflow-scrolling:touch">
-    <table class="gh-table">
-      <thead>
-        <tr>
-          <th>Score</th>
-          <th>Source</th>
-          <th>Industry</th>
-          <th>Role</th>
-          <th>Size</th>
-          <th>Stage</th>
-          <th class="num">Amount</th>
-          <th>Created</th>
-        </tr>
-      </thead>
-      <tbody>
-        {topLeads.map(l => (
+    <div class="gh-card-header">Top scoring leads</div>
+    <div style="overflow-x:auto">
+      <table class="gh-table">
+        <thead>
           <tr>
-            <td><span class={`gh-score ${scoreClass(l.total_score)}`}>{l.total_score}</span></td>
-            <td>{l.source}</td>
-            <td>{l.industry}</td>
-            <td>{l.role}</td>
-            <td>{l.company_size}</td>
-            <td>{l.stage}</td>
-            <td class="num">{formatCurrency(l.amount_cents)}</td>
-            <td style="color:var(--text-3)">{l.created_at}</td>
+            <th>Score</th>
+            <th>Role</th>
+            <th>Industry</th>
+            <th>Size</th>
+            <th>Stage</th>
+            <th>Source</th>
+            <th class="gh-num">Amount</th>
+            <th class="gh-num">Created</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {topLeads.map(l => (
+            <tr>
+              <td>
+                <span class={`gh-score ${scoreClass(l.total_score)}`}>{l.total_score}</span>
+              </td>
+              <td style="font-weight:500;color:var(--text-1)">{l.role}</td>
+              <td style="color:var(--text-2)">{l.industry}</td>
+              <td style="color:var(--text-3)">{l.company_size}</td>
+              <td>
+                <span class="gh-badge" style={stageBadgeStyle[l.stage] ?? ''}>{l.stage}</span>
+              </td>
+              <td class="gh-mono" style="color:var(--text-3)">{l.source}</td>
+              <td class="gh-num" style="font-weight:600;color:var(--text-1)">{formatCurrency(l.amount_cents)}</td>
+              <td class="gh-num gh-mono" style="color:var(--text-3)">{l.created_at}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
