@@ -1,17 +1,51 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const links = [
+  { href: '/',           label: 'Home',       desc: 'Start here' },
+  { href: '/work',       label: 'Work',        desc: 'Case studies & proof' },
+  { href: '/ai-systems', label: 'AI Systems',  desc: 'Workflows & agents' },
+  { href: '/insights',   label: 'Writing',     desc: 'GTM & AI' },
+];
 ---
 
-<Layout title="404 Page not found" noindex>
-  <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)] text-center">
-    <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">404</p>
-    <h1 class="text-4xl font-semibold text-[var(--color-text)] mb-4">Page not found</h1>
-    <p class="text-[var(--color-text-muted)] mb-8">This page doesn't exist or has been moved.</p>
-    <a
-      href="/"
-      class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors"
-    >
-      ← Back to home
-    </a>
-  </div>
+<Layout title="404 — Page not found" noindex>
+  <section class="relative min-h-[80vh] flex items-center border-b border-[var(--color-border)] overflow-hidden">
+
+    <!-- Background number -->
+    <span aria-hidden="true" class="pointer-events-none select-none absolute right-0 top-1/2 -translate-y-1/2 text-[clamp(14rem,28vw,22rem)] font-bold leading-none text-[var(--color-border)] opacity-50 pr-6">404</span>
+
+    <div class="relative mx-auto max-w-6xl px-6 py-24 w-full">
+      <div class="max-w-lg">
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">404</p>
+
+        <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
+          Wrong turn.<br class="hidden md:block" />
+          <span class="text-[var(--color-text-muted)]">Right operator.</span>
+        </h1>
+
+        <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-10">
+          This page doesn't exist — or it moved without updating the map.
+          The system is working fine. You just need a better route.
+        </p>
+
+        <!-- Nav links -->
+        <nav class="space-y-3" aria-label="Recovery navigation">
+          {links.map(({ href, label, desc }) => (
+            <a
+              href={href}
+              class="group flex items-center gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-4 transition-all duration-150 hover:border-[var(--color-border-2)] hover:bg-[var(--color-surface-2)] card-lift"
+            >
+              <span class="text-[var(--color-accent)] font-mono text-sm shrink-0 transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+              <div class="flex-1 min-w-0">
+                <span class="text-sm font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">{label}</span>
+                <span class="text-xs text-[var(--color-text-dim)] ml-2">{desc}</span>
+              </div>
+              <span class="text-xs text-[var(--color-text-dim)] font-mono shrink-0">{href}</span>
+            </a>
+          ))}
+        </nav>
+      </div>
+    </div>
+  </section>
 </Layout>
