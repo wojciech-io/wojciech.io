@@ -9,7 +9,9 @@ const allPosts = (await getCollection('insights', ({ data }) => !data.draft)).so
 const featuredPost = allPosts.find(p => p.data.featured);
 const restPosts = allPosts.filter(p => p !== featuredPost);
 
-const categories = ['All', 'AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products'];
+// Only show categories that have at least one article
+const usedCategories = [...new Set(allPosts.map(p => p.data.category).filter(Boolean))] as string[];
+const categories = ['All', ...usedCategories.sort()];
 
 const author = {
   name: 'Wojciech Łuszczyński',
@@ -61,6 +63,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
           href={`/insights/${slug}/`}
           class="group mb-10 grid overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-200 hover:shadow-[0_8px_40px_rgb(0_0_0/0.12)] hover:border-[var(--color-border-2)] lg:grid-cols-[0.9fr_1.1fr]"
           data-category={featuredPost.data.category ?? ''}
+          data-featured-article
         >
           <!-- Cover -->
           <div
@@ -145,7 +148,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
       ))}
     </div>
 
-    <p class="mb-6 mt-3 text-sm text-[var(--color-text-dim)]" id="article-count">{restPosts.length} <span>articles</span></p>
+    <p class="mb-6 mt-3 text-sm text-[var(--color-text-dim)]" id="article-count">{allPosts.length} <span>articles</span></p>
 
     <!-- Article grid -->
     <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 mb-16" id="article-grid">
@@ -238,20 +241,31 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
 
 <script>
   const catBtns = document.querySelectorAll<HTMLButtonElement>('.cat-btn');
-  const cards = document.querySelectorAll<HTMLElement>('.article-card');
+  const cards   = document.querySelectorAll<HTMLElement>('.article-card');
+  const featured = document.querySelector<HTMLElement>('[data-featured-article]');
   const noResults = document.getElementById('no-results')!;
-  const countEl = document.getElementById('article-count')!;
+  const countEl   = document.getElementById('article-count')!;
 
-  const ACTIVE = 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm';
+  const ACTIVE   = 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm';
   const INACTIVE = 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]';
 
   function applyFilter(cat: string) {
     let visible = 0;
+
+    // Featured hero: show if All or category matches
+    if (featured) {
+      const match = cat === 'All' || (featured.dataset.category ?? '') === cat;
+      featured.style.display = match ? '' : 'none';
+      if (match) visible++;
+    }
+
+    // Grid cards
     cards.forEach(card => {
       const match = cat === 'All' || (card.dataset.category ?? '') === cat;
-      (card as HTMLElement).style.display = match ? '' : 'none';
+      card.style.display = match ? '' : 'none';
       if (match) visible++;
     });
+
     noResults.classList.toggle('hidden', visible > 0);
     countEl.textContent = `${visible} article${visible !== 1 ? 's' : ''}`;
   }
