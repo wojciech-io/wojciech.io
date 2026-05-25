@@ -40,13 +40,48 @@ const ALLOWED = [
   '/manifest.json',
 ];
 
+// Security headers applied to every wojciech.io response.
+// Mixpanel uses EU endpoints (api-eu.mixpanel.com). Sentry tunnel not used on public site.
+const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
+  'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+  'x-content-type-options': 'nosniff',
+  'x-frame-options': 'SAMEORIGIN',
+  'referrer-policy': 'strict-origin-when-cross-origin',
+  'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()',
+  // CSP: permit GA, Mixpanel EU, Gravatar, SimpleIcons CDN, self-hosted fonts.
+  // unsafe-inline required for Astro's is:inline scripts and Tailwind utilities.
+  'content-security-policy': [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com",
+    "font-src 'self'",
+    "frame-src 'none'",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "object-src 'none'",
+    "upgrade-insecure-requests",
+  ].join('; '),
+};
+
+function applySecurityHeaders(response: Response): Response {
+  const headers = new Headers(response.headers);
+  for (const [key, value] of Object.entries(PUBLIC_SECURITY_HEADERS)) {
+    headers.set(key, value);
+  }
+  return new Response(response.body, { status: response.status, headers });
+}
+
 export const onRequest: PagesFunction<Env> = async (ctx) => {
   const { request, env, next } = ctx;
   const url = new URL(request.url);
 
-  // Pass-through for the public wojciech.io project deploys.
+  // Public wojciech.io: pass through with security headers injected.
   if (!isGatedHost(url.hostname)) {
-    return next();
+    const response = await next();
+    return applySecurityHeaders(response);
   }
 
   if (ALLOWED.includes(url.pathname)) {
