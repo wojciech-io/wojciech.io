@@ -21,6 +21,7 @@ export const GET: APIRoute = async ({ site }) => {
   );
 
   const origin = site ?? new URL('https://wojciech.io/');
+  const feedUrl = new URL('/rss.xml', origin).href;
   const items = posts
     .map((post) => {
       const slug = post.id.replace(/\.mdx?$/, '');
@@ -31,25 +32,32 @@ export const GET: APIRoute = async ({ site }) => {
           <title>${escapeXml(post.data.title)}</title>
           <description>${escapeXml(post.data.description)}</description>
           <link>${url}</link>
-          <guid>${url}</guid>
+          <guid isPermaLink="true">${url}</guid>
           <pubDate>${post.data.publishedAt.toUTCString()}</pubDate>
+          <author>w.luszczynski@gmail.com (Wojciech Łuszczyński)</author>
         </item>`;
     })
     .join('');
 
   return new Response(
     `<?xml version="1.0" encoding="UTF-8" ?>
-      <rss version="2.0">
-        <channel>
-          <title>Wojciech Łuszczyński - Insights</title>
-          <description>Articles on growth, AI systems, GTM architecture, and building revenue systems.</description>
-          <link>${new URL('/insights/', origin).href}</link>
-          ${items}
-        </channel>
-      </rss>`,
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Wojciech Łuszczyński · Insights</title>
+    <description>Articles on growth, AI systems, GTM architecture, and building revenue systems for B2B SaaS.</description>
+    <link>${new URL('/insights/', origin).href}</link>
+    <atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <managingEditor>w.luszczynski@gmail.com (Wojciech Łuszczyński)</managingEditor>
+    <webMaster>w.luszczynski@gmail.com (Wojciech Łuszczyński)</webMaster>
+    <ttl>1440</ttl>
+    ${items}
+  </channel>
+</rss>`,
     {
       headers: {
         'content-type': 'application/rss+xml; charset=utf-8',
+        'cache-control': 'public, max-age=3600',
       },
     },
   );
