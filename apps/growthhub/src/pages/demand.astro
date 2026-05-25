@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { acquisitionLast14, sourceBreakdown, paidChannels, formatCurrency, formatPct } from '../lib/dummy-data';
+
+const totalSessions = acquisitionLast14.reduce((s, d) => s + d.sessions, 0);
+const totalLeads    = acquisitionLast14.reduce((s, d) => s + d.leads, 0);
+const totalSignups  = acquisitionLast14.reduce((s, d) => s + d.signups, 0);
+const avgCpl        = Math.round(acquisitionLast14.reduce((s, d) => s + d.cpl_cents, 0) / acquisitionLast14.length);
+const totalSpend    = paidChannels.reduce((s, c) => s + c.spend_cents, 0);
+const totalPaidLeads = paidChannels.reduce((s, c) => s + c.leads, 0);
+---
+
+<Layout title="Demand-gen" activePage="demand" isDemo={false}>
+  <div class="gh-page-header">
+    <h1 class="gh-page-title">Demand-gen</h1>
+    <p class="gh-page-sub">Last 14 days · acquisition, channels, paid performance</p>
+  </div>
+
+  <!-- Headline row -->
+  <div class="gh-metric-row" style="margin-bottom:24px">
+    <div class="gh-metric">
+      <div class="gh-metric-label">Sessions (14d)</div>
+      <div class="gh-metric-value">{totalSessions.toLocaleString()}</div>
+    </div>
+    <div class="gh-metric">
+      <div class="gh-metric-label">Signups (14d)</div>
+      <div class="gh-metric-value">{totalSignups}</div>
+    </div>
+    <div class="gh-metric">
+      <div class="gh-metric-label">Leads (14d)</div>
+      <div class="gh-metric-value">{totalLeads}</div>
+    </div>
+    <div class="gh-metric">
+      <div class="gh-metric-label">Avg CPL (14d)</div>
+      <div class="gh-metric-value">{formatCurrency(avgCpl)}</div>
+    </div>
+  </div>
+
+  <!-- Daily acquisition table -->
+  <div class="gh-card" style="margin-bottom:20px">
+    <div class="gh-card-header">Daily acquisition</div>
+    <div style="overflow-x:auto">
+      <table class="gh-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th class="gh-num">Sessions</th>
+            <th class="gh-num">Signups</th>
+            <th class="gh-num">Leads</th>
+            <th class="gh-num">CPL</th>
+            <th class="gh-num">Conv %</th>
+          </tr>
+        </thead>
+        <tbody>
+          {acquisitionLast14.slice().reverse().map(d => (
+            <tr>
+              <td class="gh-mono">{d.date}</td>
+              <td class="gh-num">{d.sessions.toLocaleString()}</td>
+              <td class="gh-num">{d.signups}</td>
+              <td class="gh-num">{d.leads}</td>
+              <td class="gh-num">{formatCurrency(d.cpl_cents)}</td>
+              <td class="gh-num">{((d.leads / d.sessions) * 100).toFixed(2)}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <!-- Source breakdown -->
+    <div class="gh-card">
+      <div class="gh-card-header">Traffic by source</div>
+      {sourceBreakdown.map(s => (
+        <div class="gh-source-row">
+          <span class="gh-source-name">{s.source}</span>
+          <span class="gh-source-bar-wrap">
+            <span class="gh-source-bar" style={`width:${(s.share * 100).toFixed(0)}%`}></span>
+          </span>
+          <span class="gh-mono" style="font-size:11px;min-width:36px;text-align:right">{(s.share * 100).toFixed(0)}%</span>
+          <span class="gh-mono" style="font-size:11px;color:var(--text-3);min-width:60px;text-align:right">{s.sessions.toLocaleString()}</span>
+        </div>
+      ))}
+    </div>
+
+    <!-- Paid channels -->
+    <div class="gh-card">
+      <div class="gh-card-header">Paid channels — 14d <span class="gh-card-meta">Total spend {formatCurrency(totalSpend)} · {totalPaidLeads} leads</span></div>
+      <table class="gh-table">
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th class="gh-num">Spend</th>
+            <th class="gh-num">Leads</th>
+            <th class="gh-num">CPL</th>
+            <th class="gh-num">ROAS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paidChannels.map(c => (
+            <tr>
+              <td>{c.channel}</td>
+              <td class="gh-num">{formatCurrency(c.spend_cents)}</td>
+              <td class="gh-num">{c.leads}</td>
+              <td class="gh-num">{formatCurrency(c.cpl_cents)}</td>
+              <td class="gh-num" class:list={[c.roas >= 3 ? 'gh-up' : c.roas >= 2 ? '' : 'gh-down']}>{c.roas.toFixed(1)}x</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Layout>

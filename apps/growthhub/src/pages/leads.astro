@@ -1,0 +1,131 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { topLeads, pipeline, headlineMetrics, formatCurrency, formatPct } from '../lib/dummy-data';
+
+const totalLeads  = topLeads.length;
+const avgScore    = Math.round(topLeads.reduce((s, l) => s + l.total_score, 0) / topLeads.length);
+const pipelineVal = pipeline.reduce((s, p) => s + p.amount_cents, 0);
+const hotLeads    = topLeads.filter(l => l.total_score >= 80).length;
+
+function scoreClass(score: number) {
+  if (score >= 85) return 'gh-up';
+  if (score >= 70) return '';
+  return 'gh-down';
+}
+
+const stageOrder = ['New', 'Discovery', 'Qualified', 'Demo', 'Proposal', 'Negotiation'];
+---
+
+<Layout title="Leads" activePage="leads" isDemo={false}>
+  <div class="gh-page-header">
+    <h1 class="gh-page-title">Leads</h1>
+    <p class="gh-page-sub">Lead scoring · ICP fit · pipeline stages</p>
+  </div>
+
+  <!-- Headline row -->
+  <div class="gh-metric-row" style="margin-bottom:24px">
+    <div class="gh-metric">
+      <div class="gh-metric-label">Leads (7d)</div>
+      <div class="gh-metric-value">{headlineMetrics.leads_7d}</div>
+      <div class="gh-metric-delta gh-up">{formatPct(headlineMetrics.leads_7d_delta)} WoW</div>
+    </div>
+    <div class="gh-metric">
+      <div class="gh-metric-label">Hot leads (score ≥80)</div>
+      <div class="gh-metric-value">{hotLeads}</div>
+    </div>
+    <div class="gh-metric">
+      <div class="gh-metric-label">Avg lead score</div>
+      <div class="gh-metric-value">{avgScore}</div>
+    </div>
+    <div class="gh-metric">
+      <div class="gh-metric-label">Pipeline value</div>
+      <div class="gh-metric-value">{formatCurrency(pipelineVal)}</div>
+      <div class="gh-metric-delta gh-up">{formatPct(headlineMetrics.pipeline_delta)} WoW</div>
+    </div>
+  </div>
+
+  <!-- Pipeline stage funnel -->
+  <div class="gh-card" style="margin-bottom:20px">
+    <div class="gh-card-header">Pipeline by stage</div>
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;padding:4px 0 8px">
+      {pipeline.map(p => {
+        const pct = (p.amount_cents / pipelineVal * 100).toFixed(0);
+        return (
+          <div style="text-align:center">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:6px">{p.stage}</div>
+            <div style="font-size:22px;font-weight:700;color:var(--text-1);line-height:1">{p.count}</div>
+            <div style="font-size:11px;color:var(--accent);font-weight:600;margin-top:3px">{formatCurrency(p.amount_cents)}</div>
+            <div style="font-size:10px;color:var(--text-3);margin-top:2px">{pct}% of pipe</div>
+          </div>
+        );
+      })}
+    </div>
+    <!-- Bar visual -->
+    <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:8px;gap:1px">
+      {pipeline.map((p, i) => {
+        const pct = (p.amount_cents / pipelineVal * 100).toFixed(1);
+        const hues = ['#3b82f6','#6366f1','#8b5cf6','#a855f7','#ec4899','#f43f5e'];
+        return <div style={`flex:${pct};background:${hues[i]};min-width:2px`}></div>;
+      })}
+    </div>
+  </div>
+
+  <!-- Top leads table -->
+  <div class="gh-card">
+    <div class="gh-card-header">Top leads by score <span class="gh-card-meta">{topLeads.length} records shown · sorted by total score</span></div>
+    <div style="overflow-x:auto">
+      <table class="gh-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Role / Industry</th>
+            <th>Source</th>
+            <th>Stage</th>
+            <th class="gh-num">ICP</th>
+            <th class="gh-num">Behaviour</th>
+            <th class="gh-num">Score</th>
+            <th class="gh-num">Amount</th>
+            <th class="gh-num">Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          {topLeads.map(l => (
+            <tr>
+              <td class="gh-mono" style="font-size:11px;color:var(--text-3)">{l.id}</td>
+              <td>
+                <div style="font-size:12px;font-weight:500;color:var(--text-1)">{l.role}</div>
+                <div style="font-size:11px;color:var(--text-3)">{l.industry} · {l.company_size}</div>
+              </td>
+              <td class="gh-mono" style="font-size:11px">{l.source}</td>
+              <td>
+                <span class="gh-badge" style={`
+                  ${l.stage === 'Demo' || l.stage === 'Qualified' ? 'background:rgba(99,102,241,.12);color:#818cf8' :
+                    l.stage === 'Discovery' ? 'background:rgba(59,130,246,.12);color:#60a5fa' :
+                    l.stage === 'New' ? 'background:rgba(100,116,139,.12);color:#94a3b8' :
+                    'background:rgba(168,85,247,.12);color:#c084fc'}
+                `}>{l.stage}</span>
+              </td>
+              <td class={`gh-num ${scoreClass(l.icp_score)}`}>{l.icp_score}</td>
+              <td class={`gh-num ${scoreClass(l.behaviour_score)}`}>{l.behaviour_score}</td>
+              <td class={`gh-num ${scoreClass(l.total_score)}`} style="font-weight:700">{l.total_score}</td>
+              <td class="gh-num">{formatCurrency(l.amount_cents)}</td>
+              <td class="gh-num gh-mono" style="font-size:11px;color:var(--text-3)">{l.created_at}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .gh-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+</style>
