@@ -9,7 +9,7 @@ const nav = [
   { label: 'Insights',   href: '/insights',   desc: 'Writing on GTM, AI, and product' },
   { label: 'Tools',      href: '/resources',  desc: 'Free tools, templates, and starter packs' },
   { label: 'About',      href: '/about',      desc: 'Operator profile and background' },
-  { label: 'Bites',      href: '/bites',      desc: 'Short-form operator notes — coming soon', soon: true },
+  { label: 'Bites',      href: '/bites',      desc: 'Short-form operator notes, coming soon', soon: true },
   { label: 'Contact',    href: '/contact',    desc: 'Book a call or send a message' },
 ];
 
@@ -17,15 +17,15 @@ const writing = [
   { label: 'CRM-first AI adoption',       href: '/insights/crm-first-ai-adoption',    desc: 'Why CRM hygiene beats prompt-first AI rollouts' },
   { label: 'Claude Code GTM Starter Pack', href: '/insights/claude-code-vs-clay',      desc: 'Four-layer AI outbound system without enrichment tools' },
   { label: 'Claude Code in client GTM',    href: '/insights/claude-code-client-gtm',   desc: 'How I use Claude Code inside real client engagements' },
-  { label: 'AI stack in production',       href: '/insights/ai-production-stack',      desc: 'Every AI tool in active use — what earned its place' },
+  { label: 'AI stack in production',       href: '/insights/ai-production-stack',      desc: 'Every AI tool in active use: what earned its place' },
   { label: 'All writing →',               href: '/insights',                           desc: 'AI GTM systems, agent tooling, operator playbooks' },
 ];
 
 const network = [
-  { label: 'Apps & workspace', href: SITE.appUrl, desc: 'app.wojciech.io — apps, CV, stack' },
-  { label: 'AI Espresso', href: SITE.subscribeUrl, desc: 'subscribe.wojciech.io — newsletter on AI and GTM' },
-  { label: 'Audio AI course', href: 'https://academy.wojciech.io', desc: 'academy.wojciech.io — audio-first AI course', soon: true },
-  { label: 'NotchCue', href: SITE.notchUrl, desc: 'notch.wojciech.io — macOS teleprompter app' },
+  { label: 'Apps & workspace', href: SITE.appUrl, desc: 'app.wojciech.io: apps, CV, stack' },
+  { label: 'AI Espresso', href: SITE.subscribeUrl, desc: 'subscribe.wojciech.io: newsletter on AI and GTM' },
+  { label: 'Audio AI course', href: 'https://academy.wojciech.io', desc: 'academy.wojciech.io: audio-first AI course', soon: true },
+  { label: 'NotchCue', href: SITE.notchUrl, desc: 'notch.wojciech.io: macOS teleprompter app' },
 ];
 
 const connect = [
@@ -95,9 +95,10 @@ const connect = [
           {nav.map(({ label, href, desc, soon }) => (
             <li class="flex items-center gap-2">
               <a
-                href={href}
+                href={soon ? undefined : href}
                 title={desc}
-                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
+                aria-disabled={soon ? 'true' : undefined}
+                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none cursor-default' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               >
                 {label}
               </a>
@@ -132,11 +133,12 @@ const connect = [
           {network.map(({ label, href, desc, soon }) => (
             <li class="flex items-center gap-2">
               <a
-                href={href}
+                href={soon ? undefined : href}
                 title={desc}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
+                target={soon ? undefined : '_blank'}
+                rel={soon ? undefined : 'noopener noreferrer'}
+                aria-disabled={soon ? 'true' : undefined}
+                class={`text-[13px] no-underline transition-colors ${soon ? 'text-[var(--color-text-dim)] pointer-events-none cursor-default' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               >
                 {label}
               </a>

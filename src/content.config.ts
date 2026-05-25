@@ -42,7 +42,7 @@ const work = defineCollection({
   }),
 });
 
-// Sprint 2 — Testimonials collection (B4 decision).
+// Sprint 2: Testimonials collection (B4 decision).
 // Featured subset criteria (locked in docs/03-content-decisions.md):
 //   primary: tightest claims (specific numbers, not generic praise) + voice fit
 //   tiebreaker: recognizable names
@@ -65,7 +65,7 @@ const testimonials = defineCollection({
     voiceFit: z.enum(['high', 'medium', 'low']).default('medium'), // tone alignment with docs/10
     claimTightness: z.enum(['specific-numbers', 'specific-outcome', 'generic']).default('generic'),
     tags: z.array(z.string()).default([]),
-    draft: z.boolean().default(true),                // default true — explicit opt-in to surface
+    draft: z.boolean().default(true),                // default true: explicit opt-in to surface
   }),
 });
 
