@@ -31,7 +31,16 @@ const TWITTER_REQUIRED = [
   'twitter:image',
 ] as const;
 
-const PAGES_TO_AUDIT = ['/', '/about/', '/work/', '/ai-systems/', '/insights/'] as const;
+const PAGES_TO_AUDIT = [
+  '/',
+  '/about/',
+  '/work/',
+  '/ai-systems/',
+  '/insights/',
+  '/contact/',
+  '/now/',
+  '/resources/',
+] as const;
 const INDEXABLE_SITEMAP_PATHS = [
   '/',
   '/about/',
