@@ -12,6 +12,9 @@ import { test, expect } from '@playwright/test';
 
 test.beforeEach(({}, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'Visual baselines are captured in Chromium only.');
+  // Only darwin baselines are committed. Skip on Linux CI until linux baselines are generated.
+  // To generate: npx playwright test --update-snapshots  (on Linux runner, then commit the -linux.png files)
+  test.skip(process.platform !== 'darwin', 'Visual baselines are macOS-only — linux snapshots not yet generated.');
 });
 
 const VIEWPORTS = [
