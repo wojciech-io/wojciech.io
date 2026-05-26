@@ -6,9 +6,8 @@ import { test, expect } from '@playwright/test';
  * Complements smoke.spec.ts (which only covers EN main pages) by adding
  * supporting pages + the SEO/feed surface.
  *
- * PL/IT routes removed Sprint 2 B1 (English-only launch per CLAUDE.md).
- * Re-add localized paths here when a dedicated localization sprint reinstates
- * /[lang]/ + /pl/ + /it/ in src/pages/.
+ * DE/DK/NO/JP routes are active. Legacy PL/IT/EN prefixes intentionally
+ * redirect to root because they are not published locales.
  */
 
 const PAGES = [

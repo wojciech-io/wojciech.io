@@ -1,28 +1,65 @@
 ---
 interface Props {
-  id: string;
-  provider?: 'youtube' | 'loom';
+  id?: string;
+  src?: string;
+  provider?: 'youtube' | 'loom' | 'vimeo';
   title?: string;
   caption?: string;
+  aspect?: '16:9' | '4:3' | '1:1' | '9:16';
 }
 
-const { id, provider = 'youtube', title = 'Embedded video', caption } = Astro.props;
+const { id, src, provider = 'youtube', title = 'Embedded video', caption, aspect = '16:9' } = Astro.props;
 
-const src =
-  provider === 'loom'
-    ? `https://www.loom.com/embed/${id}`
-    : `https://www.youtube-nocookie.com/embed/${id}`;
+const aspectRatio = {
+  '16:9': '16 / 9',
+  '4:3': '4 / 3',
+  '1:1': '1 / 1',
+  '9:16': '9 / 16',
+}[aspect];
+
+const allowedHosts = new Set([
+  'www.youtube-nocookie.com',
+  'youtube-nocookie.com',
+  'www.youtube.com',
+  'youtube.com',
+  'player.vimeo.com',
+  'www.loom.com',
+]);
+
+function safeEmbedSrc(value: string): string {
+  if (value.startsWith('/')) return value;
+  try {
+    const url = new URL(value);
+    if (url.protocol === 'https:' && allowedHosts.has(url.hostname)) return value;
+  } catch {
+    return '';
+  }
+  return '';
+}
+
+function srcForProvider() {
+  if (!id) return '';
+  if (provider === 'loom') return `https://www.loom.com/embed/${id}`;
+  if (provider === 'vimeo') return `https://player.vimeo.com/video/${id}`;
+  return `https://www.youtube-nocookie.com/embed/${id}`;
+}
+
+const embedSrc = src ? safeEmbedSrc(src) : srcForProvider();
 ---
 
 <figure class="video-embed">
-  <div class="video-embed__frame">
-    <iframe
-      src={src}
-      title={title}
-      loading="lazy"
-      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowfullscreen
-    />
+  <div class="video-embed__frame" style={`--video-aspect: ${aspectRatio}`}>
+    {embedSrc ? (
+      <iframe
+        src={embedSrc}
+        title={title}
+        loading="lazy"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      />
+    ) : (
+      <p class="video-embed__fallback">Video embed unavailable.</p>
+    )}
   </div>
   {caption && <figcaption>{caption}</figcaption>}
 </figure>
@@ -33,7 +70,7 @@ const src =
   }
   .video-embed__frame {
     position: relative;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: var(--video-aspect, 16 / 9);
     border-radius: var(--radius-card);
     border: 1px solid var(--color-border);
     overflow: hidden;
@@ -45,6 +82,14 @@ const src =
     width: 100%;
     height: 100%;
     border: 0;
+  }
+  .video-embed__fallback {
+    display: grid;
+    min-height: 10rem;
+    place-items: center;
+    margin: 0;
+    color: var(--color-text-dim);
+    font-size: 0.875rem;
   }
   figcaption {
     margin-top: 0.625rem;

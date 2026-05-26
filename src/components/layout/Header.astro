@@ -3,16 +3,22 @@ import Nav, { links } from './Nav.astro';
 import SearchModal from '../ui/SearchModal.astro';
 import ThemeToggle from '../ui/ThemeToggle.astro';
 import { localizedHomeList } from '../../data/locales';
+import { localizedPageSlugs, type LocalizedPageSlug } from '../../data/localizedPages';
 
-const localeSegment = Astro.url.pathname.split('/').filter(Boolean)[0];
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const localeSegment = segments[0];
 const currentLocale = localizedHomeList.find((locale) => locale.path === localeSegment);
 const currentLanguageCode = currentLocale?.code ?? 'EN';
+const currentPageSegment = currentLocale ? segments[1] : segments[0];
+const localizedPage = localizedPageSlugs.includes(currentPageSegment as LocalizedPageSlug)
+  ? currentPageSegment
+  : '';
 const languageOptions = [
-  { code: 'EN', label: 'English', href: '/' },
+  { code: 'EN', label: 'English', href: localizedPage ? `/${localizedPage}/` : '/' },
   ...localizedHomeList.map((locale) => ({
     code: locale.code,
     label: locale.label,
-    href: `/${locale.path}/`,
+    href: localizedPage ? `/${locale.path}/${localizedPage}/` : `/${locale.path}/`,
   })),
 ];
 ---

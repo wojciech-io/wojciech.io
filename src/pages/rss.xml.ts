@@ -2,10 +2,8 @@ import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
 
 // Canonical XML 1.0 entity escape (5 predefined entities: & < > " ').
-// Used on internal MDX content (validated by src/content.config.ts schema),
-// not user input. Output context is XML element/attribute text, not HTML:
-// so semgrep's HTML-focused replaceAll rule does not apply here.
-// See .agent-reports/2026-05-22-security-auditor-triage-002.md for full triage.
+// Used on internal MDX content validated by src/content.config.ts. Output
+// context is XML element/attribute text, not HTML.
 const escapeXml = (value: string) =>
   // nosemgrep: javascript.audit.detect-replaceall-sanitization.detect-replaceall-sanitization
   value
@@ -34,7 +32,7 @@ export const GET: APIRoute = async ({ site }) => {
           <link>${url}</link>
           <guid isPermaLink="true">${url}</guid>
           <pubDate>${post.data.publishedAt.toUTCString()}</pubDate>
-          <author>w.luszczynski@gmail.com (Wojciech Łuszczyński)</author>
+          <author>hello@wojciech.io (Wojciech Łuszczyński)</author>
         </item>`;
     })
     .join('');
@@ -48,8 +46,8 @@ export const GET: APIRoute = async ({ site }) => {
     <link>${new URL('/insights/', origin).href}</link>
     <atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />
     <language>en-us</language>
-    <managingEditor>w.luszczynski@gmail.com (Wojciech Łuszczyński)</managingEditor>
-    <webMaster>w.luszczynski@gmail.com (Wojciech Łuszczyński)</webMaster>
+    <managingEditor>hello@wojciech.io (Wojciech Łuszczyński)</managingEditor>
+    <webMaster>hello@wojciech.io (Wojciech Łuszczyński)</webMaster>
     <ttl>1440</ttl>
     ${items}
   </channel>

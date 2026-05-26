@@ -6,10 +6,8 @@ interface Env {
 
 const COOKIE_NAME = 'academy_auth';
 
-// Literal regex (not `new RegExp(template)`) so semgrep's
-// detect-non-literal-regexp rule does not fire on a hard-coded cookie name.
-// If COOKIE_NAME changes, update the literal below too.
-// See .agent-reports/2026-05-22-security-auditor-triage-002.md for full triage.
+// Literal regex on a hard-coded cookie name. If COOKIE_NAME changes, update
+// the literal below too.
 const COOKIE_RX = /(?:^|;\s*)academy_auth=([^;]+)/;
 
 function cookieValue(request: Request): string | null {

@@ -6,14 +6,14 @@ resource "cloudflare_pages_project" "wojciech_io" {
   source {
     type = "github"
     config {
-      owner                         = "wojciechluszczynski"
-      repo_name                     = "wojciech-io"
+      owner                         = "wojciech-io"
+      repo_name                     = "wojciech.io"
       production_branch             = "main"
       pr_comments_enabled           = true
       deployments_enabled           = true
       production_deployment_enabled = true
       preview_deployment_setting    = "custom"
-      preview_branch_includes       = ["claude/**"]
+      preview_branch_includes       = ["feat/**", "fix/**", "chore/**", "codex/**"]
       preview_branch_excludes       = []
     }
   }

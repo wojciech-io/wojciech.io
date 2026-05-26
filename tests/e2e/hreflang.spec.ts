@@ -9,6 +9,15 @@ const EXPECTED_HOME_ALTERNATES = [
   ['ja-JP', 'https://wojciech.io/jp/'],
 ] as const;
 
+const EXPECTED_ABOUT_ALTERNATES = [
+  ['x-default', 'https://wojciech.io/about/'],
+  ['en', 'https://wojciech.io/about/'],
+  ['de-DE', 'https://wojciech.io/de/about/'],
+  ['da-DK', 'https://wojciech.io/dk/about/'],
+  ['nb-NO', 'https://wojciech.io/no/about/'],
+  ['ja-JP', 'https://wojciech.io/jp/about/'],
+] as const;
+
 test('canonical on EN page points to root (never /en/)', async ({ page }) => {
   await page.goto('/about/');
   const canonical = await page.locator('link[rel=canonical]').getAttribute('href');
@@ -46,5 +55,23 @@ test('localized home pages point back to the same alternate set', async ({ page 
       );
 
     expect(alternates).toEqual(EXPECTED_HOME_ALTERNATES);
+  }
+});
+
+test('localized content pages preserve the current page in hreflang alternates', async ({ page }) => {
+  for (const [, href] of EXPECTED_ABOUT_ALTERNATES) {
+    const path = new URL(href).pathname;
+    await page.goto(path);
+
+    const alternates = await page
+      .locator('link[rel=alternate][hreflang]')
+      .evaluateAll((links) =>
+        links.map((link) => [
+          link.getAttribute('hreflang'),
+          link.getAttribute('href'),
+        ]),
+      );
+
+    expect(alternates).toEqual(EXPECTED_ABOUT_ALTERNATES);
   }
 });

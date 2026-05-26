@@ -1,0 +1,125 @@
+---
+interface Props {
+  value: string;
+  label: string;
+  body?: string;
+  eyebrow?: string;
+  delta?: string;
+  tone?: 'neutral' | 'accent' | 'warning';
+}
+
+const { value, label, body, eyebrow, delta, tone = 'accent' } = Astro.props;
+---
+
+<aside class:list={['stat-callout', `stat-callout--${tone}`]}>
+  <div class="stat-callout__metric">
+    {eyebrow && <p class="stat-callout__eyebrow">{eyebrow}</p>}
+    <p class="stat-callout__value">{value}</p>
+    <p class="stat-callout__label">{label}</p>
+  </div>
+  {(body || delta) && (
+    <div class="stat-callout__copy">
+      {delta && <p class="stat-callout__delta">{delta}</p>}
+      {body && <p class="stat-callout__body">{body}</p>}
+      <slot />
+    </div>
+  )}
+</aside>
+
+<style>
+  .stat-callout {
+    display: grid;
+    gap: 1rem;
+    margin-block: 2rem;
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-2);
+  }
+
+  @media (min-width: 640px) {
+    .stat-callout {
+      grid-template-columns: minmax(9rem, 0.85fr) minmax(0, 1.4fr);
+      align-items: center;
+      padding: 1.5rem;
+    }
+  }
+
+  .stat-callout--accent {
+    border-color: color-mix(in srgb, var(--color-accent) 32%, var(--color-border));
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-accent) 8%, var(--color-surface-2)),
+      var(--color-surface-2)
+    );
+  }
+
+  .stat-callout--warning {
+    border-color: color-mix(in srgb, #f59e0b 45%, var(--color-border));
+    background: color-mix(in srgb, #f59e0b 8%, var(--color-surface-2));
+  }
+
+  .stat-callout__metric {
+    min-width: 0;
+  }
+
+  .stat-callout__eyebrow,
+  .stat-callout__delta {
+    margin: 0 0 0.45rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .stat-callout--warning .stat-callout__eyebrow,
+  .stat-callout--warning .stat-callout__delta {
+    color: #b45309;
+  }
+
+  .stat-callout__value {
+    margin: 0;
+    font-size: clamp(2.25rem, 7vw, 4.5rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: 0;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-callout__label {
+    margin: 0.625rem 0 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--color-text-muted);
+  }
+
+  .stat-callout__copy {
+    min-width: 0;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .stat-callout__copy {
+      border-top: 0;
+      border-left: 1px solid var(--color-border);
+      padding-top: 0;
+      padding-left: 1.25rem;
+    }
+  }
+
+  .stat-callout__body,
+  .stat-callout__copy :global(p) {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+  }
+
+  .stat-callout__copy :global(p + p) {
+    margin-top: 0.625rem;
+  }
+</style>

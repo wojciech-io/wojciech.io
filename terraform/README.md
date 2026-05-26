@@ -43,6 +43,12 @@ terraform plan   # preview changes
 terraform apply  # apply changes
 ```
 
+## WAF posture
+
+The baseline WAF rollout lives in [waf-rules.md](./waf-rules.md). Apply it in
+Cloudflare in log/simulate mode first, then promote to challenge/block after
+checking production traffic.
+
 ## State backup
 
 Move to Cloudflare R2 backend when the site is in production:

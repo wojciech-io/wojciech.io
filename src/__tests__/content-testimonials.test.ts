@@ -45,4 +45,11 @@ describe('testimonial content entries', () => {
   it.each(entries)('$file: tags is array', ({ data }) => {
     expect(Array.isArray(data.tags)).toBe(true);
   });
+
+  it.each(entries)('$file: avoids remote avatar dependencies and uses LinkedIn source links', ({ data }) => {
+    expect(data.avatar, 'remote profile photos should not be used').toBeUndefined();
+    if (data.href) {
+      expect(data.href).toMatch(/^https:\/\/[a-z]{2}\.linkedin\.com\/in\//);
+    }
+  });
 });
