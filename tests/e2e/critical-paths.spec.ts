@@ -77,10 +77,21 @@ test('llms.txt is served', async ({ request }) => {
   expect(r.status()).toBe(200);
 });
 
-test('rss feed is valid xml', async ({ request }) => {
+test('rss feed is valid xml with required channel elements', async ({ request }) => {
   const r = await request.get('/rss.xml');
   expect(r.status()).toBe(200);
-  expect(await r.text()).toMatch(/<rss|<feed/);
+  const body = await r.text();
+  expect(body).toMatch(/<rss|<feed/);
+  expect(body).toContain('<title>');
+  expect(body).toContain('<link>');
+  expect(body).toContain('<item>');
+});
+
+test('rss feed items include <category> tags', async ({ request }) => {
+  const r = await request.get('/rss.xml');
+  expect(r.status()).toBe(200);
+  const body = await r.text();
+  expect(body).toContain('<category>');
 });
 
 test('legacy /blog/* redirect lands on a live insights article (prod only)', async ({
