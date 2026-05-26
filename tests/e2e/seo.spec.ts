@@ -37,15 +37,14 @@ const INDEXABLE_SITEMAP_PATHS = [
   '/',
   '/about/',
   '/ai-systems/',
-  '/apps/',
   '/contact/',
   '/insights/',
   '/now/',
   '/resources/',
-  '/subscribe/',
   '/work/',
 ] as const;
-const NON_INDEXABLE_SITEMAP_PATHS = ['/404/', '/cv/', '/privacy/', '/pl/', '/it/'] as const;
+// /apps/ and /subscribe/ are in noindexSitemapPaths in astro.config.mjs — excluded by design.
+const NON_INDEXABLE_SITEMAP_PATHS = ['/404/', '/cv/', '/privacy/', '/pl/', '/it/', '/apps/', '/subscribe/'] as const;
 
 const siteUrlForPath = (path: string) => `https://wojciech.io${path}`;
 const sameOriginPath = (absoluteUrl: string) => new URL(absoluteUrl).pathname;
