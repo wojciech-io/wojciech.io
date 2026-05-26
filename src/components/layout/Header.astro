@@ -1,5 +1,6 @@
 ---
 import Nav, { links } from './Nav.astro';
+import SearchModal from '../ui/SearchModal.astro';
 import ThemeToggle from '../ui/ThemeToggle.astro';
 ---
 
@@ -20,6 +21,17 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
     <div class="hidden lg:flex items-center gap-8">
       <Nav />
       <div class="flex items-center gap-2">
+        <button
+          type="button"
+          onclick="openSearch()"
+          class="flex items-center gap-1.5 text-sm text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
+          aria-label="Search (Cmd+K)"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <kbd class="hidden rounded border border-[var(--color-border)] px-1 py-0.5 font-mono text-[10px] text-[var(--color-text-dim)] xl:inline">⌘K</kbd>
+        </button>
         <ThemeToggle />
         <!-- Language: static EN badge — multilingual coming later -->
         <span
@@ -55,6 +67,7 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
     </button>
 
   </div>
+  <SearchModal />
 </header>
 
 <!-- Mobile full-screen overlay -->
@@ -104,6 +117,17 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
   <!-- Bottom bar -->
   <div class="px-8 pb-10 pt-6 border-t border-[var(--color-border)] shrink-0 space-y-4">
     <div class="flex items-center gap-3">
+      <button
+        type="button"
+        onclick="closeMobileNav(); openSearch();"
+        class="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border)] px-3 py-2.5 text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
+        aria-label="Search"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        Search
+      </button>
       <ThemeToggle class="flex-1" />
       <span
         class="lang-toggle-btn opacity-60 cursor-default select-none"

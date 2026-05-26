@@ -1,0 +1,104 @@
+---
+---
+
+<div
+  id="search-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Search"
+  class="fixed inset-0 z-[200] hidden items-start justify-center px-4 pt-[15vh]"
+>
+  <div id="search-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+  <div class="relative w-full max-w-2xl overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] shadow-2xl">
+    <p
+      id="search-dev-note"
+      class="hidden border-b border-[var(--color-border)] px-5 py-3 text-sm text-[var(--color-text-muted)]"
+    >
+      Search available after build. Run npm run build to index.
+    </p>
+    <div id="pagefind-ui-root"></div>
+  </div>
+</div>
+
+<script>
+  let pagefindLoaded = false;
+
+  function ensurePagefindStyles() {
+    if (document.querySelector('link[href="/pagefind/pagefind-ui.css"]')) return;
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/pagefind/pagefind-ui.css';
+    document.head.append(link);
+  }
+
+  function showDevNotice() {
+    if (!window.location.hostname.includes('localhost')) return;
+    document.getElementById('search-dev-note')?.classList.remove('hidden');
+  }
+
+  async function loadPagefind() {
+    if (pagefindLoaded) return;
+    pagefindLoaded = true;
+    ensurePagefindStyles();
+
+    try {
+      const pagefindModule = '/pagefind/' + 'pagefind-ui.js';
+      await import(pagefindModule);
+      const { PagefindUI } = window as Window & {
+        PagefindUI?: new (options: Record<string, unknown>) => unknown;
+      };
+      if (!PagefindUI) throw new Error('PagefindUI unavailable');
+      new PagefindUI({
+        element: '#pagefind-ui-root',
+        showSubResults: true,
+        resetStyles: false,
+      });
+    } catch {
+      pagefindLoaded = false;
+      showDevNotice();
+    }
+  }
+
+  function openSearch() {
+    const modal = document.getElementById('search-modal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    void loadPagefind().then(() => {
+      const input = modal.querySelector<HTMLInputElement>('input[type="text"]');
+      input?.focus();
+    });
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSearch() {
+    const modal = document.getElementById('search-modal');
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('search-backdrop')?.addEventListener('click', closeSearch);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeSearch();
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      const modal = document.getElementById('search-modal');
+      if (!modal) return;
+      modal.classList.contains('hidden') ? openSearch() : closeSearch();
+    }
+  });
+
+  (window as Window & { openSearch?: () => void }).openSearch = openSearch;
+
+  document.addEventListener('astro:page-load', () => {
+    document.getElementById('search-backdrop')?.addEventListener('click', closeSearch);
+    (window as Window & { openSearch?: () => void }).openSearch = openSearch;
+  });
+</script>
