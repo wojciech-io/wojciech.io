@@ -1,0 +1,72 @@
+---
+/**
+ * ResultCard — hero result highlight for case study moments.
+ * Shows a big outcome metric with context, client tag, and timeframe.
+ *
+ * Usage:
+ *   <ResultCard
+ *     metric="3.2×"
+ *     label="pipeline lift"
+ *     context="Outbound motion rebuilt on AI-enriched sequences. CRM connected to scoring model."
+ *     timeframe="6 weeks"
+ *     tag="GTM architecture"
+ *   />
+ */
+interface Props {
+  metric: string;
+  label: string;
+  context?: string;
+  timeframe?: string;
+  tag?: string;
+  /** Stack two ResultCards side by side using a parent grid — this is standalone by default */
+  compact?: boolean;
+}
+
+const { metric, label, context, timeframe, tag, compact = false } = Astro.props;
+---
+
+<div class:list={[
+  'relative overflow-hidden rounded-[var(--radius-card)] border border-[color-mix(in_srgb,var(--color-accent)_30%,transparent)] my-6',
+  'bg-[color-mix(in_srgb,var(--color-accent)_5%,var(--color-surface-2))]',
+  compact ? 'p-5' : 'p-6 sm:p-8',
+]}>
+  <!-- Top accent line -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/60 to-transparent" aria-hidden="true" />
+
+  <!-- Tag row -->
+  {(tag || timeframe) && (
+    <div class="flex items-center gap-2 mb-4 flex-wrap">
+      {tag && (
+        <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--color-accent-hi)] bg-[color-mix(in_srgb,var(--color-accent)_12%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_25%,transparent)] rounded px-2 py-0.5">
+          {tag}
+        </span>
+      )}
+      {timeframe && (
+        <span class="text-[10px] text-[var(--color-text-dim)] font-medium uppercase tracking-wider">
+          {timeframe}
+        </span>
+      )}
+    </div>
+  )}
+
+  <!-- Metric -->
+  <div class="flex items-end gap-3 mb-3">
+    <p class:list={[
+      'font-bold leading-none tracking-tight tabular-nums text-[var(--color-accent)]',
+      compact ? 'text-5xl' : 'text-6xl sm:text-7xl',
+    ]}>
+      {metric}
+    </p>
+    <p class="text-base sm:text-lg font-semibold text-[var(--color-text)] mb-1.5 leading-tight">
+      {label}
+    </p>
+  </div>
+
+  {context && (
+    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-prose">
+      {context}
+    </p>
+  )}
+
+  <slot />
+</div>

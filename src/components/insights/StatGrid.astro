@@ -1,86 +1,111 @@
 ---
-// MDX component: 2x2 or 4-column grid of headline stats.
-// Usage:
-//   <StatGrid stats={[
-//     { value: "9 970", label: "Sessions · 7d", delta: "+8.2%", good: true },
-//     { value: "168",   label: "Signups · 7d", delta: "+14.4%", good: true },
-//     ...
-//   ]} />
-
 interface Stat {
   value: string;
   label: string;
   delta?: string;
-  good?: boolean;     // colors delta green when true
+  good?: boolean;
   sub?: string;
 }
 interface Props {
   stats: Stat[];
   columns?: 2 | 3 | 4;
+  caption?: string;
 }
-const { stats, columns = 4 } = Astro.props;
+const { stats, columns = 4, caption } = Astro.props;
+
+const colClass = {
+  2: 'sg-cols-2',
+  3: 'sg-cols-3',
+  4: 'sg-cols-4',
+}[columns];
 ---
 
-<div class={`sg-grid sg-cols-${columns}`}>
-  {stats.map(({ value, label, delta, good, sub }) => (
-    <div class="sg-card">
-      <p class="sg-label">{label}</p>
-      <div class="sg-value">{value}</div>
-      {delta && <p class={`sg-delta${good ? ' sg-good' : ''}${good === false ? ' sg-bad' : ''}`}>{delta}</p>}
-      {sub && <p class="sg-sub">{sub}</p>}
-    </div>
-  ))}
-</div>
+<figure class="sg-wrap">
+  <div class:list={['sg-grid', colClass]}>
+    {stats.map(({ value, label, delta, good, sub }) => (
+      <div class="sg-card">
+        <p class="sg-label">{label}</p>
+        <p class="sg-value">{value}</p>
+        {delta && (
+          <p class:list={['sg-delta', good === true && 'sg-good', good === false && 'sg-bad']}>
+            {delta}
+          </p>
+        )}
+        {sub && <p class="sg-sub">{sub}</p>}
+      </div>
+    ))}
+  </div>
+  {caption && <figcaption class="sg-caption">{caption}</figcaption>}
+</figure>
 
 <style>
+  .sg-wrap { margin: 2rem 0; }
+
   .sg-grid {
     display: grid;
     gap: 0.75rem;
-    margin: 2rem 0;
   }
   .sg-cols-2 { grid-template-columns: repeat(2, 1fr); }
   .sg-cols-3 { grid-template-columns: repeat(3, 1fr); }
   .sg-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
   @media (max-width: 720px) {
     .sg-cols-3, .sg-cols-4 { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 420px) {
     .sg-grid { grid-template-columns: 1fr; }
   }
+
   .sg-card {
-    padding: 1.25rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+    padding: 1.25rem 1.375rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
     background: var(--color-surface);
+    transition: border-color 0.15s;
   }
+  .sg-card:hover { border-color: var(--color-border-2); }
+
   .sg-label {
-    font-size: 0.7rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.6875rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     color: var(--color-text-dim);
-    margin: 0 0 0.5rem;
   }
+
   .sg-value {
-    font-size: 1.85rem;
+    margin: 0;
+    font-size: 2rem;
     font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    line-height: 1;
+    letter-spacing: -0.025em;
     color: var(--color-text);
     font-variant-numeric: tabular-nums;
   }
+
   .sg-delta {
-    margin: 0.35rem 0 0;
-    font-size: 0.8rem;
+    margin: 0.375rem 0 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
     color: var(--color-text-dim);
     font-variant-numeric: tabular-nums;
   }
-  .sg-delta.sg-good { color: #18a058; }
-  .sg-delta.sg-bad  { color: #d03050; }
-  [data-theme="dark"] .sg-delta.sg-good { color: #4ade80; }
-  [data-theme="dark"] .sg-delta.sg-bad  { color: #f87171; }
+  .sg-delta.sg-good { color: var(--color-accent); }
+  .sg-delta.sg-bad  { color: #f87171; }
+
   .sg-sub {
-    margin: 0.5rem 0 0;
+    margin: 0.375rem 0 0;
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+  }
+
+  .sg-caption {
+    display: block;
+    margin-top: 0.75rem;
+    text-align: center;
     font-size: 0.75rem;
     color: var(--color-text-dim);
   }

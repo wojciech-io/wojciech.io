@@ -1,0 +1,90 @@
+---
+/**
+ * CaseStudyBlock — structured proof block for case study sections.
+ * Shows: challenge → system built → result.
+ *
+ * Usage:
+ *   <CaseStudyBlock
+ *     tag="GTM architecture"
+ *     challenge="Pipeline was generating volume but losing deals at qualification."
+ *     system="AI-enriched ICP scoring, CRM routing rules, outbound sequences rebuilt."
+ *     result="3× pipeline lift in 6 weeks. BDR time on admin cut by 60%."
+ *   />
+ */
+interface Props {
+  tag?: string;
+  client?: string;
+  challenge: string;
+  system: string;
+  result: string;
+  timeframe?: string;
+}
+
+const { tag, client, challenge, system, result, timeframe } = Astro.props;
+---
+
+<div class="relative my-8 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-hidden not-prose">
+  <!-- Top accent -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border-2)] to-transparent" aria-hidden="true" />
+
+  <!-- Header -->
+  {(tag || client || timeframe) && (
+    <div class="flex items-center gap-2 px-5 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface)] flex-wrap">
+      {tag && (
+        <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--color-accent-hi)] bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_25%,transparent)] rounded px-2 py-0.5">
+          {tag}
+        </span>
+      )}
+      {client && (
+        <span class="text-[10px] font-medium uppercase tracking-wider text-[var(--color-text-dim)]">{client}</span>
+      )}
+      {timeframe && (
+        <span class="ml-auto text-[10px] text-[var(--color-text-dim)] font-medium uppercase tracking-wider">{timeframe}</span>
+      )}
+    </div>
+  )}
+
+  <!-- Three-row body -->
+  <div class="divide-y divide-[var(--color-border)]">
+
+    <div class="flex gap-4 px-5 py-4">
+      <span class="flex-shrink-0 w-6 h-6 rounded border border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-center mt-0.5">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2v12M2 8h12" stroke="var(--color-text-dim)" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-dim)] mb-1">Challenge</p>
+        <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{challenge}</p>
+      </div>
+    </div>
+
+    <div class="flex gap-4 px-5 py-4">
+      <span class="flex-shrink-0 w-6 h-6 rounded border border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-center mt-0.5">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="5" height="5" rx="1" stroke="var(--color-text-dim)" stroke-width="1.5"/>
+          <rect x="9" y="2" width="5" height="5" rx="1" stroke="var(--color-text-dim)" stroke-width="1.5"/>
+          <rect x="2" y="9" width="5" height="5" rx="1" stroke="var(--color-text-dim)" stroke-width="1.5"/>
+          <path d="M9 11.5h5M11.5 9v5" stroke="var(--color-accent)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-dim)] mb-1">System built</p>
+        <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{system}</p>
+      </div>
+    </div>
+
+    <div class="flex gap-4 px-5 py-4 bg-[color-mix(in_srgb,var(--color-accent)_4%,transparent)]">
+      <span class="flex-shrink-0 w-6 h-6 rounded border border-[color-mix(in_srgb,var(--color-accent)_30%,transparent)] bg-[color-mix(in_srgb,var(--color-accent)_12%,transparent)] flex items-center justify-center mt-0.5">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 9l3 3 7-7" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-widest text-[var(--color-accent-hi)] mb-1">Result</p>
+        <p class="text-sm font-medium text-[var(--color-text)] leading-relaxed">{result}</p>
+      </div>
+    </div>
+
+  </div>
+</div>
