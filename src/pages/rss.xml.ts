@@ -1,17 +1,6 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
-
-// Canonical XML 1.0 entity escape (5 predefined entities: & < > " ').
-// Used on internal MDX content validated by src/content.config.ts. Output
-// context is XML element/attribute text, not HTML.
-const escapeXml = (value: string) =>
-  // nosemgrep: javascript.audit.detect-replaceall-sanitization.detect-replaceall-sanitization
-  value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&apos;');
+import { escapeXml } from '../utils/xml';
 
 export const GET: APIRoute = async ({ site }) => {
   const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort(
@@ -24,9 +13,10 @@ export const GET: APIRoute = async ({ site }) => {
     .map((post) => {
       const slug = post.id.replace(/\.mdx?$/, '');
       const url = new URL(`/insights/${slug}/`, origin).href;
-      const category = post.data.category
-        ? `\n          <category>${escapeXml(post.data.category)}</category>`
-        : '';
+      const categories = [
+        ...(post.data.category ? [post.data.category] : []),
+        ...post.data.tags,
+      ].filter((v, i, a) => a.indexOf(v) === i);
 
       return `
         <item>
@@ -36,7 +26,7 @@ export const GET: APIRoute = async ({ site }) => {
           <guid isPermaLink="true">${url}</guid>
           <pubDate>${post.data.publishedAt.toUTCString()}</pubDate>
           <author>hello@wojciech.io (Wojciech Łuszczyński)</author>
-          ${category}
+          ${categories.map((c) => `<category>${escapeXml(c)}</category>`).join('\n          ')}
         </item>`;
     })
     .join('');
