@@ -21,43 +21,15 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
       <Nav />
       <div class="flex items-center gap-2">
         <ThemeToggle />
-        <!-- Language selector -->
-        <div class="relative" id="lang-selector">
-          <button
-            type="button"
-            class="lang-toggle-btn"
-            aria-haspopup="listbox"
-            aria-expanded="false"
-            aria-label="Language: English"
-            id="lang-toggle-desktop"
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            <span>EN</span>
-            <svg class="lang-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3.5l3 3 3-3"/></svg>
-          </button>
-          <div
-            id="lang-dropdown-desktop"
-            role="listbox"
-            aria-label="Select language"
-            class="lang-dropdown hidden absolute right-0 top-full mt-1.5 w-36 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-lg py-1 z-50"
-          >
-            <div role="option" aria-selected="true" class="lang-opt lang-opt--active">
-              <span>English</span><span class="lang-opt-code">EN</span>
-            </div>
-            <div role="option" aria-selected="false" aria-disabled="true" class="lang-opt lang-opt--soon">
-              <span>Deutsch</span><span class="lang-opt-soon-badge">soon</span>
-            </div>
-            <div role="option" aria-selected="false" aria-disabled="true" class="lang-opt lang-opt--soon">
-              <span>Dansk</span><span class="lang-opt-soon-badge">soon</span>
-            </div>
-            <div role="option" aria-selected="false" aria-disabled="true" class="lang-opt lang-opt--soon">
-              <span>Norsk</span><span class="lang-opt-soon-badge">soon</span>
-            </div>
-            <div role="option" aria-selected="false" aria-disabled="true" class="lang-opt lang-opt--soon">
-              <span>日本語</span><span class="lang-opt-soon-badge">soon</span>
-            </div>
-          </div>
-        </div>
+        <!-- Language: static EN badge — multilingual coming later -->
+        <span
+          class="lang-toggle-btn opacity-60 cursor-default select-none"
+          aria-label="Language: English"
+          title="More languages coming soon"
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>EN</span>
+        </span>
       </div>
       <a
         href="/contact/#book-call"
@@ -133,15 +105,14 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
   <div class="px-8 pb-10 pt-6 border-t border-[var(--color-border)] shrink-0 space-y-4">
     <div class="flex items-center gap-3">
       <ThemeToggle class="flex-1" />
-      <button
-        type="button"
-        class="lang-toggle-btn"
-        aria-label="Language: English (more coming soon)"
-        id="lang-toggle-mobile"
+      <span
+        class="lang-toggle-btn opacity-60 cursor-default select-none"
+        aria-label="Language: English"
+        title="More languages coming soon"
       >
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         <span>EN</span>
-      </button>
+      </span>
     </div>
     <a
       href="/contact/#book-call"
@@ -186,21 +157,6 @@ import ThemeToggle from '../ui/ThemeToggle.astro';
 
   // Make closeMobileNav available globally for the wordmark link
   (window as any).closeMobileNav = closeMobileNav;
-
-  // Language dropdown (desktop)
-  const langBtn = document.getElementById('lang-toggle-desktop');
-  const langDrop = document.getElementById('lang-dropdown-desktop');
-  if (langBtn && langDrop) {
-    langBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const open = langDrop.classList.toggle('hidden');
-      langBtn.setAttribute('aria-expanded', open ? 'false' : 'true');
-    });
-    document.addEventListener('click', () => {
-      langDrop.classList.add('hidden');
-      langBtn.setAttribute('aria-expanded', 'false');
-    });
-  }
 
   openBtn.addEventListener('click', openMobileNav);
   closeBtn.addEventListener('click', closeMobileNav);
