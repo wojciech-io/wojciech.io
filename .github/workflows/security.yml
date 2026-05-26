@@ -16,7 +16,7 @@ jobs:
     name: Secret scan (gitleaks)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Install gitleaks
@@ -30,10 +30,10 @@ jobs:
     name: Dependency audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "npm"
       - run: npm ci
       - name: npm audit (fail on high/critical)
@@ -45,7 +45,7 @@ jobs:
     container:
       image: returntocorp/semgrep
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - run: semgrep ci --config auto
         env:
           SEMGREP_RULES: "p/default p/javascript p/typescript"
@@ -80,7 +80,7 @@ jobs:
                 echo "::error::$label missing required headers:$missing"
                 FAILED=1
               else
-                echo "::warning::$label missing headers:$missing (non-blocking — known gap, see .agent-reports/)"
+                echo "::warning::$label missing headers:$missing (non-blocking security header gap)"
               fi
             else
               echo "$label ✓ all required headers present"

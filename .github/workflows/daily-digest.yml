@@ -13,17 +13,17 @@ permissions:
   pull-requests: read
 
 env:
-  DIGEST_TO: w.luszczynski@gmail.com
+  DIGEST_TO: ${{ secrets.DIGEST_TO != '' && secrets.DIGEST_TO || 'hello@wojciech.io' }}
   # Resend "from" must be on a domain verified in Resend. Override via
   # secrets.DIGEST_FROM once the domain is verified; default assumes wojciech.io.
-  DIGEST_FROM: ${{ secrets.DIGEST_FROM != '' && secrets.DIGEST_FROM || 'wojciech.io agents <agents@wojciech.io>' }}
+  DIGEST_FROM: ${{ secrets.DIGEST_FROM != '' && secrets.DIGEST_FROM || 'wojciech.io ops <ops@wojciech.io>' }}
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
 
 jobs:
   digest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0  # need full history for git tag + log in release-status section
 
@@ -73,12 +73,8 @@ jobs:
               --jq '.[] | "- #\(.number) \(.title) — \(.url)"' \
               | grep . || echo "_(none — green)_"; }
             echo ""
-            echo "### Agent health"
-            for s in .agent-state/*/state.md; do
-              echo "- $s:"; grep -E 'Last run|Health' "$s" | sed 's/^/    /'
-            done
-            echo ""
-            echo "→ dev.wojciech.io (Sprint 1)"
+            echo "### Operations"
+            echo "- dev.wojciech.io: static operations dashboard, gated by Cloudflare Access"
           } > digest.md
           cat digest.md
 

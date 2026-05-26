@@ -1,0 +1,129 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import {
+  htmlLangForLocale,
+  localizedPageAlternates,
+  localizedPages,
+  ogLocaleForLocale,
+  type LocalizedPageCopy,
+} from '../../data/localizedPages';
+import { localizedHome } from '../../data/locales';
+import { SITE } from '../../data/site';
+
+export function getStaticPaths() {
+  return localizedPages.map((copy) => ({
+    params: { locale: copy.locale, page: copy.slug },
+    props: { copy },
+  }));
+}
+
+const { copy } = Astro.props as { copy: LocalizedPageCopy };
+const locale = localizedHome[copy.locale];
+const canonical = `/${copy.locale}/${copy.slug}/`;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': copy.slug === 'contact' ? 'ContactPage' : 'WebPage',
+  name: copy.title,
+  description: copy.description,
+  inLanguage: htmlLangForLocale(copy.locale),
+  url: `${SITE.url}${canonical}`,
+  isPartOf: { '@type': 'WebSite', name: 'wojciech.io', url: SITE.url + '/' },
+};
+---
+
+<Layout
+  htmlLang={htmlLangForLocale(copy.locale)}
+  ogLocale={ogLocaleForLocale(copy.locale)}
+  title={copy.title}
+  description={copy.description}
+  canonical={canonical}
+  alternates={localizedPageAlternates(copy.slug)}
+  schema={schema}
+>
+  <section class="relative overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-bg)]">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px] opacity-70" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
+      <div class="max-w-3xl">
+        <p class="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-accent)]">
+          <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
+          {copy.eyebrow}
+        </p>
+        <h1 class="reveal-up mb-6 text-[length:var(--text-h1)] font-semibold leading-tight tracking-tight text-[var(--color-text)]" data-reveal-index="0">
+          {copy.h1}
+        </h1>
+        <p class="reveal-up max-w-2xl text-[length:var(--text-body-lg)] leading-relaxed text-[var(--color-text-muted)]" data-reveal-index="1">
+          {copy.lead}
+        </p>
+        <div class="reveal-up mt-8 flex flex-wrap gap-3" data-reveal-index="2">
+          <a
+            href={copy.primaryHref}
+            class="btn-press inline-flex rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 py-2.5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
+            data-mp-cta={copy.primaryCta}
+            data-mp-location={`localized_${copy.locale}_${copy.slug}_hero`}
+          >
+            {copy.primaryCta}
+          </a>
+          <a
+            href={copy.secondaryHref}
+            class="btn-press inline-flex rounded-[var(--radius-btn)] border border-[var(--color-border-2)] bg-[var(--color-bg)] px-5 py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)]"
+            data-mp-cta={copy.secondaryCta}
+            data-mp-location={`localized_${copy.locale}_${copy.slug}_hero_secondary`}
+          >
+            {copy.secondaryCta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
+    <div class="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-[var(--color-border)] px-6 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+      {copy.stats.map((stat) => (
+        <div class="reveal-up py-7 sm:px-6" data-reveal-index="0">
+          <p class="mb-1 text-3xl font-semibold text-[var(--color-text)]">{stat.value}</p>
+          <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{stat.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="bg-[var(--color-bg)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid gap-5 lg:grid-cols-3">
+        {copy.sections.map((section, index) => (
+          <article class="reveal-up rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6" data-reveal-index={index}>
+            <p class="mb-4 font-mono text-xs text-[var(--color-text-dim)]">{String(index + 1).padStart(2, '0')}</p>
+            <h2 class="mb-3 text-xl font-semibold leading-snug text-[var(--color-text)]">{section.title}</h2>
+            <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{section.body}</p>
+            {section.items && (
+              <ul class="mt-5 space-y-2 text-sm text-[var(--color-text-muted)]">
+                {section.items.map((item) => (
+                  <li class="flex gap-2">
+                    <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </article>
+        ))}
+      </div>
+      <div class="mt-10 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-accent)]">{locale.label}</p>
+          <p class="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--color-text-muted)]">
+            {copy.description}
+          </p>
+        </div>
+        <a
+          href={copy.primaryHref}
+          class="btn-press mt-5 inline-flex shrink-0 rounded-[var(--radius-btn)] bg-[var(--color-text)] px-5 py-2.5 text-sm font-semibold text-[var(--color-bg)] transition-colors hover:opacity-90 sm:mt-0"
+          data-mp-cta={copy.primaryCta}
+          data-mp-location={`localized_${copy.locale}_${copy.slug}_footer`}
+        >
+          {copy.primaryCta}
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

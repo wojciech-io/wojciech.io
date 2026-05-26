@@ -11,9 +11,13 @@ BLOCKED_PATHS=(
   ".agent-state/"
   ".claude/"
   ".codex-tasks/"
+  "archive/insights-legacy/"
+  "templates/"
+  "prompts/"
+  "HANDOFF.md"
 )
 
-STAGED=$(git diff --cached --name-only 2>/dev/null || true)
+STAGED=$(git diff --cached --name-status 2>/dev/null | awk '$1 ~ /^R/ { print $3; next } $1 != "D" { print $2 }' || true)
 
 if [ -z "$STAGED" ]; then
   exit 0

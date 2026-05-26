@@ -1,6 +1,6 @@
 # Tests: Sprint 1 baseline
 
-Playwright-based end-to-end + accessibility. Owned by `test-engineer` agent.
+Playwright-based end-to-end + accessibility tests for the public site and gated subdomains.
 
 ## Quick commands
 

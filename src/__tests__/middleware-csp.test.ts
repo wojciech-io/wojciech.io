@@ -14,4 +14,10 @@ describe('public middleware CSP', () => {
   it('allows external media used by public pages', () => {
     expect(csp).toMatch(/img-src[^;]*https:\/\/i\.ytimg\.com/);
   });
+
+  it('sets cross-origin isolation headers without breaking third-party embeds', () => {
+    expect(PUBLIC_SECURITY_HEADERS['cross-origin-opener-policy']).toBe('same-origin-allow-popups');
+    expect(PUBLIC_SECURITY_HEADERS['cross-origin-resource-policy']).toBe('same-origin');
+    expect(PUBLIC_SECURITY_HEADERS['cross-origin-embedder-policy']).toBe('unsafe-none');
+  });
 });

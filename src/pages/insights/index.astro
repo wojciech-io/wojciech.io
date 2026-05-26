@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { SITE } from '../../data/site';
+import { localizedPageAlternates } from '../../data/localizedPages';
 
 const allPosts = (await getCollection('insights', ({ data }) => !data.draft)).sort(
   (a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
@@ -50,6 +51,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
 <Layout
   title="AI & GTM Insights · Operator Notes"
   description="Field notes on AI systems, GTM architecture, and revenue system design. Practical patterns from an operator who builds and runs these systems in production."
+  alternates={localizedPageAlternates('insights')}
   schema={breadcrumbSchema}
 >
   <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">

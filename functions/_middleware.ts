@@ -47,6 +47,9 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   'x-content-type-options': 'nosniff',
   'x-frame-options': 'SAMEORIGIN',
   'referrer-policy': 'strict-origin-when-cross-origin',
+  'cross-origin-opener-policy': 'same-origin-allow-popups',
+  'cross-origin-resource-policy': 'same-origin',
+  'cross-origin-embedder-policy': 'unsafe-none',
   'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()',
   // CSP: keep in sync with public/_headers. Middleware wins over Pages _headers
   // whenever Pages Functions run on the public site.
@@ -56,7 +59,7 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com",
     "style-src 'self' 'unsafe-inline' https://app.cal.com",
-    "img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org https://unavatar.io https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com",
+    "img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com",
     "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://cal.com https://app.cal.com",
     "font-src 'self' https://app.cal.com",
     "frame-src https://gh.wojciech.io https://cal.com https://app.cal.com",
@@ -113,6 +116,9 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
       'x-frame-options': 'DENY',
       'x-content-type-options': 'nosniff',
       'referrer-policy': 'strict-origin-when-cross-origin',
+      'cross-origin-opener-policy': 'same-origin',
+      'cross-origin-resource-policy': 'same-origin',
+      'cross-origin-embedder-policy': 'unsafe-none',
       'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
     },
   });

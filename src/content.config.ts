@@ -42,10 +42,8 @@ const work = defineCollection({
   }),
 });
 
-// Sprint 2: Testimonials collection (B4 decision).
-// Featured subset criteria (locked in docs/03-content-decisions.md):
-//   primary: tightest claims (specific numbers, not generic praise) + voice fit
-//   tiebreaker: recognizable names
+// Testimonials collection.
+// Featured subset criteria: tight claims, voice fit, recognizable public source.
 // Use `featured: true` for homepage subset (3-5 entries), `draft: true` while curating.
 const testimonials = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/testimonials' }),
@@ -62,7 +60,7 @@ const testimonials = defineCollection({
     featured: z.boolean().default(false),            // surface on homepage
     order: z.number().default(99),                   // sort within featured subset
     date: z.coerce.date().optional(),                // when given
-    voiceFit: z.enum(['high', 'medium', 'low']).default('medium'), // tone alignment with docs/10
+    voiceFit: z.enum(['high', 'medium', 'low']).default('medium'), // tone alignment
     claimTightness: z.enum(['specific-numbers', 'specific-outcome', 'generic']).default('generic'),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(true),                // default true: explicit opt-in to surface

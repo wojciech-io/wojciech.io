@@ -11,6 +11,8 @@ export function getStaticPaths() {
 }
 
 const { copy } = Astro.props as { copy: LocalizedHomeCopy };
+const workHref = `/${copy.path}/work/`;
+const contactHref = `/${copy.path}/contact/`;
 ---
 
 <Layout
@@ -82,13 +84,13 @@ const { copy } = Astro.props as { copy: LocalizedHomeCopy };
 
         <div class="reveal-up flex flex-wrap gap-3 mb-5" data-reveal-index="2">
           <a
-            href="/work/"
+            href={workHref}
             class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] text-sm sm:text-base font-semibold px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
           >
             {copy.primaryCta}
           </a>
           <a
-            href="/contact/#book-call"
+            href={contactHref}
             class="btn-press inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-bg)] text-[var(--color-text)] text-sm sm:text-base font-medium px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors"
             data-mp-cta="Book a call"
             data-mp-location={`localized_${copy.path}_hero`}
@@ -145,8 +147,8 @@ const { copy } = Astro.props as { copy: LocalizedHomeCopy };
     heading={copy.finalHeading}
     subtext={copy.finalSubtext}
     cta={copy.secondaryCta}
-    ctaHref="/contact/#book-call"
+    ctaHref={contactHref}
     ctaSecondary={copy.primaryCta}
-    ctaSecondaryHref="/work/"
+    ctaSecondaryHref={workHref}
   />
 </Layout>

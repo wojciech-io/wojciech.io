@@ -13,7 +13,7 @@ jobs:
     name: Block internal tooling dirs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -24,8 +24,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          BLOCKED="docs/ .agent-reports/ .agent-state/ .claude/ .codex-tasks/"
-          CHANGED=$(git diff --name-only "$BASE" "$HEAD")
+          BLOCKED="docs/ .agent-reports/ .agent-state/ .claude/ .codex-tasks/ archive/insights-legacy/ templates/ prompts/ HANDOFF.md"
+          CHANGED=$(git diff --name-status "$BASE" "$HEAD" | awk '$1 ~ /^R/ { print $3; next } $1 != "D" { print $2 }')
           FOUND=""
 
           for path in $BLOCKED; do
@@ -37,8 +37,8 @@ jobs:
           if [ -n "$FOUND" ]; then
             echo "::error::Blocked internal dirs in this PR:${FOUND}"
             echo ""
-            echo "These directories (sprint plans, agent state, security reports)"
-            echo "are internal tooling and must never enter git history."
+            echo "These paths contain internal planning, generated reports, or unpublished drafts"
+            echo "and must never enter the public repository."
             echo "Remove them and amend the commit."
             exit 1
           fi

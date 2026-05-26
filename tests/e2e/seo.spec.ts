@@ -2,8 +2,7 @@ import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 
 /**
- * SEO foundations review: enforces acceptance criteria from
- * `.codex-tasks/2026-05-22-seo-foundations-review.md`.
+ * SEO foundations review.
  *
  * Hreflang is covered in hreflang.spec.ts.
  * Internal-link integrity is covered in links.spec.ts.
@@ -42,9 +41,33 @@ const INDEXABLE_SITEMAP_PATHS = [
   '/now/',
   '/resources/',
   '/work/',
+  '/de/',
+  '/de/about/',
+  '/de/work/',
+  '/de/ai-systems/',
+  '/de/contact/',
+  '/de/insights/',
+  '/dk/',
+  '/dk/about/',
+  '/dk/work/',
+  '/dk/ai-systems/',
+  '/dk/contact/',
+  '/dk/insights/',
+  '/no/',
+  '/no/about/',
+  '/no/work/',
+  '/no/ai-systems/',
+  '/no/contact/',
+  '/no/insights/',
+  '/jp/',
+  '/jp/about/',
+  '/jp/work/',
+  '/jp/ai-systems/',
+  '/jp/contact/',
+  '/jp/insights/',
 ] as const;
 // /apps/ and /subscribe/ are in noindexSitemapPaths in astro.config.mjs — excluded by design.
-const NON_INDEXABLE_SITEMAP_PATHS = ['/404/', '/cv/', '/privacy/', '/pl/', '/it/', '/apps/', '/subscribe/'] as const;
+const NON_INDEXABLE_SITEMAP_PATHS = ['/404/', '/cv/', '/privacy/', '/en/', '/pl/', '/it/', '/apps/', '/subscribe/'] as const;
 
 const siteUrlForPath = (path: string) => `https://wojciech.io${path}`;
 const sameOriginPath = (absoluteUrl: string) => new URL(absoluteUrl).pathname;
