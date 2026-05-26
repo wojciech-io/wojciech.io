@@ -10,6 +10,8 @@
 
 import { test, expect } from '@playwright/test';
 
+test.describe.configure({ mode: 'serial' });
+
 test.beforeEach(({}, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium-desktop', 'Visual baselines are captured in Chromium only.');
   // Only darwin baselines are committed. Skip on Linux CI until linux baselines are generated.
@@ -28,6 +30,7 @@ const PAGES = [
   { name: 'about', path: '/about' },
   { name: 'work', path: '/work' },
   { name: 'ai-systems', path: '/ai-systems' },
+  { name: 'contact', path: '/contact' },
   { name: 'insights', path: '/insights' },
 ];
 
@@ -37,6 +40,7 @@ for (const viewport of VIEWPORTS) {
       await pwPage.setViewportSize({ width: viewport.width, height: viewport.height });
       await pwPage.goto(page.path);
       await pwPage.waitForLoadState('networkidle');
+      await pwPage.waitForTimeout(500);
 
       await expect(pwPage).toHaveScreenshot(`${page.name}-${viewport.name}.png`, {
         fullPage: true,
