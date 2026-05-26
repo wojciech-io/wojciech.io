@@ -28,7 +28,8 @@ const PAGES = [
 for (const path of PAGES) {
   test(`a11y blocking scan: ${path}`, async ({ page }, testInfo) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto(path);
+    await page.route(/https:\/\/.*cal\.com\/.*/, (route) => route.abort());
+    await page.goto(path, { waitUntil: 'domcontentloaded' });
     const results = await new AxeBuilder({ page })
       // Cal.com renders a third-party booking iframe with its own theme and
       // contrast rules. Keep the host page blocking, but do not fail our CI
