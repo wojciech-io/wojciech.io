@@ -82,17 +82,24 @@ elif [[ "${1:-}" == "--diff" ]] && [[ -n "${2:-}" ]] && [[ -n "${3:-}" ]]; then
   FILES=$(git diff --name-only "${BASE}" "${HEAD}" 2>/dev/null || true)
 else
   MODE="full"
-  # Build find command excluding build artifacts and tooling dirs
-  FILES=$(find . -type f \
-    -not -path '*/.git/*' \
-    -not -path '*/node_modules/*' \
-    -not -path '*/dist/*' \
-    -not -path '*/.wrangler/*' \
-    -not -path '*/.astro/*' \
-    -not -path '*/.claude/*' \
-    -not -path '*/scripts/*' \
-    \( -name '*.mdx' -o -name '*.md' -o -name '*.astro' -o -name '*.ts' -o -name '*.tsx' -o -name '*.json' \) \
-    2>/dev/null | sed 's|^\./||')
+  # Use -prune so directory exclusions work on both GNU and BSD find.
+  # On macOS, BSD find's -path treats '*' as not matching '/', so the common
+  # '-not -path "*/dir/*"' idiom silently fails for nested paths.
+  FILES=$(find . \
+    \( \
+      -name '.git' -o \
+      -name 'node_modules' -o \
+      -name 'dist' -o \
+      -name '.wrangler' -o \
+      -name '.astro' -o \
+      -name '.claude' -o \
+      -name 'scripts' \
+    \) -prune \
+    -o \( \
+      -type f \
+      \( -name '*.mdx' -o -name '*.md' -o -name '*.astro' -o -name '*.ts' -o -name '*.tsx' -o -name '*.json' \) \
+      -print \
+    \) 2>/dev/null | sed 's|^\./||')
 fi
 
 if [[ -z "$FILES" ]]; then
