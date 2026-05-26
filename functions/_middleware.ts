@@ -45,7 +45,7 @@ const ALLOWED = [
 export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
   'x-content-type-options': 'nosniff',
-  'x-frame-options': 'SAMEORIGIN',
+  'x-frame-options': 'DENY',
   'referrer-policy': 'strict-origin-when-cross-origin',
   'cross-origin-opener-policy': 'same-origin-allow-popups',
   'cross-origin-resource-policy': 'same-origin',
@@ -119,7 +119,7 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
       'cross-origin-opener-policy': 'same-origin',
       'cross-origin-resource-policy': 'same-origin',
       'cross-origin-embedder-policy': 'unsafe-none',
-      'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+      'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()',
     },
   });
 };

@@ -24,4 +24,11 @@ describe('public middleware CSP', () => {
     expect(PUBLIC_SECURITY_HEADERS['cross-origin-resource-policy']).toBe('same-origin');
     expect(PUBLIC_SECURITY_HEADERS['cross-origin-embedder-policy']).toBe('unsafe-none');
   });
+
+  it('X-Frame-Options is DENY, consistent with frame-ancestors none in CSP', () => {
+    // frame-ancestors 'none' in CSP is the modern directive; X-Frame-Options DENY
+    // covers legacy browsers that do not support CSP Level 2+.
+    expect(PUBLIC_SECURITY_HEADERS['x-frame-options']).toBe('DENY');
+    expect(csp).toContain("frame-ancestors 'none'");
+  });
 });
