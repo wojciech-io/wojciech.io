@@ -46,17 +46,22 @@ test('homepage has a working primary CTA link', async ({ page }) => {
 
 test('insights index lists at least one published article', async ({ page }) => {
   await page.goto('/insights/');
-  const articleLinks = page.locator('a[href^="/insights/"][href$="/"]');
-  const count = await articleLinks.count();
-  expect(count, 'expected at least one /insights/<slug>/ link on the index').toBeGreaterThan(0);
+  const articleLinks = page.locator('main a[href^="/insights/"][href$="/"]');
+  const hrefs = await articleLinks.evaluateAll((links) =>
+    links
+      .map((link) => link.getAttribute('href'))
+      .filter((href): href is string => Boolean(href) && href !== '/insights/'),
+  );
+  expect(hrefs.length, 'expected at least one /insights/<slug>/ link on the index').toBeGreaterThan(0);
 });
 
 test('article page has h1, canonical, og:image, and reading progress bar', async ({ page }) => {
   await page.goto('/insights/');
-  const firstLink = await page
-    .locator('a[href^="/insights/"][href$="/"]')
-    .first()
-    .getAttribute('href');
+  const firstLink = await page.locator('main a[href^="/insights/"][href$="/"]').evaluateAll((links) =>
+    links
+      .map((link) => link.getAttribute('href'))
+      .find((href) => href && href !== '/insights/'),
+  );
   expect(firstLink, 'no article link found on insights index').toBeTruthy();
 
   const resp = await page.goto(firstLink!);
