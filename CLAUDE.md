@@ -71,7 +71,7 @@ Do not present a flat list of apps. Group proof into three clusters:
    - Notch macOS native app built with Codex + Xcode
 
 2. **Growth architecture in practice**
-   - Kadromierz growth system / Q1-Q2 architecture
+   - B2B SaaS growth system / Q1-Q2 architecture (client under NDA)
    - CRM / SEO / CRO / winback / analytics operating systems
    - Brand24 AI Adoption task as a demonstration of approach
 
