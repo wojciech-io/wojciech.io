@@ -1,0 +1,99 @@
+---
+/**
+ * Benchmark — horizontal bar comparison: Your result vs. baseline.
+ *
+ * Usage:
+ *   <Benchmark
+ *     label="Email open rate"
+ *     yours={42}
+ *     baseline={21}
+ *     yoursLabel="AI-personalised sequences"
+ *     baselineLabel="Industry average"
+ *     unit="%"
+ *     caption="Source: campaign data Q1 2025"
+ *   />
+ */
+interface Props {
+  label: string;
+  yours: number;
+  baseline: number;
+  yoursLabel?: string;
+  baselineLabel?: string;
+  unit?: string;
+  caption?: string;
+  /** Flip so lower is better (e.g. cost, churn) */
+  lowerIsBetter?: boolean;
+}
+
+const {
+  label,
+  yours,
+  baseline,
+  yoursLabel = 'Result',
+  baselineLabel = 'Baseline',
+  unit = '%',
+  caption,
+  lowerIsBetter = false,
+} = Astro.props;
+
+const max = Math.max(yours, baseline) * 1.25;
+const yoursWidth  = Math.min(100, (yours   / max) * 100);
+const baseWidth   = Math.min(100, (baseline / max) * 100);
+const yoursAhead  = lowerIsBetter ? yours < baseline : yours > baseline;
+const delta       = lowerIsBetter
+  ? ((baseline - yours) / baseline * 100).toFixed(0)
+  : ((yours - baseline) / baseline * 100).toFixed(0);
+const deltaSign   = Number(delta) > 0 ? '+' : '';
+---
+
+<figure class="my-8 not-prose rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-hidden">
+  <div class="px-5 py-4 border-b border-[var(--color-border)] flex items-center justify-between gap-3 flex-wrap">
+    <p class="text-sm font-semibold text-[var(--color-text)]">{label}</p>
+    {yoursAhead && (
+      <span class="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--color-accent)] bg-[color-mix(in_srgb,var(--color-accent)_12%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_25%,transparent)] rounded-full px-2.5 py-0.5">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12l5-5 5 5" />
+        </svg>
+        {deltaSign}{delta}% vs baseline
+      </span>
+    )}
+  </div>
+
+  <div class="px-5 py-5 space-y-4">
+
+    <!-- Your result -->
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-xs font-medium text-[var(--color-text)]">{yoursLabel}</span>
+        <span class="text-xs font-bold tabular-nums text-[var(--color-accent)]">{yours}{unit}</span>
+      </div>
+      <div class="h-2.5 rounded-full bg-[var(--color-surface)] overflow-hidden">
+        <div
+          class="h-full rounded-full bg-[var(--color-accent)] transition-all"
+          style={`width: ${yoursWidth}%`}
+          role="presentation"
+        />
+      </div>
+    </div>
+
+    <!-- Baseline -->
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-xs font-medium text-[var(--color-text-muted)]">{baselineLabel}</span>
+        <span class="text-xs font-semibold tabular-nums text-[var(--color-text-dim)]">{baseline}{unit}</span>
+      </div>
+      <div class="h-2.5 rounded-full bg-[var(--color-surface)] overflow-hidden">
+        <div
+          class="h-full rounded-full bg-[var(--color-border-2)]"
+          style={`width: ${baseWidth}%`}
+          role="presentation"
+        />
+      </div>
+    </div>
+
+  </div>
+
+  {caption && (
+    <figcaption class="px-5 pb-4 text-[11px] text-[var(--color-text-dim)]">{caption}</figcaption>
+  )}
+</figure>

@@ -4,90 +4,70 @@ interface Props {
   labelB: string;
   tagA?: string;
   tagB?: string;
+  /** Color-code cols: left=muted(before), right=accent(after). Default true. */
+  colorCode?: boolean;
+  caption?: string;
 }
 
-const { labelA, labelB, tagA, tagB } = Astro.props;
+const { labelA, labelB, tagA, tagB, colorCode = true, caption } = Astro.props;
 ---
 
-<div class="compare">
-  <section class="compare__col">
-    <header class="compare__head">
-      <p class="compare__label">{labelA}</p>
-      {tagA && <span class="compare__tag">{tagA}</span>}
-    </header>
-    <div class="compare__body"><slot name="a" /></div>
-  </section>
-  <section class="compare__col">
-    <header class="compare__head">
-      <p class="compare__label">{labelB}</p>
-      {tagB && <span class="compare__tag">{tagB}</span>}
-    </header>
-    <div class="compare__body"><slot name="b" /></div>
-  </section>
-</div>
+<figure class="my-8 not-prose">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-<style>
-  .compare {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-block: 1.75rem;
-  }
-  @media (max-width: 600px) {
-    .compare {
-      grid-template-columns: 1fr;
-    }
-  }
-  .compare__col {
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-surface-2);
-    padding: 1.125rem 1.25rem;
-  }
-  .compare__head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-  .compare__label {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text);
-  }
-  .compare__tag {
-    flex-shrink: 0;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    color: var(--color-text-dim);
-  }
-  .compare__body :global(> *:first-child) {
-    margin-top: 0;
-  }
-  .compare__body :global(> *:last-child) {
-    margin-bottom: 0;
-  }
-  .compare__body :global(p) {
-    font-size: 0.9375rem;
-    line-height: 1.65;
-    color: var(--color-text-muted);
-    margin-block: 0.5rem;
-  }
-  .compare__body :global(ul) {
-    margin-block: 0.5rem;
-    padding-left: 1.125rem;
-    list-style-type: disc;
-  }
-  .compare__body :global(li) {
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    color: var(--color-text-muted);
-    margin-block: 0.3125rem;
-  }
-</style>
+    <!-- Column A: Before / baseline -->
+    <section class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-hidden">
+      <header class:list={[
+        'flex items-center justify-between gap-2 px-4 py-3 border-b border-[var(--color-border)]',
+        colorCode ? 'bg-[var(--color-surface)]' : 'bg-[var(--color-surface)]',
+      ]}>
+        <p class="font-semibold text-sm text-[var(--color-text-muted)]">{labelA}</p>
+        {tagA && (
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-dim)] border border-[var(--color-border)] rounded px-1.5 py-0.5">
+            {tagA}
+          </span>
+        )}
+      </header>
+      <div class="px-4 py-4 text-sm leading-relaxed text-[var(--color-text-muted)] [&>p]:my-2 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0 [&>ul]:my-2 [&>ul]:pl-4 [&>ul]:list-disc [&>li]:my-1.5">
+        <slot name="a" />
+      </div>
+    </section>
+
+    <!-- Column B: After / improved -->
+    <section class:list={[
+      'rounded-[var(--radius-card)] border overflow-hidden',
+      colorCode
+        ? 'border-[color-mix(in_srgb,var(--color-accent)_30%,transparent)] bg-[color-mix(in_srgb,var(--color-accent)_4%,var(--color-surface-2))]'
+        : 'border-[var(--color-border)] bg-[var(--color-surface-2)]',
+    ]}>
+      <header class:list={[
+        'flex items-center justify-between gap-2 px-4 py-3 border-b',
+        colorCode
+          ? 'border-[color-mix(in_srgb,var(--color-accent)_25%,transparent)] bg-[color-mix(in_srgb,var(--color-accent)_6%,var(--color-surface))]'
+          : 'border-[var(--color-border)] bg-[var(--color-surface)]',
+      ]}>
+        <p class:list={[
+          'font-semibold text-sm',
+          colorCode ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]',
+        ]}>{labelB}</p>
+        {tagB && (
+          <span class:list={[
+            'text-[10px] font-bold uppercase tracking-wider border rounded px-1.5 py-0.5',
+            colorCode
+              ? 'text-[var(--color-accent-hi)] border-[color-mix(in_srgb,var(--color-accent)_35%,transparent)] bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)]'
+              : 'text-[var(--color-text-dim)] border-[var(--color-border)]',
+          ]}>
+            {tagB}
+          </span>
+        )}
+      </header>
+      <div class="px-4 py-4 text-sm leading-relaxed text-[var(--color-text-muted)] [&>p]:my-2 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0 [&>ul]:my-2 [&>ul]:pl-4 [&>ul]:list-disc [&>li]:my-1.5">
+        <slot name="b" />
+      </div>
+    </section>
+
+  </div>
+  {caption && (
+    <figcaption class="mt-3 text-center text-xs text-[var(--color-text-dim)]">{caption}</figcaption>
+  )}
+</figure>
