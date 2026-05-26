@@ -36,6 +36,9 @@ import Quote from '../../components/insights/Quote.astro';
 import ToolCard from '../../components/insights/ToolCard.astro';
 import ProcessFlow from '../../components/insights/ProcessFlow.astro';
 import Grid from '../../components/insights/Grid.astro';
+import ResultCard from '../../components/insights/ResultCard.astro';
+import Benchmark from '../../components/insights/Benchmark.astro';
+import CaseStudyBlock from '../../components/insights/CaseStudyBlock.astro';
 import { SITE } from '../../data/site';
 
 const mdxComponents = {
@@ -46,6 +49,7 @@ const mdxComponents = {
   Badge, Button, CTABand, FAQ, SectionHeader, ProofCard,
   DataTable, MetricRow, ArticleTimeline, KeyPoint, TwoUp, Quote,
   ToolCard, ProcessFlow, Grid,
+  ResultCard, Benchmark, CaseStudyBlock,
 };
 
 export async function getStaticPaths() {
@@ -53,17 +57,26 @@ export async function getStaticPaths() {
   const sorted = posts.sort((a, b) =>
     b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
   );
-  return sorted.map((post, idx) => ({
-    params: { slug: post.id.replace(/\.mdx?$/, '') },
-    props: {
-      post,
-      prevPost: sorted[idx + 1] ?? null,
-      nextPost: sorted[idx - 1] ?? null,
-    },
-  }));
+  return sorted.map((post, idx) => {
+    const others = sorted.filter((_, i) => i !== idx);
+    // Related: same tags first, then chronological; pick top 3
+    const sameTags = others.filter((p) =>
+      p.data.tags.some((t) => post.data.tags.includes(t))
+    );
+    const related = [...new Set([...sameTags, ...others])].slice(0, 3);
+    return {
+      params: { slug: post.id.replace(/\.mdx?$/, '') },
+      props: {
+        post,
+        prevPost: sorted[idx + 1] ?? null,
+        nextPost: sorted[idx - 1] ?? null,
+        related,
+      },
+    };
+  });
 }
 
-const { post, prevPost, nextPost } = Astro.props;
+const { post, prevPost, nextPost, related } = Astro.props;
 const { Content } = await render(post);
 const canonicalPath = `/insights/${post.id.replace(/\.mdx?$/, '')}/`;
 const slug = post.id.replace(/\.mdx?$/, '');
@@ -184,10 +197,10 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
           </span>
         ))}
       </div>
-      <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5" transition:name={`article-title-${slug}`}>
+      <h1 class="text-[var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5" transition:name={`article-title-${slug}`}>
         {post.data.title}
       </h1>
-      <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-6">
+      <p class="text-[var(--text-body-lg)] text-[var(--color-text-muted)] leading-relaxed mb-6">
         {post.data.description}
       </p>
       <div class="flex items-center gap-3 pb-8 border-b border-[var(--color-border)]">
@@ -250,6 +263,40 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
       </div>
     </div>
   </section>
+
+  <!-- Related articles -->
+  {related && related.length > 0 && (
+    <section class="border-t border-[var(--color-border)] py-12">
+      <div class="mx-auto max-w-3xl px-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)] mb-6">More from insights</p>
+        <div class="grid gap-3 sm:grid-cols-3">
+          {related.map((rel) => {
+            const relSlug = rel.id.replace(/\.mdx?$/, '');
+            return (
+              <a
+                href={`/insights/${relSlug}/`}
+                class="group flex flex-col gap-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 hover:border-[var(--color-accent)]/40 hover:bg-[var(--color-surface-2)] transition-colors"
+              >
+                <div class="flex flex-wrap gap-1.5 mb-1">
+                  {rel.data.tags.slice(0, 2).map((tag) => (
+                    <span class="text-[9px] font-semibold uppercase tracking-wider text-[var(--color-accent)] bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded px-1.5 py-0.5">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <p class="text-sm font-semibold text-[var(--color-text)] leading-snug group-hover:text-[var(--color-accent-hi)] transition-colors line-clamp-3">
+                  {rel.data.title}
+                </p>
+                <p class="mt-auto text-[11px] text-[var(--color-text-dim)]">
+                  {rel.data.publishedAt.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}
+                </p>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
 
   <!-- Prev / Next navigation -->
   {(prevPost || nextPost) && (
