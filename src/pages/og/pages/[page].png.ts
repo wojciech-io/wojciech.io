@@ -3,66 +3,18 @@ import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import { OG_PAGES } from '../../../data/og-pages';
 
 const fontRegular = readFileSync(resolve(process.cwd(), 'public/fonts/Geist-Regular.ttf'));
 const fontBold = readFileSync(resolve(process.cwd(), 'public/fonts/Geist-Bold.ttf'));
 
-interface PageMeta {
-  title: string;
-  eyebrow: string;
-  description: string;
-}
-
-const pages: Record<string, PageMeta> = {
-  about: {
-    title: 'Fractional GTM Architect & AI Systems Builder',
-    eyebrow: 'About',
-    description: 'Growth operator building AI-native revenue systems for B2B SaaS.',
-  },
-  work: {
-    title: 'GTM Systems & Case Studies',
-    eyebrow: 'Work',
-    description: 'AI-native GTM, CRM, automation, and shipped products.',
-  },
-  'ai-systems': {
-    title: 'AI Systems · Workflows, Agents & Operating Leverage',
-    eyebrow: 'AI Systems',
-    description: 'Claude Code, MCP, and automation built for real production GTM.',
-  },
-  contact: {
-    title: 'Build, Fix, or Review the System',
-    eyebrow: 'Contact',
-    description: '30-minute call for GTM audits, AI workflow design, and CRM architecture.',
-  },
-  insights: {
-    title: 'AI & GTM Insights · Operator Notes',
-    eyebrow: 'Insights',
-    description: 'Field notes on AI systems, GTM architecture, and revenue design.',
-  },
-  now: {
-    title: "What I'm Working On Now",
-    eyebrow: 'Now',
-    description: 'Current focus: systems, clients, reading, and thinking.',
-  },
-  resources: {
-    title: 'Resources · Tools and Templates for Operators',
-    eyebrow: 'Resources',
-    description: 'Starter packs, MCP configs, and operator frameworks for AI-native GTM.',
-  },
-  home: {
-    title: 'GTM Architect · AI-native Revenue Systems',
-    eyebrow: 'wojciech.io',
-    description: 'Build AI-native revenue systems for B2B SaaS.',
-  },
-};
-
 export function getStaticPaths() {
-  return Object.keys(pages).map((page) => ({ params: { page } }));
+  return Object.keys(OG_PAGES).map((page) => ({ params: { page } }));
 }
 
 export const GET: APIRoute = async ({ params }) => {
   const page = params.page as string;
-  const meta = pages[page];
+  const meta = OG_PAGES[page];
   if (!meta) return new Response('Not found', { status: 404 });
 
   const { title, eyebrow, description } = meta;

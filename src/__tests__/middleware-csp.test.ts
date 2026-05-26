@@ -15,6 +15,10 @@ describe('public middleware CSP', () => {
     expect(csp).toMatch(/img-src[^;]*https:\/\/i\.ytimg\.com/);
   });
 
+  it('allows Sentry client-side error reporting', () => {
+    expect(csp).toMatch(/connect-src[^;]*https:\/\/o4511411558678528\.ingest\.de\.sentry\.io/);
+  });
+
   it('sets cross-origin isolation headers without breaking third-party embeds', () => {
     expect(PUBLIC_SECURITY_HEADERS['cross-origin-opener-policy']).toBe('same-origin-allow-popups');
     expect(PUBLIC_SECURITY_HEADERS['cross-origin-resource-policy']).toBe('same-origin');
