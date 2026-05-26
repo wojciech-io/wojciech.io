@@ -1,0 +1,85 @@
+---
+/**
+ * VideoLoop — muted autoplay looping video for case studies, hero backgrounds,
+ * and product demos. Never autoplays off-screen (IntersectionObserver guard).
+ *
+ * Usage:
+ *   <VideoLoop
+ *     src="/media/adsai-demo"   // without extension: resolves .webm + .mp4
+ *     poster="/media/adsai-demo-poster.webp"
+ *     width={1200}
+ *     height={750}
+ *     alt="AdsAI campaign builder demo"
+ *     class="rounded-[var(--radius-card)] shadow-[var(--shadow-card)]"
+ *   />
+ *
+ * Files: place webm + mp4 pairs in /public/media/.
+ * Max 3 MB per clip, max 1200x750 px.
+ */
+
+interface Props {
+  src: string;          // path without extension, e.g. "/media/demo"
+  poster?: string;      // static fallback image (webp preferred)
+  width?: number;
+  height?: number;
+  alt?: string;         // used as aria-label on the wrapper
+  class?: string;
+}
+
+const {
+  src,
+  poster,
+  width = 1200,
+  height = 750,
+  alt = '',
+  class: className = '',
+} = Astro.props;
+
+const id = `vl-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<figure
+  class={`video-loop-wrap overflow-hidden ${className}`}
+  aria-label={alt || undefined}
+  role={alt ? 'img' : undefined}
+  id={id}
+>
+  <video
+    class="video-loop-el w-full h-full object-cover"
+    width={width}
+    height={height}
+    poster={poster}
+    muted
+    loop
+    playsinline
+    preload="none"
+    aria-hidden="true"
+  >
+    <source src={`${src}.webm`} type="video/webm" />
+    <source src={`${src}.mp4`}  type="video/mp4" />
+    {poster && <img src={poster} alt={alt} width={width} height={height} loading="lazy" />}
+  </video>
+</figure>
+
+<script define:vars={{ id }}>
+  // Only autoplay when the element enters the viewport.
+  // Respects prefers-reduced-motion: no autoplay, show poster only.
+  const wrap = document.getElementById(id);
+  if (wrap) {
+    const video = wrap.querySelector('video');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (video && !reduced) {
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      obs.observe(wrap);
+    }
+  }
+</script>
