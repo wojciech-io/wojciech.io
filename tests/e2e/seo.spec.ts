@@ -20,6 +20,7 @@ const OG_REQUIRED = [
   'og:title',
   'og:description',
   'og:image',
+  'og:image:alt',
   'og:url',
   'og:type',
 ] as const;
@@ -29,6 +30,7 @@ const TWITTER_REQUIRED = [
   'twitter:title',
   'twitter:description',
   'twitter:image',
+  'twitter:image:alt',
 ] as const;
 
 const PAGES_TO_AUDIT = [
