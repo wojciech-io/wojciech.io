@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test';
  * launch per CLAUDE.md). Re-add when localization sprint reinstates them.
  */
 
-const PAGES_TO_AUDIT = ['/', '/about/', '/work/', '/ai-systems/', '/insights/'];
+const PAGES_TO_AUDIT = ['/', '/about/', '/work/', '/ai-systems/', '/insights/', '/resources/'];
 
 test('cookie banner /privacy link resolves (was 404 historically)', async ({ page }) => {
   await page.goto('/');

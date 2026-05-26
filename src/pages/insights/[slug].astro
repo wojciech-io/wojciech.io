@@ -260,10 +260,17 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
 </Layout>
 
 <script>
-  import { trackArticleViewed, trackArticleScrollDepth, trackNewsletterCtaClicked } from '../../utils/mixpanel';
-
   const bar = document.getElementById('progress-bar') as HTMLElement;
   const article = document.getElementById('article-content') as HTMLElement;
+  const hasAnalyticsConsent = () => localStorage.getItem('cookie-consent') === 'accepted';
+  let analyticsModule: Promise<typeof import('../../utils/mixpanel')> | null = null;
+  const loadAnalytics = async () => {
+    if (!hasAnalyticsConsent()) return null;
+    analyticsModule ??= import('../../utils/mixpanel');
+    const analytics = await analyticsModule;
+    analytics.initAfterConsent();
+    return analytics;
+  };
 
   // Article metadata injected at build time via data attributes on the article element
   const slug = article?.dataset.slug ?? '';
@@ -274,7 +281,9 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
 
   // fire article_viewed (Layout page_viewed fires first via 300ms timeout)
   setTimeout(() => {
-    trackArticleViewed({ slug, title, category: category || undefined, tags, read_time_min: readTimeMin });
+    loadAnalytics().then((analytics) =>
+      analytics?.trackArticleViewed({ slug, title, category: category || undefined, tags, read_time_min: readTimeMin }),
+    );
   }, 400);
 
   // Scroll depth milestones: fire once each
@@ -293,7 +302,9 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
     for (const milestone of [25, 50, 75, 100] as const) {
       if (pct >= milestone && !milestones.has(milestone)) {
         milestones.add(milestone);
-        trackArticleScrollDepth({ slug, depth_pct: milestone });
+        loadAnalytics().then((analytics) =>
+          analytics?.trackArticleScrollDepth({ slug, depth_pct: milestone }),
+        );
       }
     }
   }
@@ -303,6 +314,6 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
 
   // Newsletter CTA in article footer
   document.querySelector('a[href="/subscribe"]')?.addEventListener('click', () => {
-    trackNewsletterCtaClicked({ location: 'article_end' });
+    loadAnalytics().then((analytics) => analytics?.trackNewsletterCtaClicked({ location: 'article_end' }));
   });
 </script>

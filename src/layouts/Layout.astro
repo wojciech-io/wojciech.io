@@ -50,25 +50,6 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       updatedAt={updatedAt}
       schema={schema}
     />
-    <script is:inline>
-      (() => {
-        const stored = localStorage.getItem('theme');
-        const theme = stored === 'dark' || stored === 'light' ? stored : 'light';
-        document.documentElement.dataset.theme = theme;
-        document.documentElement.style.colorScheme = theme;
-      })();
-    </script>
-    {import.meta.env.PROD && (
-      <>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4ED804XJLP" />
-        <script is:inline>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-4ED804XJLP');
-        </script>
-      </>
-    )}
   </head>
   <body class="min-h-dvh flex flex-col">
     <Header />
@@ -78,20 +59,52 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     <Footer />
     <CookieBanner />
 
-    <!-- Mixpanel: fire page_viewed after consent check has run -->
+    <!-- Mixpanel: load only after consent, then fire page_viewed -->
     <script>
-      import { trackPageViewed } from '../utils/mixpanel';
-      // CookieBanner.astro handles initAfterConsent(): we just fire the event.
-      // Small delay ensures init has run before we track.
-      setTimeout(() => {
-        trackPageViewed({
+      const GA_ID = 'G-4ED804XJLP';
+      const hasAnalyticsConsent = () => localStorage.getItem('cookie-consent') === 'accepted';
+      let analyticsModule: Promise<typeof import('../utils/mixpanel')> | null = null;
+      let googleAnalyticsLoaded = false;
+
+      const initGoogleAnalytics = () => {
+        if (googleAnalyticsLoaded) return;
+        googleAnalyticsLoaded = true;
+
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+        document.head.appendChild(script);
+
+        const w = window as typeof window & {
+          dataLayer?: unknown[];
+          gtag?: (...args: unknown[]) => void;
+        };
+        w.dataLayer = w.dataLayer || [];
+        w.gtag = (...args: unknown[]) => w.dataLayer?.push(args);
+        w.gtag('js', new Date());
+        w.gtag('config', GA_ID);
+      };
+
+      const loadAnalytics = async () => {
+        if (!hasAnalyticsConsent()) return null;
+        initGoogleAnalytics();
+        analyticsModule ??= import('../utils/mixpanel');
+        const analytics = await analyticsModule;
+        analytics.initAfterConsent();
+        return analytics;
+      };
+
+      const trackCurrentPage = () => {
+        loadAnalytics().then((analytics) => analytics?.trackPageViewed({
           path: window.location.pathname,
           title: document.title,
-        });
-      }, 300);
+        }));
+      };
+
+      setTimeout(trackCurrentPage, 300);
+      window.addEventListener('analytics-consent-accepted', trackCurrentPage, { once: true });
 
       // Track outbound links + internal CTAs globally via event delegation
-      import { trackOutboundClicked, trackCtaClicked, trackNewsletterCtaClicked } from '../utils/mixpanel';
       document.addEventListener('click', (e) => {
         const a = (e.target as Element)?.closest('a');
         if (!a) return;
@@ -99,7 +112,9 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
 
         // Outbound
         if (href.startsWith('http') && !href.includes('wojciech.io')) {
-          trackOutboundClicked({ href, label: a.textContent?.trim() || undefined });
+          loadAnalytics().then((analytics) =>
+            analytics?.trackOutboundClicked({ href, label: a.textContent?.trim() || undefined }),
+          );
         }
 
         // Internal CTAs tagged with data-mp-cta
@@ -107,9 +122,9 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
         if (cta) {
           const location = a.dataset.mpLocation ?? 'unknown';
           if (cta === 'newsletter') {
-            trackNewsletterCtaClicked({ location });
+            loadAnalytics().then((analytics) => analytics?.trackNewsletterCtaClicked({ location }));
           } else {
-            trackCtaClicked({ label: cta, href, location });
+            loadAnalytics().then((analytics) => analytics?.trackCtaClicked({ label: cta, href, location }));
           }
         }
       });

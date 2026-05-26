@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 
 /**
- * SEO foundations review — enforces acceptance criteria from
+ * SEO foundations review: enforces acceptance criteria from
  * `.codex-tasks/2026-05-22-seo-foundations-review.md`.
  *
  * Hreflang is covered in hreflang.spec.ts.
@@ -179,7 +179,7 @@ test('llms.txt present and non-trivial', async ({ request }) => {
   const r = await request.get('/llms.txt');
   expect(r.status()).toBe(200);
   const body = await r.text();
-  expect(body.length, 'llms.txt too short — should describe the site').toBeGreaterThan(500);
+  expect(body.length, 'llms.txt too short: should describe the site').toBeGreaterThan(500);
 });
 
 test('sitemap exists and lists key pages', async ({ request }) => {
