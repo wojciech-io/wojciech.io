@@ -53,7 +53,7 @@ const serializeSitemapItem = (item) => {
   }
   if (path === '/') return { ...item, lastmod: SITE_LASTMOD, changefreq: 'weekly', priority: 1.0 };
   if (path === '/insights/') return { ...item, lastmod: SITE_LASTMOD, changefreq: 'weekly', priority: 0.9 };
-  if (['/about/', '/work/', '/ai-systems/', '/contact/'].includes(path)) {
+  if (['/about/', '/work/', '/ai-systems/', '/contact/', '/now/', '/resources/'].includes(path)) {
     return { ...item, lastmod: SITE_LASTMOD, changefreq: 'monthly', priority: 0.7 };
   }
   return { ...item, lastmod: SITE_LASTMOD, changefreq: 'monthly', priority: 0.5 };
