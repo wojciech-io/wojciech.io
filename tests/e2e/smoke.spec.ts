@@ -46,8 +46,31 @@ test('homepage has a working primary CTA link', async ({ page }) => {
 
 test('insights index lists at least one published article', async ({ page }) => {
   await page.goto('/insights/');
-  // Heuristic: there should be at least one link pointing to /insights/<slug>/.
   const articleLinks = page.locator('a[href^="/insights/"][href$="/"]');
   const count = await articleLinks.count();
   expect(count, 'expected at least one /insights/<slug>/ link on the index').toBeGreaterThan(0);
+});
+
+test('article page has h1, canonical, og:image, and reading progress bar', async ({ page }) => {
+  await page.goto('/insights/');
+  const firstLink = await page
+    .locator('a[href^="/insights/"][href$="/"]')
+    .first()
+    .getAttribute('href');
+  expect(firstLink, 'no article link found on insights index').toBeTruthy();
+
+  const resp = await page.goto(firstLink!);
+  expect(resp?.status(), `article ${firstLink} returned non-200`).toBe(200);
+
+  await expect(page.locator('h1').first()).toBeVisible();
+
+  const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+  expect(canonical, 'canonical link missing on article').toBeTruthy();
+  expect(canonical).toContain('/insights/');
+
+  const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content');
+  expect(ogImage, 'og:image missing on article').toBeTruthy();
+  expect(ogImage).toMatch(/\/og\//);
+
+  await expect(page.locator('#progress-bar')).toBeAttached();
 });

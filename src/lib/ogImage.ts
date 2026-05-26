@@ -27,7 +27,7 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
         style: {
           width: `${OG_IMAGE_WIDTH}px`,
           height: `${OG_IMAGE_HEIGHT}px`,
-          background: '#0f0f10',
+          background: '#0a0a0b',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
