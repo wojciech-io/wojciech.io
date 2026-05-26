@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Pre-commit guard: block internal tooling dirs from ever reaching git history.
-# These dirs are gitignored, but this hook catches edge cases (--no-verify bypass,
-# temporary gitignore removal, etc.) and provides a clear error message.
+# Pre-commit guard: blocks internal tooling dirs AND runs the content-guard
+# privacy + quality scan on staged files.
 
 set -euo pipefail
 
@@ -23,6 +22,7 @@ if [ -z "$STAGED" ]; then
   exit 0
 fi
 
+# 1. Block sensitive internal dirs
 FOUND=""
 for path in "${BLOCKED_PATHS[@]}"; do
   if echo "$STAGED" | grep -q "^${path}"; then
@@ -35,11 +35,17 @@ if [ -n "$FOUND" ]; then
   echo "  BLOCKED: sensitive internal dirs staged for commit:"
   echo "  $FOUND"
   echo ""
-  echo "  These directories are internal tooling (sprint plans, agent state,"
-  echo "  security reports). They must never enter git history."
-  echo "  Remove them from staging: git restore --staged <path>"
+  echo "  Remove from staging: git restore --staged <path>"
   echo ""
   exit 1
+fi
+
+# 2. Run content-guard on staged files (privacy + quality scan)
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+GUARD="${REPO_ROOT}/scripts/content-guard.sh"
+
+if [ -x "$GUARD" ]; then
+  "$GUARD" --staged
 fi
 
 exit 0
