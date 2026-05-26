@@ -8,7 +8,7 @@ What we monitor, with what, and why. Decision log included so future-you doesn't
 |---|---|---|
 | Frontend/runtime errors | Sentry | Partially in place (`sentry.client.config.js` exists in root) |
 | Traffic / Core Web Vitals | Cloudflare Web Analytics | Built into CF Pages |
-| Uptime / prod-down alerts | Better Stack | Sprint 1+ (urgent mail + optional SMS) |
+| Uptime / prod-down alerts | Better Stack | **Live** — 9 monitors, 180s checks, EU+US regions |
 | Deploy smoke | Playwright (`smoke-prod.yml`) | Sprint 0 stub |
 | Agent health | `.agent-state/*/state.md` + daily digest | Sprint 0 |
 
@@ -22,6 +22,25 @@ A single 8:00 mail to `w.luszczynski@gmail.com` aggregates: items needing decisi
 - **Why Sentry?** Already wired (`sentry.client.config.js`); good DX for frontend error grouping.
 - **Why Better Stack for uptime?** Cheap, supports SMS escalation for genuine prod-down, integrates with email-first preference.
 - **Why email-only digest?** User explicitly chose mail over Slack for the daily rhythm.
+
+## Better Stack monitors
+
+Configured 2026-05-26. Token stored in project settings (not committed).
+
+| URL | Status | Notes |
+|-----|--------|-------|
+| https://wojciech.io | active | main site |
+| https://academy.wojciech.io | active | |
+| https://subscribe.wojciech.io | active | |
+| https://notch.wojciech.io | active | |
+| https://gh.wojciech.io | active | |
+| https://app.wojciech.io | active | was /favicon.svg, fixed to root |
+| https://wojciech.io/rss.xml | active | SEO health |
+| https://wojciech.io/sitemap-index.xml | active | SEO health |
+| https://wojciech.io/llms.txt | active | LLM discoverability |
+| https://dev.wojciech.io | **paused** | DNS not set up yet; unpause after DNS+CF Access configured |
+
+To manage: https://uptime.betterstack.com
 
 ## dev.wojciech.io dashboard
 
