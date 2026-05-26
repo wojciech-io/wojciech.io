@@ -40,6 +40,7 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
 <!doctype html>
 <html lang="en">
   <head>
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <SEOHead
       title={title}
       description={description}
@@ -136,25 +137,35 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       });
     </script>
 
-    <!-- Scroll-triggered reveal via Motion One inView.
+    <!-- Scroll-triggered reveal via native IntersectionObserver.
          Re-registers on every View Transitions navigation (astro:page-load). -->
     <script>
-      import { inView, animate } from 'motion';
-
       function initReveal() {
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const els = document.querySelectorAll<HTMLElement>('.reveal-up:not([data-revealed])');
 
-        document.querySelectorAll<HTMLElement>('.reveal-up').forEach((el) => {
-          if (el.dataset.revealed) return;          // skip already-visible elements
-          if (reduced) {
-            el.classList.add('is-visible');          // instant reveal
-            return;
-          }
-          inView(el, () => {
+        if (reduced) {
+          els.forEach((el) => {
             el.classList.add('is-visible');
             el.dataset.revealed = '1';
-          }, { margin: '0px 0px -40px 0px' });
-        });
+          });
+          return;
+        }
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const el = entry.target as HTMLElement;
+              el.classList.add('is-visible');
+              el.dataset.revealed = '1';
+              observer.unobserve(el);
+            });
+          },
+          { rootMargin: '0px 0px -40px 0px', threshold: 0.01 },
+        );
+
+        els.forEach((el) => observer.observe(el));
       }
 
       // Run on first load and after every View Transitions navigation

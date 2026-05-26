@@ -6,17 +6,52 @@
   role="dialog"
   aria-modal="true"
   aria-label="Search"
-  class="fixed inset-0 z-[200] hidden items-start justify-center px-4 pt-[15vh]"
+  class="fixed inset-0 z-[200] hidden items-start justify-center px-4 pt-[12vh]"
 >
   <div id="search-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
 
   <div class="relative w-full max-w-2xl overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] shadow-2xl">
+    <!-- Header bar -->
+    <div class="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
+      <span class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Search</span>
+      <div class="flex items-center gap-3">
+        <kbd class="hidden sm:inline-flex items-center gap-1 rounded border border-[var(--color-border)] bg-[var(--color-surface)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--color-text-dim)]">
+          <span>esc</span>
+        </kbd>
+        <button
+          id="search-close"
+          aria-label="Close search"
+          class="flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="search-loading" class="hidden flex-col items-center justify-center gap-3 px-5 py-10">
+      <div class="h-5 w-5 animate-spin rounded-full border-2 border-[var(--color-border-2)] border-t-[var(--color-accent)]"></div>
+      <p class="text-xs text-[var(--color-text-dim)]">Loading search&hellip;</p>
+    </div>
+
+    <!-- Dev notice (build first) -->
     <p
       id="search-dev-note"
       class="hidden border-b border-[var(--color-border)] px-5 py-3 text-sm text-[var(--color-text-muted)]"
     >
-      Search available after build. Run npm run build to index.
+      Search available after build. Run <code class="text-xs">npm run build</code> to index.
     </p>
+
+    <!-- Error state (prod only) -->
+    <p
+      id="search-error"
+      class="hidden px-5 py-6 text-sm text-[var(--color-text-muted)]"
+    >
+      Search index unavailable. Try refreshing the page.
+    </p>
+
     <div id="pagefind-ui-root"></div>
   </div>
 </div>
@@ -26,7 +61,6 @@
 
   function ensurePagefindStyles() {
     if (document.querySelector('link[href="/pagefind/pagefind-ui.css"]')) return;
-
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = '/pagefind/pagefind-ui.css';
@@ -34,14 +68,30 @@
   }
 
   function showDevNotice() {
-    if (!window.location.hostname.includes('localhost')) return;
     document.getElementById('search-dev-note')?.classList.remove('hidden');
+  }
+
+  function showError() {
+    document.getElementById('search-error')?.classList.remove('hidden');
+  }
+
+  function setLoading(on: boolean) {
+    const el = document.getElementById('search-loading');
+    if (!el) return;
+    if (on) {
+      el.classList.remove('hidden');
+      el.classList.add('flex');
+    } else {
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+    }
   }
 
   async function loadPagefind() {
     if (pagefindLoaded) return;
     pagefindLoaded = true;
     ensurePagefindStyles();
+    setLoading(true);
 
     try {
       const pagefindModule = '/pagefind/' + 'pagefind-ui.js';
@@ -57,8 +107,16 @@
       });
     } catch {
       pagefindLoaded = false;
-      showDevNotice();
+      setLoading(false);
+      if (window.location.hostname.includes('localhost')) {
+        showDevNotice();
+      } else {
+        showError();
+      }
+      return;
     }
+
+    setLoading(false);
   }
 
   function openSearch() {
@@ -67,11 +125,12 @@
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+
     void loadPagefind().then(() => {
       const input = modal.querySelector<HTMLInputElement>('input[type="text"]');
       input?.focus();
     });
-    document.body.style.overflow = 'hidden';
   }
 
   function closeSearch() {
@@ -83,7 +142,12 @@
     document.body.style.overflow = '';
   }
 
-  document.getElementById('search-backdrop')?.addEventListener('click', closeSearch);
+  function wireHandlers() {
+    document.getElementById('search-backdrop')?.addEventListener('click', closeSearch);
+    document.getElementById('search-close')?.addEventListener('click', closeSearch);
+  }
+
+  wireHandlers();
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeSearch();
@@ -98,7 +162,7 @@
   (window as Window & { openSearch?: () => void }).openSearch = openSearch;
 
   document.addEventListener('astro:page-load', () => {
-    document.getElementById('search-backdrop')?.addEventListener('click', closeSearch);
+    wireHandlers();
     (window as Window & { openSearch?: () => void }).openSearch = openSearch;
   });
 </script>
