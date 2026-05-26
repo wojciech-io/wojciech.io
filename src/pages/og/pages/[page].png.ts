@@ -44,6 +44,16 @@ const pages: Record<string, PageMeta> = {
     eyebrow: 'Now',
     description: 'Current focus: systems, clients, reading, and thinking.',
   },
+  resources: {
+    title: 'Resources · Tools and Templates for Operators',
+    eyebrow: 'Resources',
+    description: 'Starter packs, MCP configs, and operator frameworks for AI-native GTM.',
+  },
+  home: {
+    title: 'GTM Architect · AI-native Revenue Systems',
+    eyebrow: 'wojciech.io',
+    description: 'Build AI-native revenue systems for B2B SaaS.',
+  },
 };
 
 export function getStaticPaths() {
