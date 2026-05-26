@@ -1,4 +1,5 @@
 ---
+import ThemeToggle from '@wojciech/ui/components/ThemeToggle.astro';
 import '../styles/global.css';
 import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
 
@@ -11,6 +12,10 @@ const {
   title = 'AI Espresso — subscribe.wojciech.io',
   description = 'Short operator notes on AI systems, GTM architecture, and what ships. Free. Under 3 minutes.',
 } = Astro.props;
+
+const SITE = 'https://subscribe.wojciech.io';
+const canonical = new URL(Astro.url.pathname, SITE).href.replace(/\/$/, '') || SITE;
+const image = `${SITE}/og-default.png`;
 ---
 
 <!doctype html>
@@ -20,22 +25,31 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href="https://subscribe.wojciech.io" />
+    <link rel="canonical" href={canonical} />
     <meta name="robots" content="index, follow" />
+    <meta name="author" content="Wojciech Łuszczyński" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f5ee" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0c0c" />
 
     <!-- OG -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content="https://subscribe.wojciech.io" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://subscribe.wojciech.io/og-default.png" />
+    <meta property="og:site_name" content="AI Espresso" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={image} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="AI Espresso newsletter preview" />
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@w_luszczynski" />
+    <meta name="twitter:creator" content="@w_luszczynski" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://subscribe.wojciech.io/og-default.png" />
+    <meta name="twitter:image" content={image} />
+    <meta name="twitter:image:alt" content="AI Espresso newsletter preview" />
 
     <!-- JSON-LD: WebSite + Newsletter + author Person for LLM and rich-result crawlers -->
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -144,39 +158,57 @@ const {
       });
     </script>
   </head>
-  <body class="min-h-dvh flex flex-col bg-[var(--color-bg)] text-[var(--color-text)]">
+  <body class="min-h-dvh flex flex-col">
 
-    <!-- Language selector -->
-    <div class="fixed top-3 right-4 z-50">
-      <div class="relative" id="lang-dd">
-        <button id="lang-trigger" aria-haspopup="listbox" aria-expanded="false"
-          class="inline-flex items-center gap-1.5 h-8 px-2 rounded-[7px] text-[11px] font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
-          <span id="lang-flag-current" class="inline-flex items-center">
-            <svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px]"><rect width="20" height="14" fill="#B22234"/><rect width="20" height="1.08" y="1.08" fill="white"/><rect width="20" height="1.08" y="3.23" fill="white"/><rect width="20" height="1.08" y="5.38" fill="white"/><rect width="20" height="1.08" y="7.54" fill="white"/><rect width="20" height="1.08" y="9.69" fill="white"/><rect width="20" height="1.08" y="11.85" fill="white"/><rect width="8" height="7.54" fill="#3C3B6E"/></svg>
-          </span>
-          <span id="lang-code-current">EN</span>
-          <svg id="lang-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true" class="opacity-40 transition-transform duration-150"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div id="lang-menu" role="listbox"
-          class="hidden absolute right-0 top-[calc(100%+6px)] z-50 min-w-[9rem] overflow-hidden rounded-[8px] bg-[var(--color-surface)] shadow-[0_8px_32px_rgb(0_0_0/0.18)] py-1 border border-[var(--color-border)]">
-          <button onclick="switchLang('en')" data-lang-opt="en" role="option"
-            class="lang-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors">
-            <svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px] shrink-0"><rect width="20" height="14" fill="#B22234"/><rect width="20" height="1.08" y="1.08" fill="white"/><rect width="20" height="1.08" y="3.23" fill="white"/><rect width="20" height="1.08" y="5.38" fill="white"/><rect width="20" height="1.08" y="7.54" fill="white"/><rect width="20" height="1.08" y="9.69" fill="white"/><rect width="20" height="1.08" y="11.85" fill="white"/><rect width="8" height="7.54" fill="#3C3B6E"/></svg>
-            English
-          </button>
-          <button onclick="switchLang('pl')" data-lang-opt="pl" role="option"
-            class="lang-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors">
-            <svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px] shrink-0"><rect width="20" height="7" fill="white"/><rect y="7" width="20" height="7" fill="#DC143C"/></svg>
-            Polski
-          </button>
-          <button onclick="switchLang('it')" data-lang-opt="it" role="option"
-            class="lang-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors">
-            <svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px] shrink-0"><rect width="6.67" height="14" fill="#009246"/><rect x="6.67" width="6.67" height="14" fill="white"/><rect x="13.33" width="6.67" height="14" fill="#CE2B37"/></svg>
-            Italiano
-          </button>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgb(var(--color-bg-rgb)/0.86)] backdrop-blur-md">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between gap-3 sm:gap-4">
+        <div class="flex items-center gap-2.5">
+          <span class="text-sm font-semibold tracking-tight text-[var(--color-text)]">AI Espresso</span>
+          <span class="hidden sm:inline-flex text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--color-text-dim)] border border-[var(--color-border)] rounded-full px-2 py-0.5">newsletter</span>
+        </div>
+        <div class="flex items-center gap-2 sm:gap-3">
+          <div class="relative z-50">
+            <div class="relative" id="lang-dd">
+              <button id="lang-trigger" aria-haspopup="listbox" aria-expanded="false"
+                class="inline-flex items-center gap-1.5 h-8 px-2 rounded-[7px] text-[11px] font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
+                <span id="lang-flag-current" class="inline-flex items-center">
+                  <svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px]"><rect width="20" height="14" fill="#B22234"/><rect width="20" height="1.08" y="1.08" fill="white"/><rect width="20" height="1.08" y="3.23" fill="white"/><rect width="20" height="1.08" y="5.38" fill="white"/><rect width="20" height="1.08" y="7.54" fill="white"/><rect width="20" height="1.08" y="9.69" fill="white"/><rect width="20" height="1.08" y="11.85" fill="white"/><rect width="8" height="7.54" fill="#3C3B6E"/></svg>
+                </span>
+                <span id="lang-code-current">EN</span>
+                <svg id="lang-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true" class="opacity-40 transition-transform duration-150"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div id="lang-menu" role="listbox"
+                class="hidden absolute right-0 top-[calc(100%+6px)] z-50 min-w-[9rem] overflow-hidden rounded-[8px] bg-[var(--color-surface)] shadow-[0_8px_32px_rgb(0_0_0/0.18)] py-1 border border-[var(--color-border)]">
+                <button onclick="switchLang('en')" data-lang-opt="en" role="option"
+                  class="lang-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors">
+                  <svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px] shrink-0"><rect width="20" height="14" fill="#B22234"/><rect width="20" height="1.08" y="1.08" fill="white"/><rect width="20" height="1.08" y="3.23" fill="white"/><rect width="20" height="1.08" y="5.38" fill="white"/><rect width="20" height="1.08" y="7.54" fill="white"/><rect width="20" height="1.08" y="9.69" fill="white"/><rect width="20" height="1.08" y="11.85" fill="white"/><rect width="8" height="7.54" fill="#3C3B6E"/></svg>
+                  English
+                </button>
+                <button onclick="switchLang('pl')" data-lang-opt="pl" role="option"
+                  class="lang-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors">
+                  <svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px] shrink-0"><rect width="20" height="7" fill="white"/><rect y="7" width="20" height="7" fill="#DC143C"/></svg>
+                  Polski
+                </button>
+                <button onclick="switchLang('it')" data-lang-opt="it" role="option"
+                  class="lang-opt w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)] transition-colors">
+                  <svg width="18" height="13" viewBox="0 0 20 14" aria-hidden="true" class="block rounded-[2px] shrink-0"><rect width="6.67" height="14" fill="#009246"/><rect x="6.67" width="6.67" height="14" fill="white"/><rect x="13.33" width="6.67" height="14" fill="#CE2B37"/></svg>
+                  Italiano
+                </button>
+              </div>
+            </div>
+          </div>
+          <ThemeToggle />
+          <a
+            href="https://wojciech.io"
+            class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+          >
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            wojciech.io
+          </a>
         </div>
       </div>
-    </div>
+    </header>
     <script>
       document.getElementById('lang-trigger')?.addEventListener('click', function(e) {
         e.stopPropagation();
@@ -216,69 +248,62 @@ const {
       })();
     </script>
 
-    <slot />
+    <main class="flex-1">
+      <slot />
+    </main>
 
     <!-- Footer -->
-    <footer style="border-top:1px solid var(--color-border);background:var(--color-bg);">
-      <div style="max-width:72rem;margin:0 auto;padding:0 1.5rem;">
-        <div style="display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:2rem;padding:2rem 0 1.5rem;">
-          <!-- Brand -->
+    <footer class="mt-auto w-full border-t border-[var(--color-border)] bg-[var(--color-bg)]">
+      <div class="mx-auto w-full max-w-6xl px-[clamp(14px,4vw,48px)]">
+        <div class="sft-grid">
           <div>
-            <a href="https://wojciech.io" target="_blank" rel="noopener" style="display:inline-flex;align-items:baseline;text-decoration:none;margin-bottom:0.75rem;font-size:14px;font-weight:700;color:var(--color-text);">wojciech<span style="background:#ebff00;color:#080808;border-radius:5px;padding:1px 5px;font-size:10px;font-weight:700;margin-left:2px;">.io</span></a>
-            <p style="font-size:12px;color:var(--color-text-muted);line-height:1.5;max-width:220px;" data-en="GTM architect and AI-native builder. Revenue systems for B2B SaaS and technology companies." data-pl="GTM architect i AI-native builder. Systemy revenue dla B2B SaaS i firm technologicznych." data-it="GTM architect e AI-native builder. Sistemi revenue per B2B SaaS e aziende tecnologiche.">GTM architect and AI-native builder. Revenue systems for B2B SaaS and technology companies.</p>
+            <a href="https://wojciech.io" target="_blank" rel="noopener" class="sft-logo">wojciech<span class="sft-badge">.io</span></a>
+            <p class="sft-tagline" data-en="GTM architect and AI-native builder. Revenue systems for B2B SaaS and technology companies." data-pl="GTM architect i AI-native builder. Systemy revenue dla B2B SaaS i firm technologicznych." data-it="GTM architect e AI-native builder. Sistemi revenue per B2B SaaS e aziende tecnologiche.">GTM architect and AI-native builder. Revenue systems for B2B SaaS and technology companies.</p>
           </div>
-          <!-- Network -->
           <div>
-            <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--color-text-dim);margin-bottom:0.75rem;" data-en="Network" data-pl="Sieć" data-it="Rete">Network</p>
-            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.5rem;">
-              <li><a href="https://wojciech.io" target="_blank" rel="noopener" style="font-size:12px;color:var(--color-text-muted);text-decoration:none;">wojciech.io</a></li>
-              <li><a href="https://app.wojciech.io" target="_blank" rel="noopener" style="font-size:12px;color:var(--color-text-muted);text-decoration:none;">app.wojciech.io</a></li>
-              <li><a href="https://academy.wojciech.io" target="_blank" rel="noopener" style="font-size:12px;color:var(--color-text-muted);text-decoration:none;">academy.wojciech.io</a></li>
-              <li><a href="https://notch.wojciech.io" target="_blank" rel="noopener" style="font-size:12px;color:var(--color-text-muted);text-decoration:none;">notch.wojciech.io</a></li>
+            <p class="sft-head" data-en="Network" data-pl="Sieć" data-it="Rete">Network</p>
+            <ul class="sft-list">
+              <li><a href="https://wojciech.io" target="_blank" rel="noopener">wojciech.io</a></li>
+              <li><a href="https://app.wojciech.io" target="_blank" rel="noopener">app.wojciech.io</a></li>
+              <li><a href="https://academy.wojciech.io" target="_blank" rel="noopener">academy.wojciech.io</a></li>
+              <li><a href="https://notch.wojciech.io" target="_blank" rel="noopener">notch.wojciech.io</a></li>
             </ul>
           </div>
-          <!-- Connect -->
           <div>
-            <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--color-text-dim);margin-bottom:0.75rem;" data-en="Connect" data-pl="Kontakt" data-it="Contatti">Connect</p>
-            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.5rem;">
-              <li><a href="https://www.linkedin.com/in/wojciech-luszczynski/" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--color-text-muted);text-decoration:none;">LinkedIn</a></li>
-              <li><a href="https://github.com/wojciechluszczynski" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--color-text-muted);text-decoration:none;">GitHub</a></li>
-              <li><a href="https://twitter.com/w_luszczynski" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--color-text-muted);text-decoration:none;">X / Twitter</a></li>
-              <li><a href="https://substack.com/@luscinetti" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--color-text-muted);text-decoration:none;">Substack</a></li>
+            <p class="sft-head" data-en="Connect" data-pl="Kontakt" data-it="Contatti">Connect</p>
+            <ul class="sft-list">
+              <li><a href="https://www.linkedin.com/in/wojciech-luszczynski/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+              <li><a href="https://github.com/wojciechluszczynski" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><a href="https://twitter.com/w_luszczynski" target="_blank" rel="noopener noreferrer">X / Twitter</a></li>
+              <li><a href="https://substack.com/@luscinetti" target="_blank" rel="noopener noreferrer">Substack</a></li>
             </ul>
           </div>
         </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;border-top:1px solid var(--color-border);padding:1rem 0;font-size:11px;color:var(--color-text-dim);">
-          <p>© 2026 Wojciech Łuszczyński · <a href="https://wojciech.io/now" target="_blank" rel="noopener" style="color:var(--color-text-muted);text-decoration:none;" data-en="What I'm doing now" data-pl="Co teraz robię" data-it="Cosa faccio ora">What I'm doing now</a></p>
+        <div class="sft-bottom">
+          <p>© {new Date().getFullYear()} Wojciech Łuszczyński · <a href="https://wojciech.io/now" target="_blank" rel="noopener" data-en="What I'm doing now" data-pl="Co teraz robię" data-it="Cosa faccio ora">What I'm doing now</a></p>
           <p>GTM architect · AI-native builder</p>
         </div>
       </div>
     </footer>
     <style>
-      @media (max-width: 700px) {
-        footer > div > div:first-of-type {
-          grid-template-columns: 1fr 1fr !important;
-        }
-        footer > div > div:first-of-type > div:first-child {
-          grid-column: 1 / -1;
-        }
-      }
-      @media (max-width: 440px) {
-        footer > div > div:first-of-type {
-          grid-template-columns: 1fr !important;
-        }
-        footer > div > div:last-of-type {
-          flex-direction: column !important;
-          align-items: center !important;
-          text-align: center !important;
-        }
-      }
+      .sft-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 2rem; padding: 1.75rem 0 1.25rem; }
+      .sft-logo { display: inline-flex; align-items: baseline; text-decoration: none; margin-bottom: 0.625rem; font-size: 14px; font-weight: 700; color: var(--color-text); }
+      .sft-badge { background: var(--color-accent-cta); color: var(--color-accent-text); border-radius: 5px; padding: 1px 5px; font-size: 10px; font-weight: 700; margin-left: 2px; }
+      .sft-tagline { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; max-width: 220px; margin-top: 6px; }
+      .sft-head { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-dim); margin-bottom: 0.625rem; }
+      .sft-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+      .sft-list a { font-size: 12px; color: var(--color-text-muted); text-decoration: none; transition: color .15s; }
+      .sft-list a:hover { color: var(--color-text); }
+      .sft-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--color-border); padding: 14px 0; font-size: 11px; color: var(--color-text-dim); }
+      .sft-bottom a { color: var(--color-text-muted); text-decoration: none; }
+      @media (max-width: 700px) { .sft-grid { grid-template-columns: 1fr 1fr; } .sft-grid > div:first-child { grid-column: 1 / -1; } }
+      @media (max-width: 440px) { .sft-grid { grid-template-columns: 1fr; } .sft-bottom { flex-direction: column; align-items: center; text-align: center; gap: 4px; } }
     </style>
 
     <!-- Analytics consent — minimal bottom bar -->
     <div id="sub-consent" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;border-top:1px solid var(--color-border);background:var(--color-surface);padding:10px 20px;gap:12px;align-items:center;font-size:12px;color:var(--color-text-muted)">
       <span style="flex:1">I use Mixpanel (EU) &amp; Google Analytics to understand sign-up flow — anonymously, no ads. <a href="https://wojciech.io/privacy/" target="_blank" rel="noopener noreferrer" style="color:var(--color-accent);text-decoration:underline">Details</a></span>
-      <button onclick="subConsent('yes')" style="padding:5px 14px;background:var(--color-accent);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">Accept</button>
+      <button onclick="subConsent('yes')" style="padding:5px 14px;background:var(--color-accent-cta);color:var(--color-accent-text);border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer">Accept</button>
       <button onclick="subConsent('no')" style="padding:5px 10px;background:none;border:none;font-size:11px;color:var(--color-text-muted);cursor:pointer">No thanks</button>
     </div>
     <script is:inline>
