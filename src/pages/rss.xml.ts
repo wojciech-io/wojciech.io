@@ -9,6 +9,7 @@ export const GET: APIRoute = async ({ site }) => {
 
   const origin = site ?? new URL('https://wojciech.io/');
   const feedUrl = new URL('/rss.xml', origin).href;
+  const lastBuildDate = posts[0]?.data.publishedAt.toUTCString() ?? new Date().toUTCString();
   const items = posts
     .map((post) => {
       const slug = post.id.replace(/\.mdx?$/, '');
@@ -42,6 +43,7 @@ export const GET: APIRoute = async ({ site }) => {
     <language>en-us</language>
     <managingEditor>hello@wojciech.io (Wojciech Łuszczyński)</managingEditor>
     <webMaster>hello@wojciech.io (Wojciech Łuszczyński)</webMaster>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <ttl>1440</ttl>
     ${items}
   </channel>
