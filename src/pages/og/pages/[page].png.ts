@@ -39,6 +39,11 @@ const pages: Record<string, PageMeta> = {
     eyebrow: 'Insights',
     description: 'Field notes on AI systems, GTM architecture, and revenue design.',
   },
+  now: {
+    title: "What I'm Working On Now",
+    eyebrow: 'Now',
+    description: 'Current focus: systems, clients, reading, and thinking.',
+  },
 };
 
 export function getStaticPaths() {
