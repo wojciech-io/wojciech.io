@@ -5,7 +5,10 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      include: ['src/data/**'],
+      // Unit-testable modules: pure data and the public middleware headers export.
+      // functions/api/* and functions/_utils/crypto.ts require CF Workers runtime mocks
+      // (out of scope for unit tests; covered by E2E + security workflow instead).
+      include: ['src/data/**', 'functions/_middleware.ts'],
       reporter: ['text', 'lcov'],
     },
   },
