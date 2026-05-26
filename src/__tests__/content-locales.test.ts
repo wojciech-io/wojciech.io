@@ -11,6 +11,44 @@ import {
 
 const EXPECTED_LOCALES = ['de', 'dk', 'no', 'jp'] as const;
 const EXPECTED_SLUGS = ['about', 'work', 'ai-systems', 'contact', 'insights'] as const;
+const LOCALE_COPY_MARKERS: Record<(typeof EXPECTED_LOCALES)[number], RegExp[]> = {
+  de: [/\bIch\b/, /\bfür\b/, /\bArbeit\b/, /\bSysteme\b/],
+  dk: [/\bJeg\b/, /\bikke\b/, /\bhvad\b/i, /\bværktøj/i],
+  no: [/\bJeg\b/, /\bikke\b/, /\barbeidet\b/i, /\bverktøy/i],
+  jp: [/[\u3040-\u30ff]/, /[\u4e00-\u9faf]/],
+};
+
+function copyTextForLocale(locale: (typeof EXPECTED_LOCALES)[number]) {
+  const home = localizedHome[locale];
+  const homeText = [
+    home.title,
+    home.description,
+    home.eyebrow,
+    home.h1Primary,
+    home.h1Secondary,
+    home.lead,
+    home.primaryCta,
+    home.secondaryCta,
+    home.finalHeading,
+    home.finalSubtext,
+    ...home.proof.flatMap((p) => [p.value, p.label]),
+    ...home.steps.flatMap((s) => [s.step, s.title, s.body]),
+  ];
+  const pageText = localizedPages
+    .filter((copy) => copy.locale === locale)
+    .flatMap((copy) => [
+      copy.title,
+      copy.description,
+      copy.eyebrow,
+      copy.h1,
+      copy.lead,
+      copy.primaryCta,
+      copy.secondaryCta,
+      ...copy.stats.flatMap((s) => [s.value, s.label]),
+      ...copy.sections.flatMap((s) => [s.title, s.body, ...(s.items ?? [])]),
+    ]);
+  return [...homeText, ...pageText].join(' ');
+}
 
 describe('localizedHome', () => {
   it('covers exactly the expected locale keys', () => {
@@ -51,6 +89,14 @@ describe('localizedHome', () => {
 
   it('localizedHomeList has one entry per locale', () => {
     expect(localizedHomeList.length).toBe(EXPECTED_LOCALES.length);
+  });
+
+  it.each(EXPECTED_LOCALES)('%s: uses locale-specific copy instead of an EN stub', (locale) => {
+    const text = copyTextForLocale(locale);
+    expect(text.length, `${locale} copy is too short`).toBeGreaterThan(2500);
+    for (const marker of LOCALE_COPY_MARKERS[locale]) {
+      expect(text, `${locale} missing marker ${marker}`).toMatch(marker);
+    }
   });
 });
 
@@ -97,6 +143,21 @@ describe('localizedPages', () => {
   it('primaryHref is a valid internal path', () => {
     for (const copy of localizedPages) {
       expect(copy.primaryHref, `${copy.locale}/${copy.slug} primaryHref`).toMatch(/^\//);
+    }
+  });
+
+  it('localized CTA hrefs stay inside the active locale when a localized target exists', () => {
+    for (const copy of localizedPages) {
+      if (copy.slug === 'contact') {
+        expect(copy.primaryHref, `${copy.locale}/contact primaryHref`).toBe(
+          `/${copy.locale}/contact/#book-call`,
+        );
+      }
+      if (copy.slug === 'insights') {
+        expect(copy.primaryHref, `${copy.locale}/insights primaryHref`).toBe(
+          `/${copy.locale}/insights/`,
+        );
+      }
     }
   });
 
