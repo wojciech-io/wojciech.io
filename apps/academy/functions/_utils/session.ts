@@ -4,8 +4,14 @@ export const COOKIE_NAME = 'academy_auth';
 
 export function readCookie(request: Request, name: string): string | null {
   const cookie = request.headers.get('Cookie') || '';
-  const match = cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
-  return match ? decodeURIComponent(match[1]) : null;
+  for (const part of cookie.split(';')) {
+    const trimmed = part.trim();
+    const eq = trimmed.indexOf('=');
+    if (eq >= 0 && trimmed.slice(0, eq) === name) {
+      return decodeURIComponent(trimmed.slice(eq + 1));
+    }
+  }
+  return null;
 }
 
 // Returns the verified session for the academy_auth cookie, or null.
