@@ -6,6 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
 
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
+const sentryDsn = process.env.PUBLIC_SENTRY_DSN;
 const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/subscribe/']);
 
 const isIndexableSitemapUrl = (/** @type {string} */ page) => {
@@ -23,12 +24,23 @@ const isIndexableSitemapUrl = (/** @type {string} */ page) => {
 
 export default defineConfig({
   site: 'https://wojciech.io',
+  build: {
+    inlineStylesheets: 'always',
+  },
   integrations: [
     mdx(),
     sitemap({
       filter: isIndexableSitemapUrl,
     }),
     sentry({
+      enabled: {
+        client: Boolean(sentryDsn),
+        server: false,
+      },
+      clientInitPath: './sentry.client.config.ts',
+      bundleSizeOptimizations: {
+        excludeTracing: true,
+      },
       sourceMapsUploadOptions: sentryAuthToken
         ? { org: 'wojciechio', project: 'javascript-astro', authToken: sentryAuthToken }
         : { enabled: false },
