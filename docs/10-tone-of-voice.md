@@ -59,9 +59,13 @@ natural, idiomatic copy with the concrete-contrast style intact
 > model, not a set of separate campaigns.
 
 **After (B+A voice):**
-> I build revenue systems. Then I stay until they work.
-> Most B2B companies don't have a traffic problem — they have a system problem.
+> I build revenue systems. Then I run them.
+> Most B2B companies don't have a traffic problem. They have a system problem.
 > Fifteen years inside growth teams showed me the same gap everywhere: great
 > traffic with a leaky CRM, AI in the deck but Excel in the actual work. I
-> rebuild it as one operating model — GTM, CRM, automation and AI as a single
-> machine — and I don't leave when it gets hard.
+> rebuild it as one operating model: GTM, CRM, automation and AI as a single
+> machine. And I don't leave when it gets hard.
+
+Note: "Then I stay until they work" was retired — "until" implies a finite
+engagement that ends when the system is fixed. "Then I run them" signals
+long-term operation, not just temporary presence.
