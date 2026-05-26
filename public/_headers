@@ -15,6 +15,18 @@
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
+# OG images: immutable (content changes only on redeploy, paths are stable)
+/og/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fonts: immutable (versioned via ?v= query param in SEOHead preload links)
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Public images: long-lived browser cache, short CF edge cache (may change)
+/images/*
+  Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400
+
 /*
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
