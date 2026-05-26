@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
-@import './tokens.css';
+@import "@wojciech/tokens/index.css";
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
@@ -49,6 +49,50 @@ body {
   transition: transform 0.1s ease, background-color 0.15s ease;
 }
 .btn-press:active { transform: scale(0.96); }
+
+.theme-toggle {
+  --toggle-pad: 3px;
+  block-size: 32px;
+  inline-size: 64px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-2);
+  background: var(--color-surface);
+  color: var(--color-text-dim);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.07);
+}
+
+.theme-toggle__thumb {
+  position: absolute;
+  inset-block: var(--toggle-pad);
+  inset-inline-start: var(--toggle-pad);
+  inline-size: calc(50% - var(--toggle-pad));
+  border-radius: calc(var(--radius-btn) - 2px);
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-theme='dark'] .theme-toggle__thumb {
+  background: var(--color-border-2);
+  box-shadow: none;
+  transform: translateX(100%);
+}
+
+.theme-toggle__label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-dim);
+  transition: color 0.2s ease;
+}
+
+:root:not([data-theme='dark']) .theme-toggle__label--light,
+:root[data-theme='dark'] .theme-toggle__label--dark {
+  color: var(--color-text);
+}
 
 /* reveal-up: visible by default, animated only when JS is ready */
 .js-ready .reveal-up {

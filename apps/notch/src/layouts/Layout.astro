@@ -1,4 +1,5 @@
 ---
+import ThemeToggle from '@wojciech/ui/components/ThemeToggle.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -10,6 +11,10 @@ const {
   title = 'NotchCue — macOS teleprompter for the camera notch',
   description = 'Keep notes close to the camera. NotchCue puts your prompts around the MacBook notch so delivery stays natural during calls, demos, and recordings.',
 } = Astro.props;
+
+const SITE = 'https://notch.wojciech.io';
+const canonical = new URL(Astro.url.pathname, SITE).href.replace(/\/$/, '') || SITE;
+const image = `${SITE}/og-default.png`;
 ---
 
 <!doctype html>
@@ -19,20 +24,29 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href="https://notch.wojciech.io" />
+    <link rel="canonical" href={canonical} />
     <meta name="robots" content="index, follow" />
+    <meta name="author" content="Wojciech Łuszczyński" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f5ee" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0c0c" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content="https://notch.wojciech.io" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://notch.wojciech.io/og-default.png" />
+    <meta property="og:site_name" content="NotchCue" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={image} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NotchCue macOS teleprompter preview" />
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@w_luszczynski" />
+    <meta name="twitter:creator" content="@w_luszczynski" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://notch.wojciech.io/og-default.png" />
+    <meta name="twitter:image" content={image} />
+    <meta name="twitter:image:alt" content="NotchCue macOS teleprompter preview" />
     <!-- JSON-LD: SoftwareApplication + author Person for LLM and rich-result crawlers -->
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
@@ -121,6 +135,7 @@ const {
         </div>
         <!-- Nav right: lang toggle + back link -->
         <div class="flex items-center gap-4">
+          <ThemeToggle />
           <div id="lang-bar" class="flex gap-0.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-0.5">
             <button onclick="nLang('pl')" id="nlPL" class="nl-btn">PL</button>
             <button onclick="nLang('en')" id="nlEN" class="nl-btn nl-active">EN</button>
@@ -180,10 +195,10 @@ const {
 
     <style>
       .nl-btn { font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 5px; border: none; background: transparent; cursor: pointer; color: var(--color-text-muted); transition: background .12s, color .12s; }
-      .nl-active { background: #ebff00; color: #080808; }
+      .nl-active { background: var(--color-accent-cta); color: var(--color-accent-text); }
       .nft-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 2rem; padding: 1.75rem 0 1.25rem; }
       .nft-logo { display: inline-flex; align-items: baseline; text-decoration: none; margin-bottom: 0.625rem; font-size: 14px; font-weight: 700; color: var(--color-text); }
-      .nft-badge { background: #ebff00; color: #080808; border-radius: 5px; padding: 1px 5px; font-size: 10px; font-weight: 700; margin-left: 2px; }
+      .nft-badge { background: var(--color-accent-cta); color: var(--color-accent-text); border-radius: 5px; padding: 1px 5px; font-size: 10px; font-weight: 700; margin-left: 2px; }
       .nft-tagline { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; max-width: 220px; margin-top: 6px; }
       .nft-head { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-dim); margin-bottom: 0.625rem; }
       .nft-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
