@@ -236,3 +236,15 @@ test('sitemap exists and lists key pages', async ({ request }) => {
   expect(body, 'sitemap must not list dev subdomain').not.toContain('dev.wojciech.io');
   expect(body, 'sitemap must not list app subdomain').not.toContain('app.wojciech.io');
 });
+
+test('sitemap contains at least one published article URL', async ({ request }) => {
+  const idx = await request.get('/sitemap-index.xml');
+  const idxBody = await idx.text();
+  const childMatch = idxBody.match(/<loc>([^<]+sitemap-0\.xml)<\/loc>/);
+  expect(childMatch, 'sitemap-index must reference a child sitemap').not.toBeNull();
+  const child = await request.get(sameOriginPath(childMatch![1]));
+  const body = await child.text();
+  expect(body, 'sitemap must contain at least one /insights/<slug>/ article URL').toMatch(
+    /\/insights\/[^/]+\//,
+  );
+});
