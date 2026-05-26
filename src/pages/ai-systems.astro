@@ -1,11 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import AiSystemsContent from '../components/pages/AiSystemsContent.astro';
+import { SITE } from '../data/site';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'AI Systems', item: SITE.url + '/ai-systems/' },
+  ],
+};
 ---
 
 <Layout
-  title="AI Systems"
-  description="AI-native workflows, GTM agents, and operating leverage: how Wojciech builds with AI in practice."
+  title="AI Systems · Workflows, Agents & Operating Leverage"
+  description="AI-native workflows, GTM agents, and operating leverage. How I build with Claude Code, MCP, and automation in practice: architecture, decisions, and what actually runs in production."
+  schema={breadcrumbSchema}
 >
   <AiSystemsContent />
 </Layout>

@@ -1,11 +1,28 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ContactContent from '../components/pages/ContactContent.astro';
+import { SITE } from '../data/site';
+
+const contactSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Book a Call · Wojciech Łuszczyński',
+  url: SITE.url + '/contact/',
+  description: '30-minute call for GTM audits, AI workflow design, CRM architecture, and product scoping.',
+  mainEntity: {
+    '@type': 'Person',
+    name: 'Wojciech Łuszczyński',
+    url: SITE.url + '/',
+    email: SITE.email,
+    sameAs: [SITE.linkedin, SITE.github],
+  },
+};
 ---
 
 <Layout
-  title="Contact"
-  description="Get in touch with Wojciech Łuszczyński, growth operator, GTM architect, AI-native builder."
+  title="Book a Call · GTM & AI Systems"
+  description="30-minute call for GTM audits, AI workflow design, CRM architecture, and product scoping. Direct link to scheduler. Response within 24h."
+  schema={contactSchema}
 >
   <ContactContent />
 </Layout>

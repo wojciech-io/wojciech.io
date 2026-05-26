@@ -1,0 +1,51 @@
+---
+interface Props {
+  left?: string;
+  right?: string;
+  ratio?: '1:1' | '2:1' | '1:2';
+  gap?: 'sm' | 'md' | 'lg';
+}
+
+const { left, right, ratio = '1:1', gap = 'md' } = Astro.props;
+
+const cols = {
+  '1:1': '1fr 1fr',
+  '2:1': '2fr 1fr',
+  '1:2': '1fr 2fr',
+};
+
+const gaps = { sm: '1rem', md: '1.75rem', lg: '2.5rem' };
+---
+
+<div class="two-up" style={`--cols: ${cols[ratio]}; --gap: ${gaps[gap]}`}>
+  <div class="two-up__col">
+    {left ? <Fragment set:html={left} /> : <slot name="left" />}
+  </div>
+  <div class="two-up__col">
+    {right ? <Fragment set:html={right} /> : <slot name="right" />}
+  </div>
+</div>
+
+<style>
+  .two-up {
+    display: grid;
+    grid-template-columns: var(--cols, 1fr 1fr);
+    gap: var(--gap, 1.75rem);
+    margin-block: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 600px) {
+    .two-up {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .two-up__col :global(> *:first-child) {
+    margin-top: 0;
+  }
+
+  .two-up__col :global(> *:last-child) {
+    margin-bottom: 0;
+  }
+</style>

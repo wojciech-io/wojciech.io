@@ -1,18 +1,27 @@
 ---
 interface Props {
-  coverType?: 'terminal' | 'builder' | 'default';
+  coverType?: 'terminal' | 'builder' | 'chart' | 'product' | 'system' | 'default';
   tags?: string[];
   title?: string;
 }
 
-const { coverType = 'default', tags = [], title = '' } = Astro.props;
+const { coverType = 'default', tags = [] } = Astro.props;
 
 const captions: Record<string, string> = {
   terminal: 'GTM agent · Claude Code · outbound at operator cost',
   builder: 'Astro · Cloudflare Pages · agentic deployment flow',
+  chart:   'GTM architecture · revenue system design',
+  product: 'Product · shipped and running in production',
+  system:  'AI workflow · operating system design',
   default: 'wojciech.io · insights',
 };
-const caption = captions[coverType];
+const caption = captions[coverType] ?? captions['default'];
+
+// Map extended types to the rendered SVG variant
+const svgVariant: 'terminal' | 'builder' | 'default' =
+  coverType === 'terminal' ? 'terminal'
+  : coverType === 'builder' ? 'builder'
+  : 'default';
 ---
 
 <div
@@ -47,7 +56,7 @@ const caption = captions[coverType];
 
   <!-- SVG illustration (centered) -->
   <div class="relative z-10 w-full flex items-center justify-center px-4 md:px-8 max-w-[900px]">
-    {coverType === 'terminal' && (
+    {svgVariant === 'terminal' && (
       <svg
         viewBox="0 0 760 300"
         xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +109,7 @@ const caption = captions[coverType];
       </svg>
     )}
 
-    {coverType === 'builder' && (
+    {svgVariant === 'builder' && (
       <svg
         viewBox="0 0 760 300"
         xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +170,7 @@ const caption = captions[coverType];
       </svg>
     )}
 
-    {coverType === 'default' && (
+    {svgVariant === 'default' && (
       <svg
         viewBox="0 0 760 300"
         xmlns="http://www.w3.org/2000/svg"
