@@ -13,6 +13,7 @@ interface Props {
   artifact?: string;
   outcome?: string;
   external?: boolean;
+  revealIndex?: number;
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   artifact,
   outcome,
   external = false,
+  revealIndex,
 } = Astro.props;
 
 const coverLabels: Record<CoverType, string> = {
@@ -55,7 +57,11 @@ const isAgentRepo = cover === 'gtm-pack';
 <a
   href={href}
   {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-  class="group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-lift hover:border-[var(--color-accent)]/40"
+  {...(revealIndex !== undefined ? { 'data-reveal-index': revealIndex } : {})}
+  class:list={[
+    'group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-lift hover:border-[var(--color-accent)]/40',
+    revealIndex !== undefined && 'reveal-up',
+  ]}
 >
   <div class="artifact-stage relative aspect-[16/9] overflow-hidden p-3.5">
     {screenshot ? (
