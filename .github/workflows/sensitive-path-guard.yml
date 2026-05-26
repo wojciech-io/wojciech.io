@@ -1,0 +1,46 @@
+name: Sensitive path guard
+
+on:
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  guard:
+    name: Block internal tooling dirs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Check for blocked paths in PR diff
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          BLOCKED="docs/ .agent-reports/ .agent-state/ .claude/ .codex-tasks/"
+          CHANGED=$(git diff --name-only "$BASE" "$HEAD")
+          FOUND=""
+
+          for path in $BLOCKED; do
+            if echo "$CHANGED" | grep -q "^${path}"; then
+              FOUND="${FOUND} ${path}"
+            fi
+          done
+
+          if [ -n "$FOUND" ]; then
+            echo "::error::Blocked internal dirs in this PR:${FOUND}"
+            echo ""
+            echo "These directories (sprint plans, agent state, security reports)"
+            echo "are internal tooling and must never enter git history."
+            echo "Remove them and amend the commit."
+            exit 1
+          fi
+
+          echo "No blocked paths found. PR is clean."
