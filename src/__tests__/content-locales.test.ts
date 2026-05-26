@@ -1,6 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { localizedHome, localizedHomeList } from '../data/locales';
-import { localizedPages, localizedPageSlugs } from '../data/localizedPages';
+import {
+  localizedPages,
+  localizedPageSlugs,
+  getLocalizedPage,
+  localizedPageAlternates,
+  htmlLangForLocale,
+  ogLocaleForLocale,
+} from '../data/localizedPages';
 
 const EXPECTED_LOCALES = ['de', 'dk', 'no', 'jp'] as const;
 const EXPECTED_SLUGS = ['about', 'work', 'ai-systems', 'contact', 'insights'] as const;
@@ -98,5 +105,56 @@ describe('localizedPages', () => {
       expect(typeof copy.secondaryHref, `${copy.locale}/${copy.slug} secondaryHref type`).toBe('string');
       expect(copy.secondaryHref.length, `${copy.locale}/${copy.slug} secondaryHref empty`).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('localizedPages helper functions', () => {
+  it('getLocalizedPage returns the correct entry for a locale/slug pair', () => {
+    for (const locale of EXPECTED_LOCALES) {
+      for (const slug of EXPECTED_SLUGS) {
+        const page = getLocalizedPage(locale, slug);
+        expect(page.locale).toBe(locale);
+        expect(page.slug).toBe(slug);
+        expect(page.title.length).toBeGreaterThan(0);
+        expect(page.h1.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('localizedPageAlternates returns x-default, en, and one entry per locale', () => {
+    for (const slug of EXPECTED_SLUGS) {
+      const alternates = localizedPageAlternates(slug);
+      // x-default + en + 4 locales
+      expect(alternates.length).toBe(2 + EXPECTED_LOCALES.length);
+
+      const xDefault = alternates.find((a) => a.lang === 'x-default');
+      expect(xDefault?.href).toBe(`https://wojciech.io/${slug}/`);
+
+      const en = alternates.find((a) => a.lang === 'en');
+      expect(en?.href).toBe(`https://wojciech.io/${slug}/`);
+
+      for (const locale of EXPECTED_LOCALES) {
+        const entry = alternates.find((a) => a.href.includes(`/${locale}/`));
+        expect(entry, `${locale}/${slug} alternate missing`).toBeDefined();
+        expect(entry?.href).toMatch(/^https:\/\/wojciech\.io\//);
+        expect(entry?.href).toContain(`/${slug}/`);
+      }
+    }
+  });
+
+  it.each(EXPECTED_LOCALES)('%s: htmlLangForLocale returns a valid BCP-47 language tag', (locale) => {
+    const htmlLang = htmlLangForLocale(locale);
+    expect(typeof htmlLang).toBe('string');
+    expect(htmlLang.length).toBeGreaterThan(0);
+    // BCP-47: should contain at least a 2-letter primary subtag
+    expect(htmlLang).toMatch(/^[a-z]{2}/);
+  });
+
+  it.each(EXPECTED_LOCALES)('%s: ogLocaleForLocale returns a non-empty locale string', (locale) => {
+    const ogLocale = ogLocaleForLocale(locale);
+    expect(typeof ogLocale).toBe('string');
+    expect(ogLocale.length).toBeGreaterThan(0);
+    // OG locale format: ll_CC (e.g. de_DE, ja_JP)
+    expect(ogLocale).toMatch(/^[a-z]{2}_[A-Z]{2}$/);
   });
 });
