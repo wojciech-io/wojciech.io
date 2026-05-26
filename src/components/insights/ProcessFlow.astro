@@ -1,0 +1,163 @@
+---
+interface Step {
+  label: string;
+  body?: string;
+  tag?: string;
+  highlight?: boolean;
+}
+
+interface Props {
+  steps?: Step[];
+  title?: string;
+  caption?: string;
+  direction?: 'horizontal' | 'vertical';
+}
+
+const { steps = [], title, caption, direction = 'horizontal' } = Astro.props;
+---
+
+<section class={`process-flow process-flow--${direction}`}>
+  {title && <p class="process-flow__title">{title}</p>}
+
+  <div class="process-flow__track">
+    {steps.map((step, i) => (
+      <>
+        <div class={`process-step${step.highlight ? ' process-step--highlight' : ''}`}>
+          {step.tag && <span class="process-step__tag">{step.tag}</span>}
+          <span class="process-step__label">{step.label}</span>
+          {step.body && <p class="process-step__body">{step.body}</p>}
+        </div>
+        {i < steps.length - 1 && (
+          <div class="process-flow__arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        )}
+      </>
+    ))}
+    <slot />
+  </div>
+
+  {caption && <p class="process-flow__caption">{caption}</p>}
+</section>
+
+<style>
+  .process-flow {
+    margin-block: 2rem;
+  }
+
+  .process-flow__title {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  /* Horizontal layout */
+  .process-flow--horizontal .process-flow__track {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .process-flow--horizontal .process-flow__arrow {
+    display: flex;
+    align-items: center;
+    padding-top: 0.75rem;
+    color: var(--color-text-dim);
+    flex-shrink: 0;
+  }
+
+  /* Vertical layout */
+  .process-flow--vertical .process-flow__track {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .process-flow--vertical .process-flow__arrow {
+    display: flex;
+    justify-content: center;
+    padding: 0.25rem 0;
+    color: var(--color-text-dim);
+    transform: rotate(90deg);
+  }
+
+  /* Step card */
+  .process-step {
+    flex: 1;
+    min-width: 9rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-2);
+  }
+
+  .process-step--highlight {
+    border-color: var(--color-accent) / 0.5;
+    background: var(--color-accent) / 0.06;
+  }
+
+  .process-flow--vertical .process-step {
+    min-width: unset;
+    flex: unset;
+  }
+
+  .process-step__tag {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+
+  .process-step--highlight .process-step__tag {
+    color: var(--color-accent-hi);
+  }
+
+  .process-step__label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--color-text);
+  }
+
+  .process-step__body {
+    margin: 0.375rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .process-flow__caption {
+    margin: 0.875rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-text-dim);
+    text-align: center;
+  }
+
+  @media (max-width: 540px) {
+    .process-flow--horizontal .process-flow__track {
+      flex-direction: column;
+    }
+
+    .process-flow--horizontal .process-flow__arrow {
+      transform: rotate(90deg);
+      justify-content: center;
+      padding-top: 0;
+    }
+
+    .process-step {
+      min-width: unset;
+    }
+  }
+</style>

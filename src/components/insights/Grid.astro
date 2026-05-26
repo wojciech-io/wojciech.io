@@ -1,0 +1,88 @@
+---
+interface Props {
+  cols?: 2 | 3 | 4;
+  gap?: 'sm' | 'md' | 'lg';
+  title?: string;
+  caption?: string;
+}
+
+const { cols = 3, gap = 'md', title, caption } = Astro.props;
+---
+
+<section class={`content-grid content-grid--cols-${cols} content-grid--gap-${gap}`}>
+  {(title || caption) && (
+    <header class="content-grid__header">
+      {title && <p class="content-grid__title">{title}</p>}
+      {caption && <p class="content-grid__caption">{caption}</p>}
+    </header>
+  )}
+  <div class="content-grid__cells">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .content-grid {
+    margin-block: 2rem;
+  }
+
+  .content-grid__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .content-grid__title {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .content-grid__caption {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+
+  .content-grid__cells {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Gap sizes */
+  .content-grid--gap-sm .content-grid__cells { gap: 0.5rem; }
+  .content-grid--gap-md .content-grid__cells { gap: 1rem; }
+  .content-grid--gap-lg .content-grid__cells { gap: 1.5rem; }
+
+  @media (min-width: 480px) {
+    .content-grid--cols-2 .content-grid__cells {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 540px) {
+    .content-grid--cols-3 .content-grid__cells,
+    .content-grid--cols-4 .content-grid__cells {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 720px) {
+    .content-grid--cols-3 .content-grid__cells {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 860px) {
+    .content-grid--cols-4 .content-grid__cells {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

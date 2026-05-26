@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('insights', (p) => !p.data.draft))
-  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
   .slice(0, 3);
 ---
 
@@ -30,7 +30,7 @@ const posts = (await getCollection('insights', (p) => !p.data.draft))
     <div class="divide-y divide-[var(--color-border)]">
       {posts.map((post) => (
         <a
-          href={`/insights/${post.id}/`}
+          href={`/insights/${post.id.replace(/\.mdx?$/, '')}/`}
           class="group flex flex-col md:flex-row md:items-start gap-6 py-8 transition-colors hover:text-[var(--color-accent-hi)]"
         >
           <div class="md:w-28 shrink-0">
@@ -64,7 +64,7 @@ const posts = (await getCollection('insights', (p) => !p.data.draft))
         New notes on AI systems, GTM architecture, and shipped products, published as they are ready.
       </p>
       <a
-        href="/insights"
+        href="/insights/"
         class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text)] border border-[var(--color-border)] rounded-[var(--radius-btn)] px-5 py-2 hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors whitespace-nowrap"
       >
         All writing →
