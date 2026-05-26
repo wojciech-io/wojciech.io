@@ -28,6 +28,24 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 2, name: 'Insights', item: SITE.url + '/insights/' },
   ],
 };
+const articleListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'AI & GTM Insights · Operator Notes',
+  url: SITE.url + '/insights/',
+  author: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: SITE.url + '/' },
+  blogPost: allPosts.slice(0, 10).map((p) => {
+    const slug = p.id.replace(/\.mdx?$/, '');
+    return {
+      '@type': 'BlogPosting',
+      headline: p.data.title,
+      description: p.data.description,
+      url: `${SITE.url}/insights/${slug}/`,
+      datePublished: p.data.publishedAt.toISOString(),
+      keywords: p.data.tags.join(', '),
+    };
+  }),
+};
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -53,7 +71,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
   description="Field notes on AI systems, GTM architecture, and revenue system design. Practical patterns from an operator who builds and runs these systems in production."
   ogImage="/og/pages/insights.png"
   alternates={localizedPageAlternates('insights')}
-  schema={breadcrumbSchema}
+  schema={[breadcrumbSchema, articleListSchema]}
 >
   <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
 

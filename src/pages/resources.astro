@@ -55,13 +55,26 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 2, name: 'Resources', item: SITE.url + '/resources/' },
   ],
 };
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Resources · Tools and Templates for Operators',
+  url: SITE.url + '/resources/',
+  itemListElement: resources.map((r, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: r.title,
+    description: r.description,
+    url: r.external ? r.href : SITE.url + r.href,
+  })),
+};
 ---
 
 <Layout
   title="Resources · Tools and Templates for Operators"
   description="Starter packs, MCP configs, and operator frameworks for AI-native GTM and growth systems. Built for people who ship."
   ogImage="/og/pages/resources.png"
-  schema={breadcrumbSchema}
+  schema={[breadcrumbSchema, itemListSchema]}
 >
 
   <!-- Header -->
