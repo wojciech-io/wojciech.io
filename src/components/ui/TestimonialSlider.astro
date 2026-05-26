@@ -17,8 +17,11 @@ const { testimonials } = Astro.props;
 
   <!-- Desktop: static grid (no slider) -->
   <div class="hidden lg:grid lg:grid-cols-3 gap-5">
-    {testimonials.map((t) => (
-      <figure class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col h-full">
+    {testimonials.map((t, i) => (
+      <figure
+        class="reveal-up rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col h-full"
+        {...(i === 0 ? { 'data-reveal-index': 1 } : {})}
+      >
 
         <!-- Stars -->
         <div class="flex gap-1 mb-5" role="img" aria-label="5 out of 5 stars">
@@ -81,8 +84,11 @@ const { testimonials } = Astro.props;
     <div
       class="testimonial-track flex gap-5 transition-transform duration-500 ease-out will-change-transform"
     >
-      {testimonials.map((t) => (
-        <figure class="testimonial-card shrink-0 w-[85vw] sm:w-[64%] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col">
+      {testimonials.map((t, i) => (
+        <figure
+          class="reveal-up testimonial-card shrink-0 w-[85vw] sm:w-[64%] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col"
+          {...(i === 0 ? { 'data-reveal-index': 1 } : {})}
+        >
 
           <!-- Stars -->
           <div class="flex gap-1 mb-5" role="img" aria-label="5 out of 5 stars">

@@ -65,7 +65,7 @@ const rest = projects.slice(1);
   <div class="mx-auto max-w-6xl px-6">
 
     <!-- Header -->
-    <div class="flex items-end justify-between mb-12">
+    <div class="reveal-up flex items-end justify-between mb-12" data-reveal-index="0">
       <div>
         <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
           <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
@@ -86,7 +86,8 @@ const rest = projects.slice(1);
       href={featured.href}
       target={featured.external ? '_blank' : undefined}
       rel={featured.external ? 'noopener noreferrer' : undefined}
-      class="group block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/30 transition-colors mb-5"
+      class="reveal-up group block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-lift hover:border-[var(--color-accent)]/30 transition-colors mb-5"
+      data-reveal-index="0"
     >
       <div class="grid min-h-[360px] lg:grid-cols-2">
         <!-- Left: real artifact -->
@@ -152,7 +153,7 @@ const rest = projects.slice(1);
 
     <!-- Remaining projects: 3-column grid -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {rest.map((p) => (
+      {rest.map((p, index) => (
         <ProjectCard
           cover={p.cover}
           title={p.title}
@@ -165,6 +166,7 @@ const rest = projects.slice(1);
           artifact={p.artifact}
           outcome={p.outcome}
           external={p.external}
+          revealIndex={index + 1}
         />
       ))}
 
