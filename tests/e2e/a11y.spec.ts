@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 /**
  * Accessibility baseline.
  *
- * Sprint 1: warning-mode — collects violations, attaches to report, but does
+ * Sprint 1: warning-mode, collects violations, attaches to report, but does
  * NOT fail the build on serious findings until baseline is clean.
  * Sprint 2: flip to blocking on `serious` and `critical`.
  *
@@ -17,7 +17,7 @@ const BLOCKING_MIN_IMPACT: 'minor' | 'moderate' | 'serious' | 'critical' | null 
 const PAGES = ['/', '/about/', '/work/', '/ai-systems/', '/insights/'];
 
 for (const path of PAGES) {
-  test(`a11y baseline — ${path}`, async ({ page }, testInfo) => {
+  test(`a11y baseline: ${path}`, async ({ page }, testInfo) => {
     await page.goto(path);
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
@@ -35,7 +35,7 @@ for (const path of PAGES) {
         (acc, v) => ((acc[v.impact ?? 'unknown'] = (acc[v.impact ?? 'unknown'] ?? 0) + 1), acc),
         {} as Record<string, number>,
       );
-      console.warn(`a11y ${path} — violations:`, counts);
+      console.warn(`a11y ${path}: violations:`, counts);
     } else {
       const blocking = results.violations.filter((v) =>
         impactAtLeast(v.impact, BLOCKING_MIN_IMPACT),

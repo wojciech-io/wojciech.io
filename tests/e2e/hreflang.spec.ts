@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Canonical correctness (post-Sprint-2-B1 — English-only launch).
+ * Canonical correctness (post-Sprint-2-B1: English-only launch).
  *
  * Multilingual hreflang tests removed Sprint 2 B1 along with /[lang]/, /pl/,
  * /it/ route directories. The original tests guarded against:

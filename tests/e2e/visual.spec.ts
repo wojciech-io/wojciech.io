@@ -1,4 +1,4 @@
-// Tier 5a — Visual regression baseline
+// Tier 5a: Visual regression baseline
 //
 // Threshold rationale: 0.1 maxDiffPixelRatio is lenient initially. Tighten to 0.02
 // after 2-3 weeks of stable runs. Mask animated/dynamic regions (live counters,

@@ -10,20 +10,15 @@ const {
   src,
   position = 'center',
   opacity = 0.1,
-  eager = false,
 } = Astro.props;
 ---
 
-<img
-  src={src}
-  alt=""
+<div
+  class="absolute inset-0 hidden bg-cover bg-center saturate-[0.82] md:block"
+  style={`background-image: url('${src}'); background-position: ${position}; opacity: ${opacity};`}
   aria-hidden="true"
-  class="absolute inset-0 h-full w-full object-cover saturate-[0.82]"
-  style={`object-position: ${position}; opacity: ${opacity};`}
-  loading={eager ? 'eager' : 'lazy'}
-  decoding="async"
 />
 <div
-  class="absolute inset-0 bg-gradient-to-b from-[var(--color-bg)]/62 via-[var(--color-bg)]/84 to-[var(--color-bg)]"
+  class="absolute inset-0 hidden bg-gradient-to-b from-[var(--color-bg)]/62 via-[var(--color-bg)]/84 to-[var(--color-bg)] md:block"
   aria-hidden="true"
 />
