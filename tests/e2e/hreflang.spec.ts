@@ -1,20 +1,13 @@
 import { test, expect } from '@playwright/test';
 
-/**
- * Canonical correctness (post-Sprint-2-B1: English-only launch).
- *
- * Multilingual hreflang tests removed Sprint 2 B1 along with /[lang]/, /pl/,
- * /it/ route directories. The original tests guarded against:
- *   - localized pages must emit en/pl/it/x-default (no localized pages now)
- *   - EN-only articles must NOT emit PL/IT alternates (always true now)
- *   - og:locale matches html lang on localized pages (no localized pages)
- *
- * Only the canonical-URL guard remains relevant.
- *
- * When a future localization sprint reinstates /[lang]/, restore the full
- * hreflang test suite from git history (commit ba6dc07 / 9bd1712 referenced
- * in the original docstring) and re-enable.
- */
+const EXPECTED_HOME_ALTERNATES = [
+  ['x-default', 'https://wojciech.io/'],
+  ['en', 'https://wojciech.io/'],
+  ['de-DE', 'https://wojciech.io/de/'],
+  ['da-DK', 'https://wojciech.io/dk/'],
+  ['nb-NO', 'https://wojciech.io/no/'],
+  ['ja-JP', 'https://wojciech.io/jp/'],
+] as const;
 
 test('canonical on EN page points to root (never /en/)', async ({ page }) => {
   await page.goto('/about/');
@@ -23,11 +16,35 @@ test('canonical on EN page points to root (never /en/)', async ({ page }) => {
   expect(canonical).not.toMatch(/\/en\//);
 });
 
-test('homepage emits no hreflang alternates (English-only launch)', async ({ page }) => {
+test('homepage emits localized home hreflang alternates', async ({ page }) => {
   await page.goto('/');
-  const count = await page.locator('link[rel=alternate][hreflang]').count();
-  expect(
-    count,
-    'English-only launch: no localized variants exist, so no hreflang alternates should emit',
-  ).toBe(0);
+
+  const alternates = await page
+    .locator('link[rel=alternate][hreflang]')
+    .evaluateAll((links) =>
+      links.map((link) => [
+        link.getAttribute('hreflang'),
+        link.getAttribute('href'),
+      ]),
+    );
+
+  expect(alternates).toEqual(EXPECTED_HOME_ALTERNATES);
+});
+
+test('localized home pages point back to the same alternate set', async ({ page }) => {
+  for (const [, href] of EXPECTED_HOME_ALTERNATES.filter(([lang]) => lang !== 'x-default' && lang !== 'en')) {
+    const localizedPath = new URL(href).pathname;
+    await page.goto(localizedPath);
+
+    const alternates = await page
+      .locator('link[rel=alternate][hreflang]')
+      .evaluateAll((links) =>
+        links.map((link) => [
+          link.getAttribute('hreflang'),
+          link.getAttribute('href'),
+        ]),
+      );
+
+    expect(alternates).toEqual(EXPECTED_HOME_ALTERNATES);
+  }
 });
