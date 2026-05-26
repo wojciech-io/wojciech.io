@@ -176,8 +176,19 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       }
 
       initLenis();
-      document.addEventListener('astro:page-load', () => { lenis?.destroy(); lenis = null; initLenis(); });
-      document.addEventListener('astro:before-preparation', () => { lenis?.destroy(); lenis = null; });
+      document.addEventListener('astro:page-load', () => {
+        lenis?.destroy(); lenis = null;
+        // Restore smooth scroll after transition completes
+        document.documentElement.style.removeProperty('scroll-behavior');
+        initLenis();
+      });
+      document.addEventListener('astro:before-preparation', () => {
+        lenis?.destroy(); lenis = null;
+        // Kill native smooth scroll so the browser doesn't animate-scroll to top
+        // during the View Transition (double-scroll jank)
+        document.documentElement.style.scrollBehavior = 'auto';
+        window.scrollTo(0, 0);
+      });
     </script>
 
     <!-- CF_BEACON_TOKEN: set PUBLIC_CF_BEACON_TOKEN in Cloudflare Pages env vars
