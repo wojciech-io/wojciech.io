@@ -13,6 +13,8 @@ import { test, expect } from '@playwright/test';
 const PAGES = [
   { path: '/contact/', name: 'contact' },
   { path: '/cv/', name: 'cv' },
+  { path: '/now/', name: 'now' },
+  { path: '/resources/', name: 'resources' },
 ];
 
 const BASE_URL = process.env.BASE_URL ?? 'http://localhost:4321';
