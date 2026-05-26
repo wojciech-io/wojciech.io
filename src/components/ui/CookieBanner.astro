@@ -43,12 +43,15 @@
 </div>
 
 <script>
-  import { initAfterConsent, optOut } from '../../utils/mixpanel';
-
   const COOKIE_KEY = 'cookie-consent';
   const banner = document.getElementById('cookie-banner') as HTMLElement;
   const acceptBtn = document.getElementById('cookie-accept') as HTMLButtonElement;
   const declineBtn = document.getElementById('cookie-decline') as HTMLButtonElement;
+
+  async function initAnalytics() {
+    const { initAfterConsent } = await import('../../utils/mixpanel');
+    initAfterConsent();
+  }
 
   function hideBanner() {
     banner.classList.add('translate-y-full');
@@ -66,7 +69,7 @@
   const consent = localStorage.getItem(COOKIE_KEY);
 
   if (consent === 'accepted') {
-    initAfterConsent();
+    initAnalytics();
   } else if (!consent) {
     showBanner();
   }
@@ -74,12 +77,12 @@
   acceptBtn?.addEventListener('click', () => {
     localStorage.setItem(COOKIE_KEY, 'accepted');
     hideBanner();
-    initAfterConsent();
+    initAnalytics();
+    window.dispatchEvent(new Event('analytics-consent-accepted'));
   });
 
   declineBtn?.addEventListener('click', () => {
     localStorage.setItem(COOKIE_KEY, 'declined');
     hideBanner();
-    optOut();
   });
 </script>

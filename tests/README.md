@@ -1,4 +1,4 @@
-# Tests — Sprint 1 baseline
+# Tests: Sprint 1 baseline
 
 Playwright-based end-to-end + accessibility. Owned by `test-engineer` agent.
 
@@ -23,17 +23,17 @@ npx playwright test --ui
 # Update visual baselines only for intentional UI changes
 npx playwright test visual --update-snapshots --project=chromium-desktop
 
-# Run against production (smoke only — no test data assumptions)
+# Run against production (smoke only, no test data assumptions)
 BASE_URL=https://wojciech.io npx playwright test smoke
 ```
 
 ## Files
 
-- `playwright.config.ts` — root config; switches between local preview and prod via `BASE_URL`
-- `tests/e2e/smoke.spec.ts` — golden-path 200-checks + heading presence; runs everywhere
-- `tests/e2e/a11y.spec.ts` — axe-core scan per smoke page; warning-mode in Sprint 1
-- `tests/e2e/visual.spec.ts` — visual regression baselines for 5 pages × 3 viewports
-- `tests/e2e/__screenshots__/` — committed Playwright screenshot baselines
+- `playwright.config.ts`: root config; switches between local preview and prod via `BASE_URL`
+- `tests/e2e/smoke.spec.ts`: golden-path 200-checks + heading presence; runs everywhere
+- `tests/e2e/a11y.spec.ts`: axe-core scan per smoke page; warning-mode in Sprint 1
+- `tests/e2e/visual.spec.ts`: visual regression baselines for 5 pages × 3 viewports
+- `tests/e2e/__screenshots__/`: committed Playwright screenshot baselines
 
 ## Modes
 
@@ -45,7 +45,7 @@ BASE_URL=https://wojciech.io npx playwright test smoke
 
 ## A11y baseline policy
 
-Sprint 1: **warning-mode** — violations logged + attached to report, no failed test.
+Sprint 1: **warning-mode**, violations logged + attached to report, no failed test.
 Sprint 2 plan: flip `BLOCKING_MIN_IMPACT = 'serious'` in `a11y.spec.ts`. Before flipping, baseline must be clean across all smoke pages.
 
 ## Visual regression baseline update workflow
@@ -54,9 +54,9 @@ Sprint 2 plan: flip `BLOCKING_MIN_IMPACT = 'serious'` in `a11y.spec.ts`. Before 
 2. Run `npx playwright test visual --update-snapshots --project=chromium-desktop`.
 3. Inspect the changed PNGs in `tests/e2e/__screenshots__/visual.spec.ts-snapshots/`.
 4. Commit the snapshot update with the code change in the same commit.
-5. Commit message must explain why the screenshot changed, for example "feat(home): new hero CTA — screenshot updated".
+5. Commit message must explain why the screenshot changed, for example "feat(home): new hero CTA, screenshot updated".
 
-Never update baselines just to make CI green. If you don't know why a baseline changed, investigate — that's the entire point.
+Never update baselines just to make CI green. If you don't know why a baseline changed, investigate: that's the entire point.
 
 Run visual updates when:
 
