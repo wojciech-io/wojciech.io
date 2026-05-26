@@ -94,6 +94,24 @@ test('rss feed items include <category> tags', async ({ request }) => {
   expect(body).toContain('<category>');
 });
 
+test('json feed is valid and contains required fields', async ({ request }) => {
+  const r = await request.get('/feed.json');
+  expect(r.status()).toBe(200);
+  expect(r.headers()['content-type']).toContain('application/feed+json');
+  const feed = await r.json();
+  expect(feed.version).toBe('https://jsonfeed.org/version/1.1');
+  expect(feed.title).toBeTruthy();
+  expect(feed.home_page_url).toMatch(/^https?:\/\//);
+  expect(feed.feed_url).toMatch(/\/feed\.json$/);
+  expect(Array.isArray(feed.items)).toBe(true);
+  expect(feed.items.length, 'feed must have at least one item').toBeGreaterThan(0);
+  const item = feed.items[0];
+  expect(item.id).toBeTruthy();
+  expect(item.url).toMatch(/\/insights\//);
+  expect(item.title).toBeTruthy();
+  expect(item.date_published).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+});
+
 test('legacy /blog/* redirect lands on a live insights article (prod only)', async ({
   page,
 }) => {
