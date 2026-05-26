@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
 interface Props {
   title?: string;
   description?: string;
@@ -107,6 +108,15 @@ const schemaItems = [...baseSchema, ...pageSchema];
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   )}
   <script is:inline>
+    (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable time_event track track_pageview track_links track_forms register register_once unregister identify name_tag set_config reset people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+    mixpanel.init("efa47f584d961f6fdbe3857da52daf9a",{api_host:"https://api-eu.mixpanel.com",persistence:"localStorage",track_pageview:false,ip:false});
+    if(localStorage.getItem('mp-consent')==='yes'){mixpanel.opt_in_tracking();mixpanel.track("page_viewed",{path:location.pathname,site:"academy.wojciech.io"});}
+    else{mixpanel.opt_out_tracking();}
+    window.addEventListener('wio:outbound-clicked',function(event){
+      mixpanel.track("outbound_clicked",Object.assign({site:"academy.wojciech.io"},event.detail||{}));
+    });
+  </script>
+  <script is:inline>
     (function(){
       // Mark JS available BEFORE first paint so reveal animations only hide
       // content when we can actually reveal it. No-JS users see everything.
@@ -165,5 +175,22 @@ const schemaItems = [...baseSchema, ...pageSchema];
   <script>
     import('../scripts/interactions.client.ts');
   </script>
+  <div id="academy-consent" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;border-top:1px solid var(--border);background:var(--bg1);padding:10px 20px;gap:12px;align-items:center;font-size:12px;color:var(--text-2)">
+    <span style="flex:1">Używam Mixpanel (EU), żeby rozumieć zainteresowanie programem — anonimowo, bez reklam. <a href="https://wojciech.io/privacy/" target="_blank" rel="noopener noreferrer" style="color:var(--orange);text-decoration:underline">Szczegóły</a></span>
+    <button onclick="academyConsent('yes')" style="padding:5px 14px;background:var(--orange);color:#050505;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">OK</button>
+    <button onclick="academyConsent('no')" style="padding:5px 10px;background:none;border:none;font-size:11px;color:var(--text-2);cursor:pointer">Nie</button>
+  </div>
+  <script is:inline>
+    function academyConsent(v){
+      localStorage.setItem('mp-consent',v);
+      document.getElementById('academy-consent').style.display='none';
+      if(v==='yes'){mixpanel.opt_in_tracking();mixpanel.track("page_viewed",{path:location.pathname,site:"academy.wojciech.io"});}
+    }
+    (function(){
+      var c=localStorage.getItem('mp-consent');
+      if(!c) document.getElementById('academy-consent').style.display='flex';
+    })();
+  </script>
+  <OutboundTelemetry />
 </body>
 </html>

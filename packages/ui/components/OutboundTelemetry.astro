@@ -1,0 +1,60 @@
+<script is:inline>
+  (() => {
+    if (window.__wioOutboundTelemetryReady) return;
+    window.__wioOutboundTelemetryReady = true;
+
+    const INTERNAL_ROOT = 'wojciech.io';
+    const MAX_LABEL_LENGTH = 72;
+
+    const isInternalHost = (hostname) => {
+      const host = hostname.toLowerCase();
+      return host === INTERNAL_ROOT || host.endsWith(`.${INTERNAL_ROOT}`);
+    };
+
+    const cleanLabel = (value) => {
+      const label = (value || '').replace(/\s+/g, ' ').trim();
+      return label ? label.slice(0, MAX_LABEL_LENGTH) : undefined;
+    };
+
+    const ensureUtmParams = (url, label) => {
+      const source = window.location.hostname || INTERNAL_ROOT;
+      if (!url.searchParams.has('utm_source')) url.searchParams.set('utm_source', source);
+      if (!url.searchParams.has('utm_medium')) url.searchParams.set('utm_medium', 'referral');
+      if (!url.searchParams.has('utm_campaign')) url.searchParams.set('utm_campaign', 'outbound');
+      if (label && !url.searchParams.has('utm_content')) url.searchParams.set('utm_content', label);
+    };
+
+    document.addEventListener('click', (event) => {
+      const anchor = event.target?.closest?.('a[href]');
+      if (!anchor) return;
+
+      let url;
+      try {
+        url = new URL(anchor.getAttribute('href'), window.location.href);
+      } catch {
+        return;
+      }
+
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+      if (isInternalHost(url.hostname)) return;
+
+      const originalHref = url.toString();
+      const label = cleanLabel(anchor.getAttribute('aria-label') || anchor.textContent || anchor.href);
+
+      ensureUtmParams(url, label);
+      const href = url.toString();
+      if (anchor.href !== href) anchor.href = href;
+
+      window.dispatchEvent(new CustomEvent('wio:outbound-clicked', {
+        detail: {
+          href,
+          original_href: originalHref,
+          label,
+          destination_host: url.hostname,
+          source_host: window.location.hostname,
+          path: window.location.pathname,
+        },
+      }));
+    }, { capture: true });
+  })();
+</script>
