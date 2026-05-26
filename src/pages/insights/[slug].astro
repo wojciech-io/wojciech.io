@@ -409,6 +409,8 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
 
   // Newsletter CTA in article footer
   document.querySelector('a[href="/subscribe/"]')?.addEventListener('click', () => {
-    trackNewsletterCtaClicked({ location: 'article_end' });
+    loadAnalytics().then((analytics) =>
+      analytics?.trackNewsletterCtaClicked({ location: 'article_end' }),
+    );
   });
 </script>
