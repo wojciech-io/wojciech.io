@@ -6,11 +6,24 @@ import { test, expect } from '@playwright/test';
  * Catches broken /privacy links (historical CookieBanner bug) and any
  * regressions in cross-page navigation.
  *
- * PL/IT routes + lang-switcher tests removed Sprint 2 B1 (English-only
- * launch per CLAUDE.md). Re-add when localization sprint reinstates them.
+ * Locale index pages (DE/DK/NO/JP) reinstated as locale sprint is active.
+ * PL/IT removed as legacy routes redirect to /.
  */
 
-const PAGES_TO_AUDIT = ['/', '/about/', '/work/', '/ai-systems/', '/insights/', '/resources/', '/contact/', '/now/'];
+const PAGES_TO_AUDIT = [
+  '/',
+  '/about/',
+  '/work/',
+  '/ai-systems/',
+  '/insights/',
+  '/resources/',
+  '/contact/',
+  '/now/',
+  '/de/',
+  '/dk/',
+  '/no/',
+  '/jp/',
+];
 
 test('cookie banner /privacy link resolves (was 404 historically)', async ({ page }) => {
   await page.goto('/');
