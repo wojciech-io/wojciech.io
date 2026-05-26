@@ -81,18 +81,18 @@ const stackItems = [
       <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
 
         <!-- Left: text -->
-        <div class="flex-1 max-w-xl animate-fade-up">
-          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">AI Systems</p>
-          <h1 class="text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5" transition:name="page-title-ai-systems">
+        <div class="flex-1 max-w-xl">
+          <p class="reveal-up text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4" data-reveal-index="0">AI Systems</p>
+          <h1 class="reveal-up text-4xl md:text-5xl font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5" data-reveal-index="1" transition:name="page-title-ai-systems">
             <span>AI in the architecture.</span><br class="hidden md:block" />
             <span class="text-[var(--color-text-muted)]">Not bolted on at the end.</span>
           </h1>
-          <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-8">
+          <p class="reveal-up text-lg text-[var(--color-text-muted)] leading-relaxed mb-8" data-reveal-index="2">
             Most teams add AI to tasks. I add it to systems.
             The difference is whether you get a faster copywriter or a different operating model: one that compounds, self-corrects, and runs without a human in every loop.
           </p>
-          <div class="flex flex-wrap gap-3">
-            <a href="#principles" class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-hi)] transition-colors text-sm">
+          <div class="reveal-up flex flex-wrap gap-3" data-reveal-index="3">
+            <a href="#principles" class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors text-sm">
               How I think about AI
             </a>
             <a href="#tools" class="btn-press inline-flex items-center gap-2 border border-[var(--color-border-2)] text-[var(--color-text)] font-medium px-6 py-3 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 transition-colors text-sm">
@@ -102,7 +102,7 @@ const stackItems = [
         </div>
 
         <!-- Right: terminal mockup -->
-        <div class="w-full lg:w-[460px] shrink-0 animate-scale-in [animation-delay:150ms]">
+        <div class="reveal-up w-full lg:w-[460px] shrink-0" data-reveal-index="2">
           <div class="rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] overflow-hidden shadow-2xl">
             <!-- Terminal title bar -->
             <div class="flex items-center gap-2 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
@@ -143,8 +143,8 @@ const stackItems = [
         class="mb-12"
       />
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {principles.map(({ n, title, body }) => (
-          <div class="relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 card-lift hover:border-[var(--color-border-2)] group">
+        {principles.map(({ n, title, body }, i) => (
+          <div class="reveal-up relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 card-lift hover:border-[var(--color-border-2)] group" data-reveal-index={i}>
             <span class="pointer-events-none select-none absolute -right-2 -top-4 text-[7rem] font-bold leading-none text-[var(--color-border)] opacity-60 group-hover:opacity-90 transition-opacity">{n}</span>
             <p class="relative text-xs font-semibold text-[var(--color-accent)] uppercase tracking-widest mb-5">{n}</p>
             <h3 class="relative text-base font-semibold text-[var(--color-text)] mb-2">{title}</h3>
@@ -251,13 +251,15 @@ const stackItems = [
         class="mb-12"
       />
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tools.map(({ title, description, tags, href }) => (
-          <ProofCard
-            title={title}
-            description={description}
-            tags={tags}
-            href={href}
-          />
+        {tools.map(({ title, description, tags, href }, i) => (
+          <div class="reveal-up" data-reveal-index={i}>
+            <ProofCard
+              title={title}
+              description={description}
+              tags={tags}
+              href={href}
+            />
+          </div>
         ))}
       </div>
     </div>
@@ -314,8 +316,8 @@ const stackItems = [
             { en: 'Custom agent and tool development', pl: 'Rozwój dedykowanych agentów i narzędzi', it: 'Sviluppo di agenti e strumenti su misura' },
             { en: 'Team onboarding to AI-native operating patterns', pl: 'Wdrożenie zespołu w AI-native wzorce działania', it: 'Onboarding del team ai modelli operativi AI-native' },
             { en: 'Ongoing iteration and measurement', pl: 'Bieżąca iteracja i pomiar', it: 'Iterazione e misurazione continue' },
-          ].map((item) => (
-            <div class="flex items-start gap-3 group">
+          ].map((item, i) => (
+            <div class="reveal-up flex items-start gap-3 group" data-reveal-index={i}>
               <span class="text-[var(--color-accent)] mt-0.5 shrink-0 group-hover:translate-x-0.5 transition-transform duration-150">→</span>
               <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors duration-150">{item.en}</p>
             </div>
