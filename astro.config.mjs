@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
 
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
-const sentryDsn = process.env.PUBLIC_SENTRY_DSN;
+const sentryDsn = process.env.PUBLIC_SENTRY_DSN ?? 'https://eeed3e8af9a62f73f7ae309873dddc50@o4511411558678528.ingest.de.sentry.io/4511411564314704';
 const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/subscribe/']);
 
 const isIndexableSitemapUrl = (/** @type {string} */ page) => {
@@ -37,7 +37,7 @@ export default defineConfig({
         client: Boolean(sentryDsn),
         server: false,
       },
-      clientInitPath: './sentry.client.config.ts',
+      clientInitPath: './sentry.client.config.js',
       bundleSizeOptimizations: {
         excludeTracing: true,
       },
