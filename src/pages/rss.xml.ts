@@ -24,6 +24,9 @@ export const GET: APIRoute = async ({ site }) => {
     .map((post) => {
       const slug = post.id.replace(/\.mdx?$/, '');
       const url = new URL(`/insights/${slug}/`, origin).href;
+      const category = post.data.category
+        ? `\n          <category>${escapeXml(post.data.category)}</category>`
+        : '';
 
       return `
         <item>
@@ -33,6 +36,7 @@ export const GET: APIRoute = async ({ site }) => {
           <guid isPermaLink="true">${url}</guid>
           <pubDate>${post.data.publishedAt.toUTCString()}</pubDate>
           <author>hello@wojciech.io (Wojciech Łuszczyński)</author>
+          ${category}
         </item>`;
     })
     .join('');

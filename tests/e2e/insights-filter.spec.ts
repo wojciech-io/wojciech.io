@@ -32,7 +32,7 @@ test.describe('/insights/ category filter', () => {
     await btn.click();
 
     await expect(btn).toHaveAttribute('aria-selected', 'true');
-    expect(page.url()).toContain(`cat=${encodeURIComponent(cat!)}`);
+    expect(new URL(page.url()).searchParams.get('cat')).toBe(cat);
   });
 
   test('URL ?cat= param restores filter on load', async ({ page }) => {
