@@ -42,23 +42,24 @@ const ALLOWED = [
 
 // Security headers applied to every wojciech.io response.
 // Mixpanel uses EU endpoints (api-eu.mixpanel.com). Sentry tunnel not used on public site.
-const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
+export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
   'x-content-type-options': 'nosniff',
   'x-frame-options': 'SAMEORIGIN',
   'referrer-policy': 'strict-origin-when-cross-origin',
   'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()',
-  // CSP: permit GA, Mixpanel EU, Gravatar, SimpleIcons CDN, self-hosted fonts.
+  // CSP: keep in sync with public/_headers. Middleware wins over Pages _headers
+  // whenever Pages Functions run on the public site.
   // unsafe-inline required for Astro's is:inline scripts and Tailwind utilities.
-  // gh.wojciech.io allowed in frame-src for the LiveEmbed demo on /ai-systems/.
+  // gh.wojciech.io is for LiveEmbed demos; Cal.com is for /contact/#book-call.
   'content-security-policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com",
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org https://unavatar.io",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com",
-    "font-src 'self'",
-    "frame-src https://gh.wojciech.io",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com",
+    "style-src 'self' 'unsafe-inline' https://app.cal.com",
+    "img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org https://unavatar.io https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://cal.com https://app.cal.com",
+    "font-src 'self' https://app.cal.com",
+    "frame-src https://gh.wojciech.io https://cal.com https://app.cal.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
