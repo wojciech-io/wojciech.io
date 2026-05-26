@@ -3,6 +3,7 @@ import SEOHead from '../components/seo/SEOHead.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import CookieBanner from '../components/ui/CookieBanner.astro';
+import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
 import ClientRouter from 'astro/components/ClientRouter.astro';
 import '../styles/global.css';
 
@@ -65,6 +66,7 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     </main>
     <Footer />
     <CookieBanner />
+    <OutboundTelemetry />
 
     <!-- Mixpanel: load only after consent, then fire page_viewed -->
     <script>
@@ -111,18 +113,31 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       setTimeout(trackCurrentPage, 300);
       window.addEventListener('analytics-consent-accepted', trackCurrentPage, { once: true });
 
-      // Track outbound links + internal CTAs globally via event delegation
+      window.addEventListener('wio:outbound-clicked', (event) => {
+        const detail = (event as CustomEvent<{
+          href?: string;
+          original_href?: string;
+          label?: string;
+          destination_host?: string;
+          source_host?: string;
+          path?: string;
+        }>).detail;
+        if (!detail.href) return;
+        loadAnalytics().then((analytics) => analytics?.trackOutboundClicked({
+          href: detail.href,
+          original_href: detail.original_href,
+          label: detail.label,
+          destination_host: detail.destination_host,
+          source_host: detail.source_host,
+          path: detail.path,
+        }));
+      });
+
+      // Track internal CTAs tagged with data-mp-cta globally via event delegation
       document.addEventListener('click', (e) => {
         const a = (e.target as Element)?.closest('a');
         if (!a) return;
         const href = a.getAttribute('href') ?? '';
-
-        // Outbound
-        if (href.startsWith('http') && !href.includes('wojciech.io')) {
-          loadAnalytics().then((analytics) =>
-            analytics?.trackOutboundClicked({ href, label: a.textContent?.trim() || undefined }),
-          );
-        }
 
         // Internal CTAs tagged with data-mp-cta
         const cta = a.dataset.mpCta;

@@ -97,6 +97,13 @@ export function trackNewsletterCtaClicked(props: { location: string }) {
   track('newsletter_cta_clicked', props);
 }
 
-export function trackOutboundClicked(props: { href: string; label?: string }) {
+export function trackOutboundClicked(props: {
+  href: string;
+  original_href?: string;
+  label?: string;
+  destination_host?: string;
+  source_host?: string;
+  path?: string;
+}) {
   track('outbound_clicked', props);
 }

@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
 interface Props {
   title?: string;
   activePage?: string;
@@ -68,6 +69,9 @@ const ogImage = `${SITE}/og-default.png`;
     mixpanel.init("efa47f584d961f6fdbe3857da52daf9a",{api_host:"https://api-eu.mixpanel.com",persistence:"localStorage",track_pageview:false,ip:false});
     if(localStorage.getItem('mp-consent')==='yes'){mixpanel.opt_in_tracking();mixpanel.track("page_viewed",{path:location.pathname,site:"gh.wojciech.io"});}
     else{mixpanel.opt_out_tracking();}
+    window.addEventListener('wio:outbound-clicked',function(event){
+      mixpanel.track("outbound_clicked",Object.assign({site:"gh.wojciech.io"},event.detail||{}));
+    });
   </script>
 </head>
 <body>
@@ -131,5 +135,6 @@ const ogImage = `${SITE}/og-default.png`;
     if(!c) document.getElementById('gh-consent').style.display='flex';
   })();
 </script>
+<OutboundTelemetry />
 </body>
 </html>

@@ -1,5 +1,6 @@
 ---
 import ThemeToggle from '@wojciech/ui/components/ThemeToggle.astro';
+import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -81,6 +82,15 @@ const image = `${SITE}/og-default.png`;
         document.documentElement.dataset.theme = t === 'dark' ? 'dark' : 'light';
         document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
       })();
+    </script>
+    <script is:inline>
+      (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable time_event track track_pageview track_links track_forms register register_once unregister identify name_tag set_config reset people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+      mixpanel.init("efa47f584d961f6fdbe3857da52daf9a",{api_host:"https://api-eu.mixpanel.com",persistence:"localStorage",track_pageview:false,ip:false});
+      if(localStorage.getItem('mp-consent')==='yes'){mixpanel.opt_in_tracking();mixpanel.track("page_viewed",{path:location.pathname,site:"notch.wojciech.io"});}
+      else{mixpanel.opt_out_tracking();}
+      window.addEventListener('wio:outbound-clicked',function(event){
+        mixpanel.track("outbound_clicked",Object.assign({site:"notch.wojciech.io"},event.detail||{}));
+      });
     </script>
     <script is:inline>
       window.setLang = function(l) {
@@ -252,5 +262,22 @@ const image = `${SITE}/og-default.png`;
       );
       document.querySelectorAll('.reveal-up').forEach((el) => obs.observe(el));
     </script>
+    <div id="notch-consent" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;border-top:1px solid var(--color-border);background:var(--color-surface);padding:10px 20px;gap:12px;align-items:center;font-size:12px;color:var(--color-text-muted)">
+      <span style="flex:1">This site uses Mixpanel (EU) to understand product interest — anonymously, no ads. <a href="https://wojciech.io/privacy/" target="_blank" rel="noopener noreferrer" style="color:var(--color-accent-cta);text-decoration:underline">Details</a></span>
+      <button onclick="notchConsent('yes')" style="padding:5px 14px;background:var(--color-accent-cta);color:var(--color-accent-text);border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer">Accept</button>
+      <button onclick="notchConsent('no')" style="padding:5px 10px;background:none;border:none;font-size:11px;color:var(--color-text-muted);cursor:pointer">No thanks</button>
+    </div>
+    <script is:inline>
+      function notchConsent(v){
+        localStorage.setItem('mp-consent',v);
+        document.getElementById('notch-consent').style.display='none';
+        if(v==='yes'){mixpanel.opt_in_tracking();mixpanel.track("page_viewed",{path:location.pathname,site:"notch.wojciech.io"});}
+      }
+      (function(){
+        var c=localStorage.getItem('mp-consent');
+        if(!c) document.getElementById('notch-consent').style.display='flex';
+      })();
+    </script>
+    <OutboundTelemetry />
   </body>
 </html>
