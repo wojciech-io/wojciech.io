@@ -98,7 +98,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Wenn das System klemmt, sprechen wir konkret.',
       lead: 'Schick Kontext, Stack und Engpass. Im Call klären wir, ob ein Audit, ein Build Sprint oder ein klarer Fix der richtige nächste Schritt ist.',
       primaryCta: '30 Minuten buchen',
-      primaryHref: '/contact/#book-call',
+      primaryHref: '/de/contact/#book-call',
       secondaryCta: 'LinkedIn öffnen',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -119,7 +119,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Operator Notes zu AI, GTM und Revenue Architecture.',
       lead: 'Die Beiträge zeigen Architektur, Entscheidungen und Lessons aus Systemen, die tatsächlich gebaut und betrieben werden.',
       primaryCta: 'Alle Artikel ansehen',
-      primaryHref: '/insights/',
+      primaryHref: '/de/insights/',
       secondaryCta: 'Call buchen',
       secondaryHref: '/de/contact/',
       stats: [
@@ -205,7 +205,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Når systemet sidder fast, taler vi konkret.',
       lead: 'Send kontekst, stack og flaskehals. På call’et afklarer vi, om næste skridt er audit, build sprint eller et konkret fix.',
       primaryCta: 'Book 30 minutter',
-      primaryHref: '/contact/#book-call',
+      primaryHref: '/dk/contact/#book-call',
       secondaryCta: 'Åbn LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -226,7 +226,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Operator notes om AI, GTM og revenue architecture.',
       lead: 'Artiklerne viser arkitektur, beslutninger og lessons fra systemer, der faktisk er bygget og kørt.',
       primaryCta: 'Se alle artikler',
-      primaryHref: '/insights/',
+      primaryHref: '/dk/insights/',
       secondaryCta: 'Book et call',
       secondaryHref: '/dk/contact/',
       stats: [
@@ -312,7 +312,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Når systemet sitter fast, snakker vi konkret.',
       lead: 'Send kontekst, stack og flaskehals. I samtalen avklarer vi om neste steg er audit, build sprint eller et konkret fix.',
       primaryCta: 'Book 30 minutter',
-      primaryHref: '/contact/#book-call',
+      primaryHref: '/no/contact/#book-call',
       secondaryCta: 'Åpne LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -333,7 +333,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Operator notes om AI, GTM og revenue architecture.',
       lead: 'Artiklene viser arkitektur, beslutninger og lessons fra systemer som faktisk er bygget og kjørt.',
       primaryCta: 'Se alle artikler',
-      primaryHref: '/insights/',
+      primaryHref: '/no/insights/',
       secondaryCta: 'Book en samtale',
       secondaryHref: '/no/contact/',
       stats: [
@@ -419,7 +419,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Systemが詰まっているなら、具体的に話しましょう。',
       lead: 'Context、stack、bottleneckを送ってください。Audit、build sprint、または具体的なfixのどれが次に必要かを判断します。',
       primaryCta: '30分を予約',
-      primaryHref: '/contact/#book-call',
+      primaryHref: '/jp/contact/#book-call',
       secondaryCta: 'LinkedInを見る',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -440,7 +440,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'AI、GTM、revenue architectureのoperator notes。',
       lead: '記事では、実際に構築し運用しているsystemのarchitecture、意思決定、lessonを説明します。',
       primaryCta: 'すべての記事を見る',
-      primaryHref: '/insights/',
+      primaryHref: '/jp/insights/',
       secondaryCta: '相談を予約',
       secondaryHref: '/jp/contact/',
       stats: [

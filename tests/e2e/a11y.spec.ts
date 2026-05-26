@@ -3,23 +3,37 @@ import AxeBuilder from '@axe-core/playwright';
 
 /**
  * Accessibility baseline.
- *
- * Sprint 1: warning-mode, collects violations, attaches to report, but does
- * NOT fail the build on serious findings until baseline is clean.
- * Sprint 2: flip to blocking on `serious` and `critical`.
- *
- * To flip to blocking, change BLOCKING_MIN_IMPACT to 'serious' below and the
- * assertion at the bottom from `console.warn` to `expect(...).toEqual([])`.
+ * Serious and critical axe findings block CI.
+ * Reduced motion is forced so the scanner evaluates final contrast rather
+ * than transient opacity during reveal animations.
  */
 
-const BLOCKING_MIN_IMPACT: 'minor' | 'moderate' | 'serious' | 'critical' | null = null;
+const BLOCKING_MIN_IMPACT: 'minor' | 'moderate' | 'serious' | 'critical' = 'serious';
 
-const PAGES = ['/', '/about/', '/work/', '/ai-systems/', '/insights/'];
+const PAGES = [
+  '/',
+  '/about/',
+  '/work/',
+  '/ai-systems/',
+  '/insights/',
+  '/contact/',
+  '/now/',
+  '/resources/',
+  '/de/',
+  '/dk/',
+  '/no/',
+  '/jp/',
+] as const;
 
 for (const path of PAGES) {
-  test(`a11y baseline: ${path}`, async ({ page }, testInfo) => {
+  test(`a11y blocking scan: ${path}`, async ({ page }, testInfo) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(path);
     const results = await new AxeBuilder({ page })
+      // Cal.com renders a third-party booking iframe with its own theme and
+      // contrast rules. Keep the host page blocking, but do not fail our CI
+      // on UI we cannot patch from this repo.
+      .exclude('#cal-inline iframe')
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .analyze();
 
@@ -29,19 +43,10 @@ for (const path of PAGES) {
       contentType: 'application/json',
     });
 
-    if (BLOCKING_MIN_IMPACT === null) {
-      // Warning mode: log only, no assertions.
-      const counts = results.violations.reduce(
-        (acc, v) => ((acc[v.impact ?? 'unknown'] = (acc[v.impact ?? 'unknown'] ?? 0) + 1), acc),
-        {} as Record<string, number>,
-      );
-      console.warn(`a11y ${path}: violations:`, counts);
-    } else {
-      const blocking = results.violations.filter((v) =>
-        impactAtLeast(v.impact, BLOCKING_MIN_IMPACT),
-      );
-      expect(blocking, `axe blocking violations on ${path}`).toEqual([]);
-    }
+    const blocking = results.violations.filter((v) =>
+      impactAtLeast(v.impact, BLOCKING_MIN_IMPACT),
+    );
+    expect(blocking, `axe blocking violations on ${path}`).toEqual([]);
   });
 }
 
