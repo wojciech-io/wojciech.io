@@ -179,7 +179,12 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
             >
               <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 28px 28px;" aria-hidden="true" />
               <div class="absolute top-3.5 left-3.5">
-                <span class="rounded-full bg-white/12 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/65 ring-1 ring-white/15">
+                <span
+                  class="rounded-full bg-white/12 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/65 ring-1 ring-white/15 cursor-pointer hover:bg-white/20 transition-colors"
+                  data-filter-cat={post.data.category ?? ''}
+                  role="button"
+                  tabindex="0"
+                >
                   {post.data.category ?? 'Article'}
                 </span>
               </div>
@@ -260,17 +265,20 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
   const ACTIVE   = 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm';
   const INACTIVE = 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]';
 
-  function applyFilter(cat: string) {
-    let visible = 0;
+  function applyFilter(cat: string, pushState = false) {
+    catBtns.forEach(b => {
+      const active = (b.dataset.cat ?? 'All') === cat;
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+      b.classList.remove(...ACTIVE.split(' '), ...INACTIVE.split(' '));
+      b.classList.add(...(active ? ACTIVE : INACTIVE).split(' '));
+    });
 
-    // Featured hero: show if All or category matches
+    let visible = 0;
     if (featured) {
       const match = cat === 'All' || (featured.dataset.category ?? '') === cat;
       featured.style.display = match ? '' : 'none';
       if (match) visible++;
     }
-
-    // Grid cards
     cards.forEach(card => {
       const match = cat === 'All' || (card.dataset.category ?? '') === cat;
       card.style.display = match ? '' : 'none';
@@ -279,17 +287,29 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
 
     noResults.classList.toggle('hidden', visible > 0);
     countEl.textContent = `${visible} article${visible !== 1 ? 's' : ''}`;
+
+    if (pushState) {
+      const url = new URL(window.location.href);
+      if (cat === 'All') url.searchParams.delete('cat');
+      else url.searchParams.set('cat', cat);
+      window.history.replaceState(null, '', url.toString());
+    }
   }
 
   catBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      catBtns.forEach(b => {
-        const active = b === btn;
-        b.setAttribute('aria-selected', active ? 'true' : 'false');
-        b.classList.remove(...ACTIVE.split(' '), ...INACTIVE.split(' '));
-        b.classList.add(...(active ? ACTIVE : INACTIVE).split(' '));
-      });
-      applyFilter(btn.dataset.cat ?? 'All');
-    });
+    btn.addEventListener('click', () => applyFilter(btn.dataset.cat ?? 'All', true));
+  });
+
+  // Restore filter from URL on load
+  const initialCat = new URL(window.location.href).searchParams.get('cat') ?? 'All';
+  applyFilter(initialCat);
+
+  // Allow tag chips in article cards to filter
+  document.addEventListener('click', (e) => {
+    const chip = (e.target as Element).closest<HTMLElement>('[data-filter-cat]');
+    if (!chip) return;
+    e.preventDefault();
+    applyFilter(chip.dataset.filterCat ?? 'All', true);
+    document.getElementById('cat-nav')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 </script>
