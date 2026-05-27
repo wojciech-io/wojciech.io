@@ -76,12 +76,14 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     <CookieBanner />
     <OutboundTelemetry />
 
-    <!-- Mixpanel: load only after consent, then fire page_viewed -->
+    <!-- Analytics: GA4 + Mixpanel + PostHog — loaded only after consent -->
     <script>
       const GA_ID = 'G-4ED804XJLP';
+      const PH_KEY = import.meta.env.PUBLIC_POSTHOG_KEY as string | undefined;
       const hasAnalyticsConsent = () => localStorage.getItem('cookie-consent') === 'accepted';
       let analyticsModule: Promise<typeof import('../utils/mixpanel')> | null = null;
       let googleAnalyticsLoaded = false;
+      let postHogLoaded = false;
 
       const initGoogleAnalytics = () => {
         if (googleAnalyticsLoaded) return;
@@ -102,9 +104,30 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
         w.gtag('config', GA_ID);
       };
 
+      type PostHog = { init: (k: string, opts: Record<string, unknown>) => void; capture: (e: string, p?: Record<string, unknown>) => void };
+      const ph = () => (window as typeof window & { posthog?: PostHog }).posthog;
+
+      const initPostHog = () => {
+        if (postHogLoaded || !PH_KEY) return;
+        postHogLoaded = true;
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://eu-assets.i.posthog.com/static/array.js';
+        script.onload = () => {
+          ph()?.init(PH_KEY, {
+            api_host: 'https://eu.i.posthog.com',
+            person_profiles: 'identified_only',
+            autocapture: false,
+            capture_pageview: false,
+          });
+        };
+        document.head.appendChild(script);
+      };
+
       const loadAnalytics = async () => {
         if (!hasAnalyticsConsent()) return null;
         initGoogleAnalytics();
+        initPostHog();
         analyticsModule ??= import('../utils/mixpanel');
         const analytics = await analyticsModule;
         analytics.initAfterConsent();
@@ -112,10 +135,13 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       };
 
       const trackCurrentPage = () => {
-        loadAnalytics().then((analytics) => analytics?.trackPageViewed({
-          path: window.location.pathname,
-          title: document.title,
-        }));
+        loadAnalytics().then((analytics) => {
+          analytics?.trackPageViewed({
+            path: window.location.pathname,
+            title: document.title,
+          });
+          ph()?.capture('$pageview', { path: window.location.pathname, title: document.title });
+        });
       };
 
       setTimeout(trackCurrentPage, 300);
