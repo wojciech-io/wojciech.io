@@ -8,7 +8,7 @@ const subdomains = [
   { host: 'wojciech.io', role: 'Public portfolio: insights, case studies, CV, tools', access: 'Public' },
   { host: 'app.wojciech.io', role: 'Private operating workspace', access: 'Password gate' },
   { host: 'gh.wojciech.io', role: 'GrowthHub analytics dashboard', access: 'Password gate' },
-  { host: 'academy.wojciech.io', role: 'Academy', access: 'Public' },
+  { host: 'academy.wojciech.io', role: 'Academy', access: 'Public + member area' },
   { host: 'notch.wojciech.io', role: 'Notch', access: 'Public' },
   { host: 'subscribe.wojciech.io', role: 'Newsletter funnel', access: 'Public' },
   { host: 'dev (internal)', role: 'Dev dashboard, agent health', access: 'Internal' },
@@ -89,6 +89,10 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
           <div class={cardClass}>
             <p class="font-semibold text-[var(--color-text)] mb-2">Infrastructure as code</p>
             <p class="text-sm">Cloudflare Pages projects and custom domains are provisioned with Terraform, with WAF rules documented alongside the config.</p>
+          </div>
+          <div class={cardClass}>
+            <p class="font-semibold text-[var(--color-text)] mb-2">Edge data</p>
+            <p class="text-sm">Cloudflare D1 (SQLite at the edge) holds members and sessions for the gated apps; Workers KV backs rate limiting. No external database.</p>
           </div>
         </div>
       </section>
@@ -206,8 +210,8 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
             <p class="text-sm">HSTS with preload and includeSubDomains. Strict CSP: frame-ancestors none, object-src none, base-uri self, form-action self, upgrade-insecure-requests. X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy locking camera, microphone, geolocation, FLoC, topics, payment.</p>
           </div>
           <div class={cardClass}>
-            <p class="font-semibold text-[var(--color-text)] mb-2">Auth gates (app · GrowthHub)</p>
-            <p class="text-sm">Cloudflare Pages Functions. HMAC-SHA256 signed cookies, timing-safe comparison, time-boxed tokens, rate-limited login. No credentials in source.</p>
+            <p class="font-semibold text-[var(--color-text)] mb-2">Auth gates</p>
+            <p class="text-sm">Cloudflare Pages Functions. App and GrowthHub use a password gate with HMAC-SHA256 signed cookies, timing-safe comparison, time-boxed tokens and rate-limited login. Academy uses passwordless magic-link sign-in against a D1 member store. No credentials in source.</p>
           </div>
         </div>
       </section>
@@ -218,7 +222,7 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
         <h2 class={h2Class}>Backup, failover, rollback</h2>
         <div class="grid gap-4 sm:grid-cols-2 mt-4">
           <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Backup</strong><span class="text-sm">Weekly mirror to Azure Static Web Apps as an independent cold standby.</span></div>
-          <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Failover</strong><span class="text-sm">An operator-triggered workflow runs health checks, then flips DNS to the Azure standby via the Cloudflare API and restores it once the primary recovers.</span></div>
+          <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Failover</strong><span class="text-sm">A Cloudflare Worker health-checks the site on a 5-minute cron and automatically flips DNS to the Azure standby via the Cloudflare API, then restores it once the primary recovers. A GitHub workflow provides a manual override.</span></div>
           <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Rollback</strong><span class="text-sm">Non-destructive git revert with no force-push, fully auditable, with a required reason.</span></div>
           <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Monitoring</strong><span class="text-sm">Daily production smoke (also fired by BetterStack incident webhooks), weekday status digest, weekly Lighthouse audit.</span></div>
         </div>

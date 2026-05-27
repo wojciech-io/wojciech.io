@@ -198,7 +198,9 @@ while IFS= read -r file; do
   # words (e.g. Spanish "todo" = "all/everything") don't false-positive.
   # "lorem ipsum" is never legitimate prose, so keep it case-insensitive.
   if [[ "$ext" == "mdx" ]]; then
-    matches=$( { grep -nE '\b(TODO|FIXME|TBD|PLACEHOLDER)\b' "$file" 2>/dev/null; grep -niE 'lorem ipsum' "$file" 2>/dev/null; } | head -3)
+    # `|| true` on every grep + the pipeline: under `set -euo pipefail` a
+    # no-match grep (exit 1) would otherwise abort the whole script.
+    matches=$( { grep -nE '\b(TODO|FIXME|TBD|PLACEHOLDER)\b' "$file" 2>/dev/null || true; grep -niE 'lorem ipsum' "$file" 2>/dev/null || true; } | head -3 || true)
     if [[ -n "$matches" ]]; then
       warn "  $file — unresolved placeholder in article content:"
       echo "$matches" | while IFS= read -r line; do
