@@ -150,6 +150,24 @@ export const insightLocaleLabels: Record<InsightLocale, {
     authorLabel: 'Sobre el autor',
     authorBio: 'Arquitecto GTM y Growth Operator que crea sistemas de ingresos AI-native para empresas B2B SaaS y tecnológicas. Conecto posicionamiento, SEO, contenido, adquisición de pago, CRM, automatización, analytics y flujos de trabajo de IA en una infraestructura de crecimiento práctica.',
   },
+  pl: {
+    allInsights: 'Wszystkie spostrzeżenia',
+    article: 'Artykuł',
+    articles: 'artykuły',
+    bylineRole: 'GTM Architect & Growth Operator',
+    featured: 'Polecane',
+    newsletter: 'Newsletter',
+    newsletterHeading: 'Najpierw zdobądź następny.',
+    newsletterBody: 'Kiedy opublikuję nowy artykuł na temat systemów AI, architektury GTM lub modeli operacyjnych wzrostu, dowiesz się o tym jako pierwszy.',
+    readArticle: 'Przeczytaj artykuł',
+    readTimeSuffix: 'min czytania',
+    subscribe: 'Subskrybuj',
+    moreFromInsights: 'Więcej informacji',
+    previous: 'Poprzedni',
+    next: 'Następny',
+    authorLabel: 'O autorze',
+    authorBio: 'Architekt GTM i operator wzrostu budujący natywne dla AI systemy przychodów dla B2B SaaS i firm technologicznych. Łączę pozycjonowanie, SEO, treści, płatne pozyskiwanie, CRM, automatyzację, analitykę i przepływy pracy AI w praktyczną infrastrukturę wzrostu.'
+  },
 };
 
 export function insightSlug(post: InsightPost) {
