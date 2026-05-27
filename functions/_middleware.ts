@@ -50,7 +50,7 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   'cross-origin-opener-policy': 'same-origin-allow-popups',
   'cross-origin-resource-policy': 'same-origin',
   'cross-origin-embedder-policy': 'unsafe-none',
-  'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()',
+  'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=(), payment=()',
   // CSP: keep in sync with public/_headers. Middleware wins over Pages _headers
   // whenever Pages Functions run on the public site.
   // unsafe-inline required for Astro's is:inline scripts and Tailwind utilities.
@@ -119,7 +119,7 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
       'cross-origin-opener-policy': 'same-origin',
       'cross-origin-resource-policy': 'same-origin',
       'cross-origin-embedder-policy': 'unsafe-none',
-      'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()',
+      'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=(), payment=()',
     },
   });
 };

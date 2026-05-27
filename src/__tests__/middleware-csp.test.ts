@@ -31,4 +31,10 @@ describe('public middleware CSP', () => {
     expect(PUBLIC_SECURITY_HEADERS['x-frame-options']).toBe('DENY');
     expect(csp).toContain("frame-ancestors 'none'");
   });
+
+  it('Permissions-Policy opts out of FLoC and Topics API', () => {
+    const pp = PUBLIC_SECURITY_HEADERS['permissions-policy'];
+    expect(pp).toContain('interest-cohort=()');
+    expect(pp).toContain('browsing-topics=()');
+  });
 });

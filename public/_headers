@@ -27,6 +27,10 @@
 /images/*
   Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400
 
+# Pagefind search index: revalidated on each deploy (not content-addressed by filename)
+/pagefind/*
+  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=3600
+
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
@@ -34,6 +38,6 @@
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   Cross-Origin-Resource-Policy: same-origin
   Cross-Origin-Embedder-Policy: unsafe-none
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com; style-src 'self' 'unsafe-inline' https://app.cal.com; img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://cal.com https://app.cal.com https://o4511411558678528.ingest.de.sentry.io; font-src 'self' https://app.cal.com; frame-src https://gh.wojciech.io https://cal.com https://app.cal.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
