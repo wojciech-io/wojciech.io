@@ -24,15 +24,37 @@ jobs:
         run: |
           set -euo pipefail
 
-          BLOCKED="docs/ .agent-reports/ .agent-state/ .claude/ .codex-tasks/ archive/insights-legacy/ templates/ prompts/ HANDOFF.md"
+          BLOCKED=".agent-reports/ .agent-state/ .claude/ .codex-tasks/ archive/insights-legacy/ templates/ prompts/ HANDOFF.md"
+          # docs/ is gitignored except for two public-safe brand reference files.
+          # Those two are explicitly allowed; everything else under docs/ is blocked.
+          BLOCKED_DOCS_EXCEPTIONS="docs/10-tone-of-voice.md docs/design-system.md"
+
           CHANGED=$(git diff --name-status "$BASE" "$HEAD" | awk '$1 ~ /^R/ { print $3; next } $1 != "D" { print $2 }')
           FOUND=""
 
+          # Check general blocked prefixes
           for path in $BLOCKED; do
             if echo "$CHANGED" | grep -q "^${path}"; then
               FOUND="${FOUND} ${path}"
             fi
           done
+
+          # Check docs/ separately: flag any docs/ file that is not in the allowlist
+          DOCS_CHANGED=$(echo "$CHANGED" | grep "^docs/" || true)
+          if [ -n "$DOCS_CHANGED" ]; then
+            while IFS= read -r doc_path; do
+              allowed=0
+              for exc in $BLOCKED_DOCS_EXCEPTIONS; do
+                if [ "$doc_path" = "$exc" ]; then
+                  allowed=1
+                  break
+                fi
+              done
+              if [ "$allowed" -eq 0 ]; then
+                FOUND="${FOUND} ${doc_path}"
+              fi
+            done <<< "$DOCS_CHANGED"
+          fi
 
           if [ -n "$FOUND" ]; then
             echo "::error::Blocked internal dirs in this PR:${FOUND}"
