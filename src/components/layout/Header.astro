@@ -143,21 +143,25 @@ const languageOptions = [
     </ul>
   </nav>
 
-  <!-- Bottom bar -->
-  <div class="px-8 pb-10 pt-6 border-t border-[var(--color-border)] shrink-0 space-y-4">
-    <div class="flex items-center gap-3">
-      <button
-        type="button"
-        onclick="closeMobileNav(); openSearch();"
-        class="flex flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border)] px-3 py-2.5 text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
-        aria-label="Search"
-      >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-        Search
-      </button>
-      <ThemeToggle class="flex-1" />
+  <!-- Bottom bar: search full-width, then theme + lang, then CTA -->
+  <div class="px-8 pb-10 pt-6 border-t border-[var(--color-border)] shrink-0 space-y-3">
+    <!-- Search -->
+    <button
+      id="mobile-search-btn"
+      type="button"
+      class="w-full flex items-center gap-2.5 rounded-[var(--radius-btn)] border border-[var(--color-border)] px-4 py-3 text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
+      aria-label="Open search"
+    >
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      Search
+    </button>
+    <!-- Theme toggle + language selector -->
+    <div class="flex gap-3">
+      <div class="flex-1">
+        <ThemeToggle class="w-full" />
+      </div>
       <details class="relative flex-1">
         <summary class="lang-toggle-btn w-full cursor-pointer list-none select-none justify-center" aria-label={`Language: ${currentLanguageCode}`}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -179,6 +183,7 @@ const languageOptions = [
         </div>
       </details>
     </div>
+    <!-- CTA -->
     <a
       href="/contact/#book-call"
       class="mobile-nav-link btn-press flex items-center justify-center gap-2 w-full bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold py-3.5 rounded-[var(--radius-btn)] hover:opacity-90 transition-opacity text-sm"
@@ -191,50 +196,70 @@ const languageOptions = [
 </div>
 
 <script>
-  const overlay  = document.getElementById('mobile-nav-overlay')!;
-  const openBtn  = document.getElementById('mobile-nav-open')!;
-  const closeBtn = document.getElementById('mobile-nav-close')!;
-  const lines    = openBtn.querySelectorAll<HTMLElement>('.hamburger-line');
+  // Re-runs after every View Transitions navigation so the new DOM elements
+  // get fresh event listeners. Without this, hamburger stops working after
+  // the first page change (elements are replaced but listeners aren't re-bound).
+  function initMobileNav() {
+    const overlay  = document.getElementById('mobile-nav-overlay');
+    const openBtn  = document.getElementById('mobile-nav-open');
+    const closeBtn = document.getElementById('mobile-nav-close');
+    const searchBtn = document.getElementById('mobile-search-btn');
+    if (!overlay || !openBtn || !closeBtn) return;
 
-  function openMobileNav() {
-    overlay.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
-    overlay.classList.add('translate-x-0', 'opacity-100');
-    overlay.setAttribute('aria-hidden', 'false');
-    openBtn.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-    // Animate to X
-    lines[0].style.transform = 'translateY(6.5px) rotate(45deg)';
-    lines[1].style.opacity = '0';
-    lines[2].style.transform = 'translateY(-6.5px) rotate(-45deg)';
-  }
+    const lines = openBtn.querySelectorAll<HTMLElement>('.hamburger-line');
 
-  function closeMobileNav() {
-    overlay.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
-    overlay.classList.remove('translate-x-0', 'opacity-100');
-    overlay.setAttribute('aria-hidden', 'true');
-    openBtn.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-    // Reset hamburger
-    lines[0].style.transform = '';
-    lines[1].style.opacity = '';
-    lines[2].style.transform = '';
-  }
-
-  // Make closeMobileNav available globally for the wordmark link
-  (window as any).closeMobileNav = closeMobileNav;
-
-  openBtn.addEventListener('click', openMobileNav);
-  closeBtn.addEventListener('click', closeMobileNav);
-
-  // Close on nav link click (internal links only)
-  overlay.querySelectorAll<HTMLElement>('.mobile-nav-link').forEach((link) => {
-    link.addEventListener('click', closeMobileNav);
-  });
-
-  // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && openBtn.getAttribute('aria-expanded') === 'true') {
-      closeMobileNav();
+    function openMobileNav() {
+      overlay.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+      overlay.classList.add('translate-x-0', 'opacity-100');
+      overlay.setAttribute('aria-hidden', 'false');
+      openBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      lines[0].style.transform = 'translateY(6.5px) rotate(45deg)';
+      lines[1].style.opacity = '0';
+      lines[2].style.transform = 'translateY(-6.5px) rotate(-45deg)';
     }
-  });
+
+    function closeMobileNav() {
+      overlay.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+      overlay.classList.remove('translate-x-0', 'opacity-100');
+      overlay.setAttribute('aria-hidden', 'true');
+      openBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      lines[0].style.transform = '';
+      lines[1].style.opacity = '';
+      lines[2].style.transform = '';
+    }
+
+    // Expose so inline onclick="closeMobileNav()" on the wordmark link works
+    (window as any).closeMobileNav = closeMobileNav;
+
+    openBtn.addEventListener('click', openMobileNav);
+    closeBtn.addEventListener('click', closeMobileNav);
+
+    // Search button in overlay — close nav then open search modal
+    searchBtn?.addEventListener('click', () => {
+      closeMobileNav();
+      (window as any).openSearch?.();
+    });
+
+    // Close when a nav link is followed
+    overlay.querySelectorAll<HTMLElement>('.mobile-nav-link').forEach((link) => {
+      link.addEventListener('click', closeMobileNav);
+    });
+  }
+
+  // One-time Escape key listener — persists across navigations (uses window ref)
+  if (!document.documentElement.dataset.mobileNavEscapeReady) {
+    document.documentElement.dataset.mobileNavEscapeReady = 'true';
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const btn = document.getElementById('mobile-nav-open');
+      if (btn?.getAttribute('aria-expanded') === 'true') {
+        (window as any).closeMobileNav?.();
+      }
+    });
+  }
+
+  initMobileNav();
+  document.addEventListener('astro:page-load', initMobileNav);
 </script>
