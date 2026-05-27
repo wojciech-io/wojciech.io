@@ -193,10 +193,13 @@ while IFS= read -r file; do
     fi
   fi
 
-  # MDX: TODO/FIXME/TBD in production content
+  # MDX: TODO/FIXME/TBD in production content.
+  # Code markers are ALL-CAPS by convention — match case-SENSITIVE so foreign
+  # words (e.g. Spanish "todo" = "all/everything") don't false-positive.
+  # "lorem ipsum" is never legitimate prose, so keep it case-insensitive.
   if [[ "$ext" == "mdx" ]]; then
-    if grep -qiE '\b(TODO|FIXME|TBD|PLACEHOLDER|LOREM IPSUM)\b' "$file" 2>/dev/null; then
-      matches=$(grep -niE '\b(TODO|FIXME|TBD|PLACEHOLDER|LOREM IPSUM)\b' "$file" 2>/dev/null | head -3)
+    matches=$( { grep -nE '\b(TODO|FIXME|TBD|PLACEHOLDER)\b' "$file" 2>/dev/null; grep -niE 'lorem ipsum' "$file" 2>/dev/null; } | head -3)
+    if [[ -n "$matches" ]]; then
       warn "  $file — unresolved placeholder in article content:"
       echo "$matches" | while IFS= read -r line; do
         echo "        $line" >&2
