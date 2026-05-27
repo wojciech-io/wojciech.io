@@ -85,6 +85,7 @@ test('rss feed is valid xml with required channel elements', async ({ request })
   expect(body).toContain('<title>');
   expect(body).toContain('<link>');
   expect(body).toContain('<item>');
+  expect(body).toContain('<lastBuildDate>');
 });
 
 test('rss feed items include <category> tags', async ({ request }) => {
