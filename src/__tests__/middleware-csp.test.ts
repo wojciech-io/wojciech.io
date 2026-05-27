@@ -13,6 +13,13 @@ describe('public middleware CSP', () => {
 
   it('allows external media used by public pages', () => {
     expect(csp).toMatch(/img-src[^;]*https:\/\/i\.ytimg\.com/);
+    // simpleicons CDN removed — stack section no longer fetches icons from CDN
+    expect(csp).not.toContain('cdn.simpleicons.org');
+  });
+
+  it('allows pagefind web workers and webmanifest', () => {
+    expect(csp).toMatch(/worker-src[^;]*'self'/);
+    expect(csp).toMatch(/manifest-src[^;]*'self'/);
   });
 
   it('allows Sentry client-side error reporting', () => {
