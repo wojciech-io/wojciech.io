@@ -175,6 +175,17 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
           return;
         }
 
+        // Synchronously reveal elements already in the viewport so the initial
+        // invisible state (set by `.js .reveal-up`) does not delay LCP paint.
+        const vh = window.innerHeight;
+        els.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.top < vh && r.bottom > 0) {
+            el.classList.add('is-visible');
+            el.dataset.revealed = '1';
+          }
+        });
+
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -188,7 +199,9 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
           { rootMargin: '0px 0px -40px 0px', threshold: 0.01 },
         );
 
-        els.forEach((el) => observer.observe(el));
+        els.forEach((el) => {
+          if (!el.dataset.revealed) observer.observe(el);
+        });
       }
 
       // Run on first load and after every View Transitions navigation
