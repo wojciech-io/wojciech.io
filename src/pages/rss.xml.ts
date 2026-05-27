@@ -1,18 +1,17 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
+import { insightSlug, isLocalePost, sortInsights } from '../lib/insights';
 import { escapeXml } from '../utils/xml';
 
 export const GET: APIRoute = async ({ site }) => {
-  const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort(
-    (a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
-  );
+  const posts = (await getCollection('insights', isLocalePost('en'))).sort(sortInsights);
 
   const origin = site ?? new URL('https://wojciech.io/');
   const feedUrl = new URL('/rss.xml', origin).href;
   const lastBuildDate = posts[0]?.data.publishedAt.toUTCString() ?? new Date().toUTCString();
   const items = posts
     .map((post) => {
-      const slug = post.id.replace(/\.mdx?$/, '');
+      const slug = insightSlug(post);
       const url = new URL(`/insights/${slug}/`, origin).href;
       const categories = [
         ...(post.data.category ? [post.data.category] : []),

@@ -1,0 +1,111 @@
+---
+title: "Client GTM workでClaude Codeをどう使っているか"
+description: "Outbound agent stackだけではありません。Claude Codeがreal client engagementsでcontent operations、CRM hygiene、researchをどう動かし、delivery modelが外からどう見えるか。"
+publishedAt: "2026-05-25"
+tags:
+  - Claude Code
+  - GTM
+  - AI
+  - Client Work
+  - MCP
+featured: false
+draft: false
+coverType: "terminal"
+category: "AI Systems"
+locale: "jp"
+translationOf: "claude-code-client-gtm"
+tldr:
+  - "Claude Codeは各engagementで3つの仕事をします。Outbound intelligence、content operations、CRM data hygieneです。"
+  - "Compounding effectは本物です。Client engagementの5回目のrunは1回目より明確に良くなります。"
+  - "Clientsが見るのは速いdeliveryと良いdraftsです。Agent stackは見えません。それがポイントです。"
+---
+
+Claude Codeを知っている人の多くは、coding assistantだと思っています。私のclient engagementsでは、それは一番小さい役割です。
+
+私はClaude CodeをGTM engagementの3箇所に組み込んでいます。Outbound intelligence、content operations、CRM data。結果として、2年前には存在しなかったdelivery modelになりました。
+
+Thinkingを置き換えるのではありません。Thinkingからshippingまでのoverheadを消すためです。
+
+---
+
+## 3つの仕事
+
+Claude Codeには3つのworkloadsがあります。それぞれsetupとlogicが違います。
+
+### Job 1: Research and outbound intelligence
+
+[GTM agent stack](/jp/insights/claude-code-vs-clay/)は別で説明しました。短く言えば、Claude Code、4つのMCP tools、`CLAUDE.md` operator brief、5つのSkillsでenrichment-to-draft pipelineを動かします。50 accountsのCSVが、1時間以内にscored accountsとsequence draftsになります。
+
+そこで十分に書かなかったのが、**compounding effect**です。
+
+3か月のengagement後、`CLAUDE.md`にはclient-specific ICP signals、objection patterns、sequence learningsが蓄積されます。5回目のrunは1回目より明確に良い。ClayやApolloではこれは起きません。あれらはrowsを処理します。Operator contextは蓄積しません。
+
+### Job 2: Content operations
+
+GTM engagementは必ずcontentに触れます。Website、case studies、LinkedIn positioning、email nurture。通常、「homepageを直したい」から「直った」まで、stakeholder cyclesとwriting back-and-forthで数週間かかります。
+
+Claude Codeではworkflowが短くなります。
+
+1. **Audit:** `/audit`がsite、competitors、ICP briefを読み、sectionごとのgap analysisを返します。
+2. **Draft:** `/draft [section]`はtemplateではなくaudit findingsから書きます。
+3. **Iteration:** 私が編集します。Systemは何をなぜ変えたかを見ます。次のdraftは最初から近くなります。
+
+Outputは最初から完璧ではありません。ただしbaselineはresearch-groundedで、iterationは数週間ではなく数時間です。
+
+### Job 3: CRM data operations
+
+これは最も過小評価されているuse caseです。
+
+多くのB2B CRMには同じ問題があります。Duplicate companies、companyに紐づかないcontacts、wrong stageのdeals、未入力のcustom fields。Manual cleanupは数週間かかり、それでも人によって判断が揺れます。
+
+Claude Code + HubSpot MCPでは違います。
+
+- Contactsとcompaniesをbatchで読む
+- ICP scoring criteriaを一貫して適用する
+- Duplicatesとmissing dataをpatternで検出する
+- CRMに書き込む前にhuman review用のupdate payloadsを作る
+
+One-clickではありません。Reviewとapprovalは必要です。ただしlogicは一貫し、reasoningを確認できます。
+
+<Comparison
+  items={[
+    { label: 'Traditional GTM delivery', tag: 'Coordination', tone: 'muted', body: 'Research、briefs、copy、CRM cleanup、reviewsが別々に進む。ボトルネックはorchestrationです。' },
+    { label: 'Claude Code delivery', tag: 'Operator-led', tone: 'accent', body: 'Agent stackがcontextを保持し、researchし、draftを書き、CRM payloadsを作る。Operatorが判断してreviewします。' }
+  ]}
+/>
+
+---
+
+## 可能になるengagement model
+
+**Before:** GTM engagementはdeliverablesのscope、research task、writer brief、draft review、sequence build、CRM cleanupを並行管理する仕事でした。最低6週間、常にorchestrationが必要でした。
+
+**Now:** Operator outputsを中心にscopeします。Enriched account list、sequenced outreach、positioned website copy、clean CRM。外部依存を減らして速くdeliverできます。
+
+ClientはICP definition、sequence tone、content approvalに入ります。Judgmentは私とclientのものです。消えるのはresearch overheadとwriting latencyです。
+
+---
+
+## Clientsが見るもの、見ないもの
+
+Clientsが見るのは速いdeliveryと高品質なfirst draftsです。Generic personalizationではなく、account-specific signalsを使うsequences。Historical chaosではなくICPを反映したCRM。
+
+Agent stackは見えません。意図的です。
+
+Outputがすべてです。Toolはimplementation detail。ClientはMCP serversを理解する必要はありません。必要なのはcallsをbookするsequencesです。
+
+---
+
+## 知っておくべきconstraints
+
+**Upfront investmentが必要です。** `CLAUDE.md`は丁寧に書く必要があります。Client memory structureも作る必要があります。First-run outputは良いですが、最高ではありません。Compoundingは2回目以降です。
+
+**情報量の多いtaskほど強いです。** ICP、site content、CRM exportが豊かであるほどoutputは良くなります。
+
+**Operator judgmentの代替ではありません。** Scoring logic、sequence strategy、positioning decisionsはoperatorが決めます。Claude Codeはexecuteします。
+
+私はscopeし、runし、reviewします。Speed improvementは本物です。Judgment layerは私に残ります。
+
+GTM engagementのbottleneckがstrategyではなくresearch、writing、CRM hygieneなら、真剣に見る価値があります。
+
+[相談を予約](/jp/contact/#book-call)すれば、あなたのstackにどう当てはまるか一緒に見られます。

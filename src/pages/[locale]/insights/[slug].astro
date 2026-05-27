@@ -1,0 +1,321 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import ArticleCover from '../../../components/ui/ArticleCover.astro';
+import Callout from '../../../components/insights/Callout.astro';
+import VideoEmbed from '../../../components/insights/VideoEmbed.astro';
+import Screenshot from '../../../components/insights/Screenshot.astro';
+import Compare from '../../../components/insights/Compare.astro';
+import Flow from '../../../components/insights/Flow.astro';
+import Stat from '../../../components/insights/Stat.astro';
+import StatCallout from '../../../components/insights/StatCallout.astro';
+import StatRow from '../../../components/insights/StatRow.astro';
+import StatGrid from '../../../components/insights/StatGrid.astro';
+import DoDont from '../../../components/insights/DoDont.astro';
+import TLDR from '../../../components/insights/TLDR.astro';
+import Steps from '../../../components/insights/Steps.astro';
+import PullQuote from '../../../components/insights/PullQuote.astro';
+import TechStack from '../../../components/insights/TechStack.astro';
+import TOC from '../../../components/insights/TOC.astro';
+import BeforeAfter from '../../../components/insights/BeforeAfter.astro';
+import Diagram from '../../../components/insights/diagrams/Diagram.astro';
+import Box from '../../../components/insights/diagrams/Box.astro';
+import Arrow from '../../../components/insights/diagrams/Arrow.astro';
+import Stack from '../../../components/insights/diagrams/Stack.astro';
+import Badge from '../../../components/ui/Badge.astro';
+import Button from '../../../components/ui/Button.astro';
+import CTABand from '../../../components/ui/CTABand.astro';
+import FAQ from '../../../components/ui/FAQ.astro';
+import SectionHeader from '../../../components/ui/SectionHeader.astro';
+import ProofCard from '../../../components/ui/ProofCard.astro';
+import DataTable from '../../../components/insights/DataTable.astro';
+import MetricRow from '../../../components/insights/MetricRow.astro';
+import ArticleTimeline from '../../../components/insights/ArticleTimeline.astro';
+import KeyPoint from '../../../components/insights/KeyPoint.astro';
+import KeyTakeaway from '../../../components/insights/KeyTakeaway.astro';
+import Comparison from '../../../components/insights/Comparison.astro';
+import TwoUp from '../../../components/insights/TwoUp.astro';
+import Quote from '../../../components/insights/Quote.astro';
+import ToolCard from '../../../components/insights/ToolCard.astro';
+import ProcessFlow from '../../../components/insights/ProcessFlow.astro';
+import Grid from '../../../components/insights/Grid.astro';
+import ResultCard from '../../../components/insights/ResultCard.astro';
+import Benchmark from '../../../components/insights/Benchmark.astro';
+import CaseStudyBlock from '../../../components/insights/CaseStudyBlock.astro';
+import { SITE } from '../../../data/site';
+import { localizedHome, type LocaleKey } from '../../../data/locales';
+import {
+  insightLocaleLabels,
+  insightSlug,
+  isLocalePost,
+  localizedInsightAlternates,
+  localizedInsightLocales,
+  sortInsights,
+} from '../../../lib/insights';
+
+const mdxComponents = {
+  Callout, VideoEmbed, Screenshot, Compare, Flow,
+  Video: VideoEmbed,
+  Stat, StatCallout, StatRow, StatGrid, DoDont, TLDR, Steps, PullQuote, TechStack, TOC,
+  BeforeAfter,
+  Diagram, Box, Arrow, Stack,
+  Badge, Button, CTABand, FAQ, SectionHeader, ProofCard,
+  DataTable, MetricRow, ArticleTimeline, KeyPoint, TwoUp, Quote,
+  Timeline: ArticleTimeline,
+  Comparison,
+  KeyTakeaway,
+  ToolCard, ProcessFlow, Grid,
+  ResultCard, Benchmark, CaseStudyBlock,
+};
+
+export async function getStaticPaths() {
+  const posts = await getCollection('insights', ({ data }) => localizedInsightLocales.includes(data.locale as LocaleKey) && !data.draft);
+  const grouped = new Map<LocaleKey, typeof posts>();
+  for (const locale of localizedInsightLocales) {
+    grouped.set(locale, posts.filter(isLocalePost(locale)).sort(sortInsights));
+  }
+
+  return posts.map((post) => {
+    const locale = post.data.locale as LocaleKey;
+    const sorted = grouped.get(locale) ?? [];
+    const idx = sorted.findIndex((candidate) => candidate.id === post.id);
+    const others = sorted.filter((_, i) => i !== idx);
+    const sameTags = others.filter((candidate) =>
+      candidate.data.tags.some((tag) => post.data.tags.includes(tag))
+    );
+    const related = [...new Set([...sameTags, ...others])].slice(0, 3);
+
+    return {
+      params: { locale, slug: insightSlug(post) },
+      props: {
+        post,
+        prevPost: sorted[idx + 1] ?? null,
+        nextPost: sorted[idx - 1] ?? null,
+        related,
+      },
+    };
+  });
+}
+
+const { post, prevPost, nextPost, related } = Astro.props;
+const locale = post.data.locale as LocaleKey;
+const localeCopy = localizedHome[locale];
+const labels = insightLocaleLabels[locale];
+const { Content } = await render(post);
+const slug = insightSlug(post);
+const canonicalPath = `/${locale}/insights/${slug}/`;
+const canonicalURL = new URL(canonicalPath, Astro.site).href;
+const publishedAt = post.data.publishedAt.toISOString();
+const updatedAt = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
+const ogImage = post.data.ogImage ?? `/og/${post.data.translationOf ?? slug}.png`;
+const ogImageURL = new URL(ogImage, Astro.site).href;
+const formatDate = (date: Date) =>
+  date.toLocaleDateString(localeCopy.htmlLang, { day: 'numeric', month: 'long', year: 'numeric' });
+
+const authorSchema = {
+  '@type': 'Person',
+  name: 'Wojciech Łuszczyński',
+  alternateName: 'Wojtek Luszczynski',
+  url: SITE.url + '/',
+  image: 'https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=384&r=g',
+  jobTitle: 'GTM Architect & Growth Operator',
+  sameAs: [SITE.linkedin, SITE.github, SITE.twitter.replace('twitter.com', 'x.com'), SITE.substack, SITE.medium, SITE.subscribeUrl],
+};
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    description: post.data.description,
+    datePublished: publishedAt,
+    dateModified: updatedAt,
+    mainEntityOfPage: canonicalURL,
+    url: canonicalURL,
+    image: ogImageURL,
+    inLanguage: localeCopy.htmlLang,
+    keywords: post.data.tags.join(', '),
+    articleSection: post.data.category ?? 'Insights',
+    author: authorSchema,
+    publisher: authorSchema,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + `/${locale}/` },
+      { '@type': 'ListItem', position: 2, name: 'Insights', item: SITE.url + `/${locale}/insights/` },
+      { '@type': 'ListItem', position: 3, name: post.data.title, item: canonicalURL },
+    ],
+  },
+];
+---
+
+<Layout
+  htmlLang={localeCopy.htmlLang}
+  ogLocale={localeCopy.ogLocale}
+  title={post.data.title}
+  description={post.data.description}
+  canonical={canonicalPath}
+  ogImage={ogImage}
+  type="article"
+  publishedAt={publishedAt}
+  updatedAt={updatedAt}
+  alternates={localizedInsightAlternates(post.data.translationOf ?? slug)}
+  schema={schema}
+>
+  <div id="progress-bar" class="fixed left-0 top-0 z-50 h-0.5 w-0 bg-[var(--color-accent)] transition-none" role="progressbar" aria-label="Reading progress" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100} />
+
+  <ArticleCover coverType={post.data.coverType} tags={post.data.tags} title={post.data.title} />
+
+  <article
+    id="article-content"
+    class="mx-auto max-w-3xl px-6 pb-16 pt-[var(--space-section)]"
+    data-slug={slug}
+    data-title={post.data.title}
+    data-category={post.data.category ?? ''}
+    data-tags={post.data.tags.join(',')}
+    data-read-time={Math.max(4, Math.ceil((post.body?.split(/\s+/).length ?? 0) / 220))}
+    data-pagefind-meta={`date:${post.data.publishedAt.toISOString().split('T')[0]},category:${post.data.category ?? 'Insights'},locale:${locale}`}
+  >
+    <header class="mb-10">
+      <a href={`/${locale}/insights/`} class="mb-6 inline-flex items-center gap-1.5 text-xs text-[var(--color-text-dim)] transition-colors hover:text-[var(--color-accent)]">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {labels.allInsights}
+      </a>
+      <div class="mb-5 flex flex-wrap items-center gap-3">
+        <span class="text-xs font-semibold uppercase tracking-widest text-[var(--color-accent)]">{post.data.category ?? labels.article}</span>
+        {post.data.tags.map((tag) => (
+          <span class="rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-2.5 py-0.5 text-xs text-[var(--color-text-muted)]">{tag}</span>
+        ))}
+      </div>
+      <h1 class="mb-5 text-[length:var(--text-h1)] font-semibold leading-tight tracking-tight text-[var(--color-text)]" data-pagefind-weight="10">
+        {post.data.title}
+      </h1>
+      <p class="mb-6 text-[length:var(--text-body-lg)] leading-relaxed text-[var(--color-text-muted)]" data-pagefind-weight="5">
+        {post.data.description}
+      </p>
+      <div class="flex items-center gap-3 border-b border-[var(--color-border)] pb-8">
+        <a href={`/${locale}/about/`} aria-label="Wojciech Łuszczyński profile">
+          <img
+            src="https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=72&r=g"
+            alt="Wojciech Łuszczyński"
+            width="36"
+            height="36"
+            loading="eager"
+            decoding="async"
+            class="h-9 w-9 rounded-full border-2 border-[var(--color-accent)]/40 object-cover"
+          />
+        </a>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-[var(--color-text)]">
+            <a href={`/${locale}/about/`} class="transition-colors hover:text-[var(--color-accent)]">Wojciech Łuszczyński</a>
+          </p>
+          <p class="text-xs text-[var(--color-text-dim)]">
+            {labels.bylineRole} · <a href={`/${locale}/insights/`} class="transition-colors hover:text-[var(--color-accent)]">Insights</a> · {formatDate(post.data.publishedAt)}
+          </p>
+        </div>
+      </div>
+    </header>
+
+    {post.data.tldr && post.data.tldr.length > 0 && <TLDR items={post.data.tldr} />}
+
+    <div class="prose-content">
+      <Content components={mdxComponents} />
+    </div>
+  </article>
+
+  <section class="mx-auto max-w-3xl px-6 pb-16" data-pagefind-ignore>
+    <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] p-6">
+      <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent)]">{labels.authorLabel}</p>
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+        <img
+          src="https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=96&r=g"
+          alt="Wojciech Łuszczyński"
+          width="48"
+          height="48"
+          loading="lazy"
+          decoding="async"
+          class="h-12 w-12 rounded-full border border-[var(--color-border)] object-cover"
+        />
+        <div>
+          <h2 class="mb-2 text-lg font-semibold text-[var(--color-text)]">Wojciech Łuszczyński</h2>
+          <p class="mb-4 text-sm leading-relaxed text-[var(--color-text-muted)]">{labels.authorBio}</p>
+          <div class="flex flex-wrap gap-2">
+            <a href={`/${locale}/about/`} class="rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 py-0.5 text-xs text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-accent)]">Profile</a>
+            <a href={`/${locale}/work/`} class="rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 py-0.5 text-xs text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-accent)]">Work</a>
+            <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer" class="rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 py-0.5 text-xs text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-accent)]">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {related && related.length > 0 && (
+    <section class="border-t border-[var(--color-border)] py-12" data-pagefind-ignore>
+      <div class="mx-auto max-w-3xl px-6">
+        <p class="mb-6 text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{labels.moreFromInsights}</p>
+        <div class="grid gap-3 sm:grid-cols-3">
+          {related.map((rel) => (
+            <a href={`/${locale}/insights/${insightSlug(rel)}/`} class="group flex flex-col gap-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 transition-colors hover:border-[var(--color-accent)]/40 hover:bg-[var(--color-surface-2)]">
+              <p class="text-sm font-semibold leading-snug text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">{rel.data.title}</p>
+              <p class="mt-auto text-[11px] text-[var(--color-text-dim)]">{formatDate(rel.data.publishedAt)}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {(prevPost || nextPost) && (
+    <nav class="border-t border-[var(--color-border)]" aria-label="Article navigation" data-pagefind-ignore>
+      <div class="mx-auto grid max-w-3xl grid-cols-2 gap-4 px-6 py-8">
+        {prevPost ? (
+          <a href={`/${locale}/insights/${insightSlug(prevPost)}/`} class="group flex flex-col gap-1 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 transition-colors hover:border-[var(--color-accent)]/40">
+            <span class="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{labels.previous}</span>
+            <span class="line-clamp-2 text-sm font-medium leading-snug text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">{prevPost.data.title}</span>
+          </a>
+        ) : <div />}
+        {nextPost ? (
+          <a href={`/${locale}/insights/${insightSlug(nextPost)}/`} class="group flex flex-col gap-1 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 text-right transition-colors hover:border-[var(--color-accent)]/40">
+            <span class="flex items-center justify-end gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{labels.next}</span>
+            <span class="line-clamp-2 text-sm font-medium leading-snug text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">{nextPost.data.title}</span>
+          </a>
+        ) : <div />}
+      </div>
+    </nav>
+  )}
+
+  <section class="border-t border-[var(--color-border)] py-16" data-pagefind-ignore>
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] p-8 md:p-10">
+        <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent)]">{labels.newsletter}</p>
+        <h2 class="mb-3 text-2xl font-semibold text-[var(--color-text)]">{labels.newsletterHeading}</h2>
+        <p class="mb-6 max-w-md text-[var(--color-text-muted)]">{labels.newsletterBody}</p>
+        <a href="/subscribe/" class="btn-press inline-flex items-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-6 py-3 font-semibold text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]">
+          {labels.subscribe}
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const bar = document.getElementById('progress-bar') as HTMLElement;
+  const article = document.getElementById('article-content') as HTMLElement;
+
+  function updateProgress() {
+    const { top, height } = article.getBoundingClientRect();
+    const windowH = window.innerHeight;
+    const scrollable = height - windowH;
+    const scrolled = Math.max(0, -top);
+    const pct = scrollable > 0 ? Math.min(100, (scrolled / scrollable) * 100) : 0;
+
+    bar.style.width = pct + '%';
+    bar.setAttribute('aria-valuenow', String(Math.round(pct)));
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+</script>

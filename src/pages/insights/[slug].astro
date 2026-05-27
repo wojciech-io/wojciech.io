@@ -32,6 +32,8 @@ import DataTable from '../../components/insights/DataTable.astro';
 import MetricRow from '../../components/insights/MetricRow.astro';
 import ArticleTimeline from '../../components/insights/ArticleTimeline.astro';
 import KeyPoint from '../../components/insights/KeyPoint.astro';
+import KeyTakeaway from '../../components/insights/KeyTakeaway.astro';
+import Comparison from '../../components/insights/Comparison.astro';
 import TwoUp from '../../components/insights/TwoUp.astro';
 import Quote from '../../components/insights/Quote.astro';
 import ToolCard from '../../components/insights/ToolCard.astro';
@@ -40,9 +42,13 @@ import Grid from '../../components/insights/Grid.astro';
 import ResultCard from '../../components/insights/ResultCard.astro';
 import Benchmark from '../../components/insights/Benchmark.astro';
 import CaseStudyBlock from '../../components/insights/CaseStudyBlock.astro';
-import Comparison from '../../components/insights/Comparison.astro';
-import KeyTakeaway from '../../components/insights/KeyTakeaway.astro';
 import { SITE } from '../../data/site';
+import {
+  insightSlug,
+  isLocalePost,
+  localizedInsightAlternates,
+  sortInsights,
+} from '../../lib/insights';
 
 const mdxComponents = {
   Callout, VideoEmbed, Screenshot, Compare, Flow,
@@ -60,10 +66,8 @@ const mdxComponents = {
 };
 
 export async function getStaticPaths() {
-  const posts = await getCollection('insights', ({ data }) => !data.draft);
-  const sorted = posts.sort((a, b) =>
-    b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
-  );
+  const posts = await getCollection('insights', isLocalePost('en'));
+  const sorted = posts.sort(sortInsights);
   return sorted.map((post, idx) => {
     const others = sorted.filter((_, i) => i !== idx);
     // Related: same tags first, then chronological; pick top 3
@@ -72,7 +76,7 @@ export async function getStaticPaths() {
     );
     const related = [...new Set([...sameTags, ...others])].slice(0, 3);
     return {
-      params: { slug: post.id.replace(/\.mdx?$/, '') },
+      params: { slug: insightSlug(post) },
       props: {
         post,
         prevPost: sorted[idx + 1] ?? null,
@@ -85,8 +89,8 @@ export async function getStaticPaths() {
 
 const { post, prevPost, nextPost, related } = Astro.props;
 const { Content } = await render(post);
-const canonicalPath = `/insights/${post.id.replace(/\.mdx?$/, '')}/`;
-const slug = post.id.replace(/\.mdx?$/, '');
+const slug = insightSlug(post);
+const canonicalPath = `/insights/${slug}/`;
 const ogImage = post.data.ogImage ?? `/og/${slug}.png`;
 const canonicalURL = new URL(canonicalPath, Astro.site).href;
 const publishedAt = post.data.publishedAt.toISOString();
@@ -159,6 +163,7 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
   description={post.data.description}
   canonical={canonicalPath}
   ogImage={ogImage}
+  alternates={localizedInsightAlternates(slug)}
   type="article"
   publishedAt={publishedAt}
   updatedAt={updatedAt}
@@ -286,7 +291,7 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
         <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)] mb-6">More from insights</p>
         <div class="grid gap-3 sm:grid-cols-3">
           {related.map((rel) => {
-            const relSlug = rel.id.replace(/\.mdx?$/, '');
+            const relSlug = insightSlug(rel);
             return (
               <a
                 href={`/insights/${relSlug}/`}
@@ -319,7 +324,7 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
       <div class="mx-auto max-w-3xl px-6 py-8 grid grid-cols-2 gap-4">
         {prevPost ? (
           <a
-            href={`/insights/${prevPost.id.replace(/\.mdx?$/, '')}/`}
+            href={`/insights/${insightSlug(prevPost)}/`}
             class="group flex flex-col gap-1 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:border-[var(--color-accent)]/40 transition-colors"
           >
             <span class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)] flex items-center gap-1.5">
@@ -331,7 +336,7 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
         ) : <div />}
         {nextPost ? (
           <a
-            href={`/insights/${nextPost.id.replace(/\.mdx?$/, '')}/`}
+            href={`/insights/${insightSlug(nextPost)}/`}
             class="group flex flex-col gap-1 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 hover:border-[var(--color-accent)]/40 transition-colors text-right"
           >
             <span class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)] flex items-center justify-end gap-1.5">

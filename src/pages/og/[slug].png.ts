@@ -1,10 +1,11 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { insightSlug, isLocalePost } from '../../lib/insights';
 import { ogPngResponse, renderOgImage } from '../../lib/ogImage';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('insights', (p) => !p.data.draft);
-  return posts.map((p) => ({ params: { slug: p.id.replace(/\.mdx?$/, '') }, props: { post: p } }));
+  const posts = await getCollection('insights', isLocalePost('en'));
+  return posts.map((p) => ({ params: { slug: insightSlug(p) }, props: { post: p } }));
 }
 
 export const GET: APIRoute = async ({ props }) => {
