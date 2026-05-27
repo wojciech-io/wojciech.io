@@ -94,11 +94,16 @@
     setLoading(true);
 
     try {
-      const pagefindModule = '/pagefind/' + 'pagefind-ui.js';
-      await import(pagefindModule);
-      const { PagefindUI } = window as Window & {
-        PagefindUI?: new (options: Record<string, unknown>) => unknown;
-      };
+      await new Promise<void>((resolve, reject) => {
+        if (document.querySelector('script[data-pagefind-ui]')) { resolve(); return; }
+        const s = document.createElement('script');
+        s.src = '/pagefind/pagefind-ui.js';
+        s.dataset.pagefindUi = '1';
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error('pagefind-ui.js failed to load'));
+        document.head.appendChild(s);
+      });
+      const PagefindUI = (window as Window & { PagefindUI?: new (opts: Record<string, unknown>) => unknown }).PagefindUI;
       if (!PagefindUI) throw new Error('PagefindUI unavailable');
       new PagefindUI({
         element: '#pagefind-ui-root',
