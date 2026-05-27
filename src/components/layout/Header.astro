@@ -1,11 +1,18 @@
 ---
-import Nav, { links } from './Nav.astro';
+import Nav from './Nav.astro';
 import SearchModal from '../ui/SearchModal.astro';
 import ThemeToggle from '../ui/ThemeToggle.astro';
 import { localizedHomeList } from '../../data/locales';
 import { localizedPageSlugs, type LocalizedPageSlug } from '../../data/localizedPages';
+import { getPrimaryNavLinks, getUiStringsForPath, localizeHref, getLocaleFromPath } from '../../data/uiStrings';
 
-const segments = Astro.url.pathname.split('/').filter(Boolean);
+const pathname = Astro.url.pathname;
+const t = getUiStringsForPath(pathname);
+const uiLocale = getLocaleFromPath(pathname);
+const links = getPrimaryNavLinks(pathname);
+const bookCallHref = localizeHref('/contact/', uiLocale) + '#book-call';
+
+const segments = pathname.split('/').filter(Boolean);
 const localeSegment = segments[0];
 const currentLocale = localizedHomeList.find((locale) => locale.path === localeSegment);
 const currentLanguageCode = currentLocale?.code ?? 'EN';
@@ -74,12 +81,12 @@ const languageOptions = [
         </details>
       </div>
       <a
-        href="/contact/#book-call"
+        href={bookCallHref}
         class="btn-press shrink-0 inline-block min-w-40 text-center text-sm font-semibold px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:opacity-90 transition-colors"
         data-mp-cta="Book a call"
         data-mp-location="header"
       >
-        Book a call
+        {t.cta.bookCall}
       </a>
     </div>
 
@@ -187,12 +194,12 @@ const languageOptions = [
     </div>
     <!-- CTA -->
     <a
-      href="/contact/#book-call"
+      href={bookCallHref}
       class="mobile-nav-link btn-press flex items-center justify-center gap-2 w-full bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold py-3.5 rounded-[var(--radius-btn)] hover:opacity-90 transition-opacity text-sm"
       data-mp-cta="Book a call"
       data-mp-location="mobile_nav"
     >
-      Book a call
+      {t.cta.bookCall}
     </a>
   </div>
 </div>

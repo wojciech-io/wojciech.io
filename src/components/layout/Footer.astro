@@ -1,24 +1,33 @@
 ---
 import { SITE } from '../../data/site';
+import { getUiStringsForPath, getLocaleFromPath, localizeHref } from '../../data/uiStrings';
 
 const year = new Date().getFullYear();
 
+const pathname = Astro.url.pathname;
+const t = getUiStringsForPath(pathname);
+const locale = getLocaleFromPath(pathname);
+
+const contactHref = localizeHref('/contact/', locale);
+
 const nav = [
-  { label: 'Work',       href: '/work/',       desc: 'Selected proof and case studies' },
-  { label: 'AI Systems', href: '/ai-systems/', desc: 'Agents, workflows, and automation' },
-  { label: 'Insights',   href: '/insights/',   desc: 'Writing on GTM, AI, and product' },
-  { label: 'Tools',      href: '/resources/',  desc: 'Free tools, templates, and starter packs' },
-  { label: 'About',      href: '/about/',      desc: 'Operator profile and background' },
-  { label: 'Bites',      href: '/bites/',      desc: 'Short-form operator notes, coming soon', soon: true },
-  { label: 'Contact',    href: '/contact/',    desc: 'Book a call or send a message' },
+  { label: t.nav.work,       href: localizeHref('/work/',       locale), desc: 'Selected proof and case studies' },
+  { label: t.nav.aiSystems,  href: localizeHref('/ai-systems/', locale), desc: 'Agents, workflows, and automation' },
+  { label: t.nav.insights,   href: localizeHref('/insights/',   locale), desc: 'Writing on GTM, AI, and product' },
+  { label: t.nav.tools,      href: '/resources/',                        desc: 'Free tools, templates, and starter packs' },
+  { label: t.nav.about,      href: localizeHref('/about/',      locale), desc: 'Operator profile and background' },
+  { label: 'Bites',          href: '/bites/',                            desc: 'Short-form operator notes, coming soon', soon: true },
+  { label: t.nav.contact,    href: contactHref,                          desc: 'Book a call or send a message' },
 ];
 
+// Writing column lists individual EN articles + a "see all" entry. Article URLs
+// stay canonical (EN) for now — only the "see all" link is locale-prefixed.
 const writing = [
   { label: 'CRM-first AI adoption',      href: '/insights/crm-first-ai-adoption/',  desc: 'Why CRM hygiene beats prompt-first AI rollouts' },
   { label: 'Claude Code GTM Starter',    href: '/insights/claude-code-vs-clay/',    desc: 'Four-layer AI outbound system without enrichment tools' },
   { label: 'Claude Code in client GTM',  href: '/insights/claude-code-client-gtm/', desc: 'How I use Claude Code inside real client engagements' },
   { label: 'AI stack in production',     href: '/insights/ai-production-stack/',    desc: 'Every AI tool in active use: what earned its place' },
-  { label: 'All writing →',             href: '/insights/',                        desc: 'AI GTM systems, agent tooling, operator playbooks' },
+  { label: t.footer.allWriting,          href: localizeHref('/insights/', locale),  desc: 'AI GTM systems, agent tooling, operator playbooks' },
 ];
 
 const network = [
@@ -76,12 +85,11 @@ const connect = [
             <span class="ml-0.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-1.5 py-0.5 text-[10px] font-bold leading-none text-[var(--color-accent-text)]">.io</span>
           </a>
           <p class="text-[13px] leading-relaxed text-[var(--color-text-muted)]">
-            GTM architect · AI-native builder.<br class="hidden sm:block" />
-            Revenue systems for B2B SaaS.
+            {t.footer.brandTagline}
           </p>
         </div>
-        <a href="/contact/" class="self-start text-[12px] font-medium text-[var(--color-accent-hi)] underline underline-offset-2 hover:text-[var(--color-text)] transition-colors whitespace-nowrap">
-          Get in touch →
+        <a href={contactHref} class="self-start text-[12px] font-medium text-[var(--color-accent-hi)] underline underline-offset-2 hover:text-[var(--color-text)] transition-colors whitespace-nowrap">
+          {t.footer.getInTouch}
         </a>
       </div>
 
@@ -95,11 +103,10 @@ const connect = [
             <span class="ml-0.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-1.5 py-0.5 text-[10px] font-bold leading-none text-[var(--color-accent-text)]">.io</span>
           </a>
           <p class="mb-5 text-[13px] leading-relaxed text-[var(--color-text-muted)]">
-            GTM architect &amp; AI-native builder.<br />
-            Revenue systems for B2B SaaS.
+            {t.footer.brandTagline}
           </p>
-          <a href="/contact/" class="text-[11px] text-[var(--color-text-dim)] underline underline-offset-2 hover:text-[var(--color-text)] transition-colors">
-            Get in touch →
+          <a href={contactHref} class="text-[11px] text-[var(--color-text-dim)] underline underline-offset-2 hover:text-[var(--color-text)] transition-colors">
+            {t.footer.getInTouch}
           </a>
         </div>
 
@@ -249,7 +256,7 @@ const connect = [
     <!-- Bottom bar -->
     <div class="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--color-border)] py-4 text-[11px] text-[var(--color-text-dim)]">
       <p>© {year} Wojciech Łuszczyński · <a href="https://wojciech.io" class="hover:text-[var(--color-text)] transition-colors">wojciech.io</a></p>
-      <p>GTM architect · AI-native builder</p>
+      <p>{t.footer.bottomTagline}</p>
     </div>
   </div>
 </footer>

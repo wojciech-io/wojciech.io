@@ -4,6 +4,14 @@
 // - Stores choice in localStorage as 'cookie-consent' = 'accepted' | 'declined'
 // - On accept: fires initAfterConsent() which initialises GA4 + Mixpanel
 // - On decline: fires optOut() so Mixpanel stays in opt-out mode
+// - Copy localized per current path (UI strings in src/data/uiStrings.ts)
+
+import { getUiStringsForPath, getLocaleFromPath, localizeHref } from '../../data/uiStrings';
+
+const pathname = Astro.url.pathname;
+const t = getUiStringsForPath(pathname);
+const locale = getLocaleFromPath(pathname);
+const privacyHref = localizeHref('/privacy/', locale);
 ---
 
 <div
@@ -18,8 +26,8 @@
 
       <!-- Text -->
       <p class="flex-1 text-xs text-[var(--color-text-muted)] leading-relaxed">
-        I use Mixpanel and Google Analytics to see which content is useful — anonymously, EU data residency, no ads.
-        <a href="/privacy/" class="ml-1 text-[var(--color-accent)] hover:text-[var(--color-accent-hi)] underline underline-offset-2 whitespace-nowrap">Privacy policy</a>
+        {t.cookie.bannerText}
+        <a href={privacyHref} class="ml-1 text-[var(--color-accent)] hover:text-[var(--color-accent-hi)] underline underline-offset-2 whitespace-nowrap">{t.cookie.privacyPolicy}</a>
       </p>
 
       <!-- Actions -->
@@ -28,13 +36,13 @@
           id="cookie-decline"
           class="text-xs text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors px-3 py-1.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-surface-2)]"
         >
-          No thanks
+          {t.cookie.reject}
         </button>
         <button
           id="cookie-accept"
           class="btn-press text-xs font-semibold px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:opacity-90 transition-opacity"
         >
-          Accept analytics
+          {t.cookie.accept}
         </button>
       </div>
 
