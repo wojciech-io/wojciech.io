@@ -7,6 +7,8 @@ const EXPECTED_HOME_ALTERNATES = [
   ['da-DK', 'https://wojciech.io/dk/'],
   ['nb-NO', 'https://wojciech.io/no/'],
   ['ja-JP', 'https://wojciech.io/jp/'],
+  ['it-IT', 'https://wojciech.io/it/'],
+  ['es-ES', 'https://wojciech.io/es/'],
 ] as const;
 
 const EXPECTED_ABOUT_ALTERNATES = [
@@ -16,6 +18,8 @@ const EXPECTED_ABOUT_ALTERNATES = [
   ['da-DK', 'https://wojciech.io/dk/about/'],
   ['nb-NO', 'https://wojciech.io/no/about/'],
   ['ja-JP', 'https://wojciech.io/jp/about/'],
+  ['it-IT', 'https://wojciech.io/it/about/'],
+  ['es-ES', 'https://wojciech.io/es/about/'],
 ] as const;
 
 test('canonical on EN page points to root (never /en/)', async ({ page }) => {
