@@ -1,0 +1,152 @@
+---
+title: "Il pacchetto iniziale dell'agente GTM Claude Code"
+description: "Come ho costruito un sistema di intelligenza artificiale in quattro fasi che esegue ricerche in uscita, bozze di sequenza e arricchimento del CRM: senza uno strumento di arricchimento esterno."
+publishedAt: "2025-04-18"
+updatedAt: "2026-05-10"
+tags:
+  - AI
+  - GTM
+  - Claude Code
+  - MCP
+featured: true
+draft: false
+coverType: "terminal"
+category: "AI Systems"
+locale: "it"
+translationOf: "claude-code-vs-clay"
+---
+
+La maggior parte dei contenuti di GTM AI rientra in due categorie: Suggerimenti per ChatGPT o confronti di strumenti da 500 dollari al mese con i quali nessuno può realmente lavorare. Questo non è né l'uno né l'altro.
+
+Si tratta di un sistema che ho costruito e gestito: uno stack di Claude Code Agent a quattro livelli per la ricerca in uscita, le bozze di sequenza, l'arricchimento del CRM e il punteggio ICP. Niente argilla. Nessun credito di arricchimento Apollo. Nessun flusso n8n che si rompe ogni tre settimane.
+
+Solo codice Claude, alcuni strumenti MCP, un `CLAUDE.md` pulito e cinque abilità di operatore.
+
+---
+
+## Perché Claude Code invece di Clay
+
+Clay è bravo in quello che fa: pipeline di arricchimento strutturate con un'interfaccia visiva e un modello di credito per linea. L'ho usato. È utile per i team che hanno bisogno di un arricchimento su scala, senza dover ricorrere all'ingegneria.
+
+Ma ha delle limitazioni che riguardano il mio modo di lavorare:
+
+- Si acquistano crediti di arricchimento, non intelligenza. I dati passano attraverso fornitori di terze parti, il livello di ragionamento è sottile.
+- La pipeline visiva è forte ma fragile. La logica complessa diventa difficile da testare, versionare e impegnare.
+- Non si scrive davvero. I dati possono essere inseriti nei modelli, ma la domanda *perché questa prospettiva è rilevante per questo account in questo momento* rimane irrisolta.
+
+Claude Code tramite Agent Loop e MCP Tools permette qualcosa di diverso: un sistema che **legge il contesto, valuta l'idoneità, scrive copie e aggiorna i record**. L'intelligenza è il prodotto, non l'infrastruttura.
+
+<Confronto
+  items={[
+    { label: 'Pipeline in stile Clay', tag: 'Enrichment', tone: 'muted', body: 'Forte se il compito è l'arricchimento dei dati per linea. Più debole se il contesto, il giudizio e la copia devono confluire in un ciclo". },
+    { label: 'Claude Code agent stack', tag: 'Reasoning', tone: 'accentuato', body: 'Forte quando il sistema deve leggere, decidere, scrivere e documentare lo stato del lavoro.' }
+  ]}
+/>
+
+---
+
+## La pila a quattro livelli
+
+### Strato 1: CLAUDE.md come lettera dell'operatore
+
+Ogni sessione di agente inizia con `CLAUDE.md`. Non si tratta di documentazione. È il file di briefing: quello che riceverebbe un SDR junior il primo giorno, con la differenza che il modello lo legge a ogni esecuzione.
+
+Contiene la definizione dell'ICP, il tono di voce, le regole per i lead qualificati, i casi limite e gli arresti bruschi. Il file `CLAUDE.md` è il più importante del sistema, perché vi è codificato il giudizio dell'operatore, in modo che il modello non debba tirare a indovinare.
+
+### Livello 2: Strumenti MCP come livello di accesso ai dati
+
+Utilizzo quattro server MCP: Web Search per le ricerche aziendali attuali, Browser Automation per le pagine che bloccano i crawler, Memory/File System per i file dei clienti e un MCP Custom Scoring che assegna un punteggio ai dati aziendali strutturati rispetto ai criteri ICP.
+
+L'MCP di valutazione è stato il più difficile da costruire ed è il più prezioso. Fornisce all'agente una griglia di valutazione coerente per tutte le esecuzioni.
+
+### Livello 3: File di memoria del cliente
+
+Ogni cliente riceve una struttura:
+
+``testo
+/clienti/acme-corp/
+  icp.md
+  contattato.csv
+  sequenze/
+  ricerca/
+```
+
+L'agente legge questi file all'inizio di ogni sessione. Quando un account viene ricercato, scrive prima `ricerca/[nome-account].md`. In questo modo si crea una traccia di controllo e ogni sequenza è ancorata a una ricerca reale.
+
+### Strato 4: le cinque competenze
+
+Cinque competenze coprono il flusso di lavoro:
+
+- `/ricerca [azienda]`: profilo dell'azienda, notizie, stack tecnologico, dimensione del team, stakeholder.
+- `/score [azienda]`: legge la ricerca e l'ICP, dà un punteggio da 1 a 10 più una giustificazione.
+- `/draft [azienda] [sequenza-variante]`: scrive la prima mail e i follow-up dalla ricerca, non dai campi di fusione.
+- `/enrich [csv-path]`: elabora un elenco CSV, scrive i punteggi e i flag di priorità.
+- `/log [azienda] [stato]`: mantiene pulito `contattati.csv`.
+
+---
+
+## Un'esecuzione reale
+
+Una corsa tipica:
+
+1. inserire il CSV con 50 nomi di aziende nella cartella dei clienti.
+2. eseguire `claude /enrich clients/acme-corp/new-accounts.csv`.
+3. L'agente esegue: Ricerca Web, Scrape del browser se necessario, Punteggio, File di ricerca, CSV arricchito.
+4. Dopo circa 20 minuti è disponibile un elenco con i punteggi, i flag di priorità e i file di ricerca.
+5. Viene eseguito `draft [azienda] v2` per i primi 10, ciascuno con una revisione.
+6. le sequenze inviate sono documentate tramite `/log`.
+
+Tempo totale: circa 45 minuti di lavoro dell'agente più 30 minuti di revisione. Flusso di lavoro paragonabile tra argilla e copywriting: da tre a quattro ore, e il copy non è allo stesso livello.
+
+---
+
+## Quanto costa
+
+Per 50 account, l'ordine di grandezza è piccolo: Claude API pochi dollari, Search API nell'ordine dei centesimi, Custom MCP quasi nulla. Clay raggiunge rapidamente gli 800-2.400 dollari al mese se si includono crediti di arricchimento significativi e file LLM.
+
+Il compromesso: il tempo di costruzione. Circa 20 ore per `CLAUDE.md`, l'impostazione del MCP, le competenze e lo strumento di valutazione. Per i team che non hanno questa capacità, Clay ha ragione. Per gli operatori che possono investire il tempo di costruzione, si ripaga rapidamente.
+
+---
+
+## La struttura di `CLAUDE.md
+
+Il nucleo riutilizzabile:
+
+``markdown
+## Agente GTM: CLAUDE.md
+
+## Chi sei
+Sei un agente GTM B2B per la ricerca e l'outreach.
+
+## Definizione di ICP
+- Dimensione dell'azienda
+- settore
+- Geografia
+- Segnali di acquisto
+- Segnali di acquisto comportamentali
+
+## Tono e regole
+- Nessuna apertura generica
+- Condurre con un'osservazione specifica
+- Prima e-mail max 100 parole
+- Nessuna affermazione priva di fonti
+
+## Arresto duro
+Se il punteggio è inferiore a 6, non scrivere.
+```
+
+---
+
+## Il pacchetto iniziale
+
+Sto rilasciando il nucleo come **Claude Code GTM Agent Starter Pack**: `CLAUDE.md` Template, Skills, Folder Structure e Scoring MCP Source.
+
+È destinato agli operatori GTM che vogliono costruirsi da soli invece di aspettare un wrapper SaaS. Prerequisiti: Chiave API Claude, codice Claude nel terminale e un ICP sufficientemente specifico per essere valutato.
+
+---
+
+## Cosa viene dopo
+
+Due cose sono in cantiere: CRM Sync come MCP bidirezionale di HubSpot e Signal Monitoring, che ricrea una watchlist su base settimanale.
+
+Se state costruendo qualcosa di simile o volete vedere lo starter pack dal vivo, [prenotate una chiamata](/it/contact/#book-call).

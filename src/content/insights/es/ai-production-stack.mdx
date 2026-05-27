@@ -1,0 +1,97 @@
+---
+title: "La pila de IA que realmente utilizo en producción"
+description: "Un recorrido completo por las herramientas de IA que están funcionando activamente en Client Work y en nuestros propios productos: qué se ha ganado su sitio, qué se ha descartado y qué lógica mantiene unida la pila."
+publishedAt: "2026-05-22"
+tags:
+  - AI
+  - Stack
+  - Tools
+  - Production
+  - Claude Code
+featured: false
+draft: false
+coverType: "system"
+category: "AI Systems"
+locale: "es"
+translationOf: "ai-production-stack"
+tldr:
+  - "La pila tiene cuatro capas: Razonamiento, Ejecución, Investigación y CRM/Datos. Cada capa tiene una función clara."
+  - "Lo que se ha cancelado es tan importante como la lista de mantenimiento: Zapier, Notion AI y varias herramientas de enriquecimiento no han sobrevivido al trabajo de producción real."
+  - "La prueba operativa de toda herramienta de IA: ¿produce un trabajo mejor o se limita a trasladar el trabajo a otra parte?"
+---
+
+Existe una versión de este artículo que no escribo yo: 47 herramientas, tabla comparativa y clasificación del uno al diez. Ya has leído este artículo. No ha servido de nada.
+
+Esta es la otra versión: cada herramienta de IA que se ejecuta actualmente en mi pila de producción, qué trabajo hace y por qué se merece el puesto. Igual de importante: lo que se ha echado. Esta lista suele ser más útil que la lista de mantenimiento.
+
+Una aclaración previa: yo diferencio entre herramientas que **crean mejor trabajo** y herramientas que sólo **moven trabajo**. La primera categoría se queda. La segunda quema tiempo y te da sensación de productividad sin mejorar el sistema.
+
+<Toma clave
+  title="Prueba de funcionamiento"
+  body="Una herramienta sólo se queda si aumenta la calidad del resultado, disminuye el tiempo de decisión o hace que el contexto sea más fiable. Si sólo empaqueta un proceso manual de forma más bonita, se queda fuera."
+/>
+
+---
+
+## La pila por capas
+
+### Capa 1: Razonamiento
+
+**Utilizo Claude Sonnet / Opus** para trabajos de diagnóstico complejos: análisis ICP, arquitectura GTM, síntesis de posicionamiento. En otras palabras, siempre que haya que mantener simultáneamente varias restricciones contrapuestas y se requiera una decisión defendible al final, no sólo una probable frase siguiente.
+
+No utilizo Claude para todo. Textos rutinarios, reescrituras sencillas, preguntas rápidas de investigación: para eso no se necesita toda la capa de razonamiento. Usar Opus para un asunto es como usar una llave dinamométrica para colgar cuadros.
+
+La prueba es: *¿Llego a la misma respuesta sin esta capa?* Si la respuesta es sí, no la uso. Si la tarea requiere una consideración real: compensaciones, señales contradictorias, un argumento coherente a partir de entradas dispersas, entonces ésta es la capa adecuada.
+
+### Capa 2: Ejecución
+
+**Código Claude** ejecuta la pila de agentes. Canalizaciones de investigación, bucles de enriquecimiento, borradores de contenido a partir de datos de auditoría, clasificación de CRM: esto es lo que se ejecuta aquí. Es la herramienta con mayor ventaja, no porque sea la más inteligente, sino porque conecta la capa de inteligencia con el producto de trabajo real.
+
+La configuración decisiva: `CLAUDE.md` por cliente, herramientas MCP para el acceso a los datos, habilidades para las subtareas con nombre. Describo la pila de salida en detalle en [este artículo](/es/insights/claude-code-vs-clay/), y cómo se ejecuta en los compromisos con los clientes [aquí](/es/insights/claude-code-client-gtm/). En resumen: Claude code con un buen contexto de operador genera trabajo que antes requería un equipo.
+
+Yo uso **Cursor** para código que realmente necesita vivir en el repo. Servidor MCP, Cloudflare Worker, funciones en productos propios: Cursor se hace cargo de la capa de edición. Claude Code piensa y ejecuta el trabajo del agente; Cursor se integra con IDE y Diff Review.
+
+Esto no es redundante. Claude Code es un operador. Cursor es editor. Trabajos diferentes, contextos diferentes.
+
+### Capa 3: Investigación
+
+**Exa MCP** es para investigación web en tiempo real en ejecuciones de agentes. Exa está construido para el uso LLM: búsqueda semántica, respuestas limpias, menos drama rastreador. Brave Search ha sido reemplazado en mi pila porque la calidad es establemente mejor con Company Research.
+
+**MCP** de automatización del navegador basado en Playwright es para sitios que bloquean el scraping: Páginas de empresa de LinkedIn, algunas páginas de precios de SaaS, señales de Glassdoor. No se trata de un rastreador masivo. Es para las pocas páginas de alto valor por compromiso donde la búsqueda estática no es suficiente.
+
+Utilizo **Perplexity** para la investigación rápida de mercados, sectores o temas técnicos cuando necesito un punto de partida sintetizado en lugar de resultados de búsqueda sin procesar. Lo considero un generador de información, no una fuente. Todo lo importante está verificado.
+
+### Capa 4: CRM y datos
+
+**HubSpot MCP** es para operaciones de CRM: lectura de registros de contactos y empresas, clasificación según los criterios de ICP, etiquetado de problemas de calidad de datos, generación de cargas útiles de actualización. El trabajo de CRM solía ser manual e incoherente. Con MCP en el bucle, la lógica de clasificación es coherente y auditable.
+
+**GA4 / Amplitude** no son herramientas de IA, sino fuentes de datos sobre las que Claude razona. Saco informes o uso API, introduzco datos estructurados en la capa de razonamiento y hago preguntas al operador: "Aquí hay 90 días de adquisición por canal y conversión por cohorte: ¿cuál es el diagnóstico?". Esto funciona si los datos están limpios.
+
+---
+
+## Lo que se desechó
+
+**Zapier** ha sido reemplazado por MCP Server. Zapier es bueno si quieres conectar aplicaciones sin código. Pero cada flujo de trabajo complejo acababa convirtiéndose en un problema de mantenimiento. Los servidores MCP cuestan más de configurar, pero son versionables, inspeccionables y no se rompen cuando cambia un flujo auth.
+
+**Notion AI** nunca justificó su hueco. La salida era genérica. El contexto se limitaba efectivamente a la página actual, por lo que no podía razonar sobre mi estructura de conocimiento real. Escribo en Notion. Pienso con Claude.
+
+**Apollo/Clearbit Enrichment** fue sustituido por Agent Research para mi caso de uso. Con un gran equipo de ventas y un gran volumen, los créditos de enriquecimiento pueden tener sentido. Para la profundidad y calidad que necesito en el trabajo con clientes, la pila de agentes proporciona mejores insumos a un coste menor.
+
+**En la actualidad, GPT-4 / Gemini** no están activos en la pila. No porque sean malos, sino porque la pila es coherente. Los modelos adicionales sin un trabajo específico generan esfuerzo de decisión sin mejor calidad de salida.
+
+---
+
+## La lógica operativa
+
+La pila no es una lista de herramientas. Es una serie de decisiones sobre **dónde se sitúa la inteligencia** en el flujo de trabajo y **dónde es responsable cada capa**.
+
+- Capa de razonamiento: mantiene el juicio, diagnostica el problema, establece la lógica.
+- Capa de ejecución: ejecuta el trabajo, produce resultados, mantiene el contexto.
+- Capa de investigación: aporta datos del mundo real a las demás capas.
+- Capa de datos: almacena lo que ha ocurrido y lo que significa.
+
+Cada herramienta merece su lugar si realiza una de estas tareas mejor que la alternativa. Si el resultado empeora, aumenta el mantenimiento o existe una opción mejor, se cancela.
+
+La pila cambiará. Parte de esta lista desaparecerá en seis meses. No pasa nada. La lógica de funcionamiento permanece.
+
+Si estás creando una pila de IA para GTM y necesitas una segunda opinión sobre lo que debe permanecer y lo que debe desaparecer, [reserva una llamada](/es/contacto/#book-call).
