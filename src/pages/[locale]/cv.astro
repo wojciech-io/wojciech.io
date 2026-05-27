@@ -1,0 +1,19 @@
+---
+import CvDocument from '../../components/pages/CvDocument.astro';
+import { cvLocalizedLangs, type CvLang } from '../../data/cv';
+
+export function getStaticPaths() {
+  return cvLocalizedLangs.map((locale) => ({
+    params: { locale },
+    props: { lang: locale },
+  }));
+}
+
+interface Props {
+  lang: CvLang;
+}
+
+const { lang } = Astro.props;
+---
+
+<CvDocument lang={lang} />
