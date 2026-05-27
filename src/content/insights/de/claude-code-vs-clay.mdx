@@ -1,0 +1,152 @@
+---
+title: "Das Claude Code GTM Agent Starter Pack"
+description: "Wie ich ein vierstufiges AI-System gebaut habe, das Outbound Research, Sequenz-Drafts und CRM Enrichment ausführt: ohne externes Enrichment Tool."
+publishedAt: "2025-04-18"
+updatedAt: "2026-05-10"
+tags:
+  - AI
+  - GTM
+  - Claude Code
+  - MCP
+featured: true
+draft: false
+coverType: "terminal"
+category: "AI Systems"
+locale: "de"
+translationOf: "claude-code-vs-clay"
+---
+
+Die meisten GTM-AI-Inhalte fallen in zwei Kategorien: Prompt-Tipps für ChatGPT oder Tool-Vergleiche für 500 Dollar im Monat, mit denen niemand wirklich arbeiten kann. Das hier ist beides nicht.
+
+Das ist ein Breakdown eines Systems, das ich gebaut habe und betreibe: ein vierstufiger Claude Code Agent Stack für Outbound Research, Sequenz-Drafts, CRM Enrichment und ICP Scoring. Kein Clay. Keine Apollo Enrichment Credits. Keine n8n Flows, die alle drei Wochen brechen.
+
+Nur Claude Code, ein paar MCP Tools, ein sauberes `CLAUDE.md` und fünf Operator Skills.
+
+---
+
+## Warum Claude Code statt Clay
+
+Clay ist gut in dem, was es macht: strukturierte Enrichment Pipelines mit visueller Oberfläche und Credit-Modell pro Zeile. Ich habe es genutzt. Für Teams, die Enrichment at Scale ohne Engineering brauchen, ist es nützlich.
+
+Aber es hat Grenzen, die für meine Arbeitsweise zählen:
+
+- Du kaufst Enrichment Credits, nicht Intelligence. Daten laufen über Drittanbieter, die Reasoning-Schicht ist dünn.
+- Die visuelle Pipeline ist stark, aber spröde. Komplexe Logik wird schwer prüfbar, versionierbar und übergabefähig.
+- Es schreibt nicht wirklich. Daten können in Templates injiziert werden, aber die Frage *warum dieser Prospect für diesen Account genau jetzt relevant ist* bleibt ungelöst.
+
+Claude Code über Agent Loop und MCP Tools erlaubt etwas anderes: ein System, das **Kontext liest, Fit bewertet, Copy schreibt und Records aktualisiert**. Die Intelligence ist das Produkt, nicht die Infrastruktur.
+
+<Comparison
+  items={[
+    { label: 'Clay-style pipeline', tag: 'Enrichment', tone: 'muted', body: 'Stark, wenn die Aufgabe Datenanreicherung pro Zeile ist. Schwächer, wenn Kontext, Urteil und Copy in einem Loop zusammenkommen müssen.' },
+    { label: 'Claude Code agent stack', tag: 'Reasoning', tone: 'accent', body: 'Stark, wenn das System lesen, entscheiden, schreiben und den Arbeitsstand dokumentieren muss.' }
+  ]}
+/>
+
+---
+
+## Der vierstufige Stack
+
+### Schicht 1: CLAUDE.md als Operator Brief
+
+Jede Agent Session beginnt mit `CLAUDE.md`. Das ist keine Dokumentation. Es ist das Briefing File: das, was ein Junior SDR am ersten Tag bekommen würde, nur dass das Modell es bei jedem Run liest.
+
+Es enthält ICP Definition, Tone of Voice, Qualified-Lead-Regeln, Edge Cases und harte Stopps. `CLAUDE.md` ist die wichtigste Datei im System, weil dort Operator-Urteil kodiert wird, damit das Modell nicht raten muss.
+
+### Schicht 2: MCP Tools als Data Access Layer
+
+Ich nutze vier MCP Server: Web Search für aktuelle Company Research, Browser Automation für Seiten, die Crawler blockieren, Memory/File System für Client Files und ein Custom Scoring MCP, das strukturierte Company-Daten gegen ICP Kriterien bewertet.
+
+Der Scoring MCP war am schwersten zu bauen und ist am wertvollsten. Er gibt dem Agent eine konsistente Rubrik über Runs hinweg.
+
+### Schicht 3: Client Memory Files
+
+Jeder Client bekommt eine Struktur:
+
+```text
+/clients/acme-corp/
+  icp.md
+  contacted.csv
+  sequences/
+  research/
+```
+
+Der Agent liest diese Dateien zu Beginn jeder Session. Wenn ein Account recherchiert wird, schreibt er zuerst `research/[account-name].md`. Dadurch entsteht ein Audit Trail, und jede Sequenz ist in echter Recherche verankert.
+
+### Schicht 4: Die fünf Skills
+
+Fünf Skills decken den Workflow ab:
+
+- `/research [company]`: Company Profile, News, Tech Stack, Teamgröße, Stakeholder.
+- `/score [company]`: liest Research und ICP, gibt Score von 1 bis 10 plus Begründung.
+- `/draft [company] [sequence-variant]`: schreibt erste Mail und Follow-ups aus Research, nicht aus Merge Fields.
+- `/enrich [csv-path]`: verarbeitet eine CSV-Liste, schreibt Scores und Priority Flags.
+- `/log [company] [status]`: hält `contacted.csv` sauber.
+
+---
+
+## Ein echter Run
+
+Ein typischer Run:
+
+1. CSV mit 50 Company Names in den Client Folder legen.
+2. `claude /enrich clients/acme-corp/new-accounts.csv` ausführen.
+3. Agent läuft durch: Web Search, Browser Scrape wenn nötig, Score, Research File, enriched CSV.
+4. Nach etwa 20 Minuten liegt eine Liste mit Fit Scores, Priority Flags und Research Files vor.
+5. Für die Top 10 läuft `/draft [company] v2`, jeweils mit Review.
+6. Gesendete Sequenzen werden per `/log` dokumentiert.
+
+Gesamtzeit: etwa 45 Minuten Agent Work plus 30 Minuten Review. Vergleichbarer Clay-plus-Copywriting-Workflow: drei bis vier Stunden, und die Copy ist nicht auf demselben Niveau.
+
+---
+
+## Was es kostet
+
+Pro 50-Account Run ist die Größenordnung klein: Claude API wenige Dollar, Search API im Cent-Bereich, Custom MCP fast nichts. Clay liegt schnell bei 800 bis 2.400 Dollar pro Monat, wenn sinnvolle Enrichment Credits und LLM Rows enthalten sind.
+
+Der Trade-off: Build Time. Etwa 20 Stunden für `CLAUDE.md`, MCP Setup, Skills und Scoring Tool. Für Teams ohne diese Kapazität ist Clay richtig. Für Operatoren, die Build Time investieren können, zahlt es sich schnell zurück.
+
+---
+
+## Die `CLAUDE.md` Struktur
+
+Der wiederverwendbare Kern:
+
+```markdown
+# GTM Agent: CLAUDE.md
+
+## Who you are
+You are a B2B GTM research and outreach agent.
+
+## ICP definition
+- Company size
+- Industry
+- Geography
+- Stack signals
+- Behavioural buying signals
+
+## Tone and rules
+- No generic openings
+- Lead with a specific observation
+- First email max 100 words
+- No unsourced claims
+
+## Hard stops
+If score is below 6, do not draft.
+```
+
+---
+
+## Das Starter Pack
+
+Ich veröffentliche den Kern als **Claude Code GTM Agent Starter Pack**: `CLAUDE.md` Template, Skills, Folder Structure und Scoring MCP Source.
+
+Es ist für GTM Operatoren gedacht, die selbst bauen wollen, statt auf einen SaaS Wrapper zu warten. Voraussetzungen: Claude API Key, Claude Code im Terminal und ein ICP, der spezifisch genug ist, um gescort zu werden.
+
+---
+
+## Was als Nächstes kommt
+
+Zwei Dinge sind in Arbeit: CRM Sync als bidirektionaler HubSpot MCP und Signal Monitoring, das eine Watchlist wöchentlich neu scored.
+
+Wenn du etwas Ähnliches baust oder das Starter Pack live sehen willst, [buch einen Call](/de/contact/#book-call).

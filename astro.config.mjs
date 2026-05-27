@@ -11,19 +11,33 @@ const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 const sentryDsn = process.env.PUBLIC_SENTRY_DSN ?? 'https://eeed3e8af9a62f73f7ae309873dddc50@o4511411558678528.ingest.de.sentry.io/4511411564314704';
 const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/subscribe/']);
 
-/** @returns {Map<string, string>} slug → ISO date string (YYYY-MM-DD) */
+const localizedArticleLocales = new Set(['de', 'dk', 'no', 'jp']);
+
+/** @returns {Map<string, string>} locale:slug → ISO date string (YYYY-MM-DD) */
 function buildArticleDateMap() {
   const map = new Map();
-  const dir = resolve('./src/content/insights');
-  for (const file of readdirSync(dir).filter(f => /\.(md|mdx)$/.test(f))) {
-    const content = readFileSync(resolve(dir, file), 'utf-8');
-    const match = content.match(/publishedAt:\s*(.+)/);
-    if (!match) continue;
-    const date = new Date(match[1].trim());
-    if (!isNaN(date.getTime())) {
-      map.set(file.replace(/\.mdx?$/, ''), date.toISOString().split('T')[0]);
+  const root = resolve('./src/content/insights');
+
+  function walk(/** @type {string} */ dir, /** @type {string} */ locale = 'en') {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const fullPath = resolve(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath, localizedArticleLocales.has(entry.name) ? entry.name : locale);
+        continue;
+      }
+      if (!/\.(md|mdx)$/.test(entry.name)) continue;
+
+      const content = readFileSync(fullPath, 'utf-8');
+      const match = content.match(/publishedAt:\s*(.+)/);
+      if (!match) continue;
+      const date = new Date(match[1].trim());
+      if (!isNaN(date.getTime())) {
+        map.set(`${locale}:${entry.name.replace(/\.mdx?$/, '')}`, date.toISOString().split('T')[0]);
+      }
     }
   }
+
+  walk(root);
   return map;
 }
 
@@ -46,10 +60,11 @@ const isIndexableSitemapUrl = (/** @type {string} */ page) => {
 /** @param {import('@astrojs/sitemap').SitemapItem} item */
 const serializeSitemapItem = (item) => {
   const path = new URL(item.url).pathname;
-  const articleMatch = path.match(/^\/insights\/([^/]+)\//);
+  const articleMatch = path.match(/^\/(?:(de|dk|no|jp)\/)?insights\/([^/]+)\//);
   if (articleMatch) {
-    const slug = articleMatch[1];
-    return { ...item, lastmod: articleDates.get(slug) ?? SITE_LASTMOD, changefreq: 'monthly', priority: 0.8 };
+    const locale = articleMatch[1] ?? 'en';
+    const slug = articleMatch[2];
+    return { ...item, lastmod: articleDates.get(`${locale}:${slug}`) ?? SITE_LASTMOD, changefreq: 'monthly', priority: 0.8 };
   }
   if (path === '/') return { ...item, lastmod: SITE_LASTMOD, changefreq: 'weekly', priority: 1.0 };
   if (path === '/insights/') return { ...item, lastmod: SITE_LASTMOD, changefreq: 'weekly', priority: 0.9 };

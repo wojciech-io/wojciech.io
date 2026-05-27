@@ -1,0 +1,97 @@
+---
+title: "Der AI-Stack, den ich wirklich in Produktion nutze"
+description: "Ein kompletter Rundgang durch die AI-Tools, die in Client Work und eigenen Produkten aktiv laufen: was seinen Platz verdient hat, was rausgeflogen ist und welche Logik den Stack zusammenhält."
+publishedAt: "2026-05-22"
+tags:
+  - AI
+  - Stack
+  - Tools
+  - Production
+  - Claude Code
+featured: false
+draft: false
+coverType: "system"
+category: "AI Systems"
+locale: "de"
+translationOf: "ai-production-stack"
+tldr:
+  - "Der Stack hat vier Schichten: Reasoning, Execution, Research und CRM/Data. Jede Schicht hat einen klaren Job."
+  - "Was gestrichen wurde, ist genauso wichtig wie die Keep-Liste: Zapier, Notion AI und mehrere Enrichment-Tools haben echte Produktionsarbeit nicht überlebt."
+  - "Der operative Test für jedes AI-Tool: erzeugt es bessere Arbeit, oder verschiebt es Arbeit nur an eine andere Stelle?"
+---
+
+Es gibt eine Version dieses Artikels, die ich nicht schreibe: 47 Tools, Vergleichstabelle und Bewertung von eins bis zehn. Du hast diesen Artikel schon gelesen. Er hat nicht geholfen.
+
+Das hier ist die andere Version: jedes AI-Tool, das aktuell in meinem Production Stack läuft, welchen Job es übernimmt und warum es den Slot verdient hat. Genauso wichtig: was rausgeflogen ist. Diese Liste ist meistens nützlicher als die Keep-Liste.
+
+Ein Frame vorab: Ich unterscheide zwischen Tools, die **bessere Arbeit erzeugen**, und Tools, die Arbeit nur **verschieben**. Die erste Kategorie bleibt. Die zweite verbrennt Zeit und gibt dir das Gefühl von Produktivität, ohne das System zu verbessern.
+
+<KeyTakeaway
+  title="Operating test"
+  body="Ein Tool bleibt nur, wenn es Outputqualität erhöht, Entscheidungszeit senkt oder Kontext zuverlässiger macht. Wenn es nur einen manuellen Prozess hübscher verpackt, fliegt es raus."
+/>
+
+---
+
+## Der Stack nach Schichten
+
+### Schicht 1: Reasoning
+
+**Claude Sonnet / Opus** nutze ich für komplexe Diagnosearbeit: ICP-Analyse, GTM-Architektur, Positioning-Synthese. Also überall dort, wo mehrere konkurrierende Constraints gleichzeitig gehalten werden müssen und am Ende eine verteidigbare Entscheidung stehen soll, nicht nur ein wahrscheinlicher nächster Satz.
+
+Ich nutze Claude nicht für alles. Routinetexte, einfache Rewrites, schnelle Recherchefragen: dafür braucht es nicht die volle Reasoning-Schicht. Opus für eine Subject Line zu nutzen ist wie ein Drehmomentschlüssel zum Bilderaufhängen.
+
+Der Test lautet: *Komme ich ohne diese Schicht zur gleichen Antwort?* Wenn ja, nutze ich sie nicht. Wenn die Aufgabe echte Abwägung braucht: Trade-offs, widersprüchliche Signale, ein schlüssiges Argument aus verstreuten Inputs, dann ist das die richtige Schicht.
+
+### Schicht 2: Execution
+
+**Claude Code** betreibt den Agent Stack. Research Pipelines, Enrichment Loops, Content Drafts aus Audit-Daten, CRM-Klassifizierung: das läuft hier. Es ist das Tool mit dem größten Hebel, nicht weil es das intelligenteste ist, sondern weil es die Intelligence-Schicht mit tatsächlichem Work Product verbindet.
+
+Die entscheidende Konfiguration: `CLAUDE.md` pro Client, MCP Tools für Datenzugriff, Skills für benannte Sub-Tasks. Den Outbound Stack beschreibe ich im Detail in [diesem Artikel](/de/insights/claude-code-vs-clay/), und wie er in Client Engagements läuft [hier](/de/insights/claude-code-client-gtm/). Kurz: Claude Code mit gutem Operator-Kontext erzeugt Arbeit, für die früher ein Team nötig war.
+
+**Cursor** nutze ich für Code, der wirklich im Repo leben muss. MCP Server, Cloudflare Worker, Features in eigenen Produkten: Cursor übernimmt die Editing-Schicht. Claude Code denkt und führt Agent Work aus; Cursor integriert sich in IDE und Diff Review.
+
+Das ist nicht redundant. Claude Code ist Operator. Cursor ist Editor. Unterschiedliche Jobs, unterschiedliche Kontexte.
+
+### Schicht 3: Research
+
+**Exa MCP** ist für Echtzeit-Webrecherche in Agent Runs. Exa ist für LLM-Nutzung gebaut: semantische Suche, saubere Antworten, weniger Crawler-Drama. Brave Search wurde in meinem Stack ersetzt, weil die Qualität bei Company Research stabil besser ist.
+
+**Browser automation MCP** auf Playwright-Basis ist für Seiten, die Scraping blockieren: LinkedIn Company Pages, manche SaaS Pricing Pages, Glassdoor-Signale. Das ist kein Bulk-Crawler. Es ist für die wenigen High-Value-Seiten pro Engagement, bei denen statische Suche nicht reicht.
+
+**Perplexity** nutze ich für schnelle Hintergrundrecherche zu Märkten, Branchen oder technischen Themen, wenn ich einen synthetisierten Startpunkt brauche statt roher Suchergebnisse. Ich behandle es als Briefing Generator, nicht als Quelle. Alles Wichtige wird verifiziert.
+
+### Schicht 4: CRM und Daten
+
+**HubSpot MCP** ist für CRM Operations: Contact- und Company-Records lesen, gegen ICP-Kriterien klassifizieren, Data-Quality-Issues markieren, Update Payloads erzeugen. CRM-Arbeit war früher manuell und inkonsistent. Mit MCP im Loop ist die Klassifizierungslogik konsistent und auditierbar.
+
+**GA4 / Amplitude** sind keine AI Tools, sondern Datenquellen, gegen die Claude reasoning betreibt. Ich ziehe Reports oder nutze APIs, gebe strukturierte Daten in die Reasoning-Schicht und stelle Operator-Fragen: "Hier sind 90 Tage Acquisition by Channel und Conversion by Cohort: was ist die Diagnose?" Das funktioniert, wenn die Daten sauber sind.
+
+---
+
+## Was rausgeflogen ist
+
+**Zapier** wurde durch MCP Server ersetzt. Zapier ist gut, wenn Apps ohne Code verbunden werden sollen. Aber jeder komplexe Workflow wurde irgendwann ein Wartungsproblem. MCP Server kosten mehr Setup, sind dafür versionierbar, inspizierbar und brechen nicht still, wenn sich ein Auth Flow ändert.
+
+**Notion AI** hat seinen Slot nie gerechtfertigt. Der Output war generisch. Der Kontext war faktisch auf die aktuelle Page begrenzt, also konnte es nicht über meine tatsächliche Wissensstruktur reasonen. Ich schreibe in Notion. Ich denke mit Claude.
+
+**Apollo/Clearbit Enrichment** wurde für meinen Use Case durch Agent Research ersetzt. Bei großem Sales-Team und hohem Volumen können Enrichment Credits Sinn ergeben. Für die Tiefe und Qualität, die ich in Client Work brauche, liefert der Agent Stack bessere Inputs zu geringeren Kosten.
+
+**GPT-4 / Gemini** sind aktuell nicht aktiv im Stack. Nicht weil sie schlecht sind, sondern weil der Stack kohärent ist. Zusätzliche Modelle ohne spezifischen Job erzeugen Entscheidungsaufwand ohne bessere Outputqualität.
+
+---
+
+## Die Operating Logic
+
+Der Stack ist keine Tool-Liste. Er ist eine Reihe von Entscheidungen darüber, **wo Intelligence im Workflow sitzt** und **wofür jede Schicht verantwortlich ist**.
+
+- Reasoning Layer: hält Urteil, diagnostiziert das Problem, setzt die Logik.
+- Execution Layer: führt Arbeit aus, produziert Output, hält Kontext.
+- Research Layer: bringt Real-World-Daten in die anderen Schichten.
+- Data Layer: speichert, was passiert ist und was es bedeutet.
+
+Jedes Tool verdient seinen Platz, wenn es einen dieser Jobs besser macht als die Alternative. Wenn Output schlechter wird, Maintenance steigt oder eine bessere Option existiert, wird es gestrichen.
+
+Der Stack wird sich ändern. Ein Teil dieser Liste ist in sechs Monaten weg. Das ist okay. Die Operating Logic bleibt.
+
+Wenn du einen AI Stack für GTM aufbaust und eine zweite Meinung brauchst, was bleiben und was rausfliegen sollte, [buch einen Call](/de/contact/#book-call).

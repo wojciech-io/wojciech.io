@@ -1,0 +1,111 @@
+---
+title: "Slik bruker jeg Claude Code i klienters GTM-arbeid"
+description: "Utover outbound agent stacken: hvordan Claude Code kjører content operations, CRM hygiene og research i reelle klientengasjementer, og hvordan delivery-modellen ser ut utenfra."
+publishedAt: "2026-05-25"
+tags:
+  - Claude Code
+  - GTM
+  - AI
+  - Client Work
+  - MCP
+featured: false
+draft: false
+coverType: "terminal"
+category: "AI Systems"
+locale: "no"
+translationOf: "claude-code-client-gtm"
+tldr:
+  - "Claude Code kjører tre jobber i hvert engagement: outbound intelligence, content operations og CRM data hygiene."
+  - "Compounding-effekten er reell: femte run i et client engagement er målbart bedre enn første."
+  - "Klienter ser raskere delivery og bedre drafts. De ser ikke agent stacken. Det er poenget."
+---
+
+De fleste som har hørt om Claude Code tenker på det som en coding assistant. Det er den minste delen av hva det gjør i mine klientengasjementer.
+
+Jeg har bygget det inn i tre deler av hvert GTM engagement: outbound intelligence, content operations og CRM data. Resultatet er en delivery-modell som ikke fantes for to år siden.
+
+Dette handler ikke om å erstatte tenkningen. Det handler om å fjerne overhead mellom tenkning og shipping.
+
+---
+
+## De tre jobbene
+
+Jeg bruker Claude Code til tre distinkte workloads med egen setup og logikk.
+
+### Jobb 1: Research og outbound intelligence
+
+Jeg har dokumentert [GTM agent stacken](/no/insights/claude-code-vs-clay/). Kortversjon: Claude Code, fire MCP tools, et `CLAUDE.md` operator brief og fem Skills håndterer enrichment-to-draft pipeline. En liste på 50 accounts går fra kald CSV til scored accounts med sequence drafts på under en time.
+
+Det jeg ikke dekket nok der: **compounding-effekten**.
+
+Etter tre måneder er `CLAUDE.md` fylt med klientspesifikke ICP-signaler, objections og sequence learnings. Femte run er merkbart bedre enn første. Clay og Apollo prosesserer rader. De bygger ikke operator-kontekst.
+
+### Jobb 2: Content operations
+
+Alle GTM engagements berører content: website, case studies, LinkedIn positioning, email nurture. Avstanden mellom "vi må oppdatere homepage" og "homepage er oppdatert" er ofte uker med stakeholders og skrivepingpong.
+
+Med Claude Code kollapser workflowen:
+
+1. **Audit:** `/audit` leser sitet, konkurrentene og ICP briefet. Output er strukturert gap analysis med konkrete anbefalinger.
+2. **Draft:** `/draft [section]` skriver fra audit findings, ikke template.
+3. **Iteration:** Jeg redigerer. Systemet ser hva jeg endret og hvorfor. Neste draft starter nærmere riktig svar.
+
+Output er ikke perfekt fra start. Men baseline er research-grounded, og iteration tar timer i stedet for uker.
+
+### Jobb 3: CRM data operations
+
+Dette er den mest undervurderte use casen.
+
+De fleste B2B CRM-er har samme problemer: duplicate companies, contacts uten companies, deals i feil stage, custom fields ingen fyller ut. Manuell cleanup tar uker og blir fortsatt inkonsistent.
+
+Claude Code med HubSpot MCP gjør det annerledes:
+
+- leser contacts og companies i batches
+- bruker ICP scoring criteria konsistent
+- flagger duplicates og missing data som patterns
+- genererer update payloads for human review før noe skrives i CRM
+
+Det er ikke one-click. Review og approval trengs fortsatt. Men logikken er konsistent og reasoning kan inspiseres.
+
+<Comparison
+  items={[
+    { label: 'Tradisjonell GTM delivery', tag: 'Koordinering', tone: 'muted', body: 'Research, briefs, copy, CRM cleanup og reviews kjører i separate spor. Flaskehalsen er orchestration.' },
+    { label: 'Claude Code delivery', tag: 'Operator-led', tone: 'accent', body: 'Agent stacken holder kontekst, gjør research, skriver drafts og lager CRM payloads. Operatoren bestemmer og reviewer.' }
+  ]}
+/>
+
+---
+
+## Engagement-modellen dette muliggjør
+
+**Før:** Et GTM engagement betydde scope deliverables, delegere research, briefe writers, reviewe drafts, bygge sequences og styre CRM cleanup parallelt. Minimum seks uker med konstant orchestration.
+
+**Nå:** Jeg scoper rundt operator outputs: enriched account list, sequenced outreach, positioned website copy og clean CRM. Jeg leverer raskere og med færre avhengigheter.
+
+Klienter er fortsatt i loopen på ICP, tone og content approval. Judgment er mitt og deres. Det som er borte er research overhead og writing latency.
+
+---
+
+## Hva klienter ser og ikke ser
+
+Klienter ser raskere delivery og bedre first drafts. Sequences med konkrete account-signaler, ikke generisk personalization. Et CRM som reflekterer ICP i stedet for historisk kaos.
+
+De ser ikke agent stacken. Det er med vilje.
+
+Output taler for seg. Tooling er implementation detail. En klient trenger ikke forstå MCP servers. De trenger sequences som booker calls. Det er kontrakten.
+
+---
+
+## Constraints å kjenne
+
+**Det krever upfront investment.** `CLAUDE.md` må skrives ordentlig. Client memory structure må scaffoldes. First-run output er bra, ikke fantastisk. Compounding starter på run to.
+
+**Det fungerer best på information-dense tasks.** Jo rikere ICP, site content og CRM export er, jo bedre blir output.
+
+**Det erstatter ikke operator judgment.** Scoring logic, sequence strategy og positioning decisions kommer fra operatoren. Claude Code executes. Operatoren bestemmer.
+
+Jeg scoper det, kjører det og reviewer output. Fartsforbedringen er reell. Judgment-laget er fortsatt mitt.
+
+Hvis GTM-engagementet sitter fast i research, writing eller CRM hygiene, er dette verdt å se på.
+
+[Book en samtale](/no/contact/#book-call) hvis du vil se hvordan det passer til din stack.

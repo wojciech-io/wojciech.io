@@ -11,10 +11,12 @@ import { localizedHome } from '../../data/locales';
 import { SITE } from '../../data/site';
 
 export function getStaticPaths() {
-  return localizedPages.map((copy) => ({
-    params: { locale: copy.locale, page: copy.slug },
-    props: { copy },
-  }));
+  return localizedPages
+    .filter((copy) => copy.slug !== 'insights')
+    .map((copy) => ({
+      params: { locale: copy.locale, page: copy.slug },
+      props: { copy },
+    }));
 }
 
 const { copy } = Astro.props as { copy: LocalizedPageCopy };

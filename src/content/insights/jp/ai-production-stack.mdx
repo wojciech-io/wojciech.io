@@ -1,0 +1,97 @@
+---
+title: "実際にproductionで使っているAI stack"
+description: "Client workと自分のproductsで実際に動いているAI toolsの全体像。何が残り、何を切り、どんなoperating logicでstackを組んでいるか。"
+publishedAt: "2026-05-22"
+tags:
+  - AI
+  - Stack
+  - Tools
+  - Production
+  - Claude Code
+featured: false
+draft: false
+coverType: "system"
+category: "AI Systems"
+locale: "jp"
+translationOf: "ai-production-stack"
+tldr:
+  - "Stackはreasoning、execution、research、CRM/dataの4層。各層には明確な役割があります。"
+  - "残したものと同じくらい、切ったものが重要です。Zapier、Notion AI、いくつかのenrichment toolsはproduction workに耐えませんでした。"
+  - "AI toolの判断基準は一つ。より良いoutputを作るのか、それとも仕事を別の場所へ移すだけなのか。"
+---
+
+この記事には、私が書かないバージョンがあります。47個のtools、比較表、10点満点のスコア。もう読んだことがあるはずです。そしてあまり役に立たなかったはずです。
+
+ここでは別の書き方をします。今のproduction stackで実際に動いているAI tools、それぞれの役割、なぜ残っているのか。そして何を切ったのか。実務では、この「切ったもの」のほうが学びになります。
+
+前提として、私はtoolsを二つに分けています。**より良いoutputを作るtools**と、仕事をただ**別の場所へ移すtools**です。前者は残ります。後者は時間を使わせ、何か進んでいる感覚だけを残します。
+
+<KeyTakeaway
+  title="Operating test"
+  body="Toolは、output qualityを上げる、decision timeを下げる、contextを安定させる、のどれかを満たすときだけ残します。手作業を少しきれいに包むだけなら削除します。"
+/>
+
+---
+
+## Stack by layer
+
+### Layer 1: Reasoning
+
+**Claude Sonnet / Opus**は、複雑なdiagnostic workに使います。ICP analysis、GTM architecture review、positioning synthesis。複数のconstraintsを同時に扱い、説明可能な結論が必要なタスクです。
+
+すべてにClaudeを使うわけではありません。Routine drafting、simple rewrite、単純なresearch queryにはfull reasoning layerは不要です。Subject lineの書き換えにOpusを使うのは、額縁を掛けるためにトルクレンチを使うようなものです。
+
+判断基準は、*それなしで同じ答えに到達できるか*。できるなら使いません。Trade-off、conflicting signals、散らばったinputsから一貫したargumentを作る必要があるなら、この層を使います。
+
+### Layer 2: Execution
+
+**Claude Code**はagent stackを動かします。Research pipelines、enrichment loops、audit dataからのcontent drafts、CRM classification。ここが一番leverageの大きいtoolです。最も賢いからではなく、intelligence layerを実際のwork productにつなげるからです。
+
+重要なのは設定です。Clientごとの`CLAUDE.md`、data access用のMCP tools、named sub-tasks用のSkills。[Outbound stack](/jp/insights/claude-code-vs-clay/)と[client engagementsでの使い方](/jp/insights/claude-code-client-gtm/)は別記事で説明しています。短く言えば、良いoperator contextを持ったClaude Codeは、以前ならteamが必要だった仕事を作ります。
+
+**Cursor**はrepoに残るcodeを書くときに使います。MCP server、Cloudflare Worker、product feature。Claude Codeはthinkingとagent work、CursorはIDE integrationとdiff reviewです。
+
+これは重複ではありません。Claude Codeはoperator。Cursorはeditorです。
+
+### Layer 3: Research
+
+**Exa MCP**はagent runs内のreal-time web research用です。LLM利用に向いたsemantic search、clean responses、crawler blockingの少なさがあります。Company researchではBrave Searchより安定していました。
+
+**Browser automation MCP**はPlaywrightベースで、通常のscrapingを止めるページに使います。LinkedIn company pages、一部のSaaS pricing pages、Glassdoor signals。Bulk crawlingではなく、重要度の高い数ページに使います。
+
+**Perplexity**は、industry、market、technical topicの背景理解に使います。Sourceではなくresearch brief generatorとして扱います。重要な内容は必ず確認します。
+
+### Layer 4: CRM and data
+
+**HubSpot MCP**はCRM operations用です。Contact/company recordsの読み取り、ICP criteriaによるclassification、data quality issueの検出、update payloadの生成。MCPが入ると、classification logicが一貫し、auditしやすくなります。
+
+**GA4 / Amplitude**はAI toolsではなくdata sourcesです。ReportsやAPIからstructured dataを取り、reasoning layerに渡します。「直近90日のacquisition by channelとconversion by cohortから診断して」という問いは、dataがcleanならreasoning layerが得意です。
+
+---
+
+## 切ったもの
+
+**Zapier**はMCP serversに置き換えました。Simpleなapp connectionには良いですが、複雑なworkflowはmaintenance problemになりました。MCPはsetupが重い代わりに、inspectable、versionable、robustです。
+
+**Notion AI**はslotを正当化できませんでした。Outputはgenericで、contextも狭い。私はNotionで書きますが、Claudeで考えます。
+
+**Apollo/Clearbit enrichment**は、このuse caseではagent researchに置き換えました。大きなsales teamならcreditsは意味があります。ただ、client workで必要なresearch qualityとpersonalization depthにはagent stackのほうが合っています。
+
+**GPT-4 / Gemini**はactive useではありません。悪いからではなく、stackがすでにcoherentだからです。明確なjobがないmodelを増やすと、output qualityではなくdecision overheadが増えます。
+
+---
+
+## Operating logic
+
+Stackはtool listではありません。**workflowのどこにintelligenceを置くか**、そして**各layerが何を担当するか**の設計です。
+
+- Reasoning layer: judgmentを持ち、問題を診断し、logicを決める。
+- Execution layer: workを実行し、outputを作り、contextを保つ。
+- Research layer: real-world dataを他のlayersへ入れる。
+- Data layer: 何が起きたか、何を意味するかを保存する。
+
+Toolは、このどれかをalternativeより良くできるときだけ残ります。Outputが悪い、maintenance costが高い、より良い選択肢がある。そのときは切ります。
+
+Stackは変わります。ここにあるものの一部は半年後に消えています。それで問題ありません。Operating logicは残ります。
+
+GTM function向けのAI stackを作っていて、何を残すべきか見たいなら、[相談を予約](/jp/contact/#book-call)してください。

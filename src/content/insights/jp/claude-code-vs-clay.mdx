@@ -1,0 +1,152 @@
+---
+title: "Claude Code GTM Agent Starter Pack"
+description: "Outbound research、sequence drafting、CRM enrichmentを外部enrichment toolなしで動かす4層AI systemをどう作ったか。"
+publishedAt: "2025-04-18"
+updatedAt: "2026-05-10"
+tags:
+  - AI
+  - GTM
+  - Claude Code
+  - MCP
+featured: true
+draft: false
+coverType: "terminal"
+category: "AI Systems"
+locale: "jp"
+translationOf: "claude-code-vs-clay"
+---
+
+GTM AI contentの多くは2種類です。ChatGPTのprompt tipsか、月500ドルのtool comparison。どちらも実際には動きにくい。これはそのどちらでもありません。
+
+これは私が構築し、実際に運用しているsystemのbreakdownです。Outbound research、sequence drafting、CRM enrichment、ICP scoringを行う4層のClaude Code agent stack。Clayなし。Apollo enrichment creditsなし。3週間ごとに壊れるn8n flowsなし。
+
+Claude Code、いくつかのMCP tools、構造化された`CLAUDE.md`、5つのoperator Skillsだけです。
+
+---
+
+## なぜClayではなくClaude Codeか
+
+Clayは得意なことがあります。Visual interfaceとrow単位のcredit modelを持つstructured enrichment pipelinesです。Engineeringなしでscaleしたいteamsには役立ちます。
+
+ただし、私の働き方では限界があります。
+
+- 買っているのはenrichment creditsであってintelligenceではありません。Dataはprovidersを通り、reasoning layerは薄い。
+- Visual pipelineは強力ですがbrittleです。複雑なlogicはinspect、version、handoffしにくくなります。
+- 本当の意味では書きません。Dataをtemplateに入れられても、*なぜこのprospectがこのaccountに今 relevantなのか*のreasoningはありません。
+
+Claude Codeはagent loopとMCP toolsによって別のものを作れます。**Contextを読み、fitを判断し、copyを書き、recordsを更新する**systemです。
+
+<Comparison
+  items={[
+    { label: 'Clay pipeline', tag: 'Enrichment', tone: 'muted', body: 'Rowごとのdata enrichmentには強い。ただしcontext、judgment、copyが同じloopに必要な場合は弱い。' },
+    { label: 'Claude Code stack', tag: 'Reasoning', tone: 'accent', body: 'Systemが読み、判断し、書き、作業状態を記録する必要がある場合に強い。' }
+  ]}
+/>
+
+---
+
+## 4層stack
+
+### Layer 1: CLAUDE.md as operator brief
+
+すべてのClaude Code sessionは`CLAUDE.md`から始まります。これはdocumentationではありません。Junior SDRに初日に渡すbriefing fileのようなものを、modelが毎回読む形です。
+
+ICP definition、tone、lead qualification、edge cases、hard rulesを含みます。Operator judgmentをここにencodeするため、このfileが最重要です。
+
+### Layer 2: MCP tools as data access layer
+
+4つのMCP serversを使います。Real-time company research用のweb search、crawlerを止めるpages用のbrowser automation、client files用のmemory/filesystem、fit scoreを返すcustom scoring MCPです。
+
+Scoring MCPは最も難しく、最も価値がありました。Runsをまたいで安定したrubricを持てるからです。
+
+### Layer 3: Client memory files
+
+各clientにはfolderがあります。
+
+```text
+/clients/acme-corp/
+  icp.md
+  contacted.csv
+  sequences/
+  research/
+```
+
+Agentはsession開始時にこれを読みます。New accountをresearchするときは、draftの前に`research/[account-name].md`を書きます。Audit trailができ、sequenceは実際のresearchにgroundedされます。
+
+### Layer 4: Five Skills
+
+5つのSkillsです。
+
+- `/research [company]`: company profile、news、stack signals、team size、stakeholders。
+- `/score [company]`: researchとICPを読み、1-10 scoreとreasoningを返す。
+- `/draft [company] [sequence-variant]`: merge fieldsではなくresearchからmailとfollow-upsを書く。
+- `/enrich [csv-path]`: CSVをbatch処理し、scores付きのenriched CSVを出す。
+- `/log [company] [status]`: `contacted.csv`をcleanに保つ。
+
+---
+
+## 実際のrun
+
+流れはこうです。
+
+1. 50 companiesのCSVをclient folderへ置く。
+2. `claude /enrich clients/acme-corp/new-accounts.csv`を実行。
+3. Agentがweb search、必要ならbrowser scrape、score、research file、enriched CSVを作る。
+4. 約20分後、fit scores、priority flags、research filesが揃う。
+5. Top 10に対して`/draft [company] v2`を一つずつ実行しreviewする。
+6. Sent sequencesを`/log`で記録する。
+
+50 accountsで、unattended agent workが約45分、私のreviewが約30分。Clay + copywritingなら最低3-4時間で、copy qualityも同じではありません。
+
+---
+
+## Cost
+
+50-account runのcostは小さいです。Claude APIが数ドル、search APIがcent level、custom MCPはほぼ無視できます。Clayはmeaningful creditsとLLM rowsを含めると月800-2,400ドルになりやすい。
+
+Trade-offはbuild timeです。`CLAUDE.md`、MCP setup、Skills、scoring toolに約20時間。CapacityがないteamにはClayが正しい。Build timeを投資できるoperatorにはすぐ回収できます。
+
+---
+
+## `CLAUDE.md` structure
+
+Reusable coreはこれです。
+
+```markdown
+# GTM Agent: CLAUDE.md
+
+## Who you are
+You are a B2B GTM research and outreach agent.
+
+## ICP definition
+- Company size
+- Industry
+- Geography
+- Stack signals
+- Buying signals
+
+## Tone and rules
+- No generic openings
+- Lead with a specific observation
+- First email max 100 words
+- No unsourced claims
+
+## Hard stops
+If score is below 6, do not draft.
+```
+
+---
+
+## Starter Pack
+
+このcoreを**Claude Code GTM Agent Starter Pack**として公開しています。`CLAUDE.md` template、Skills、folder structure、scoring MCP sourceです。
+
+SaaS wrapperを待つのではなく、自分で作りたいGTM operators向けです。
+
+---
+
+## What's next
+
+次は2つです。HubSpotへ直接書き込むbidirectional CRM syncと、watchlist accountsをweekly scoringするsignal monitoring。
+
+似たものを作っている、またはstarter packを見たい場合は、[相談を予約](/jp/contact/#book-call)してください。

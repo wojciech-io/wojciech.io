@@ -1,17 +1,21 @@
 ---
-// MDX component: highlighted callout box for key lessons.
-// Usage:
-//   <KeyTakeaway>One to three sentence takeaway goes here.</KeyTakeaway>
-//   <KeyTakeaway icon="warning">Watch out for this gotcha.</KeyTakeaway>
-//
-// icon options: 'info' | 'warning' | 'tip' | 'check'
-
 interface Props {
   icon?: 'info' | 'warning' | 'tip' | 'check';
   title?: string;
+  body?: string;
+  items?: string[];
+  tone?: 'accent' | 'warning' | 'neutral';
 }
 
-const { icon = 'info', title } = Astro.props;
+const {
+  icon,
+  title,
+  body,
+  items = [],
+  tone = 'accent',
+} = Astro.props;
+
+const resolvedIcon = icon ?? (tone === 'warning' ? 'warning' : tone === 'neutral' ? 'info' : 'info');
 
 const configs = {
   info: {
@@ -31,17 +35,17 @@ const configs = {
   },
   check: {
     label: title ?? 'Confirmed',
-    borderColor: 'var(--color-success)',
+    borderColor: 'var(--color-success, var(--color-accent))',
     iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
   },
 } as const;
 
-const cfg = configs[icon];
+const cfg = configs[resolvedIcon];
 ---
 
 <aside
   class="kt-block"
-  data-icon={icon}
+  data-icon={resolvedIcon}
   role="note"
   aria-label={cfg.label}
   style={`--kt-accent: ${cfg.borderColor};`}
@@ -55,6 +59,12 @@ const cfg = configs[icon];
     <span class="kt-label">{cfg.label}</span>
   </header>
   <div class="kt-body">
+    {body && <p>{body}</p>}
+    {items.length > 0 && (
+      <ul>
+        {items.map((item) => <li>{item}</li>)}
+      </ul>
+    )}
     <slot />
   </div>
 </aside>
@@ -114,6 +124,15 @@ const cfg = configs[icon];
 
   .kt-body :global(p:first-child) {
     margin-top: 0;
+  }
+
+  .kt-body :global(ul) {
+    margin-block: 0.5rem;
+    padding-left: 1.125rem;
+  }
+
+  .kt-body :global(li) {
+    margin-block: 0.3rem;
   }
 
   .kt-body :global(strong) {
