@@ -42,6 +42,15 @@ technology companies.
 - Testimonials live in `src/content/testimonials`.
 - MDX article components are registered in `src/pages/insights/[slug].astro`.
 
+## Copy and Design
+
+- All copy must follow the tone of voice spec in `docs/10-tone-of-voice.md`.
+  Read it before writing or reviewing any visible text.
+- Design tokens, typography, spacing, and colour are documented in
+  `docs/design-system.md`. Source of truth is `src/styles/tokens.css`.
+- Hard copy bans: no em dashes, no AI slop phrases, no boilerplate structures.
+  See `docs/10-tone-of-voice.md` for the full list.
+
 ## Deployment
 
 Merges to `main` run CI first. Deploys are handled by Wrangler GitHub Actions
