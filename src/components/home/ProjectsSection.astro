@@ -1,5 +1,6 @@
 ---
 import ProjectCard from '../ui/ProjectCard.astro';
+import ProjectCover from '../ui/ProjectCover.astro';
 
 const projects = [
   {
@@ -8,7 +9,6 @@ const projects = [
     description: 'A relationship operating system for local-government property teams. One place for contacts, owner context, communication status, and next actions.',
     tags: ['AI workflow', 'CRM-lite', 'Ops dashboard'],
     href: 'https://relora-jet.vercel.app/',
-    screenshot: '/images/work/relora-preview.jpg',
     problem: 'Important owner conversations lived across inboxes, notes, and memory.',
     system: 'Contacts, relationships, briefs, status, and follow-up in one operator view.',
     artifact: 'Live demo app with dashboard, relation map, and task flow.',
@@ -21,7 +21,6 @@ const projects = [
     description: 'An AI-native Google Ads cockpit: spend, ROAS, ICP fit, campaign priorities, and next-best actions in one workspace.',
     tags: ['AI', 'Ads', 'GTM', 'Operator tooling'],
     href: 'https://ads-assistant-three.vercel.app/',
-    screenshot: '/images/work/ads-assistant-preview.jpg',
     problem: 'Ad optimization work was split between reports, intuition, and repeated checks.',
     system: 'Budget, ICP, ROAS, alerts, and actions are pulled into one decision loop.',
     artifact: 'Live dashboard with campaign priorities and optimization queue.',
@@ -34,7 +33,6 @@ const projects = [
     description: 'A self-serve camper rental site for browsing vehicles, checking dates, and moving from interest to reservation quickly.',
     tags: ['Product', 'Booking', 'Web app'],
     href: 'https://camper-rental-weld.vercel.app/',
-    screenshot: '/images/work/kamperownia-preview.jpg',
     problem: 'Rental demand needed a clearer path from browsing to booking.',
     system: 'Inventory, dates, offer framing, and reservation CTA in one front-end flow.',
     artifact: 'Responsive booking website with vehicle cards and search entry point.',
@@ -47,7 +45,6 @@ const projects = [
     description: 'A macOS teleprompter concept for calls, demos, and recordings. Keeps notes close to the camera so delivery stays natural.',
     tags: ['macOS', 'Swift', 'AI-built'],
     href: 'https://notch.wojciech.io/',
-    screenshot: '/images/work/notch-preview.jpg',
     problem: 'Notes sit away from the camera, which breaks eye contact during calls and demos.',
     system: 'Prompts live around the MacBook notch with a focused reading surface.',
     artifact: 'Product site and app concept built around the camera area.',
@@ -90,22 +87,12 @@ const rest = projects.slice(1);
       data-reveal-index="0"
     >
       <div class="grid min-h-[360px] lg:grid-cols-2">
-        <!-- Left: real artifact -->
+        <!-- Left: generated cover -->
         <div class="artifact-stage relative min-h-[260px] overflow-hidden p-5 md:p-8">
-          <div class="artifact-shot h-full min-h-[220px] overflow-hidden rounded-[14px] bg-[var(--color-surface)] transition-transform duration-500 group-hover:scale-[1.012]">
-            <img
-              src={featured.screenshot}
-              alt={`${featured.title} product screenshot`}
-              loading="lazy"
-              decoding="async"
-              class="h-full w-full object-cover object-top"
-            />
+          <div class="h-full min-h-[220px] overflow-hidden rounded-[14px] transition-transform duration-500 group-hover:scale-[1.012]">
+            <ProjectCover cover={featured.cover} />
           </div>
           <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>
-          <div class="artifact-label absolute left-5 top-5 inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-semibold backdrop-blur-md">
-            <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
-            Live product artifact
-          </div>
         </div>
 
         <!-- Right: content -->
