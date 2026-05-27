@@ -60,6 +60,7 @@ const languageOptions = [
             {languageOptions.map((option) => (
               <a
                 href={option.href}
+                data-lang-switch={option.code}
                 class:list={[
                   'lang-opt cursor-pointer',
                   option.code === currentLanguageCode && 'lang-opt--active',
@@ -171,6 +172,7 @@ const languageOptions = [
           {languageOptions.map((option) => (
             <a
               href={option.href}
+              data-lang-switch={option.code}
               class:list={[
                 'lang-opt cursor-pointer',
                 option.code === currentLanguageCode && 'lang-opt--active',
@@ -262,4 +264,33 @@ const languageOptions = [
 
   initMobileNav();
   document.addEventListener('astro:page-load', initMobileNav);
+</script>
+
+<script>
+  // Fix language switcher for localized insight article pages.
+  // The server-side fallback only knows top-level slugs (e.g. /insights/), but each
+  // article page emits <link rel="alternate" hreflang> tags with exact translated URLs.
+  // We read those and update [data-lang-switch] anchors to point to the right article.
+  const hreflangToCode: Record<string, string> = {
+    en: 'EN', 'de-DE': 'DE', 'da-DK': 'DK', 'nb-NO': 'NO',
+    'ja-JP': 'JP', 'it-IT': 'IT', 'es-ES': 'ES',
+  };
+
+  function applyAlternates() {
+    const alternates = document.head.querySelectorAll<HTMLLinkElement>('link[rel="alternate"][hreflang]');
+    if (!alternates.length) return;
+    const map = new Map<string, string>();
+    alternates.forEach((link) => {
+      const code = hreflangToCode[link.hreflang];
+      if (code) map.set(code, link.href);
+    });
+    if (!map.size) return;
+    document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((a) => {
+      const code = a.dataset.langSwitch;
+      if (code && map.has(code)) a.href = map.get(code)!;
+    });
+  }
+
+  applyAlternates();
+  document.addEventListener('astro:page-load', applyAlternates);
 </script>
