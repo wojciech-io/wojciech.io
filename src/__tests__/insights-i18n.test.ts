@@ -23,7 +23,9 @@ function read(locale: (typeof LOCALES)[number], slug: string) {
 }
 
 function frontmatterValue(content: string, key: string) {
-  return content.match(new RegExp(`^${key}:\\s*"?([^"\\n]+)"?`, 'm'))?.[1];
+  const prefix = `${key}:`;
+  const line = content.split('\n').find((entry) => entry.startsWith(prefix));
+  return line?.slice(prefix.length).trim().replace(/^"|"$/g, '');
 }
 
 describe('localized insight articles', () => {

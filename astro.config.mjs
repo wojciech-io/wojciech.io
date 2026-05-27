@@ -4,40 +4,39 @@ import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
-import { readFileSync, readdirSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from 'fs';
 
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 const sentryDsn = process.env.PUBLIC_SENTRY_DSN ?? 'https://eeed3e8af9a62f73f7ae309873dddc50@o4511411558678528.ingest.de.sentry.io/4511411564314704';
 const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/subscribe/']);
 
-const localizedArticleLocales = new Set(['de', 'dk', 'no', 'jp']);
+const articleLocales = ['en', 'de', 'dk', 'no', 'jp'];
+const articleSlugs = [
+  'ai-production-stack',
+  'claude-code-client-gtm',
+  'claude-code-vs-clay',
+  'crm-first-ai-adoption',
+];
+
+function articleFileUrl(/** @type {string} */ locale, /** @type {string} */ slug) {
+  const prefix = locale === 'en' ? '' : `${locale}/`;
+  return new URL(`./src/content/insights/${prefix}${slug}.mdx`, import.meta.url);
+}
 
 /** @returns {Map<string, string>} locale:slug → ISO date string (YYYY-MM-DD) */
 function buildArticleDateMap() {
   const map = new Map();
-  const root = resolve('./src/content/insights');
-
-  function walk(/** @type {string} */ dir, /** @type {string} */ locale = 'en') {
-    for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      const fullPath = resolve(dir, entry.name);
-      if (entry.isDirectory()) {
-        walk(fullPath, localizedArticleLocales.has(entry.name) ? entry.name : locale);
-        continue;
-      }
-      if (!/\.(md|mdx)$/.test(entry.name)) continue;
-
-      const content = readFileSync(fullPath, 'utf-8');
+  for (const locale of articleLocales) {
+    for (const slug of articleSlugs) {
+      const content = readFileSync(articleFileUrl(locale, slug), 'utf-8');
       const match = content.match(/publishedAt:\s*(.+)/);
       if (!match) continue;
       const date = new Date(match[1].trim());
       if (!isNaN(date.getTime())) {
-        map.set(`${locale}:${entry.name.replace(/\.mdx?$/, '')}`, date.toISOString().split('T')[0]);
+        map.set(`${locale}:${slug}`, date.toISOString().split('T')[0]);
       }
     }
   }
-
-  walk(root);
   return map;
 }
 
