@@ -15,6 +15,18 @@ const restPosts = allPosts.filter(p => p !== featuredPost);
 const usedCategories = [...new Set(allPosts.map(p => p.data.category).filter(Boolean))] as string[];
 const categories = ['All', ...usedCategories.sort()];
 
+// Article count per category, for filter chip labels
+const categoryCounts: Record<string, number> = { All: allPosts.length };
+for (const p of allPosts) {
+  if (p.data.category) {
+    categoryCounts[p.data.category] = (categoryCounts[p.data.category] ?? 0) + 1;
+  }
+}
+
+// 3 most recent articles by publishedAt (pure date order, ignoring featured flag)
+const byDate = [...allPosts].sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const latestPosts = byDate.slice(0, 3);
+
 const author = {
   name: 'Wojciech Łuszczyński',
   avatar: 'https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=56&r=g',
@@ -165,22 +177,69 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
 
     <!-- Category filter: single clean row -->
     <div class="mb-2 flex flex-wrap gap-2" id="cat-nav" role="tablist" aria-label="Filter by category">
-      {categories.map((cat, i) => (
-        <button
-          role="tab"
-          data-cat={cat}
-          aria-selected={i === 0 ? 'true' : 'false'}
-          class:list={[
-            'cat-btn rounded-[var(--radius-btn)] px-4 py-2 text-sm font-medium transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]',
-            i === 0
-              ? 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm'
-              : 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]',
-          ]}
-        >{cat}</button>
-      ))}
+      {categories.map((cat, i) => {
+        const count = categoryCounts[cat] ?? 0;
+        return (
+          <button
+            role="tab"
+            data-cat={cat}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            class:list={[
+              'cat-btn rounded-[var(--radius-btn)] px-4 py-2 text-sm font-medium transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]',
+              i === 0
+                ? 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm'
+                : 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]',
+            ]}
+          >
+            {cat}
+            <span class="cat-btn-count ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums" aria-label={`${count} articles`}>{count}</span>
+          </button>
+        );
+      })}
     </div>
 
     <p class="mb-6 mt-3 text-sm text-[var(--color-text-dim)]" id="article-count">{allPosts.length} <span>articles</span></p>
+
+    <!-- Latest: 3 most recent articles, shown before the full grid -->
+    <section id="latest-section" class="mb-10" aria-label="Latest articles">
+      <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)] mb-4">Latest</p>
+      <div class="flex flex-col gap-3" id="latest-list">
+        {latestPosts.map(post => {
+          const slug = post.id.replace(/\.mdx?$/, '');
+          return (
+            <a
+              href={`/insights/${slug}/`}
+              class="latest-card group flex items-start gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-4 transition-all duration-150 hover:border-[var(--color-border-2)] hover:bg-[var(--color-surface-2)]"
+              data-category={post.data.category ?? ''}
+            >
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                  {post.data.category && (
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
+                      {post.data.category}
+                    </span>
+                  )}
+                  <time class="text-[10px] text-[var(--color-text-dim)]" datetime={post.data.publishedAt.toISOString()}>
+                    {formatDate(post.data.publishedAt)}
+                  </time>
+                </div>
+                <p class="text-sm font-semibold text-[var(--color-text)] leading-snug group-hover:text-[var(--color-accent-hi)] transition-colors line-clamp-2 mb-1">
+                  {post.data.title}
+                </p>
+                <p class="text-xs text-[var(--color-text-muted)] leading-relaxed line-clamp-2">
+                  {post.data.description}
+                </p>
+              </div>
+              <div class="shrink-0 self-center text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
 
     <!-- Article grid -->
     <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3 mb-16" id="article-grid">
@@ -279,12 +338,16 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
 <script>
   const catBtns = document.querySelectorAll<HTMLButtonElement>('.cat-btn');
   const cards   = document.querySelectorAll<HTMLElement>('.article-card');
+  const latestCards = document.querySelectorAll<HTMLElement>('.latest-card');
   const featured = document.querySelector<HTMLElement>('[data-featured-article]');
   const noResults = document.getElementById('no-results')!;
   const countEl   = document.getElementById('article-count')!;
+  const latestSection = document.getElementById('latest-section');
 
   const ACTIVE   = 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm';
   const INACTIVE = 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]';
+  const COUNT_ACTIVE   = 'bg-[var(--color-bg)]/20 text-[var(--color-bg)]';
+  const COUNT_INACTIVE = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)]';
 
   function applyFilter(cat: string, pushState = false) {
     catBtns.forEach(b => {
@@ -292,6 +355,12 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
       b.setAttribute('aria-selected', active ? 'true' : 'false');
       b.classList.remove(...ACTIVE.split(' '), ...INACTIVE.split(' '));
       b.classList.add(...(active ? ACTIVE : INACTIVE).split(' '));
+      // Update count badge styling
+      const badge = b.querySelector<HTMLElement>('.cat-btn-count');
+      if (badge) {
+        badge.classList.remove(...COUNT_ACTIVE.split(' '), ...COUNT_INACTIVE.split(' '));
+        badge.classList.add(...(active ? COUNT_ACTIVE : COUNT_INACTIVE).split(' '));
+      }
     });
 
     let visible = 0;
@@ -305,6 +374,17 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
       card.style.display = match ? '' : 'none';
       if (match) visible++;
     });
+
+    // Filter latest section cards
+    let latestVisible = 0;
+    latestCards.forEach(card => {
+      const match = cat === 'All' || (card.dataset.category ?? '') === cat;
+      card.style.display = match ? '' : 'none';
+      if (match) latestVisible++;
+    });
+    if (latestSection) {
+      latestSection.style.display = latestVisible > 0 ? '' : 'none';
+    }
 
     noResults.classList.toggle('hidden', visible > 0);
     countEl.textContent = `${visible} article${visible !== 1 ? 's' : ''}`;
