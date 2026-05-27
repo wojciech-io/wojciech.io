@@ -31,6 +31,11 @@ jobs:
       - run: npm ci
 
       - run: npm run build
+        env:
+          # PUBLIC_ vars are inlined at build time; production is built here in
+          # CI (not by Cloudflare), so the key must live as a GitHub secret.
+          # Public PostHog project key, safe to expose in client JS.
+          PUBLIC_POSTHOG_KEY: ${{ secrets.PUBLIC_POSTHOG_KEY }}
 
       - name: Wrangler deploy
         run: npx wrangler pages deploy dist --project-name=wojciech-io --branch=main --commit-message=deploy-wojciech-io
