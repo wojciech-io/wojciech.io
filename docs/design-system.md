@@ -211,6 +211,404 @@ color: var(--color-accent);
 
 ---
 
+## Components
+
+Component docs list source path, public props, intended use, and a minimal example. Props marked with `?` are optional.
+
+### Home sections
+
+#### HeroSection
+**Path:** `src/components/home/HeroSection.astro`
+**Props:** none
+**Use:** Homepage hero with primary positioning, CTA pair, proof row, and stage media.
+**Example:** `<HeroSection />`
+
+#### AILeverage
+**Path:** `src/components/home/AILeverage.astro`
+**Props:** none
+**Use:** Homepage section explaining AI leverage across strategy, operations, automation, and build work.
+**Example:** `<AILeverage />`
+
+#### ProjectsSection
+**Path:** `src/components/home/ProjectsSection.astro`
+**Props:** none
+**Use:** Homepage work preview section built from featured work entries and ProjectCard.
+**Example:** `<ProjectsSection />`
+
+#### HowIWork
+**Path:** `src/components/home/HowIWork.astro`
+**Props:** none
+**Use:** Operator-method section for diagnosis, design, build, and delivery steps.
+**Example:** `<HowIWork />`
+
+#### InsightsPreview
+**Path:** `src/components/home/InsightsPreview.astro`
+**Props:** none
+**Use:** Homepage article preview list filtered to canonical insight URLs.
+**Example:** `<InsightsPreview />`
+
+#### TestimonialsSection
+**Path:** `src/components/home/TestimonialsSection.astro`
+**Props:** none
+**Use:** Homepage social proof section using featured testimonial entries.
+**Example:** `<TestimonialsSection />`
+
+#### MetricsStrip
+**Path:** `src/components/home/MetricsStrip.astro`
+**Props:** none
+**Use:** Compact proof strip for high-level experience and operating metrics.
+**Example:** `<MetricsStrip />`
+
+### UI primitives
+
+#### ArticleCover
+**Path:** `src/components/ui/ArticleCover.astro`
+**Props:** coverType? ('terminal' | 'builder' | 'chart' | 'product' | 'system' | 'default'), tags? (string[]), title? (string)
+**Use:** Generated visual cover for insight pages and article cards.
+**Example:** `<ArticleCover coverType="system" tags={tags} title={title} />`
+
+#### AvatarRing
+**Path:** `src/components/ui/AvatarRing.astro`
+**Props:** src? (string), alt? (string), size? ('md' | 'lg' | 'xl'), loading? ('eager' | 'lazy'), fetchpriority? ('high' | 'low' | 'auto')
+**Use:** Circular portrait treatment with consistent ring, sizing, and loading controls.
+**Example:** `<AvatarRing {...props} />`
+
+#### Badge
+**Path:** `src/components/ui/Badge.astro`
+**Props:** variant? ('default' | 'accent' | 'muted'), class? (string)
+**Use:** Inline label, status chip, or compact category marker.
+**Example:** `<Badge variant="accent">AI Systems</Badge>`
+
+#### Button
+**Path:** `src/components/ui/Button.astro`
+**Props:** href? (string), variant? ('primary' | 'ghost' | 'outline'), size? ('sm' | 'md' | 'lg'), external? (boolean), class? (string), [key: string] (unknown)
+**Use:** Standard CTA and navigation button with consistent sizing and external-link behavior.
+**Example:** `<Button href="/contact/" variant="primary">Book a call</Button>`
+
+#### CTABand
+**Path:** `src/components/ui/CTABand.astro`
+**Props:** heading? (string), subtext? (string), cta? (string), ctaHref? (string), ctaSecondary? (string), ctaSecondaryHref? (string)
+**Use:** Full-width conversion band at the end of pages and sections.
+**Example:** `<CTABand {...props} />`
+
+#### CookieBanner
+**Path:** `src/components/ui/CookieBanner.astro`
+**Props:** none
+**Use:** Consent banner for analytics opt-in and local preference storage.
+**Example:** `<CookieBanner />`
+
+#### FAQ
+**Path:** `src/components/ui/FAQ.astro`
+**Props:** items (FAQItem[])
+**Use:** Accessible FAQ block for repeated question-answer content.
+**Example:** `<FAQ items={items} />`
+
+#### FlagIcon
+**Path:** `src/components/ui/FlagIcon.astro`
+**Props:** lang ('en' | 'pl' | 'it' | 'de' | 'es'), size? (number), class? (string)
+**Use:** Small locale indicator for language navigation and selectors.
+**Example:** `<FlagIcon {...props} />`
+
+#### LiveEmbed
+**Path:** `src/components/ui/LiveEmbed.astro`
+**Props:** src (string), screenshot? (string), alt? (string), label? (string), appName? (string), appDesc? (string)
+**Use:** Framed app preview with screenshot facade and gradient fallback.
+**Example:** `<LiveEmbed {...props} />`
+
+#### PageBackdrop
+**Path:** `src/components/ui/PageBackdrop.astro`
+**Props:** src (string), position? (string), opacity? (number), eager? (boolean)
+**Use:** Controlled background image layer for pages that need photographic context.
+**Example:** `<PageBackdrop {...props} />`
+
+#### ProjectCard
+**Path:** `src/components/ui/ProjectCard.astro`
+**Props:** title (string), description (string), tags (string[]), href (string), cover? (CoverType), screenshot? (string), icon? (string), cluster? (Cluster), problem? (string), system? (string), artifact? (string), outcome? (string), external? (boolean), revealIndex? (number)
+**Use:** Work card with cover, proof fields, tags, and link handling.
+**Example:** `<ProjectCard title={title} description={description} tags={tags} href="/work/" />`
+
+#### ProjectCover
+**Path:** `src/components/ui/ProjectCover.astro`
+**Props:** cover (ProjectCoverType)
+**Use:** Inline project cover system for work cards without bitmap screenshots.
+**Example:** `<ProjectCover cover="pipeline" />`
+
+#### ProofCard
+**Path:** `src/components/ui/ProofCard.astro`
+**Props:** title (string), description (string), tags? (string[]), metrics? (Metric[]), href? (string), image? (string), icon? (string), cluster? (string), featured? (boolean)
+**Use:** Proof-oriented card for work, outcomes, and portfolio evidence.
+**Example:** `<ProofCard {...props} />`
+
+#### SearchModal
+**Path:** `src/components/ui/SearchModal.astro`
+**Props:** none
+**Use:** Sitewide Pagefind search overlay with lazy loading, loading state, and error state.
+**Example:** `<SearchModal />`
+
+#### SectionHeader
+**Path:** `src/components/ui/SectionHeader.astro`
+**Props:** eyebrow? (string), heading (string), lead? (string), align? ('left' | 'center'), class? (string)
+**Use:** Standard section heading block with optional eyebrow and lead copy.
+**Example:** `<SectionHeader eyebrow="Work" heading="Systems shipped" />`
+
+#### TestimonialCard
+**Path:** `src/components/ui/TestimonialCard.astro`
+**Props:** quote (string), name (string), role (string), company? (string)
+**Use:** Single testimonial quote card with source attribution.
+**Example:** `<TestimonialCard {...props} />`
+
+#### TestimonialSlider
+**Path:** `src/components/ui/TestimonialSlider.astro`
+**Props:** testimonials (Testimonial[])
+**Use:** Carousel treatment for multiple testimonial cards.
+**Example:** `<TestimonialSlider {...props} />`
+
+#### ThemeToggle
+**Path:** `src/components/ui/ThemeToggle.astro`
+**Props:** class? (string)
+**Use:** Light and dark theme toggle paired with the SEOHead theme init script.
+**Example:** `<ThemeToggle {...props} />`
+
+#### VideoLoop
+**Path:** `src/components/ui/VideoLoop.astro`
+**Props:** src (string), poster? (string), width? (number), height? (number), alt? (string), class? (string)
+**Use:** Muted looping product or demo video with poster fallback.
+**Example:** `<VideoLoop src="/media/growthhub-demo" poster="/media/growthhub-demo-poster.webp" />`
+
+### Insights MDX components
+
+#### ArticleTimeline
+**Path:** `src/components/insights/ArticleTimeline.astro`
+**Props:** items (TimelineItem[]), caption? (string)
+**Use:** Vertical timeline for phase-based narratives and implementation histories.
+**Example:** `<ArticleTimeline {...props} />`
+
+#### BeforeAfter
+**Path:** `src/components/insights/BeforeAfter.astro`
+**Props:** before (Side), after (Side), label? (string)
+**Use:** Side-by-side before and after comparison for process or system changes.
+**Example:** `<BeforeAfter {...props} />`
+
+#### Benchmark
+**Path:** `src/components/insights/Benchmark.astro`
+**Props:** label (string), yours (number), baseline (number), yoursLabel? (string), baselineLabel? (string), unit? (string), caption? (string), lowerIsBetter? (boolean)
+**Use:** Visual metric comparison where a current value is compared against a baseline.
+**Example:** `<Benchmark {...props} />`
+
+#### Callout
+**Path:** `src/components/insights/Callout.astro`
+**Props:** type? ('note' | 'tip' | 'warning' | 'critical'), title? (string)
+**Use:** Highlighted note, tip, warning, or critical block inside long-form articles.
+**Example:** `<Callout {...props} />`
+
+#### CaseStudyBlock
+**Path:** `src/components/insights/CaseStudyBlock.astro`
+**Props:** tag? (string), client? (string), challenge (string), system (string), result (string), timeframe? (string)
+**Use:** Public-safe case study summary with challenge, system, and result fields.
+**Example:** `<CaseStudyBlock {...props} />`
+
+#### Compare
+**Path:** `src/components/insights/Compare.astro`
+**Props:** labelA (string), labelB (string), tagA? (string), tagB? (string), colorCode? (boolean), caption? (string)
+**Use:** Two-column comparison wrapper using slots for richer MDX content.
+**Example:** `<Compare {...props} />`
+
+#### Comparison
+**Path:** `src/components/insights/Comparison.astro`
+**Props:** items? (ComparisonItem[]), left? (string), right? (string), leftItems? (string[]), rightItems? (string[]), caption? (string)
+**Use:** Compact comparison cards or classic left/right comparison lists.
+**Example:** `<Comparison left="Manual" right="System" leftItems={left} rightItems={right} />`
+
+#### DataTable
+**Path:** `src/components/insights/DataTable.astro`
+**Props:** columns (Column[]), rows (Record<string, string | number>[]), caption? (string), highlight? (number[])
+**Use:** Token-aligned data table for compact comparisons and audits.
+**Example:** `<DataTable columns={columns} rows={rows} />`
+
+#### DoDont
+**Path:** `src/components/insights/DoDont.astro`
+**Props:** do? (string[]), dont? (string[]), doLabel? (string), dontLabel? (string), caption? (string)
+**Use:** Paired do and do-not guidance for tactical articles.
+**Example:** `<DoDont {...props} />`
+
+#### Flow
+**Path:** `src/components/insights/Flow.astro`
+**Props:** steps (Step[]), caption? (string)
+**Use:** Linear process flow for operational sequences.
+**Example:** `<Flow {...props} />`
+
+#### Grid
+**Path:** `src/components/insights/Grid.astro`
+**Props:** cols? (2 | 3 | 4), gap? ('sm' | 'md' | 'lg'), title? (string), caption? (string)
+**Use:** Generic MDX grid wrapper for repeated blocks.
+**Example:** `<Grid {...props} />`
+
+#### KeyPoint
+**Path:** `src/components/insights/KeyPoint.astro`
+**Props:** title? (string), items? (string[]), type? ('takeaway' | 'warning' | 'result')
+**Use:** Short key point list with tone variants for result, warning, or takeaway.
+**Example:** `<KeyPoint {...props} />`
+
+#### KeyTakeaway
+**Path:** `src/components/insights/KeyTakeaway.astro`
+**Props:** icon? ('info' | 'warning' | 'tip' | 'check'), title? (string), body? (string), items? (string[]), tone? ('accent' | 'warning' | 'neutral')
+**Use:** Prominent takeaway block for article summaries and decision points.
+**Example:** `<KeyTakeaway icon="check" title="Decision" body="Use the system path." />`
+
+#### MetricRow
+**Path:** `src/components/insights/MetricRow.astro`
+**Props:** items (Metric[]), caption? (string)
+**Use:** Horizontal metric strip for article proof points.
+**Example:** `<MetricRow {...props} />`
+
+#### ProcessFlow
+**Path:** `src/components/insights/ProcessFlow.astro`
+**Props:** steps? (Step[]), title? (string), caption? (string), direction? ('horizontal' | 'vertical')
+**Use:** Process visualization with optional horizontal or vertical layout.
+**Example:** `<ProcessFlow {...props} />`
+
+#### PullQuote
+**Path:** `src/components/insights/PullQuote.astro`
+**Props:** quote? (string), source? (string), role? (string), href? (string)
+**Use:** Large quoted excerpt with optional linked attribution.
+**Example:** `<PullQuote {...props} />`
+
+#### Quote
+**Path:** `src/components/insights/Quote.astro`
+**Props:** author? (string), role? (string), source? (string)
+**Use:** Standard inline quote block with attribution slot support.
+**Example:** `<Quote {...props} />`
+
+#### ResultCard
+**Path:** `src/components/insights/ResultCard.astro`
+**Props:** metric (string), label (string), context? (string), timeframe? (string), tag? (string), compact? (boolean)
+**Use:** Single quantified result card for case studies and proof moments.
+**Example:** `<ResultCard {...props} />`
+
+#### Screenshot
+**Path:** `src/components/insights/Screenshot.astro`
+**Props:** src (string), alt (string), url? (string), caption? (string)
+**Use:** Responsive screenshot with caption and optional linked source.
+**Example:** `<Screenshot src="/images/work/notch.png" alt="Notch interface" />`
+
+#### Stat
+**Path:** `src/components/insights/Stat.astro`
+**Props:** value (string), label (string), sub? (string), delta? (string), deltaDir? ('up' | 'down' | 'neutral'), source? (string), accent? (boolean)
+**Use:** Single metric tile used inside StatGrid or custom MDX layouts.
+**Example:** `<Stat {...props} />`
+
+#### StatCallout
+**Path:** `src/components/insights/StatCallout.astro`
+**Props:** value (string), label (string), body? (string), eyebrow? (string), delta? (string), tone? ('neutral' | 'accent' | 'warning')
+**Use:** Large metric callout for article proof or warning moments.
+**Example:** `<StatCallout {...props} />`
+
+#### StatGrid
+**Path:** `src/components/insights/StatGrid.astro`
+**Props:** stats (Stat[]), columns? (2 | 3 | 4), caption? (string)
+**Use:** Responsive grid of metric tiles.
+**Example:** `<StatGrid {...props} />`
+
+#### StatRow
+**Path:** `src/components/insights/StatRow.astro`
+**Props:** cols? (2 | 3 | 4), caption? (string)
+**Use:** Slot-based metric row when Stat components are authored manually in MDX.
+**Example:** `<StatRow {...props} />`
+
+#### Steps
+**Path:** `src/components/insights/Steps.astro`
+**Props:** items? (StepInput[]), title? (string), caption? (string), start? (number)
+**Use:** Ordered implementation steps for playbooks and migration guides.
+**Example:** `<Steps {...props} />`
+
+#### TLDR
+**Path:** `src/components/insights/TLDR.astro`
+**Props:** items? (string[]), title? (string)
+**Use:** Short summary block near the top of insight articles.
+**Example:** `<TLDR items={frontmatter.tldr} title="TL;DR" />`
+
+#### TOC
+**Path:** `src/components/insights/TOC.astro`
+**Props:** title? (string), levels? ('h2' | 'h2,h3'), minItems? (number), sticky? (boolean)
+**Use:** Generated table of contents for long MDX articles.
+**Example:** `<TOC {...props} />`
+
+#### TechStack
+**Path:** `src/components/insights/TechStack.astro`
+**Props:** title? (string), caption? (string), items? (StackItemInput[]), groups? (StackGroupInput[]), cols? (2 | 3)
+**Use:** Tool and platform stack display for implementation articles.
+**Example:** `<TechStack {...props} />`
+
+#### ToolCard
+**Path:** `src/components/insights/ToolCard.astro`
+**Props:** title? (string), caption? (string), items? (Tool[]), cols? (2 | 3)
+**Use:** Grid of tools with descriptions, links, and role context.
+**Example:** `<ToolCard {...props} />`
+
+#### TwoUp
+**Path:** `src/components/insights/TwoUp.astro`
+**Props:** left? (string), right? (string), ratio? ('1:1' | '2:1' | '1:2'), gap? ('sm' | 'md' | 'lg')
+**Use:** Two-column MDX layout with optional ratio control.
+**Example:** `<TwoUp {...props} />`
+
+#### VideoEmbed
+**Path:** `src/components/insights/VideoEmbed.astro`
+**Props:** id? (string), src? (string), provider? ('youtube' | 'loom' | 'vimeo'), title? (string), caption? (string), aspect? ('16:9' | '4:3' | '1:1' | '9:16')
+**Use:** Accessible video embed wrapper with provider or direct source support.
+**Example:** `<VideoEmbed provider="youtube" id="abc123" title="Demo" />`
+
+### Insights diagram helpers
+
+#### Arrow
+**Path:** `src/components/insights/diagrams/Arrow.astro`
+**Props:** label? (string), dashed? (boolean), direction? ('right' | 'left' | 'both' | 'down')
+**Use:** Directional connector for custom MDX diagrams.
+**Example:** `<Arrow {...props} />`
+
+#### Box
+**Path:** `src/components/insights/diagrams/Box.astro`
+**Props:** variant? ('default' | 'accent' | 'muted' | 'outline'), label? (string), sub? (string)
+**Use:** Diagram node used inside custom MDX system diagrams.
+**Example:** `<Box {...props} />`
+
+#### Diagram
+**Path:** `src/components/insights/diagrams/Diagram.astro`
+**Props:** caption? (string), direction? ('row' | 'column'), align? ('start' | 'center' | 'stretch')
+**Use:** Diagram container for composed Box, Arrow, and Stack components.
+**Example:** `<Diagram {...props} />`
+
+#### Stack
+**Path:** `src/components/insights/diagrams/Stack.astro`
+**Props:** direction? ('row' | 'column'), gap? ('sm' | 'md' | 'lg'), align? ('start' | 'center' | 'stretch')
+**Use:** Grouping component for diagram layers or grouped nodes.
+**Example:** `<Stack {...props} />`
+
+### Layout and SEO
+
+#### Footer
+**Path:** `src/components/layout/Footer.astro`
+**Props:** none
+**Use:** Global footer with page links, writing links, network links, and contact links.
+**Example:** `<Footer />`
+
+#### Header
+**Path:** `src/components/layout/Header.astro`
+**Props:** none
+**Use:** Global header with navigation, theme toggle, and responsive menu behavior.
+**Example:** `<Header />`
+
+#### Nav
+**Path:** `src/components/layout/Nav.astro`
+**Props:** none
+**Use:** Shared navigation list used by the global header.
+**Example:** `<Nav />`
+
+#### SEOHead
+**Path:** `src/components/seo/SEOHead.astro`
+**Props:** title? (string), description? (string), canonical? (string), ogImage? (string), ogImageAlt? (string), noindex? (boolean), type? ('website' | 'article'), ogLocale? (string), alternates? (Array<{ lang: string; href: string }>), publishedAt? (Date | string), updatedAt? (Date | string), schema? (Record<string, unknown> | Record<string, unknown>[])
+**Use:** Source of truth for canonical, OG, Twitter, hreflang, schema, favicon, and theme meta.
+**Example:** `<SEOHead title={title} description={description} canonical="/about/" />`
+
 ## Themes
 
 Light is default. Dark is set via `data-theme="dark"` on `<html>`. Theme preference is stored in `localStorage` under key `theme`. The inline script in `SEOHead.astro` applies the stored preference before first paint to prevent FOUC.
