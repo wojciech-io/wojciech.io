@@ -9,13 +9,15 @@ import {
   ogLocaleForLocale,
 } from '../data/localizedPages';
 
-const EXPECTED_LOCALES = ['de', 'dk', 'no', 'jp'] as const;
+const EXPECTED_LOCALES = ['de', 'dk', 'no', 'jp', 'it', 'es'] as const;
 const EXPECTED_SLUGS = ['about', 'work', 'ai-systems', 'contact', 'insights'] as const;
 const LOCALE_COPY_MARKERS: Record<(typeof EXPECTED_LOCALES)[number], RegExp[]> = {
   de: [/\bIch\b/, /\bfür\b/, /\bArbeit\b/, /\bSysteme\b/],
   dk: [/\bJeg\b/, /\bikke\b/, /\bhvad\b/i, /\bværktøj/i],
   no: [/\bJeg\b/, /\bikke\b/, /\barbeidet\b/i, /\bverktøy/i],
   jp: [/[\u3040-\u30ff]/, /[\u4e00-\u9faf]/],
+  it: [/\blavoro\b/i, /\bsistema\b/i, /\boperatore\b/i],
+  es: [/\btrabajo\b/i, /\bsistema\b/i, /\boperador\b/i],
 };
 
 function copyTextForLocale(locale: (typeof EXPECTED_LOCALES)[number]) {
