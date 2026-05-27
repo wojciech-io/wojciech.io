@@ -669,6 +669,203 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       ],
     },
   },
+  pl: {
+    about: {
+      title: 'O Wojciechu - Operator GTM natywny dla AI',
+      description: 'Profil Wojciecha Łuszczyńskiego: architekt GTM, przedsiębiorca wzrostowy i twórca natywnych systemów przychodowych AI dla B2B SaaS.',
+      eyebrow: 'Profil',
+      h1: 'Architektura GTM, realizacja wzrostu i systemy AI w jednym operatorze.',
+      lead: 'Pracuję tam, gdzie spotykają się strategia, dane, narzędzia i wdrożenie. Skupiam się na zespołach B2B SaaS z prawdziwym produktem, ale bez stabilnego systemu przychodów.',
+      primaryCta: 'Zobacz realizacje',
+      primaryHref: '/pl/work/',
+      secondaryCta: 'Umów rozmowę',
+      secondaryHref: '/pl/contact/',
+      stats: [
+        {
+          value: '20',
+          label: 'Years Marketing & Digital'
+        },
+        {
+          value: '10',
+          label: 'Lata działalności B2B SaaS'
+        },
+        {
+          value: '10',
+          label: 'Lata GTM'
+        }
+      ],
+      sections: [
+        {
+          title: 'Jak pracuję',
+          body: 'Najpierw diagnozuję system: ICP, pipeline, CRM, atrybucję, treści, płatne pozyskiwanie i automatyzację. Następnie buduję brakujące części w kolejności, która zapewnia najszybszą przejrzystość operacyjną.'
+        },
+        {
+          title: 'Co dostarczam',
+          body: 'Żadnych odizolowanych taktyk. Zapewniam model operacyjny: procesy, dashboardy, przepływy pracy, automatyzację, przepływy pracy AI i jasne obowiązki.'
+        },
+        {
+          title: 'Dla kogo',
+          body: 'B2B SaaS, firmy technologiczne i zespoły założycielskie, które chcą budować szybciej bez przekształcania GTM w bałagan narzędziowy.'
+        }
+      ]
+    },
+    work: {
+      title: 'Systemy GTM i studia przypadków',
+      description: 'Wybrane systemy: AI-native GTM, CRM, automatyzacja, content, płatne pozyskiwanie i narzędzia wewnętrzne.',
+      eyebrow: 'Praca',
+      h1: 'Wybrane systemy przychodowe, produkty i modele operacyjne.',
+      lead: 'Przykłady są zgodne z tym samym schematem: jasny problem, mierzalna architektura, szybkie wdrożenie i stała infrastruktura.',
+      primaryCta: 'Zobacz systemy AI',
+      primaryHref: '/pl/ai-systems/',
+      secondaryCta: 'Umów rozmowę',
+      secondaryHref: '/pl/contact/',
+      stats: [
+        {
+          value: 'B2B',
+          label: 'SaaS i technologia'
+        },
+        {
+          value: 'AI',
+          label: 'Przepływy pracy i agenci'
+        },
+        {
+          value: 'CRM',
+          label: 'Operacje przychodowe'
+        }
+      ],
+      sections: [
+        {
+          title: 'Architektura przychodów',
+          body: 'Pipeline, CRM, atrybucja i GTM Motion są traktowane jako jeden system. Celem jest powtarzalny rytm pracy, a nie kolejny pulpit nawigacyjny.'
+        },
+        {
+          title: 'Projekt natywny dla AI',
+          body: 'Claude Code, MCP, automatyzacja i aplikacje wewnętrzne są wykorzystywane tam, gdzie przynoszą realne korzyści: Badania, higiena CRM, content ops, sales enablement i raportowanie.'
+        },
+        {
+          title: 'Produkty jako dowód',
+          body: 'Produkty w ekosystemie pokazują, jak szybko można budować, testować i dostarczać systemy kierowane przez operatorów.'
+        }
+      ]
+    },
+    'ai-systems': {
+      title: 'Systemy AI - przepływy pracy, agenci i dźwignia',
+      description: 'Natywne dla AI przepływy pracy, agenci GTM i automatyzacja dla marketingu, sprzedaży i operacji.',
+      eyebrow: 'Systemy AI',
+      h1: 'AI nie jest dodatkiem. To nowy poziom operacyjny.',
+      lead: 'Buduję przepływy pracy AI w taki sposób, aby były zakotwiczone w systemie: Dane, kontekst, reguły, zapewnienie jakości i wyraźne przekazanie ludziom.',
+      primaryCta: 'Czytaj więcej',
+      primaryHref: '/pl/insights/',
+      secondaryCta: 'Omówienie systemu',
+      secondaryHref: '/pl/contact/',
+      stats: [
+        {
+          value: 'Agenci',
+          label: 'Badania i GTM'
+        },
+        {
+          value: 'MCP',
+          label: 'Orkiestracja narzędzi'
+        },
+        {
+          value: 'QA',
+          label: 'Człowiek w pętli'
+        }
+      ],
+      sections: [
+        {
+          title: 'Najpierw kontekst',
+          body: 'Dobre systemy AI nie zaczynają się od podpowiedzi. Zaczynają od czystych danych, jasnych ról, ograniczeń i mierzalnej jakości.'
+        },
+        {
+          title: 'Przepływy pracy operatora',
+          body: 'Najlepsze przepływy pracy są wystarczająco małe, aby działać niezawodnie i wystarczająco duże, aby wykonywać prawdziwą pracę dla systemu.'
+        },
+        {
+          title: 'Budowanie na żądanie',
+          body: 'Jeśli narzędzia SaaS nie pasują, tworzę wewnętrzne narzędzia lub agentów, którzy są bezpośrednio połączeni z CRM, Content Ops i Analytics.'
+        }
+      ]
+    },
+    contact: {
+      title: 'Umów rozmowę - Systemy GTM i AI',
+      description: '30-minutowa rozmowa telefoniczna dotycząca audytów GTM, projektowania przepływu pracy AI, architektury CRM i określania zakresu produktu.',
+      eyebrow: 'Skontaktuj się z nami',
+      h1: 'Kiedy system się blokuje, mówimy konkretnie.',
+      lead: 'Wyślij kontekst, stos i wąskie gardło. Podczas rozmowy ustalamy, czy następnym krokiem będzie audyt, sprint budowlany czy konkretne rozwiązanie.',
+      primaryCta: 'zarezerwuj 30 minut',
+      primaryHref: '/pl/contact/#book-call',
+      secondaryCta: 'Otwórz LinkedIn',
+      secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
+      stats: [
+        {
+          value: '30m',
+          label: 'Pierwsze połączenie'
+        },
+        {
+          value: '24h',
+          label: 'Czas reakcji'
+        },
+        {
+          value: 'UE',
+          label: 'Remote-first'
+        }
+      ],
+      sections: [
+        {
+          title: 'Dobre tematy',
+          body: 'Audyt GTM, model operacyjny CRM, projektowanie przepływu pracy AI, operacje na treściach, płatne pozyskiwanie, diagnostyka pipeline i narzędzia wewnętrzne.'
+        },
+        {
+          title: 'Czego potrzebuję z wyprzedzeniem',
+          body: 'W skrócie: co sprzedajesz, komu, gdzie urywa się pipeline, które narzędzia działają i jakie decyzje należy podjąć.'
+        },
+        {
+          title: 'Co nie pasuje',
+          body: 'Luźna burza mózgów bez właściciela, czysta implementacja narzędzia bez kontekstu GTM lub projekty bez jasnych danych i kontroli dostępu.'
+        }
+      ]
+    },
+    insights: {
+      title: 'AI & GTM Insights - Uwagi dla operatorów',
+      description: 'Praktyczne wskazówki dotyczące systemów AI, architektury GTM i systemów sprzedaży.',
+      eyebrow: 'Spostrzeżenia',
+      h1: 'Uwagi operatora dotyczące AI, GTM i architektury przychodów.',
+      lead: 'Artykuły pokazują architekturę, decyzje i wnioski wyciągnięte z systemów, które są faktycznie budowane i obsługiwane.',
+      primaryCta: 'Zobacz wszystkie artykuły',
+      primaryHref: '/pl/insights/',
+      secondaryCta: 'Umów rozmowę',
+      secondaryHref: '/pl/contact/',
+      stats: [
+        {
+          value: 'MDX',
+          label: 'Komponenty'
+        },
+        {
+          value: 'AI',
+          label: 'Stos produkcyjny'
+        },
+        {
+          value: 'GTM',
+          label: 'Uwagi operatora'
+        }
+      ],
+      sections: [
+        {
+          title: 'Co znajdziesz',
+          body: 'Decyzje Build vs. Buy, wprowadzenie CRM AI, Claude Code w pracy GTM i rzeczywiste decyzje produkcyjne.'
+        },
+        {
+          title: 'Jak pisane są artykuły',
+          body: 'Brak opakowania przywództwa. Każda notatka wyjaśnia system, decyzję lub lekcję operacyjną.'
+        },
+        {
+          title: 'Dla kogo',
+          body: 'Założyciele, liderzy GTM, zespoły RevOps i operatorzy, którzy chcą używać AI jako działającej infrastruktury, a nie tylko jako wersji demonstracyjnej.'
+        }
+      ]
+    }
+  },
 };
 
 export const localizedPages: LocalizedPageCopy[] = localizedHomeList.flatMap((locale) =>

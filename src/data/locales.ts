@@ -1,4 +1,4 @@
-export type LocaleKey = 'de' | 'dk' | 'no' | 'jp' | 'it' | 'es';
+export type LocaleKey = 'de' | 'dk' | 'no' | 'jp' | 'it' | 'es' | 'pl';
 
 export interface LocalizedHomeCopy {
   key: LocaleKey;
@@ -229,6 +229,68 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: '¿Hay un sistema que merezca la pena arreglar?',
     finalSubtext: 'Envía el contexto, el cuello de botella y el stack actual. Te diré por dónde empezaría.',
+  },
+  pl: {
+    key: 'pl',
+    path: 'pl',
+    code: 'PL',
+    label: 'Polski',
+    htmlLang: 'pl',
+    hreflang: 'pl',
+    ogLocale: 'pl_PL',
+    title: 'Wojciech Łuszczyński · AI-native GTM Operator',
+    description: 'AI-native systemy przychodowe dla B2B SaaS: GTM, CRM, automatyzacja, płatne pozyskiwanie i workflowy AI jako jeden model operacyjny.',
+    eyebrow: 'Architekt GTM · Growth Operator',
+    h1Primary: 'Buduję systemy przychodowe.',
+    h1Secondary: 'Potem nimi operuję.',
+    lead: 'GTM, CRM, workflowy AI, automatyzacja: jeden model operacyjny. Tworzę brakujące połączenia, instrumentuję całość i zostaję, aż wszystko zacznie działać.',
+    primaryCta: 'Zobacz realizacje',
+    secondaryCta: 'Umów rozmowę',
+    proof: [
+      {
+        value: '20',
+        label: 'lat w marketingu i digitalu'
+      },
+      {
+        value: '10',
+        label: 'lat w B2B SaaS'
+      },
+      {
+        value: '10',
+        label: 'lat w GTM'
+      },
+      {
+        value: '3x',
+        label: 'średni wzrost pipeline'
+      }
+    ],
+    sectionEyebrow: 'Jak pracuję',
+    sectionTitlePrimary: 'Nie doradca.',
+    sectionTitleSecondary: 'Operator.',
+    steps: [
+      {
+        step: '01',
+        title: 'Diagnoza',
+        body: 'Audyt architektury przychodowej: pipeline, CRM, GTM motion i atrybucja. Najpierw ustalamy, gdzie gubi się sygnał.'
+      },
+      {
+        step: '02',
+        title: 'Projekt',
+        body: 'Projekt systemu: co połączyć, co mierzyć, co zautomatyzować i co zbudować najpierw.'
+      },
+      {
+        step: '03',
+        title: 'Budowa',
+        body: 'Procesy, dashboardy, model operacyjny CRM i narzędzia. Buduję je sam albo razem z zespołem.'
+      },
+      {
+        step: '04',
+        title: 'Domknięcie luki',
+        body: 'Jeśli odpowiedniego narzędzia nie ma, buduję je: agenty AI, wewnętrzne aplikacje, workflowy MCP i czysta automatyzacja.'
+      }
+    ],
+    finalHeading: 'Masz system, który warto naprawić?',
+    finalSubtext: 'Prześlij kontekst, wąskie gardło i obecny stack. Powiem, od czego bym zaczął.'
   },
 };
 

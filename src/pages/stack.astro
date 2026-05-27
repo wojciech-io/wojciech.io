@@ -1,5 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Flow from '../components/insights/Flow.astro';
+import Diagram from '../components/insights/diagrams/Diagram.astro';
+import Box from '../components/insights/diagrams/Box.astro';
+import Arrow from '../components/insights/diagrams/Arrow.astro';
+import Stack from '../components/insights/diagrams/Stack.astro';
 
 // Hidden engineering overview. Not linked in navigation, noindex + nofollow,
 // excluded from sitemap. Shared by direct link only.
@@ -27,6 +32,32 @@ const securityChecks = [
   { name: 'Lighthouse CI', detail: 'Weekly performance, a11y, SEO audit' },
 ];
 
+// Tech logos via Simple Icons CDN (slug/colour). Items without a logo use a letter mark.
+const techGroups = [
+  { label: 'Frontend & content', icons: [
+    { name: 'Astro', slug: 'astro' }, { name: 'TypeScript', slug: 'typescript' },
+    { name: 'Tailwind CSS', slug: 'tailwindcss' }, { name: 'Vite', slug: 'vite' },
+    { name: 'MDX', slug: 'mdx' }, { name: 'Pagefind', mark: 'PF' },
+  ]},
+  { label: 'Motion & interaction', icons: [
+    { name: 'Motion', slug: 'framer' }, { name: 'Lenis', mark: 'LN' },
+    { name: 'View Transitions', mark: 'VT' },
+  ]},
+  { label: 'Edge & infrastructure', icons: [
+    { name: 'Cloudflare', slug: 'cloudflare' }, { name: 'Workers', slug: 'cloudflareworkers' },
+    { name: 'Pages', slug: 'cloudflarepages' }, { name: 'D1', mark: 'D1' }, { name: 'KV', mark: 'KV' },
+    { name: 'Terraform', slug: 'terraform' }, { name: 'GitHub Actions', slug: 'githubactions' },
+  ]},
+  { label: 'Measurement & ops', icons: [
+    { name: 'GA4', slug: 'googleanalytics' }, { name: 'Mixpanel', slug: 'mixpanel' },
+    { name: 'PostHog', slug: 'posthog' }, { name: 'Sentry', slug: 'sentry' },
+    { name: 'Better Stack', mark: 'BS' }, { name: 'Linear', slug: 'linear' },
+  ]},
+  { label: 'Payments & email', icons: [
+    { name: 'Stripe', slug: 'stripe' }, { name: 'Resend', slug: 'resend' },
+  ]},
+];
+
 const cardClass = 'rounded-[var(--radius-card)] border border-[var(--color-border)] p-5';
 const h2Class = 'text-xl font-semibold text-[var(--color-text)] mb-1';
 const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-hi)] mb-2';
@@ -34,7 +65,7 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
 
 <Layout
   title="Engineering & Security Stack · wojciech.io"
-  description="Internal engineering overview of wojciech.io and its subdomains: architecture, tooling, CI/CD, security, resilience, and the multi-agent operating model."
+  description="Internal engineering overview of wojciech.io and its subdomains: architecture, tooling, animation, CI/CD, security, resilience, and the multi-agent operating model."
   canonical="/stack/"
   noindex={true}
 >
@@ -48,7 +79,7 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
       </h1>
       <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-2xl">
         wojciech.io is one operating system across seven surfaces: an Astro monorepo on
-        Cloudflare Pages, with a CI gate, layered security, automated resilience, and a
+        Cloudflare, with a CI gate, layered security, automated failover, motion-led UI, and a
         multi-agent build model. This page documents the whole thing.
       </p>
       <p class="text-sm text-[var(--color-text-dim)] mt-4">Last reviewed: May 2026 · not indexed, not linked in navigation</p>
@@ -56,52 +87,117 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
 
     <div class="space-y-16 text-[var(--color-text-muted)] leading-relaxed">
 
+      <!-- 0. Architecture at a glance (visual) -->
+      <section>
+        <p class={eyebrowClass}>How it fits together</p>
+        <h2 class={h2Class}>From a git push to the edge</h2>
+        <Flow
+          caption="Every merge to main runs the gate before anything ships."
+          steps={[
+            { label: 'git push', sub: 'main' },
+            { label: 'CI gate', sub: 'build · test · a11y' },
+            { label: 'Deploy', sub: 'Wrangler' },
+            { label: 'Cloudflare', sub: '7 Pages projects' },
+            { label: 'Edge', sub: 'Functions · D1 · KV', active: true },
+          ]}
+        />
+        <Diagram direction="column" caption="Runtime, resilience and observability around the edge.">
+          <Box variant="accent" label="Cloudflare Pages" sub="static + edge, 7 surfaces" />
+          <Arrow direction="down" label="request" />
+          <Diagram direction="row">
+            <Box variant="outline" label="Pages Functions" sub="auth · APIs" />
+            <Arrow label="reads/writes" />
+            <Stack>
+              <Box variant="muted" label="D1" sub="members · sessions" />
+              <Box variant="muted" label="KV" sub="rate limiting" />
+            </Stack>
+          </Diagram>
+          <Arrow direction="down" dashed label="health check · 5 min" />
+          <Diagram direction="row">
+            <Box variant="outline" label="Failover Worker" sub="cron monitor" />
+            <Arrow label="DNS flip" dashed />
+            <Box variant="muted" label="Azure standby" sub="cold backup" />
+          </Diagram>
+          <Arrow direction="down" dashed label="signals" />
+          <Stack direction="row">
+            <Box variant="muted" label="Better Stack" sub="uptime · incidents" />
+            <Box variant="muted" label="Sentry" sub="errors · perf" />
+          </Stack>
+        </Diagram>
+      </section>
+
       <!-- 1. Architecture -->
       <section>
         <p class={eyebrowClass}>01 · Architecture</p>
         <h2 class={h2Class}>One repo, seven surfaces</h2>
         <p class="mt-3">
           A single npm-workspaces monorepo on <strong class="text-[var(--color-text)]">Astro 6</strong>,
-          hosted entirely on <strong class="text-[var(--color-text)]">Cloudflare Pages</strong>. Static where
+          hosted entirely on <strong class="text-[var(--color-text)]">Cloudflare</strong>. Static where
           possible, <strong class="text-[var(--color-text)]">Cloudflare Pages Functions</strong> (edge) where
           logic is needed: auth and APIs. One pipeline, seven independently deployed projects.
         </p>
         <div class="grid gap-4 sm:grid-cols-2 mt-6">
           <div class={cardClass}>
             <p class="font-semibold text-[var(--color-text)] mb-2">Frontend</p>
-            <p class="text-sm">Astro + MDX · Tailwind CSS 4 · CSS custom properties as design tokens · Lenis (smooth scroll) · Motion (animation) · Geist typeface.</p>
+            <p class="text-sm">Astro 6 + MDX · Tailwind CSS 4 (Vite plugin) · CSS custom properties as design tokens · Geist typeface. Content-rich pages render through a custom MDX component library (diagrams, callouts, stat blocks, this very page's flow charts).</p>
           </div>
           <div class={cardClass}>
             <p class="font-semibold text-[var(--color-text)] mb-2">Build-time</p>
-            <p class="text-sm">OG images via Satori + resvg (SVG to PNG) · Pagefind static search index built post-build · sitemap generation with indexability filter.</p>
+            <p class="text-sm">OG images via Satori + resvg (SVG to PNG) · Pagefind static search index built post-build · sitemap generation with an indexability filter.</p>
           </div>
-        </div>
-        <div class="grid gap-4 sm:grid-cols-2 mt-4">
           <div class={cardClass}>
             <p class="font-semibold text-[var(--color-text)] mb-2">Shared packages</p>
             <p class="text-sm">
               Three internal workspace packages keep the surfaces consistent:
               <code class="text-xs font-mono bg-[var(--color-surface-2)] px-1 rounded">@wojciech/tokens</code> (design tokens),
               <code class="text-xs font-mono bg-[var(--color-surface-2)] px-1 rounded">@wojciech/ui</code> (shared components),
-              and <code class="text-xs font-mono bg-[var(--color-surface-2)] px-1 rounded">@wojciech/mdx-components</code> (MDX building blocks).
+              <code class="text-xs font-mono bg-[var(--color-surface-2)] px-1 rounded">@wojciech/mdx-components</code> (MDX building blocks).
             </p>
           </div>
           <div class={cardClass}>
             <p class="font-semibold text-[var(--color-text)] mb-2">Infrastructure as code</p>
-            <p class="text-sm">Cloudflare Pages projects and custom domains are provisioned with Terraform, with WAF rules documented alongside the config.</p>
-          </div>
-          <div class={cardClass}>
-            <p class="font-semibold text-[var(--color-text)] mb-2">Edge data</p>
-            <p class="text-sm">Cloudflare D1 (SQLite at the edge) holds members and sessions for the gated apps; Workers KV backs rate limiting. No external database.</p>
+            <p class="text-sm">Cloudflare Pages projects and custom domains are provisioned with Terraform, with WAF rules documented alongside the config. D1 (SQLite at the edge) holds members and sessions; Workers KV backs rate limiting. No external database.</p>
           </div>
         </div>
       </section>
 
-      <!-- 2. Subdomains -->
+      <!-- 2. Animation & interaction -->
       <section>
-        <p class={eyebrowClass}>02 · Surfaces</p>
+        <p class={eyebrowClass}>02 · Motion</p>
+        <h2 class={h2Class}>Animation and interaction</h2>
+        <p class="mt-3">
+          Motion is treated as part of the system, not decoration. It is GPU-friendly, respects
+          <code class="text-xs font-mono bg-[var(--color-surface-2)] px-1 rounded">prefers-reduced-motion</code>,
+          and never blocks the main content.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-2 mt-6">
+          <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Motion</strong><span class="text-sm">Spring and tween animations for hero, cards and reveal-on-scroll, driven by the <code class="text-xs font-mono bg-[var(--color-surface-2)] px-1 rounded">motion</code> library.</span></div>
+          <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Lenis</strong><span class="text-sm">Smooth, inertia-based scrolling tied into the reveal timeline, with a safe fallback when reduced motion is set.</span></div>
+          <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">View Transitions</strong><span class="text-sm">Astro's ClientRouter gives app-like cross-page transitions while staying fully static and crawlable.</span></div>
+          <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Scroll choreography</strong><span class="text-sm">Sections fade and rise on enter; intersection observers stagger groups so the page assembles as you read.</span></div>
+        </div>
+      </section>
+
+      <!-- 3. Subdomains -->
+      <section>
+        <p class={eyebrowClass}>03 · Surfaces</p>
         <h2 class={h2Class}>Subdomains</h2>
-        <p class="mt-3">Each surface is its own Cloudflare Pages project, deployed independently.</p>
+        <p class="mt-3">Each surface is its own Cloudflare Pages project, deployed independently. Same monorepo, same gate, same design tokens.</p>
+
+        <Diagram direction="column" caption="One repo branches into seven independently deployed surfaces.">
+          <Box variant="accent" label="wojciech.io" sub="monorepo · single CI gate" />
+          <Arrow direction="down" dashed label="fan-out · 7 Pages projects" />
+          <Stack direction="row" gap="sm">
+            <Box variant="default" label="wojciech.io" sub="public portfolio" />
+            <Box variant="outline" label="app.wojciech.io" sub="password gate" />
+            <Box variant="outline" label="gh.wojciech.io" sub="password gate" />
+            <Box variant="default" label="academy.wojciech.io" sub="public + member" />
+            <Box variant="default" label="notch.wojciech.io" sub="public" />
+            <Box variant="default" label="subscribe.wojciech.io" sub="public" />
+            <Box variant="muted" label="dev" sub="internal" />
+          </Stack>
+        </Diagram>
+
         <div class="mt-6 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
           <table class="w-full text-sm">
             <thead>
@@ -124,9 +220,9 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
         </div>
       </section>
 
-      <!-- 3. Analytics -->
+      <!-- 4. Analytics -->
       <section>
-        <p class={eyebrowClass}>03 · Measurement</p>
+        <p class={eyebrowClass}>04 · Measurement</p>
         <h2 class={h2Class}>Analytics, consent-gated by default</h2>
         <p class="mt-3">
           Nothing loads before the visitor accepts analytics
@@ -139,26 +235,27 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
           <li class={cardClass}><strong class="text-[var(--color-text)]">Mixpanel · EU residency</strong><br /><span class="text-sm">Product events: page views, outbound clicks, CTA + newsletter intent.</span></li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">PostHog · EU</strong><br /><span class="text-sm">Product analytics and pageview tracking, loaded only after consent.</span></li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">Sentry · EU region</strong><br /><span class="text-sm">Error and performance monitoring.</span></li>
+          <li class={cardClass}><strong class="text-[var(--color-text)]">Better Stack</strong><br /><span class="text-sm">Uptime monitoring; incidents fire a webhook that re-runs the production smoke test.</span></li>
         </ul>
       </section>
 
-      <!-- 4. i18n -->
+      <!-- 5. i18n -->
       <section>
-        <p class={eyebrowClass}>04 · Languages</p>
+        <p class={eyebrowClass}>05 · Languages</p>
         <h2 class={h2Class}>Internationalisation</h2>
         <p class="mt-3">
-          Eight languages in the CV and SEO layer: EN (base), PL, DE, DK, NO, JP, IT, ES. Six fully
-          translated homepage locales (de, dk, no, jp, it, es), each with its own
+          Eight languages in the CV and SEO layer: EN (base), PL, DE, DK, NO, JP, IT, ES. Seven fully
+          translated homepage locales (pl, de, dk, no, jp, it, es), each with its own
           <code class="text-xs font-mono bg-[var(--color-surface-2)] px-1 rounded">htmlLang</code>,
           <code class="text-xs font-mono bg-[var(--color-surface-2)] px-1 rounded">hreflang</code>, and OG locale.
-          Real translations, not machine output. hreflang and html lang are verified by end-to-end tests.
+          hreflang and html lang are verified by end-to-end tests.
         </p>
         <p class="mt-3 text-sm text-[var(--color-text-dim)]">Content lives in typed collections: insights, work (case studies), testimonials.</p>
       </section>
 
-      <!-- 5. Testing -->
+      <!-- 6. Testing -->
       <section>
-        <p class={eyebrowClass}>05 · Quality</p>
+        <p class={eyebrowClass}>06 · Quality</p>
         <h2 class={h2Class}>Testing</h2>
         <div class="grid gap-4 sm:grid-cols-2 mt-3">
           <div class={cardClass}>
@@ -172,25 +269,70 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
         </div>
       </section>
 
-      <!-- 6. CI/CD -->
+      <!-- 7. CI/CD -->
       <section>
-        <p class={eyebrowClass}>06 · Delivery</p>
+        <p class={eyebrowClass}>07 · Delivery</p>
         <h2 class={h2Class}>CI/CD pipeline</h2>
-        <ol class="mt-4 space-y-3">
+
+        <Flow
+          caption="A ticket goes from Linear to live without anyone clicking deploy."
+          steps={[
+            { label: 'Linear', sub: 'ticket scoped' },
+            { label: 'Branch', sub: 'atomic, file-scoped' },
+            { label: 'PR', sub: 'conventional commit' },
+            { label: 'CI gate', sub: '10 checks' },
+            { label: 'Review', sub: 'agent + human' },
+            { label: 'Merge', sub: 'squash to main' },
+            { label: 'Deploy', sub: 'Wrangler · parallel', active: true },
+          ]}
+        />
+
+        <Diagram direction="column" caption="Deploy fans out to every surface in parallel, then verifies itself.">
+          <Box variant="accent" label="Merge to main" sub="green CI required" />
+          <Arrow direction="down" label="Wrangler" />
+          <Stack direction="row" gap="sm">
+            <Box variant="outline" label="wojciech.io" />
+            <Box variant="outline" label="app" />
+            <Box variant="outline" label="gh" />
+            <Box variant="outline" label="academy" />
+            <Box variant="outline" label="notch" />
+            <Box variant="outline" label="subscribe" />
+          </Stack>
+          <Arrow direction="down" dashed label="post-deploy" />
+          <Stack direction="row" gap="sm">
+            <Box variant="muted" label="Smoke tests" sub="Playwright vs prod" />
+            <Box variant="muted" label="Header probe" sub="6 domains" />
+            <Box variant="muted" label="Better Stack" sub="uptime baseline" />
+          </Stack>
+        </Diagram>
+
+        <ol class="mt-6 space-y-3">
           <li class={cardClass}><strong class="text-[var(--color-text)]">1 · CI</strong> on every push and PR to main: build and type-check (Node 24), unit tests, end-to-end smoke and a11y. Artifacts retained.</li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">2 · Deploy</strong> runs only after CI succeeds. Site, app, subscribe and notch deploy in parallel via Wrangler. A running deploy is never cancelled mid-flight.</li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">3 · Commit hygiene</strong>: enforced conventional commits, with Release Please wired up for versioning and changelog.</li>
         </ol>
       </section>
 
-      <!-- 7. Security -->
+      <!-- 8. Security -->
       <section>
-        <p class={eyebrowClass}>07 · Security</p>
+        <p class={eyebrowClass}>08 · Security</p>
         <h2 class={h2Class}>Layered, not bolted on</h2>
         <p class="mt-3">
           Branch protection on main requires every check below to pass before merge. Secrets live only in
           Cloudflare environment bindings, never in the repo.
         </p>
+
+        <Diagram direction="column" caption="Defense in depth: a request crosses four layers before it reaches the app.">
+          <Box variant="muted" label="Public internet" sub="anyone" />
+          <Arrow direction="down" />
+          <Box variant="outline" label="Cloudflare WAF" sub="managed + OWASP + custom rules" />
+          <Arrow direction="down" />
+          <Box variant="outline" label="Rate limiter" sub="Workers KV · per IP" />
+          <Arrow direction="down" />
+          <Box variant="outline" label="Auth gate" sub="HMAC cookies · magic links" />
+          <Arrow direction="down" />
+          <Box variant="accent" label="Pages Functions" sub="app code, D1, KV" />
+        </Diagram>
 
         <div class="grid gap-3 sm:grid-cols-2 mt-6">
           {securityChecks.map((c) => (
@@ -216,35 +358,83 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
         </div>
       </section>
 
-      <!-- 8. Resilience -->
+      <!-- 9. Resilience -->
       <section>
-        <p class={eyebrowClass}>08 · Resilience</p>
+        <p class={eyebrowClass}>09 · Resilience</p>
         <h2 class={h2Class}>Backup, failover, rollback</h2>
+
+        <Diagram direction="row" caption="Failover is a finite state machine, not a manual checklist.">
+          <Box variant="accent" label="Healthy" sub="primary serving" />
+          <Arrow label="health fail · 5 min" dashed />
+          <Box variant="outline" label="Detected" sub="Worker cron" />
+          <Arrow label="DNS flip" />
+          <Box variant="outline" label="Azure live" sub="cold standby hot" />
+          <Arrow label="primary recovered" dashed />
+          <Box variant="muted" label="Restored" sub="DNS back to CF" />
+        </Diagram>
+
         <div class="grid gap-4 sm:grid-cols-2 mt-4">
           <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Backup</strong><span class="text-sm">Weekly mirror to Azure Static Web Apps as an independent cold standby.</span></div>
           <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Failover</strong><span class="text-sm">A Cloudflare Worker health-checks the site on a 5-minute cron and automatically flips DNS to the Azure standby via the Cloudflare API, then restores it once the primary recovers. A GitHub workflow provides a manual override.</span></div>
           <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Rollback</strong><span class="text-sm">Non-destructive git revert with no force-push, fully auditable, with a required reason.</span></div>
-          <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Monitoring</strong><span class="text-sm">Daily production smoke (also fired by BetterStack incident webhooks), weekday status digest, weekly Lighthouse audit.</span></div>
+          <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Monitoring</strong><span class="text-sm">Better Stack uptime checks, daily production smoke, weekday status digest, weekly Lighthouse audit.</span></div>
         </div>
       </section>
 
-      <!-- 9. Agents -->
+      <!-- 10. Operating model -->
       <section>
-        <p class={eyebrowClass}>09 · Operating model</p>
+        <p class={eyebrowClass}>10 · Operating model</p>
         <h2 class={h2Class}>A multi-agent build process</h2>
-        <p class="mt-3">Clear role separation with a defined handoff protocol.</p>
+        <p class="mt-3">Clear role separation with a defined handoff protocol, planned and tracked in Linear.</p>
+
+        <Diagram direction="column" caption="Each agent has one job. Linear is the coordination layer; the human keeps the call.">
+          <Box variant="accent" label="Wojciech" sub="orchestrator · go/no-go" />
+          <Arrow direction="down" dashed label="scopes · tickets" />
+          <Box variant="outline" label="Linear" sub="sprints · atomic tasks · DoD" />
+          <Arrow direction="down" dashed label="dispatched to" />
+          <Stack direction="row" gap="sm">
+            <Box variant="default" label="GPT-5.5" sub="strategy · positioning" />
+            <Box variant="default" label="Claude Code" sub="implementation · tests" />
+            <Box variant="default" label="Codex" sub="independent review" />
+            <Box variant="default" label="Claude Design" sub="visual exploration" />
+          </Stack>
+          <Arrow direction="down" dashed label="converge · PR" />
+          <Box variant="muted" label="Merge gate" sub="docs + code agree · DoD met" />
+        </Diagram>
+
         <ul class="mt-5 space-y-3">
           <li class={cardClass}><strong class="text-[var(--color-text)]">Claude Code</strong> · implementation: components, styling, templates, content collections, accessibility, SEO. Does not touch DNS, information architecture, positioning, or proof metrics without approval.</li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">Codex</strong> · independent review: code, SEO, redirect maps, test scenarios, performance checklists. Closed tasks on separate branches.</li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">GPT-5.5 Thinking</strong> · strategy: positioning, page logic, trade-offs, the go / no-go release call.</li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">Claude Design</strong> · visual exploration only: variants and references, never the source of truth.</li>
         </ul>
-        <p class="mt-5 text-sm">
-          Handoff: strategy is written into docs, Claude implements against docs, Codex reviews independently,
-          Wojciech accepts, and changes merge only once docs and implementation agree. Every page ships against a
-          fixed Definition of Done: semantics, responsiveness, no placeholder copy, complete meta and OG, working
-          CTAs, optimised images, reviewed accessibility, and validated proof claims.
-        </p>
+        <div class={`${cardClass} mt-4`}>
+          <p class="font-semibold text-[var(--color-text)] mb-2">Sprints & tasks · Linear</p>
+          <p class="text-sm">Work is scoped into sprints and atomic tickets in Linear. Each agent gets a closed, reviewable task with explicit file scope; nothing starts before checking the git log to avoid collisions. Strategy is written into docs, Claude implements against docs, Codex reviews independently, and changes merge only once docs and implementation agree, against a fixed Definition of Done.</p>
+        </div>
+      </section>
+
+      <!-- 11. Tech index -->
+      <section>
+        <p class={eyebrowClass}>The toolbox</p>
+        <h2 class={h2Class}>Everything, at a glance</h2>
+        <div class="mt-6 space-y-6">
+          {techGroups.map((group) => (
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)] mb-3">{group.label}</p>
+              <ul class="flex flex-wrap gap-2">
+                {group.icons.map((t) => (
+                  <li class="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-2)] py-1.5 pl-1.5 pr-3.5 text-sm">
+                    {t.slug
+                      ? <img src={`https://cdn.simpleicons.org/${t.slug}/888888`} alt="" width="18" height="18" loading="lazy" class="shrink-0" />
+                      : <span class="inline-flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[var(--color-border)] text-[9px] font-bold text-[var(--color-text)]" aria-hidden="true">{t.mark}</span>}
+                    <span class="text-[var(--color-text)]">{t.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </section>
 
     </div>

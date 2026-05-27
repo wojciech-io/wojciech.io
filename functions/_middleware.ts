@@ -57,11 +57,11 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   // gh.wojciech.io is for LiveEmbed demos; Cal.com is for /contact/#book-call.
   'content-security-policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com https://eu-assets.i.posthog.com",
     "style-src 'self' 'unsafe-inline' https://app.cal.com",
-    // cdn.simpleicons.org removed: stack section no longer loads icons from CDN
-    "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://cal.com https://app.cal.com https://o4511411558678528.ingest.de.sentry.io",
+    // cdn.simpleicons.org: tech-logo chips on the /stack overview page
+    "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com https://cdn.simpleicons.org",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://cal.com https://app.cal.com https://o4511411558678528.ingest.de.sentry.io https://eu.i.posthog.com",
     "font-src 'self' https://app.cal.com",
     // worker-src: pagefind search uses web workers served from same origin
     "worker-src 'self'",

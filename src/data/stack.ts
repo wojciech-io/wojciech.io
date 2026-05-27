@@ -28,12 +28,12 @@ export const STACK: StackCategory[] = [
   },
   {
     name: 'Backend & Data',
-    enables: 'Auth, database, and storage in minutes, then custom Python APIs and BigQuery for querying millions of rows without managing servers.',
+    enables: 'Auth, APIs, and data at the edge: signed-cookie gates, rate limiting, and SQLite-at-the-edge without managing servers.',
     items: [
-      { name: 'Supabase',  icon: 'supabase',      iconColor: MONO },
-      { name: 'FastAPI',   icon: 'fastapi',        iconColor: MONO },
-      { name: 'Cloud Run', icon: 'googlecloud',    iconColor: MONO },
-      { name: 'BigQuery',  icon: 'googlebigquery', iconColor: MONO },
+      { name: 'Cloudflare Workers',   icon: 'cloudflareworkers', iconColor: MONO },
+      { name: 'Pages Functions',      icon: 'cloudflarepages',   iconColor: MONO },
+      { name: 'D1',                   letterMark: 'D1' },
+      { name: 'Workers KV',           letterMark: 'KV' },
     ],
   },
   {
@@ -73,18 +73,18 @@ export const STACK: StackCategory[] = [
   },
   {
     name: 'Infrastructure',
-    enables: 'Push to git, get a live URL. Edge hosting, branch previews, DNS, and CDN without manual glue.',
+    enables: 'Push to git, get a live URL. Edge hosting, branch previews, DNS, and CDN, provisioned as code with Terraform.',
     items: [
       { name: 'Cloudflare Pages', icon: 'cloudflarepages', iconColor: MONO },
       { name: 'Cloudflare',       icon: 'cloudflare',      iconColor: MONO },
-      { name: 'Vercel',           icon: 'vercel',          iconColor: MONO },
-      { name: 'Netlify',          icon: 'netlify',         iconColor: MONO },
+      { name: 'Terraform',        icon: 'terraform',       iconColor: MONO },
+      { name: 'Wrangler',         letterMark: 'WR' },
       { name: 'GitHub',           icon: 'github',          iconColor: MONO },
     ],
   },
   {
     name: 'Static & Content',
-    enables: 'Ultra-fast static sites with 0kb JS by default. Perfect for landing pages, docs, and content-heavy projects where Core Web Vitals matter.',
+    enables: 'Ultra-fast static sites with minimal client JS. Perfect for landing pages, docs, and content-heavy projects where Core Web Vitals matter.',
     items: [
       { name: 'Astro',   icon: 'astro',   iconColor: MONO },
       { name: 'Framer',  icon: 'framer',  iconColor: MONO },
