@@ -213,6 +213,28 @@ body {
   }
 }
 
+/* ─── Mobile: skip GPU-heavy entrance animations ─────────────────
+   On touch-primary devices (phones, tablets), reveal-up creates one
+   GPU compositing layer per animated element. With 30+ elements on a
+   page, iOS Safari / Android Chrome exhaust their tile budgets and
+   render blank areas mid-scroll ("ucina"). Show content immediately
+   and let scrolling use the native fast-path. Lenis also skips on
+   these devices via the (pointer: fine) guard in Layout.astro.    */
+@media (hover: none) and (pointer: coarse) {
+  .js .reveal-up {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0ms;
+  }
+  .animate-float {
+    animation: none;
+  }
+  .animate-glow-breathe {
+    animation: none;
+  }
+}
+
 /* ─── Motion tokens (Motion One / Lenis / View Transitions) ──────
    Duration / easing used across inView() calls and CSS transitions.
    Set to 0s/instant when user prefers reduced motion. */

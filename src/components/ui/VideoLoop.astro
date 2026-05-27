@@ -63,12 +63,13 @@ const id = `vl-${Math.random().toString(36).slice(2, 8)}`;
 
 <script define:vars={{ id }}>
   // Only autoplay when the element enters the viewport.
-  // Respects prefers-reduced-motion: no autoplay, show poster only.
+  // Respects prefers-reduced-motion and coarse-pointer (mobile): show poster only.
   const wrap = document.getElementById(id);
   if (wrap) {
     const video = wrap.querySelector('video');
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (video && !reduced) {
+    const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    if (video && !reduced && !isMobile) {
       const obs = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
