@@ -13,8 +13,13 @@ describe('public middleware CSP', () => {
 
   it('allows external media used by public pages', () => {
     expect(csp).toMatch(/img-src[^;]*https:\/\/i\.ytimg\.com/);
-    // simpleicons CDN removed — stack section no longer fetches icons from CDN
-    expect(csp).not.toContain('cdn.simpleicons.org');
+    // simpleicons CDN: tech-logo chips on the /stack overview page
+    expect(csp).toMatch(/img-src[^;]*https:\/\/cdn\.simpleicons\.org/);
+  });
+
+  it('allows PostHog EU (script + connect)', () => {
+    expect(csp).toMatch(/script-src[^;]*https:\/\/eu-assets\.i\.posthog\.com/);
+    expect(csp).toMatch(/connect-src[^;]*https:\/\/eu\.i\.posthog\.com/);
   });
 
   it('allows pagefind web workers and webmanifest', () => {
