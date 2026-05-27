@@ -1,4 +1,5 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, rgb } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 import { currentSession } from '../_utils/session';
 import { clientIp, rateLimit } from '../_utils/ratelimit';
 
@@ -6,6 +7,8 @@ interface Env {
   DB?: D1Database;
   AUTH_SECRET?: string;
   RATE_LIMIT?: KVNamespace;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ASSETS: any; // CF Pages ASSETS binding — type provided at runtime by the platform
 }
 
 const PROGRAM = 'ai-growth-os';
@@ -75,7 +78,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     issuedAt = settled?.issued_at || issuedAt;
   }
 
-  const pdf = await renderCertificate(recipientName, verificationCode!, issuedAt!);
+  const pdf = await renderCertificate(request, env.ASSETS, recipientName, verificationCode!, issuedAt!);
 
   return new Response(pdf, {
     status: 200,
@@ -87,8 +90,33 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   });
 };
 
-async function renderCertificate(name: string, code: string, issuedAtIso: string): Promise<Uint8Array> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function loadFont(assets: any, request: Request, path: string): Promise<ArrayBuffer> {
+  const url = new URL(path, request.url).href;
+  const res = await assets.fetch(new Request(url));
+  if (!res.ok) throw new Error(`Font load failed: ${path} (${res.status})`);
+  return res.arrayBuffer();
+}
+
+async function renderCertificate(
+  request: Request,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  assets: any,
+  name: string,
+  code: string,
+  issuedAtIso: string,
+): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
+  doc.registerFontkit(fontkit);
+
+  // Geist supports the full Latin Extended-A block including Polish diacritics.
+  const [regularBytes, boldBytes] = await Promise.all([
+    loadFont(assets, request, '/fonts/Geist-Regular.ttf'),
+    loadFont(assets, request, '/fonts/Geist-Bold.ttf'),
+  ]);
+  const sans = await doc.embedFont(regularBytes);
+  const sansBold = await doc.embedFont(boldBytes);
+
   const page = doc.addPage([842, 595]); // A4 landscape, points
   const { width, height } = page.getSize();
 
@@ -96,28 +124,23 @@ async function renderCertificate(name: string, code: string, issuedAtIso: string
   const muted = rgb(0.45, 0.45, 0.5);
   const accent = rgb(1, 0.478, 0.11); // --orange #ff7a1c
 
-  const serif = await doc.embedFont(StandardFonts.TimesRoman);
-  const serifBold = await doc.embedFont(StandardFonts.TimesRomanBold);
-  const sans = await doc.embedFont(StandardFonts.Helvetica);
-
-  const center = (text: string, font: typeof serif, size: number, y: number, color = ink) => {
-    const safe = winAnsiSafe(text);
-    const w = font.widthOfTextAtSize(safe, size);
-    page.drawText(safe, { x: (width - w) / 2, y, size, font, color });
+  const center = (text: string, font: typeof sans, size: number, y: number, color = ink) => {
+    const w = font.widthOfTextAtSize(text, size);
+    page.drawText(text, { x: (width - w) / 2, y, size, font, color });
   };
 
   // Frame.
   page.drawRectangle({ x: 28, y: 28, width: width - 56, height: height - 56, borderColor: ink, borderWidth: 1.5 });
   page.drawRectangle({ x: 22, y: 22, width: width - 44, height: height - 44, borderColor: accent, borderWidth: 0.75 });
 
-  center('AI GROWTH OS', serifBold, 16, height - 96, accent);
+  center('AI GROWTH OS', sansBold, 16, height - 96, accent);
   center('CERTYFIKAT UKOŃCZENIA', sans, 11, height - 120, muted);
 
-  center('Zaświadcza się, że', serif, 14, height - 200, muted);
-  center(name, serifBold, 34, height - 250, ink);
+  center('Zaświadcza się, że', sans, 14, height - 200, muted);
+  center(name, sansBold, 34, height - 250, ink);
 
-  center(`ukończył(a) program ${PROGRAM_TITLE} — operacyjną akademię AI dla zespołów B2B SaaS,`, serif, 13, height - 300, ink);
-  center(`zaliczając wszystkie ${PROGRAM_EPISODE_COUNT} odcinków i ćwiczenia wdrożeniowe.`, serif, 13, height - 320, ink);
+  center(`ukończył(a) program ${PROGRAM_TITLE} — operacyjną akademię AI dla zespołów B2B SaaS,`, sans, 13, height - 300, ink);
+  center(`zaliczając wszystkie ${PROGRAM_EPISODE_COUNT} odcinków i ćwiczenia wdrożeniowe.`, sans, 13, height - 320, ink);
 
   const issued = new Date(issuedAtIso);
   const dateStr = issued.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -130,19 +153,6 @@ async function renderCertificate(name: string, code: string, issuedAtIso: string
   center(`Kod weryfikacyjny: ${code}`, sans, 9, 56, muted);
 
   return doc.save();
-}
-
-// pdf-lib's StandardFonts only encode WinAnsi (CP1252), which lacks the Polish
-// glyphs ł ą ę ś ż ź ć ń. Until a Unicode TTF is bundled and embedded via
-// @pdf-lib/fontkit, fold those to their closest ASCII so names never crash the
-// renderer. NOTE: this transliterates diacritics — bundle a font to render them.
-const PL_FOLD: Record<string, string> = {
-  ą: 'a', ć: 'c', ę: 'e', ł: 'l', ń: 'n', ś: 's', ź: 'z', ż: 'z',
-  Ą: 'A', Ć: 'C', Ę: 'E', Ł: 'L', Ń: 'N', Ś: 'S', Ź: 'Z', Ż: 'Z',
-};
-
-function winAnsiSafe(text: string): string {
-  return text.replace(/[ąćęłńśźżĄĆĘŁŃŚŹŻ]/g, (c) => PL_FOLD[c] ?? c);
 }
 
 function makeVerificationCode(): string {
