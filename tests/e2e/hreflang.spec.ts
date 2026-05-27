@@ -9,6 +9,7 @@ const EXPECTED_HOME_ALTERNATES = [
   ['ja-JP', 'https://wojciech.io/jp/'],
   ['it-IT', 'https://wojciech.io/it/'],
   ['es-ES', 'https://wojciech.io/es/'],
+  ['pl', 'https://wojciech.io/pl/'],
 ] as const;
 
 const EXPECTED_ABOUT_ALTERNATES = [
@@ -20,6 +21,7 @@ const EXPECTED_ABOUT_ALTERNATES = [
   ['ja-JP', 'https://wojciech.io/jp/about/'],
   ['it-IT', 'https://wojciech.io/it/about/'],
   ['es-ES', 'https://wojciech.io/es/about/'],
+  ['pl', 'https://wojciech.io/pl/about/'],
 ] as const;
 
 const EXPECTED_CV_ALTERNATES = [

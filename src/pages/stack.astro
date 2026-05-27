@@ -182,7 +182,22 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
       <section>
         <p class={eyebrowClass}>03 · Surfaces</p>
         <h2 class={h2Class}>Subdomains</h2>
-        <p class="mt-3">Each surface is its own Cloudflare Pages project, deployed independently.</p>
+        <p class="mt-3">Each surface is its own Cloudflare Pages project, deployed independently. Same monorepo, same gate, same design tokens.</p>
+
+        <Diagram direction="column" caption="One repo branches into seven independently deployed surfaces.">
+          <Box variant="accent" label="wojciech.io" sub="monorepo · single CI gate" />
+          <Arrow direction="down" dashed label="fan-out · 7 Pages projects" />
+          <Stack direction="row" gap="sm">
+            <Box variant="default" label="wojciech.io" sub="public portfolio" />
+            <Box variant="outline" label="app.wojciech.io" sub="password gate" />
+            <Box variant="outline" label="gh.wojciech.io" sub="password gate" />
+            <Box variant="default" label="academy.wojciech.io" sub="public + member" />
+            <Box variant="default" label="notch.wojciech.io" sub="public" />
+            <Box variant="default" label="subscribe.wojciech.io" sub="public" />
+            <Box variant="muted" label="dev" sub="internal" />
+          </Stack>
+        </Diagram>
+
         <div class="mt-6 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
           <table class="w-full text-sm">
             <thead>
@@ -258,7 +273,40 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
       <section>
         <p class={eyebrowClass}>07 · Delivery</p>
         <h2 class={h2Class}>CI/CD pipeline</h2>
-        <ol class="mt-4 space-y-3">
+
+        <Flow
+          caption="A ticket goes from Linear to live without anyone clicking deploy."
+          steps={[
+            { label: 'Linear', sub: 'ticket scoped' },
+            { label: 'Branch', sub: 'atomic, file-scoped' },
+            { label: 'PR', sub: 'conventional commit' },
+            { label: 'CI gate', sub: '10 checks' },
+            { label: 'Review', sub: 'agent + human' },
+            { label: 'Merge', sub: 'squash to main' },
+            { label: 'Deploy', sub: 'Wrangler · parallel', active: true },
+          ]}
+        />
+
+        <Diagram direction="column" caption="Deploy fans out to every surface in parallel, then verifies itself.">
+          <Box variant="accent" label="Merge to main" sub="green CI required" />
+          <Arrow direction="down" label="Wrangler" />
+          <Stack direction="row" gap="sm">
+            <Box variant="outline" label="wojciech.io" />
+            <Box variant="outline" label="app" />
+            <Box variant="outline" label="gh" />
+            <Box variant="outline" label="academy" />
+            <Box variant="outline" label="notch" />
+            <Box variant="outline" label="subscribe" />
+          </Stack>
+          <Arrow direction="down" dashed label="post-deploy" />
+          <Stack direction="row" gap="sm">
+            <Box variant="muted" label="Smoke tests" sub="Playwright vs prod" />
+            <Box variant="muted" label="Header probe" sub="6 domains" />
+            <Box variant="muted" label="Better Stack" sub="uptime baseline" />
+          </Stack>
+        </Diagram>
+
+        <ol class="mt-6 space-y-3">
           <li class={cardClass}><strong class="text-[var(--color-text)]">1 · CI</strong> on every push and PR to main: build and type-check (Node 24), unit tests, end-to-end smoke and a11y. Artifacts retained.</li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">2 · Deploy</strong> runs only after CI succeeds. Site, app, subscribe and notch deploy in parallel via Wrangler. A running deploy is never cancelled mid-flight.</li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">3 · Commit hygiene</strong>: enforced conventional commits, with Release Please wired up for versioning and changelog.</li>
@@ -273,6 +321,18 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
           Branch protection on main requires every check below to pass before merge. Secrets live only in
           Cloudflare environment bindings, never in the repo.
         </p>
+
+        <Diagram direction="column" caption="Defense in depth: a request crosses four layers before it reaches the app.">
+          <Box variant="muted" label="Public internet" sub="anyone" />
+          <Arrow direction="down" />
+          <Box variant="outline" label="Cloudflare WAF" sub="managed + OWASP + custom rules" />
+          <Arrow direction="down" />
+          <Box variant="outline" label="Rate limiter" sub="Workers KV · per IP" />
+          <Arrow direction="down" />
+          <Box variant="outline" label="Auth gate" sub="HMAC cookies · magic links" />
+          <Arrow direction="down" />
+          <Box variant="accent" label="Pages Functions" sub="app code, D1, KV" />
+        </Diagram>
 
         <div class="grid gap-3 sm:grid-cols-2 mt-6">
           {securityChecks.map((c) => (
@@ -302,6 +362,17 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
       <section>
         <p class={eyebrowClass}>09 · Resilience</p>
         <h2 class={h2Class}>Backup, failover, rollback</h2>
+
+        <Diagram direction="row" caption="Failover is a finite state machine, not a manual checklist.">
+          <Box variant="accent" label="Healthy" sub="primary serving" />
+          <Arrow label="health fail · 5 min" dashed />
+          <Box variant="outline" label="Detected" sub="Worker cron" />
+          <Arrow label="DNS flip" />
+          <Box variant="outline" label="Azure live" sub="cold standby hot" />
+          <Arrow label="primary recovered" dashed />
+          <Box variant="muted" label="Restored" sub="DNS back to CF" />
+        </Diagram>
+
         <div class="grid gap-4 sm:grid-cols-2 mt-4">
           <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Backup</strong><span class="text-sm">Weekly mirror to Azure Static Web Apps as an independent cold standby.</span></div>
           <div class={cardClass}><strong class="text-[var(--color-text)] block mb-1">Failover</strong><span class="text-sm">A Cloudflare Worker health-checks the site on a 5-minute cron and automatically flips DNS to the Azure standby via the Cloudflare API, then restores it once the primary recovers. A GitHub workflow provides a manual override.</span></div>
@@ -315,6 +386,22 @@ const eyebrowClass = 'text-xs font-semibold uppercase tracking-widest text-[var(
         <p class={eyebrowClass}>10 · Operating model</p>
         <h2 class={h2Class}>A multi-agent build process</h2>
         <p class="mt-3">Clear role separation with a defined handoff protocol, planned and tracked in Linear.</p>
+
+        <Diagram direction="column" caption="Each agent has one job. Linear is the coordination layer; the human keeps the call.">
+          <Box variant="accent" label="Wojciech" sub="orchestrator · go/no-go" />
+          <Arrow direction="down" dashed label="scopes · tickets" />
+          <Box variant="outline" label="Linear" sub="sprints · atomic tasks · DoD" />
+          <Arrow direction="down" dashed label="dispatched to" />
+          <Stack direction="row" gap="sm">
+            <Box variant="default" label="GPT-5.5" sub="strategy · positioning" />
+            <Box variant="default" label="Claude Code" sub="implementation · tests" />
+            <Box variant="default" label="Codex" sub="independent review" />
+            <Box variant="default" label="Claude Design" sub="visual exploration" />
+          </Stack>
+          <Arrow direction="down" dashed label="converge · PR" />
+          <Box variant="muted" label="Merge gate" sub="docs + code agree · DoD met" />
+        </Diagram>
+
         <ul class="mt-5 space-y-3">
           <li class={cardClass}><strong class="text-[var(--color-text)]">Claude Code</strong> · implementation: components, styling, templates, content collections, accessibility, SEO. Does not touch DNS, information architecture, positioning, or proof metrics without approval.</li>
           <li class={cardClass}><strong class="text-[var(--color-text)]">Codex</strong> · independent review: code, SEO, redirect maps, test scenarios, performance checklists. Closed tasks on separate branches.</li>
