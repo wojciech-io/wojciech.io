@@ -95,6 +95,35 @@ test('rss feed items include <category> tags', async ({ request }) => {
   expect(body).toContain('<category>');
 });
 
+test('json feed is valid and contains required fields', async ({ request }) => {
+  const r = await request.get('/feed.json');
+  expect(r.status()).toBe(200);
+  // Astro preview serves static .json as application/json; CF Pages overrides to
+  // application/feed+json via _headers. Accept both in CI.
+  const ct = r.headers()['content-type'] ?? '';
+  expect(ct.includes('application/feed+json') || ct.includes('application/json'), `unexpected content-type: ${ct}`).toBe(true);
+  const feed = await r.json();
+  expect(feed.version).toBe('https://jsonfeed.org/version/1.1');
+  expect(feed.title).toBeTruthy();
+  expect(feed.home_page_url).toMatch(/^https?:\/\//);
+  expect(feed.feed_url).toMatch(/\/feed\.json$/);
+  expect(Array.isArray(feed.items)).toBe(true);
+  expect(feed.items.length, 'feed must have at least one item').toBeGreaterThan(0);
+  const item = feed.items[0];
+  expect(item.id).toBeTruthy();
+  expect(item.url).toMatch(/\/insights\//);
+  expect(item.title).toBeTruthy();
+  expect(item.date_published).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+});
+
+test('homepage has JSON Feed autodiscovery link', async ({ page }) => {
+  await page.goto('/');
+  const link = page.locator('link[rel="alternate"][type="application/feed+json"]');
+  await expect(link, 'JSON Feed autodiscovery link missing from <head>').toHaveCount(1);
+  const href = await link.getAttribute('href');
+  expect(href, 'JSON Feed href').toMatch(/\/feed\.json$/);
+});
+
 test('legacy /blog/* redirect lands on a live insights article (prod only)', async ({
   page,
 }) => {
