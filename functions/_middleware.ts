@@ -59,9 +59,14 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com",
     "style-src 'self' 'unsafe-inline' https://app.cal.com",
-    "img-src 'self' data: https://www.gravatar.com https://cdn.simpleicons.org https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com",
+    // cdn.simpleicons.org removed: stack section no longer loads icons from CDN
+    "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com",
     "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://cal.com https://app.cal.com https://o4511411558678528.ingest.de.sentry.io",
     "font-src 'self' https://app.cal.com",
+    // worker-src: pagefind search uses web workers served from same origin
+    "worker-src 'self'",
+    // manifest-src: webmanifest served from same origin
+    "manifest-src 'self'",
     "frame-src https://gh.wojciech.io https://cal.com https://app.cal.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
