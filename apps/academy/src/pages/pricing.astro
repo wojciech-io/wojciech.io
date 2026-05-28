@@ -111,7 +111,7 @@ const pricingSchema = [
               <li><span class="ac-check">✓</span><span>{f}</span></li>
             ))}
           </ul>
-          <a href="#cennik" class="ac-btn ac-btn-primary" style="margin-top: auto; justify-content: center">Otrzymaj cennik →</a>
+          <span class="ac-btn ac-btn-primary" style="margin-top:auto;justify-content:center;opacity:0.45;cursor:default;pointer-events:none">Wkrótce dostępne</span>
         </article>
       ))}
     </div>
@@ -135,49 +135,37 @@ const pricingSchema = [
     </div>
   </section>
 
-  <!-- Request form -->
+  <!-- Coming soon notice -->
   <section class="ac-section" id="cennik" style="padding-top: 0">
-    <p class="ac-section-eyebrow reveal-up">Otrzymaj cennik</p>
-    <h2 class="reveal-up delay-1">Powiedz kogo wdrażasz — odeślę cennik w 24 h.</h2>
-    <p class="ac-section-sub reveal-up delay-2">
-      Bez rozmowy sprzedażowej na siłę. Wpisujesz ile osób i jaki jest cel, a dostajesz konkretny cennik, warunki (raty, faktura VAT) i propozycję onboardingu. Dla większych zespołów (50+) i custom curriculum — opisz to w briefie, wycenię indywidualnie.
-    </p>
+    <div class="reveal-up" style="max-width:560px;margin:0 auto;text-align:center;padding:48px 32px;border:1px solid var(--border);border-radius:16px;background:var(--bg2)">
+      <p style="font-size:32px;margin:0 0 16px">⏳</p>
+      <p class="ac-section-eyebrow" style="margin-bottom:12px">Wkrótce</p>
+      <h2 style="font-size:22px;margin:0 0 12px">Zapisy otwieramy niedługo.</h2>
+      <p style="font-size:14px;color:var(--text-2);margin:0 0 24px;line-height:1.6">
+        Program jest gotowy — dopinamy ostatnie szczegóły oferty. Zostaw email, żebym dał Ci znać, gdy zapisy się otworzą.
+      </p>
+      <form class="ac-form" data-ac-form action="/api/contact" style="text-align:left">
+        <input type="hidden" name="kind" value="pricing-waitlist" />
+        <div class="ac-form-row">
+          <div>
+            <label class="ac-form-label" for="pw-name">Imię</label>
+            <input class="ac-input" id="pw-name" name="name" type="text" required autocomplete="given-name" />
+          </div>
+          <div>
+            <label class="ac-form-label" for="pw-email">Email</label>
+            <input class="ac-input" id="pw-email" name="email" type="email" required autocomplete="email" />
+          </div>
+        </div>
+        <p class="ac-form-help">Bez spamu. Jeden email, gdy otwieramy.</p>
+        {import.meta.env.PUBLIC_TURNSTILE_SITEKEY && (
+          <div class="cf-turnstile" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITEKEY} data-theme="dark"></div>
+        )}
+        <button type="submit" class="ac-btn ac-btn-primary" style="width:100%" data-label="Daj mi znać →">Daj mi znać →</button>
+        <div class="ac-form-status" role="status" aria-live="polite"></div>
+      </form>
+    </div>
 
-    <form class="ac-form reveal-up delay-3" data-ac-form action="/api/contact">
-      <input type="hidden" name="kind" value="pricing-request" />
-      <div class="ac-form-row">
-        <div>
-          <label class="ac-form-label" for="pr-name">Imię i nazwisko</label>
-          <input class="ac-input" id="pr-name" name="name" type="text" required autocomplete="name" />
-        </div>
-        <div>
-          <label class="ac-form-label" for="pr-company">Firma</label>
-          <input class="ac-input" id="pr-company" name="company" type="text" autocomplete="organization" />
-        </div>
-      </div>
-      <div class="ac-form-row">
-        <div>
-          <label class="ac-form-label" for="pr-email">Email służbowy</label>
-          <input class="ac-input" id="pr-email" name="email" type="email" required autocomplete="email" />
-        </div>
-        <div>
-          <label class="ac-form-label" for="pr-team">Ile osób chcesz wdrożyć?</label>
-          <input class="ac-input" id="pr-team" name="team_size" type="text" placeholder="np. tylko ja / 8 osób w GTM / 60+" required />
-        </div>
-      </div>
-      <div>
-        <label class="ac-form-label" for="pr-brief">Cel wdrożenia (opcjonalne)</label>
-        <textarea class="ac-textarea" id="pr-brief" name="brief" placeholder="Np. chcemy podnieść SQL/SDR i skrócić ramp-time. Outbound + content. 8 osób."></textarea>
-      </div>
-      <p class="ac-form-help">Idzie bezpośrednio na hello@wojciech.io. Odpowiadam osobiście w 24 h z cennikiem i warunkami.</p>
-      {import.meta.env.PUBLIC_TURNSTILE_SITEKEY && (
-        <div class="cf-turnstile" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITEKEY} data-theme="dark"></div>
-      )}
-      <button type="submit" class="ac-btn ac-btn-primary" data-label="Wyślij i otrzymaj cennik →">Wyślij i otrzymaj cennik →</button>
-      <div class="ac-form-status" role="status" aria-live="polite"></div>
-    </form>
-
-    <p class="reveal-up" style="margin-top:28px;font-size:13px;color:var(--text-3)">
+    <p class="reveal-up" style="margin-top:28px;font-size:13px;color:var(--text-3);text-align:center">
       Chcesz najpierw ocenić format? <a href="https://academy.wojciech.io/audio/s1e01.mp3" style="color:var(--orange)">Pierwszy odcinek (S1E01) jest otwarty ↗</a> — bez karty, bez zapisu.
     </p>
   </section>
