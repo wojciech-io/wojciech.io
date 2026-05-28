@@ -66,12 +66,38 @@ import {
           return '$' + (cents / 100).toFixed(0);
         };
         const h = data.headline;
+        const setDelta = (el, delta, higherIsBetter = true) => {
+          if (!el) return;
+          const good = higherIsBetter ? delta >= 0 : delta <= 0;
+          el.textContent = (delta >= 0 ? '+' : '') + (delta * 100).toFixed(1) + '% wow';
+          el.className = 'gh-metric-delta ' + (good ? 'up' : 'down');
+        };
         const cards = document.querySelectorAll('.gh-metric');
-        if (cards[0]) cards[0].querySelector('.gh-metric-value').textContent = h.sessions_7d.toLocaleString();
-        if (cards[1]) cards[1].querySelector('.gh-metric-value').textContent = h.signups_7d.toString();
-        if (cards[2]) cards[2].querySelector('.gh-metric-value').textContent = h.leads_7d.toString();
-        if (cards[3]) cards[3].querySelector('.gh-metric-value').textContent = fc(h.cpl_7d_cents);
-        // Delta swaps left for v1.2 when we have a proper client component.
+        if (cards[0]) {
+          cards[0].querySelector('.gh-metric-value').textContent = h.sessions_7d.toLocaleString();
+          setDelta(cards[0].querySelector('.gh-metric-delta'), h.sessions_7d_delta);
+        }
+        if (cards[1]) {
+          cards[1].querySelector('.gh-metric-value').textContent = h.signups_7d.toString();
+          setDelta(cards[1].querySelector('.gh-metric-delta'), h.signups_7d_delta);
+        }
+        if (cards[2]) {
+          cards[2].querySelector('.gh-metric-value').textContent = h.leads_7d.toString();
+          setDelta(cards[2].querySelector('.gh-metric-delta'), h.leads_7d_delta);
+        }
+        if (cards[3]) {
+          cards[3].querySelector('.gh-metric-value').textContent = fc(h.cpl_7d_cents);
+          setDelta(cards[3].querySelector('.gh-metric-delta'), h.cpl_7d_delta, false); // lower CPL is better
+        }
+        if (cards[4]) {
+          cards[4].querySelector('.gh-metric-value').textContent = fc(h.pipeline_total_cents);
+          setDelta(cards[4].querySelector('.gh-metric-delta'), h.pipeline_delta);
+        }
+        if (cards[5]) {
+          cards[5].querySelector('.gh-metric-value').textContent = fc(h.won_mtd_cents);
+          const wonCount = cards[5].querySelector('.gh-metric-sub');
+          if (wonCount) wonCount.textContent = h.won_count_mtd + ' deal' + (h.won_count_mtd !== 1 ? 's' : '');
+        }
       }
     } catch {}
   })();
