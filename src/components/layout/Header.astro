@@ -274,6 +274,19 @@ const languageOptions = [
 </script>
 
 <script>
+  // Persist locale choice in a cookie so the middleware redirects on next visit.
+  const LOCALE_CODE_TO_PATH: Record<string, string> = {
+    EN: 'en', DE: 'de', DK: 'dk', NO: 'no', JP: 'jp', IT: 'it', ES: 'es', PL: 'pl',
+  };
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element).closest<HTMLAnchorElement>('[data-lang-switch]');
+    if (!a) return;
+    const locale = LOCALE_CODE_TO_PATH[a.dataset.langSwitch ?? ''];
+    if (locale) {
+      document.cookie = `locale_pref=${locale}; path=/; domain=wojciech.io; max-age=31536000; samesite=lax; secure`;
+    }
+  });
+
   // Fix language switcher for localized insight article pages.
   // The server-side fallback only knows top-level slugs (e.g. /insights/), but each
   // article page emits <link rel="alternate" hreflang> tags with exact translated URLs.
