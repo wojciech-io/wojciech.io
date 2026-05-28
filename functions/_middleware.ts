@@ -2,8 +2,40 @@
 // ONLY for app.wojciech.io traffic. Same functions/ directory is deployed by both
 // wojciech.io and app-wojciech-io CF Pages projects; we discriminate by hostname so
 // public wojciech.io traffic always passes through.
+//
+// Also handles Accept-Language → locale redirect for the main site root.
 
 import { verifyToken } from './_utils/crypto';
+
+// Maps Accept-Language primary subtag → site locale path
+const ACCEPT_LANG_MAP: Record<string, string> = {
+  de: 'de',
+  da: 'dk',
+  nb: 'no',
+  nn: 'no',
+  ja: 'jp',
+  it: 'it',
+  es: 'es',
+  pl: 'pl',
+};
+const SUPPORTED_LOCALES = new Set(Object.values(ACCEPT_LANG_MAP));
+const LOCALE_PREF_COOKIE = 'locale_pref';
+
+function parseAcceptLanguage(header: string): string | null {
+  for (const segment of header.split(',')) {
+    const primary = segment.trim().split(/[;-]/)[0].toLowerCase();
+    if (primary in ACCEPT_LANG_MAP) return ACCEPT_LANG_MAP[primary];
+  }
+  return null;
+}
+
+function getLocalePreference(request: Request): string | null {
+  const cookieHeader = request.headers.get('cookie') || '';
+  const saved = parseCookie(cookieHeader, LOCALE_PREF_COOKIE);
+  if (saved === 'en') return null; // explicit English preference
+  if (saved && SUPPORTED_LOCALES.has(saved)) return saved;
+  return parseAcceptLanguage(request.headers.get('Accept-Language') || '');
+}
 
 interface Env {
   APP_PASSWORD: string;
@@ -91,6 +123,21 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
 
   // Public wojciech.io: pass through with security headers injected.
   if (!isGatedHost(url.hostname)) {
+    // Locale auto-redirect: only for the canonical root on the main site.
+    // Reads Accept-Language on first visit; persists preference via cookie.
+    if (url.pathname === '/' && url.hostname === 'wojciech.io') {
+      const locale = getLocalePreference(request);
+      if (locale) {
+        return new Response(null, {
+          status: 302,
+          headers: {
+            Location: `/${locale}/`,
+            'Set-Cookie': `${LOCALE_PREF_COOKIE}=${locale}; Path=/; Domain=wojciech.io; Max-Age=31536000; SameSite=Lax; Secure`,
+            'Cache-Control': 'private, no-store',
+          },
+        });
+      }
+    }
     const response = await next();
     return applySecurityHeaders(response);
   }
