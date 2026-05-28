@@ -1,0 +1,17 @@
+# Standalone Cloudflare Worker that triggers the GrowthHub nightly data sync.
+# CF Pages Functions don't support cron triggers, so this slim Worker fires
+# on schedule and POSTs to the Pages Function /api/sync endpoint.
+#
+# Secrets required in CF dashboard (Workers → growthhub-cron → Settings → Variables):
+#   CRON_SECRET   — matches the CRON_SECRET set on the growthhub Pages project
+#
+# To deploy: wrangler deploy --env production
+name = "growthhub-cron"
+main = "src/index.ts"
+compatibility_date = "2026-05-20"
+
+[env.production]
+name = "growthhub-cron"
+
+[[triggers]]
+crons = ["0 3 * * *"]

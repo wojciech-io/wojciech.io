@@ -9,9 +9,8 @@ binding = "DB"
 database_name = "growthhub-db"
 database_id = "2f1a5091-e1ad-4403-bfd5-8ce93c9fc092"
 
-# Nightly data pull — fires at 03:00 UTC every day.
-# Bound to the /api/sync handler via CF Pages Cron Triggers.
-# To enable: set the cron in Cloudflare dashboard under Pages → growthhub → Settings → Cron Triggers
-# or wire here after confirming database_id above.
-# [[triggers]]
-# crons = ["0 3 * * *"]
+# Nightly sync is triggered by the standalone Worker in apps/growthhub-cron/.
+# CF Pages Functions don't support scheduled events; the Worker POSTs to /api/sync
+# using a shared CRON_SECRET. Set CRON_SECRET (Secret) in both:
+#   - CF Pages → growthhub → Settings → Environment Variables
+#   - CF Workers → growthhub-cron → Settings → Variables
