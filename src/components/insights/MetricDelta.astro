@@ -1,0 +1,179 @@
+---
+interface Props {
+  before: string;
+  after: string;
+  delta: string;
+  label?: string;
+  beforeLabel?: string;
+  afterLabel?: string;
+  tone?: 'positive' | 'warning' | 'neutral';
+}
+
+const {
+  before,
+  after,
+  delta,
+  label,
+  beforeLabel = 'Before',
+  afterLabel = 'After',
+  tone = 'positive',
+} = Astro.props;
+---
+
+<figure class={`metric-delta metric-delta--${tone}`}>
+  <div class="metric-delta__grid">
+    <div class="metric-delta__cell metric-delta__cell--before">
+      <p class="metric-delta__eyebrow">{beforeLabel}</p>
+      <p class="metric-delta__value">{before}</p>
+    </div>
+
+    <div class="metric-delta__connector" aria-hidden="true">
+      <svg class="metric-delta__arrow" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M3 10h14M13 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="metric-delta__badge">{delta}</span>
+    </div>
+
+    <div class="metric-delta__cell metric-delta__cell--after">
+      <p class="metric-delta__eyebrow">{afterLabel}</p>
+      <p class="metric-delta__value">{after}</p>
+    </div>
+  </div>
+  {label && <figcaption class="metric-delta__label">{label}</figcaption>}
+</figure>
+
+<style>
+  .metric-delta {
+    margin-block: 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .metric-delta--positive {
+    border-color: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+  }
+
+  .metric-delta--warning {
+    border-color: color-mix(in srgb, #f59e0b 35%, var(--color-border));
+  }
+
+  .metric-delta__grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  .metric-delta__cell {
+    padding: 1.5rem;
+    background: var(--color-surface-2);
+  }
+
+  .metric-delta__cell--after {
+    background: var(--color-surface-2);
+  }
+
+  .metric-delta--positive .metric-delta__cell--after {
+    background: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface-2));
+  }
+
+  .metric-delta--warning .metric-delta__cell--after {
+    background: color-mix(in srgb, #f59e0b 6%, var(--color-surface-2));
+  }
+
+  .metric-delta__eyebrow {
+    margin: 0 0 0.375rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+
+  .metric-delta__value {
+    margin: 0;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metric-delta__cell--after .metric-delta__value {
+    color: var(--color-text);
+  }
+
+  .metric-delta--positive .metric-delta__cell--after .metric-delta__value {
+    color: var(--color-accent-hi, var(--color-accent));
+  }
+
+  .metric-delta__connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 1rem 0.75rem;
+    background: var(--color-surface);
+    border-inline: 1px solid var(--color-border);
+  }
+
+  .metric-delta__arrow {
+    color: var(--color-text-dim);
+    flex-shrink: 0;
+  }
+
+  .metric-delta--positive .metric-delta__arrow {
+    color: var(--color-accent);
+  }
+
+  .metric-delta__badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    background: color-mix(in srgb, var(--color-text-dim) 14%, transparent);
+    color: var(--color-text-muted);
+  }
+
+  .metric-delta--positive .metric-delta__badge {
+    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    color: var(--color-accent-hi, var(--color-accent));
+  }
+
+  .metric-delta--warning .metric-delta__badge {
+    background: color-mix(in srgb, #f59e0b 14%, transparent);
+    color: #d97706;
+  }
+
+  .metric-delta__label {
+    padding: 0.625rem 1.5rem;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: 0.8125rem;
+    text-align: center;
+    color: var(--color-text-dim);
+    margin: 0;
+  }
+
+  @media (max-width: 420px) {
+    .metric-delta__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .metric-delta__connector {
+      flex-direction: row;
+      justify-content: center;
+      border-inline: 0;
+      border-block: 1px solid var(--color-border);
+      padding: 0.625rem 1rem;
+    }
+
+    .metric-delta__arrow {
+      transform: none;
+    }
+  }
+</style>

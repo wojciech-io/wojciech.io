@@ -45,7 +45,17 @@ Claude Code, specifically the agent loop via the SDK, with MCP tools wired in, l
 
 ## The four-layer stack
 
-The system has four components that work together:
+The system has four components that work together, and the intelligence layer runs through all of them:
+
+<AgentFlow
+  title="How the stack runs"
+  inputLabel="Account list (CSV) + CLAUDE.md operator brief"
+  agentLabel="Claude Code agent loop"
+  tools={["/research", "/score", "/draft", "/enrich", "/log"]}
+  outputLabel="Enriched CSV + research files + personalised sequences"
+  caption="Five named skills handle each step. The agent chooses which to invoke based on the brief."
+/>
+
 
 ### Layer 1: CLAUDE.md: the operator brief
 
@@ -115,6 +125,16 @@ Here's what an actual session looks like when I'm working a new account list:
 6. Log sent sequences with `/log`
 
 Total time for a 50-account list: about 45 minutes of unattended agent work, plus 30 minutes of my review. Equivalent Clay + copywriting workflow: 3–4 hours minimum, and the copy quality isn't comparable.
+
+<MetricDelta
+  before="3-4 hours"
+  beforeLabel="Clay + copywriting workflow"
+  after="75 min"
+  afterLabel="Agent stack (unattended + review)"
+  delta="-65%"
+  label="Time per 50-account enrichment run"
+  tone="positive"
+/>
 
 ---
 

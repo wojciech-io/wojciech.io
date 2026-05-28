@@ -1,0 +1,136 @@
+---
+interface Annotation {
+  x: number;
+  y: number;
+  label: string;
+  pos?: 'top' | 'bottom' | 'left' | 'right';
+}
+
+interface Props {
+  src: string;
+  alt: string;
+  annotations?: Annotation[];
+  caption?: string;
+}
+
+const { src, alt, annotations = [], caption } = Astro.props;
+---
+
+<figure class="annotated-img">
+  <div class="annotated-img__canvas">
+    <img
+      src={src}
+      alt={alt}
+      class="annotated-img__img"
+      loading="lazy"
+      decoding="async"
+    />
+    {annotations.map((ann, i) => (
+      <div
+        class={`annotated-img__pin annotated-img__pin--${ann.pos ?? 'top'}`}
+        style={`left: ${ann.x}%; top: ${ann.y}%`}
+        aria-label={`Annotation ${i + 1}: ${ann.label}`}
+      >
+        <span class="annotated-img__pin-dot" aria-hidden="true">{i + 1}</span>
+        <span class="annotated-img__pin-tooltip">{ann.label}</span>
+      </div>
+    ))}
+  </div>
+  {caption && <figcaption class="annotated-img__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .annotated-img {
+    margin-block: 2rem;
+  }
+
+  .annotated-img__canvas {
+    position: relative;
+    display: block;
+    border-radius: var(--radius-card);
+    overflow: visible;
+  }
+
+  .annotated-img__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+  }
+
+  .annotated-img__pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+  }
+
+  .annotated-img__pin-dot {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--color-accent-text, #fff);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    cursor: default;
+    user-select: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent);
+  }
+
+  .annotated-img__pin-tooltip {
+    position: absolute;
+    z-index: 20;
+    padding: 0.375rem 0.625rem;
+    border-radius: var(--radius-badge, 0.375rem);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-text);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .annotated-img__pin:hover .annotated-img__pin-tooltip,
+  .annotated-img__pin:focus-within .annotated-img__pin-tooltip {
+    opacity: 1;
+  }
+
+  /* Tooltip positioning */
+  .annotated-img__pin--top .annotated-img__pin-tooltip {
+    bottom: calc(100% + 0.375rem);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .annotated-img__pin--bottom .annotated-img__pin-tooltip {
+    top: calc(100% + 0.375rem);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .annotated-img__pin--left .annotated-img__pin-tooltip {
+    right: calc(100% + 0.375rem);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .annotated-img__pin--right .annotated-img__pin-tooltip {
+    left: calc(100% + 0.375rem);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .annotated-img__caption {
+    margin-top: 0.75rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--color-text-dim);
+  }
+</style>

@@ -1,0 +1,203 @@
+---
+interface Props {
+  agentLabel?: string;
+  inputLabel?: string;
+  outputLabel?: string;
+  tools: string[];
+  caption?: string;
+  title?: string;
+}
+
+const {
+  agentLabel = 'Agent',
+  inputLabel = 'Input',
+  outputLabel = 'Output',
+  tools = [],
+  caption,
+  title,
+} = Astro.props;
+---
+
+<figure class="agent-flow">
+  {title && <p class="agent-flow__title">{title}</p>}
+
+  <div class="agent-flow__diagram">
+    <!-- Input -->
+    <div class="agent-flow__row">
+      <div class="agent-flow__node agent-flow__node--input">
+        <span class="agent-flow__node-label">{inputLabel}</span>
+      </div>
+    </div>
+
+    <div class="agent-flow__connector agent-flow__connector--vert" aria-hidden="true">
+      <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+        <path d="M6 0v12M2 8l4 6 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Agent -->
+    <div class="agent-flow__row">
+      <div class="agent-flow__node agent-flow__node--agent">
+        <span class="agent-flow__node-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="agent-flow__node-label">{agentLabel}</span>
+      </div>
+    </div>
+
+    {tools.length > 0 && (
+      <>
+        <div class="agent-flow__connector agent-flow__connector--vert" aria-hidden="true">
+          <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+            <path d="M6 0v12M2 8l4 6 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Tools row -->
+        <div class="agent-flow__row">
+          <div class="agent-flow__tools">
+            {tools.map((tool) => (
+              <div class="agent-flow__node agent-flow__node--tool">
+                <span class="agent-flow__tool-label">{tool}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
+    )}
+
+    <div class="agent-flow__connector agent-flow__connector--vert" aria-hidden="true">
+      <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+        <path d="M6 0v12M2 8l4 6 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Output -->
+    <div class="agent-flow__row">
+      <div class="agent-flow__node agent-flow__node--output">
+        <span class="agent-flow__node-label">{outputLabel}</span>
+      </div>
+    </div>
+  </div>
+
+  {caption && <figcaption class="agent-flow__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .agent-flow {
+    margin-block: 2rem;
+  }
+
+  .agent-flow__title {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .agent-flow__diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .agent-flow__row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .agent-flow__connector--vert {
+    color: var(--color-text-dim);
+    padding: 0.125rem 0;
+  }
+
+  .agent-flow__node {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+  }
+
+  .agent-flow__node--input {
+    border-style: dashed;
+    background: transparent;
+    min-width: 10rem;
+    justify-content: center;
+  }
+
+  .agent-flow__node--agent {
+    border-color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface-2));
+    min-width: 12rem;
+    justify-content: center;
+  }
+
+  .agent-flow__node--output {
+    border-color: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
+    background: color-mix(in srgb, var(--color-accent) 5%, var(--color-surface-2));
+    min-width: 10rem;
+    justify-content: center;
+  }
+
+  .agent-flow__node-icon {
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .agent-flow__node-label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .agent-flow__node--input .agent-flow__node-label,
+  .agent-flow__node--output .agent-flow__node-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .agent-flow__node--agent .agent-flow__node-label {
+    color: var(--color-text);
+  }
+
+  /* Tools row */
+  .agent-flow__tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .agent-flow__node--tool {
+    flex: 0 1 auto;
+    padding: 0.5rem 0.875rem;
+    border-color: color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
+    background: color-mix(in srgb, var(--color-accent) 4%, var(--color-surface));
+  }
+
+  .agent-flow__tool-label {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .agent-flow__caption {
+    margin-top: 0.875rem;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--color-text-dim);
+  }
+</style>
