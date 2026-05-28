@@ -22,9 +22,11 @@ describe('public middleware CSP', () => {
     expect(csp).toMatch(/connect-src[^;]*https:\/\/eu\.i\.posthog\.com/);
   });
 
-  it('allows pagefind web workers and webmanifest', () => {
+  it('allows pagefind web workers, webmanifest, and WASM compilation', () => {
     expect(csp).toMatch(/worker-src[^;]*'self'/);
     expect(csp).toMatch(/manifest-src[^;]*'self'/);
+    // Pagefind compiles a WebAssembly module at runtime; without this Safari refuses it.
+    expect(csp).toMatch(/script-src[^;]*'wasm-unsafe-eval'/);
   });
 
   it('allows Sentry client-side error reporting', () => {
