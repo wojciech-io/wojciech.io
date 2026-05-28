@@ -213,7 +213,7 @@ export const cvData: CvData = {
           'Increased lead generation by 30% with high-converting landing pages and A/B testing',
           'Grew blog traffic by 50% through automation-driven content strategies',
           'Optimised website speed by 25%, enhancing user experience and engagement',
-          'Streamlined workflows integrating marketing, product, and web development',
+          'Connected marketing, product, and web development workflows, cutting handoff friction',
         ],
         pl: [
           'Wzrost ruchu organicznego o 40% dzięki SEO i poprawkom technicznym',
