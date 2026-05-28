@@ -79,3 +79,9 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
 export function onRequestGet() {
   return json({ ok: false, error: 'Method not allowed.' }, { status: 405 });
 }
+
+// Explicit handler so Cloudflare Pages does not answer preflight with a permissive
+// Access-Control-Allow-Origin: *. This endpoint is same-origin only; no CORS needed.
+export function onRequestOptions() {
+  return new Response(null, { status: 405, headers: { allow: 'POST', 'cache-control': 'no-store' } });
+}

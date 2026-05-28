@@ -314,8 +314,6 @@ export const apps: AppEntry[] = [
     tags: 'consumer ios macos watchos health fitness swift apple xcode codex',
     searchName: 'wojciech coach running health apple watch iphone fitness tracker coaching',
     tech: [{ label: 'SwiftUI', accent: true }, { label: 'HealthKit', accent: true }, { label: 'watchOS', accent: true }, { label: 'Xcode' }, { label: 'Codex' }],
-    url: 'https://coach.wojciech.io',
-    urlLabel: { en: 'Landing', pl: 'Landing', it: 'Landing' },
     status: 'private-beta',
     palette: {
       screenFrom: '#060b18', screenTo: '#0d1a35',

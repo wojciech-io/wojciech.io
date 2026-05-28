@@ -58,6 +58,32 @@ Action: `Managed Challenge`
 Exception: allow Cloudflare Access, Pages Functions auth endpoints, and expected
 payment/webhook providers only if those endpoints are public.
 
+## Rule inventory (policy evidence)
+
+Public-safe inventory of the live WAF, rate-limit, and Access rules so reviewers can
+verify posture from the repo without dashboard access. No tokens, zone IDs, or
+incident details belong here.
+
+| Rule | Purpose | Protected host / path | Expected response | Owner |
+|---|---|---|---|---|
+| Scanner path block | Block common exploit/probe paths | All hosts · `/wp-admin`, `/wp-login.php`, `/.env`, `/vendor/phpunit`, `/xmlrpc.php` | `403` | Wojciech |
+| Scanner user-agent guard | Block scanner/curl-style agents | All hosts | `403` + `x-wojciech-bot-guard: blocked-scanner-user-agent` | Wojciech |
+| API burst challenge | Challenge non-bot API bursts | All hosts · `/api/*` | Managed Challenge | Wojciech |
+| API rate limit | Cap request bursts per client | All hosts · `/api/*` · IP+colo, 120/60s | `429` | Wojciech |
+| Protect gated surfaces | Challenge non-bot traffic to gated apps | `app.wojciech.io`, `academy.wojciech.io` | Managed Challenge (auth/webhook endpoints exempt) | Wojciech |
+| Cloudflare Access (app) | Identity gate on private workspace | `app.wojciech.io` · `/*` | `401` until authenticated | Wojciech |
+
+### Planned exemption — discovery files
+
+The scanner user-agent guard currently also blocks legitimate security scanners,
+uptime checks, and SEO tools from reading discovery files. Add an exemption so the
+following are served regardless of user agent (audit 2026-05-28, finding P2 #6):
+
+- `/.well-known/security.txt`
+- `/robots.txt`
+- `/sitemap-index.xml`
+- `/sitemap-*.xml`
+
 ## Deployment guardrail
 
 WAF changes should be rolled out as:

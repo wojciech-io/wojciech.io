@@ -57,7 +57,8 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   // gh.wojciech.io is for LiveEmbed demos; Cal.com is for /contact/#book-call.
   'content-security-policy': [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com https://eu-assets.i.posthog.com",
+    // wasm-unsafe-eval: Pagefind search compiles a WebAssembly module at runtime.
+    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com https://eu-assets.i.posthog.com",
     "style-src 'self' 'unsafe-inline' https://app.cal.com",
     // cdn.simpleicons.org: tech-logo chips on the /stack overview page
     "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com https://cdn.simpleicons.org",
