@@ -23,12 +23,12 @@ describe('public/_headers', () => {
     expect(ppLine).toContain('geolocation=()');
   });
 
-  it('sets Cache-Control for /pagefind/* (search index must revalidate, not be immutable)', () => {
-    expect(headersContent).toContain('/pagefind/*');
-    const pagefindSection = headersContent.split('/pagefind/*')[1]?.split(/\n\n/)[0] ?? '';
-    expect(pagefindSection, 'pagefind Cache-Control missing').toContain('Cache-Control:');
-    expect(pagefindSection, 'pagefind must not be immutable').not.toContain('immutable');
-    expect(pagefindSection, 'pagefind must revalidate').toMatch(/max-age=0|s-maxage/);
+  it('sets Cache-Control for /search/* (search index must revalidate, not be immutable)', () => {
+    expect(headersContent).toContain('/search/*');
+    const searchSection = headersContent.split('/search/*')[1]?.split(/\n\n/)[0] ?? '';
+    expect(searchSection, 'search index Cache-Control missing').toContain('Cache-Control:');
+    expect(searchSection, 'search index must not be immutable').not.toContain('immutable');
+    expect(searchSection, 'search index must revalidate').toMatch(/max-age=0|s-maxage/);
   });
 
   it('sets HSTS with includeSubDomains and preload', () => {
