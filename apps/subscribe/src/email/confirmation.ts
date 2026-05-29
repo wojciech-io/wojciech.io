@@ -84,7 +84,7 @@ export function confirmationEmail({ email, confirmUrl }: ConfirmationEmailProps)
                 <tr>
                   <td style="padding-bottom: 32px;">
                     <p class="email-muted" style="font-size: 15px; line-height: 1.65; color: #66645f; margin-bottom: 12px;">
-                      You asked to subscribe to <strong class="email-text" style="color: #171717; font-weight: 600;">AI Espresso</strong> — short operator notes on AI systems, GTM architecture, and what I'm building.
+                      You asked to subscribe to <strong class="email-text" style="color: #171717; font-weight: 600;">AI Espresso</strong>, short operator notes on AI systems, GTM architecture, and what I'm building.
                     </p>
                     <p class="email-muted" style="font-size: 15px; line-height: 1.65; color: #66645f;">
                       Click the button below to confirm <strong style="color: inherit;">${email}</strong> and get the next issue.

@@ -283,8 +283,8 @@ export const apps: AppEntry[] = [
     category: 'Mac Utility · macOS native',
     badge: 'macOS',
     tagline: {
-      en: 'Local-first Mac audit with cleanup preview and HTML report. Files move to Trash — nothing disappears silently.',
-      pl: 'Lokalny audyt Maca z podglądem czyszczenia i raportem HTML. Pliki trafiają do Kosza — nic nie znika po cichu.',
+      en: 'Local-first Mac audit with cleanup preview and HTML report. Files move to Trash. Nothing disappears silently.',
+      pl: 'Lokalny audyt Maca z podglądem czyszczenia i raportem HTML. Pliki trafiają do Kosza. Nic nie znika po cichu.',
       it: 'Audit Mac locale con anteprima pulizia e report HTML. I file vanno nel Cestino, niente sparisce in silenzio.',
     },
     tags: 'productivity macos native swift desktop utility cleaner storage privacy local-first',
