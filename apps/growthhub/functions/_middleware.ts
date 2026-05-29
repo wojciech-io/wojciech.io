@@ -8,6 +8,7 @@ interface Env {
   APP_PASSWORD: string;
   COOKIE_SECRET: string;
   COOKIE_MAX_AGE_DAYS?: string;
+  CRON_SECRET?: string;
   ASSETS: Fetcher;
 }
 
@@ -74,6 +75,16 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
   }
 
   if (isAllowed(url.pathname)) {
+    return next();
+  }
+
+  // Allow cron Worker to hit /api/sync with a shared secret (no cookie).
+  if (
+    url.pathname === '/api/sync' &&
+    request.method === 'POST' &&
+    env.CRON_SECRET &&
+    request.headers.get('Authorization') === `Bearer ${env.CRON_SECRET}`
+  ) {
     return next();
   }
 

@@ -27,7 +27,10 @@ export async function syncPipedrive(env: PipedriveEnv): Promise<SyncResult> {
   const base = `https://${env.PIPEDRIVE_DOMAIN}.pipedrive.com/api/v1`;
   const auth = `api_token=${env.PIPEDRIVE_API_TOKEN}`;
 
-  // 1. Persons with recent activity (last 30d) — feed `leads` table.
+  // Resolve stage IDs → human-readable names once per sync.
+  const stageMap = await fetchStageMap(base, auth);
+
+  // 1. Persons — feed `leads` table.
   const personsRes = await fetch(`${base}/persons?limit=500&sort=update_time DESC&${auth}`);
   if (!personsRes.ok) {
     return { rows_written: 0, error: `persons HTTP ${personsRes.status}` };
@@ -39,7 +42,7 @@ export async function syncPipedrive(env: PipedriveEnv): Promise<SyncResult> {
     const stage = p.open_deals_count > 0 ? 'Open' : (p.closed_deals_count > 0 ? 'Closed' : 'New');
     const amount_cents = Math.round((p.value || 0) * 100);
     const industry = p.org_id?.label_ids?.[0] || null;
-    const company_size = null;  // Pipedrive doesn't have this out of box
+    const company_size = null;
     const role = p.title || null;
     const scored = scoreLead({ industry, company_size, role, source: 'inbound-form' });
 
@@ -57,13 +60,13 @@ export async function syncPipedrive(env: PipedriveEnv): Promise<SyncResult> {
     written++;
   }
 
-  // 2. Pipeline snapshot — group open deals by stage.
+  // 2. Pipeline snapshot — group open deals by resolved stage name.
   const dealsRes = await fetch(`${base}/deals?status=open&limit=500&${auth}`);
   if (dealsRes.ok) {
     const deals = (await dealsRes.json() as any).data || [];
     const byStage = new Map<string, { count: number; amount: number }>();
     for (const d of deals) {
-      const stage = d.stage_id ? `Stage ${d.stage_id}` : 'New';
+      const stage = stageMap.get(d.stage_id) ?? d.stage_name ?? 'Unknown';
       const acc = byStage.get(stage) || { count: 0, amount: 0 };
       acc.count++;
       acc.amount += Math.round((d.value || 0) * 100);
@@ -78,20 +81,35 @@ export async function syncPipedrive(env: PipedriveEnv): Promise<SyncResult> {
     }
   }
 
-  // 3. Closed deals — won/lost in last 30 days.
+  // 3. Closed deals — won/lost.
   const closedRes = await fetch(`${base}/deals?status=closed&limit=200&${auth}`);
   if (closedRes.ok) {
     const closed = (await closedRes.json() as any).data || [];
     for (const d of closed) {
       const outcome = d.status === 'won' ? 'won' : 'lost';
       const closed_at = d.close_time || d.update_time;
+      const cycle_days = d.add_time && closed_at
+        ? Math.round((new Date(closed_at).getTime() - new Date(d.add_time).getTime()) / 86_400_000)
+        : null;
       await env.DB.prepare(
         `INSERT INTO deals_closed (id, closed_at, outcome, amount_cents, cycle_days, source) VALUES (?, ?, ?, ?, ?, ?)
-         ON CONFLICT(id) DO UPDATE SET outcome=excluded.outcome, amount_cents=excluded.amount_cents`
-      ).bind(`pd-${d.id}`, closed_at, outcome, Math.round((d.value || 0) * 100),
-             d.stage_change_time ? null : null, 'pipedrive').run();
+         ON CONFLICT(id) DO UPDATE SET outcome=excluded.outcome, amount_cents=excluded.amount_cents, cycle_days=excluded.cycle_days`
+      ).bind(`pd-${d.id}`, closed_at, outcome, Math.round((d.value || 0) * 100), cycle_days, 'pipedrive').run();
     }
   }
 
   return { rows_written: written };
+}
+
+async function fetchStageMap(base: string, auth: string): Promise<Map<number, string>> {
+  const map = new Map<number, string>();
+  try {
+    const res = await fetch(`${base}/stages?${auth}`);
+    if (!res.ok) return map;
+    const stages = (await res.json() as any).data || [];
+    for (const s of stages) map.set(s.id, s.name);
+  } catch {
+    // Non-fatal — fall back to deal's stage_name field
+  }
+  return map;
 }
