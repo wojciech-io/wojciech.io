@@ -1,0 +1,174 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTABand from '../components/ui/CTABand.astro';
+import PageBackdrop from '../components/ui/PageBackdrop.astro';
+import { SITE } from '../data/site';
+
+// Repo URL is provisional until the plugin repo is published.
+const PAGE_OPTIMIZER_REPO = 'https://github.com/wojciechluszczynski/page-optimizer';
+
+interface Skill {
+  command: string;
+  what: string;
+}
+
+interface Bite {
+  name: string;
+  kicker: string;
+  summary: string;
+  audience: string;
+  tags: string[];
+  repo: string;
+  skills: Skill[];
+}
+
+const bites: Bite[] = [
+  {
+    name: 'Page Optimizer',
+    kicker: 'Claude Code plugin · v0.1.0',
+    summary:
+      'Point it at a single-file HTML landing page. It tells you what is broken, then ships a fixed version. Six skills, one job: turn a rough page into something you can publish.',
+    audience:
+      'For anyone shipping landing pages with Claude Code: solo founders, operators, indie builders. You write the HTML, it runs the audit and the fixes a designer would bill you for.',
+    tags: ['Claude Code', 'Landing page', 'a11y', 'SEO', 'Audit'],
+    repo: PAGE_OPTIMIZER_REPO,
+    skills: [
+      {
+        command: '/audit-page',
+        what: 'Reads the HTML and writes a full AUDIT.md next to it: copy, em dashes, visuals, micro-animations, mobile nav, performance, SEO, accessibility.',
+      },
+      {
+        command: '/optimize-page',
+        what: 'Generates improved/index.html with every high-priority fix applied: broken CTA hover, mobile menus with no Escape key, unpinned CDN versions, missing LCP preload.',
+      },
+      {
+        command: '/responsive-check',
+        what: 'Checks mobile and tablet readiness: viewport, breakpoint gaps, 44px touch targets, 16px body text, image sizing and CLS.',
+      },
+      {
+        command: '/llm-copy',
+        what: 'Audits copy for AI answer engines: clear answers over poetry, full entity coverage, a Q&A structure models can quote (AEO and GEO).',
+      },
+      {
+        command: '/color-review',
+        what: 'Runs WCAG contrast math on every text and background pair, then checks palette consistency and fit with the industry.',
+      },
+      {
+        command: '/visual-harmony',
+        what: 'Catches visual dissonance: inconsistent border-radius, broken type scales, random shadows and off-grid spacing.',
+      },
+    ],
+  },
+];
+
+const install = [
+  { step: '1', text: 'Download the plugin from the repo and unzip it.' },
+  { step: '2', text: 'Run install.sh on macOS or Linux, install.ps1 on Windows.' },
+  { step: '3', text: 'Restart Claude Code. The skills show up on their own.' },
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Bites', item: SITE.url + '/bites/' },
+  ],
+};
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Page Optimizer',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'macOS, Linux, Windows',
+  description: bites[0].summary,
+  url: SITE.url + '/bites/',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+
+<Layout
+  title="Bites · Small Claude Code Tools"
+  description="Free Claude Code plugins that each do one job well. Page Optimizer audits a landing page and ships the fixed version. Take it and run."
+  ogImage="/og/pages/bites.png"
+  schema={[breadcrumbSchema, softwareSchema]}
+>
+
+  <!-- Header -->
+  <section class="relative overflow-hidden pt-20 pb-16 border-b border-[var(--color-border)]">
+    <PageBackdrop src="/images/office-bg.jpg" position="center 52%" opacity={0.07} eager />
+    <div class="relative mx-auto max-w-6xl px-6">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Bites</p>
+      <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5 max-w-2xl">
+        Small tools you can take and run.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+        Claude Code plugins I built for my own work, then gave away. Each one does a single job well. No SaaS wrapper, no login, no monthly fee.
+      </p>
+    </div>
+  </section>
+
+  <!-- Bites -->
+  {bites.map((bite) => (
+    <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+      <div class="mx-auto max-w-6xl px-6">
+
+        <!-- Bite header -->
+        <div class="grid lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-12 items-start mb-12">
+          <div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              {bite.tags.map((tag) => (
+                <span class="text-xs font-medium px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)]">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-2">{bite.kicker}</p>
+            <h2 class="text-2xl font-semibold text-[var(--color-text)] tracking-tight mb-4">{bite.name}</h2>
+            <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">{bite.summary}</p>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{bite.audience}</p>
+            <div class="mt-6">
+              <a
+                href={bite.repo}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded-[var(--radius-badge)] bg-[var(--color-accent)] px-5 py-2.5 text-sm font-semibold text-[var(--color-bg)] hover:bg-[var(--color-accent-hi)] transition-colors"
+              >
+                Get it on GitHub →
+              </a>
+            </div>
+          </div>
+
+          <!-- Install -->
+          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7">
+            <h3 class="text-sm font-semibold text-[var(--color-text)] mb-5">Install in three steps</h3>
+            <ol class="flex flex-col gap-4">
+              {install.map(({ step, text }) => (
+                <li class="flex gap-3">
+                  <span class="flex-none grid place-items-center w-6 h-6 rounded-full border border-[var(--color-border)] text-xs font-semibold text-[var(--color-accent-hi)] bg-[var(--color-surface-2)]">{step}</span>
+                  <span class="text-sm text-[var(--color-text-muted)] leading-relaxed">{text}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <h3 class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-muted)] mb-5">What is inside</h3>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {bite.skills.map(({ command, what }) => (
+            <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 flex flex-col gap-3">
+              <code class="text-sm font-semibold text-[var(--color-accent-hi)] font-mono">{command}</code>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{what}</p>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  ))}
+
+  <CTABand />
+
+</Layout>
