@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { OG_PAGES, OG_PAGE_SLUGS } from '../data/og-pages';
 
-const EXPECTED_SLUGS = ['about', 'work', 'ai-systems', 'contact', 'insights', 'now', 'resources', 'home'];
+const EXPECTED_SLUGS = ['about', 'work', 'ai-systems', 'bites', 'contact', 'insights', 'now', 'resources', 'home'];
 
 describe('OG_PAGES metadata', () => {
   it('covers exactly the expected set of page slugs', () => {
