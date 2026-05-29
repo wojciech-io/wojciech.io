@@ -61,10 +61,10 @@
   let previousFocus: HTMLElement | null = null;
 
   function ensurePagefindStyles() {
-    if (document.querySelector('link[href="/pagefind/pagefind-ui.css"]')) return;
+    if (document.querySelector('link[href="/search/pagefind-ui.css"]')) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = '/pagefind/pagefind-ui.css';
+    link.href = '/search/pagefind-ui.css';
     document.head.append(link);
   }
 
@@ -98,7 +98,7 @@
       await new Promise<void>((resolve, reject) => {
         if (document.querySelector('script[data-pagefind-ui]')) { resolve(); return; }
         const s = document.createElement('script');
-        s.src = '/pagefind/pagefind-ui.js';
+        s.src = '/search/pagefind-ui.js';
         s.dataset.pagefindUi = '1';
         s.onload = () => resolve();
         s.onerror = () => reject(new Error('pagefind-ui.js failed to load'));
@@ -108,6 +108,7 @@
       if (!PagefindUI) throw new Error('PagefindUI unavailable');
       new PagefindUI({
         element: '#pagefind-ui-root',
+        bundlePath: '/search/',
         showSubResults: true,
         resetStyles: false,
       });
