@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../data/site';
+
+const surfaces = [
+  { name: 'wojciech.io', host: 'wojciech.io', purpose: 'Public site, insights, case studies', probe: '/healthz.json' },
+  { name: 'app.wojciech.io', host: 'app.wojciech.io', purpose: 'Gated app surface', probe: null },
+  { name: 'subscribe.wojciech.io', host: 'subscribe.wojciech.io', purpose: 'Newsletter signup, AI Espresso inbox', probe: null },
+  { name: 'growthhub.wojciech.io', host: 'growthhub.wojciech.io', purpose: 'GrowthHub operator surface', probe: null },
+  { name: 'gh.wojciech.io', host: 'gh.wojciech.io', purpose: 'GrowthHub auth gate', probe: null },
+  { name: 'academy.wojciech.io', host: 'academy.wojciech.io', purpose: 'Akademia AI, Stripe checkout', probe: null },
+  { name: 'notch.wojciech.io', host: 'notch.wojciech.io', purpose: 'Notch experiment surface', probe: null },
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Status', item: SITE.url + '/status/' },
+  ],
+};
+---
+
+<Layout
+  title="Status · wojciech.io"
+  description="Live status of wojciech.io surfaces. Monitored externally; raw health endpoint at /healthz.json."
+  ogImage="/og/pages/now.png"
+  schema={[breadcrumbSchema]}
+>
+  <section class="pt-10 pb-8 md:pt-20 md:pb-12 border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-3xl px-6">
+      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">Status</p>
+      <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
+        Are we up.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-xl">
+        Live state of the surfaces I run. Public probe at <a href="/healthz.json" class="underline decoration-[var(--color-accent)] underline-offset-4">/healthz.json</a> for external monitors.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="mb-10">
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Primary probe</p>
+        <div class="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <span id="primary-dot" class="inline-block w-2.5 h-2.5 rounded-full bg-[var(--color-text-dim)]"></span>
+            <span id="primary-label" class="text-sm font-semibold text-[var(--color-text)]">Checking…</span>
+          </div>
+          <pre id="primary-payload" class="text-xs text-[var(--color-text-muted)] font-mono whitespace-pre-wrap break-all">loading /healthz.json</pre>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">Surfaces</p>
+        <ul class="space-y-3">
+          {surfaces.map((s) => (
+            <li class="border-l-2 border-[var(--color-border-2)] pl-5">
+              <h2 class="text-base font-semibold text-[var(--color-text)] mb-1">{s.name}</h2>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{s.purpose}</p>
+              {s.probe ? (
+                <p class="text-xs text-[var(--color-text-dim)] mt-1">probe: <code>https://{s.host}{s.probe}</code></p>
+              ) : (
+                <p class="text-xs text-[var(--color-text-dim)] mt-1">no public probe</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p class="mt-12 text-xs text-[var(--color-text-dim)]">
+        External uptime monitoring runs against the probes above. Incidents are handled out of band; this page only reflects the live JSON probe.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  (async () => {
+    const dot = document.getElementById('primary-dot');
+    const label = document.getElementById('primary-label');
+    const payload = document.getElementById('primary-payload');
+    try {
+      const res = await fetch('/healthz.json', { cache: 'no-store' });
+      const data = await res.json();
+      const ok = res.ok && data && data.status === 'ok';
+      dot.style.background = ok ? 'rgb(34,197,94)' : 'rgb(239,68,68)';
+      label.textContent = ok ? 'Operational' : 'Degraded';
+      payload.textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      dot.style.background = 'rgb(239,68,68)';
+      label.textContent = 'Probe failed';
+      payload.textContent = String(err);
+    }
+  })();
+</script>
