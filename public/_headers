@@ -32,9 +32,13 @@
 /images/*
   Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400
 
-# Pagefind search index: revalidated on each deploy (not content-addressed by filename)
+# Pagefind search index + worker: short edge cache so dynamically-injected
+# security headers (CSP) cannot get stuck stale across deploys. The worker
+# script carries the CSP that governs WASM compilation — a long s-maxage here
+# previously pinned an outdated CSP (missing 'wasm-unsafe-eval') for 24h, which
+# silently broke search (WASM blocked → 0 results). Keep this short.
 /pagefind/*
-  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=3600
+  Cache-Control: public, max-age=300, must-revalidate
 
 /*
   X-Frame-Options: DENY
