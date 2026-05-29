@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import CTABand from '../components/ui/CTABand.astro';
 import PageBackdrop from '../components/ui/PageBackdrop.astro';
+import BeforeAfter from '@wojciech/mdx-components/components/BeforeAfter.astro';
 import { SITE } from '../data/site';
 
 // Hosted in this public monorepo: zip download served from /public, source browsable on GitHub.
@@ -61,6 +62,50 @@ const bites: Bite[] = [
         what: 'Catches visual dissonance: inconsistent border-radius, broken type scales, random shadows and off-grid spacing.',
       },
     ],
+  },
+];
+
+// Real fixes the plugin ships, taken from optimize-page/references/optimization-patterns.md.
+// Each pair is a transformation the skill actually performs, not a promise.
+const examples = [
+  {
+    label: '/optimize-page',
+    before: {
+      title: 'Before',
+      body: 'The hamburger toggles a menu, but Escape does nothing, focus never moves into it, and the page keeps scrolling underneath.',
+      caption: 'Mobile nav',
+    },
+    after: {
+      title: 'After',
+      body: 'A real drawer. Escape closes it, focus lands on the close button and returns to the trigger, the backdrop click dismisses it, and body scroll locks while it is open.',
+      caption: 'aria-modal, focus return, scroll lock',
+    },
+  },
+  {
+    label: '/optimize-page',
+    before: {
+      title: 'Before',
+      body: 'Hover on the primary button drops to a near-invisible shade, so it reads as disabled right when someone wants to click.',
+      caption: '.btn-accent:hover',
+    },
+    after: {
+      title: 'After',
+      body: 'Hover shifts to a darker tone of the same accent. The button stays legible and obviously clickable.',
+      caption: 'Contrast holds on hover',
+    },
+  },
+  {
+    label: '/optimize-page',
+    before: {
+      title: 'Before',
+      body: 'Submitting the contact form fires a browser alert(). Unstyled, off-brand, and gone the moment the page reloads.',
+      caption: 'alert() on submit',
+    },
+    after: {
+      title: 'After',
+      body: 'An inline success panel confirms the message, sets the reply expectation, and offers a phone fallback. No alert().',
+      caption: 'Inline success state',
+    },
   },
 ];
 
@@ -162,6 +207,17 @@ const softwareSchema = {
               ))}
             </ol>
           </div>
+        </div>
+
+        <!-- Before / after -->
+        <h3 class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-muted)] mb-5">Before and after</h3>
+        <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-2xl mb-2">
+          Three fixes <code class="font-mono text-[var(--color-accent-hi)]">/optimize-page</code> ships on a real page. Same fixes a designer would bill you for.
+        </p>
+        <div class="mb-12">
+          {examples.map((ex) => (
+            <BeforeAfter label={ex.label} before={ex.before} after={ex.after} />
+          ))}
         </div>
 
         <!-- Skills -->
