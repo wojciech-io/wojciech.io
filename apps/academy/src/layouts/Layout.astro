@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
+import NetworkTopBar from '@wojciech/ui/components/NetworkTopBar.astro';
+import LangSwitcher from '@wojciech/ui/components/LangSwitcher.astro';
 import NetworkFooter from '@wojciech/ui/components/NetworkFooter.astro';
 interface Props {
   title?: string;
@@ -136,18 +138,22 @@ const schemaItems = [...baseSchema, ...pageSchema];
   </script>
 </head>
 <body>
+  <NetworkTopBar current="academy" />
   <header class="ac-header">
     <div class="ac-header-inner">
       <a href="/" class="ac-wordmark" aria-label="AI Growth OS">
         academy<span class="ac-wordmark-tag">.</span>
       </a>
       <nav class="ac-nav" aria-label="Primary">
-        <a href="/#program" class="ac-nav-link">Program</a>
-        <a href="/pricing" class="ac-nav-link">Cennik</a>
-        <a href="/cohort" class="ac-nav-link">Cohort</a>
-        <a href="/login" class="ac-nav-link">Panel</a>
+        <a href="/#program" class="ac-nav-link" data-pl="Program" data-en="Programme">Program</a>
+        <a href="/pricing" class="ac-nav-link" data-pl="Cennik" data-en="Pricing">Cennik</a>
+        <a href="/cohort" class="ac-nav-link" data-pl="Cohort" data-en="Cohort">Cohort</a>
+        <a href="/login" class="ac-nav-link" data-pl="Panel" data-en="Panel">Panel</a>
       </nav>
-      <a href="/pricing" class="ac-header-cta">Dołącz</a>
+      <div class="ac-header-actions">
+        <a href="/pricing" class="ac-header-cta" data-pl="Dołącz" data-en="Join">Dołącz</a>
+        <LangSwitcher langs={['pl', 'en']} defaultLang="pl" />
+      </div>
     </div>
   </header>
   <main>
