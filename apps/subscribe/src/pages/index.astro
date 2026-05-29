@@ -21,6 +21,26 @@ const previewItems = [
     link: 'openai.com',
   },
 ];
+
+// Realne wydania AI Espresso (tytuły wprost z wysłanych edycji). Najnowsze u góry.
+const editions = [
+  { date: '27 maja', title: 'Trwały runtime dla agentów.' },
+  { date: '26 maja', title: 'MCP bez sesji.' },
+  { date: '25 maja', title: 'Governance dla agentów.' },
+  { date: '24 maja', title: 'Agenci za firewallem.' },
+  { date: '22 maja', title: 'Agent ops w terminalu.' },
+  { date: '21 maja', title: 'MCP zamiast bety.' },
+  { date: '20 maja', title: 'Zaufanie i koszty w stacku.' },
+  { date: '19 maja', title: 'Kontekst i koszty w ryzach.' },
+  { date: '18 maja', title: 'Agenci przechodzą na platformę.' },
+  { date: '15 maja', title: 'Koszt agenta staje się policzalny.' },
+  { date: '14 maja', title: 'Orkiestracja wchodzi do enterprise.' },
+  { date: '13 maja', title: 'Agenci w Teams. Review na usage.' },
+  { date: '12 maja', title: 'Głos, przeglądarka, agenci.' },
+  { date: '11 maja', title: 'MCP bez wpadek.' },
+  { date: '10 maja', title: 'MCP wchodzi na produkcję.' },
+  { date: '8 maja',  title: "Głos wchodzi do produktu. Agenty do pipeline'u." },
+];
 ---
 
 <Layout>
@@ -185,7 +205,7 @@ const previewItems = [
               <div style="width: 11px; height: 11px; border-radius: 50%; background: #28ca41;"></div>
             </div>
             <div style="flex: 1; background: #d8d4cb; border-radius: 5px; height: 22px; display: flex; align-items: center; padding: 0 10px; min-width: 0;">
-              <span style="font-size: 11px; color: #555; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">AI Espresso · 15 maja 2026 · hello@wojciech.io</span>
+              <span style="font-size: 11px; color: #555; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">AI Espresso · 27 maja 2026 · hello@wojciech.io</span>
             </div>
           </div>
 
@@ -200,7 +220,7 @@ const previewItems = [
                   <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #111; white-space: nowrap;">AI Espresso</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
-                  <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8a86;">15 maja 2026</span>
+                  <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8a86;">27 maja 2026</span>
                   <img src="/wojciech-avatar.webp" width="30" height="30" alt="Wojciech" style="border-radius: 50%; display: block; object-fit: cover; object-position: top; flex-shrink: 0;" />
                 </div>
               </div>
@@ -209,8 +229,8 @@ const previewItems = [
             <!-- Headline card -->
             <div style="max-width: 680px; margin: 0 auto 10px; background: #fff; border-radius: 20px; padding: 24px 28px; text-align: center;">
               <span style="display: inline-block; background: #ebff00; color: #080808; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;">Poranny skrót</span>
-              <h3 style="margin: 0 0 10px; font-size: 22px; line-height: 1.15; font-weight: 700; color: #080808; letter-spacing: -0.01em;">Koszt agenta staje się policzalny.</h3>
-              <p style="margin: 0 auto; max-width: 480px; font-size: 14px; line-height: 1.5; color: #3d3d3d;">Billing, metryki i polityki narzędzi wchodzą do agent stacku. Dobra wiadomość: dopiero wtedy automaty da się skalować w firmie.</p>
+              <h3 style="margin: 0 0 10px; font-size: 22px; line-height: 1.15; font-weight: 700; color: #080808; letter-spacing: -0.01em;">Trwały runtime dla agentów.</h3>
+              <p style="margin: 0 auto; max-width: 480px; font-size: 14px; line-height: 1.5; color: #3d3d3d;">Stan, sesje i wznawianie po awarii wchodzą do agent stacku. Mniej kruchych one-shotów, więcej procesów, które realnie dowożą.</p>
             </div>
 
             <!-- Article cards -->
@@ -240,6 +260,29 @@ const previewItems = [
               data-en="Subscribe →" data-pl="Zapisz się →" data-it="Iscriviti →"
             >Zapisz się →</a>
           </div>
+        </div>
+
+        <!-- Inbox: realne ostatnie wydania -->
+        <div class="editions-inbox" style="margin-top: 1.25rem; border-radius: 14px; border: 1px solid var(--color-border); background: var(--color-surface); overflow: hidden;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-border);">
+            <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-dim);"
+              data-en="Inbox" data-pl="Skrzynka" data-it="Inbox">Skrzynka</span>
+            <span style="font-size: 0.6875rem; color: var(--color-text-dim);">{editions.length} {''}
+              <span data-en="recent issues" data-pl="ostatnich wydań" data-it="numeri recenti">ostatnich wydań</span>
+            </span>
+          </div>
+          <ul style="list-style: none; margin: 0; padding: 0; max-height: 280px; overflow-y: auto;">
+            {editions.map((e, i) => (
+              <li style={`display: flex; align-items: baseline; gap: 0.75rem; padding: 0.625rem 1rem; ${i === 0 ? '' : 'border-top: 1px solid var(--color-border);'}`}>
+                <span style="flex-shrink: 0; width: 3.75rem; font-size: 0.6875rem; font-weight: 600; color: var(--color-text-dim); white-space: nowrap;">{e.date}</span>
+                <span style="font-size: 0.8125rem; line-height: 1.35; color: var(--color-text); font-weight: 500;">{e.title}</span>
+                {i === 0 && (
+                  <span style="flex-shrink: 0; margin-left: auto; align-self: center; font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-text); background: var(--color-accent-cta); border-radius: 999px; padding: 2px 7px;"
+                    data-en="New" data-pl="Nowe" data-it="Nuovo">Nowe</span>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
         </div><!-- end preview-col -->
 
