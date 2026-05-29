@@ -32,9 +32,11 @@
 /images/*
   Cache-Control: public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400
 
-# Pagefind search index: revalidated on each deploy (not content-addressed by filename)
-/pagefind/*
-  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=3600
+# Pagefind search index (served from /search/, relocated from /pagefind/ to escape a
+# stale CF edge-cached worker that pinned an outdated CSP). Short edge TTL so header
+# changes (e.g. CSP) can never get stuck on the stable-named entry files again.
+/search/*
+  Cache-Control: public, max-age=0, s-maxage=300, stale-while-revalidate=600
 
 /*
   X-Frame-Options: DENY
