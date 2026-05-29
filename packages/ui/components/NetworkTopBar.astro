@@ -1,0 +1,98 @@
+---
+/**
+ * NetworkTopBar — thin cross-property navigation bar.
+ * Sits above the main app header on all subdomains.
+ * Scrolls away with the page (not sticky) to keep the header clean.
+ *
+ * CSS falls back through both token naming conventions:
+ *   --color-* (wojciech.io / app) and -- (academy / gh)
+ */
+interface Props {
+  current?: 'academy' | 'app' | 'growthhub' | 'subscribe' | 'notch';
+}
+
+const { current } = Astro.props;
+
+const sites = [
+  { key: 'main',      label: 'wojciech.io',  href: 'https://wojciech.io' },
+  { key: 'academy',   label: 'Academy',      href: 'https://academy.wojciech.io' },
+  { key: 'app',       label: 'App',          href: 'https://app.wojciech.io' },
+  { key: 'growthhub', label: 'GrowthHub',    href: 'https://gh.wojciech.io' },
+  { key: 'subscribe', label: 'Newsletter',   href: 'https://subscribe.wojciech.io' },
+  { key: 'notch',     label: 'NotchCue',     href: 'https://notch.wojciech.io' },
+];
+---
+
+<div class="ntb" role="navigation" aria-label="Wojciech network">
+  <div class="ntb-inner">
+    <span class="ntb-brand">Wojciech Łuszczyński</span>
+    <div class="ntb-nav">
+      {sites.map(({ key, label, href }) => (
+        key === current
+          ? <span class="ntb-link ntb-link--active" aria-current="true">{label}</span>
+          : <a href={href} class="ntb-link">{label}</a>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .ntb {
+    width: 100%;
+    border-bottom: 1px solid var(--color-border, var(--border, rgba(0,0,0,0.07)));
+    background: var(--color-bg, var(--bg, #fff));
+  }
+  .ntb-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .ntb-brand {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-text-dim, var(--text-3, #999));
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .ntb-nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .ntb-nav::-webkit-scrollbar { display: none; }
+  .ntb-link {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-text-dim, var(--text-3, #999));
+    text-decoration: none;
+    padding: 0 8px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.12s;
+    white-space: nowrap;
+    border-right: 1px solid var(--color-border, var(--border, rgba(0,0,0,0.07)));
+    flex-shrink: 0;
+  }
+  .ntb-link:first-child { border-left: 1px solid var(--color-border, var(--border, rgba(0,0,0,0.07))); }
+  .ntb-link:hover { color: var(--color-text, var(--text, #111)); }
+  .ntb-link--active {
+    color: var(--color-text-muted, var(--text-2, #666));
+    font-weight: 600;
+    cursor: default;
+  }
+
+  @media (max-width: 480px) {
+    .ntb-brand { display: none; }
+    .ntb-inner { justify-content: flex-end; }
+    .ntb-link { font-size: 9px; padding: 0 6px; }
+  }
+</style>

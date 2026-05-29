@@ -4,90 +4,59 @@ interface Props {
   dont?: string[];
   doLabel?: string;
   dontLabel?: string;
+  caption?: string;
 }
 
-const { do: doItems = [], dont = [], doLabel = 'Do', dontLabel = "Don't" } = Astro.props;
+const { do: doItems = [], dont = [], doLabel = 'Do', dontLabel = "Don't", caption } = Astro.props;
 ---
 
-<div class="dodont">
-  <div class="dodont-col dodont-do">
-    <div class="dodont-header">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span>{doLabel}</span>
-    </div>
-    <ul>
-      {doItems.map((item) => <li>{item}</li>)}
-      <slot name="do" />
-    </ul>
-  </div>
-  <div class="dodont-col dodont-dont">
-    <div class="dodont-header">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span>{dontLabel}</span>
-    </div>
-    <ul>
-      {dont.map((item) => <li>{item}</li>)}
-      <slot name="dont" />
-    </ul>
-  </div>
-</div>
+<figure class="my-8 not-prose">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-<style>
-  .dodont {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    margin: 2rem 0;
-  }
-  @media (min-width: 640px) {
-    .dodont { grid-template-columns: 1fr 1fr; }
-  }
-  .dodont-col {
-    padding: 1.25rem 1.5rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-surface-2);
-  }
-  .dodont-header {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.875rem;
-  }
-  .dodont-do .dodont-header { color: var(--color-accent); }
-  .dodont-dont .dodont-header { color: var(--color-text-muted); }
-  .dodont-col ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.625rem;
-  }
-  .dodont-col :global(li) {
-    font-size: 0.9375rem;
-    line-height: 1.55;
-    color: var(--color-text);
-    padding-left: 1rem;
-    position: relative;
-  }
-  .dodont-col :global(li)::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.625rem;
-    width: 0.375rem;
-    height: 0.375rem;
-    border-radius: 50%;
-  }
-  .dodont-do :global(li)::before { background: var(--color-accent); }
-  .dodont-dont :global(li)::before { background: var(--color-border-2); }
-</style>
+    <!-- Do -->
+    <div class="rounded-[var(--radius-card)] border border-[color-mix(in_srgb,var(--color-accent)_30%,transparent)] bg-[color-mix(in_srgb,var(--color-accent)_4%,var(--color-surface-2))] overflow-hidden">
+      <div class="flex items-center gap-2 px-4 py-3 border-b border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] bg-[color-mix(in_srgb,var(--color-accent)_6%,var(--color-surface))]">
+        <span class="w-5 h-5 rounded-full flex items-center justify-center bg-[var(--color-accent)] shrink-0">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent-hi)]">{doLabel}</span>
+      </div>
+      <ul class="px-4 py-4 space-y-2.5 list-none m-0 p-4">
+        {doItems.map((item) => (
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[var(--color-text)]">
+            <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0" aria-hidden="true" />
+            {item}
+          </li>
+        ))}
+        <slot name="do" />
+      </ul>
+    </div>
+
+    <!-- Don't -->
+    <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-hidden">
+      <div class="flex items-center gap-2 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface)]">
+        <span class="w-5 h-5 rounded-full flex items-center justify-center bg-[var(--color-surface-2)] border border-[var(--color-border-2)] shrink-0">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[var(--color-text-dim)]"/>
+          </svg>
+        </span>
+        <span class="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text-dim)]">{dontLabel}</span>
+      </div>
+      <ul class="list-none m-0 p-4 space-y-2.5">
+        {dont.map((item) => (
+          <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[var(--color-text-muted)]">
+            <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--color-border-2)] shrink-0" aria-hidden="true" />
+            {item}
+          </li>
+        ))}
+        <slot name="dont" />
+      </ul>
+    </div>
+
+  </div>
+  {caption && (
+    <figcaption class="mt-3 text-center text-xs text-[var(--color-text-dim)]">{caption}</figcaption>
+  )}
+</figure>
