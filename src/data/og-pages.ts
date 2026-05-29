@@ -44,6 +44,11 @@ export const OG_PAGES: Record<string, OGPageMeta> = {
     eyebrow: 'Resources',
     description: 'Starter packs, MCP configs, and operator frameworks for AI-native GTM.',
   },
+  bites: {
+    title: 'Bites · Small Claude Code Tools',
+    eyebrow: 'Bites',
+    description: 'Free Claude Code plugins that each do one job well. Take them and run.',
+  },
   home: {
     title: 'GTM Architect · AI-native Revenue Systems',
     eyebrow: 'wojciech.io',
