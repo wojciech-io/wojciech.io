@@ -1,0 +1,174 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import { SITE } from '../data/site';
+
+// Public roadmap board. Only real, shipped or genuinely in-flight items.
+// No speculative "ideas" placeholders. Columns map to actual delivery state.
+type Status = 'live' | 'building' | 'soon';
+
+interface Item {
+  title: string;
+  body: string;
+  tags: string[];
+  href?: string;
+}
+
+const columns: { key: Status; label: string; note: string; items: Item[] }[] = [
+  {
+    key: 'live',
+    label: 'Live',
+    note: 'Shipped and in production',
+    items: [
+      {
+        title: 'GrowthHub · demo dashboard',
+        body: 'Operator-grade growth dashboard for B2B SaaS: funnel metrics, pipeline snapshots, ICP segments. Public demo, no login.',
+        tags: ['Cloudflare D1', 'Pipedrive', 'Astro'],
+        href: 'https://gh.wojciech.io/demo',
+      },
+      {
+        title: 'Page Optimizer · Claude Code plugin',
+        body: 'First "bite": a plugin that audits and optimizes web pages · visual harmony, responsive checks, LLM-friendly copy. Download and run locally.',
+        tags: ['Claude Code', 'Skills', 'Open'],
+        href: '/bites/',
+      },
+      {
+        title: 'AI Espresso · daily notes',
+        body: 'Short operator notes on AI systems, GTM and automation. New issue every weekday morning, free.',
+        tags: ['Newsletter', 'Resend'],
+        href: 'https://subscribe.wojciech.io',
+      },
+      {
+        title: 'Unified network: nav + footer',
+        body: 'One shared top bar and footer across wojciech.io, academy, GrowthHub and the app · consistent cross-subdomain navigation.',
+        tags: ['Design system', 'Monorepo'],
+      },
+      {
+        title: 'Language versions',
+        body: 'The site reads in EN, PL, IT, DE, DK, NO, JP and ES, with browser-language auto-detect on first visit.',
+        tags: ['i18n', 'DeepL'],
+      },
+      {
+        title: 'Search + Insights',
+        body: 'Full-text search across the site and a growing library of long-form operator essays built on a shared MDX component set.',
+        tags: ['Pagefind', 'MDX'],
+        href: '/insights/',
+      },
+    ],
+  },
+  {
+    key: 'building',
+    label: 'Building',
+    note: 'In flight right now',
+    items: [
+      {
+        title: 'GrowthHub · live Pipedrive sync',
+        body: 'Nightly cron that pulls real pipeline data into the dashboard, replacing the synthetic dataset with live numbers.',
+        tags: ['Cron Worker', 'Pipedrive API'],
+      },
+      {
+        title: 'AI Growth OS · Academy',
+        body: 'A practical AI program for GTM teams: outbound, content and revenue ops as a repeatable system. Sign-ups opening soon.',
+        tags: ['Course', 'Cohort'],
+        href: 'https://academy.wojciech.io',
+      },
+    ],
+  },
+];
+
+const statusDot: Record<Status, string> = {
+  live: 'var(--color-accent-cta)',
+  building: 'var(--color-accent)',
+  soon: 'var(--color-text-dim)',
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Roadmap', item: SITE.url + '/roadmap/' },
+  ],
+};
+const roadmapSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Roadmap · What I\'m shipping',
+  url: SITE.url + '/roadmap/',
+  description: 'Public roadmap for wojciech.io and its products: what is live, what is being built, and what is coming next.',
+  dateModified: '2026-05-29',
+  author: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: SITE.url + '/' },
+};
+---
+
+<Layout
+  title="Roadmap · What I'm shipping"
+  description="Public roadmap for wojciech.io and its products: what is live, what is being built, and what is coming next."
+  schema={[breadcrumbSchema, roadmapSchema]}
+>
+  <section class="border-b border-[var(--color-border)] bg-[var(--color-bg)]">
+    <div class="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+      <SectionHeader
+        eyebrow="Roadmap"
+        heading="What I'm shipping."
+        lead="A live look at the products and tools across this network · what's in production, what's being built, and what's next. No vapor: only things that exist or are actively in flight."
+      />
+    </div>
+  </section>
+
+  <section class="bg-[var(--color-bg)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid gap-8 lg:grid-cols-2">
+        {columns.map((col) => (
+          <div class="reveal-up">
+            <div class="mb-5 flex items-center gap-2.5">
+              <span
+                class="inline-block h-2.5 w-2.5 rounded-full"
+                style={`background:${statusDot[col.key]}`}
+                aria-hidden="true"
+              ></span>
+              <h2 class="text-base font-semibold text-[var(--color-text)]">{col.label}</h2>
+              <span class="text-xs text-[var(--color-text-dim)]">· {col.note}</span>
+              <span class="ml-auto text-xs font-semibold text-[var(--color-text-dim)]">{col.items.length}</span>
+            </div>
+
+            <div class="flex flex-col gap-4">
+              {col.items.map((item) => {
+                const Tag = item.href ? 'a' : 'div';
+                const external = item.href?.startsWith('http');
+                return (
+                  <Tag
+                    href={item.href}
+                    target={external ? '_blank' : undefined}
+                    rel={external ? 'noopener noreferrer' : undefined}
+                    class:list={[
+                      'group block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 transition-colors',
+                      item.href ? 'hover:border-[var(--color-border-2)]' : '',
+                    ]}
+                  >
+                    <div class="mb-2 flex items-start justify-between gap-3">
+                      <h3 class="text-sm font-semibold text-[var(--color-text)] leading-snug">{item.title}</h3>
+                      {item.href && (
+                        <svg class="mt-0.5 shrink-0 text-[var(--color-text-dim)] transition-colors group-hover:text-[var(--color-accent)]" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      )}
+                    </div>
+                    <p class="mb-3 text-[13px] leading-relaxed text-[var(--color-text-muted)]">{item.body}</p>
+                    <div class="flex flex-wrap gap-1.5">
+                      {item.tags.map((t) => (
+                        <span class="rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-2 py-0.5 text-[11px] text-[var(--color-text-muted)]">{t}</span>
+                      ))}
+                    </div>
+                  </Tag>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p class="reveal-up mt-12 text-center text-sm text-[var(--color-text-muted)]">
+        Want to follow along? <a href="https://subscribe.wojciech.io" class="font-medium text-[var(--color-accent-hi)] underline underline-offset-2 hover:text-[var(--color-text)]">AI Espresso</a> covers what I build, most weekday mornings.
+      </p>
+    </div>
+  </section>
+</Layout>
