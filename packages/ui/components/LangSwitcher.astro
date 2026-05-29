@@ -1,0 +1,111 @@
+---
+/**
+ * LangSwitcher — reusable language toggle for subdomains.
+ *
+ * On mount it reads localStorage (storageKey) → browser language → defaultLang.
+ * On click it stores the selection and updates every element that has
+ * data-{lang} attributes on the page (same pattern as app.wojciech.io).
+ *
+ * CSS falls back through both token conventions:
+ *   --color-* (wojciech.io / app)  and  plain -- (academy / gh)
+ */
+interface Props {
+  langs: string[];          // e.g. ['pl', 'en', 'it']
+  storageKey?: string;      // localStorage key, default 'appLang'
+  defaultLang?: string;     // fallback when nothing stored + browser miss
+}
+
+const { langs, storageKey = 'appLang', defaultLang = 'en' } = Astro.props;
+---
+
+<div
+  class="ls"
+  data-langs={langs.join(',')}
+  data-storage-key={storageKey}
+  data-default={defaultLang}
+  role="group"
+  aria-label="Language"
+>
+  {langs.map((l) => (
+    <button class="ls-btn" data-lang={l} type="button" aria-pressed="false">
+      {l.toUpperCase()}
+    </button>
+  ))}
+</div>
+
+<style>
+  .ls {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .ls-btn {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 3px 7px;
+    border: 1px solid var(--color-border, var(--border, rgba(0,0,0,0.12)));
+    background: transparent;
+    color: var(--color-text-dim, var(--text-3, #999));
+    cursor: pointer;
+    transition: color 0.12s, background 0.12s;
+    line-height: 1.4;
+    border-radius: 0;
+  }
+  .ls-btn:first-child { border-radius: 4px 0 0 4px; }
+  .ls-btn:last-child  { border-radius: 0 4px 4px 0; }
+  .ls-btn + .ls-btn   { border-left: none; }
+  .ls-btn:hover {
+    color: var(--color-text, var(--text, #111));
+  }
+  .ls-btn.active {
+    color: var(--color-accent, var(--accent, var(--orange, #1a6ef8)));
+    border-color: currentColor;
+  }
+</style>
+
+<script>
+  function initLangSwitcher(switcher: HTMLElement) {
+    const langs = (switcher.dataset.langs ?? 'en').split(',');
+    const storageKey = switcher.dataset.storageKey ?? 'appLang';
+    const defaultLang = switcher.dataset.default ?? 'en';
+    const selector = langs.map((k) => `[data-${k}]`).join(',');
+
+    function applyLang(l?: string | null) {
+      if (l) {
+        try { localStorage.setItem(storageKey, l); } catch (_) { /* */ }
+      } else {
+        try { l = localStorage.getItem(storageKey); } catch (_) { /* */ }
+        if (!l) {
+          const bl = (navigator.language ?? 'en').toLowerCase();
+          l = langs.find((k) => bl.startsWith(k)) ?? defaultLang;
+        }
+      }
+      // Update translatable elements
+      document.querySelectorAll<HTMLElement>(selector).forEach((el) => {
+        const v = el.getAttribute(`data-${l}`) ?? el.getAttribute(`data-${defaultLang}`);
+        if (v !== null) el.textContent = v;
+      });
+      // Sync button states
+      switcher.querySelectorAll<HTMLButtonElement>('.ls-btn').forEach((btn) => {
+        const active = btn.dataset.lang === l;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      // Expose globally for any legacy onclick="applyLang('xx')" attrs
+      (window as Window & { applyLang?: (l: string) => void }).applyLang = (lang: string) => applyLang(lang);
+    }
+
+    switcher.querySelectorAll<HTMLButtonElement>('.ls-btn').forEach((btn) => {
+      btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+    });
+
+    applyLang(null);
+  }
+
+  // Init all switchers (dedup guard so safe to call multiple times)
+  if (!document.documentElement.dataset.langSwitcherReady) {
+    document.documentElement.dataset.langSwitcherReady = 'true';
+    document.querySelectorAll<HTMLElement>('.ls[data-langs]').forEach(initLangSwitcher);
+  }
+</script>
