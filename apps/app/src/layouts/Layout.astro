@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Footer from '../components/Footer.astro';
 import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
 import NetworkTopBar from '@wojciech/ui/components/NetworkTopBar.astro';
+import LangSwitcher from '@wojciech/ui/components/LangSwitcher.astro';
 interface Props {
   title?: string;
   activePage?: string;
@@ -62,11 +63,7 @@ const { title = 'app.wojciech.io', activePage = 'apps' } = Astro.props;
         <a href="/contact" class={`nav-link${activePage === 'contact' ? ' active' : ''}`} data-en="Contact" data-pl="Kontakt" data-it="Contatti">Contact</a>
       </nav>
       <div class="app-header-right">
-        <div class="nav-lang">
-          <button class="nav-lang-btn" onclick="applyLang('pl')">PL</button>
-          <button class="nav-lang-btn active" onclick="applyLang('en')">EN</button>
-          <button class="nav-lang-btn" onclick="applyLang('it')">IT</button>
-        </div>
+        <LangSwitcher langs={['pl', 'en', 'it']} />
         <button class="nav-theme-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
           <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         </button>
@@ -190,30 +187,9 @@ function initAppTheme() {
   setTheme(t);
 }
 
-// ── Language ───────────────────────────────────
-function applyLang(l) {
-  if (l) {
-    try { localStorage.setItem('appLang', l); } catch(e) {}
-  } else {
-    try { l = localStorage.getItem('appLang'); } catch(e) {}
-    if (!l) {
-      var bl = (navigator.language || 'en').toLowerCase();
-      l = bl.startsWith('pl') ? 'pl' : bl.startsWith('it') ? 'it' : 'en';
-    }
-  }
-  document.querySelectorAll('[data-en],[data-pl],[data-it]').forEach(function(el) {
-    var v = el.getAttribute('data-' + l) || el.getAttribute('data-en');
-    if (v !== null) el.textContent = v;
-  });
-  document.querySelectorAll('.nav-lang-btn').forEach(function(b) {
-    b.classList.toggle('active', b.textContent === l.toUpperCase());
-  });
-}
-
 // ── Init ───────────────────────────────────────
 (function() {
   initAppTheme();
-  applyLang();
 })();
 </script>
 <OutboundTelemetry />

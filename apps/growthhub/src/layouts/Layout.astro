@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
 import NetworkTopBar from '@wojciech/ui/components/NetworkTopBar.astro';
+import LangSwitcher from '@wojciech/ui/components/LangSwitcher.astro';
 interface Props {
   title?: string;
   activePage?: string;
@@ -91,20 +92,21 @@ const ogImage = `${SITE}/og-default.png`;
         GrowthHub<span class="gh-wordmark-tag">.</span>
       </a>
       <nav class="gh-nav" aria-label="Primary">
-        <a href={isDemo ? '/demo' : '/'} class={`gh-nav-link${activePage === 'review' ? ' active' : ''}`}>Weekly review</a>
-        <a href={isDemo ? '/demo/demand' : '/demand'} class={`gh-nav-link${activePage === 'demand' ? ' active' : ''}`}>Demand-gen</a>
-        <a href={isDemo ? '/demo/leads' : '/leads'} class={`gh-nav-link${activePage === 'leads' ? ' active' : ''}`}>Leads</a>
-        <a href={isDemo ? '/demo/revenue' : '/revenue'} class={`gh-nav-link${activePage === 'revenue' ? ' active' : ''}`}>Revenue</a>
+        <a href={isDemo ? '/demo' : '/'} class={`gh-nav-link${activePage === 'review' ? ' active' : ''}`} data-en="Weekly review" data-pl="Przegląd tygodnia">Weekly review</a>
+        <a href={isDemo ? '/demo/demand' : '/demand'} class={`gh-nav-link${activePage === 'demand' ? ' active' : ''}`} data-en="Demand-gen" data-pl="Generowanie popytu">Demand-gen</a>
+        <a href={isDemo ? '/demo/leads' : '/leads'} class={`gh-nav-link${activePage === 'leads' ? ' active' : ''}`} data-en="Leads" data-pl="Leady">Leads</a>
+        <a href={isDemo ? '/demo/revenue' : '/revenue'} class={`gh-nav-link${activePage === 'revenue' ? ' active' : ''}`} data-en="Revenue" data-pl="Przychody">Revenue</a>
       </nav>
       <div class="gh-header-right">
         {isDemo ? (
-          <span>Demo mode</span>
+          <span data-en="Demo mode" data-pl="Tryb demo">Demo mode</span>
         ) : (
           <>
-            <span>Single user</span>
-            <a href="/api/auth?logout=1" style="color:var(--text-3)">Sign out</a>
+            <span data-en="Single user" data-pl="Użytkownik">Single user</span>
+            <a href="/api/auth?logout=1" style="color:var(--text-3)" data-en="Sign out" data-pl="Wyloguj">Sign out</a>
           </>
         )}
+        <LangSwitcher langs={['en', 'pl']} storageKey="ghLang" defaultLang="en" />
       </div>
     </div>
   </header>
