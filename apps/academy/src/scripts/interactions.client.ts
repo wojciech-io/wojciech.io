@@ -72,13 +72,13 @@
         detail = `${seats} × indywidualne 1 900 zł`;
       } else if (seats <= 10) {
         total = 9900;
-        detail = `Team license — 10 seatów (płacisz tyle samo od 6 do 10)`;
+        detail = `Team license: 10 seatów (płacisz tyle samo od 6 do 10)`;
       } else if (seats <= 20) {
         total = 14900;
-        detail = `Team license PLUS — do 20 seatów`;
+        detail = `Team license PLUS: do 20 seatów`;
       } else {
         total = -1; // enterprise
-        detail = `Enterprise — porozmawiajmy o custom curriculum`;
+        detail = `Enterprise: porozmawiajmy o custom curriculum`;
       }
       if (seatLabel) seatLabel.textContent = String(seats);
       if (out) {

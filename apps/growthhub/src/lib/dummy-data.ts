@@ -62,10 +62,10 @@ export const acquisitionLast14: AcquisitionDay[] = [
 export const sourceBreakdown: SourceBreakdown[] = [
   { source: 'Organic search', sessions: 7842, share: 0.41 },
   { source: 'Direct',         sessions: 3621, share: 0.19 },
-  { source: 'Paid — Google',  sessions: 2980, share: 0.16 },
-  { source: 'Paid — LinkedIn', sessions: 1854, share: 0.10 },
+  { source: 'Paid · Google',  sessions: 2980, share: 0.16 },
+  { source: 'Paid · LinkedIn', sessions: 1854, share: 0.10 },
   { source: 'Referral',       sessions: 1432, share: 0.07 },
-  { source: 'Paid — Meta',    sessions: 970,  share: 0.05 },
+  { source: 'Paid · Meta',    sessions: 970,  share: 0.05 },
   { source: 'Email',          sessions: 414,  share: 0.02 },
 ];
 
