@@ -4,7 +4,17 @@ import CTABand from '../components/ui/CTABand.astro';
 import PageBackdrop from '../components/ui/PageBackdrop.astro';
 import { SITE } from '../data/site';
 
-const resources = [
+interface Resource {
+  title: string;
+  description: string;
+  tags: string[];
+  href: string;
+  label: string;
+  external: boolean;
+  download?: boolean;
+}
+
+const resources: Resource[] = [
   {
     title: 'Claude Code GTM Agent Starter Pack',
     description: 'CLAUDE.md template, Skills definitions, folder structure, and scoring MCP source for building an AI-powered outbound GTM agent. Built for operators who want the system, not the SaaS wrapper.',
@@ -15,11 +25,12 @@ const resources = [
   },
   {
     title: 'Page Optimizer: a Claude Code plugin',
-    description: 'Six skills that audit a landing page and ship the fixed version: copy, accessibility, WCAG contrast, responsive checks, and AI answer-engine optimisation. Free, no SaaS wrapper.',
+    description: 'Six skills that audit a landing page and ship the fixed version: copy, accessibility, WCAG contrast, responsive checks, and AI answer-engine optimisation. Free, no SaaS wrapper. Full write-up on the Bites page.',
     tags: ['Claude Code', 'Landing page', 'a11y', 'SEO'],
-    href: '/bites/',
-    label: 'See the bite',
+    href: '/bites/page-optimizer.zip',
+    label: 'Download the plugin',
     external: false,
+    download: true,
   },
   {
     title: 'How to build a Claude Code GTM agent',
@@ -103,10 +114,11 @@ const itemListSchema = {
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {resources.map(({ title, description, tags, href, label, external }) => (
+        {resources.map(({ title, description, tags, href, label, external, download }) => (
           <a
             href={href}
             {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            {...(download ? { download: true } : {})}
             class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col gap-4 hover:border-[var(--color-accent)]/40 hover:shadow-[var(--shadow-card-hover)] transition-all"
           >
             <div class="flex flex-wrap gap-2">

@@ -4,8 +4,9 @@ import CTABand from '../components/ui/CTABand.astro';
 import PageBackdrop from '../components/ui/PageBackdrop.astro';
 import { SITE } from '../data/site';
 
-// Repo URL is provisional until the plugin repo is published.
-const PAGE_OPTIMIZER_REPO = 'https://github.com/wojciechluszczynski/page-optimizer';
+// Hosted in this public monorepo: zip download served from /public, source browsable on GitHub.
+const PAGE_OPTIMIZER_DOWNLOAD = '/bites/page-optimizer.zip';
+const PAGE_OPTIMIZER_REPO = 'https://github.com/wojciech-io/wojciech.io/tree/main/bites/page-optimizer';
 
 interface Skill {
   command: string;
@@ -19,6 +20,7 @@ interface Bite {
   audience: string;
   tags: string[];
   repo: string;
+  download: string;
   skills: Skill[];
 }
 
@@ -32,6 +34,7 @@ const bites: Bite[] = [
       'For anyone shipping landing pages with Claude Code: solo founders, operators, indie builders. You write the HTML, it runs the audit and the fixes a designer would bill you for.',
     tags: ['Claude Code', 'Landing page', 'a11y', 'SEO', 'Audit'],
     repo: PAGE_OPTIMIZER_REPO,
+    download: PAGE_OPTIMIZER_DOWNLOAD,
     skills: [
       {
         command: '/audit-page',
@@ -62,7 +65,7 @@ const bites: Bite[] = [
 ];
 
 const install = [
-  { step: '1', text: 'Download the plugin from the repo and unzip it.' },
+  { step: '1', text: 'Download page-optimizer.zip below and unzip it.' },
   { step: '2', text: 'Run install.sh on macOS or Linux, install.ps1 on Windows.' },
   { step: '3', text: 'Restart Claude Code. The skills show up on their own.' },
 ];
@@ -128,14 +131,21 @@ const softwareSchema = {
             <h2 class="text-2xl font-semibold text-[var(--color-text)] tracking-tight mb-4">{bite.name}</h2>
             <p class="text-base text-[var(--color-text-muted)] leading-relaxed mb-4">{bite.summary}</p>
             <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{bite.audience}</p>
-            <div class="mt-6">
+            <div class="mt-6 flex flex-wrap items-center gap-3">
+              <a
+                href={bite.download}
+                download
+                class="inline-flex items-center gap-2 rounded-[var(--radius-badge)] bg-[var(--color-accent)] px-5 py-2.5 text-sm font-semibold text-[var(--color-bg)] hover:bg-[var(--color-accent-hi)] transition-colors"
+              >
+                Download the plugin ↓
+              </a>
               <a
                 href={bite.repo}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 rounded-[var(--radius-badge)] bg-[var(--color-accent)] px-5 py-2.5 text-sm font-semibold text-[var(--color-bg)] hover:bg-[var(--color-accent-hi)] transition-colors"
+                class="inline-flex items-center gap-2 rounded-[var(--radius-badge)] border border-[var(--color-border)] px-5 py-2.5 text-sm font-semibold text-[var(--color-text)] hover:border-[var(--color-accent)] transition-colors"
               >
-                Get it on GitHub →
+                View source →
               </a>
             </div>
           </div>
