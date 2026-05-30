@@ -70,6 +70,13 @@ const breadcrumbSchema = {
         </ul>
       </div>
 
+      <div class="mt-12">
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">Recent activity</p>
+        <ul id="recent-activity" class="space-y-2 text-sm">
+          <li class="text-[var(--color-text-dim)]">Loading recent ships…</li>
+        </ul>
+      </div>
+
       <p class="mt-12 text-xs text-[var(--color-text-dim)]">
         External uptime monitoring runs against the probes above. Incidents are handled out of band; this page only reflects the live JSON probe.
       </p>
@@ -93,6 +100,50 @@ const breadcrumbSchema = {
       dot.style.background = 'rgb(239,68,68)';
       label.textContent = 'Probe failed';
       payload.textContent = String(err);
+    }
+  })();
+
+  (async () => {
+    const list = document.getElementById('recent-activity');
+    const renderMessage = (msg) => {
+      list.replaceChildren();
+      const li = document.createElement('li');
+      li.className = 'text-[var(--color-text-dim)]';
+      li.textContent = msg;
+      list.appendChild(li);
+    };
+    try {
+      const res = await fetch('/api/changelog.json', { cache: 'no-store' });
+      const data = await res.json();
+      const entries = (data.entries || []).slice(0, 5);
+      if (entries.length === 0) {
+        renderMessage('No recent ships available yet.');
+        return;
+      }
+      list.replaceChildren();
+      for (const e of entries) {
+        const li = document.createElement('li');
+        li.className = 'text-[var(--color-text-muted)]';
+        if (e.date) {
+          const dateSpan = document.createElement('span');
+          dateSpan.className = 'text-xs text-[var(--color-text-dim)] mr-2 font-mono';
+          dateSpan.textContent = new Date(e.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          li.appendChild(dateSpan);
+        }
+        li.appendChild(document.createTextNode(e.title || ''));
+        const prNum = Number(e.pr);
+        if (Number.isInteger(prNum) && prNum > 0) {
+          li.appendChild(document.createTextNode(' '));
+          const link = document.createElement('a');
+          link.href = `https://github.com/wojciech-io/wojciech.io/pull/${prNum}`;
+          link.className = 'text-[var(--color-text-dim)] hover:text-[var(--color-accent)]';
+          link.textContent = `#${prNum}`;
+          li.appendChild(link);
+        }
+        list.appendChild(li);
+      }
+    } catch (err) {
+      renderMessage('Activity feed unavailable.');
     }
   })();
 </script>
