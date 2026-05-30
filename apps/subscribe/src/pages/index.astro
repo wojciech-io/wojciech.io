@@ -22,24 +22,25 @@ const previewItems = [
   },
 ];
 
-// Realne wydania AI Espresso (tytuły wprost z wysłanych edycji). Najnowsze u góry.
+// Realne wydania AI Espresso (tytuł + lead wprost z wysłanych edycji).
+// Lead = pierwszy substancjonalny akapit wydania. Najnowsze u góry.
 const editions = [
-  { date: '27 maja', title: 'Trwały runtime dla agentów.' },
-  { date: '26 maja', title: 'MCP bez sesji.' },
-  { date: '25 maja', title: 'Governance dla agentów.' },
-  { date: '24 maja', title: 'Agenci za firewallem.' },
-  { date: '22 maja', title: 'Agent ops w terminalu.' },
-  { date: '21 maja', title: 'MCP zamiast bety.' },
-  { date: '20 maja', title: 'Zaufanie i koszty w stacku.' },
-  { date: '19 maja', title: 'Kontekst i koszty w ryzach.' },
-  { date: '18 maja', title: 'Agenci przechodzą na platformę.' },
-  { date: '15 maja', title: 'Koszt agenta staje się policzalny.' },
-  { date: '14 maja', title: 'Orkiestracja wchodzi do enterprise.' },
-  { date: '13 maja', title: 'Agenci w Teams. Review na usage.' },
-  { date: '12 maja', title: 'Głos, przeglądarka, agenci.' },
-  { date: '11 maja', title: 'MCP bez wpadek.' },
-  { date: '10 maja', title: 'MCP wchodzi na produkcję.' },
-  { date: '8 maja',  title: "Głos wchodzi do produktu. Agenty do pipeline'u." },
+  { date: '27 maja', title: 'Trwały runtime dla agentów.',                       lead: 'W 2026 wygrywa nie tylko model, ale infrastruktura wykonania. Dziś widać trzy klocki: trwały stan, powtarzalne procedury i twarde dopuszczanie integracji.' },
+  { date: '26 maja', title: 'MCP bez sesji.',                                    lead: 'Agent stack idzie w stronę zwykłej infrastruktury: skalowanie jak HTTP, audyt jak w SaaS i rozliczanie za wynik, a nie za obietnicę.' },
+  { date: '25 maja', title: 'Governance dla agentów.',                           lead: 'Agenci w firmie zaczynają być traktowani jak normalna aplikacja w stacku. Liczą się uprawnienia, audyt, zgodność i szybkie poprawki po review.' },
+  { date: '24 maja', title: 'Agenci za firewallem.',                             lead: 'Dwa sygnały na dziś: MCP wchodzi do kolejnych produktów, i rośnie presja na bezpieczne uwierzytelnianie zdalnych serwerów.' },
+  { date: '22 maja', title: 'Agent ops w terminalu.',                            lead: 'Widoczny trend: modele stają się wymienne, a przewaga idzie w stronę obserwowalności, kontroli kosztów i stabilnych interfejsów narzędzi.' },
+  { date: '21 maja', title: 'MCP zamiast bety.',                                 lead: 'Tydzień, w którym widać szybki pivot: mniej jednorazowych „AI akcji", więcej standardu MCP, kontroli uprawnień i uruchamiania agentów na zdalnej infrastrukturze.' },
+  { date: '20 maja', title: 'Zaufanie i koszty w stacku.',                       lead: 'Widać dwa trendy: provenance dla mediów i coraz twardsze podejście do jakości integracji, modeli i kosztów w produkcji.' },
+  { date: '19 maja', title: 'Kontekst i koszty w ryzach.',                       lead: 'Nowości idą w dwóch kierunkach: mniej przełączania kontekstu i mniej niespodzianek w kosztach oraz dostępach.' },
+  { date: '18 maja', title: 'Agenci przechodzą na platformę.',                   lead: 'Widać kolejną falę produkcyjnych klocków: desktop do pracy w sesjach, API do odpalania agentów oraz governance i routing po stronie infra.' },
+  { date: '15 maja', title: 'Koszt agenta staje się policzalny.',                lead: 'Widać mocny trend: billing, metryki i polityki narzędzi wchodzą do agent stacku. To dobra wiadomość, bo dopiero wtedy automaty da się skalować w firmie.' },
+  { date: '14 maja', title: 'Orkiestracja wchodzi do enterprise.',               lead: 'Dziś najmocniejszy sygnał to nie kolejny model, tylko to, kto daje wykonanie, kontrolę i integracje pod duże systemy.' },
+  { date: '13 maja', title: 'Agenci w Teams. Review na usage.',                  lead: 'Dziś liczy się to, czy agent wchodzi w narzędzia zespołu i czy da się policzyć koszt per wykonana akcja.' },
+  { date: '12 maja', title: 'Głos, przeglądarka, agenci.',                       lead: 'Dzisiejszy update od OpenAI dobrze pokazuje kierunek: modele są ważne, ale przewaga zaczyna siedzieć w runtime, sandboxach, przeglądarce, danych i gotowych workflow.' },
+  { date: '11 maja', title: 'MCP bez wpadek.',                                   lead: 'Dziś wchodzi praktyczny temat: jak podkręcić agent stack i jednocześnie nie otworzyć sobie drzwi do wycieków i RCE. Są już twarde sygnały: GA dla secret scanning przez MCP, plus konkretne checklisty.' },
+  { date: '10 maja', title: 'MCP wchodzi na produkcję.',                         lead: 'Dwa sygnały na dziś: limity dla narzędzi kodujących rosną, a integracje MCP przesuwają się w stronę governance, audytu i dystrybucji skills.' },
+  { date: '8 maja',  title: "Głos wchodzi do produktu. Agenty do pipeline'u.",   lead: 'W tym wydaniu: nowe realtime modele głosowe w API, świeższa „Instant" jako domyślny runtime w czacie, twardsze testy przed wdrożeniem (CAISI/NIST) oraz dwa ruchy w stronę „AI jako SDLC/workflow engine".' },
 ];
 ---
 
@@ -271,18 +272,29 @@ const editions = [
               <span data-en="recent issues" data-pl="ostatnich wydań" data-it="numeri recenti">ostatnich wydań</span>
             </span>
           </div>
-          <ul style="list-style: none; margin: 0; padding: 0; max-height: 280px; overflow-y: auto;">
+          <div style="max-height: 420px; overflow-y: auto;">
             {editions.map((e, i) => (
-              <li style={`display: flex; align-items: baseline; gap: 0.75rem; padding: 0.625rem 1rem; ${i === 0 ? '' : 'border-top: 1px solid var(--color-border);'}`}>
-                <span style="flex-shrink: 0; width: 3.75rem; font-size: 0.6875rem; font-weight: 600; color: var(--color-text-dim); white-space: nowrap;">{e.date}</span>
-                <span style="font-size: 0.8125rem; line-height: 1.35; color: var(--color-text); font-weight: 500;">{e.title}</span>
-                {i === 0 && (
-                  <span style="flex-shrink: 0; margin-left: auto; align-self: center; font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-text); background: var(--color-accent-cta); border-radius: 999px; padding: 2px 7px;"
-                    data-en="New" data-pl="Nowe" data-it="Nuovo">Nowe</span>
-                )}
-              </li>
+              <details open={i === 0} class="edition-item" style={`border-top: ${i === 0 ? 'none' : '1px solid var(--color-border)'};`}>
+                <summary style="display: flex; align-items: baseline; gap: 0.75rem; padding: 0.625rem 1rem; cursor: pointer; list-style: none;">
+                  <span style="flex-shrink: 0; width: 3.75rem; font-size: 0.6875rem; font-weight: 600; color: var(--color-text-dim); white-space: nowrap;">{e.date}</span>
+                  <span style="font-size: 0.8125rem; line-height: 1.35; color: var(--color-text); font-weight: 500;">{e.title}</span>
+                  {i === 0 && (
+                    <span style="flex-shrink: 0; margin-left: auto; align-self: center; font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-text); background: var(--color-accent-cta); border-radius: 999px; padding: 2px 7px;"
+                      data-en="New" data-pl="Nowe" data-it="Nuovo">Nowe</span>
+                  )}
+                  <span class="edition-chevron" aria-hidden="true" style="flex-shrink: 0; color: var(--color-text-dim); font-size: 0.75rem; transition: transform 0.18s ease; margin-left: 0.5rem;">▾</span>
+                </summary>
+                <div style="padding: 0 1rem 0.875rem calc(1rem + 3.75rem + 0.75rem); font-size: 0.75rem; line-height: 1.55; color: var(--color-text-muted);">
+                  {e.lead}
+                </div>
+              </details>
             ))}
-          </ul>
+          </div>
+          <style>
+            details.edition-item > summary::-webkit-details-marker { display: none; }
+            details.edition-item[open] .edition-chevron { transform: rotate(180deg); }
+            details.edition-item > summary:hover { background: var(--color-surface-2); }
+          </style>
         </div>
         </div><!-- end preview-col -->
 
