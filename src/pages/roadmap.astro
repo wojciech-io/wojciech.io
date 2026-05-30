@@ -82,6 +82,28 @@ const statusDot: Record<Status, string> = {
   soon: 'var(--color-text-dim)',
 };
 
+// Shipped recently — curated from real merged PRs (last ~7 days). Update on
+// substantive ships, not every commit. Tag = short area, blurb = what changed
+// for the visitor, not the diff. Date is the merge date.
+interface ShipEntry { date: string; tag: string; title: string; href?: string }
+const shipped: ShipEntry[] = [
+  { date: '29 May', tag: 'SEO',     title: 'Trimmed meta titles + descriptions across IT, ES and English home, /about, /ai-systems to fit SERP limits.' },
+  { date: '29 May', tag: 'Roadmap', title: 'Launched this public roadmap board.', href: '/roadmap/' },
+  { date: '29 May', tag: 'Bites',   title: 'Real before/after examples on the Page Optimizer page.', href: '/bites/' },
+  { date: '29 May', tag: 'Subscribe', title: 'Real AI Espresso inbox + latest issue on the signup page.', href: 'https://subscribe.wojciech.io' },
+  { date: '29 May', tag: 'Bites',   title: 'Page Optimizer plugin now hosted in the monorepo with a direct download.', href: '/bites/' },
+  { date: '29 May', tag: 'Bites',   title: 'Launched /bites/ with the Page Optimizer plugin.', href: '/bites/' },
+  { date: '29 May', tag: 'Search',  title: 'Relocated Pagefind bundle to /search/ so CSP fixes never get stuck stale at the edge.' },
+  { date: '29 May', tag: 'Copy',    title: 'Em-dash sweep across all subdomains for a tighter, more direct voice.' },
+  { date: '29 May', tag: 'Cleanup', title: 'Removed orphaned Vercel-era Cal embed widget; live booking stays on cal.com.' },
+  { date: '29 May', tag: 'MDX',     title: 'Consolidated insights components into @wojciech/mdx-components for reuse across sites.' },
+  { date: '29 May', tag: 'UI',      title: 'Cross-subdomain NetworkTopBar on academy, app and GrowthHub.' },
+  { date: '29 May', tag: 'UI',      title: 'Unified NetworkFooter across all subdomains.' },
+  { date: '29 May', tag: 'GrowthHub', title: 'Announced public GrowthHub demo on the AI Systems page.', href: 'https://gh.wojciech.io/demo' },
+  { date: '28 May', tag: 'Academy', title: 'Coming-soon state for all purchase surfaces while the offer is finalized.', href: 'https://academy.wojciech.io' },
+  { date: '28 May', tag: 'Type',    title: 'Fluid typography across all page headings (LUS-9).' },
+];
+
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -167,7 +189,44 @@ const roadmapSchema = {
         ))}
       </div>
 
-      <p class="reveal-up mt-12 text-center text-sm text-[var(--color-text-muted)]">
+    </div>
+  </section>
+
+  <!-- Shipped recently -->
+  <section class="border-t border-[var(--color-border)] bg-[var(--color-surface-2)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-4xl px-6">
+      <div class="reveal-up mb-8 flex items-center gap-2.5">
+        <span class="inline-block h-2.5 w-2.5 rounded-full" style="background:var(--color-accent-cta)" aria-hidden="true"></span>
+        <h2 class="text-base font-semibold text-[var(--color-text)]">Shipped recently</h2>
+        <span class="text-xs text-[var(--color-text-dim)]">· last 7 days</span>
+        <span class="ml-auto text-xs font-semibold text-[var(--color-text-dim)]">{shipped.length}</span>
+      </div>
+
+      <ol class="m-0 list-none p-0 flex flex-col">
+        {shipped.map((s, i) => {
+          const Tag = s.href ? 'a' : 'div';
+          const external = s.href?.startsWith('http');
+          return (
+            <li class={i === 0 ? '' : 'border-t border-[var(--color-border)]'}>
+              <Tag
+                href={s.href}
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noopener noreferrer' : undefined}
+                class:list={[
+                  'group grid grid-cols-[60px_56px_1fr] items-start gap-3 py-3 sm:gap-4',
+                  s.href ? 'no-underline transition-colors hover:bg-[var(--color-surface)]' : '',
+                ]}
+              >
+                <span class="pt-0.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-dim)]">{s.date}</span>
+                <span class="rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-0.5 text-center text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">{s.tag}</span>
+                <span class="text-[13px] leading-relaxed text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)]">{s.title}</span>
+              </Tag>
+            </li>
+          );
+        })}
+      </ol>
+
+      <p class="reveal-up mt-10 text-center text-sm text-[var(--color-text-muted)]">
         Want to follow along? <a href="https://subscribe.wojciech.io" class="font-medium text-[var(--color-accent-hi)] underline underline-offset-2 hover:text-[var(--color-text)]">AI Espresso</a> covers what I build, most weekday mornings.
       </p>
     </div>
