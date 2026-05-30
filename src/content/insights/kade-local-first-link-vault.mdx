@@ -1,0 +1,119 @@
+---
+title: "The browser bookmark is the wrong primitive"
+description: "Why I built Kade as a local-first link vault: not another bookmark list, but a private queue for links that need context before they are opened again."
+publishedAt: "2026-05-30"
+tags:
+  - Products
+  - Local-first
+  - macOS
+  - Security
+featured: false
+draft: false
+category: "Products"
+coverType: "product"
+ogImage: "/images/kade/dashboard.png"
+tldr:
+  - "Bookmarks remember the URL. They rarely remember why the URL mattered."
+  - "Kade treats saved links as a queue with notes, ratings, categories, previews and visit history."
+  - "The public product page stays clean; the private vault and generated link data stay local."
+---
+
+Most bookmark products solve the easy part: keep the URL somewhere.
+
+That is useful until the list becomes research, sourcing, comparison, private reference work, or anything that needs judgment a few days later. Then the browser has the one thing that is cheap to recover and misses the thing that is expensive: context.
+
+Kade started from that gap.
+
+It is a local-first link vault for saved URLs that need a reason attached to them. Not a public read-it-later feed. Not a cloud password manager. A private queue where a link can carry the things that make it useful later: category, monthly drop, note, rating, best bites, preview and visit history.
+
+<PullQuote>
+The URL is not the memory. The reason you saved it is.
+</PullQuote>
+
+## The problem with bookmarks
+
+Browser bookmarks are fine for stable destinations: a bank login, a docs page, a tool you open every week.
+
+They are much weaker for links that are part of thinking. A link saved during research has more state than the browser stores:
+
+- why it looked useful,
+- what it should be compared against,
+- whether it has already been opened,
+- how strong the signal was,
+- which project or category it belongs to,
+- what phrase will make it recognizable next week.
+
+Once that context is gone, the link becomes work again. You reopen it, scan it, remember half of the original reason, then decide whether it still matters.
+
+That is the waste Kade is designed to remove.
+
+## Kade treats links as operational objects
+
+The product opens on a dashboard because the first question is not “what did I save?”
+
+The better first question is: “what needs attention now?”
+
+That changes the interface. The dashboard shows queue health, categories and pending work. The link view carries the heavier surface: previews, comments, ratings, source status and best bites. Opened links move down instead of disappearing, so the vault keeps memory without pretending every link is equally urgent.
+
+The working model is simple:
+
+1. Drop a link or import a batch.
+2. Assign category, monthly bucket and source status.
+3. Attach a short note, rating and useful cues.
+4. Generate previews locally when possible.
+5. Track visits and push already-opened items lower in the queue.
+
+This is closer to a small operating system than a bookmark folder.
+
+## Why local-first
+
+A link vault can be sensitive even when it is not storing passwords.
+
+The shape of a saved link list can reveal projects, commercial intent, habits, timing and private interests. That makes the storage model a product decision, not an implementation detail.
+
+Kade keeps the working vault local and encrypted. The public site does not include vault contents, bookmark imports, generated thumbnail manifests, private seeds or local recovery data. The marketing page explains the product; it does not publish the user’s link graph by accident.
+
+That boundary matters.
+
+## The Mac version is the real security path
+
+The web build is useful for workflow iteration. It proves the model quickly: dashboard first, categorized links, encrypted local record, previews in the right place, visit history and export/import.
+
+But the serious unlock model belongs in the native app.
+
+On macOS, Kade can use Touch ID, Keychain-protected keys, a background sync worker and a local metadata pipeline without handing browser JavaScript more responsibility than it should have. That is the right split: web for fast product shaping, native macOS for durable security and background work.
+
+## The design rule
+
+Kade should feel private before it feels clever.
+
+That means a sparse lock screen, quiet product language, dashboard-first navigation, and previews only where they help recognition. The app should not announce every security detail on the login screen. It should use enough copy to set the boundary, then get out of the way.
+
+The same rule applies to the public page: show the product, explain the operating model, keep the private data out.
+
+## Current status
+
+The current Kade build has:
+
+- local web vault,
+- native macOS prototype,
+- product icon set,
+- clean public landing,
+- Insights note,
+- encrypted export/import path,
+- recovery/reset flow,
+- thumbnail worker direction,
+- security docs.
+
+The next useful work is native: signing, packaging, stronger Touch ID/Keychain unlock, encrypted sync and a better preview worker.
+
+Until then, the product direction is clear: bookmarks as recall, not storage.
+
+<CTABand
+  heading="Kade is the private link vault."
+  subtext="A local-first workspace for links that need context before they are opened again."
+  cta="See Kade"
+  ctaHref="/kade/"
+  ctaSecondary="See all apps"
+  ctaSecondaryHref="/apps/"
+/>
