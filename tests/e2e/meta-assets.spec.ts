@@ -58,10 +58,15 @@ test('webmanifest icon files all exist', async ({ request }) => {
 
 test('homepage <head> has RSS autodiscovery link', async ({ page }) => {
   await page.goto('/');
-  const rssLink = page.locator('link[rel="alternate"][type="application/rss+xml"]');
-  await expect(rssLink, 'RSS autodiscovery link missing').toHaveCount(1);
-  const rssHref = await rssLink.getAttribute('href');
-  expect(rssHref, 'RSS href must end in /rss.xml').toMatch(/\/rss\.xml$/);
+  const rssLinks = page.locator('link[rel="alternate"][type="application/rss+xml"]');
+  // The site exposes multiple RSS feeds (insights /rss.xml, changelog /changelog.rss).
+  // Assert at least one exists, then assert the canonical insights feed is among them.
+  await expect(rssLinks, 'RSS autodiscovery link missing').not.toHaveCount(0);
+  const hrefs = await rssLinks.evaluateAll((nodes) =>
+    nodes.map((n) => (n as HTMLLinkElement).getAttribute('href') || ''),
+  );
+  const insightsFeed = hrefs.find((h) => /\/rss\.xml$/.test(h));
+  expect(insightsFeed, `insights /rss.xml autodiscovery missing — found: ${hrefs.join(', ')}`).toBeTruthy();
 });
 
 test('homepage <head> includes <link rel="manifest"> pointing to webmanifest', async ({
