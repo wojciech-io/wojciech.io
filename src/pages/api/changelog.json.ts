@@ -1,28 +1,22 @@
 import type { APIRoute } from 'astro';
-import { readFileSync, existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import shippedData from '../../data/shipped.json';
 
 /**
  * Public changelog endpoint.
  *
- * Reads src/data/shipped.json (generated at build time from squash-merged
+ * Imports src/data/shipped.json (generated at build time from squash-merged
  * PRs on main — see scripts/generate-shipped.mjs) and exposes it as a stable,
  * documented JSON contract for downstream consumers:
  *   - the /roadmap "Shipped recently" UI section
  *   - the /status surface health board
  *   - external monitors / newsletter automation
  *
- * Fail-soft: if shipped.json is missing or unparseable (e.g. during a
- * partial deploy, or a fresh checkout before the prebuild runs), returns
- * an empty list with a status hint so callers don't have to special-case
- * 404s. Schema is versioned so we can evolve without breaking clients.
+ * Static import so Vite bundles the data into the serverless function.
+ * Runtime fs reads break on Cloudflare Pages — src/data/ is not deployed
+ * alongside dist/_worker.js.
+ *
+ * Schema is versioned so we can evolve without breaking clients.
  */
-
-const SHIPPED_JSON = join(
-  dirname(fileURLToPath(import.meta.url)),
-  '../../data/shipped.json',
-);
 
 interface ShippedEntry {
   number: number;
@@ -33,23 +27,16 @@ interface ShippedEntry {
   sha: string;
 }
 
+const ENTRIES: ShippedEntry[] = Array.isArray(shippedData)
+  ? (shippedData as ShippedEntry[])
+  : [];
+
 const BUILD_TIME = new Date().toISOString();
 const COMMIT = process.env.CF_PAGES_COMMIT_SHA ?? process.env.GITHUB_SHA ?? 'local';
 
-function loadEntries(): { entries: ShippedEntry[]; source: 'shipped.json' | 'empty' } {
-  if (!existsSync(SHIPPED_JSON)) return { entries: [], source: 'empty' };
-  try {
-    const raw = readFileSync(SHIPPED_JSON, 'utf8');
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return { entries: [], source: 'empty' };
-    return { entries: parsed as ShippedEntry[], source: 'shipped.json' };
-  } catch {
-    return { entries: [], source: 'empty' };
-  }
-}
-
 export const GET: APIRoute = () => {
-  const { entries, source } = loadEntries();
+  const entries = ENTRIES;
+  const source: 'shipped.json' | 'empty' = entries.length > 0 ? 'shipped.json' : 'empty';
   return new Response(
     JSON.stringify(
       {
