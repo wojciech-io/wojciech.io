@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import CTABand from '../components/ui/CTABand.astro';
 import PageBackdrop from '../components/ui/PageBackdrop.astro';
-import BeforeAfter from '@wojciech/mdx-components/components/BeforeAfter.astro';
+import BeforeAfterDemo from '@wojciech/mdx-components/components/BeforeAfterDemo.astro';
 import { SITE } from '../data/site';
 
 // Hosted in this public monorepo: zip download served from /public, source browsable on GitHub.
@@ -62,50 +62,6 @@ const bites: Bite[] = [
         what: 'Catches visual dissonance: inconsistent border-radius, broken type scales, random shadows and off-grid spacing.',
       },
     ],
-  },
-];
-
-// Real fixes the plugin ships, taken from optimize-page/references/optimization-patterns.md.
-// Each pair is a transformation the skill actually performs, not a promise.
-const examples = [
-  {
-    label: '/optimize-page',
-    before: {
-      title: 'Before',
-      body: 'The hamburger toggles a menu, but Escape does nothing, focus never moves into it, and the page keeps scrolling underneath.',
-      caption: 'Mobile nav',
-    },
-    after: {
-      title: 'After',
-      body: 'A real drawer. Escape closes it, focus lands on the close button and returns to the trigger, the backdrop click dismisses it, and body scroll locks while it is open.',
-      caption: 'aria-modal, focus return, scroll lock',
-    },
-  },
-  {
-    label: '/optimize-page',
-    before: {
-      title: 'Before',
-      body: 'Hover on the primary button drops to a near-invisible shade, so it reads as disabled right when someone wants to click.',
-      caption: '.btn-accent:hover',
-    },
-    after: {
-      title: 'After',
-      body: 'Hover shifts to a darker tone of the same accent. The button stays legible and obviously clickable.',
-      caption: 'Contrast holds on hover',
-    },
-  },
-  {
-    label: '/optimize-page',
-    before: {
-      title: 'Before',
-      body: 'Submitting the contact form fires a browser alert(). Unstyled, off-brand, and gone the moment the page reloads.',
-      caption: 'alert() on submit',
-    },
-    after: {
-      title: 'After',
-      body: 'An inline success panel confirms the message, sets the reply expectation, and offers a phone fallback. No alert().',
-      caption: 'Inline success state',
-    },
   },
 ];
 
@@ -209,15 +165,80 @@ const softwareSchema = {
           </div>
         </div>
 
-        <!-- Before / after -->
+        <!-- Before / after — live, interactive demos -->
         <h3 class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-muted)] mb-5">Before and after</h3>
         <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-2xl mb-2">
-          Three fixes <code class="font-mono text-[var(--color-accent-hi)]">/optimize-page</code> ships on a real page. Same fixes a designer would bill you for.
+          Three fixes <code class="font-mono text-[var(--color-accent-hi)]">/optimize-page</code> ships on a real page. Hover, click, press Escape — the demos are wired up.
         </p>
         <div class="mb-12">
-          {examples.map((ex) => (
-            <BeforeAfter label={ex.label} before={ex.before} after={ex.after} />
-          ))}
+
+          <BeforeAfterDemo label="/optimize-page · CTA hover state" caption="Hover both buttons. The Before one blends into the background, the After one stays clickable.">
+            <Fragment slot="before">
+              <button type="button" class="demo-cta demo-cta-broken">Book a call</button>
+              <p class="demo-note">Hover blends into background. Reads as disabled right when someone wants to click.</p>
+            </Fragment>
+            <Fragment slot="after">
+              <button type="button" class="demo-cta demo-cta-fixed">Book a call</button>
+              <p class="demo-note">Hover shifts to a darker tone of the same accent. Stays legible.</p>
+            </Fragment>
+          </BeforeAfterDemo>
+
+          <BeforeAfterDemo label="/optimize-page · Mobile drawer" caption="Open the menu, then press Escape. The Before version ignores Escape; the After version closes and returns focus to the trigger.">
+            <Fragment slot="before">
+              <div class="demo-drawer" data-demo-drawer="broken">
+                <button type="button" class="demo-button" data-demo-drawer-trigger>Open menu</button>
+                <div class="demo-drawer-panel" data-demo-drawer-panel hidden>
+                  <a href="javascript:void(0)" tabindex="0">Home</a>
+                  <a href="javascript:void(0)" tabindex="0">Insights</a>
+                  <a href="javascript:void(0)" tabindex="0">Work</a>
+                </div>
+                <p class="demo-note">No Escape handler. No focus management. Page scroll keeps going.</p>
+              </div>
+            </Fragment>
+            <Fragment slot="after">
+              <div class="demo-drawer" data-demo-drawer="fixed">
+                <button type="button" class="demo-button" data-demo-drawer-trigger>Open menu</button>
+                <div class="demo-drawer-panel" data-demo-drawer-panel hidden role="dialog" aria-modal="true" aria-label="Demo menu">
+                  <button type="button" class="demo-drawer-close" data-demo-drawer-close aria-label="Close menu">×</button>
+                  <a href="javascript:void(0)">Home</a>
+                  <a href="javascript:void(0)">Insights</a>
+                  <a href="javascript:void(0)">Work</a>
+                </div>
+                <p class="demo-note">Escape closes. Focus enters the panel, returns to the trigger on close.</p>
+              </div>
+            </Fragment>
+          </BeforeAfterDemo>
+
+          <BeforeAfterDemo label="/optimize-page · Submit state" caption="Type something and submit. Both versions “send” nothing — they just show the state.">
+            <Fragment slot="before">
+              <form class="demo-form" data-demo-form="broken" novalidate>
+                <label class="demo-label">
+                  <span>Name</span>
+                  <input type="text" placeholder="Daria" autocomplete="off" />
+                </label>
+                <button type="submit" class="demo-button">Send</button>
+                <p class="demo-note">Submit fires <code>alert()</code>. Off-brand, blocking, gone the moment the page reloads.</p>
+              </form>
+            </Fragment>
+            <Fragment slot="after">
+              <div data-demo-form="fixed">
+                <form class="demo-form" data-demo-form-shell novalidate>
+                  <label class="demo-label">
+                    <span>Name</span>
+                    <input type="text" placeholder="Daria" autocomplete="off" />
+                  </label>
+                  <button type="submit" class="demo-button">Send</button>
+                </form>
+                <div class="demo-form-success" data-demo-form-success hidden>
+                  <p class="demo-form-success-title">Got it. I reply within 24h.</p>
+                  <p class="demo-note">Need it faster? <a href="javascript:void(0)" tabindex="0">+48 …</a></p>
+                  <button type="button" class="demo-form-reset" data-demo-form-reset>Reset demo</button>
+                </div>
+                <p class="demo-note demo-note-shell">Inline success state. Sets the reply expectation. Offers a phone fallback.</p>
+              </div>
+            </Fragment>
+          </BeforeAfterDemo>
+
         </div>
 
         <!-- Skills -->
@@ -238,3 +259,205 @@ const softwareSchema = {
   <CTABand />
 
 </Layout>
+
+<style is:global>
+  /* Live demos for /bites/ — kept scoped via the `demo-` prefix.
+     `is:global` so the styles reach into BeforeAfterDemo's slot content. */
+  .demo-cta {
+    background: var(--color-accent);
+    color: var(--color-bg);
+    padding: 0.7rem 1.15rem;
+    border-radius: var(--radius-badge);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: background 150ms ease, color 150ms ease;
+    align-self: flex-start;
+  }
+  .demo-cta-broken:hover,
+  .demo-cta-broken:focus-visible {
+    background: rgba(235, 255, 0, 0.18);
+    color: var(--color-text-dim);
+  }
+  .demo-cta-fixed:hover,
+  .demo-cta-fixed:focus-visible {
+    background: var(--color-accent-hi);
+    color: var(--color-bg);
+  }
+  .demo-note {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    margin: 0.85rem 0 0;
+    line-height: 1.5;
+  }
+  .demo-note code {
+    background: var(--color-surface-2);
+    padding: 0.05rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.95em;
+  }
+  .demo-button {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    padding: 0.55rem 0.95rem;
+    border-radius: var(--radius-badge);
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    align-self: flex-start;
+    transition: border-color 150ms ease;
+  }
+  .demo-button:hover { border-color: var(--color-accent); }
+  .demo-drawer { position: relative; }
+  .demo-drawer-panel {
+    margin-top: 0.85rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    position: relative;
+  }
+  .demo-drawer-panel a {
+    color: var(--color-text);
+    font-size: 0.9rem;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+  }
+  .demo-drawer-panel a:hover,
+  .demo-drawer-panel a:focus-visible {
+    border-bottom-color: var(--color-accent);
+    outline: none;
+  }
+  .demo-drawer-close {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.6rem;
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .demo-drawer-close:hover { color: var(--color-text); }
+  .demo-form { display: flex; flex-direction: column; gap: 0.65rem; }
+  .demo-label { display: flex; flex-direction: column; gap: 0.3rem; }
+  .demo-label > span {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+  .demo-label input {
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--radius-badge);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 0.9rem;
+  }
+  .demo-label input:focus-visible {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+  .demo-form-success {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+  }
+  .demo-form-success-title {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 0.95rem;
+  }
+  .demo-form-reset {
+    margin-top: 0.6rem;
+    background: transparent;
+    border: none;
+    color: var(--color-text-dim);
+    font-size: 0.75rem;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+  }
+  .demo-form-reset:hover { color: var(--color-text); }
+</style>
+
+<script is:inline>
+  // Drawer demo: broken version has no Escape/focus management;
+  // fixed version closes on Escape, returns focus to trigger.
+  document.querySelectorAll('[data-demo-drawer]').forEach((root) => {
+    const mode = root.getAttribute('data-demo-drawer'); // 'broken' | 'fixed'
+    const trigger = root.querySelector('[data-demo-drawer-trigger]');
+    const panel = root.querySelector('[data-demo-drawer-panel]');
+    const close = root.querySelector('[data-demo-drawer-close]');
+    if (!trigger || !panel) return;
+
+    trigger.addEventListener('click', () => {
+      panel.hidden = false;
+      if (mode === 'fixed') {
+        const first = panel.querySelector('a, button');
+        if (first) first.focus();
+      }
+    });
+
+    if (mode === 'fixed') {
+      if (close) {
+        close.addEventListener('click', () => {
+          panel.hidden = true;
+          trigger.focus();
+        });
+      }
+      root.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !panel.hidden) {
+          e.preventDefault();
+          panel.hidden = true;
+          trigger.focus();
+        }
+      });
+    }
+  });
+
+  // Form demo: broken version calls alert(); fixed shows inline success.
+  document.querySelectorAll('form[data-demo-form="broken"]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Deliberately the "before" behavior — that's the demo.
+      window.alert('Sent!');
+    });
+  });
+
+  document.querySelectorAll('[data-demo-form="fixed"]').forEach((root) => {
+    const form = root.querySelector('[data-demo-form-shell]');
+    const success = root.querySelector('[data-demo-form-success]');
+    const shellNote = root.querySelector('.demo-note-shell');
+    const reset = root.querySelector('[data-demo-form-reset]');
+    if (!form || !success) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.hidden = true;
+      if (shellNote) shellNote.hidden = true;
+      success.hidden = false;
+    });
+
+    if (reset) {
+      reset.addEventListener('click', () => {
+        success.hidden = true;
+        form.hidden = false;
+        if (shellNote) shellNote.hidden = false;
+        const input = form.querySelector('input');
+        if (input) input.value = '';
+      });
+    }
+  });
+</script>

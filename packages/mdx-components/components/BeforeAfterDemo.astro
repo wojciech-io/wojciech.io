@@ -1,0 +1,117 @@
+---
+// Side-by-side "live" before/after demo. Unlike BeforeAfter.astro which renders
+// plain text bodies, this component takes two named slots (`before`, `after`)
+// and renders them as actual interactive UI — so visitors can hover, click,
+// and feel the difference instead of reading a description.
+//
+// Usage:
+//   <BeforeAfterDemo label="Mobile drawer" caption="Press Escape after opening">
+//     <Fragment slot="before">
+//       <!-- broken implementation -->
+//     </Fragment>
+//     <Fragment slot="after">
+//       <!-- fixed implementation -->
+//     </Fragment>
+//   </BeforeAfterDemo>
+
+interface Props {
+  label?: string;     // eyebrow above the block
+  caption?: string;   // short hint shown above the panels ("Hover this →")
+}
+const { label, caption } = Astro.props;
+---
+
+<figure class="bad-block">
+  {label && <p class="bad-eyebrow">{label}</p>}
+  {caption && <p class="bad-caption">{caption}</p>}
+  <div class="bad-grid">
+    <div class="bad-side bad-before">
+      <span class="bad-tag">Before</span>
+      <div class="bad-stage">
+        <slot name="before" />
+      </div>
+    </div>
+    <div class="bad-arrow" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
+    </div>
+    <div class="bad-side bad-after">
+      <span class="bad-tag bad-tag-accent">After</span>
+      <div class="bad-stage">
+        <slot name="after" />
+      </div>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .bad-block { margin: 2rem 0; }
+  .bad-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: 0.5rem;
+  }
+  .bad-caption {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0 0 0.85rem;
+  }
+  .bad-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  @media (max-width: 720px) {
+    .bad-grid { grid-template-columns: 1fr; }
+    .bad-arrow { display: none; }
+  }
+  .bad-side {
+    padding: 1.25rem 1.25rem 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .bad-after {
+    border-color: var(--color-accent);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 5%, var(--color-surface)), var(--color-surface));
+  }
+  .bad-tag {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: 0.9rem;
+  }
+  .bad-tag-accent {
+    color: var(--color-bg);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .bad-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 110px;
+  }
+  .bad-arrow {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-accent);
+    width: 32px;
+  }
+  .bad-arrow svg { width: 24px; height: 24px; }
+</style>
