@@ -54,6 +54,11 @@ export const OG_PAGES: Record<string, OGPageMeta> = {
     eyebrow: 'wojciech.io',
     description: 'Build AI-native revenue systems for B2B SaaS.',
   },
+  roadmap: {
+    title: "What I'm Shipping · Public Roadmap",
+    eyebrow: 'Roadmap',
+    description: 'A live look at what is in production, what is being built, and what is next.',
+  },
 };
 
 /** The set of page slugs that will be pre-rendered by getStaticPaths. */
