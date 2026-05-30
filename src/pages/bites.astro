@@ -197,8 +197,8 @@ const softwareSchema = {
             </Fragment>
             <Fragment slot="after">
               <div class="demo-drawer" data-demo-drawer="fixed">
-                <button type="button" class="demo-button" data-demo-drawer-trigger>Open menu</button>
-                <div class="demo-drawer-panel" data-demo-drawer-panel hidden role="dialog" aria-modal="true" aria-label="Demo menu">
+                <button type="button" class="demo-button" data-demo-drawer-trigger aria-expanded="false" aria-controls="demo-drawer-fixed-panel">Open menu</button>
+                <div id="demo-drawer-fixed-panel" class="demo-drawer-panel" data-demo-drawer-panel hidden role="dialog" aria-modal="true" aria-label="Demo menu">
                   <button type="button" class="demo-drawer-close" data-demo-drawer-close aria-label="Close menu">×</button>
                   <a href="javascript:void(0)">Home</a>
                   <a href="javascript:void(0)">Insights</a>
@@ -236,6 +236,25 @@ const softwareSchema = {
                 </div>
                 <p class="demo-note demo-note-shell">Inline success state. Sets the reply expectation. Offers a phone fallback.</p>
               </div>
+            </Fragment>
+          </BeforeAfterDemo>
+
+          <BeforeAfterDemo label="/responsive-check · Touch targets" caption="Try tapping the X on a phone. Before: 24px chip — your finger covers three buttons at once. After: 44px hit area meeting the Apple/Material baseline.">
+            <Fragment slot="before">
+              <div class="demo-tt-row">
+                <button type="button" class="demo-tt-icon demo-tt-icon-small" aria-label="Close A">×</button>
+                <button type="button" class="demo-tt-icon demo-tt-icon-small" aria-label="Close B">×</button>
+                <button type="button" class="demo-tt-icon demo-tt-icon-small" aria-label="Close C">×</button>
+              </div>
+              <p class="demo-note">24px square. Three crammed side by side. A real thumb hits two of them at once.</p>
+            </Fragment>
+            <Fragment slot="after">
+              <div class="demo-tt-row">
+                <button type="button" class="demo-tt-icon demo-tt-icon-large" aria-label="Close A">×</button>
+                <button type="button" class="demo-tt-icon demo-tt-icon-large" aria-label="Close B">×</button>
+                <button type="button" class="demo-tt-icon demo-tt-icon-large" aria-label="Close C">×</button>
+              </div>
+              <p class="demo-note">44px hit area, breathing room between. Same icon, but each one is actually tappable.</p>
             </Fragment>
           </BeforeAfterDemo>
 
@@ -390,6 +409,28 @@ const softwareSchema = {
     padding: 0;
   }
   .demo-form-reset:hover { color: var(--color-text); }
+  /* Touch target sizes — small vs 44px (Apple HIG / Material baseline). */
+  .demo-tt-row { display: flex; align-items: center; gap: 4px; }
+  .demo-tt-icon {
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1;
+    padding: 0;
+  }
+  .demo-tt-icon:hover,
+  .demo-tt-icon:focus-visible {
+    border-color: var(--color-accent);
+    outline: none;
+  }
+  .demo-tt-icon-small { width: 24px; height: 24px; font-size: 0.8rem; }
+  .demo-tt-icon-large { width: 44px; height: 44px; }
+  .demo-tt-row:has(.demo-tt-icon-large) { gap: 10px; }
 </style>
 
 <script is:inline>
@@ -402,26 +443,30 @@ const softwareSchema = {
     const close = root.querySelector('[data-demo-drawer-close]');
     if (!trigger || !panel) return;
 
-    trigger.addEventListener('click', () => {
+    const open = () => {
       panel.hidden = false;
       if (mode === 'fixed') {
+        trigger.setAttribute('aria-expanded', 'true');
         const first = panel.querySelector('a, button');
         if (first) first.focus();
       }
-    });
+    };
+    const closePanel = () => {
+      panel.hidden = true;
+      if (mode === 'fixed') {
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.focus();
+      }
+    };
+
+    trigger.addEventListener('click', open);
 
     if (mode === 'fixed') {
-      if (close) {
-        close.addEventListener('click', () => {
-          panel.hidden = true;
-          trigger.focus();
-        });
-      }
+      if (close) close.addEventListener('click', closePanel);
       root.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && !panel.hidden) {
           e.preventDefault();
-          panel.hidden = true;
-          trigger.focus();
+          closePanel();
         }
       });
     }
