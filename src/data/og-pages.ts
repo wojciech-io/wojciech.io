@@ -64,6 +64,43 @@ export const OG_PAGES: Record<string, OGPageMeta> = {
     eyebrow: 'Status',
     description: 'Live availability of every surface across this network, probed in real time.',
   },
+  // Locale homes — tytuł wspólny, descriptions skrócone z data/locales.ts
+  // do limitu OG (120 ch) z zachowaniem sensu. Eyebrow = lokalna nazwa.
+  pl: {
+    title: 'Wojciech Łuszczyński · AI-native GTM Operator (PL)',
+    eyebrow: 'wojciech.io · PL',
+    description: 'AI-native systemy przychodowe dla B2B SaaS: GTM, CRM, automatyzacja i workflowy AI jako jeden model operacyjny.',
+  },
+  it: {
+    title: 'Wojciech Łuszczyński · AI-native GTM Operator (IT)',
+    eyebrow: 'wojciech.io · IT',
+    description: 'Sistemi di ricavo AI-native per SaaS B2B: GTM, CRM, automazione e flussi AI come un unico modello operativo.',
+  },
+  de: {
+    title: 'Wojciech Łuszczyński · AI-native GTM Operator (DE)',
+    eyebrow: 'wojciech.io · DE',
+    description: 'AI-native Revenue-Systeme für B2B SaaS: GTM, CRM, Automatisierung und AI-Workflows als ein Operating Model.',
+  },
+  dk: {
+    title: 'Wojciech Łuszczyński · AI-native GTM Operator (DK)',
+    eyebrow: 'wojciech.io · DK',
+    description: 'AI-native revenue-systemer til B2B SaaS: GTM, CRM, automatisering og AI-arbejdsgange som én operating model.',
+  },
+  no: {
+    title: 'Wojciech Łuszczyński · AI-native GTM Operator (NO)',
+    eyebrow: 'wojciech.io · NO',
+    description: 'AI-native revenue-systemer for B2B SaaS: GTM, CRM, automatisering og AI-arbeidsflyter som én operating model.',
+  },
+  jp: {
+    title: 'Wojciech Łuszczyński · AI-native GTM Operator (JP)',
+    eyebrow: 'wojciech.io · JP',
+    description: 'B2B SaaS向けAIネイティブRevenue system：GTM、CRM、自動化、AIワークフローを1つのオペレーティングモデルとして提供。',
+  },
+  es: {
+    title: 'Wojciech Łuszczyński · AI-native GTM Operator (ES)',
+    eyebrow: 'wojciech.io · ES',
+    description: 'Sistemas de ingresos AI-native para SaaS B2B: GTM, CRM, automatización y flujos AI como un único modelo operativo.',
+  },
 };
 
 /** The set of page slugs that will be pre-rendered by getStaticPaths. */
