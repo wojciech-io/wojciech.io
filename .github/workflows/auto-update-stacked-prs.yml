@@ -1,0 +1,76 @@
+# After any PR merge to main, refresh other open PRs that are now BEHIND.
+# Saves the manual `gh pr update-branch` ritual when shipping a stack of PRs:
+# without this, auto-merge waits for someone to refresh each downstream branch
+# every time the base advances.
+#
+# Idempotent + fail-safe: individual PR refresh failures (conflicts, race with
+# concurrent merge) do not fail the workflow — they just stay BEHIND for the
+# next trigger or a manual run.
+name: Auto-update stacked PRs
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: auto-update-stacked-prs
+  cancel-in-progress: false
+
+jobs:
+  refresh-behind:
+    # Only act on actual merges (not closed-without-merge) for pull_request triggers.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for GitHub to recompute merge states
+        run: sleep 15
+
+      - name: Refresh BEHIND open PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -eo pipefail
+
+          # Fetch only the PR number — never interpolate PR titles into shell
+          # commands or logs to avoid injection from a malicious branch name.
+          mapfile -t behind < <(
+            gh pr list --repo "$REPO" --base main --state open \
+              --json number,mergeStateStatus \
+              --jq '.[] | select(.mergeStateStatus == "BEHIND") | .number'
+          )
+
+          if [ ${#behind[@]} -eq 0 ]; then
+            echo "No BEHIND PRs to refresh."
+            exit 0
+          fi
+
+          echo "Found ${#behind[@]} BEHIND PR(s): ${behind[*]}"
+
+          failed=0
+          for pr_number in "${behind[@]}"; do
+            # Defense in depth: enforce integer-only pr_number even though
+            # `gh --jq '.number'` should always emit one. This shields the
+            # `gh pr update-branch` arg from any unexpected jq output.
+            if ! [[ "$pr_number" =~ ^[0-9]+$ ]]; then
+              echo "::warning::Skipping non-numeric PR identifier: $pr_number"
+              continue
+            fi
+
+            echo "::group::Refreshing PR #$pr_number"
+            if gh pr update-branch "$pr_number" --repo "$REPO"; then
+              echo "  ✓ refreshed"
+            else
+              echo "  ✗ refresh failed (likely merge conflict or race) — skipping"
+              failed=$((failed + 1))
+            fi
+            echo "::endgroup::"
+          done
+
+          echo "Done. Refreshed $((${#behind[@]} - failed)) / ${#behind[@]} PR(s)."
