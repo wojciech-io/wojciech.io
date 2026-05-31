@@ -52,7 +52,7 @@ export const GET: APIRoute = async ({ site }) => {
   <channel>
     <title>Wojciech Łuszczyński · Changelog</title>
     <description>What I'm shipping on wojciech.io. Every merged PR, in feed-reader form.</description>
-    <link>${new URL('/roadmap/', origin).href}</link>
+    <link>${new URL('/', origin).href}</link>
     <atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />
     <language>en-us</language>
     <managingEditor>hello@wojciech.io (Wojciech Łuszczyński)</managingEditor>
