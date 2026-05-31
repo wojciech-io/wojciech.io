@@ -121,6 +121,22 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
   const { request, env, next } = ctx;
   const url = new URL(request.url);
 
+  // Uptime probe — single endpoint that always returns 200 OK, on every host,
+  // before any locale/auth logic runs. Lets BetterStack monitor app.wojciech.io
+  // (which is auth-gated) without the gate flapping the check.
+  // No body details so we don't leak commit/host metadata to public scanners.
+  if (url.pathname === '/healthz') {
+    return new Response('ok\n', {
+      status: 200,
+      headers: {
+        'content-type': 'text/plain; charset=utf-8',
+        'cache-control': 'no-store',
+        'x-content-type-options': 'nosniff',
+        'referrer-policy': 'strict-origin-when-cross-origin',
+      },
+    });
+  }
+
   // Public wojciech.io: pass through with security headers injected.
   if (!isGatedHost(url.hostname)) {
     // Locale auto-redirect: only for the canonical root on the main site.
