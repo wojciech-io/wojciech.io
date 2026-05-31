@@ -1,0 +1,126 @@
+---
+title: "Stos AI, z którego faktycznie korzystam w środowisku produkcyjnym"
+description: "Kompleksowy przegląd wszystkich narzędzi AI, z których aktywnie korzystam w ramach realizacji projektów dla klientów oraz tworzenia własnych produktów: dlaczego dane narzędzie znalazło się w tym zestawie, co zostało pominięte oraz jak wygląda logika działania w całym stosie technologicznym."
+publishedAt: "2026-05-22"
+tags:
+  - "AI"
+  - "Stack"
+  - "Tools"
+  - "Production"
+  - "Claude Code"
+featured: false
+draft: false
+coverType: "system"
+category: "AI Systems"
+locale: "pl"
+translationOf: "ai-production-stack"
+tldr:
+  - "Struktura składa się z czterech warstw: warstwy wnioskowania, warstwy wykonania, warstwy badawczej oraz warstwy CRM /data. Każda warstwa pełni określoną funkcję i ma jasno określony powód swojego istnienia."
+  - "To, co zostało wycięte, ma równie duże znaczenie jak to, co pozostało: Zapier, Notion AI oraz kilka narzędzi rozszerzających funkcjonalność nie przetrwało próby w rzeczywistym środowisku produkcyjnym."
+  - "Najważniejsze kryterium oceny każdego narzędzia AI: czy zapewnia ono lepsze wyniki, czy tylko przenosi pracę w inne miejsce?"
+---
+Jest taka wersja tego artykułu, której nie zamierzam pisać: ta z 47 narzędziami, tabelą porównawczą i oceną w skali od 1 do 10. Już to czytaliście. To wam nie pomogło.
+
+Oto nieco inna wersja: wszystkie narzędzia AI, które obecnie działają w moim środowisku produkcyjnym, konkretne zadania, jakie wykonują, oraz powody, dla których znalazły się na tej liście. Opowiem wam też, co zostało odrzucone: ta część jest zazwyczaj bardziej przydatna niż lista narzędzi, które pozostały.
+
+Mała uwaga wstępna: rozróżniam narzędzia, które **zapewniają lepsze wyniki**, od tych, które po prostu **przenoszą pracę z jednego miejsca w drugie**. Te pierwsze warto zatrzymać. Te drugie tylko marnują czas i sprawiają, że czujesz się produktywny, choć w rzeczywistości niczego nie rozwiązują.
+
+<KeyTakeaway
+  title="Test działania"
+  body="Narzędzie zostaje tylko wtedy, gdy poprawia jakość wyników, skraca czas podejmowania decyzji lub zwiększa wiarygodność kontekstu. Jeśli jedynie ubiera ręczny proces w ładniejszy interfejs użytkownika, zostaje wyeliminowane."
+/>
+
+---
+
+## Stos warstwa po warstwie
+
+<ProcessFlow
+  direction="vertical"
+  steps={[
+    { tag: "Warstwa 1", label: "Rozumowanie", body: "Claude Sonnet / Opus – do złożonej diagnostyki, ICP – do analizy, GTM – do projektowania architektury. Stosowane w sytuacjach, gdy zadanie wymaga uwzględnienia sprzecznych ograniczeń i wyciągnięcia uzasadnionego wniosku." },
+    { tag: "Warstwa 2", label: "Realizacja", body: "Claude Code obsługuje stos agentów: potoki badawcze, pętle wzbogacania danych, szkice treści oraz klasyfikację CRM. Warstwa łącząca analizę danych z wynikami pracy." },
+    { tag: "Warstwa 3", label: "Badania", body: "Exa MCP – narzędzie do wyszukiwania informacji w sieci w czasie rzeczywistym. Automatyzacja przeglądarki w przypadku stron blokujących roboty indeksujące. Perplexity – narzędzie do syntetycznego wyszukiwania informacji." },
+    { tag: "Warstwa 4", label: "CRM + Dane", body: "MCP firmy HubSpot do obsługi operacji CRM. GA4 i Amplitude jako źródła danych, na podstawie których działa warstwa wnioskowania." }
+  ]}
+/>
+### Poziom 1: Rozumowanie
+
+**Claude Sonnet / Opus** – kompleksowe usługi diagnostyczne: analiza ICP, przeglądy architektury GTM, synteza pozycjonowania. Wszędzie tam, gdzie zadanie wymaga jednoczesnego uwzględnienia wielu sprzecznych ograniczeń i wyciągnięcia uzasadnionego wniosku, a nie tylko dopasowania wzorca do prawdopodobnego kolejnego elementu.
+
+Nie korzystam z Claude’a przy każdej okazji. Rutynowe tworzenie szkiców, proste poprawki, zwykłe zapytania badawcze – to nie wymaga pełnego poziomu rozumowania. Użycie Opus do przeróbki tematu wiadomości to jak użycie klucza dynamometrycznego do powieszenia ramki na zdjęcie.
+
+Test decydujący: *Czy bez tego mogę dojść do tego samego wniosku?* Jeśli tak, to tego nie stosuję. Jeśli zadanie rzeczywiście wymaga rozumowania: rozważenia kompromisów, syntezy sprzecznych sygnałów, zbudowania spójnej argumentacji na podstawie rozproszonych informacji – to właśnie po tę warstwę sięgam.
+
+### Warstwa 2: Realizacja
+
+**Claude Code** obsługuje stos agentów. Potoki badawcze, pętle wzbogacania danych, szkice treści oparte na danych audytowych, klasyfikacja CRM: wszystko to odbywa się właśnie tutaj. Jest to narzędzie o największym znaczeniu w całym stosie – nie dlatego, że jest najinteligentniejsze, ale dlatego, że łączy warstwę analityczną z rzeczywistymi wynikami pracy.
+
+Kluczowa konfiguracja: plik `CLAUDE.md` dla każdego klienta, narzędzia MCP do dostępu do danych oraz umiejętności (Skills) do realizacji konkretnych podzadań. Opisałem już [szczegółowo stos rozwiązań zewnętrznych](/pl/insights/claude-code-vs-clay) oraz [jak działa on w projektach realizowanych u klientów](/pl/insights/claude-code-client-gtm). W skrócie: plik `Claude Code` w połączeniu z odpowiednim kontekstem operatora pozwala osiągnąć wyniki, które wcześniej wymagały zaangażowania całego zespołu.
+
+**Cursor** do kodu, który musi znajdować się w repozytorium. Kiedy tworzę serwer MCP, rozbudowuję moduł Cloudflare Worker lub wprowadzam nową funkcję do jednego z moich produktów, Cursor zajmuje się edycją kodu. Claude Code odpowiada za logikę i działanie agenta; Cursor natomiast zapewnia integrację z środowiskiem IDE oraz przegląd zmian.
+
+Nie są one zbędne. Claude Code to operator, a „Cursor” to edytor. Różne zadania, różne konteksty.
+
+### Poziom 3: Badania
+
+**Exa MCP** do wyszukiwania informacji w sieci w czasie rzeczywistym podczas pracy agentów. Exa została stworzona specjalnie z myślą o wykorzystaniu w ramach usługi LLM: oferuje wyszukiwanie semantyczne, przejrzyste wyniki i nie napotyka problemów z blokowaniem przez serwisy. Po kilku miesiącach zastąpiła w moim zestawie narzędzi Brave Search, ponieważ jakość wyników wyszukiwania dotyczących firm jest w niej niezmiennie lepsza.
+
+**Automatyzacja przeglądarki MCP** (oparta na bibliotece Playwright) przeznaczona do stron, które blokują standardowe metody zbierania danych: strony firmowe na LinkedIn, niektóre strony z cennikami na SaaS oraz sygnały z serwisu Glassdoor. Nie jest to rozwiązanie do masowego indeksowania: służy do obsługi kilku wybranych stron o dużej wartości w ramach poszczególnych projektów, w przypadku których zwykłe wyszukiwanie statyczne nie wystarcza.
+
+**Perplexity** służy mi do szybkiego zbierania informacji ogólnych na temat branż, rynków lub zagadnień technicznych, gdy potrzebuję zwięzłego podsumowania, a nie surowych wyników wyszukiwania. Traktuję tę platformę jako narzędzie do tworzenia zarysu badań, a nie jako źródło informacji. Wszystkie istotne informacje, które tam znajdę, weryfikuję.
+
+### Warstwa 4: Protokół CRM i dane
+
+**MCP firmy HubSpot** do obsługi operacji CRM: odczytywanie rekordów kontaktów i firm, klasyfikowanie według kryteriów ICP, sygnalizowanie problemów z jakością danych, generowanie pakietów aktualizacyjnych. Większość zadań związanych z CRM była wcześniej wykonywana ręcznie i przebiegała w sposób niejednolity. Dzięki włączeniu MCP logika klasyfikacji jest spójna i podlega audytowi.
+
+**GA4 / Amplitude** do celów analitycznych – nie za pośrednictwem narzędzi AI, ale jako źródło danych, na podstawie których Claude może przeprowadzać wnioskowanie. Pobieram eksporty raportów lub korzystam bezpośrednio z interfejsu API danych GA4, a następnie przekazuję ustrukturyzowane dane do warstwy wnioskowania. „Oto dane z ostatnich 90 dni dotyczące pozyskiwania użytkowników według kanałów i konwersji według kohort: jaka jest diagnoza?” Jest to zadanie, z którym warstwa wnioskowania radzi sobie dobrze, gdy dane są czyste.
+
+---
+
+## Co zostało wycięte
+
+<Comparison
+  left="Replaced"
+  right="Replaced by"
+  leftItems={[
+    "Zapier : visual workflow builder, brittle at complexity",
+    "Notion AI : limited context window, generic output",
+    "Apollo/Clearbit enrichment : credits model, shallow reasoning",
+    "GPT-4 / Gemini : no unique job in this stack"
+  ]}
+  rightItems={[
+    "MCP servers : inspectable, versionable, don't break on auth changes",
+    "Claude with full knowledge context : thinks across structure",
+    "Agent research stack : better output quality for my use case",
+    "Claude (single coherent reasoning layer with clear jobs)"
+  ]}
+/>
+
+To jest ta część, która zazwyczaj nie pojawia się w zestawieniach dotyczących stosów w serwisie AI.
+
+**Zapier**: zastąpiony przez serwery MCP. Zapier świetnie nadaje się do łączenia aplikacji bez pisania kodu, ale każdy złożony proces, który próbowałem w nim zbudować, stawał się problemem przy utrzymaniu. Serwery MCP wymagają więcej pracy na początku i pisania kodu, ale można je sprawdzić, wersjonować i nie psują się, gdy aplikacja aktualizuje swój proces uwierzytelniania.
+
+**Notion AI**: nigdy nie zasłużył na swoje miejsce. Wyniki były zbyt ogólnikowe. Okno kontekstowe ograniczało się do bieżącej strony, więc nie potrafiło uwzględnić mojej rzeczywistej struktury wiedzy. Piszę w Notion, ale myślę z pomocą Claude’a.
+
+**Wzbogacanie danych przez Apollo/Clearbit**: w moim konkretnym przypadku zastąpił je zestaw narzędzi do analizy danych o potencjalnych klientach. W przypadku pracy z zespołem sprzedaży na dużą skalę kredyty na wzbogacanie danych nadal mają sens. Jeśli chodzi o jakość analizy i poziom personalizacji, jakich potrzebuję w pracy z klientami, zestaw narzędzi do analizy danych o potencjalnych klientach zapewnia lepsze wyniki przy niższych kosztach.
+
+**GPT-4 / Gemini**: nie są obecnie w użyciu. Nie dlatego, że są złe, ale dlatego, że obecny zestaw narzędzi jest już spójny, a dodawanie modeli bez konkretnego zadania dla każdego z nich powoduje zbędne obciążenie decyzyjne, nie poprawiając przy tym jakości wyników. Pytanie nie brzmi: „czy ten model jest dobry?”, ale: „czy oferuje coś, czego nie ma mój obecny zestaw narzędzi?”.
+
+---
+
+## Zasada działania
+
+Stos nie jest po prostu listą narzędzi. To zbiór decyzji dotyczących tego, **gdzie w procesie pracy znajduje się inteligencja** oraz **za co odpowiada każda warstwa**.
+
+Warstwa rozumowania: dokonuje oceny, diagnozuje problem, ustala logikę.
+Warstwa wykonawcza: realizuje zadania, generuje wyniki, utrzymuje kontekst.
+Warstwa badawcza: dostarcza dane z rzeczywistego świata do pozostałych warstw.
+Warstwa danych: przechowuje zapisy tego, co się wydarzyło i jakie ma to znaczenie.
+
+Każde narzędzie zasługuje na swoje miejsce, ponieważ wykonuje dane zadanie lepiej niż inne rozwiązania. Gdy narzędzie przestaje spełniać tę rolę – gdy jego wydajność spada, koszty utrzymania rosną lub pojawia się lepsza alternatywa – zostaje wycofane.
+
+Lista ulegnie zmianie. Niektóre z wymienionych tu pozycji znikną za pół roku. Nie ma w tym nic złego. Zasada działania pozostaje ta sama.
+
+---
+
+Jeśli tworzysz stos AI do obsługi funkcji GTM i potrzebujesz dodatkowej opinii na temat tego, co warto zachować, a co wyeliminować, [umów się na rozmowę](/pl/contact/#book-call).

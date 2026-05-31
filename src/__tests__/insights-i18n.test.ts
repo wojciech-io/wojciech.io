@@ -3,7 +3,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = new URL('../content/insights/', import.meta.url);
-const LOCALES = ['de', 'dk', 'no', 'jp'] as const;
+const LOCALES = ['de', 'dk', 'no', 'jp', 'pl'] as const;
 const SOURCE_SLUGS = [
   'ai-production-stack',
   'claude-code-client-gtm',
@@ -16,6 +16,7 @@ const LOCALE_MARKERS: Record<(typeof LOCALES)[number], RegExp[]> = {
   dk: [/\bDet\b|\bDen\b|\bDer\b/, /\bog\b/, /\bikke\b/, /\bhvis\b/i],
   no: [/\bDet\b|\bDen\b/, /\bog\b/, /\bikke\b/, /\bhvis\b/i],
   jp: [/[\u3040-\u30ff]/, /[\u4e00-\u9faf]/],
+  pl: [/\b(\u017ce|jest|nie|kt\u00f3ry|kt\u00f3ra)\b/i, /\b(si\u0119|tylko|dla)\b/i],
 };
 
 function read(locale: (typeof LOCALES)[number], slug: string) {
