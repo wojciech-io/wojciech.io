@@ -48,7 +48,7 @@ const editions = [
   <main id="top">
 
     <!-- ─── HERO ───────────────────────────────────────────────────── -->
-    <section class="relative overflow-hidden" style="min-height: 640px; border-bottom: 1px solid var(--color-border);">
+    <section class="relative overflow-hidden subscribe-hero" style="border-bottom: 1px solid var(--color-border);">
 
       <!-- Subtle grid -->
       <div class="pointer-events-none absolute inset-0" style="background-image: linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px); background-size: 48px 48px;" aria-hidden="true"></div>
@@ -91,9 +91,9 @@ const editions = [
         </div>
       </div>
 
-      <!-- Left column: copy + form -->
+      <!-- Left column: copy + form (mobile padding floor lowered so headline and form sit above the fold) -->
       <div class="relative mx-auto px-6" style="max-width: 72rem;">
-        <div class="animate-fade-up flex flex-col justify-center" style="padding-top: clamp(4rem, 7vw, 7rem); padding-bottom: clamp(5rem, 9vw, 9rem); max-width: 100%;" id="form-col">
+        <div class="animate-fade-up flex flex-col justify-center" style="padding-top: clamp(2rem, 7vw, 7rem); padding-bottom: clamp(2.5rem, 9vw, 9rem); max-width: 100%;" id="form-col">
 
           <!-- Mobile: avatar + name -->
           <div class="flex items-center gap-3 mb-7" style="display: flex;">
@@ -121,8 +121,8 @@ const editions = [
             <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text);" data-en="AI Espresso" data-pl="AI Espresso" data-it="AI Espresso">AI Espresso</span>
           </div>
 
-          <!-- Headline -->
-          <h1 style="font-size: clamp(2.6rem, 6.5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em; margin-bottom: 1.5rem;">
+          <!-- Headline (mobile floor lowered so 375px viewports don't get a 42px headline) -->
+          <h1 style="font-size: clamp(1.875rem, 6.5vw, 4.5rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 1.5rem;">
             <span style="color: var(--color-text);" data-en="Notes for people" data-pl="Notatki dla ludzi," data-it="Note per chi">Notes for people</span><br />
             <span style="color: var(--color-text-muted);" data-en="who ship." data-pl="którzy shipują." data-it="che costruiscono.">who ship.</span>
           </h1>
@@ -154,7 +154,6 @@ const editions = [
               >
                 Subscribe free →
               </button>
-            </div>
             <p id="sub-status" style="min-height: 1.25rem; font-size: 0.75rem; color: var(--color-text-dim);" role="status" aria-live="polite"></p>
           </form>
 
@@ -406,6 +405,11 @@ const editions = [
 </script>
 
 <style>
+  /* Hero min-height: tall on desktop where the photo is shown, natural on mobile. */
+  .subscribe-hero { min-height: auto; }
+  @media (min-width: 1024px) {
+    .subscribe-hero { min-height: 640px; }
+  }
   /* Left column width constraint on lg+ — mirrors wojciech.io hero pattern */
   @media (min-width: 1024px) {
     #form-col {
