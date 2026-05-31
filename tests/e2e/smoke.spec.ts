@@ -14,10 +14,8 @@ const GOLDEN_PATHS = [
   { path: '/about/', label: 'about' },
   { path: '/work/', label: 'work' },
   { path: '/apps/', label: 'apps' },
-  { path: '/kade/', label: 'kade' },
   { path: '/ai-systems/', label: 'ai-systems' },
   { path: '/insights/', label: 'insights index' },
-  { path: '/insights/kade-local-first-link-vault/', label: 'kade insight' },
 ] as const;
 
 for (const { path, label } of GOLDEN_PATHS) {
