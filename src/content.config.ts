@@ -69,4 +69,20 @@ const testimonials = defineCollection({
   }),
 });
 
-export const collections = { insights, work, testimonials };
+// Roadmap collection: public products and subdomains with a build status.
+// Own products only — never client work (confidential). `category` is the slice
+// dimension (Product / Newsletter / Course / Tool), mirroring a project board.
+const roadmap = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/roadmap' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    status: z.enum(['live', 'building', 'next', 'exploring']),
+    category: z.string(),
+    href: z.string().optional(),
+    order: z.number().default(99),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { insights, work, testimonials, roadmap };

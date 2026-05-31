@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+
+const all = (await getCollection('roadmap'))
+  .filter((e) => !e.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+
+type Status = 'live' | 'building' | 'next' | 'exploring';
+
+const columns: { status: Status; label: string; dot: string }[] = [
+  { status: 'live', label: 'Live', dot: 'var(--color-success)' },
+  { status: 'building', label: 'Building', dot: 'var(--color-accent-cta)' },
+  { status: 'next', label: 'Next up', dot: 'var(--color-accent-hi)' },
+  { status: 'exploring', label: 'Exploring', dot: 'var(--color-text-dim)' },
+];
+
+const byStatus = (s: Status) => all.filter((e) => e.data.status === s);
+const activeColumns = columns.filter((c) => byStatus(c.status).length > 0);
+---
+
+<section style="max-width: 72rem; margin: 0 auto; padding: clamp(4rem, 7vw, 6rem) 1.5rem;">
+
+  <!-- Header -->
+  <header style="max-width: 42rem; margin-bottom: clamp(2.5rem, 5vw, 3.5rem);">
+    <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.75rem;">Roadmap</p>
+    <h1 style="font-size: clamp(2.25rem, 5vw, 3.25rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; color: var(--color-text); margin-bottom: 1.25rem;">
+      What's shipped, building, and next.
+    </h1>
+    <p style="font-size: 1.0625rem; line-height: 1.65; color: var(--color-text-muted);">
+      A live view of the products and subdomains across wojciech.io. Own work only. Client engagements stay private.
+    </p>
+  </header>
+
+  <!-- Board -->
+  <div class="roadmap-board" style={`display: grid; gap: 1.25rem; grid-template-columns: repeat(${activeColumns.length}, minmax(0, 1fr));`}>
+    {activeColumns.map((col) => (
+      <section aria-label={col.label} style="min-width: 0;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.625rem; border-bottom: 1px solid var(--color-border);">
+          <span style={`width: 7px; height: 7px; border-radius: 9999px; background: ${col.dot}; flex-shrink: 0;`} aria-hidden="true"></span>
+          <h2 style="font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text);">{col.label}</h2>
+          <span style="font-size: 0.75rem; font-weight: 500; color: var(--color-text-dim); margin-left: auto;">{byStatus(col.status).length}</span>
+        </div>
+
+        <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.875rem;">
+          {byStatus(col.status).map((e) => (
+            <li style="border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface); padding: 1rem 1.125rem;">
+              <span style="display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-dim); border: 1px solid var(--color-border-2); border-radius: var(--radius-badge); padding: 2px 7px; margin-bottom: 0.625rem;">{e.data.category}</span>
+              <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.375rem;">{e.data.title}</h3>
+              <p style="font-size: 0.8125rem; line-height: 1.55; color: var(--color-text-muted); margin: 0;">{e.data.description}</p>
+              {e.data.href && (
+                <a href={e.data.href} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--color-accent-hi); text-decoration: none;">Visit ↗</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+
+</section>
+
+<style>
+  @media (max-width: 900px) {
+    .roadmap-board {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+  @media (max-width: 560px) {
+    .roadmap-board {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

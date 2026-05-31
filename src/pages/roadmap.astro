@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import RoadmapContent from '../components/pages/RoadmapContent.astro';
+import { SITE } from '../data/site';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Roadmap', item: SITE.url + '/roadmap/' },
+  ],
+};
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Roadmap',
+  url: SITE.url + '/roadmap/',
+  description: 'A live view of the products and subdomains across wojciech.io: what is shipped, what is being built, and what is next.',
+  author: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: SITE.url + '/' },
+};
+---
+
+<Layout
+  title="Roadmap · Products across wojciech.io"
+  description="A live view of the products and subdomains across wojciech.io: what is shipped, what is being built, and what is next."
+  schema={[breadcrumbSchema, pageSchema]}
+>
+  <RoadmapContent />
+</Layout>
