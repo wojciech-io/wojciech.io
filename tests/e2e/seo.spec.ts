@@ -78,7 +78,9 @@ const INDEXABLE_SITEMAP_PATHS = [
   '/jp/insights/',
 ] as const;
 // /apps/ and /subscribe/ are in noindexSitemapPaths in astro.config.mjs — excluded by design.
-const NON_INDEXABLE_SITEMAP_PATHS = ['/404/', '/cv/', '/privacy/', '/en/', '/pl/', '/it/', '/apps/', '/subscribe/'] as const;
+// Note: locale roots like /de/, /pl/, /it/ ARE indexable now that articles exist for them.
+// /en/ stays excluded because canonical EN URLs omit the prefix (e.g. /insights/<slug>/).
+const NON_INDEXABLE_SITEMAP_PATHS = ['/404/', '/cv/', '/privacy/', '/en/', '/apps/', '/subscribe/'] as const;
 
 const siteUrlForPath = (path: string) => `https://wojciech.io${path}`;
 const sameOriginPath = (absoluteUrl: string) => new URL(absoluteUrl).pathname;
