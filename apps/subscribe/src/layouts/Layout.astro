@@ -102,9 +102,23 @@ const image = `${SITE}/og-default.png`;
     </script>
     <!-- Language init -->
     <script is:inline>
+      function wioWriteLangCookie(lang) {
+        try {
+          var host = location.hostname;
+          if (!host || host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) return;
+          var domain = host.endsWith('wojciech.io') ? '.wojciech.io' : '.' + host.split('.').slice(-2).join('.');
+          var secure = location.protocol === 'https:' ? '; Secure' : '';
+          document.cookie = 'wio_lang=' + lang + '; Path=/; Max-Age=31536000; SameSite=Lax; Domain=' + domain + secure;
+        } catch (_) {}
+      }
+      function wioReadLangCookie() {
+        var m = document.cookie.match(/(?:^|; )wio_lang=([^;]*)/);
+        return m ? decodeURIComponent(m[1]) : null;
+      }
       window.setLang = function(l) {
         var lang = (l || 'en').toLowerCase();
         localStorage.setItem('wio_lang', lang);
+        wioWriteLangCookie(lang);
         document.querySelectorAll('[data-pl],[data-en],[data-it]').forEach(function(el) {
           var v = el.getAttribute('data-' + lang);
           if (v === null) v = el.getAttribute('data-en');
@@ -114,6 +128,7 @@ const image = `${SITE}/og-default.png`;
       };
       window.switchLang = function(lang) {
         localStorage.setItem('wio_lang', lang);
+        wioWriteLangCookie(lang);
         window.setLang(lang);
         // update trigger display
         var flagMap = {
@@ -135,7 +150,9 @@ const image = `${SITE}/og-default.png`;
         document.getElementById('lang-chevron') && (document.getElementById('lang-chevron').style.transform = '');
       };
       (function() {
-        var saved = localStorage.getItem('wio_lang');
+        // Read order: shared cookie (cross-subdomain) → localStorage (legacy) → browser language → default.
+        var fromCookie = wioReadLangCookie();
+        var saved = (fromCookie && ['en','pl','it'].indexOf(fromCookie) >= 0) ? fromCookie : localStorage.getItem('wio_lang');
         var nav = (navigator.language || '').toLowerCase();
         var detected = saved || (nav.startsWith('pl') ? 'pl' : nav.startsWith('it') ? 'it' : 'en');
         document.addEventListener('DOMContentLoaded', function() { window.setLang(detected); });

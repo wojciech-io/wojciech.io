@@ -224,6 +224,19 @@ const image = `${SITE}/og-default.png`;
 
     <script is:inline>
       var _nL = 'en';
+      function wioWriteLangCookie(lang) {
+        try {
+          var host = location.hostname;
+          if (!host || host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) return;
+          var domain = host.endsWith('wojciech.io') ? '.wojciech.io' : '.' + host.split('.').slice(-2).join('.');
+          var secure = location.protocol === 'https:' ? '; Secure' : '';
+          document.cookie = 'wio_lang=' + lang + '; Path=/; Max-Age=31536000; SameSite=Lax; Domain=' + domain + secure;
+        } catch (_) {}
+      }
+      function wioReadLangCookie() {
+        var m = document.cookie.match(/(?:^|; )wio_lang=([^;]*)/);
+        return m ? decodeURIComponent(m[1]) : null;
+      }
       function nLang(l) {
         _nL = l;
         ['PL','EN','IT'].forEach(function(x) {
@@ -234,6 +247,7 @@ const image = `${SITE}/og-default.png`;
           window.setLang(l);
         } else {
           try { localStorage.setItem('wio_lang', l); } catch(e) {}
+          wioWriteLangCookie(l);
           document.querySelectorAll('[data-pl],[data-en],[data-it]').forEach(function(el) {
             var v = el.getAttribute('data-' + l) || el.getAttribute('data-en');
             if (v !== null) el.textContent = v;
@@ -241,7 +255,11 @@ const image = `${SITE}/og-default.png`;
         }
       }
       (function() {
-        var sl = localStorage.getItem('wio_lang') || localStorage.getItem('notchLang');
+        // Read order: shared cookie (cross-subdomain) → localStorage → legacy notchLang → browser → default.
+        var fromCookie = wioReadLangCookie();
+        var sl = (fromCookie && ['pl','en','it'].indexOf(fromCookie) > -1)
+          ? fromCookie
+          : (localStorage.getItem('wio_lang') || localStorage.getItem('notchLang'));
         var detected;
         if (sl && ['pl','en','it'].indexOf(sl) > -1) { detected = sl; }
         else {

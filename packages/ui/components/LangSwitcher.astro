@@ -65,17 +65,72 @@ const { langs, storageKey = 'appLang', defaultLang = 'en' } = Astro.props;
 </style>
 
 <script>
+  // Cross-subdomain language persistence.
+  // Uses a cookie scoped to .wojciech.io so the choice follows the user across
+  // wojciech.io, app.wojciech.io, subscribe.wojciech.io, academy.wojciech.io, etc.
+  // Falls back to localStorage when the host has no shared parent domain (localhost dev).
+  const COOKIE_NAME = 'wio_lang';
+
+  function getSharedDomain(): string | null {
+    const host = location.hostname;
+    if (!host || host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) return null;
+    // .wojciech.io covers every wojciech.io subdomain; other hosts get host-scoped cookies.
+    if (host.endsWith('wojciech.io')) return '.wojciech.io';
+    // Strip leftmost label so example.com stays example.com but app.example.com becomes .example.com.
+    const parts = host.split('.');
+    if (parts.length < 2) return null;
+    return '.' + parts.slice(-2).join('.');
+  }
+
+  function readCookie(name: string): string | null {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  function writeCookie(name: string, value: string) {
+    const domain = getSharedDomain();
+    const secure = location.protocol === 'https:';
+    const parts = [
+      `${name}=${encodeURIComponent(value)}`,
+      'Path=/',
+      'Max-Age=31536000',          // 1 year
+      'SameSite=Lax',
+    ];
+    if (domain) parts.push(`Domain=${domain}`);
+    if (secure) parts.push('Secure');
+    document.cookie = parts.join('; ');
+  }
+
   function initLangSwitcher(switcher: HTMLElement) {
     const langs = (switcher.dataset.langs ?? 'en').split(',');
     const storageKey = switcher.dataset.storageKey ?? 'appLang';
     const defaultLang = switcher.dataset.default ?? 'en';
     const selector = langs.map((k) => `[data-${k}]`).join(',');
 
+    function persist(l: string) {
+      writeCookie(COOKIE_NAME, l);
+      try { localStorage.setItem(storageKey, l); } catch (_) { /* */ }
+    }
+
+    function readStored(): string | null {
+      const fromCookie = readCookie(COOKIE_NAME);
+      if (fromCookie && langs.includes(fromCookie)) return fromCookie;
+      try {
+        const fromLocal = localStorage.getItem(storageKey);
+        if (fromLocal && langs.includes(fromLocal)) {
+          // Migrate to the shared cookie so the next subdomain hop carries it.
+          writeCookie(COOKIE_NAME, fromLocal);
+          return fromLocal;
+        }
+      } catch (_) { /* */ }
+      return null;
+    }
+
     function applyLang(l?: string | null) {
       if (l) {
-        try { localStorage.setItem(storageKey, l); } catch (_) { /* */ }
+        persist(l);
       } else {
-        try { l = localStorage.getItem(storageKey); } catch (_) { /* */ }
+        l = readStored();
         if (!l) {
           const bl = (navigator.language ?? 'en').toLowerCase();
           l = langs.find((k) => bl.startsWith(k)) ?? defaultLang;

@@ -48,6 +48,25 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
 <html lang={htmlLang}>
   <head>
     <script is:inline>document.documentElement.classList.add('js');</script>
+    <!-- Cross-subdomain language: write the same cookie subscribe/app/academy read. -->
+    <script is:inline>
+      (function () {
+        try {
+          var path = location.pathname || '/';
+          var seg = path.split('/').filter(Boolean)[0] || '';
+          var known = ['en','pl','it','de','dk','no','jp','es'];
+          var lang = known.indexOf(seg) >= 0 ? seg : 'en';
+          var host = location.hostname;
+          if (!host || host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) {
+            try { localStorage.setItem('appLang', lang); } catch (_) {}
+            return;
+          }
+          var domain = host.endsWith('wojciech.io') ? '.wojciech.io' : '.' + host.split('.').slice(-2).join('.');
+          var secure = location.protocol === 'https:' ? '; Secure' : '';
+          document.cookie = 'wio_lang=' + lang + '; Path=/; Max-Age=31536000; SameSite=Lax; Domain=' + domain + secure;
+        } catch (_) {}
+      })();
+    </script>
     <SEOHead
       title={title}
       description={description}
