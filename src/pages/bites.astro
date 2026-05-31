@@ -168,74 +168,93 @@ const softwareSchema = {
         <!-- Before / after — live, interactive demos -->
         <h3 class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-muted)] mb-5">Before and after</h3>
         <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-2xl mb-2">
-          Real fixes the plugin ships on a live page. Hover, click, press Escape, tap — every demo is wired up.
+          Real fixes shown side by side. Each block shows both states at the same time, so the difference is obvious without hovering or clicking.
         </p>
         <div class="mb-12">
 
-          <BeforeAfterDemo label="/optimize-page · CTA hover state" caption="Hover both buttons. The Before one blends into the background, the After one stays clickable.">
+          <BeforeAfterDemo label="/optimize-page · CTA hover state" caption="Both buttons shown twice — rest state and hovered state. Before: the hovered button blends into the background. After: it stays clickable.">
             <Fragment slot="before">
-              <button type="button" class="demo-cta demo-cta-broken">Book a call</button>
-              <p class="demo-note">Hover blends into background. Reads as disabled right when someone wants to click.</p>
+              <div class="demo-state-stack">
+                <div class="demo-state">
+                  <span class="demo-state-label">Rest</span>
+                  <button type="button" class="demo-cta demo-cta-broken">Book a call</button>
+                </div>
+                <div class="demo-state">
+                  <span class="demo-state-label">Hovered</span>
+                  <button type="button" class="demo-cta demo-cta-broken is-hover">Book a call</button>
+                </div>
+              </div>
+              <p class="demo-note">Hovered button reads as disabled — exact moment someone is about to click.</p>
             </Fragment>
             <Fragment slot="after">
-              <button type="button" class="demo-cta demo-cta-fixed">Book a call</button>
-              <p class="demo-note">Hover shifts to a darker tone of the same accent. Stays legible.</p>
+              <div class="demo-state-stack">
+                <div class="demo-state">
+                  <span class="demo-state-label">Rest</span>
+                  <button type="button" class="demo-cta demo-cta-fixed">Book a call</button>
+                </div>
+                <div class="demo-state">
+                  <span class="demo-state-label">Hovered</span>
+                  <button type="button" class="demo-cta demo-cta-fixed is-hover">Book a call</button>
+                </div>
+              </div>
+              <p class="demo-note">Darker tone of the same accent. Stays legible, signals "yes, click here".</p>
             </Fragment>
           </BeforeAfterDemo>
 
-          <BeforeAfterDemo label="/optimize-page · Mobile drawer" caption="Open the menu, then press Escape. The Before version ignores Escape; the After version closes and returns focus to the trigger.">
+          <BeforeAfterDemo label="/optimize-page · Mobile drawer" caption="Both drawers are shown open by default. Before has no close affordance. After has an X, a focus trap, and closes on Escape.">
             <Fragment slot="before">
-              <div class="demo-drawer" data-demo-drawer="broken">
-                <button type="button" class="demo-button" data-demo-drawer-trigger>Open menu</button>
-                <div class="demo-drawer-panel" data-demo-drawer-panel hidden>
+              <div class="demo-drawer demo-drawer-open" data-demo-drawer="broken">
+                <button type="button" class="demo-button" data-demo-drawer-trigger>Menu open</button>
+                <div class="demo-drawer-panel" data-demo-drawer-panel>
                   <a href="javascript:void(0)" tabindex="0">Home</a>
                   <a href="javascript:void(0)" tabindex="0">Insights</a>
                   <a href="javascript:void(0)" tabindex="0">Work</a>
                 </div>
-                <p class="demo-note">No Escape handler. No focus management. Page scroll keeps going.</p>
               </div>
+              <p class="demo-note">No close button. No Escape handler. Background page keeps scrolling under it.</p>
             </Fragment>
             <Fragment slot="after">
-              <div class="demo-drawer" data-demo-drawer="fixed">
-                <button type="button" class="demo-button" data-demo-drawer-trigger aria-expanded="false" aria-controls="demo-drawer-fixed-panel">Open menu</button>
-                <div id="demo-drawer-fixed-panel" class="demo-drawer-panel" data-demo-drawer-panel hidden role="dialog" aria-modal="true" aria-label="Demo menu">
+              <div class="demo-drawer demo-drawer-open" data-demo-drawer="fixed">
+                <button type="button" class="demo-button" data-demo-drawer-trigger aria-expanded="true" aria-controls="demo-drawer-fixed-panel">Menu open</button>
+                <div id="demo-drawer-fixed-panel" class="demo-drawer-panel" data-demo-drawer-panel role="dialog" aria-modal="true" aria-label="Demo menu">
                   <button type="button" class="demo-drawer-close" data-demo-drawer-close aria-label="Close menu">×</button>
                   <a href="javascript:void(0)">Home</a>
                   <a href="javascript:void(0)">Insights</a>
                   <a href="javascript:void(0)">Work</a>
                 </div>
-                <p class="demo-note">Escape closes. Focus enters the panel, returns to the trigger on close.</p>
               </div>
+              <p class="demo-note">Visible X. Escape closes (try it). Focus returns to the trigger.</p>
             </Fragment>
           </BeforeAfterDemo>
 
-          <BeforeAfterDemo label="/optimize-page · Submit state" caption="Type something and submit. Both versions “send” nothing — they just show the state.">
+          <BeforeAfterDemo label="/optimize-page · Submit state" caption="Both forms shown post-submit. Before: a blocking browser alert. After: an inline success state with a phone fallback.">
             <Fragment slot="before">
-              <form class="demo-form" data-demo-form="broken" novalidate>
-                <label class="demo-label">
-                  <span>Name</span>
-                  <input type="text" placeholder="Daria" autocomplete="off" />
-                </label>
-                <button type="submit" class="demo-button">Send</button>
-                <p class="demo-note">Submit fires <code>alert()</code>. Off-brand, blocking, gone the moment the page reloads.</p>
-              </form>
-            </Fragment>
-            <Fragment slot="after">
-              <div data-demo-form="fixed">
-                <form class="demo-form" data-demo-form-shell novalidate>
+              <div class="demo-form-frame">
+                <form class="demo-form" novalidate onsubmit="event.preventDefault()">
                   <label class="demo-label">
                     <span>Name</span>
-                    <input type="text" placeholder="Daria" autocomplete="off" />
+                    <input type="text" value="Daria" autocomplete="off" readonly />
                   </label>
                   <button type="submit" class="demo-button">Send</button>
                 </form>
-                <div class="demo-form-success" data-demo-form-success hidden>
-                  <p class="demo-form-success-title">Got it. I reply within 24h.</p>
-                  <p class="demo-note">Need it faster? <a href="javascript:void(0)" tabindex="0">+48 …</a></p>
-                  <button type="button" class="demo-form-reset" data-demo-form-reset>Reset demo</button>
+                <div class="demo-alert" role="alertdialog" aria-label="Browser alert">
+                  <div class="demo-alert-body">
+                    <p class="demo-alert-title">localhost says</p>
+                    <p class="demo-alert-text">Sent!</p>
+                  </div>
+                  <div class="demo-alert-actions">
+                    <button type="button" class="demo-alert-button" disabled>OK</button>
+                  </div>
                 </div>
-                <p class="demo-note demo-note-shell">Inline success state. Sets the reply expectation. Offers a phone fallback.</p>
               </div>
+              <p class="demo-note">Blocking native dialog. Off-brand, modal, vanishes the second the page reloads.</p>
+            </Fragment>
+            <Fragment slot="after">
+              <div class="demo-form-success">
+                <p class="demo-form-success-title">Got it. I reply within 24h.</p>
+                <p class="demo-note">Need it faster? <a href="javascript:void(0)" tabindex="0">+48 …</a></p>
+              </div>
+              <p class="demo-note">Inline success state. Sets reply expectation. Offers a phone fallback.</p>
             </Fragment>
           </BeforeAfterDemo>
 
@@ -351,14 +370,36 @@ const softwareSchema = {
     align-self: flex-start;
   }
   .demo-cta-broken:hover,
-  .demo-cta-broken:focus-visible {
+  .demo-cta-broken:focus-visible,
+  .demo-cta-broken.is-hover {
     background: rgba(235, 255, 0, 0.18);
     color: var(--color-text-dim);
   }
   .demo-cta-fixed:hover,
-  .demo-cta-fixed:focus-visible {
+  .demo-cta-fixed:focus-visible,
+  .demo-cta-fixed.is-hover {
     background: var(--color-accent-hi);
     color: var(--color-bg);
+  }
+  /* Side-by-side state stacks for hover/active demos. */
+  .demo-state-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    align-items: flex-start;
+  }
+  .demo-state {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .demo-state-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    min-width: 56px;
   }
   .demo-note {
     font-size: 0.78rem;
@@ -386,6 +427,7 @@ const softwareSchema = {
   }
   .demo-button:hover { border-color: var(--color-accent); }
   .demo-drawer { position: relative; }
+  .demo-drawer-open .demo-drawer-panel { display: flex; }
   .demo-drawer-panel {
     margin-top: 0.85rem;
     padding: 0.85rem 1rem;
@@ -442,6 +484,7 @@ const softwareSchema = {
     outline: none;
     border-color: var(--color-accent);
   }
+  .demo-form-frame { position: relative; }
   .demo-form-success {
     padding: 0.85rem 1rem;
     border-radius: var(--radius-card);
@@ -449,22 +492,58 @@ const softwareSchema = {
     background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
   }
   .demo-form-success-title {
-    margin: 0;
+    margin: 0 0 0.3rem;
     font-weight: 600;
     color: var(--color-text);
     font-size: 0.95rem;
   }
-  .demo-form-reset {
-    margin-top: 0.6rem;
+  /* Browser-alert mockup overlaying the form (Before column). */
+  .demo-alert {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 220px;
+    max-width: 90%;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #e9e7df;
+    color: #1a1a1a;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  }
+  .demo-alert-body {
+    padding: 0.85rem 1rem 0.7rem;
+    text-align: center;
+  }
+  .demo-alert-title {
+    margin: 0 0 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #6b6b6b;
+  }
+  .demo-alert-text {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1a1a1a;
+  }
+  .demo-alert-actions {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+  }
+  .demo-alert-button {
+    flex: 1;
+    padding: 0.6rem;
     background: transparent;
     border: none;
-    color: var(--color-text-dim);
-    font-size: 0.75rem;
-    text-decoration: underline;
-    cursor: pointer;
-    padding: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0a84ff;
+    cursor: default;
   }
-  .demo-form-reset:hover { color: var(--color-text); }
   /* Touch target sizes — small vs 44px (Apple HIG / Material baseline). */
   .demo-tt-row { display: flex; align-items: center; gap: 4px; }
   .demo-tt-icon {
@@ -586,75 +665,36 @@ const softwareSchema = {
 </style>
 
 <script is:inline>
-  // Drawer demo: broken version has no Escape/focus management;
-  // fixed version closes on Escape, returns focus to trigger.
-  document.querySelectorAll('[data-demo-drawer]').forEach((root) => {
-    const mode = root.getAttribute('data-demo-drawer'); // 'broken' | 'fixed'
+  // Drawer demos are open-by-default for static legibility.
+  // The "fixed" version still demonstrates Escape-to-close so the caption stays honest.
+  document.querySelectorAll('[data-demo-drawer="fixed"]').forEach((root) => {
     const trigger = root.querySelector('[data-demo-drawer-trigger]');
     const panel = root.querySelector('[data-demo-drawer-panel]');
     const close = root.querySelector('[data-demo-drawer-close]');
     if (!trigger || !panel) return;
 
-    const open = () => {
-      panel.hidden = false;
-      if (mode === 'fixed') {
-        trigger.setAttribute('aria-expanded', 'true');
-        const first = panel.querySelector('a, button');
-        if (first) first.focus();
-      }
-    };
     const closePanel = () => {
-      panel.hidden = true;
-      if (mode === 'fixed') {
-        trigger.setAttribute('aria-expanded', 'false');
-        trigger.focus();
-      }
+      root.classList.remove('demo-drawer-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.focus();
+    };
+    const openPanel = () => {
+      root.classList.add('demo-drawer-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      const first = panel.querySelector('a, button');
+      if (first) first.focus();
     };
 
-    trigger.addEventListener('click', open);
-
-    if (mode === 'fixed') {
-      if (close) close.addEventListener('click', closePanel);
-      root.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && !panel.hidden) {
-          e.preventDefault();
-          closePanel();
-        }
-      });
-    }
-  });
-
-  // Form demo: broken version calls alert(); fixed shows inline success.
-  document.querySelectorAll('form[data-demo-form="broken"]').forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      // Deliberately the "before" behavior — that's the demo.
-      window.alert('Sent!');
+    trigger.addEventListener('click', () => {
+      if (root.classList.contains('demo-drawer-open')) closePanel();
+      else openPanel();
     });
-  });
-
-  document.querySelectorAll('[data-demo-form="fixed"]').forEach((root) => {
-    const form = root.querySelector('[data-demo-form-shell]');
-    const success = root.querySelector('[data-demo-form-success]');
-    const shellNote = root.querySelector('.demo-note-shell');
-    const reset = root.querySelector('[data-demo-form-reset]');
-    if (!form || !success) return;
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      form.hidden = true;
-      if (shellNote) shellNote.hidden = true;
-      success.hidden = false;
+    if (close) close.addEventListener('click', closePanel);
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && root.classList.contains('demo-drawer-open')) {
+        e.preventDefault();
+        closePanel();
+      }
     });
-
-    if (reset) {
-      reset.addEventListener('click', () => {
-        success.hidden = true;
-        form.hidden = false;
-        if (shellNote) shellNote.hidden = false;
-        const input = form.querySelector('input');
-        if (input) input.value = '';
-      });
-    }
   });
 </script>
