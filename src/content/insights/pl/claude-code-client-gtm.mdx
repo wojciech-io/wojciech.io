@@ -1,0 +1,124 @@
+---
+title: "Jak używam Claude Code w GTM u klientów"
+description: "Poza outboundowym agent stackiem: jak Claude Code prowadzi mi content ops, higienę CRM i research w realnych projektach klientowskich. I jak ten model dostarczania wygląda z zewnątrz."
+publishedAt: "2026-05-25"
+tags:
+  - "Claude Code"
+  - "GTM"
+  - "AI"
+  - "Client Work"
+  - "MCP"
+featured: false
+draft: false
+coverType: "terminal"
+category: "AI Systems"
+locale: "pl"
+translationOf: "claude-code-client-gtm"
+tldr:
+  - "Claude Code robi w każdym projekcie trzy rzeczy: outboundowy research, content operations i higienę danych w CRM."
+  - "Compounding jest realny. Piąty run u tego samego klienta jest mierzalnie lepszy niż pierwszy."
+  - "Klient widzi szybsze dostarczanie i lepsze drafty. Stosu agentów nie widzi. I o to właśnie chodzi."
+---
+
+Większość osób, które słyszały o Claude Code, traktuje go jak asystenta do kodu. To najmniejsza część tego, co robi u mnie w projektach klientowskich.
+
+Wbiłem go w trzy miejsca każdego GTM-engagementu: outboundowy research, content operations, dane w CRM. Wyszedł z tego model dostarczania, którego dwa lata temu nie dało się złożyć. I do którego nie potrafię już wrócić.
+
+To nie chodzi o zastąpienie myślenia. Chodzi o wycięcie tarcia między myśleniem a wysłaniem.
+
+---
+
+## Trzy zadania, które wykonuje
+
+<ProcessFlow
+  steps={[
+    { tag: "Zadanie 1", label: "Badania + analizy zewnętrzne", highlight: true, body: "Lista 50 kont: przekształcenie surowego pliku CSV w sklasyfikowane konta wraz z gotowymi sekwencjami w mniej niż godzinę. Kontekst CLAUDE.md jest łączony w kolejnych przebiegach." },
+    { tag: "Księga Hioba 2", label: "Działania związane z treścią", body: "Faza audytu ujawnia niedociągnięcia. Faza projektowania opiera się na badaniach, a nie na szablonach. Cykl iteracji trwa godziny, a nie tygodnie." },
+    { tag: "Księga Hioba 3", label: "CRM operacje na danych", body: "Spójna klasyfikacja ICP na dużą skalę, sygnalizowanie duplikatów i brakujących danych oraz możliwość weryfikacji uzasadnienia przed jakąkolwiek interwencją ze strony CRM." }
+  ]}
+/>
+
+Korzystam z serwisu Claude Code do obsługi trzech różnych rodzajów zadań, z których każde ma własną konfigurację i logikę działania.
+
+### Zadanie 1: Badania i gromadzenie informacji zewnętrznych
+
+Szczegółowo opisałem [struktura agenta GTM](/pl/insights/claude-code-vs-clay). W skrócie: plik `Claude Code`, cztery narzędzia MCP, instrukcja operatora `CLAUDE.md` oraz pięć nazwanych umiejętności obsługują proces wzbogacania danych i tworzenia szkiców (pipeline). Lista 50 kont przechodzi od surowego pliku CSV do ocenionych kont wraz z gotowymi sekwencjami w mniej niż godzinę.
+
+Kwestia, której tam nie poruszyłem: **efekt kumulacji**.
+
+Po trzech miesiącach pracy nad projektem plik `CLAUDE.md` zawiera bogaty zbiór specyficznych dla klienta sygnałów dotyczących ICP, wzorców sprzeciwu oraz wniosków dotyczących sekwencji. Piąta iteracja jest wyraźnie lepsza od pierwszej. Takiego efektu nie da się osiągnąć w systemach Clay ani Apollo. Systemy te przetwarzają dane wiersz po wierszu. Nie gromadzą one kontekstu operatora.
+
+### Stanowisko 2: Zarządzanie treścią
+
+Każde zlecenie w usługi GTM dotyczy treści: strony internetowej, studiów przypadków, profilu na LinkedIn oraz kampanii e-mailowych. Od momentu stwierdzenia „musimy zaktualizować stronę główną” do faktycznej aktualizacji strony mija zazwyczaj kilka tygodni, które wypełniają cykle konsultacji z interesariuszami i wielokrotna wymiana korespondencji.
+
+Dzięki funkcji Claude Code proces pracy ulega uproszczeniu:
+
+1. **Faza audytu:** `/audit` analizuje aktualną witrynę, zestaw konkurencji oraz brief z serwisu ICP. Zwraca uporządkowaną analizę luk wraz z konkretnymi zaleceniami dla poszczególnych sekcji.
+2. **Faza tworzenia szkicu:** `/draft [sekcja]`: nie na podstawie szablonu, ale wyników audytu. Każdy szkic opiera się na tym, co ujawnił audyt, a nie na założeniach autora.
+3. **Iteracja:** Edytuję szkic. System odnotowuje, co zmieniłem i dlaczego. Kolejny szkic jest już bliższy właściwej odpowiedzi.
+
+Wynik nie jest od razu idealny. Punktem wyjścia są badania naukowe, a cykl iteracji trwa godziny, a nie tygodnie.
+
+### Zadanie 3: Operacje na danych w CRM
+
+To jest najbardziej niedoceniany przykład zastosowania.
+
+Większość systemów CRM dla sektora B2B, z którymi mam do czynienia, boryka się z tymi samymi problemami: zduplikowane firmy, kontakty bez przypisanych firm, transakcje utknięte na niewłaściwym etapie oraz pola niestandardowe, których nikt nie wypełnił. Ręczne uporządkowanie tych danych zajmuje analitykowi całe tygodnie, a mimo to wyniki są niespójne, ponieważ ludzie stosują te same zasady w różny sposób w wierszu 12 i w wierszu 412.
+
+Claude Code w porównaniu z HubSpotMCP, który działa inaczej:
+
+- Odczytuje rekordy kontaktów i firm w partiach
+- Stosuje kryteria punktacji ICP żeby spójnej klasyfikacji i segmentacji na dużą skalę
+- Wskazuje duplikaty i brakujące dane na podstawie wzorców, a nie poprzez sprawdzanie każdego wiersza z osobna
+- Generuje pakiety aktualizacyjne do weryfikacji przez użytkownika, zanim jakiekolwiek dane trafią do systemu CRM
+
+Nie dzieje się to jednym kliknięciem. Nadal musisz to sprawdzić i zatwierdzić. Logika klasyfikacji jest jednak spójna i przed zatwierdzeniem możesz zapoznać się z uzasadnieniem: „niska ocena w kategorii ICP, ponieważ liczba pracowników wynosi poniżej 50, a brakuje sygnałów wskazujących na stosowanie technologii korporacyjnych”.
+
+---
+
+## Model współpracy, jaki to pozwala
+
+<MetricDelta
+  before="Co najmniej 6 tygodni"
+  beforeLabel="Traditional GTM engagement"
+  after="Szybsza dostawa"
+  afterLabel="With agent stack"
+  delta="research + writing latency removed"
+  label="Co się zmieniło: obciążenie związane z badaniami i opóźnienia w pisaniu, a nie warstwa oceny"
+  tone="positive"
+/>
+
+**Wcześniej:** Praca w projektu GTM polegała na określeniu zakresu zadań, przydzielaniu zadań badawczych, sporządzaniu wytycznych dla autorów, sprawdzaniu szkiców, tworzeniu sekwencji oraz równoległym zarządzaniu procesem CRM. Trwało to co najmniej sześć tygodni i wymagało ciągłej koordynacji.
+
+**Obecnie:** Analizuję wyniki pracy operatorów: rozbudowaną listę kont, zaplanowane działania marketingowe, dostosowane treści na stronie internetowej oraz przejrzystą stronę CRM. Realizuję te zadania szybciej, przy mniejszym uzależnieniu od zasobów zewnętrznych.
+
+Nie oznacza to jednak, że pracuję sam. Klienci nadal mają wpływ na określenie tematu przewodniego, ton wypowiedzi oraz zatwierdzanie treści. Decyzja trzeba zarówno do mnie, jak i do nich. Zniknęły natomiast nakłady związane z researchiem oraz opóźnienia w tworzeniu treści.
+
+---
+
+## Co widzą klienci, a czego nie
+
+Klienci zyskują szybszą realizację i lepszej jakości pierwsze wersje projektów. Sekwencje oparte na konkretnych sygnałach dotyczących danego konta, a nie na ogólnej personalizacji. Model CRM, który odzwierciedla podejście ICP, a nie dotychczasowy chaos.
+
+Nie widzą stosu agentów. To zamierzone.
+
+Wynik mówi sam za siebie. Narzędzie to tylko szczegół implementacyjny. Klient nie musi rozumieć działania serwerów MCP. Potrzebuje sekwencji, które rezerwują połączenia. Na tym polega umowa.
+
+---
+
+## Co odróżnia dobry bieg od doskonałego
+
+Trzy czynniki decydują o różnicy między średnią produkcją a faktyczną ilością produktów wysyłanych do klientów.
+
+**Głębia kontekstu.** Plik `CLAUDE.md` stanowi punkt zaczepienia. Skromny opis zadania daje skromne wyniki. Natomiast szczegółowy kontekst operatora: obejmujący sygnały z serwisu ICP, wzorce sprzeciwów oraz notatki z kont gromadzone przez miesiące: pozwala uzyskać wyniki, których nowa osoba w zespole nie byłaby w stanie odtworzyć. To właśnie początkowa inwestycja w konfigurację sprawia, że każde kolejne uruchomienie przynosi efekt kumulacyjny, a nie tylko przyspiesza działanie.
+
+**Gęstość zadania.** Im bogatszy materiał źródłowy, tym wyraźniejszy wynik. Dobrze udokumentowany CRM daje lepszą segmentację. Szczegółowy ICP daje lepsze sekwencje. Agent wzmacnia jakość; nie tworzy jej od podstaw.
+
+**W centrum uwagi pozostaje osąd operatora.** Logika punktacji, strategia sekwencji i decyzje dotyczące pozycjonowania wychodzą ode mnie. Claude Code zajmuje się analizą i przygotowuje projekty. Decyzje biznesowe należą do operatora i właśnie dlatego to działa. Nie chcesz, by to agent podejmował decyzje dotyczące pozycjonowania. Chcesz, by realizował te, które już podjąłeś: szybciej i spójniej niż jakikolwiek zespół.
+
+---
+
+Jeśli prowadzisz projekty GTM i wąskim gardłem jest research, pisanie albo porządek w CRM, a nie sama strategia: to warto wziąć na poważnie.
+
+[Umów rozmowę](/pl/contact/#book-call), jeśli chcesz pogadać o tym, jak to wpiąć w twoją infrastrukturę.

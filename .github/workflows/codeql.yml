@@ -24,6 +24,13 @@ jobs:
         with:
           languages: javascript-typescript
           queries: security-and-quality
+          config: |
+            paths-ignore:
+              # Build-time CLI scripts: no untrusted input, no deploy surface.
+              # Translator/glossary regexes trip non-literal-regexp + incomplete-sanitization
+              # rules as false positives.
+              - scripts/i18n/**
+              - tests/**
 
       - name: Autobuild
         uses: github/codeql-action/autobuild@v4
