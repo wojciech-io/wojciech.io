@@ -26,8 +26,8 @@ Tu jest inna: każde AI, które dziś chodzi u mnie w produkcji, konkretne zadan
 Jedna rama na start: rozróżniam narzędzia, które **dają lepszy output**, od tych, które tylko **przerzucają pracę gdzie indziej**. Pierwsze zostają. Drugie palą ci czas i dają poczucie produktywności, nic przy tym nie naprawiając.
 
 <KeyTakeaway
-  title="Test działania"
-  body="Narzędzie zostaje tylko wtedy, gdy poprawia jakość wyników, skraca czas podejmowania decyzji lub zwiększa wiarygodność kontekstu. Jeśli jedynie ubiera ręczny proces w ładniejszy interfejs użytkownika, zostaje wyeliminowane."
+  title="Test operacyjny"
+  body="Narzędzie zostaje, jeśli daje lepszy output, skraca czas decyzji albo robi kontekst bardziej wiarygodnym. Jeśli tylko ubiera manualny proces w ładniejsze UI, wypada."
 />
 
 ---
@@ -37,74 +37,74 @@ Jedna rama na start: rozróżniam narzędzia, które **dają lepszy output**, od
 <ProcessFlow
   direction="vertical"
   steps={[
-    { tag: "Warstwa 1", label: "Rozumowanie", body: "Claude Sonnet / Opus – do złożonej diagnostyki, ICP – do analizy, GTM – do projektowania architektury. Stosowane w sytuacjach, gdy zadanie wymaga uwzględnienia sprzecznych ograniczeń i wyciągnięcia uzasadnionego wniosku." },
-    { tag: "Warstwa 2", label: "Realizacja", body: "Claude Code obsługuje stos agentów: potoki badawcze, pętle wzbogacania danych, szkice treści oraz klasyfikację CRM. Warstwa łącząca analizę danych z wynikami pracy." },
-    { tag: "Warstwa 3", label: "Badania", body: "Exa MCP – narzędzie do wyszukiwania informacji w sieci w czasie rzeczywistym. Automatyzacja przeglądarki w przypadku stron blokujących roboty indeksujące. Perplexity – narzędzie do syntetycznego wyszukiwania informacji." },
-    { tag: "Warstwa 4", label: "CRM + Dane", body: "MCP firmy HubSpot do obsługi operacji CRM. GA4 i Amplitude jako źródła danych, na podstawie których działa warstwa wnioskowania." }
+    { tag: "Warstwa 1", label: "Rozumowanie", body: "Claude Sonnet/Opus do złożonej diagnostyki: analiza ICP, review architektury GTM, synteza pozycjonowania. Gdy zadanie wymaga trzymania sprzecznych ograniczeń i dojścia do obroninego wniosku." },
+    { tag: "Warstwa 2", label: "Egzekucja", body: "Claude Code prowadzi agent stack: research pipelines, pętle enrichmentu, drafty contentu, klasyfikacja CRM. Warstwa, która łączy inteligencję z work product." },
+    { tag: "Warstwa 3", label: "Research", body: "Exa MCP do real-time web research. Automatyzacja przeglądarki na stronach blokujących crawlery. Perplexity do syntetycznego background research." },
+    { tag: "Warstwa 4", label: "CRM + Dane", body: "HubSpot MCP do operacji CRM. GA4 i Amplitude jako źródła danych, na podstawie których rozumuje warstwa wnioskowania." }
   ]}
 />
-### Poziom 1: Rozumowanie
+### Warstwa 1: Rozumowanie
 
-**Claude Sonnet / Opus**: kompleksowe usługi diagnostyczne: analiza ICP, przeglądy architektury GTM, synteza pozycjonowania. Wszędzie tam, gdzie zadanie wymaga jednoczesnego uwzględnienia wielu sprzecznych ograniczeń i wyciągnięcia uzasadnionego wniosku, a nie tylko dopasowania wzorca do prawdopodobnego kolejnego elementu.
+**Claude Sonnet / Opus** do złożonej pracy diagnostycznej: analiza ICP, review architektury GTM, synteza pozycjonowania. Wszędzie, gdzie zadanie wymaga trzymania wielu sprzecznych ograniczeń naraz i dojścia do obroninego wniosku, nie tylko dopasowania patternu.
 
-Nie korzystam z Claude’a przy każdej okazji. Rutynowe tworzenie szkiców, proste poprawki, zwykłe zapytania badawcze: to nie wymaga pełnego poziomu rozumowania. Użycie Opus do przeróbki tematu wiadomości to jak użycie klucza dynamometrycznego do powieszenia ramki na zdjęcie.
+Nie sięgam po Claude’a do wszystkiego. Rutynowy drafting, proste poprawki, zwykłe zapytania researchowe: to nie potrzebuje pełnej warstwy rozumowania. Odpalanie Opus na rewrite subject line’a to jak użycie klucza dynamometrycznego do powieszenia obrazka.
 
-Test decydujący: *Czy bez tego mogę dojść do tego samego wniosku?* Jeśli tak, to tego nie stosuję. Jeśli zadanie rzeczywiście wymaga rozumowania: rozważenia kompromisów, syntezy sprzecznych sygnałów, zbudowania spójnej argumentacji na podstawie rozproszonych informacji: to właśnie po tę warstwę sięgam.
+Test operacyjny: *Czy dojdę do tej samej odpowiedzi bez niego?* Jeśli tak, nie używam. Jeśli zadanie naprawdę wymaga rozumowania: ważenia kompromisów, syntezy sprzecznych sygnałów, zbudowania spójnego argumentu z rozproszonych inputów: wtedy sięgam po tę warstwę.
 
-### Warstwa 2: Realizacja
+### Warstwa 2: Egzekucja
 
-**Claude Code** obsługuje stos agentów. Potoki badawcze, pętle wzbogacania danych, szkice treści oparte na danych audytowych, klasyfikacja CRM: wszystko to odbywa się właśnie tutaj. Jest to narzędzie o największym znaczeniu w całym stosie: nie dlatego, że jest najinteligentniejsze, ale dlatego, że łączy warstwę analityczną z rzeczywistymi wynikami pracy.
+**Claude Code** prowadzi agent stack. Research pipelines, pętle enrichmentu, drafty contentu z danych audytowych, klasyfikacja CRM: wszystko leci tutaj. To narzędzie o największej dźwigni w stosie: nie dlatego, że jest najmądrzejsze, ale dlatego, że łączy inteligencję z realnym work product.
 
-Kluczowa konfiguracja: plik `CLAUDE.md` dla każdego klienta, narzędzia MCP do dostępu do danych oraz umiejętności (Skills) do realizacji konkretnych podzadań. Opisałem już [szczegółowo stos rozwiązań zewnętrznych](/pl/insights/claude-code-vs-clay) oraz [jak działa on w projektach realizowanych u klientów](/pl/insights/claude-code-client-gtm). W skrócie: plik `Claude Code` w połączeniu z odpowiednim kontekstem operatora pozwala osiągnąć wyniki, które wcześniej wymagały zaangażowania całego zespołu.
+Kluczowa konfiguracja: `CLAUDE.md` per klient, narzędzia MCP do dostępu do danych, Skills do konkretnych podzadań. Opisałem [stos outboundowy szczegółowo](/pl/insights/claude-code-vs-clay) i [jak chodzi u klientów](/pl/insights/claude-code-client-gtm). W skrócie: Claude Code z dobrym kontekstem operatora produkuje robotę, która kiedyś wymagała zespołu.
 
-**Cursor** do kodu, który musi znajdować się w repozytorium. Kiedy tworzę serwer MCP, rozbudowuję moduł Cloudflare Worker lub wprowadzam nową funkcję do jednego z moich produktów, Cursor zajmuje się edycją kodu. Claude Code odpowiada za logikę i działanie agenta; Cursor natomiast daje integrację z środowiskiem IDE oraz przegląd zmian.
+**Cursor** do kodu, który musi żyć w repo. Kiedy buduję MCP server, rozszerzam Cloudflare Worker albo shipuję feature do jednego z moich produktów, Cursor obsługuje edycję. Claude Code myśli i prowadzi agentów; Cursor daje integrację IDE i diff review.
 
-Nie są one zbędne. Claude Code to operator, a „Cursor” to edytor. Różne zadania, różne konteksty.
+Nie dublują się. Claude Code to operator; Cursor to edytor. Różne zadania, różne konteksty.
 
-### Poziom 3: Badania
+### Warstwa 3: Research
 
-**Exa MCP** do wyszukiwania informacji w sieci w czasie rzeczywistym podczas pracy agentów. Exa została stworzona specjalnie z myślą o wykorzystaniu w usługi LLM: oferuje wyszukiwanie semantyczne, przejrzyste wyniki i nie napotyka problemów z blokowaniem przez serwisy. Po kilku miesiącach zastąpiła w moim zestawie narzędzi Brave Search, ponieważ jakość wyników wyszukiwania dotyczących firm jest w niej niezmiennie lepsza.
+**Exa MCP** do real-time web research w trakcie agent runów. Exa jest zbudowana pod LLM: semantic search, czyste odpowiedzi, bez dramy z blockowaniem crawlerów. Po kilku miesiącach zastąpiła Brave Search, bo jakość wyników na zapytaniach o firmy jest konsekwentnie lepsza.
 
-**Automatyzacja przeglądarki MCP** (oparta na bibliotece Playwright) przeznaczona do stron, które blokują standardowe metody zbierania danych: strony firmowe na LinkedIn, niektóre strony z cennikami na SaaS oraz sygnały z serwisu Glassdoor. Nie to rozwiązanie do masowego indeksowania: służy do obsługi kilku wybranych stron o dużej wartości w poszczególnych projektów, gdy których zwykłe wyszukiwanie statyczne nie wystarcza.
+**Automatyzacja przeglądarki MCP** (Playwright) do stron, które blokują tradycyjne scrapowanie: firmowe strony na LinkedIn, cenniki SaaS, sygnały z Glassdoor. To nie jest narzędzie do masowego crawlowania: służy do kilku stron o dużej wartości na projekt, gdzie statyczny search nie wystarczy.
 
-**Perplexity** służy mi do szybkiego zbierania informacji ogólnych na temat branż, rynków lub zagadnień technicznych, gdy potrzebuję zwięzłego podsumowania, a nie surowych wyników wyszukiwania. Traktuję tę platformę jako narzędzie do tworzenia zarysu badań, a nie jako źródło informacji. Wszystkie istotne informacje, które tam znajdę, weryfikuję.
+**Perplexity** do szybkiego background research na branżach, rynkach lub tematach technicznych, gdzie potrzebuję zsyntezowanego punktu startu, nie surowych wyników. Traktuję go jak generator research briefu, nie źródło. Cokolwiek ważnego stamtąd wyciągnę, weryfikuję.
 
-### Warstwa 4: Protokół CRM i dane
+### Warstwa 4: CRM i dane
 
-**MCP firmy HubSpot** do obsługi operacji CRM: odczytywanie rekordów kontaktów i firm, klasyfikowanie według kryteriów ICP, sygnalizowanie problemów z jakością danych, generowanie pakietów aktualizacyjnych. Większość zadań związanych z CRM była wcześniej wykonywana ręcznie i przebiegała w sposób niejednolity. Dzięki włączeniu MCP logika klasyfikacji jest spójna i podlega audytowi.
+**HubSpot MCP** do operacji CRM: czytanie rekordów kontaktów i firm, klasyfikacja pod ICP, flagowanie problemów z jakością danych, generowanie payloadów aktualizacyjnych. Większość pracy CRM była wcześniej ręczna i niespójna. Z MCP w loopie logika klasyfikacji jest spójna i audytowalna.
 
-**GA4 / Amplitude** do celów analitycznych: nie przez narzędzi AI, ale jako źródło danych, na podstawie których Claude może przeprowadzać wnioskowanie. Pobieram eksporty raportów lub korzystam bezpośrednio z interfejsu API danych GA4, a następnie przekazuję ustrukturyzowane dane do warstwy wnioskowania. „Oto dane z ostatnich 90 dni dotyczące pozyskiwania użytkowników według kanałów i konwersji według kohort: jaka jest diagnoza?” Jest to zadanie, z którym warstwa wnioskowania radzi sobie dobrze, gdy dane są czyste.
+**GA4 / Amplitude** do analityki: nie przez narzędzia AI, ale jako źródło danych, na podstawie których Claude rozumuje. Pobieram eksporty raportów albo korzystam bezpośrednio z GA4 Data API, a potem karmię warstwę wnioskowania ustrukturyzowanymi danymi. “Oto ostatnie 90 dni pozyskiwania po kanałach i konwersji po kohortach: jaka jest diagnoza?” To zadanie, z którym warstwa rozumowania radzi sobie dobrze, gdy dane są czyste.
 
 ---
 
 ## Co zostało wycięte
 
 <Comparison
-  left="Replaced"
-  right="Replaced by"
+  left="Wycięte"
+  right="Zastąpione przez"
   leftItems={[
-    "Zapier : visual workflow builder, brittle at complexity",
-    "Notion AI : limited context window, generic output",
-    "Apollo/Clearbit enrichment : credits model, shallow reasoning",
-    "GPT-4 / Gemini : no unique job in this stack"
+    "Zapier : wizualny workflow builder, kruchy przy złożoności",
+    "Notion AI : ciasne okno kontekstowe, generyczny output",
+    "Apollo/Clearbit enrichment : model kredytowy, płytki reasoning",
+    "GPT-4 / Gemini : brak konkretnego zadania w tym stosie"
   ]}
   rightItems={[
-    "MCP servers : inspectable, versionable, don't break on auth changes",
-    "Claude with full knowledge context : thinks across structure",
-    "Agent research stack : better output quality for my use case",
-    "Claude (single coherent reasoning layer with clear jobs)"
+    "Serwery MCP : inspekcja, wersjonowanie, nie padają przy zmianach auth",
+    "Claude z pełnym kontekstem wiedzy : myśli w poprzek struktury",
+    "Agent research stack : lepsza jakość outputu w moim use case",
+    "Claude (jedna spójna warstwa rozumowania z jasnymi zadaniami)"
   ]}
 />
 
-To jest ta część, która zazwyczaj nie pojawia się w zestawieniach dotyczących stosów w serwisie AI.
+To jest ta część, która zazwyczaj nie pojawia się w AI stack roundupach.
 
 **Zapier**: zastąpiony przez serwery MCP. Zapier świetnie nadaje się do łączenia aplikacji bez pisania kodu, ale każdy złożony proces, który próbowałem w nim zbudować, stawał się problemem przy utrzymaniu. Serwery MCP wymagają więcej pracy na początku i pisania kodu, ale można je sprawdzić, wersjonować i nie psują się, gdy aplikacja aktualizuje swój proces uwierzytelniania.
 
 **Notion AI**: nigdy nie zasłużył na swoje miejsce. Wyniki były zbyt ogólnikowe. Okno kontekstowe ograniczało się do bieżącej strony, więc nie potrafiło uwzględnić mojej rzeczywistej struktury wiedzy. Piszę w Notion, ale myślę z pomocą Claude’a.
 
-**Wzbogacanie danych przez Apollo/Clearbit**: w moim konkretnym przypadku zastąpił je zestaw narzędzi do analizy danych o potencjalnych klientach. W przypadku pracy z zespołem sprzedaży na dużą skalę kredyty na wzbogacanie danych nadal mają sens. Jeśli chodzi o jakość analizy i poziom personalizacji, jakich potrzebuję w pracy z klientami, zestaw narzędzi do analizy danych o potencjalnych klientach daje lepsze wyniki przy niższych kosztach.
+**Enrichment Apollo/Clearbit**: zastąpiony przez agent research stack w moim use case. W skali z zespołem sprzedaży kredyty enrichmentowe nadal mają sens. Dla jakości researchu i głębokości personalizacji, jakiej potrzebuję w pracy z klientami, agent stack daje lepszy output taniej.
 
-**GPT-4 / Gemini**: nie są obecnie w użyciu. Nie dlatego, że są złe, ale dlatego, że obecny zestaw narzędzi jest już spójny, a dodawanie modeli bez konkretnego zadania dla każdego z nich powoduje zbędne obciążenie decyzyjne, nie poprawiając przy tym jakości wyników. Pytanie nie brzmi: „czy ten model jest dobry?”, ale: „czy oferuje coś, czego nie ma mój obecny zestaw narzędzi?”.
+**GPT-4 / Gemini**: nie w aktywnym użyciu. Nie dlatego, że są złe, ale stos jest już spójny i dodawanie modeli bez konkretnego zadania dla każdego tworzy decision overhead bez poprawy jakości outputu. Pytanie nie brzmi “czy ten model jest dobry?”, tylko “czy robi coś, czego mój obecny stos nie robi?”.
 
 ---
 
