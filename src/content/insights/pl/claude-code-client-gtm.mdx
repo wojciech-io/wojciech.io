@@ -32,9 +32,9 @@ To nie chodzi o zastąpienie myślenia. Chodzi o wycięcie tarcia między myśle
 
 <ProcessFlow
   steps={[
-    { tag: "Zadanie 1", label: "Badania + analizy zewnętrzne", highlight: true, body: "Lista 50 kont: przekształcenie surowego pliku CSV w sklasyfikowane konta wraz z gotowymi sekwencjami w mniej niż godzinę. Kontekst CLAUDE.md jest łączony w kolejnych przebiegach." },
-    { tag: "Księga Hioba 2", label: "Działania związane z treścią", body: "Faza audytu ujawnia niedociągnięcia. Faza projektowania opiera się na badaniach, a nie na szablonach. Cykl iteracji trwa godziny, a nie tygodnie." },
-    { tag: "Księga Hioba 3", label: "CRM operacje na danych", body: "Spójna klasyfikacja ICP na dużą skalę, sygnalizowanie duplikatów i brakujących danych oraz możliwość weryfikacji uzasadnienia przed jakąkolwiek interwencją ze strony CRM." }
+    { tag: "Zadanie 1", label: "Research + outbound intelligence", highlight: true, body: "50 kont: z surowego CSV do ocenionych firm z gotowymi sekwencjami w mniej niż godzinę. Kontekst w CLAUDE.md kumuluje się z każdym runem." },
+    { tag: "Zadanie 2", label: "Content operations", body: "Audyt ujawnia luki. Drafty opierają się na researchu, nie na szablonach. Iteracja trwa godziny, nie tygodnie." },
+    { tag: "Zadanie 3", label: "Operacje na danych CRM", body: "Spójna klasyfikacja ICP na skalę, flagowanie duplikatów i braków, weryfikowalny reasoning zanim cokolwiek dotknie CRM." }
   ]}
 />
 
@@ -48,17 +48,17 @@ Kwestia, której tam nie poruszyłem: **efekt kumulacji**.
 
 Po trzech miesiącach pracy nad projektem plik `CLAUDE.md` zawiera bogaty zbiór specyficznych dla klienta sygnałów dotyczących ICP, wzorców sprzeciwu oraz wniosków dotyczących sekwencji. Piąta iteracja jest wyraźnie lepsza od pierwszej. Takiego efektu nie da się osiągnąć w systemach Clay ani Apollo. Systemy te przetwarzają dane wiersz po wierszu. Nie gromadzą one kontekstu operatora.
 
-### Stanowisko 2: Zarządzanie treścią
+### Zadanie 2: Content operations
 
-Każde zlecenie w usługi GTM dotyczy treści: strony internetowej, studiów przypadków, profilu na LinkedIn oraz kampanii e-mailowych. Od momentu stwierdzenia „musimy zaktualizować stronę główną” do faktycznej aktualizacji strony mija zazwyczaj kilka tygodni, które wypełniają cykle konsultacji z interesariuszami i wielokrotna wymiana korespondencji.
+Każdy projekt GTM zahacza o content: stronę, case studies, pozycjonowanie na LinkedIn, nurturing mailowy. Dystans od “musimy zaktualizować stronę” do “strona zaktualizowana” to zwykle tygodnie stakeholderowych rund i wymiany drafów.
 
-Dzięki funkcji Claude Code proces pracy ulega uproszczeniu:
+Z Claude Code ten proces się zwija:
 
 1. **Faza audytu:** `/audit` analizuje aktualną witrynę, zestaw konkurencji oraz brief z serwisu ICP. Zwraca uporządkowaną analizę luk wraz z konkretnymi zaleceniami dla poszczególnych sekcji.
 2. **Faza tworzenia szkicu:** `/draft [sekcja]`: nie na podstawie szablonu, ale wyników audytu. Każdy szkic opiera się na tym, co ujawnił audyt, a nie na założeniach autora.
 3. **Iteracja:** Edytuję szkic. System odnotowuje, co zmieniłem i dlaczego. Kolejny szkic jest już bliższy właściwej odpowiedzi.
 
-Wynik nie jest od razu idealny. Punktem wyjścia są badania naukowe, a cykl iteracji trwa godziny, a nie tygodnie.
+Output nie jest idealny od razu. Ale punkt startowy opiera się na researchu, a cykl iteracji to godziny, nie tygodnie.
 
 ### Zadanie 3: Operacje na danych w CRM
 
@@ -66,7 +66,7 @@ To jest najbardziej niedoceniany przykład zastosowania.
 
 Większość systemów CRM dla sektora B2B, z którymi mam do czynienia, boryka się z tymi samymi problemami: zduplikowane firmy, kontakty bez przypisanych firm, transakcje utknięte na niewłaściwym etapie oraz pola niestandardowe, których nikt nie wypełnił. Ręczne uporządkowanie tych danych zajmuje analitykowi całe tygodnie, a mimo to wyniki są niespójne, ponieważ ludzie stosują te same zasady w różny sposób w wierszu 12 i w wierszu 412.
 
-Claude Code w porównaniu z HubSpotMCP, który działa inaczej:
+Claude Code z HubSpot MCP robi to inaczej:
 
 - Odczytuje rekordy kontaktów i firm w partiach
 - Stosuje kryteria punktacji ICP żeby spójnej klasyfikacji i segmentacji na dużą skalę
@@ -80,20 +80,20 @@ Nie dzieje się to jednym kliknięciem. Nadal musisz to sprawdzić i zatwierdzi�
 ## Model współpracy, jaki to pozwala
 
 <MetricDelta
-  before="Co najmniej 6 tygodni"
-  beforeLabel="Traditional GTM engagement"
+  before="Minimum 6 tygodni"
+  beforeLabel="Tradycyjny projekt GTM"
   after="Szybsza dostawa"
-  afterLabel="With agent stack"
-  delta="research + writing latency removed"
-  label="Co się zmieniło: obciążenie związane z badaniami i opóźnienia w pisaniu, a nie warstwa oceny"
+  afterLabel="Z agent stackiem"
+  delta="research + pisanie: latency usunięte"
+  label="Co się zmieniło: narzut researchu i opóźnienie pisania, nie warstwa oceny"
   tone="positive"
 />
 
-**Wcześniej:** Praca w projektu GTM polegała na określeniu zakresu zadań, przydzielaniu zadań badawczych, sporządzaniu wytycznych dla autorów, sprawdzaniu szkiców, tworzeniu sekwencji oraz równoległym zarządzaniu procesem CRM. Trwało to co najmniej sześć tygodni i wymagało ciągłej koordynacji.
+**Wcześniej:** Projekt GTM to scope deliverables, przydzielanie researchu, briefy dla copywriterów, review drafów, budowanie sekwencji, porządkowanie CRM w tle. Minimum sześć tygodni, z ciągłą koordynacją.
 
-**Obecnie:** Analizuję wyniki pracy operatorów: rozbudowaną listę kont, zaplanowane działania marketingowe, dostosowane treści na stronie internetowej oraz przejrzystą stronę CRM. Realizuję te zadania szybciej, przy mniejszym uzależnieniu od zasobów zewnętrznych.
+**Teraz:** Scope'uję wokół outputów operatora: wzbogacona lista kont, zsekwencjonowany outbound, dopasowany copy na stronę, czysty CRM. Dowożę szybciej i z mniejszą zależnością od zewnętrznych zasobów.
 
-Nie oznacza to jednak, że pracuję sam. Klienci nadal mają wpływ na określenie tematu przewodniego, ton wypowiedzi oraz zatwierdzanie treści. Decyzja trzeba zarówno do mnie, jak i do nich. Zniknęły natomiast nakłady związane z researchiem oraz opóźnienia w tworzeniu treści.
+Nie znaczy to, że pracuję sam. Klienci nadal są w loopie: definicja ICP, ton sekwencji, akceptacja contentu. Ocena jest moja i ich. Zniknął narzut researchu i latency pisania.
 
 ---
 
@@ -107,9 +107,9 @@ Wynik mówi sam za siebie. Narzędzie to tylko szczegół implementacyjny. Klien
 
 ---
 
-## Co odróżnia dobry bieg od doskonałego
+## Co odróżnia dobry run od świetnego
 
-Trzy czynniki decydują o różnicy między średnią produkcją a faktyczną ilością produktów wysyłanych do klientów.
+Trzy rzeczy decydują o różnicy między przeciętnym outputem a takim, który faktycznie idzie do klienta.
 
 **Głębia kontekstu.** Plik `CLAUDE.md` stanowi punkt zaczepienia. Skromny opis zadania daje skromne wyniki. Natomiast szczegółowy kontekst operatora: obejmujący sygnały z serwisu ICP, wzorce sprzeciwów oraz notatki z kont gromadzone przez miesiące: pozwala uzyskać wyniki, których nowa osoba w zespole nie byłaby w stanie odtworzyć. To właśnie początkowa inwestycja w konfigurację sprawia, że każde kolejne uruchomienie przynosi efekt kumulacyjny, a nie tylko przyspiesza działanie.
 

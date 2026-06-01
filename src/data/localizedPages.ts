@@ -671,11 +671,11 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
   },
   pl: {
     about: {
-      title: 'O Wojciechu - Operator GTM natywny dla AI',
-      description: 'Profil Wojciecha Łuszczyńskiego: architekt GTM, przedsiębiorca wzrostowy i twórca natywnych systemów przychodowych AI dla B2B SaaS.',
-      eyebrow: 'Profil',
-      h1: 'Architektura GTM, realizacja wzrostu i systemy AI w jednym operatorze.',
-      lead: 'Pracuję tam, gdzie spotykają się strategia, dane, narzędzia i wdrożenie. Skupiam się na zespołach B2B SaaS z prawdziwym produktem, ale bez stabilnego systemu przychodów.',
+      title: 'O mnie · Operator GTM, AI-native',
+      description: 'Wojciech Łuszczyński: architekt GTM, growth operator i budowniczy AI-native revenue systems dla B2B SaaS.',
+      eyebrow: 'O mnie',
+      h1: 'Architektura GTM, egzekucja wzrostu i systemy AI w jednym operatorze.',
+      lead: 'Pracuję tam, gdzie stykają się strategia, dane, narzędzia i egzekucja. Skupiam się na zespołach B2B SaaS z realnym produktem, ale bez stabilnego systemu przychodów.',
       primaryCta: 'Zobacz realizacje',
       primaryHref: '/pl/work/',
       secondaryCta: 'Umów rozmowę',
@@ -683,38 +683,38 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         {
           value: '20',
-          label: 'Years Marketing & Digital'
+          label: 'lat marketing & digital'
         },
         {
           value: '10',
-          label: 'Lata działalności B2B SaaS'
+          label: 'lat B2B SaaS'
         },
         {
           value: '10',
-          label: 'Lata GTM'
+          label: 'lat GTM'
         }
       ],
       sections: [
         {
           title: 'Jak pracuję',
-          body: 'Najpierw diagnozuję system: ICP, pipeline, CRM, atrybucję, treści, płatne pozyskiwanie i automatyzację. Następnie buduję brakujące części w kolejności, która zapewnia najszybszą przejrzystość operacyjną.'
+          body: 'Najpierw diagnozuję system: ICP, pipeline, CRM, atrybucja, content, paid acquisition, automatyzacja. Potem buduję brakujące elementy w kolejności, która daje najszybszą widoczność operacyjną.'
         },
         {
           title: 'Co dostarczam',
-          body: 'Żadnych odizolowanych taktyk. Zapewniam model operacyjny: procesy, dashboardy, przepływy pracy, automatyzację, przepływy pracy AI i jasne obowiązki.'
+          body: 'Żadnych izolowanych taktyk. Dostarczam model operacyjny: procesy, dashboardy, workflow, automatyzację, AI workflows i jasne ownership.'
         },
         {
           title: 'Dla kogo',
-          body: 'B2B SaaS, firmy technologiczne i zespoły założycielskie, które chcą budować szybciej bez przekształcania GTM w bałagan narzędziowy.'
+          body: 'B2B SaaS, firmy tech i zespoły founderskie, które chcą budować szybciej bez zamieniania GTM w bałagan narzędziowy.'
         }
       ]
     },
     work: {
-      title: 'Systemy GTM i studia przypadków',
-      description: 'Wybrane systemy: AI-native GTM, CRM, automatyzacja, content, płatne pozyskiwanie i narzędzia wewnętrzne.',
-      eyebrow: 'Praca',
-      h1: 'Wybrane systemy przychodowe, produkty i modele operacyjne.',
-      lead: 'Przykłady są zgodne z tym samym schematem: jasny problem, mierzalna architektura, szybkie wdrożenie i stała infrastruktura.',
+      title: 'Systemy GTM i case studies',
+      description: 'Wybrane systemy: AI-native GTM, CRM, automatyzacja, content, paid acquisition i narzędzia wewnętrzne.',
+      eyebrow: 'Realizacje',
+      h1: 'Wybrane revenue systems, produkty i modele operacyjne.',
+      lead: 'Każdy przykład trzyma się tego samego schematu: jasny problem, mierzalna architektura, szybki ship i trwała infrastruktura.',
       primaryCta: 'Zobacz systemy AI',
       primaryHref: '/pl/ai-systems/',
       secondaryCta: 'Umów rozmowę',
@@ -722,46 +722,46 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         {
           value: 'B2B',
-          label: 'SaaS i technologia'
+          label: 'SaaS i tech'
         },
         {
           value: 'AI',
-          label: 'Przepływy pracy i agenci'
+          label: 'Workflows i agenci'
         },
         {
           value: 'CRM',
-          label: 'Operacje przychodowe'
+          label: 'Revenue operations'
         }
       ],
       sections: [
         {
-          title: 'Architektura przychodów',
-          body: 'Pipeline, CRM, atrybucja i GTM Motion są traktowane jako jeden system. Celem jest powtarzalny rytm pracy, a nie kolejny pulpit nawigacyjny.'
+          title: 'Revenue architecture',
+          body: 'Pipeline, CRM, atrybucja i GTM motions traktowane jako jeden system. Cel to powtarzalna kadencja operacyjna, nie kolejny dashboard.'
         },
         {
-          title: 'Projekt natywny dla AI',
-          body: 'Claude Code, MCP, automatyzacja i aplikacje wewnętrzne są wykorzystywane tam, gdzie przynoszą realne korzyści: Badania, higiena CRM, content ops, sales enablement i raportowanie.'
+          title: 'AI-native design',
+          body: 'Claude Code, MCP, automatyzacja i wewnętrzne apki używane tam, gdzie dają realną wartość: research, higiena CRM, content ops, sales enablement, reporting.'
         },
         {
           title: 'Produkty jako dowód',
-          body: 'Produkty w ekosystemie pokazują, jak szybko można budować, testować i dostarczać systemy kierowane przez operatorów.'
+          body: 'Produkty w ekosystemie pokazują, jak szybko można budować, testować i shipować systemy prowadzone przez operatora.'
         }
       ]
     },
     'ai-systems': {
-      title: 'Systemy AI - przepływy pracy, agenci i dźwignia',
-      description: 'Natywne dla AI przepływy pracy, agenci GTM i automatyzacja dla marketingu, sprzedaży i operacji.',
+      title: 'Systemy AI: workflows, agenci i dźwignia',
+      description: 'AI-native workflows, agenci GTM i automatyzacja dla marketingu, sprzedaży i operacji.',
       eyebrow: 'Systemy AI',
-      h1: 'AI nie jest dodatkiem. To nowy poziom operacyjny.',
-      lead: 'Buduję przepływy pracy AI w taki sposób, aby były zakotwiczone w systemie: Dane, kontekst, reguły, zapewnienie jakości i wyraźne przekazanie ludziom.',
-      primaryCta: 'Czytaj więcej',
+      h1: 'AI to nie dodatek. To nowa warstwa operacyjna.',
+      lead: 'Buduję AI workflows zakotwiczone w systemie: dane, kontekst, reguły, QA i jasne handoffy do ludzi.',
+      primaryCta: 'Czytaj artykuły',
       primaryHref: '/pl/insights/',
-      secondaryCta: 'Omówienie systemu',
+      secondaryCta: 'Pogadajmy o systemie',
       secondaryHref: '/pl/contact/',
       stats: [
         {
           value: 'Agenci',
-          label: 'Badania i GTM'
+          label: 'Research i GTM'
         },
         {
           value: 'MCP',
@@ -769,70 +769,70 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
         },
         {
           value: 'QA',
-          label: 'Człowiek w pętli'
+          label: 'Human-in-the-loop'
         }
       ],
       sections: [
         {
           title: 'Najpierw kontekst',
-          body: 'Dobre systemy AI nie zaczynają się od podpowiedzi. Zaczynają od czystych danych, jasnych ról, ograniczeń i mierzalnej jakości.'
+          body: 'Dobre systemy AI nie zaczynają od promptu. Zaczynają od czystych danych, jasnych ról, ograniczeń i mierzalnej jakości.'
         },
         {
-          title: 'Przepływy pracy operatora',
-          body: 'Najlepsze przepływy pracy są wystarczająco małe, aby działać niezawodnie i wystarczająco duże, aby wykonywać prawdziwą pracę dla systemu.'
+          title: 'Operator workflows',
+          body: 'Najlepsze workflows są wystarczająco małe, żeby chodzić niezawodnie, i wystarczająco duże, żeby robić realną robotę dla systemu.'
         },
         {
-          title: 'Budowanie na żądanie',
-          body: 'Jeśli narzędzia SaaS nie pasują, tworzę wewnętrzne narzędzia lub agentów, którzy są bezpośrednio połączeni z CRM, Content Ops i Analytics.'
+          title: 'Build on demand',
+          body: 'Jeśli SaaS nie pasuje, buduję wewnętrzne narzędzia albo agentów wpiętych bezpośrednio w CRM, content ops i analitykę.'
         }
       ]
     },
     contact: {
-      title: 'Umów rozmowę - Systemy GTM i AI',
-      description: '30-minutowa rozmowa telefoniczna dotycząca audytów GTM, projektowania przepływu pracy AI, architektury CRM i określania zakresu produktu.',
-      eyebrow: 'Skontaktuj się z nami',
-      h1: 'Kiedy system się blokuje, mówimy konkretnie.',
-      lead: 'Wyślij kontekst, stos i wąskie gardło. Podczas rozmowy ustalamy, czy następnym krokiem będzie audyt, sprint budowlany czy konkretne rozwiązanie.',
-      primaryCta: 'zarezerwuj 30 minut',
+      title: 'Umów rozmowę: systemy GTM i AI',
+      description: '30 minut na audyt GTM, AI workflow design, architekturę CRM albo scoping produktu.',
+      eyebrow: 'Kontakt',
+      h1: 'Kiedy system się blokuje, rozmawiamy konkretnie.',
+      lead: 'Wyślij kontekst, stos i wąskie gardło. Na rozmowie ustalamy, czy następny krok to audyt, build sprint, czy konkretny fix.',
+      primaryCta: 'Zarezerwuj 30 minut',
       primaryHref: '/pl/contact/#book-call',
-      secondaryCta: 'Otwórz LinkedIn',
+      secondaryCta: 'LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
         {
           value: '30m',
-          label: 'Pierwsze połączenie'
+          label: 'Pierwsza rozmowa'
         },
         {
           value: '24h',
-          label: 'Czas reakcji'
+          label: 'Czas odpowiedzi'
         },
         {
-          value: 'UE',
+          value: 'EU',
           label: 'Remote-first'
         }
       ],
       sections: [
         {
           title: 'Dobre tematy',
-          body: 'Audyt GTM, model operacyjny CRM, projektowanie przepływu pracy AI, operacje na treściach, płatne pozyskiwanie, diagnostyka pipeline i narzędzia wewnętrzne.'
+          body: 'Audyt GTM, model operacyjny CRM, AI workflow design, content ops, paid acquisition, diagnostyka pipeline, narzędzia wewnętrzne.'
         },
         {
-          title: 'Czego potrzebuję z wyprzedzeniem',
-          body: 'W skrócie: co sprzedajesz, komu, gdzie urywa się pipeline, które narzędzia działają i jakie decyzje należy podjąć.'
+          title: 'Czego potrzebuję wcześniej',
+          body: 'W skrócie: co sprzedajesz, komu, gdzie urywa się pipeline, jakie narzędzia działają i jaką decyzję trzeba podjąć.'
         },
         {
           title: 'Co nie pasuje',
-          body: 'Luźna burza mózgów bez właściciela, czysta implementacja narzędzia bez kontekstu GTM lub projekty bez jasnych danych i kontroli dostępu.'
+          body: 'Luźny brainstorming bez ownera, czysta implementacja narzędzia bez kontekstu GTM, projekty bez jasnych danych i dostępów.'
         }
       ]
     },
     insights: {
-      title: 'AI & GTM Insights - Uwagi dla operatorów',
-      description: 'Praktyczne wskazówki dotyczące systemów AI, architektury GTM i systemów sprzedaży.',
-      eyebrow: 'Spostrzeżenia',
-      h1: 'Uwagi operatora dotyczące AI, GTM i architektury przychodów.',
-      lead: 'Artykuły pokazują architekturę, decyzje i wnioski wyciągnięte z systemów, które są faktycznie budowane i obsługiwane.',
-      primaryCta: 'Zobacz wszystkie artykuły',
+      title: 'AI & GTM Insights: notatki operatora',
+      description: 'Praktyczne notatki o systemach AI, architekturze GTM i revenue systems.',
+      eyebrow: 'Insights',
+      h1: 'Notatki operatora o AI, GTM i architekturze przychodów.',
+      lead: 'Artykuły pokazują architekturę, decyzje i wnioski z systemów, które realnie buduję i prowadzę.',
+      primaryCta: 'Wszystkie artykuły',
       primaryHref: '/pl/insights/',
       secondaryCta: 'Umów rozmowę',
       secondaryHref: '/pl/contact/',
@@ -843,25 +843,25 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
         },
         {
           value: 'AI',
-          label: 'Stos produkcyjny'
+          label: 'Production stack'
         },
         {
           value: 'GTM',
-          label: 'Uwagi operatora'
+          label: 'Operator notes'
         }
       ],
       sections: [
         {
           title: 'Co znajdziesz',
-          body: 'Decyzje Build vs. Buy, wprowadzenie CRM AI, Claude Code w pracy GTM i rzeczywiste decyzje produkcyjne.'
+          body: 'Decyzje build vs. buy, AI adoption w CRM, Claude Code w GTM i realne decyzje produkcyjne.'
         },
         {
           title: 'Jak pisane są artykuły',
-          body: 'Brak opakowania przywództwa. Każda notatka wyjaśnia system, decyzję lub lekcję operacyjną.'
+          body: 'Zero thought leadership opakowań. Każda notatka opisuje system, decyzję albo lekcję operacyjną.'
         },
         {
           title: 'Dla kogo',
-          body: 'Założyciele, liderzy GTM, zespoły RevOps i operatorzy, którzy chcą używać AI jako działającej infrastruktury, a nie tylko jako wersji demonstracyjnej.'
+          body: 'Founderzy, GTM leadzi, zespoły RevOps i operatorzy, którzy chcą używać AI jako roboczej infrastruktury, nie tylko jako demo.'
         }
       ]
     }
