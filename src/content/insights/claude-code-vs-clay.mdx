@@ -12,6 +12,10 @@ featured: true
 draft: false
 coverType: "terminal"
 category: "AI Systems"
+tldr:
+  - "A four-layer Claude Code agent stack handles outbound research, sequence drafting, CRM enrichment, and ICP scoring. No Clay. No enrichment credits. No n8n flows."
+  - "50-account enrichment run: 75 minutes total (45 unattended + 30 review) vs. 3-4 hours with a Clay + copywriting workflow."
+  - "The system runs at 5-10% of equivalent Clay cost, with better output quality on the reasoning and copy layers."
 ---
 
 Most GTM AI content falls into one of two buckets: prompt tips for ChatGPT, or $500/month tool comparisons nobody can actually act on. This is neither.
@@ -142,11 +146,24 @@ Total time for a 50-account list: about 45 minutes of unattended agent work, plu
 
 The cost model matters. Here's a rough breakdown per 50-account enrichment run:
 
-- Claude API (claude-sonnet-4 at current pricing): ~$2–4 per full run depending on research depth
-- MCP tool calls: Brave Search API is ~$0.003/query; Puppeteer is self-hosted so compute only
-- Custom scoring MCP: minimal, it's just structured JSON in/out
+<DataTable
+  columns={[
+    { key: "component", label: "Component" },
+    { key: "cost", label: "Cost per run", align: "right" },
+    { key: "notes", label: "Notes" }
+  ]}
+  rows={[
+    { component: "Claude API (claude-sonnet-4)", cost: "$2-4", notes: "Varies with research depth" },
+    { component: "Brave Search API", cost: "~$0.15", notes: "~$0.003/query, ~50 queries" },
+    { component: "Browser automation", cost: "$0", notes: "Self-hosted, compute only" },
+    { component: "Custom scoring MCP", cost: "$0", notes: "Structured JSON in/out" },
+    { component: "Total per 50-account run", cost: "$2-4", notes: "vs. Clay at $800-2,400/mo" }
+  ]}
+  highlight={[4]}
+  caption="Agent stack runs at roughly 5-10% of equivalent Clay cost, with better output quality on reasoning and copy."
+/>
 
-Compare to Clay: $800–2,400/month for a plan that gives you meaningful enrichment credits plus LLM rows. For my volume and use case, the agent stack runs at roughly 5–10% of that cost, with better output quality on the reasoning and copy layers.
+For my volume and use case, the agent stack runs at roughly 5-10% of that cost, with better output quality on the reasoning and copy layers.
 
 The tradeoff: it took time to build. Probably 20 hours across the CLAUDE.md, the MCP setup, the Skills, and the scoring tool. For a team without that capacity, Clay is the right answer. For an operator who can invest the build time, this pays back quickly.
 
