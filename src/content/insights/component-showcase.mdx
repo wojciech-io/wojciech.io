@@ -1,0 +1,155 @@
+---
+title: MDX components showcase
+description: Living reference for rich MDX components available in insights articles.
+publishedAt: 2026-05-19
+tags: [internal, reference]
+tldr:
+  - Stat and StatRow give numbers their own weight
+  - DoDont replaces wishy-washy advice with two columns of opinion
+  - Steps, PullQuote, TechStack and TOC cover the second MDX component batch
+  - Drop-in site UI components work in MDX now
+draft: true
+coverType: default
+category: Operator Playbooks
+---
+
+The TL;DR above is auto-rendered from frontmatter. Below: every rich component, in one place.
+
+<TOC title="Component index" />
+
+## Stat + StatRow
+
+Use for proof-led storytelling. Tabular nums, big lime numbers.
+
+<StatRow cols={3}>
+  <Stat value="47%" label="Pipeline lift" sub="Quarter over quarter" />
+  <Stat value="3 wks" label="From idea to shipped" />
+  <Stat value="€0" label="Tooling cost" sub="Cloudflare + Astro stack" />
+</StatRow>
+
+## DoDont
+
+Sadowski-style. No hedging.
+
+<DoDont
+  do={[
+    "Hire an operator who already shipped this",
+    "Wire CRM, SEO and paid into one system",
+    "Measure pipeline, not impressions",
+  ]}
+  dont={[
+    "Hire an agency to 'do growth'",
+    "Buy six tools that don't talk to each other",
+    "Optimize for vanity metrics",
+  ]}
+/>
+
+## Steps
+
+Use for process sections where the order matters more than paragraph rhythm.
+
+<Steps
+  title="Migration loop"
+  items={[
+    { title: "Freeze the source of truth", body: "Decide which repo and route own the canonical page before touching copy.", meta: "01 / scope" },
+    { title: "Move one layer at a time", body: "Routes, content, components and deploy rules should each have a clear verification point.", meta: "02 / build" },
+    { title: "Ship with a rollback path", body: "The migration is done only when production, redirects and analytics agree.", meta: "03 / verify" },
+  ]}
+/>
+
+## PullQuote
+
+<PullQuote source="wojciech.io migration note" role="operator principle">
+  A site rebuild is not a design exercise. It is a decision about who owns the system after launch.
+</PullQuote>
+
+## TechStack
+
+<TechStack
+  title="Publishing stack"
+  caption="The article layer is deliberately boring: files, components, build output, deploy checks."
+  groups={[
+    {
+      label: "Content",
+      items: [
+        { label: "Astro", detail: "routes" },
+        { label: "MDX", detail: "articles" },
+        { label: "Content collections", detail: "schema" },
+      ],
+    },
+    {
+      label: "Delivery",
+      items: [
+        { label: "Cloudflare Pages", detail: "static deploy" },
+        { label: "GitHub", detail: "source" },
+        { label: "Sentry", detail: "runtime signal" },
+      ],
+    },
+  ]}
+/>
+
+## Callout (existing)
+
+<Callout type="tip" title="Pro tip">
+  These components are wired into `src/pages/insights/[slug].astro`: adding new ones means editing the `mdxComponents` map.
+</Callout>
+
+## Drop-in site components
+
+Now usable in MDX. Inline `<Badge>AI-native</Badge>` works in text flow.
+
+<Button href="/work/" variant="primary">See the work</Button>
+
+<SectionHeader eyebrow="Reference" heading="Use anywhere" />
+
+<FAQ items={[
+  { question: "Can I use Badge inline?", answer: "Yes: wrap any text with <Badge>label</Badge>." },
+  { question: "Do these respect dark mode?", answer: "All use design tokens, so themes follow automatically." },
+]} />
+
+<CTABand
+  heading="Want this stack?"
+  subtext="The whole site runs on Astro + Cloudflare Pages + MDX. Open source-ish."
+  cta="See the article"
+  ctaHref="/insights/astro-cloudflare-pages-portfolio-ai-workflow/"
+/>
+
+## Diagrams: Box + Arrow + Stack
+
+Declarative primitives. No Mermaid, no SVG editor: just nested components.
+
+**Linear flow** (most common):
+
+<Diagram caption="Request flow through Cloudflare edge">
+  <Box label="Browser" />
+  <Arrow label="HTTPS" />
+  <Box label="CF edge" sub="cache hit" variant="accent" />
+  <Arrow label="miss" dashed />
+  <Box label="Origin" />
+</Diagram>
+
+**Branching** (fan-out via Stack):
+
+<Diagram caption="Auth gate → multiple downstream services">
+  <Box label="Request" />
+  <Arrow />
+  <Box label="Worker" sub="middleware" variant="accent" />
+  <Arrow />
+  <Stack gap="sm">
+    <Box label="KV" sub="sessions" />
+    <Box label="D1" sub="users" />
+    <Box label="Email" sub="OTP" variant="muted" />
+  </Stack>
+</Diagram>
+
+**Layered architecture** (vertical):
+
+<Diagram direction="column" caption="Four-layer GTM AI architecture">
+  <Box label="Layer 4: Action" sub="CRM sync, sequences" variant="accent" />
+  <Arrow direction="down" />
+  <Box label="Layer 3: Decision" sub="scoring, routing" />
+  <Arrow direction="down" />
+  <Box label="Layer 2: Enrichment" sub="firmographic, signal" />
+  <Arrow direction="down" />
+  <Box label="Layer 1: Source" sub="forms, intent, ICP list" variant="muted" />
+</Diagram>

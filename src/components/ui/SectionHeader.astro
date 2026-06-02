@@ -4,15 +4,16 @@ interface Props {
   heading: string;
   lead?: string;
   align?: 'left' | 'center';
+  maxWidth?: string;
   class?: string;
 }
 
-const { eyebrow, heading, lead, align = 'left', class: className } = Astro.props;
+const { eyebrow, heading, lead, align = 'left', maxWidth = 'max-w-2xl', class: className } = Astro.props;
 
 const alignClass = align === 'center' ? 'text-center mx-auto' : '';
 ---
 
-<div class:list={['max-w-2xl', alignClass, className]}>
+<div class:list={[maxWidth, alignClass, className]}>
   {eyebrow && (
     <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">
       {eyebrow}

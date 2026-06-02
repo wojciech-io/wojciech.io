@@ -107,7 +107,7 @@ describe('getPrimaryNavLinks', () => {
     expect(hrefs).toContain('/pl/work/');
     expect(hrefs).toContain('/pl/contact/');
     expect(hrefs).toContain('/pl/about/');
-    // /resources/ stays canonical (EN-only resource hub):
+    // /resources/ stays canonical (EN-only):
     expect(hrefs).toContain('/resources/');
   });
 
