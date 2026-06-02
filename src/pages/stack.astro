@@ -1,0 +1,187 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import CTABand from '../components/ui/CTABand.astro';
+
+const groups = [
+  {
+    title: 'Architecture',
+    body: 'npm-workspaces monorepo. Astro 6 on Cloudflare Pages. Seven surfaces, seven Pages projects: wojciech.io, app, growthhub, academy, notch, subscribe, dev. Shared packages: @wojciech/tokens, @wojciech/ui, @wojciech/mdx-components.',
+    items: [
+      'Astro 6 + MDX',
+      'Cloudflare Pages (7 projects)',
+      'npm workspaces (apps/* + packages/*)',
+      '@wojciech/tokens · @wojciech/ui · @wojciech/mdx-components',
+    ],
+  },
+  {
+    title: 'Frontend',
+    body: 'Tailwind CSS 4 driven by CSS custom-prop tokens. Geist for type. Lenis + Motion for motion. Pagefind for static search. Satori + resvg-js for OG.',
+    items: [
+      'Tailwind CSS 4 (@tailwindcss/vite)',
+      'CSS custom-property tokens',
+      'Geist Sans · Geist Mono',
+      'Lenis · Motion',
+      'Pagefind static search',
+      'Satori + resvg-js (dynamic OG)',
+    ],
+  },
+  {
+    title: 'Backend & infra',
+    body: 'Cloudflare Pages Functions for gated surfaces. Wrangler for Workers (growthhub cron). Terraform manages Pages projects and domains. Node 24 in CI.',
+    items: [
+      'Cloudflare Pages Functions',
+      'Cloudflare Workers (growthhub-cron)',
+      'Terraform (cloudflare_pages_project + _domain)',
+      'WAF rules tracked in repo',
+      'Node 24',
+    ],
+  },
+  {
+    title: 'Content & i18n',
+    body: 'Astro content collections for insights, work, testimonials. Eight languages for CV and SEO surfaces. Seven fully translated locale homepages (de, dk, no, jp, it, es, pl) on top of EN.',
+    items: [
+      'Astro content collections (insights, work, testimonials)',
+      'MDX articles + custom components',
+      '8 langs: en, pl, de, dk, no, jp, it, es',
+      'Locale-prefixed routing via src/pages/[locale]',
+    ],
+  },
+  {
+    title: 'Analytics (consent-gated)',
+    body: 'Cloudflare Web Analytics runs anonymously by default. Everything else loads only after explicit consent.',
+    items: [
+      'Cloudflare Web Analytics (anonymous)',
+      'GA4 (lazy after consent)',
+      'Mixpanel EU',
+      'Sentry EU',
+      'PostHog EU',
+    ],
+  },
+  {
+    title: 'Testing',
+    body: 'Vitest for units and coverage. Playwright (Chromium + WebKit) for smoke, SEO, hreflang, axe a11y, broken-link checks, critical paths, meta and asset probes. Daily smoke against production.',
+    items: [
+      'Vitest (unit + coverage)',
+      'Playwright (Chromium + WebKit)',
+      'a11y/axe automation',
+      'Daily production smoke',
+      'Lighthouse CI weekly',
+    ],
+  },
+  {
+    title: 'CI/CD',
+    body: 'CI runs on every push and PR. Deploy runs only on CI success via workflow_run, deploying site and subdomains in parallel through Wrangler. Commitlint enforced. Release Please is run manually, not on push.',
+    items: [
+      'GitHub Actions (ci.yml + deploy.yml)',
+      'workflow_run gate (no green CI, no deploy)',
+      'Wrangler parallel deploy across surfaces',
+      'Commitlint required',
+      'Release Please (manual)',
+    ],
+  },
+  {
+    title: 'Security',
+    body: 'Branch protection on main with required checks. Secrets only in Cloudflare environment. Strict CSP, HSTS preload, X-Frame-Options DENY, sandboxed Permissions-Policy. Auth gates use HMAC-SHA256 signed cookies with timing-safe compares and rate limiting.',
+    items: [
+      'gitleaks · npm audit (high) · Semgrep · CodeQL',
+      'content-guard (pre-commit + CI + weekly cron)',
+      'sensitive-path-guard on PRs',
+      'CSP, HSTS preload, XFO DENY, Permissions-Policy',
+      'HMAC-SHA256 signed cookies, timing-safe',
+      'Per-IP rate limit on auth endpoints',
+    ],
+  },
+  {
+    title: 'Resilience',
+    body: 'Azure Static Web Apps holds a weekly cold-standby copy. Failover is operator-triggered via workflow_dispatch (auto-detects health, then flips DNS via the Cloudflare API). Rollback is a non-destructive git revert. BetterStack drives the smoke probes.',
+    items: [
+      'Azure Static Web Apps (cold standby)',
+      'Manual failover (workflow_dispatch)',
+      'Non-destructive git-revert rollback',
+      'BetterStack uptime + incident webhook',
+    ],
+  },
+  {
+    title: 'Working method',
+    body: 'Claude Code implements. Codex reviews. GPT-5.5 Thinking handles strategy and go/no-go calls. Claude Design owns visuals. Handoff is strategy, docs, code, review, accept, merge once docs and code agree.',
+    items: [
+      'Claude Code (implementation)',
+      'Codex (review)',
+      'GPT-5.5 Thinking (strategy)',
+      'Claude Design (visual)',
+    ],
+  },
+];
+---
+
+<Layout
+  title="Stack · wojciech.io"
+  description="The real stack behind wojciech.io and its subdomains. Astro, Cloudflare, Terraform, Vitest, Playwright, signed cookies, and a manual failover plan that has actually been tested."
+>
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-[var(--color-border)]">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
+
+    <div class="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
+      <p class="reveal-up text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
+        <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
+        <span>Stack</span>
+      </p>
+      <h1 class="reveal-up text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-[var(--color-text)] max-w-[900px] mb-7" data-reveal-index="0">
+        What this site is actually built on.
+      </h1>
+      <p class="reveal-up max-w-3xl text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed" data-reveal-index="1">
+        Verified from the repo, not from memory. Every layer below is in production today across wojciech.io and its subdomains. If a tool is on this page, it pays rent.
+      </p>
+    </div>
+  </section>
+
+  <!-- Stack groups -->
+  <section class="border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6 py-20 md:py-28 space-y-20">
+      {groups.map((group, idx) => (
+        <article class="reveal-up grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-12 items-start" data-reveal-index={idx % 4}>
+          <div>
+            <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-3">
+              {String(idx + 1).padStart(2, '0')}
+            </p>
+            <h2 class="text-[length:var(--text-h2)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
+              {group.title}
+            </h2>
+            <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed">
+              {group.body}
+            </p>
+          </div>
+          <ul class="grid gap-3 sm:grid-cols-2">
+            {group.items.map((item) => (
+              <li class="rounded-xl border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur px-4 py-3 text-sm text-[var(--color-text)]">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Note on accuracy -->
+  <section class="border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-3xl px-6 py-16 md:py-20">
+      <SectionHeader
+        eyebrow="Honesty"
+        heading="What this page is not."
+        lead="It is not a wish list. Failover here is manual, not automated. Release Please runs by hand. Some surfaces still live as separate Pages projects rather than under /apps. The stack moves, the page moves with it."
+      />
+    </div>
+  </section>
+
+  <CTABand
+    heading="Want to see a piece of this in action?"
+    subtext="If something on the page is interesting in context of what you are building, write me and we will look at it together."
+    cta="Get in touch"
+    ctaHref="/contact/"
+    ctaSecondary="Read insights"
+    ctaSecondaryHref="/insights/"
+  />
+</Layout>
