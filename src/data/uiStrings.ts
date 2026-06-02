@@ -305,6 +305,7 @@ export function getPrimaryNavLinks(pathname: string) {
     { label: t.nav.aiSystems,  href: localizeHref('/ai-systems/', locale), minWidth: '5.5rem' },
     { label: t.nav.insights,   href: localizeHref('/insights/',   locale), minWidth: '4rem'   },
     { label: t.nav.tools,      href: '/resources/',                        minWidth: '3rem'   },
+    { label: t.nav.stack,      href: '/stack/',                            minWidth: '3rem'   },
     { label: t.nav.about,      href: localizeHref('/about/',      locale), minWidth: '4rem'   },
     { label: t.nav.contact,    href: localizeHref('/contact/',    locale), minWidth: '4rem'   },
   ];

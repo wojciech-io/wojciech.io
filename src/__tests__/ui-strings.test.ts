@@ -52,7 +52,7 @@ describe('localizeHref', () => {
 describe('getUiStrings', () => {
   it('returns a full strings bundle for every locale (no missing keys)', () => {
     const REQUIRED = [
-      'nav.work', 'nav.aiSystems', 'nav.insights', 'nav.tools', 'nav.about', 'nav.contact',
+      'nav.work', 'nav.aiSystems', 'nav.insights', 'nav.tools', 'nav.stack', 'nav.about', 'nav.contact',
       'cta.bookCall', 'cta.nextStep',
       'cookie.bannerText', 'cookie.privacyPolicy', 'cookie.accept', 'cookie.reject',
       'footer.getInTouch', 'footer.allWriting', 'footer.brandTagline', 'footer.bottomTagline',
@@ -96,9 +96,9 @@ describe('getUiStringsForPath', () => {
 });
 
 describe('getPrimaryNavLinks', () => {
-  it('returns six links with localized labels and locale-prefixed hrefs', () => {
+  it('returns seven links with localized labels and locale-prefixed hrefs', () => {
     const plLinks = getPrimaryNavLinks('/pl/');
-    expect(plLinks).toHaveLength(6);
+    expect(plLinks).toHaveLength(7);
     const labels = plLinks.map((l) => l.label);
     expect(labels).toContain('Praca');
     expect(labels).toContain('Kontakt');
@@ -107,8 +107,9 @@ describe('getPrimaryNavLinks', () => {
     expect(hrefs).toContain('/pl/work/');
     expect(hrefs).toContain('/pl/contact/');
     expect(hrefs).toContain('/pl/about/');
-    // /resources/ stays canonical (EN-only):
+    // /resources/ and /stack/ stay canonical (EN-only):
     expect(hrefs).toContain('/resources/');
+    expect(hrefs).toContain('/stack/');
   });
 
   it('keeps EN paths canonical on the root path', () => {
