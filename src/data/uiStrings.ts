@@ -20,6 +20,7 @@ export interface UiStrings {
     aiSystems: string;
     insights: string;
     tools: string;
+    stack: string;
     about: string;
     contact: string;
   };
@@ -47,6 +48,7 @@ const en: UiStrings = {
     aiSystems: 'AI Systems',
     insights: 'Insights',
     tools: 'Tools',
+    stack: 'Stack',
     about: 'About',
     contact: 'Contact',
   },
@@ -74,6 +76,7 @@ const pl: UiStrings = {
     aiSystems: 'Systemy AI',
     insights: 'Insights',
     tools: 'Narzędzia',
+    stack: 'Stack',
     about: 'O mnie',
     contact: 'Kontakt',
   },
@@ -101,6 +104,7 @@ const de: UiStrings = {
     aiSystems: 'AI-Systeme',
     insights: 'Insights',
     tools: 'Tools',
+    stack: 'Stack',
     about: 'Über mich',
     contact: 'Kontakt',
   },
@@ -128,6 +132,7 @@ const dk: UiStrings = {
     aiSystems: 'AI-systemer',
     insights: 'Insights',
     tools: 'Værktøjer',
+    stack: 'Stack',
     about: 'Om mig',
     contact: 'Kontakt',
   },
@@ -155,6 +160,7 @@ const no: UiStrings = {
     aiSystems: 'AI-systemer',
     insights: 'Insights',
     tools: 'Verktøy',
+    stack: 'Stack',
     about: 'Om meg',
     contact: 'Kontakt',
   },
@@ -182,6 +188,7 @@ const jp: UiStrings = {
     aiSystems: 'AIシステム',
     insights: 'インサイト',
     tools: 'ツール',
+    stack: 'スタック',
     about: 'プロフィール',
     contact: 'お問い合わせ',
   },
@@ -209,6 +216,7 @@ const it: UiStrings = {
     aiSystems: 'Sistemi AI',
     insights: 'Insights',
     tools: 'Strumenti',
+    stack: 'Stack',
     about: 'Chi sono',
     contact: 'Contatti',
   },
@@ -236,6 +244,7 @@ const es: UiStrings = {
     aiSystems: 'Sistemas IA',
     insights: 'Insights',
     tools: 'Herramientas',
+    stack: 'Stack',
     about: 'Sobre mí',
     contact: 'Contacto',
   },
@@ -296,6 +305,7 @@ export function getPrimaryNavLinks(pathname: string) {
     { label: t.nav.aiSystems,  href: localizeHref('/ai-systems/', locale), minWidth: '5.5rem' },
     { label: t.nav.insights,   href: localizeHref('/insights/',   locale), minWidth: '4rem'   },
     { label: t.nav.tools,      href: '/resources/',                        minWidth: '3rem'   },
+    { label: t.nav.stack,      href: '/stack/',                             minWidth: '3rem'   },
     { label: t.nav.about,      href: localizeHref('/about/',      locale), minWidth: '4rem'   },
     { label: t.nav.contact,    href: localizeHref('/contact/',    locale), minWidth: '4rem'   },
   ];
