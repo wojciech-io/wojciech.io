@@ -1,0 +1,204 @@
+---
+title: "How to Build a GTM AI Agent for Outbound Research and CRM Enrichment"
+description: "How I built a four-layer GTM AI agent that runs outbound research, drafts sequences, and enriches CRM records without a single external enrichment tool."
+publishedAt: "2025-04-18"
+updatedAt: "2026-05-10"
+tags:
+  - AI
+  - GTM
+  - Claude Code
+  - MCP
+tldr:
+  - "4-layer stack: CLAUDE.md operator identity → MCP tools → client memory files → 5 operator skills"
+  - "No Clay, no Apollo credits: Claude Code handles research, enrichment, and sequence drafting natively"
+  - "Cost per full outbound run: ~$2–8 vs. $200–500/month for an equivalent tool stack"
+  - "The system runs as an operator, not a chatbot: structured outputs, persistent memory, real integrations"
+  - "Reusable across clients: swap the memory file, keep the entire stack"
+featured: true
+draft: false
+coverType: terminal
+---
+
+Most GTM AI content falls into one of two buckets: prompt tips for ChatGPT, or $500/month tool comparisons nobody can actually act on. This is neither.
+
+This is a breakdown of a working system I built and run: a four-layer Claude Code agent stack that handles outbound research, sequence drafting, CRM enrichment, and ICP scoring. No Clay. No Apollo enrichment credits. No n8n flows that break every three weeks.
+
+Just Claude Code, a handful of MCP tools, a well-structured CLAUDE.md, and five operator skills wired together.
+
+---
+
+## Why Claude Code instead of Clay
+
+Clay is excellent at what it does: structured enrichment pipelines with a visual interface and a credit model per row. I've used it. It's genuinely useful for teams that need enrichment at scale without engineering resources.
+
+But it has limits that matter for the way I work:
+
+- You're buying enrichment credits, not intelligence. Clay routes data through third-party providers: Clearbit, Apollo, LinkedIn scrapers: and bills per row. The LLM reasoning layer is thin.
+- The visual pipeline is powerful but brittle. Complex logic becomes hard to inspect, version, or hand off.
+- It doesn't write. You can pull data into a variable and inject it into a template, but the actual reasoning about *why this prospect matters for this account at this moment* isn't there.
+
+Claude Code: specifically the agent loop via the SDK, with MCP tools wired in: lets me build something different: a system that **reads context, reasons about fit, writes copy, and updates records**, all in one pass. The intelligence is the product, not the infrastructure.
+
+---
+
+## The four-layer stack
+
+The system has four components that work together:
+
+### Layer 1: CLAUDE.md: the operator brief
+
+Every Claude Code agent session starts by reading `CLAUDE.md`. This is not documentation. It's the briefing file: the equivalent of what you'd give a junior SDR on their first day, except it's read by the model on every run.
+
+Mine includes:
+
+- ICP definition (firmographic, technographic, behavioral signals)
+- Tone and persona for outreach (direct, no buzzwords, operator-to-operator)
+- What a qualified lead looks like vs. a time-waster
+- How to handle edge cases (no LinkedIn, foreign markets, inbound vs. outbound)
+- Hard rules (never mention competitors by name, never use "I hope this finds you well")
+
+The CLAUDE.md is the most important file in the system. It's where operator judgment gets encoded so the model doesn't have to guess.
+
+### Layer 2: MCP tools: the data access layer
+
+I run four MCP servers in the stack:
+
+**Web search** (via Brave MCP or Exa MCP): for real-time company research, funding news, job postings, recent content. This replaces the "waterfall enrichment" step in Clay.
+
+**Browser automation** (via Puppeteer MCP): for pages that block crawlers. LinkedIn company pages, some pricing pages, Glassdoor signals about team size and burn rate.
+
+**Memory / file system** (via the Claude filesystem MCP): for reading and writing client files: the CRM export CSV, the sequence templates, the running log of contacted accounts.
+
+**Custom scoring MCP** (built in a weekend with the MCP SDK): takes a structured JSON object (company data + ICP criteria) and returns a fit score with reasoning. This was the hardest to build and the most valuable: it gives the agent a consistent scoring rubric across runs.
+
+### Layer 3: Client memory files
+
+Each client gets a folder:
+
+```
+/clients/acme-corp/
+  icp.md           ← who we're targeting and why
+  contacted.csv    ← running log of touched accounts
+  sequences/       ← approved sequence variants
+  research/        ← per-account research notes
+```
+
+The agent reads these at the start of each session. When it researches a new account, it writes a `research/[account-name].md` file before drafting. This creates an audit trail and means every sequence is grounded in actual research, not hallucinated context.
+
+### Layer 4: The five Skills
+
+Skills are named sub-tasks the agent can invoke. I have five:
+
+**`/research [company]`**: Runs a full company profile: firmographics, recent news, tech stack signals, team size, funding status, key stakeholders. Writes to `research/[company].md`.
+
+**`/score [company]`**: Reads the research file and the ICP definition, returns a 1–10 fit score with three sentences of reasoning. Below 6 = skip. 8+ = priority.
+
+**`/draft [company] [sequence-variant]`**: Reads the research file, the score, the sequence template, and writes a personalized first email + two follow-ups. Never uses merge fields. Always writes from scratch based on actual research.
+
+**`/enrich [csv-path]`**: Batch processes a CSV of company names, runs `/research` and `/score` for each, outputs an enriched CSV with scores and priority flags. This is the Clay replacement.
+
+**`/log [company] [status]`**: Updates `contacted.csv` with the account status and timestamp. Keeps the running log clean without manual data entry.
+
+---
+
+## A real run, step by step
+
+Here's what an actual session looks like when I'm working a new account list:
+
+1. Drop a CSV of 50 company names into `/clients/acme-corp/`
+2. Run: `claude /enrich clients/acme-corp/new-accounts.csv`
+3. The agent loops through each account: web search → browser scrape if needed → score → write research file → append to enriched CSV
+4. 20 minutes later: enriched CSV with fit scores, priority flags, and a research file for every account above 6
+5. For the top 10: `claude /draft [company] v2`: one at a time, reviewing each draft before committing
+6. Log sent sequences with `/log`
+
+Total time for a 50-account list: about 45 minutes of unattended agent work, plus 30 minutes of my review. Equivalent Clay + copywriting workflow: 3–4 hours minimum, and the copy quality isn't comparable.
+
+---
+
+## What this costs
+
+The cost model matters. Here's a rough breakdown per 50-account enrichment run:
+
+- Claude API (claude-sonnet-4 at current pricing): ~$2–4 per full run depending on research depth
+- MCP tool calls: Brave Search API is ~$0.003/query; Puppeteer is self-hosted so compute only
+- Custom scoring MCP: minimal, it's just structured JSON in/out
+
+Compare to Clay: $800–2,400/month for a plan that gives you meaningful enrichment credits plus LLM rows. For my volume and use case, the agent stack runs at roughly 5–10% of that cost, with better output quality on the reasoning and copy layers.
+
+The tradeoff: it took time to build. Probably 20 hours across the CLAUDE.md, the MCP setup, the Skills, and the scoring tool. For a team without that capacity, Clay is the right answer. For an operator who can invest the build time, this pays back quickly.
+
+---
+
+## The CLAUDE.md structure I use
+
+Since this is the most reusable piece, here's the template structure I've landed on:
+
+```markdown
+# GTM Agent: CLAUDE.md
+
+## Who you are
+You are a B2B GTM research and outreach agent. You operate on behalf of [Client].
+Your job is to research accounts, score fit, and draft outbound sequences.
+You are not a marketing copywriter. You write like a senior operator talking to peers.
+
+## ICP definition
+**Firmographic:**
+- Company size: [range]
+- Industry: [list]
+- Geography: [regions]
+- Revenue range: [if known]
+
+**Technographic:**
+- Stack signals that indicate fit: [list]
+- Stack signals that indicate disqualification: [list]
+
+**Behavioral:**
+- Signals that indicate buying intent: [list]
+- Signals that indicate timing: [list]
+
+## Tone and rules
+- Never use: "I hope this finds you well", "I wanted to reach out", "synergies"
+- Always: lead with a specific observation, not a generic compliment
+- Length: first email max 100 words. Follow-ups max 60 words.
+- Never: mention competitors by name. Never: make claims you can't source.
+
+## Hard stops
+If an account scores below 6, do not draft. Log as "Low fit: skip" and move on.
+If you cannot find a LinkedIn company page or website, log as "Research blocked" and skip.
+```
+
+---
+
+## The starter pack
+
+I'm releasing the core of this as the **Claude Code GTM Agent Starter Pack**: the CLAUDE.md template, the Skills definitions, the folder structure, and the scoring MCP source.
+
+It's available on GitHub. It's free. It's designed for GTM operators who want to build this themselves rather than wait for a SaaS wrapper to charge $400/month for it.
+
+The pack assumes:
+- You have a Claude API key
+- You're comfortable running Claude Code in terminal
+- You understand your own ICP well enough to fill in a CLAUDE.md
+
+If those three things are true, you can have a working enrichment and outreach agent running in an afternoon.
+
+---
+
+## What's next
+
+I'm adding two things to the stack:
+
+**CRM sync**: a bidirectional MCP connector to HubSpot that writes enriched account data directly to contact/company records without manual CSV import.
+
+**Signal monitoring**: a lightweight cron that runs `/score` weekly against a watchlist of accounts and surfaces re-engagement triggers (new funding, leadership change, job postings for relevant roles).
+
+Both are in progress. I'll document them here when they're stable.
+
+---
+
+If you're building something similar or want to see the starter pack in action, [book a call](/contact#book-call). I'm happy to walk through the architecture.
+
+---
+
+**Related:** [GTM AI Agent Architecture: the four-layer stack guide](/insights/gtm-ai-agent-four-layer-architecture-guide) · [B2B CRM as a Revenue Operations System: how to rebuild it right](/insights/b2b-crm-revenue-operations-system-guide)

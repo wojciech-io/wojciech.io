@@ -1,0 +1,61 @@
+---
+title: "How to Build a Booking Engine: product architecture decisions for vertical markets"
+description: "How I built a vertical booking platform for an underserved market and what product architecture decisions drove the build from discovery to launch."
+publishedAt: "2025-12-08"
+tags:
+  - Product
+  - Booking
+  - Web app
+  - B2C
+category: "Products"
+coverType: "product"
+featured: false
+draft: false
+tldr:
+  - "Niche booking markets are underserved because generic platforms over-engineer the wrong things"
+  - "Core insight: campsite operators need calendar, pricing, and SMS confirmation: nothing else matters at launch"
+  - "Built mobile-first because 80%+ of campsite searches happen on phone, often at the gate"
+  - "Revenue model is transaction fee, not SaaS subscription: aligns incentives with operators"
+---
+
+The Polish campsite and RV pitch market had a problem: most booking happens by phone or through a booking.com listing that costs the operator 15–18% per reservation. Neither option is good.
+
+Phone bookings are lost revenue (no late-night inquiries, no searchability, no upsell). Booking.com works for hotels; it's expensive overkill for a 40-pitch campsite with a picnic table and a composting toilet.
+
+So I built a vertical booking engine specifically for this gap.
+
+## Product constraints that shaped the build
+
+**Operators are not tech-native.** The admin interface needed to work on a Samsung Galaxy running Chrome in a campsite's wifi signal. No onboarding call, no help docs, no training budget. The UI had to be self-evident.
+
+**Guests book on mobile.** Analytics from the first operator's old site showed 82% mobile. The booking flow had to be one-thumb operable: select dates, select pitch, pay, done. No account creation required.
+
+**Pricing is irregular.** Campsites have weekend pricing, peak-season pricing, early-bird discounts, last-minute pricing, and per-pitch or per-person pricing depending on the operator. Any generic booking engine either over-simplifies or over-engineers this. I built a flexible pricing matrix that covers the 80% case without requiring a PhD to configure.
+
+## Technical decisions
+
+The backend is a Postgres database with a straightforward availability model: pitch inventory, date blocks, reservations. The core availability check is a simple overlapping intervals query: intentionally simple because it needs to be fast and correct, not clever.
+
+Payment is Stripe. Not Przelewy24, not PayU: Stripe, because the developer experience is better and the international card coverage matters for tourist traffic. Polish card acceptance is complete through Stripe.
+
+SMS confirmation uses Twilio. In testing, email confirmation had a 34% open rate within 10 minutes. SMS had a 94% open rate within 2 minutes. For a booking confirmation that includes gate code and pitch number, that difference matters operationally.
+
+Admin is a simple CRUD interface with a visual availability calendar. The most-used views are: today's arrivals, this week's calendar, and the pricing editor. Everything else is secondary.
+
+## What I'd change
+
+The online payment adoption was lower than expected in the first cohort of operators. Polish campsite guests are used to paying at arrival. The conversion rate on full prepayment was acceptable; the conversion rate on "reserve now, pay on arrival" was significantly higher but created cancellation headaches.
+
+A better holdback model: small deposit online, balance at arrival: would have been the right product decision from day one. I added it in the third month.
+
+## The niche market lesson
+
+Niche markets are not small markets. Camping in Poland is a growing category with a structural gap in booking infrastructure. The total market isn't tiny: it's just unserved.
+
+The right approach for niche is to do less, correctly. Generic platforms add features because their audience is broad and heterogeneous. A niche platform can do three things extremely well and win because the alternatives do thirty things adequately.
+
+This booking engine does calendar, pricing, and confirmation. It does them correctly. That's enough to matter.
+
+---
+
+**Related:** [GTM Tools: Build vs Buy Decision Framework for Operators](/insights/gtm-tools-build-vs-buy-decision-framework) · [How to Build Micro-SaaS with AI Tools: product lessons from 10+ shipped apps](/insights/how-to-build-micro-saas-with-ai-tools)

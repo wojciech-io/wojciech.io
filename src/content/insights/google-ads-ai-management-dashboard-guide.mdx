@@ -1,0 +1,74 @@
+---
+title: "Google Ads AI Management Dashboard: replacing the native UI with a decision cockpit"
+description: "Why I built an AI-native Google Ads management dashboard instead of using the native UI, and what the architecture looks like from the inside."
+publishedAt: "2026-03-22"
+tags:
+  - AI
+  - Ads
+  - GTM
+  - Operator tooling
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+tldr:
+  - "The Google Ads UI is optimized for Google's revenue, not for operator decisions"
+  - "AdsAI surfaces budget, ROAS, ICP fit, alerts, and next actions in one workspace"
+  - "Built with React + a lightweight backend that polls the Ads API on your behalf"
+  - "Operator sees what to pause, analyze, or scale. No hunting through reports"
+---
+
+The Google Ads interface is not built for decision-making. It's built for configuration. There's a difference.
+
+You go into Ads to see how things are performing. You end up clicking through five tabs, comparing numbers in two browser windows, and building a mental model that evaporates by your next session. The actual question: "what should I do right now?": is never answered.
+
+AdsAI is my attempt to answer it.
+
+## The problem with ad dashboards
+
+Most ad dashboards (Supermetrics, Looker, Data Studio) give you more data in nicer charts. That's not the gap. The gap is between "here is your ROAS by campaign" and "here is what you should do about it."
+
+The decisions that matter in paid performance are repetitive and mostly logical:
+
+- Which campaigns are burning budget without ICP-fit traffic?
+- Which keywords have high CTR but low conversion: and why?
+- Where is there room to scale without diminishing return?
+- What's broken that I haven't noticed yet?
+
+These questions have answers. The answers live in the data. Getting them requires either a skilled analyst running daily checks or a system that does it automatically.
+
+## What AdsAI looks like
+
+The interface has three sections:
+
+**Decision queue**: a prioritized list of actions: "Pause [Campaign X], below ICP threshold for 7 days." "Increase budget on [Campaign Y] by 20%, ROAS 4.2, headroom confirmed." Each item has the supporting data inline. One click to act, one click to defer.
+
+**Campaign status board**: all active campaigns with status indicators: healthy, underperforming, paused, needs review. Color coded. No charts, no trends: just current state.
+
+**Alert rail**: budget anomalies, sudden CTR drops, spend pacing issues. Things that would normally require a daily check to catch.
+
+## The ICP layer
+
+The part that took longest to build was ICP matching. Not all traffic is worth buying even at a profitable ROAS: if you're in B2B SaaS, QSR franchise, or any segment where the buyer profile matters, raw conversion volume is a misleading signal.
+
+I added a simple ICP definition layer: industry, company size, role. The system cross-references campaign-level signals (search terms, landing page, converting job titles where available) against the ICP definition and flags misalignment. This catches campaigns that look profitable but are pulling in the wrong segment.
+
+## Architecture
+
+The backend is minimal: a lightweight Node service with scheduled Ads API polling, a small Postgres instance for history, and a set of rule-based scoring functions. No ML model. The "intelligence" is encoded rules: threshold violations, trend breaks, ICP mismatch signals. Simple logic applied consistently beats expensive models applied inconsistently.
+
+The frontend is React with a tight data contract. No unnecessary abstraction: each view maps to a specific operator question.
+
+## What I'd do differently
+
+The biggest thing I underestimated was the Ads API auth complexity. OAuth refresh handling for multiple accounts is genuinely annoying. I'd abstract that earlier.
+
+I'd also start with the alert rail as the MVP, not the full cockpit. The highest-value action is catching bad things early. The optimization queue comes second.
+
+## The takeaway
+
+Operator-grade tooling for paid performance doesn't have to be expensive or complicated. The Google Ads UI won't change: they have no incentive to help you spend less efficiently. Build the layer that serves your decisions, not their interface.
+
+---
+
+**Related:** [B2B Revenue System Design: how operators think about growth differently](/insights/b2b-revenue-system-design-operator-framework) · [How to Build a GTM AI Agent for Outbound Research and CRM Enrichment](/insights/how-to-build-gtm-ai-agent-outbound-crm)
