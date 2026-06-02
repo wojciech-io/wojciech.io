@@ -1,0 +1,127 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+
+const features = [
+  {
+    title: 'Links with context',
+    body: 'Save a link with a note about why it matters. When you come back tomorrow, you remember the intent, not just the URL.',
+  },
+  {
+    title: 'Local-first storage',
+    body: 'Everything stays on your Mac. No cloud sync, no account, no data leaving your machine.',
+  },
+  {
+    title: 'Quiet by design',
+    body: 'No notifications, no feeds, no social features. A tool that holds things and stays out of the way.',
+  },
+  {
+    title: 'Fast capture',
+    body: 'Keyboard shortcut to save the current URL with a one-line note. Takes two seconds, costs zero attention.',
+  },
+  {
+    title: 'Trust boundary',
+    body: 'Links open in your default browser. Kade never loads page content, never runs scripts, never phones home.',
+  },
+  {
+    title: 'Search and filter',
+    body: 'Find links by keyword in your notes, not by trying to remember which bookmark folder you put it in.',
+  },
+];
+---
+
+<Layout
+  title="Kade"
+  description="A quiet macOS tool for holding links that need a few minutes of context before they're worth opening again. Local-first, no cloud, no list to share."
+>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-[var(--color-border)]">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
+    <div class="pointer-events-none absolute left-1/2 top-[-200px] h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-[var(--color-surface)] opacity-70 blur-[150px]" aria-hidden="true" />
+
+    <div class="relative mx-auto max-w-6xl px-6 py-24 md:py-32 text-center">
+      <div class="animate-fade-up inline-flex items-center gap-2 rounded-full border border-dashed border-[var(--color-border-2)] bg-[var(--color-glass)] backdrop-blur px-3.5 py-2 mb-8">
+        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
+        <span class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)]">In private build</span>
+      </div>
+
+      <h1 class="animate-fade-up [animation-delay:60ms] text-[clamp(3rem,8vw,6rem)] font-semibold leading-[0.92] tracking-tight text-[var(--color-text)] max-w-[800px] mx-auto mb-7">
+        A quieter way<br>
+        <span class="text-[var(--color-text-muted)]">to keep links.</span>
+      </h1>
+
+      <p class="animate-fade-up [animation-delay:120ms] max-w-[34rem] mx-auto text-base md:text-lg leading-relaxed text-[var(--color-text-muted)] mb-10">
+        Kade holds links that need a few minutes of context before they're worth opening again. Local-first, no cloud, no list to share. A tool for you, not for your audience.
+      </p>
+
+      <div class="animate-fade-up [animation-delay:180ms]">
+        <a
+          href="mailto:hello@wojciech.io?subject=Kade early access"
+          class="btn-press inline-flex items-center h-12 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-8 text-sm font-semibold text-[var(--color-accent-text)] no-underline"
+        >
+          Request early access
+        </a>
+      </div>
+
+      <p class="animate-fade-up [animation-delay:240ms] mt-4 text-xs text-[var(--color-text-dim)]">
+        macOS native. Public launch paused while I tighten the trust boundary.
+      </p>
+    </div>
+  </section>
+
+  <!-- Problem / Solution -->
+  <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-6xl px-6 grid md:grid-cols-2 gap-px bg-[var(--color-border)] rounded-[var(--radius-card)] overflow-hidden border border-[var(--color-border)]">
+      <div class="reveal-up bg-[var(--color-surface)] p-8 md:p-10">
+        <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)] mb-3">The problem</p>
+        <h2 class="text-xl md:text-2xl font-semibold text-[var(--color-text)] leading-snug mb-4">Bookmarks lose context.</h2>
+        <p class="text-sm md:text-base leading-relaxed text-[var(--color-text-muted)]">
+          You find something worth reading later. You bookmark it. Three days pass. You see the title, you don't remember why it mattered. You don't open it.
+        </p>
+      </div>
+      <div class="reveal-up bg-[var(--color-surface)] p-8 md:p-10">
+        <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)] mb-3">The fix</p>
+        <h2 class="text-xl md:text-2xl font-semibold text-[var(--color-text)] leading-snug mb-4">Links that carry intent.</h2>
+        <p class="text-sm md:text-base leading-relaxed text-[var(--color-text-muted)]">
+          Save the link with one line about why you saved it. When you come back, the note puts you back in the mindset. You open it or you let it go, both are fine.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="reveal-up text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)] mb-8">What it does</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[var(--color-border)] rounded-[var(--radius-card)] overflow-hidden border border-[var(--color-border)]">
+        {features.map((f) => (
+          <article class="reveal-up bg-[var(--color-surface)] p-6">
+            <div class="mb-4 h-px w-8 bg-[var(--color-accent-cta)]"></div>
+            <h3 class="text-sm font-semibold text-[var(--color-text)] mb-2">{f.title}</h3>
+            <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{f.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Built by -->
+  <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-6xl px-6 flex flex-wrap items-center justify-between gap-6">
+      <div class="reveal-up">
+        <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)] mb-2">Built by</p>
+        <a href="/" class="group flex items-center gap-2 no-underline">
+          <span class="text-base font-semibold text-[var(--color-text)] group-hover:text-[var(--color-text-muted)] transition-colors">Wojciech Luszczynski</span>
+        </a>
+      </div>
+      <div class="reveal-up flex flex-wrap gap-2">
+        {['Swift', 'macOS native', 'Local-first', 'AI-built'].map((tag) => (
+          <span class="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 text-xs font-medium text-[var(--color-text-muted)]">{tag}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+</Layout>
