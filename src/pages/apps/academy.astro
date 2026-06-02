@@ -1,111 +1,222 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import PageBackdrop from '../../components/ui/PageBackdrop.astro';
-import SectionHeader from '../../components/ui/SectionHeader.astro';
-import { SITE } from '../../data/site';
+import CTABand from '../../components/ui/CTABand.astro';
 
-const academyUrl = 'https://academy.wojciech.io';
+const proof = [
+  { n: '20', unit: 'lat', label: 'marketingu i digitalu' },
+  { n: '10', unit: 'lat', label: 'B2B SaaS growth' },
+  { n: '10', unit: 'lat', label: 'GTM i revenue ops' },
+  { n: '200+', unit: '', label: 'aplikacji i systemow' },
+];
+
+const workflow = [
+  { tag: '01', title: 'Wybierasz model', body: 'Nie "najlepszy model na rynku", tylko wlasciwy model do zadania. Inaczej research, inaczej kod, inaczej outbound.' },
+  { tag: '02', title: 'Ukladasz workflow', body: 'Prompt nie jest strategia. Laczysz zrodla danych, model, decyzje czlowieka i miejsce, gdzie wynik trafia dalej.' },
+  { tag: '03', title: 'Wdrazasz w stacku', body: 'Claude, Clay, Pipedrive, n8n, Notion, D1. Pracujemy na narzedziach, ktore da sie zostawic zespolowi.' },
+  { tag: '04', title: 'Mierzysz efekt', body: 'Mniej zachwytu nad outputem, wiecej pytan: czy szybciej mamy SQL, lepszy brief, krotszy research, mniej recznej roboty.' },
+];
 
 const series = [
   {
-    n: '1',
-    title: 'AI jako narzędzie operatora',
-    meta: '12 odcinków · ~5h audio',
-    body: 'Wybór modelu pod zadanie, koszt tokenów, granica między demo a produkcją.',
+    n: '1', title: 'AI jako narzedzie operatora',
+    meta: '12 odcinkow',
+    body: 'Od mental modelu po wybor modeli: kiedy Claude vs GPT vs lokalny, jak nie palic tokenow, gdzie konczy sie demo a zaczyna produkcja.',
+    chips: ['Claude', 'GPT', 'Mental models', 'Cost ops'],
   },
   {
-    n: '2',
-    title: 'Outbound jak system, nie spam',
-    meta: '12 odcinków · ~6h audio',
-    body: 'ICP → SQL quality. Enrichment, sygnały zakupowe, kwalifikacja fit, personalizacja bez SDR-a.',
+    n: '2', title: 'Outbound jak system, nie spam',
+    meta: '12 odcinkow',
+    body: 'ICP do SQL quality. System, ktory znajduje wlasciwe firmy, wzbogaca dane, rozpoznaje sygnaly zakupowe, kwalifikuje fit i pisze personalizacje bez SDR-a.',
+    chips: ['Clay', 'Pipedrive', 'Signal stack', 'ICP'],
   },
   {
-    n: '3',
-    title: 'Content jako infrastruktura',
-    meta: '12 odcinków · ~5h audio',
-    body: 'Pipeline research → draft → publikacja → loop SEO/social/email. AI w środku, człowiek na końcu.',
+    n: '3', title: 'Content jako infrastruktura',
+    meta: '12 odcinkow',
+    body: 'Tresc nie jako kalendarz publikacji, ale jako asset dystrybucji i zaufania. Pipeline od research przez draft po publikacje i loop SEO/social/email.',
+    chips: ['LLM workflows', 'SEO', 'Distribution', 'Repurposing'],
   },
   {
-    n: '4',
-    title: 'Operating system dla GTM',
-    meta: '12 odcinków · ~6h audio',
-    body: 'Dashboardy, scoring, automatyzacje, agenty MCP, rytmy ownership. AI jako codzienna praktyka teamu.',
+    n: '4', title: 'Operating system dla GTM',
+    meta: '12 odcinkow',
+    body: 'Spinanie wszystkiego w jeden operacyjny system: dashboardy z D1, scoring, automatyzacje, agenty MCP, ownership rytmow.',
+    chips: ['MCP agents', 'Dashboards', 'Scoring', 'Team rhythm'],
   },
+];
+
+const pricing = [
+  { plan: 'Dla Ciebie', price: 'Cennik na zapytanie', body: 'Dostep do programu, Vault i certyfikat. Dla osoby, ktora chce poukladac wlasny warsztat.', status: 'soon' },
+  { plan: 'Dla zespolu', price: 'Cennik na zapytanie', body: 'Ten sam jezyk pracy dla marketingu, sprzedazy i founderow. Z wdrozeniem, nie samym dostepem.', status: 'soon' },
+  { plan: 'Cohort live', price: '2 900 zl / os.', body: '6 tygodni live, case-work i praca na prawdziwych procesach uczestnikow.', status: 'waitlist' },
 ];
 ---
 
 <Layout
   title="Academy"
-  description="Program wdrożenia AI dla zespołów GTM: 36 odcinków o tym, jak używać AI w marketingu, sprzedaży i pracy founderów B2B."
+  description="Program wdrozenia AI dla zespolow GTM: 36 odcinkow o tym, jak uzywac AI w marketingu, sprzedazy i pracy founderow B2B."
 >
-  <section class="relative pt-12 pb-8 md:pt-24 md:pb-16 border-b border-[var(--color-border)] overflow-hidden">
-    <PageBackdrop src="/images/office-bg.jpg" position="center 44%" opacity={0.08} eager />
-    <div class="relative mx-auto max-w-6xl px-6">
-      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4">
-        <a href="/apps/" class="hover:text-[var(--color-accent-hi)]">Apps</a> · Academy
-      </p>
-      <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4 max-w-2xl">
-        Naucz zespół AI od praktyka.
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-[var(--color-border)]">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
+    <div class="pointer-events-none absolute left-1/2 top-[-200px] h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-[var(--color-surface)] opacity-70 blur-[150px]" aria-hidden="true" />
+
+    <div class="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
+      <div class="animate-fade-up inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur px-3.5 py-2 mb-8">
+        <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-cta)] shadow-[0_0_14px_rgb(235_255_0/0.55)]"></span>
+        <span class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)]">Program AI dla GTM</span>
+      </div>
+
+      <h1 class="animate-fade-up [animation-delay:60ms] text-[clamp(2.5rem,7vw,5rem)] font-semibold leading-[0.95] tracking-tight text-[var(--color-text)] max-w-[800px] mb-7">
+        Naucz zespol AI od praktyka.<br>
+        <span class="text-[var(--color-text-muted)]">Nie od slajdow.</span>
       </h1>
-      <p class="text-lg text-[var(--color-text-muted)] max-w-2xl leading-relaxed">
-        36 krótkich odcinków o tym, jak używać AI w marketingu, sprzedaży i pracy founderów B2B. Nie nazwy narzędzi. Procesy: research, scoring, outbound, content, dashboardy.
+
+      <p class="animate-fade-up [animation-delay:120ms] max-w-[38rem] text-base md:text-lg leading-relaxed text-[var(--color-text-muted)] mb-10">
+        36 krotkich odcinkow o tym, jak uzywac AI w marketingu, sprzedazy i pracy founderow B2B. Nie uczysz sie nazw narzedzi. Skladasz procesy: research, scoring, outbound, content, dashboardy.
       </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a
-          href={academyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn-press inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 py-2.5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:opacity-90"
-        >
-          Otwórz Academy
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+      <div class="animate-fade-up [animation-delay:180ms] flex flex-wrap gap-3">
+        <a href="#program" class="btn-press inline-flex items-center h-12 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-8 text-sm font-semibold text-[var(--color-accent-text)] no-underline">
+          Zobacz program
         </a>
-        <a
-          href="/contact/#book-call"
-          class="btn-press inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-5 py-2.5 text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:border-[var(--color-border)] hover:text-[var(--color-text)]"
-        >
-          Porozmawiaj o wdrożeniu
+        <a href="mailto:hello@wojciech.io?subject=Academy" class="inline-flex items-center h-12 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-6 text-sm font-medium text-[var(--color-text-muted)] no-underline hover:text-[var(--color-text)] hover:border-[var(--color-border)] transition-colors">
+          Porozmawiaj o wdrozeniu
         </a>
+      </div>
+
+      <!-- Proof strip -->
+      <div class="animate-fade-up [animation-delay:240ms] mt-12 grid grid-cols-2 sm:grid-cols-4 gap-px bg-[var(--color-border)] rounded-[var(--radius-card)] overflow-hidden border border-[var(--color-border)]">
+        {proof.map(({ n, unit, label }) => (
+          <div class="bg-[var(--color-surface)] px-5 py-4 text-center">
+            <p class="text-2xl font-bold text-[var(--color-text)]">{n} {unit}</p>
+            <p class="text-xs text-[var(--color-text-dim)] mt-0.5">{label}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+  <!-- Workflow -->
+  <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader
-        eyebrow="Program"
-        heading="Cztery serie, jeden operacyjny system."
-        lead="Każda seria układa konkretny kawałek pracy GTM. Razem składają się w jeden system, który zostaje w zespole."
-      />
-      <div class="mt-10 grid md:grid-cols-2 gap-6">
-        {series.map((s) => (
-          <article class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
-            <p class="text-xs font-medium text-[var(--color-accent)] tracking-widest uppercase mb-3">Seria {s.n} · {s.meta}</p>
-            <h3 class="text-lg font-semibold text-[var(--color-text)] mb-2">{s.title}</h3>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{s.body}</p>
+      <p class="reveal-up text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)] mb-3">System pracy</p>
+      <h2 class="reveal-up text-2xl md:text-3xl font-semibold text-[var(--color-text)] leading-snug mb-4 max-w-2xl">
+        Nie chodzi o to, zeby znac wiecej narzedzi. Chodzi o to, zeby przestac robic AI na wyczucie.
+      </h2>
+      <p class="reveal-up text-sm md:text-base text-[var(--color-text-muted)] leading-relaxed mb-10 max-w-2xl">
+        Program prowadzi od wyboru modelu do procesow, ktore ktos w firmie moze powtarzac. Kazdy blok konczy sie artefaktem, nie inspiracja do zapisania w Notion.
+      </p>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--color-border)] rounded-[var(--radius-card)] overflow-hidden border border-[var(--color-border)]">
+        {workflow.map(({ tag, title, body }) => (
+          <article class="reveal-up bg-[var(--color-surface)] p-6">
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent)] mb-3 block">Krok {tag}</span>
+            <h3 class="text-sm font-semibold text-[var(--color-text)] mb-2">{title}</h3>
+            <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{body}</p>
           </article>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="py-14 md:py-20 relative overflow-hidden bg-[var(--color-surface)]">
-    <div class="relative mx-auto grid max-w-6xl gap-6 px-6 md:grid-cols-[1fr_auto] md:items-end">
-      <div class="max-w-2xl">
-        <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Wersja pełna</p>
-        <h2 class="text-2xl font-semibold leading-[1.12] tracking-tight text-[var(--color-text)] md:text-3xl">
-          Pełna platforma żyje na academy.wojciech.io.
-        </h2>
-        <p class="mt-3 max-w-xl text-sm leading-relaxed text-[var(--color-text-muted)]">
-          Tu jest brief. Tam odcinki, próbki audio, cohort, ranking modeli i program w całości.
+  <!-- Program -->
+  <section id="program" class="border-b border-[var(--color-border)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="reveal-up text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)] mb-3">Program</p>
+      <h2 class="reveal-up text-2xl md:text-3xl font-semibold text-[var(--color-text)] leading-snug mb-4">4 serie. 36 odcinkow. Zero waty.</h2>
+      <p class="reveal-up text-sm md:text-base text-[var(--color-text-muted)] leading-relaxed mb-10 max-w-2xl">
+        Mozesz przerobic jedna serie albo caly program. W kazdym module jest audio, quiz i material do uzycia od razu po odcinku.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        {series.map((s) => (
+          <article class="reveal-up rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 md:p-8">
+            <div class="flex items-start gap-4 mb-4">
+              <span class="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] text-sm font-bold">{s.n}</span>
+              <div>
+                <h3 class="text-base font-semibold text-[var(--color-text)] leading-snug">{s.title}</h3>
+                <p class="text-xs text-[var(--color-text-dim)] mt-0.5">Seria {s.n} / {s.meta}</p>
+              </div>
+            </div>
+            <p class="text-sm leading-relaxed text-[var(--color-text-muted)] mb-4">{s.body}</p>
+            <div class="flex flex-wrap gap-1.5">
+              {s.chips.map(c => (
+                <span class="rounded-full border border-[var(--color-border)] bg-[var(--color-surface-2)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-text-muted)]">{c}</span>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing: soon state, no Stripe -->
+  <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="reveal-up text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)] mb-3">Dostep</p>
+      <h2 class="reveal-up text-2xl md:text-3xl font-semibold text-[var(--color-text)] leading-snug mb-4">
+        Najpierw sprawdzasz format. Potem wybierasz dostep.
+      </h2>
+      <p class="reveal-up text-sm text-[var(--color-text-muted)] leading-relaxed mb-10 max-w-2xl">
+        Dla jednej osoby i zespolu cennik dobieram do zakresu. Cohort live ma cene otwarta, bo to konkretna grupa i konkretna praca na procesach uczestnikow.
+      </p>
+
+      <div class="grid sm:grid-cols-3 gap-5">
+        {pricing.map((p) => (
+          <div class:list={[
+            'reveal-up rounded-[var(--radius-card)] border bg-[var(--color-surface)] p-6',
+            p.status === 'waitlist' ? 'border-[var(--color-accent)]/30' : 'border-dashed border-[var(--color-border-2)]',
+          ]}>
+            <p class="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent)] mb-3">{p.plan}</p>
+            <h3 class="text-xl font-semibold text-[var(--color-text)] mb-2">{p.price}</h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5">{p.body}</p>
+            {p.status === 'waitlist' ? (
+              <a href="mailto:hello@wojciech.io?subject=Academy Cohort" class="btn-press inline-flex items-center h-10 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 text-sm font-semibold text-[var(--color-accent-text)] no-underline">
+                Zapisz sie na liste
+              </a>
+            ) : (
+              <span class="inline-flex items-center gap-2 rounded-full border border-dashed border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">
+                <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
+                Niedlugo
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Instructor -->
+  <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-6xl px-6 flex flex-wrap items-center justify-between gap-6">
+      <div class="reveal-up max-w-xl">
+        <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)] mb-3">Prowadzacy</p>
+        <h2 class="text-xl font-semibold text-[var(--color-text)] mb-2">Wojciech Luszczynski</h2>
+        <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+          20 lat w marketingu i digitalu, 10 w B2B SaaS growth. Buduje systemy revenue, laczy CRM, outbound, paid i AI workflows w jeden model operacyjny. Nie teoretyk, operator.
         </p>
       </div>
-      <div class="flex flex-wrap gap-3 md:justify-end">
-        <a href={academyUrl} target="_blank" rel="noopener noreferrer" class="btn-press inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 py-2.5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:opacity-90">
-          academy.wojciech.io
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="reveal-up shrink-0">
+        <img src="/images/wojciech-avatar-384.webp" alt="Wojciech Luszczynski" width="96" height="96" loading="lazy" class="w-24 h-24 rounded-full border border-[var(--color-border)] object-cover" />
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-[clamp(4rem,8vw,6rem)]">
+    <div class="mx-auto max-w-2xl px-6 text-center">
+      <h2 class="reveal-up text-[clamp(1.75rem,4vw,2.5rem)] font-semibold leading-[1.05] tracking-tight text-[var(--color-text)] mb-5">
+        Jesli po pierwszym odcinku nie czujesz konkretu, nie kupuj.
+      </h2>
+      <p class="reveal-up text-base leading-relaxed text-[var(--color-text-muted)] mb-8 max-w-lg mx-auto">
+        To ma byc roboczy program dla ludzi, ktorzy musza dowiezc marketing, sprzedaz albo content. Nie kolekcja ciekawostek o AI.
+      </p>
+      <div class="reveal-up">
+        <a href="mailto:hello@wojciech.io?subject=Academy" class="btn-press inline-flex items-center h-12 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-8 text-sm font-semibold text-[var(--color-accent-text)] no-underline">
+          Napisz o wdrozeniu
         </a>
       </div>
     </div>
   </section>
+
 </Layout>
