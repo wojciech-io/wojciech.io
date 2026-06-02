@@ -208,27 +208,23 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     <!-- Scroll-triggered reveal via native IntersectionObserver.
          Re-registers on every View Transitions navigation (astro:page-load). -->
     <script>
+      const REVEAL_SEL = '.reveal-up, .reveal-left, .reveal-right, .reveal-scale, .reveal-blur';
+
       function initReveal() {
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const els = document.querySelectorAll<HTMLElement>('.reveal-up:not([data-revealed])');
+        const els = document.querySelectorAll<HTMLElement>(
+          REVEAL_SEL.split(', ').map(c => `${c}:not([data-revealed])`).join(', ')
+        );
 
         if (reduced) {
-          els.forEach((el) => {
-            el.classList.add('is-visible');
-            el.dataset.revealed = '1';
-          });
+          els.forEach((el) => { el.classList.add('is-visible'); el.dataset.revealed = '1'; });
           return;
         }
 
-        // Synchronously reveal elements already in the viewport so the initial
-        // invisible state (set by `.js .reveal-up`) does not delay LCP paint.
         const vh = window.innerHeight;
         els.forEach((el) => {
           const r = el.getBoundingClientRect();
-          if (r.top < vh && r.bottom > 0) {
-            el.classList.add('is-visible');
-            el.dataset.revealed = '1';
-          }
+          if (r.top < vh && r.bottom > 0) { el.classList.add('is-visible'); el.dataset.revealed = '1'; }
         });
 
         const observer = new IntersectionObserver(
@@ -244,14 +240,46 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
           { rootMargin: '0px 0px -40px 0px', threshold: 0.01 },
         );
 
-        els.forEach((el) => {
-          if (!el.dataset.revealed) observer.observe(el);
+        els.forEach((el) => { if (!el.dataset.revealed) observer.observe(el); });
+
+        // Counter-up: animate numbers when scrolled into view
+        document.querySelectorAll<HTMLElement>('.metric-count:not([data-counted])').forEach((el) => {
+          const target = parseInt(el.dataset.target || '0', 10);
+          const suffix = el.dataset.suffix || '';
+          if (reduced) { el.textContent = `${target}${suffix}`; el.dataset.counted = '1'; return; }
+          el.textContent = `0${suffix}`;
+          const cObs = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              el.dataset.counted = '1'; cObs.unobserve(el);
+              const dur = 1600, start = performance.now();
+              function tick(now: number) {
+                const p = Math.min((now - start) / dur, 1);
+                el.textContent = `${Math.round((1 - Math.pow(1 - p, 3)) * target)}${suffix}`;
+                if (p < 1) requestAnimationFrame(tick);
+              }
+              requestAnimationFrame(tick);
+            });
+          }, { threshold: 0.5 });
+          cObs.observe(el);
         });
       }
 
-      // Run on first load and after every View Transitions navigation
+      // Scroll progress bar
+      function initScrollProgress() {
+        const bar = document.querySelector<HTMLElement>('.scroll-progress');
+        if (!bar) return;
+        const update = () => {
+          const h = document.documentElement.scrollHeight - window.innerHeight;
+          bar.style.transform = `scaleX(${h > 0 ? Math.min(window.scrollY / h, 1) : 0})`;
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        update();
+      }
+
       initReveal();
-      document.addEventListener('astro:page-load', initReveal);
+      initScrollProgress();
+      document.addEventListener('astro:page-load', () => { initReveal(); initScrollProgress(); });
     </script>
 
     <!-- Lenis smooth scroll — desktop/trackpad only, destroys on View Transitions navigation -->
