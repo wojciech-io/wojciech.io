@@ -96,12 +96,11 @@ describe('getUiStringsForPath', () => {
 });
 
 describe('getPrimaryNavLinks', () => {
-  it('returns seven links with localized labels and locale-prefixed hrefs', () => {
+  it('returns six links with localized labels and locale-prefixed hrefs', () => {
     const plLinks = getPrimaryNavLinks('/pl/');
-    expect(plLinks).toHaveLength(7);
+    expect(plLinks).toHaveLength(6);
     const labels = plLinks.map((l) => l.label);
     expect(labels).toContain('Praca');
-    expect(labels).toContain('Stack');
     expect(labels).toContain('Kontakt');
     // Locale-prefixed canonical pages:
     const hrefs = plLinks.map((l) => l.href);
