@@ -96,19 +96,21 @@ describe('getUiStringsForPath', () => {
 });
 
 describe('getPrimaryNavLinks', () => {
-  it('returns six links with localized labels and locale-prefixed hrefs', () => {
+  it('returns seven links with localized labels and locale-prefixed hrefs', () => {
     const plLinks = getPrimaryNavLinks('/pl/');
-    expect(plLinks).toHaveLength(6);
+    expect(plLinks).toHaveLength(7);
     const labels = plLinks.map((l) => l.label);
     expect(labels).toContain('Praca');
+    expect(labels).toContain('Stack');
     expect(labels).toContain('Kontakt');
     // Locale-prefixed canonical pages:
     const hrefs = plLinks.map((l) => l.href);
     expect(hrefs).toContain('/pl/work/');
     expect(hrefs).toContain('/pl/contact/');
     expect(hrefs).toContain('/pl/about/');
-    // /resources/ stays canonical (EN-only resource hub):
+    // /resources/ and /stack/ stay canonical (EN-only):
     expect(hrefs).toContain('/resources/');
+    expect(hrefs).toContain('/stack/');
   });
 
   it('keeps EN paths canonical on the root path', () => {
