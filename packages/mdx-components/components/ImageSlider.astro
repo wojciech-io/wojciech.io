@@ -1,0 +1,200 @@
+---
+/**
+ * ImageSlider — drag-to-compare before/after image overlay.
+ * Usage:
+ *   <ImageSlider
+ *     before="/images/old-dashboard.png"
+ *     after="/images/new-dashboard.png"
+ *     beforeLabel="v1"
+ *     afterLabel="v2"
+ *     alt="Dashboard redesign comparison"
+ *   />
+ */
+interface Props {
+  before: string;
+  after: string;
+  beforeLabel?: string;
+  afterLabel?: string;
+  alt?: string;
+  startPosition?: number;
+}
+
+const {
+  before,
+  after,
+  beforeLabel = 'Before',
+  afterLabel = 'After',
+  alt = 'Comparison',
+  startPosition = 50,
+} = Astro.props;
+---
+
+<figure class="img-slider" data-img-slider>
+  <div class="img-slider__container" style={`--split: ${startPosition}%`}>
+    <img src={after} alt={`${alt} — after`} class="img-slider__img img-slider__after" loading="lazy" />
+    <div class="img-slider__clip">
+      <img src={before} alt={`${alt} — before`} class="img-slider__img" loading="lazy" />
+    </div>
+    <div class="img-slider__handle" role="separator" aria-valuenow={startPosition} aria-valuemin="0" aria-valuemax="100" tabindex="0">
+      <div class="img-slider__grip">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8L22 12L18 16" /><path d="M6 8L2 12L6 16" />
+        </svg>
+      </div>
+    </div>
+    <span class="img-slider__label img-slider__label--before">{beforeLabel}</span>
+    <span class="img-slider__label img-slider__label--after">{afterLabel}</span>
+  </div>
+</figure>
+
+<style>
+  .img-slider {
+    margin: 2rem 0;
+  }
+  .img-slider__container {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    cursor: col-resize;
+    user-select: none;
+    touch-action: pan-y;
+    aspect-ratio: 16 / 10;
+    background: var(--color-surface-2);
+  }
+
+  .img-slider__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .img-slider__after {
+    position: absolute;
+    inset: 0;
+  }
+
+  .img-slider__clip {
+    position: absolute;
+    inset: 0;
+    width: var(--split);
+    overflow: hidden;
+  }
+  .img-slider__clip img {
+    width: 100cqi;
+    max-width: none;
+    min-width: 0;
+    position: absolute;
+    inset: 0;
+  }
+
+  .img-slider__handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--split);
+    width: 3px;
+    background: white;
+    transform: translateX(-50%);
+    z-index: 2;
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    outline: none;
+  }
+
+  .img-slider__grip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: white;
+    border: 2px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .img-slider__handle:hover .img-slider__grip,
+  .img-slider__handle:focus-visible .img-slider__grip {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .img-slider__handle:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .img-slider__label {
+    position: absolute;
+    top: 0.75rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .img-slider__label--before {
+    left: 0.75rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-dim);
+  }
+  .img-slider__label--after {
+    right: 0.75rem;
+    background: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent-text);
+  }
+
+  @container (max-width: 480px) {
+    .img-slider__container { aspect-ratio: 4 / 3; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-img-slider]').forEach((slider) => {
+    const container = slider.querySelector<HTMLElement>('.img-slider__container')!;
+    const handle = slider.querySelector<HTMLElement>('.img-slider__handle')!;
+    let dragging = false;
+
+    function setPosition(clientX: number) {
+      const rect = container.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+      container.style.setProperty('--split', `${pct}%`);
+      handle.setAttribute('aria-valuenow', String(Math.round(pct)));
+    }
+
+    container.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      container.setPointerCapture(e.pointerId);
+      setPosition(e.clientX);
+    });
+    container.addEventListener('pointermove', (e) => {
+      if (dragging) setPosition(e.clientX);
+    });
+    container.addEventListener('pointerup', () => { dragging = false; });
+    container.addEventListener('pointercancel', () => { dragging = false; });
+
+    // Keyboard support
+    handle.addEventListener('keydown', (e) => {
+      const current = parseFloat(container.style.getPropertyValue('--split')) || 50;
+      const step = e.shiftKey ? 10 : 2;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        container.style.setProperty('--split', `${Math.max(0, current - step)}%`);
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        container.style.setProperty('--split', `${Math.min(100, current + step)}%`);
+      }
+    });
+  });
+</script>

@@ -1,0 +1,161 @@
+---
+/**
+ * CodeBlock — styled code block with filename, language label, and copy button.
+ * Usage:
+ *   <CodeBlock filename="wrangler.toml" lang="toml">
+ *     name = "growthhub-cron"
+ *     main = "src/index.ts"
+ *   </CodeBlock>
+ */
+interface Props {
+  filename?: string;
+  lang?: string;
+  caption?: string;
+}
+
+const { filename, lang, caption } = Astro.props;
+---
+
+<figure class="code-block" data-code-block>
+  {(filename || lang) && (
+    <div class="code-block__header">
+      <div class="code-block__dots" aria-hidden="true">
+        <span /><span /><span />
+      </div>
+      {filename && <span class="code-block__filename">{filename}</span>}
+      {lang && <span class="code-block__lang">{lang}</span>}
+      <button class="code-block__copy" data-copy-btn aria-label="Copy code">
+        <svg class="code-block__copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+        </svg>
+        <svg class="code-block__check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <path d="M20 6L9 17l-5-5" />
+        </svg>
+      </button>
+    </div>
+  )}
+  <div class="code-block__body">
+    <pre><code><slot /></code></pre>
+  </div>
+  {caption && <figcaption class="code-block__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .code-block {
+    margin: 2rem 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: var(--color-surface-2);
+  }
+
+  .code-block__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .code-block__dots {
+    display: flex;
+    gap: 0.375rem;
+  }
+  .code-block__dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-border);
+  }
+
+  .code-block__filename {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .code-block__lang {
+    margin-left: auto;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+  }
+
+  .code-block__copy {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-dim);
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+  .code-block__copy:hover {
+    color: var(--color-text);
+    background: var(--color-surface-2);
+  }
+  .code-block__copy.copied {
+    color: var(--color-accent);
+  }
+
+  .code-block__body {
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+  }
+  .code-block__body pre {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    color: var(--color-text);
+    white-space: pre;
+    tab-size: 2;
+  }
+  .code-block__body code {
+    font: inherit;
+    background: none;
+    padding: 0;
+  }
+
+  .code-block__caption {
+    padding: 0.5rem 1rem;
+    border-top: 1px dashed var(--color-border);
+    font-size: 0.8rem;
+    color: var(--color-text-dim);
+    text-align: center;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-copy-btn]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const block = btn.closest('[data-code-block]');
+      const code = block?.querySelector('pre code')?.textContent;
+      if (!code) return;
+
+      await navigator.clipboard.writeText(code.trim());
+
+      const copyIcon = btn.querySelector('.code-block__copy-icon') as HTMLElement;
+      const checkIcon = btn.querySelector('.code-block__check-icon') as HTMLElement;
+      btn.classList.add('copied');
+      copyIcon.style.display = 'none';
+      checkIcon.style.display = 'block';
+
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        copyIcon.style.display = 'block';
+        checkIcon.style.display = 'none';
+      }, 2000);
+    });
+  });
+</script>

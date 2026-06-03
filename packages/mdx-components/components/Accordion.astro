@@ -1,0 +1,154 @@
+---
+/**
+ * Accordion — collapsible sections with smooth animation.
+ * Usage:
+ *   <Accordion items={[
+ *     { title: "What is this?", body: "A collapsible section." },
+ *     { title: "Why use it?",   body: "To save vertical space." },
+ *   ]} />
+ *
+ *   <Accordion items={[...]} multiple />  — allows multiple open at once
+ */
+interface AccordionItem {
+  title: string;
+  body: string;
+  open?: boolean;
+}
+interface Props {
+  items: AccordionItem[];
+  title?: string;
+  multiple?: boolean;
+}
+
+const { items, title, multiple = false } = Astro.props;
+---
+
+<div class="accordion-block" data-accordion data-multiple={multiple ? 'true' : undefined}>
+  {title && (
+    <p class="accordion-title">
+      <span class="accordion-dot" aria-hidden="true" />
+      {title}
+    </p>
+  )}
+  {items.map((item, i) => (
+    <details class="accordion-item" open={item.open || undefined}>
+      <summary class="accordion-trigger">
+        <span class="accordion-label">{item.title}</span>
+        <span class="accordion-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </span>
+      </summary>
+      <div class="accordion-body">
+        <p>{item.body}</p>
+      </div>
+    </details>
+  ))}
+</div>
+
+<style>
+  .accordion-block {
+    margin: 2rem 0;
+  }
+
+  .accordion-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin: 0 0 1rem;
+  }
+  .accordion-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--color-accent-cta);
+    transform: rotate(45deg);
+  }
+
+  .accordion-item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+  }
+  .accordion-item + .accordion-item {
+    margin-top: 0.5rem;
+  }
+  .accordion-item[open] {
+    border-color: var(--color-border-2);
+    background: var(--color-surface-2);
+  }
+
+  .accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .accordion-trigger::-webkit-details-marker { display: none; }
+  .accordion-trigger::marker { display: none; content: ''; }
+
+  .accordion-label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+
+  .accordion-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-dim);
+    transition: transform 0.25s ease, background 0.2s ease;
+  }
+  .accordion-item[open] .accordion-icon {
+    transform: rotate(180deg);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-accent-text);
+  }
+
+  .accordion-body {
+    padding: 0 1.25rem 1.25rem;
+  }
+  .accordion-body p {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+</style>
+
+<script>
+  // Single-open mode: close siblings when one opens
+  document.querySelectorAll<HTMLElement>('[data-accordion]:not([data-multiple])').forEach((block) => {
+    block.querySelectorAll('details').forEach((details) => {
+      details.addEventListener('toggle', () => {
+        if (details.open) {
+          block.querySelectorAll('details').forEach((other) => {
+            if (other !== details) other.removeAttribute('open');
+          });
+        }
+      });
+    });
+  });
+</script>

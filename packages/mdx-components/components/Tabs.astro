@@ -1,0 +1,167 @@
+---
+/**
+ * Tabs — interactive tabbed content block.
+ * Usage:
+ *   <Tabs tabs={[
+ *     { label: "Before", content: "Old way of doing things." },
+ *     { label: "After",  content: "New way with AI agents." },
+ *   ]} />
+ *
+ * Or with slots for rich content:
+ *   <Tabs labels={["Setup", "Config", "Deploy"]}>
+ *     <div data-tab="0">Setup content...</div>
+ *     <div data-tab="1">Config content...</div>
+ *     <div data-tab="2">Deploy content...</div>
+ *   </Tabs>
+ */
+interface TabItem {
+  label: string;
+  content?: string;
+}
+interface Props {
+  tabs?: TabItem[];
+  labels?: string[];
+  defaultTab?: number;
+}
+
+const { tabs = [], labels = [], defaultTab = 0 } = Astro.props;
+const tabLabels = tabs.length > 0 ? tabs.map((t) => t.label) : labels;
+const hasSlots = tabs.length === 0;
+const id = `tabs-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div class="tabs-block" data-tabs={id}>
+  <div class="tabs-bar" role="tablist">
+    {tabLabels.map((label, i) => (
+      <button
+        role="tab"
+        aria-selected={i === defaultTab ? 'true' : 'false'}
+        aria-controls={`${id}-panel-${i}`}
+        data-tab-index={i}
+        class:list={['tabs-trigger', { active: i === defaultTab }]}
+      >
+        {label}
+      </button>
+    ))}
+    <div class="tabs-indicator" aria-hidden="true" />
+  </div>
+
+  <div class="tabs-content">
+    {tabs.length > 0
+      ? tabs.map((tab, i) => (
+          <div
+            id={`${id}-panel-${i}`}
+            role="tabpanel"
+            class:list={['tabs-panel', { active: i === defaultTab }]}
+            data-panel-index={i}
+          >
+            <p>{tab.content}</p>
+          </div>
+        ))
+      : null}
+    {hasSlots && <slot />}
+  </div>
+</div>
+
+<style>
+  .tabs-block {
+    margin: 2rem 0;
+  }
+  .tabs-bar {
+    position: relative;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-bar::-webkit-scrollbar { display: none; }
+
+  .tabs-trigger {
+    all: unset;
+    cursor: pointer;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-dim);
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    position: relative;
+    z-index: 1;
+  }
+  .tabs-trigger:hover { color: var(--color-text); }
+  .tabs-trigger.active { color: var(--color-text); }
+
+  .tabs-indicator {
+    position: absolute;
+    bottom: -1px;
+    height: 2px;
+    background: var(--color-accent);
+    border-radius: 1px;
+    transition: left 0.25s ease, width 0.25s ease;
+  }
+
+  .tabs-content {
+    padding-top: 1.25rem;
+  }
+  .tabs-panel {
+    display: none;
+    animation: tabFadeIn 0.25s ease;
+  }
+  .tabs-panel.active { display: block; }
+  .tabs-panel :global(p) {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  /* Slot-based panels */
+  .tabs-content > :global([data-tab]) {
+    display: none;
+    animation: tabFadeIn 0.25s ease;
+  }
+  .tabs-content > :global([data-tab].active) { display: block; }
+
+  @keyframes tabFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((block) => {
+    const triggers = block.querySelectorAll<HTMLButtonElement>('[data-tab-index]');
+    const panels = block.querySelectorAll<HTMLElement>('[data-panel-index]');
+    const slotPanels = block.querySelectorAll<HTMLElement>('[data-tab]');
+    const indicator = block.querySelector<HTMLElement>('.tabs-indicator');
+
+    function activate(index: number) {
+      triggers.forEach((t, i) => {
+        const isActive = i === index;
+        t.classList.toggle('active', isActive);
+        t.setAttribute('aria-selected', String(isActive));
+      });
+      panels.forEach((p, i) => p.classList.toggle('active', i === index));
+      slotPanels.forEach((p) => {
+        p.classList.toggle('active', Number(p.dataset.tab) === index);
+      });
+      // Move indicator
+      const active = triggers[index];
+      if (indicator && active) {
+        indicator.style.left = `${active.offsetLeft}px`;
+        indicator.style.width = `${active.offsetWidth}px`;
+      }
+    }
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        activate(Number(trigger.dataset.tabIndex));
+      });
+    });
+
+    // Init indicator position
+    const defaultIndex = [...triggers].findIndex((t) => t.classList.contains('active'));
+    if (defaultIndex >= 0) activate(defaultIndex);
+  });
+</script>
