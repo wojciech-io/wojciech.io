@@ -313,7 +313,11 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
         // Kill native smooth scroll so the browser doesn't animate-scroll to top
         // during the View Transition (double-scroll jank)
         document.documentElement.style.scrollBehavior = 'auto';
-        window.scrollTo(0, 0);
+      });
+      // Scroll to top AFTER the new page is swapped in, not before
+      // (scrollTo before swap causes a visible flash of the old page jumping)
+      document.addEventListener('astro:after-swap', () => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
       });
     </script>
 
