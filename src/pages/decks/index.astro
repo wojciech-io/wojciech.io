@@ -1,0 +1,56 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const decks = [
+  {
+    slug: 'stack',
+    title: 'Stack walkthrough',
+    description: 'The real production stack behind wojciech.io: architecture, frontend, infra, testing, security, resilience.',
+    slides: 12,
+  },
+];
+---
+
+<Layout
+  title="Decks · wojciech.io"
+  description="Presentation decks: interactive walkthroughs of architecture, stack, and case studies."
+>
+  <section class="relative overflow-hidden border-b border-[var(--color-border)]">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
+    <div class="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
+      <p class="reveal-up text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
+        <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
+        <span>Decks</span>
+      </p>
+      <h1 class="reveal-up text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-[var(--color-text)] max-w-[900px] mb-7">
+        Presentation decks.
+      </h1>
+      <p class="reveal-up max-w-3xl text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed">
+        Interactive walkthroughs built as code. Use arrow keys to navigate, F for fullscreen, N for speaker notes.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6 py-16 md:py-24">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {decks.map((deck) => (
+          <a
+            href={`/decks/${deck.slug}/`}
+            class="group rounded-xl border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur p-6 transition-colors hover:border-[var(--color-accent)] hover:bg-[rgba(79,143,247,0.04)]"
+          >
+            <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-2">
+              {deck.slides} slides
+            </p>
+            <h2 class="text-lg font-semibold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-accent)] transition-colors">
+              {deck.title}
+            </h2>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+              {deck.description}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

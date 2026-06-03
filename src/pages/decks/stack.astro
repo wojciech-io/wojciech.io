@@ -1,0 +1,174 @@
+---
+import SlideLayout from '../../components/slides/SlideLayout.astro';
+---
+
+<SlideLayout title="Stack / wojciech.io" accent="#4f8ff7">
+  <!-- 01: Title -->
+  <section data-slide data-note="Opening slide. This is a walkthrough of the real production stack behind wojciech.io and its subdomains.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.9rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">Stack walkthrough</p>
+      <h1>What this site is<br/><span class="accent">actually built on.</span></h1>
+      <p style="max-width: 42ch; text-align: center;">Verified from the repo, not from memory. Every layer is in production today.</p>
+    </div>
+  </section>
+
+  <!-- 02: Architecture -->
+  <section data-slide data-note="npm-workspaces monorepo with 7 Cloudflare Pages projects. Shared packages keep tokens, UI, and MDX components in sync across all surfaces.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">01 &middot; Architecture</p>
+      <h2>Monorepo. Seven surfaces.<br/>One deploy pipeline.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">Astro 6 + MDX</span>
+        <span class="tag">Cloudflare Pages (7 projects)</span>
+        <span class="tag">npm workspaces</span>
+        <span class="tag">@wojciech/tokens</span>
+        <span class="tag">@wojciech/ui</span>
+        <span class="tag">@wojciech/mdx-components</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03: Frontend -->
+  <section data-slide data-note="Tailwind 4 with CSS custom-property tokens. Geist for typography. Lenis + Motion for scroll animations. Pagefind for client-side static search. Satori for dynamic OG images.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">02 &middot; Frontend</p>
+      <h2>Tailwind 4, Geist,<br/>Motion, Pagefind.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">Tailwind CSS 4</span>
+        <span class="tag">CSS custom-property tokens</span>
+        <span class="tag">Geist Sans + Mono</span>
+        <span class="tag">Lenis + Motion</span>
+        <span class="tag">Pagefind static search</span>
+        <span class="tag">Satori + resvg-js (OG)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04: Backend & infra -->
+  <section data-slide data-note="Cloudflare Pages Functions for gated surfaces. Wrangler for Workers. Terraform manages all Pages projects and DNS. No containers, no VPS.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">03 &middot; Backend &amp; infra</p>
+      <h2>Serverless-only.<br/>Terraform-managed.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">CF Pages Functions</span>
+        <span class="tag">CF Workers (cron)</span>
+        <span class="tag">Terraform</span>
+        <span class="tag">WAF rules in repo</span>
+        <span class="tag">Node 24</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05: Content & i18n -->
+  <section data-slide data-note="Content collections for articles, case studies, testimonials. Eight languages with full locale homepages for DE, DK, NO, JP, IT, ES, PL on top of English.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">04 &middot; Content &amp; i18n</p>
+      <h2>Collections, MDX,<br/>eight languages.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">Astro content collections</span>
+        <span class="tag">MDX + custom components</span>
+        <span class="tag">8 langs: en pl de dk no jp it es</span>
+        <span class="tag">Locale-prefixed routing</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06: Analytics -->
+  <section data-slide data-note="Cloudflare Web Analytics runs anonymously by default. GA4, Mixpanel, Sentry, PostHog all consent-gated and EU-hosted where possible.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">05 &middot; Analytics</p>
+      <h2>Anonymous by default.<br/>Consent-gated.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">CF Web Analytics (anon)</span>
+        <span class="tag">GA4 (lazy after consent)</span>
+        <span class="tag">Mixpanel EU</span>
+        <span class="tag">Sentry EU</span>
+        <span class="tag">PostHog EU</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07: Testing -->
+  <section data-slide data-note="Vitest for units and coverage. Playwright across Chromium + WebKit for smoke, SEO, hreflang, axe a11y, broken-link checks, meta probes. Daily smoke against production.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">06 &middot; Testing</p>
+      <h2>524 tests. Two browsers.<br/>Daily production smoke.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">Vitest (unit + coverage)</span>
+        <span class="tag">Playwright (Chromium + WebKit)</span>
+        <span class="tag">axe a11y automation</span>
+        <span class="tag">Daily production smoke</span>
+        <span class="tag">Lighthouse CI weekly</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08: CI/CD -->
+  <section data-slide data-note="CI on every push and PR. Deploy only after CI success via workflow_run. Wrangler deploys all surfaces in parallel. Commitlint enforced. Release Please manual.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">07 &middot; CI/CD</p>
+      <h2>No green CI, no deploy.<br/>Parallel Wrangler.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">GitHub Actions</span>
+        <span class="tag">workflow_run gate</span>
+        <span class="tag">Wrangler parallel deploy</span>
+        <span class="tag">Commitlint required</span>
+        <span class="tag">Release Please (manual)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09: Security -->
+  <section data-slide data-note="Branch protection with required checks. Strict CSP, HSTS preload, XFO DENY. Auth gates use HMAC-SHA256 signed cookies with timing-safe compares and per-IP rate limiting.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">08 &middot; Security</p>
+      <h2>HMAC-signed cookies.<br/>CSP + HSTS preload.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">gitleaks + npm audit</span>
+        <span class="tag">Semgrep + CodeQL</span>
+        <span class="tag">content-guard (pre-commit + CI + cron)</span>
+        <span class="tag">CSP, HSTS, XFO DENY</span>
+        <span class="tag">HMAC-SHA256 signed cookies</span>
+        <span class="tag">Per-IP rate limit</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10: Resilience -->
+  <section data-slide data-note="Azure Static Web Apps holds a weekly cold-standby copy. Failover is operator-triggered via workflow_dispatch. Rollback via non-destructive git revert. BetterStack for uptime.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">09 &middot; Resilience</p>
+      <h2>Cold standby. Manual failover.<br/>Tested, not theoretical.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">Azure Static Web Apps (standby)</span>
+        <span class="tag">Manual failover (workflow_dispatch)</span>
+        <span class="tag">Git-revert rollback</span>
+        <span class="tag">BetterStack uptime</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11: Working method -->
+  <section data-slide data-note="Claude Code implements. Codex reviews. GPT-5.5 Thinking handles strategy. Claude Design owns visuals. Handoff is strategy, docs, code, review, accept, merge.">
+    <div class="slide-stack">
+      <p class="accent" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;">10 &middot; Working method</p>
+      <h2>Four AI agents.<br/>One handoff protocol.</h2>
+      <div class="tag-row" style="margin-top: 1rem;">
+        <span class="tag">Claude Code (implementation)</span>
+        <span class="tag">Codex (review)</span>
+        <span class="tag">GPT-5.5 Thinking (strategy)</span>
+        <span class="tag">Claude Design (visual)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12: Closing -->
+  <section data-slide data-note="Final slide. Link back to /stack/ for full details, or /contact/ to discuss.">
+    <div class="slide-stack">
+      <h1>If a tool is on this page,<br/><span class="accent">it pays rent.</span></h1>
+      <p style="max-width: 42ch; text-align: center; margin-top: 0.5rem;">
+        Full details at <code>wojciech.io/stack</code>
+      </p>
+    </div>
+  </section>
+</SlideLayout>
