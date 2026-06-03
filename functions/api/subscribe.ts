@@ -54,7 +54,7 @@ async function proxySubscribe(subscribeApiUrl: string, payload: Required<Subscri
     }),
   });
 
-  const data = await response.json().catch(() => null);
+  const data = (await response.json().catch(() => null)) as Record<string, unknown> | null;
 
   if (!response.ok) {
     return json(
