@@ -1,0 +1,99 @@
+---
+/**
+ * NumberTicker — scroll-triggered animated counter with label.
+ * Usage:
+ *   <NumberTicker value={3.2} suffix="x" label="Revenue growth" />
+ *   <NumberTicker value={40} prefix="-" suffix="%" label="CAC reduction" />
+ *   <NumberTicker value={524} label="Tests passing" />
+ */
+interface Props {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  label?: string;
+  duration?: number;
+  decimals?: number;
+}
+
+const {
+  value,
+  prefix = '',
+  suffix = '',
+  label,
+  duration = 1500,
+  decimals = value % 1 !== 0 ? 1 : 0,
+} = Astro.props;
+---
+
+<span
+  class="number-ticker"
+  data-ticker
+  data-value={value}
+  data-prefix={prefix}
+  data-suffix={suffix}
+  data-duration={duration}
+  data-decimals={decimals}
+  aria-label={`${prefix}${value}${suffix}${label ? ` ${label}` : ''}`}
+>
+  <span class="number-ticker__value">{prefix}0{suffix}</span>
+  {label && <span class="number-ticker__label">{label}</span>}
+</span>
+
+<style>
+  .number-ticker {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .number-ticker__value {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+  .number-ticker__label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-dim);
+    text-align: center;
+  }
+</style>
+
+<script>
+  const tickers = document.querySelectorAll<HTMLElement>('[data-ticker]');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target as HTMLElement;
+        if (el.dataset.animated) return;
+        el.dataset.animated = 'true';
+        observer.unobserve(el);
+
+        const target = parseFloat(el.dataset.value || '0');
+        const prefix = el.dataset.prefix || '';
+        const suffix = el.dataset.suffix || '';
+        const duration = parseInt(el.dataset.duration || '1500', 10);
+        const decimals = parseInt(el.dataset.decimals || '0', 10);
+        const display = el.querySelector('.number-ticker__value')!;
+
+        const start = performance.now();
+        function tick(now: number) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = target * eased;
+          display.textContent = `${prefix}${current.toFixed(decimals)}${suffix}`;
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    },
+    { threshold: 0.3 }
+  );
+  tickers.forEach((t) => observer.observe(t));
+</script>
