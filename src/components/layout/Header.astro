@@ -271,6 +271,12 @@ const languageOptions = [
 
   initMobileNav();
   document.addEventListener('astro:page-load', initMobileNav);
+
+  // Safety net: if View Transition fires while mobile nav is open,
+  // the overlay DOM gets destroyed but body.style.overflow persists.
+  document.addEventListener('astro:before-preparation', () => {
+    document.body.style.overflow = '';
+  });
 </script>
 
 <script>

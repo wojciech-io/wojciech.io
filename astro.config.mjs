@@ -4,37 +4,33 @@ import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync, existsSync } from 'fs';
 
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 const sentryDsn = process.env.PUBLIC_SENTRY_DSN ?? 'https://eeed3e8af9a62f73f7ae309873dddc50@o4511411558678528.ingest.de.sentry.io/4511411564314704';
 const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/stack/', '/status/', '/subscribe/', '/bites/']);
 
 const articleLocales = ['en', 'de', 'dk', 'no', 'jp', 'it', 'es', 'pl'];
-const articleSlugs = [
-  'ai-production-stack',
-  'claude-code-client-gtm',
-  'claude-code-vs-clay',
-  'crm-first-ai-adoption',
-];
-
-function articleFileUrl(/** @type {string} */ locale, /** @type {string} */ slug) {
-  const prefix = locale === 'en' ? '' : `${locale}/`;
-  return new URL(`./src/content/insights/${prefix}${slug}.mdx`, import.meta.url);
-}
-
 /** @returns {Map<string, string>} locale:slug → ISO date string (YYYY-MM-DD) */
 function buildArticleDateMap() {
   const map = new Map();
+  // Auto-discover all article slugs from the content directory
+  const insightsDir = new URL('./src/content/insights/', import.meta.url);
+  const slugs = readdirSync(insightsDir)
+    .filter((/** @type {string} */ f) => f.endsWith('.mdx') && !f.includes('/'))
+    .map((/** @type {string} */ f) => f.replace('.mdx', ''));
+
   for (const locale of articleLocales) {
-    for (const slug of articleSlugs) {
-      const content = readFileSync(articleFileUrl(locale, slug), 'utf-8');
-      const match = content.match(/publishedAt:\s*(.+)/);
-      if (!match) continue;
-      const date = new Date(match[1].trim());
-      if (!isNaN(date.getTime())) {
-        map.set(`${locale}:${slug}`, date.toISOString().split('T')[0]);
-      }
+    for (const slug of slugs) {
+      const prefix = locale === 'en' ? '' : `${locale}/`;
+      const filePath = new URL(`./src/content/insights/${prefix}${slug}.mdx`, import.meta.url);
+      if (!existsSync(filePath)) continue;
+      try {
+        const content = readFileSync(filePath, 'utf-8');
+        const match = content.match(/publishedAt:\s*["']?(\d{4}-\d{2}-\d{2})["']?/);
+        if (!match) continue;
+        map.set(`${locale}:${slug}`, match[1]);
+      } catch { /* locale article doesn't exist, skip */ }
     }
   }
   return map;
