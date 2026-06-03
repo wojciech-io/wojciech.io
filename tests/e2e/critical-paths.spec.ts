@@ -27,7 +27,6 @@ const archivedInsightSlugs = [
   'b2b-revenue-system-design-operator-framework',
   'b2b-saas-growth-system-icp-acquisition-retention',
   'cloudflare-migration-zero-trust-free-tier',
-  'component-showcase',
   'framer-to-astro-build-vs-buy-website-rebuild',
   'google-ads-ai-management-dashboard-guide',
   'gtm-ai-agent-four-layer-architecture-guide',
