@@ -1,10 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SectionHeader from '../components/ui/SectionHeader.astro';
 import CTABand from '../components/ui/CTABand.astro';
 
 const groups = [
   {
+    icon: '⬡',
     title: 'Architecture',
     body: 'npm-workspaces monorepo. Astro 6 on Cloudflare Pages. Seven surfaces, seven Pages projects: wojciech.io, app, growthhub, academy, notch, subscribe, dev. Shared packages: @wojciech/tokens, @wojciech/ui, @wojciech/mdx-components.',
     items: [
@@ -15,6 +15,7 @@ const groups = [
     ],
   },
   {
+    icon: '◈',
     title: 'Frontend',
     body: 'Tailwind CSS 4 driven by CSS custom-prop tokens. Geist for type. Lenis + Motion for motion. Pagefind for static search. Satori + resvg-js for OG.',
     items: [
@@ -27,6 +28,7 @@ const groups = [
     ],
   },
   {
+    icon: '▦',
     title: 'Backend & infra',
     body: 'Cloudflare Pages Functions for gated surfaces. Wrangler for Workers (growthhub cron). Terraform manages Pages projects and domains. Node 24 in CI.',
     items: [
@@ -38,6 +40,7 @@ const groups = [
     ],
   },
   {
+    icon: '◉',
     title: 'Content & i18n',
     body: 'Astro content collections for insights, work, testimonials. Eight languages for CV and SEO surfaces. Seven fully translated locale homepages (de, dk, no, jp, it, es, pl) on top of EN.',
     items: [
@@ -48,6 +51,7 @@ const groups = [
     ],
   },
   {
+    icon: '◌',
     title: 'Analytics (consent-gated)',
     body: 'Cloudflare Web Analytics runs anonymously by default. Everything else loads only after explicit consent.',
     items: [
@@ -59,6 +63,7 @@ const groups = [
     ],
   },
   {
+    icon: '⊘',
     title: 'Testing',
     body: 'Vitest for units and coverage. Playwright (Chromium + WebKit) for smoke, SEO, hreflang, axe a11y, broken-link checks, critical paths, meta and asset probes. Daily smoke against production.',
     items: [
@@ -70,6 +75,7 @@ const groups = [
     ],
   },
   {
+    icon: '⟐',
     title: 'CI/CD',
     body: 'CI runs on every push and PR. Deploy runs only on CI success via workflow_run, deploying site and subdomains in parallel through Wrangler. Commitlint enforced. Release Please is run manually, not on push.',
     items: [
@@ -81,6 +87,7 @@ const groups = [
     ],
   },
   {
+    icon: '⊞',
     title: 'Security',
     body: 'Branch protection on main with required checks. Secrets only in Cloudflare environment. Strict CSP, HSTS preload, X-Frame-Options DENY, sandboxed Permissions-Policy. Auth gates use HMAC-SHA256 signed cookies with timing-safe compares and rate limiting.',
     items: [
@@ -93,6 +100,7 @@ const groups = [
     ],
   },
   {
+    icon: '◎',
     title: 'Resilience',
     body: 'Azure Static Web Apps holds a weekly cold-standby copy. Failover is operator-triggered via workflow_dispatch (auto-detects health, then flips DNS via the Cloudflare API). Rollback is a non-destructive git revert. BetterStack drives the smoke probes.',
     items: [
@@ -103,6 +111,7 @@ const groups = [
     ],
   },
   {
+    icon: '⚙',
     title: 'Working method',
     body: 'Claude Code implements. Codex reviews. GPT-5.5 Thinking handles strategy and go/no-go calls. Claude Design owns visuals. Handoff is strategy, docs, code, review, accept, merge once docs and code agree.',
     items: [
@@ -113,6 +122,13 @@ const groups = [
     ],
   },
 ];
+
+const stats = [
+  { value: '7', label: 'surfaces deployed' },
+  { value: '8', label: 'languages shipped' },
+  { value: '524', label: 'automated tests' },
+  { value: '10', label: 'stack layers' },
+];
 ---
 
 <Layout
@@ -122,44 +138,80 @@ const groups = [
   <!-- Hero -->
   <section class="relative overflow-hidden border-b border-[var(--color-border)]">
     <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
+    <div class="pointer-events-none absolute left-1/2 top-[-200px] h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-[var(--color-surface)] opacity-70 blur-[150px]" aria-hidden="true" />
 
     <div class="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
-      <p class="reveal-up text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
-        <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
-        <span>Stack</span>
-      </p>
-      <h1 class="reveal-up text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-[var(--color-text)] max-w-[900px] mb-7" data-reveal-index="0">
-        What this site is actually built on.
+      <div class="animate-fade-up inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur px-3.5 py-2 mb-8">
+        <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-cta)] shadow-[0_0_14px_rgb(235_255_0/0.55)]" aria-hidden="true"></span>
+        <span class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)]">Production stack</span>
+      </div>
+
+      <h1 class="animate-fade-up [animation-delay:60ms] text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-[var(--color-text)] max-w-[900px] mb-7">
+        What this site is<br>
+        <span class="text-[var(--color-text-muted)]">actually built on.</span>
       </h1>
-      <p class="reveal-up max-w-3xl text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed" data-reveal-index="1">
+      <p class="animate-fade-up [animation-delay:120ms] max-w-3xl text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed">
         Verified from the repo, not from memory. Every layer below is in production today across wojciech.io and its subdomains. If a tool is on this page, it pays rent.
       </p>
     </div>
   </section>
 
+  <!-- Stats band -->
+  <section class="border-b border-[var(--color-border)] py-6">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[var(--color-border)]">
+        {stats.map((s, i) => (
+          <div class="reveal-up px-6 py-3 flex flex-col gap-0.5" data-reveal-index={i}>
+            <strong class="text-2xl md:text-3xl font-semibold text-[var(--color-text)] tabular-nums">{s.value}</strong>
+            <span class="text-xs text-[var(--color-text-muted)]">{s.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- Stack groups -->
   <section class="border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6 py-20 md:py-28 space-y-20">
+    <div class="mx-auto max-w-6xl px-6 py-20 md:py-28">
       {groups.map((group, idx) => (
-        <article class="reveal-up grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-12 items-start" data-reveal-index={idx % 4}>
-          <div>
-            <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-3">
-              {String(idx + 1).padStart(2, '0')}
-            </p>
-            <h2 class="text-[length:var(--text-h2)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
-              {group.title}
-            </h2>
-            <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed">
-              {group.body}
-            </p>
+        <article
+          class:list={[
+            'reveal-up',
+            idx > 0 && 'mt-20 pt-20 border-t border-[var(--color-border)]',
+          ]}
+          data-reveal-index={idx % 4}
+        >
+          <div class="grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-12 items-start">
+            <!-- Left: header -->
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <span class="flex items-center justify-center w-10 h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-glass)] text-lg text-[var(--color-text)]" aria-hidden="true">
+                  {group.icon}
+                </span>
+                <div>
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)]">
+                    {String(idx + 1).padStart(2, '0')}
+                  </p>
+                  <h2 class="text-xl md:text-2xl font-semibold text-[var(--color-text)] leading-tight tracking-tight">
+                    {group.title}
+                  </h2>
+                </div>
+              </div>
+              <p class="text-sm md:text-base text-[var(--color-text-muted)] leading-relaxed mt-3">
+                {group.body}
+              </p>
+            </div>
+
+            <!-- Right: items -->
+            <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden divide-y divide-[var(--color-border)]">
+              {group.items.map((item) => (
+                <div class="flex items-start gap-3 px-5 py-3.5">
+                  <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--color-accent-cta)] shrink-0" aria-hidden="true"></span>
+                  <span class="text-sm text-[var(--color-text)] leading-relaxed">{item}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <ul class="grid gap-3 sm:grid-cols-2">
-            {group.items.map((item) => (
-              <li class="rounded-xl border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur px-4 py-3 text-sm text-[var(--color-text)]">
-                {item}
-              </li>
-            ))}
-          </ul>
         </article>
       ))}
     </div>
