@@ -255,7 +255,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
         });
-        const data = await r.json();
+        const data = await r.json() as Record<string, string>;
         if (r.ok && data.url) {
           window.location.href = data.url;
           return;
@@ -290,7 +290,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
         });
-        const data = await r.json();
+        const data = await r.json() as Record<string, string | boolean>;
         if (r.ok) {
           if (status) {
             status.className = data.sent === false ? 'ac-form-status err' : 'ac-form-status ok';

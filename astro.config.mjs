@@ -55,8 +55,8 @@ const isIndexableSitemapUrl = (/** @type {string} */ page) => {
   return true;
 };
 
-/** @param {import('@astrojs/sitemap').SitemapItem} item */
-const serializeSitemapItem = (item) => {
+// @ts-ignore — sitemap uses EnumChangefreq which can't be expressed in JSDoc .mjs
+const serializeSitemapItem = (/** @type {any} */ item) => {
   const path = new URL(item.url).pathname;
   const articleMatch = path.match(/^\/(?:(de|dk|no|jp)\/)?insights\/([^/]+)\//);
   if (articleMatch) {

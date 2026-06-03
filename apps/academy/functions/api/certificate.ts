@@ -80,7 +80,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   const pdf = await renderCertificate(request, env.ASSETS, recipientName, verificationCode!, issuedAt!);
 
-  return new Response(pdf, {
+  return new Response(pdf as unknown as BodyInit, {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',
