@@ -110,13 +110,16 @@ Tunnel solves a different problem: exposing a locally running service through a 
 
 The mechanism is a persistent outbound connection from your machine or server to Cloudflare's edge. The `cloudflared` daemon establishes the tunnel. Cloudflare routes inbound requests through it to whatever port you specify locally. No inbound port needs to be open on the host.
 
-```bash
-# Install cloudflared, then:
+<CodeBlock
+  lang="bash"
+  title="Terminal"
+  code={`# Install cloudflared, then:
 cloudflared tunnel login
 cloudflared tunnel create my-tunnel
 cloudflared tunnel route dns my-tunnel staging.example.com
-cloudflared tunnel run --url http://localhost:3000 my-tunnel
-```
+cloudflared tunnel run --url http://localhost:3000 my-tunnel`}
+  caption="Named tunnels keep the same hostname indefinitely, unlike ngrok's free tier."
+/>
 
 The tunnel is persistent: it does not expire when the session closes, unlike ngrok's free tier, which terminates tunnels when the process stops and assigns a new URL on each restart. A named Cloudflare Tunnel keeps the same hostname indefinitely.
 

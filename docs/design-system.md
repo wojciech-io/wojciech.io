@@ -557,6 +557,59 @@ Component docs list source path, public props, intended use, and a minimal examp
 **Use:** Accessible video embed wrapper with provider or direct source support.
 **Example:** `<VideoEmbed provider="youtube" id="abc123" title="Demo" />`
 
+### Interactive MDX components
+
+Client-side interactive components for rich article experiences. Each uses a single `<script>` tag that Astro deduplicates automatically (one load per page regardless of instance count). No framework dependencies.
+
+#### Tabs
+**Path:** `packages/mdx-components/components/Tabs.astro`
+**Props:** labels (string[]), variant? ('default' | 'pill' | 'underline')
+**Use:** Tabbed content switcher for comparisons, alternatives, or multi-view content. Each tab panel is a numbered slot.
+**Example:**
+```mdx
+<Tabs labels={['Claude Code', 'Clay', 'Manual']}>
+  <Fragment slot="0">Claude Code content...</Fragment>
+  <Fragment slot="1">Clay content...</Fragment>
+  <Fragment slot="2">Manual content...</Fragment>
+</Tabs>
+```
+
+#### Accordion
+**Path:** `packages/mdx-components/components/Accordion.astro`
+**Props:** items (Array<{title: string, content: string}>), openFirst? (boolean), allowMultiple? (boolean)
+**Use:** Expandable FAQ-style sections with smooth height animation. Accessible: uses `<details>`/`<summary>` with enhanced transitions.
+**Example:** `<Accordion items={[{title: 'What is MCP?', content: 'Model Context Protocol...'}]} openFirst />`
+
+#### ImageSlider
+**Path:** `packages/mdx-components/components/ImageSlider.astro`
+**Props:** before (string), after (string), beforeAlt? (string), afterAlt? (string), caption? (string), startPosition? (number)
+**Use:** Before/after image comparison with a draggable divider handle. Touch and mouse support. Keyboard accessible.
+**Example:** `<ImageSlider before="/images/before.webp" after="/images/after.webp" caption="Dashboard redesign" />`
+
+#### NumberTicker
+**Path:** `packages/mdx-components/components/NumberTicker.astro`
+**Props:** value (number), prefix? (string), suffix? (string), duration? (number), label? (string)
+**Use:** Scroll-triggered animated counter. Uses IntersectionObserver to start the count-up animation when the element enters the viewport.
+**Example:** `<NumberTicker value={75} suffix="%" label="Pipeline growth" duration={1500} />`
+
+#### EmbedDeck
+**Path:** `packages/mdx-components/components/EmbedDeck.astro`
+**Props:** slides (Array<{title?: string, body: string}>), caption? (string), autoplay? (boolean), interval? (number)
+**Use:** Inline mini presentation deck inside articles. Arrow-key navigable, swipeable, with slide counter and optional autoplay.
+**Example:**
+```mdx
+<EmbedDeck slides={[
+  {title: 'Step 1', body: 'Research phase...'},
+  {title: 'Step 2', body: 'Design phase...'},
+]} caption="Project timeline" />
+```
+
+#### CodeBlock
+**Path:** `packages/mdx-components/components/CodeBlock.astro`
+**Props:** code (string), lang? (string), title? (string), caption? (string), highlight? (number[])
+**Use:** Syntax-highlighted code block with copy-to-clipboard button, optional filename header, and line highlighting. Uses CSS-based syntax theming (no runtime parser).
+**Example:** `<CodeBlock code="const x = 1;" lang="ts" title="example.ts" highlight={[1]} />`
+
 ### Insights diagram helpers
 
 #### Arrow

@@ -1,6 +1,20 @@
 ---
 import { getCollection } from 'astro:content';
 import { insightSlug, isLocalePost, sortInsights } from '../../lib/insights';
+import type { SectionStrings } from '../../data/locales';
+
+interface Props {
+  i18n?: SectionStrings['writing'];
+}
+
+const { i18n } = Astro.props;
+const t = {
+  eyebrow: i18n?.eyebrow ?? 'Writing',
+  title: i18n?.title ?? 'Operator notes.',
+  allLink: i18n?.allLink ?? 'All writing →',
+  readLink: i18n?.readLink ?? 'Read →',
+  ctaBody: i18n?.ctaBody ?? 'New notes on AI systems, GTM architecture, and shipped products, published as they are ready.',
+};
 
 const posts = (await getCollection('insights', isLocalePost('en')))
   .sort(sortInsights)
@@ -16,10 +30,10 @@ const posts = (await getCollection('insights', isLocalePost('en')))
       <div>
         <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
           <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
-          <span>Writing</span>
+          <span>{t.eyebrow}</span>
         </p>
         <h2 class="text-[length:var(--text-h2)] font-semibold leading-tight tracking-tight text-[var(--color-text)]">
-          Operator notes.
+          {t.title}
         </h2>
       </div>
       <p class="text-sm text-[var(--color-text-muted)] max-w-sm leading-relaxed md:text-right">
@@ -54,7 +68,7 @@ const posts = (await getCollection('insights', isLocalePost('en')))
             </div>
           </div>
           <div class="md:self-center shrink-0">
-            <span class="text-sm font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent-hi)] transition-colors whitespace-nowrap">Read →</span>
+            <span class="text-sm font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent-hi)] transition-colors whitespace-nowrap">{t.readLink}</span>
           </div>
         </a>
       ))}
@@ -63,13 +77,13 @@ const posts = (await getCollection('insights', isLocalePost('en')))
     <!-- Footer CTA -->
     <div class="mt-8 pt-8 border-t border-[var(--color-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <p class="text-sm text-[var(--color-text-muted)]">
-        New notes on AI systems, GTM architecture, and shipped products, published as they are ready.
+        {t.ctaBody}
       </p>
       <a
         href="/insights/"
         class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text)] border border-[var(--color-border)] rounded-[var(--radius-btn)] px-5 py-2 hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors whitespace-nowrap"
       >
-        All writing →
+        {t.allLink}
       </a>
     </div>
 
