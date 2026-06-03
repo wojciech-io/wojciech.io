@@ -1,25 +1,6 @@
 ---
 import PageBackdrop from '../ui/PageBackdrop.astro';
 import { SITE } from '../../data/site';
-
-const contactLinks = [
-  {
-    label: 'Book a 30-min call',
-    meta: 'Google Meet · Europe/Berlin',
-    href: SITE.cal,
-    external: true,
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>`,
-    primary: true,
-  },
-  {
-    label: 'LinkedIn',
-    meta: `linkedin.com/in/${SITE.linkedinHandle}`,
-    href: SITE.linkedin,
-    external: true,
-    icon: `<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>`,
-    iconFill: true,
-  },
-];
 ---
 
 <section id="book-call" class="relative pt-10 pb-8 md:pt-14 md:pb-10 overflow-hidden">
@@ -31,20 +12,66 @@ const contactLinks = [
       Build, fix, or review the system.
     </h1>
     <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed max-w-2xl mx-auto">
-      30-minute call. Share the goal, current state, and useful links. Pick a slot below or reach me on
+      Send the context, the bottleneck, and the current stack. Or reach me on
       <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer" class="text-[var(--color-text)] underline decoration-[var(--color-accent)] decoration-2 underline-offset-2 hover:text-[var(--color-accent-hi)]">LinkedIn</a>.
     </p>
   </div>
 </section>
 
-<!-- Cal.com inline calendar — primary booking surface -->
+<!-- Contact form -->
 <section class="relative pb-12 md:pb-16 border-b border-[var(--color-border)] bg-[var(--color-bg)]">
-  <div class="mx-auto max-w-5xl px-6">
-    <div
-      id="cal-inline"
-      class="rounded-[var(--radius-card)] overflow-hidden border border-[var(--color-border)]"
-      style="min-height:760px;"
-    ></div>
+  <div class="mx-auto max-w-2xl px-6">
+    <form id="contact-form" class="space-y-5">
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label for="contact-name" class="block text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-2">Name</label>
+          <input
+            type="text"
+            id="contact-name"
+            name="name"
+            required
+            autocomplete="name"
+            class="w-full rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
+            placeholder="Your name"
+          />
+        </div>
+        <div>
+          <label for="contact-email" class="block text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-2">Email</label>
+          <input
+            type="email"
+            id="contact-email"
+            name="email"
+            required
+            autocomplete="email"
+            class="w-full rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
+            placeholder="you@company.com"
+          />
+        </div>
+      </div>
+      <div>
+        <label for="contact-context" class="block text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-2">What are you working on?</label>
+        <textarea
+          id="contact-context"
+          name="message"
+          required
+          rows={5}
+          class="w-full rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-colors resize-y"
+          placeholder="The goal, the current state, the stack. Whatever helps me understand the problem."
+        ></textarea>
+      </div>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+        <button
+          type="submit"
+          class="btn-press inline-flex items-center justify-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-7 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
+        >
+          Send message
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span id="form-status" class="text-sm text-[var(--color-text-muted)] hidden"></span>
+      </div>
+    </form>
   </div>
 </section>
 
@@ -55,7 +82,7 @@ const contactLinks = [
       <div>
         <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">What to expect</p>
         <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-          30 minutes. No pitch deck, no intro slides. We start from your current system or problem and find where the bottleneck is. You leave with a concrete next step.
+          I reply within 24h on weekdays. If the problem is a fit, we set up a 30-minute call. No pitch deck, no intro slides. We start from your system or problem.
         </p>
       </div>
       <div>
@@ -78,9 +105,9 @@ const contactLinks = [
         </ul>
       </div>
       <div>
-        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Response time</p>
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Alternative</p>
         <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-4">
-          Within 24h on weekdays. Timezone: Europe/Berlin.
+          Prefer a direct message? Connect on LinkedIn. Timezone: Europe/Berlin.
         </p>
         <a
           href={SITE.linkedin}
@@ -93,76 +120,58 @@ const contactLinks = [
           </svg>
           Reach out on LinkedIn
         </a>
+        <a
+          href={`mailto:${SITE.email}`}
+          class="mt-3 inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+          </svg>
+          {SITE.email}
+        </a>
       </div>
     </div>
   </div>
 </section>
 
-<script is:inline>
-  (function(C,A,L){
-    let p=function(a,ar){a.q.push(ar);};
-    let d=C.document;
-    C.Cal=C.Cal||function(){
-      let cal=C.Cal;let ar=arguments;
-      if(!cal.loaded){cal.ns={};cal.q=cal.q||[];d.head.appendChild(d.createElement("script")).src=A;cal.loaded=true;}
-      if(ar[0]===L){const api=function(){p(api,arguments);};const namespace=ar[1];api.q=api.q||[];
-        if(typeof namespace==="string"){cal.ns[namespace]=cal.ns[namespace]||api;p(cal.ns[namespace],ar);p(cal,["-",namespace,cal.ns[namespace]]);}
-        else p(cal,ar);return;}
-      p(cal,ar);
-    };
-  })(window,"https://app.cal.com/embed/embed.js","init");
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const status = document.getElementById('form-status') as HTMLElement;
 
-  const getSiteTheme = () =>
-    document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const name = data.get('name') as string;
+    const email = data.get('email') as string;
+    const message = data.get('message') as string;
 
-  const calUiConfig = (theme) => ({
-    theme,
-    styles: { branding: { brandColor: '#EBFF00' } },
-    cssVarsPerTheme: {
-      light: {
-        'cal-brand': '#EBFF00',
-        'cal-brand-emphasis': '#D4E600',
-        'cal-brand-text': '#0C0C0C',
-        'cal-bg': '#f8f5ee',
-        'cal-bg-emphasis': '#f1eee7',
-        'cal-bg-muted': '#ebe8df',
-        'cal-border': '#DFDBD1',
-        'cal-border-emphasis': '#CEC8BB',
-        'cal-text': '#171717',
-        'cal-text-emphasis': '#0C0C0C',
-        'cal-text-muted': '#66645F',
-      },
-      dark: {
-        'cal-brand': '#EBFF00',
-        'cal-brand-emphasis': '#F5FF66',
-        'cal-brand-text': '#0C0C0C',
-        'cal-bg': '#171717',
-        'cal-bg-emphasis': '#222222',
-        'cal-bg-muted': '#0C0C0C',
-        'cal-border': '#2A2A2A',
-        'cal-border-emphasis': '#3A3A3A',
-        'cal-text': '#F2F2F2',
-        'cal-text-emphasis': '#FFFFFF',
-        'cal-text-muted': '#888888',
-      },
-    },
-    hideEventTypeDetails: false,
-    layout: 'month_view',
-  });
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    status.classList.add('hidden');
 
-  Cal('init', { origin: 'https://cal.com' });
-  Cal('inline', {
-    elementOrSelector: '#cal-inline',
-    calLink: 'wojciech-luszczynski/30min',
-    config: { layout: 'month_view', theme: getSiteTheme() },
-  });
-  Cal('ui', calUiConfig(getSiteTheme()));
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, message }),
+      });
 
-  const themeObserver = new MutationObserver(() => {
-    Cal('ui', calUiConfig(getSiteTheme()));
-  });
-  themeObserver.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme'],
+      if (res.ok) {
+        status.textContent = 'Message sent. I will reply within 24h.';
+        status.classList.remove('hidden', 'text-red-500');
+        status.classList.add('text-[var(--color-success)]');
+        form.reset();
+      } else {
+        throw new Error('send failed');
+      }
+    } catch {
+      const subject = encodeURIComponent(`Contact from ${name}`);
+      const body = encodeURIComponent(`${message}\n\n---\nFrom: ${name} (${email})`);
+      window.location.href = `mailto:hello@wojciech.io?subject=${subject}&body=${body}`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Send message';
+    }
   });
 </script>

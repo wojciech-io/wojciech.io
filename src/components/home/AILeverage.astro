@@ -1,4 +1,19 @@
 ---
+import type { SectionStrings } from '../../data/locales';
+
+interface Props {
+  i18n?: SectionStrings['ai'];
+}
+
+const { i18n } = Astro.props;
+const t = {
+  eyebrow: i18n?.eyebrow ?? 'AI systems',
+  title: i18n?.title ?? 'AI in the architecture.',
+  titleSecondary: i18n?.titleSecondary ?? 'Not bolted on at the end.',
+  link: i18n?.link ?? 'How I build with AI →',
+  stackLabel: i18n?.stackLabel ?? 'Tech stack',
+};
+
 const rows = [
   { label: 'Ad creation loop',    before: 'Days',              after: 'Minutes'         },
   { label: 'CRM enrichment',      before: 'Manual / BDR time', after: 'Automated'       },
@@ -25,18 +40,18 @@ const stack = [
       <div>
         <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
           <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
-          <span>AI systems</span>
+          <span>{t.eyebrow}</span>
         </p>
         <h2 class="reveal-blur text-[length:var(--text-h2)] font-semibold leading-[1.15] tracking-tight mb-5">
-          <span class="text-[var(--color-text)]">AI in the architecture.</span><br />
-          <span class="text-[var(--color-text-muted)]">Not bolted on at the end.</span>
+          <span class="text-[var(--color-text)]">{t.title}</span><br />
+          <span class="text-[var(--color-text-muted)]">{t.titleSecondary}</span>
         </h2>
         <p class="text-sm text-[var(--color-text-muted)] leading-snug mb-4">
           Not for faster copy. For a different operating model. AI goes into prospecting, enrichment,
           sequencing, and scoring. The whole motion runs faster. Not just one task on the list.
         </p>
         <a href="/ai-systems/" class="text-sm text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors font-medium mb-8 inline-block">
-          How I build with AI →
+          {t.link}
         </a>
 
         <!-- Before / After table -->
@@ -55,7 +70,7 @@ const stack = [
 
       <!-- Right: animated tech stack -->
       <div class="reveal-right">
-        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-4">Tech stack</p>
+        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-4">{t.stackLabel}</p>
         <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
           <!-- Stack header terminal bar -->
           <div class="flex items-center gap-1.5 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">

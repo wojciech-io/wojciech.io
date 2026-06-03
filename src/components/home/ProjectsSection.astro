@@ -1,6 +1,23 @@
 ---
 import ProjectCard from '../ui/ProjectCard.astro';
 import ProjectCover from '../ui/ProjectCover.astro';
+import type { SectionStrings } from '../../data/locales';
+
+interface Props {
+  i18n?: SectionStrings['work'];
+}
+
+const { i18n } = Astro.props;
+const t = {
+  eyebrow: i18n?.eyebrow ?? 'Selected work',
+  title: i18n?.title ?? 'Projects that shipped.',
+  titleSecondary: i18n?.titleSecondary ?? 'Systems that still run.',
+  allLink: i18n?.allLink ?? 'All work →',
+  ctaEyebrow: i18n?.ctaEyebrow ?? 'Work with me',
+  ctaHeading: i18n?.ctaHeading ?? 'Have a revenue problem worth solving?',
+  ctaBody: i18n?.ctaBody ?? 'Book a 30-minute call. We figure out what\'s broken and whether it\'s worth working together.',
+  ctaLink: i18n?.ctaLink ?? 'Book a call →',
+};
 
 const projects = [
   {
@@ -66,15 +83,15 @@ const rest = projects.slice(1);
       <div>
         <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
           <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
-          <span>Selected work</span>
+          <span>{t.eyebrow}</span>
         </p>
         <h2 class="text-[length:var(--text-h2)] font-semibold leading-[1.15] tracking-tight">
-          <span class="text-[var(--color-text)]">Projects that shipped.</span><br />
-          <span class="text-[var(--color-text-muted)]">Systems that still run.</span>
+          <span class="text-[var(--color-text)]">{t.title}</span><br />
+          <span class="text-[var(--color-text-muted)]">{t.titleSecondary}</span>
         </h2>
       </div>
       <a href="/work/" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
-        All work →
+        {t.allLink}
       </a>
     </div>
 
@@ -162,16 +179,16 @@ const rest = projects.slice(1);
         class="group flex flex-col justify-between rounded-[var(--radius-card)] border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 p-8 card-lift hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/8 transition-colors sm:col-span-2 lg:col-span-3 lg:flex-row lg:items-end lg:gap-8"
       >
         <div class="max-w-xl">
-          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">Work with me</p>
+          <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-5">{t.ctaEyebrow}</p>
           <h3 class="text-lg font-semibold text-[var(--color-text)] leading-snug mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors">
-            Have a revenue problem worth solving?
+            {t.ctaHeading}
           </h3>
           <p class="text-sm text-[var(--color-text-muted)] leading-snug">
-            Book a 30-minute call. We figure out what's broken and whether it's worth working together.
+            {t.ctaBody}
           </p>
         </div>
         <div class="mt-8 flex shrink-0 items-center gap-2 text-sm font-semibold text-[var(--color-accent)] group-hover:text-[var(--color-accent-hi)] transition-colors lg:mt-0">
-          Book a call →
+          {t.ctaLink}
         </div>
       </a>
     </div>

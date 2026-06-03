@@ -91,29 +91,32 @@ I run four MCP servers in the stack:
 
 Each client gets a folder:
 
-```
-/clients/acme-corp/
-  icp.md           ← who we're targeting and why
-  contacted.csv    ← running log of touched accounts
-  sequences/       ← approved sequence variants
-  research/        ← per-account research notes
-```
+<CodeBlock
+  title="/clients/acme-corp/"
+  lang="text"
+  code={`icp.md           # who we're targeting and why
+contacted.csv    # running log of touched accounts
+sequences/       # approved sequence variants
+research/        # per-account research notes`}
+  caption="The agent reads these at the start of each session. Every sequence is grounded in actual research, not hallucinated context."
+/>
 
-The agent reads these at the start of each session. When it researches a new account, it writes a `research/[account-name].md` file before drafting. This creates an audit trail and means every sequence is grounded in actual research, not hallucinated context.
+When the agent researches a new account, it writes a `research/[account-name].md` file before drafting. This creates an audit trail.
 
 ### Layer 4: The five Skills
 
 Skills are named sub-tasks the agent can invoke. I have five:
 
-**`/research [company]`**: Runs a full company profile: firmographics, recent news, tech stack signals, team size, funding status, key stakeholders. Writes to `research/[company].md`.
-
-**`/score [company]`**: Reads the research file and the ICP definition, returns a 1–10 fit score with three sentences of reasoning. Below 6 = skip. 8+ = priority.
-
-**`/draft [company] [sequence-variant]`**: Reads the research file, the score, the sequence template, and writes a personalized first email + two follow-ups. Never uses merge fields. Always writes from scratch based on actual research.
-
-**`/enrich [csv-path]`**: Batch processes a CSV of company names, runs `/research` and `/score` for each, outputs an enriched CSV with scores and priority flags. This is the Clay replacement.
-
-**`/log [company] [status]`**: Updates `contacted.csv` with the account status and timestamp. Keeps the running log clean without manual data entry.
+<Accordion
+  items={[
+    { title: '/research [company]', content: 'Runs a full company profile: firmographics, recent news, tech stack signals, team size, funding status, key stakeholders. Writes to research/[company].md.' },
+    { title: '/score [company]', content: 'Reads the research file and the ICP definition, returns a 1-10 fit score with three sentences of reasoning. Below 6 = skip. 8+ = priority.' },
+    { title: '/draft [company] [sequence-variant]', content: 'Reads the research file, the score, the sequence template, and writes a personalized first email + two follow-ups. Never uses merge fields. Always writes from scratch based on actual research.' },
+    { title: '/enrich [csv-path]', content: 'Batch processes a CSV of company names, runs /research and /score for each, outputs an enriched CSV with scores and priority flags. This is the Clay replacement.' },
+    { title: '/log [company] [status]', content: 'Updates contacted.csv with the account status and timestamp. Keeps the running log clean without manual data entry.' },
+  ]}
+  openFirst
+/>
 
 ---
 

@@ -1,5 +1,11 @@
 export type LocaleKey = 'de' | 'dk' | 'no' | 'jp' | 'it' | 'es' | 'pl';
 
+export interface SectionStrings {
+  work: { eyebrow: string; title: string; titleSecondary: string; allLink: string; ctaEyebrow: string; ctaHeading: string; ctaBody: string; ctaLink: string };
+  ai: { eyebrow: string; title: string; titleSecondary: string; link: string; stackLabel: string };
+  writing: { eyebrow: string; title: string; allLink: string; readLink: string; ctaBody: string };
+}
+
 export interface LocalizedHomeCopy {
   key: LocaleKey;
   path: LocaleKey;
@@ -23,6 +29,7 @@ export interface LocalizedHomeCopy {
   steps: Array<{ step: string; title: string; body: string }>;
   finalHeading: string;
   finalSubtext: string;
+  sections: SectionStrings;
 }
 
 export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
@@ -59,6 +66,11 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: 'Gibt es ein System, das es wert ist, repariert zu werden?',
     finalSubtext: 'Schick den Kontext, den Engpass und den aktuellen Stack. Ich werde dir sagen, wo ich anfangen würde.',
+    sections: {
+      work: { eyebrow: 'Ausgewählte Projekte', title: 'Projekte, die live gingen.', titleSecondary: 'Systeme, die noch laufen.', allLink: 'Alle Projekte →', ctaEyebrow: 'Zusammenarbeiten', ctaHeading: 'Ein Revenue-Problem, das sich lohnt?', ctaBody: '30 Minuten. Wir finden den Engpass und ob sich die Zusammenarbeit lohnt.', ctaLink: 'Termin vereinbaren →' },
+      ai: { eyebrow: 'AI-Systeme', title: 'AI in der Architektur.', titleSecondary: 'Nicht nachträglich angeschraubt.', link: 'Wie ich mit AI baue →', stackLabel: 'Tech Stack' },
+      writing: { eyebrow: 'Texte', title: 'Operator-Notizen.', allLink: 'Alle Artikel →', readLink: 'Lesen →', ctaBody: 'Neue Artikel zu AI-Systemen, GTM-Architektur und Growth-Modellen.' },
+    },
   },
   dk: {
     key: 'dk',
@@ -93,6 +105,11 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: 'Er der et system, der er værd at reparere?',
     finalSubtext: 'Send kontekst, flaskehals og nuværende stak. Jeg vil fortælle dig, hvor jeg ville starte.',
+    sections: {
+      work: { eyebrow: 'Udvalgt arbejde', title: 'Projekter, der gik live.', titleSecondary: 'Systemer, der stadig kører.', allLink: 'Alt arbejde →', ctaEyebrow: 'Samarbejde', ctaHeading: 'Et revenue-problem, der er værd at løse?', ctaBody: '30 minutter. Vi finder flaskehalsen og om det giver mening at arbejde sammen.', ctaLink: 'Book et opkald →' },
+      ai: { eyebrow: 'AI-systemer', title: 'AI i arkitekturen.', titleSecondary: 'Ikke boltet på bagefter.', link: 'Hvordan jeg bygger med AI →', stackLabel: 'Tech stack' },
+      writing: { eyebrow: 'Skriveri', title: 'Operator-noter.', allLink: 'Alle artikler →', readLink: 'Læs →', ctaBody: 'Nye artikler om AI-systemer, GTM-arkitektur og growth-modeller.' },
+    },
   },
   no: {
     key: 'no',
@@ -127,6 +144,11 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: 'Finnes det et system som er verdt å fikse?',
     finalSubtext: 'Send kontekst, flaskehals og nåværende stack. Jeg skal si deg hvor jeg ville begynt.',
+    sections: {
+      work: { eyebrow: 'Utvalgt arbeid', title: 'Prosjekter som ble levert.', titleSecondary: 'Systemer som fortsatt kjører.', allLink: 'Alt arbeid →', ctaEyebrow: 'Samarbeid', ctaHeading: 'Et revenue-problem verdt å løse?', ctaBody: '30 minutter. Vi finner flaskehalsen og om det er verdt å jobbe sammen.', ctaLink: 'Bestill en samtale →' },
+      ai: { eyebrow: 'AI-systemer', title: 'AI i arkitekturen.', titleSecondary: 'Ikke boltet på i etterkant.', link: 'Hvordan jeg bygger med AI →', stackLabel: 'Tech stack' },
+      writing: { eyebrow: 'Skriving', title: 'Operator-notater.', allLink: 'Alle artikler →', readLink: 'Les →', ctaBody: 'Nye artikler om AI-systemer, GTM-arkitektur og growth-modeller.' },
+    },
   },
   jp: {
     key: 'jp',
@@ -161,6 +183,11 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: '立て直す価値のあるシステムはありますか？',
     finalSubtext: 'コンテキスト、ボトルネック、現在のスタックを送ってください。どこから手をつけるかをお伝えします。',
+    sections: {
+      work: { eyebrow: '実績', title: '納品したプロジェクト。', titleSecondary: '今も動いているシステム。', allLink: '全ての実績 →', ctaEyebrow: '一緒に働く', ctaHeading: '解決する価値のある課題がありますか？', ctaBody: '30分の通話。ボトルネックを見つけ、協業する価値があるか判断します。', ctaLink: '相談を予約 →' },
+      ai: { eyebrow: 'AIシステム', title: 'アーキテクチャに組み込むAI。', titleSecondary: '後付けではなく。', link: 'AIでの構築方法 →', stackLabel: 'テックスタック' },
+      writing: { eyebrow: '記事', title: 'オペレーターノート。', allLink: '全ての記事 →', readLink: '読む →', ctaBody: 'AIシステム、GTMアーキテクチャ、グロースモデルに関する新しい記事。' },
+    },
   },
   it: {
     key: 'it',
@@ -195,6 +222,11 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: 'C\'è un sistema che vale la pena riparare?',
     finalSubtext: 'Inviami il contesto, il punto critico e lo stack attuale. Ti dirò da dove inizierei.',
+    sections: {
+      work: { eyebrow: 'Lavori selezionati', title: 'Progetti consegnati.', titleSecondary: 'Sistemi ancora in funzione.', allLink: 'Tutti i lavori →', ctaEyebrow: 'Collaborare', ctaHeading: 'Un problema di ricavo che vale la pena risolvere?', ctaBody: '30 minuti. Troviamo il collo di bottiglia e se vale la pena collaborare.', ctaLink: 'Prenota una chiamata →' },
+      ai: { eyebrow: 'Sistemi AI', title: 'AI nell\'architettura.', titleSecondary: 'Non aggiunta a posteriori.', link: 'Come costruisco con l\'AI →', stackLabel: 'Tech stack' },
+      writing: { eyebrow: 'Articoli', title: 'Note operative.', allLink: 'Tutti gli articoli →', readLink: 'Leggi →', ctaBody: 'Nuovi articoli su sistemi AI, architettura GTM e modelli di crescita.' },
+    },
   },
   es: {
     key: 'es',
@@ -229,6 +261,11 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: '¿Hay un sistema que merezca la pena arreglar?',
     finalSubtext: 'Envía el contexto, el cuello de botella y el stack actual. Te diré por dónde empezaría.',
+    sections: {
+      work: { eyebrow: 'Trabajo seleccionado', title: 'Proyectos entregados.', titleSecondary: 'Sistemas que siguen funcionando.', allLink: 'Todo el trabajo →', ctaEyebrow: 'Colaborar', ctaHeading: '¿Un problema de ingresos que vale la pena resolver?', ctaBody: '30 minutos. Encontramos el cuello de botella y si merece la pena trabajar juntos.', ctaLink: 'Reserva una llamada →' },
+      ai: { eyebrow: 'Sistemas AI', title: 'AI en la arquitectura.', titleSecondary: 'No añadida al final.', link: 'Cómo construyo con AI →', stackLabel: 'Tech stack' },
+      writing: { eyebrow: 'Escritos', title: 'Notas de operador.', allLink: 'Todos los artículos →', readLink: 'Leer →', ctaBody: 'Nuevos artículos sobre sistemas AI, arquitectura GTM y modelos de crecimiento.' },
+    },
   },
   pl: {
     key: 'pl',
@@ -290,7 +327,12 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
       }
     ],
     finalHeading: 'Masz system, który warto naprawić?',
-    finalSubtext: 'Prześlij kontekst, wąskie gardło i obecny stack. Powiem, od czego bym zaczął.'
+    finalSubtext: 'Prześlij kontekst, wąskie gardło i obecny stack. Powiem, od czego bym zaczął.',
+    sections: {
+      work: { eyebrow: 'Wybrane projekty', title: 'Projekty, które poszły na produkcję.', titleSecondary: 'Systemy, które wciąż działają.', allLink: 'Wszystkie projekty →', ctaEyebrow: 'Współpraca', ctaHeading: 'Problem z przychodami wart rozwiązania?', ctaBody: '30 minut. Znajdziemy wąskie gardło i ustalimy, czy warto działać razem.', ctaLink: 'Umów rozmowę →' },
+      ai: { eyebrow: 'Systemy AI', title: 'AI w architekturze.', titleSecondary: 'Nie doklejone na końcu.', link: 'Jak buduję z AI →', stackLabel: 'Stos technologiczny' },
+      writing: { eyebrow: 'Artykuły', title: 'Notatki operatora.', allLink: 'Wszystkie artykuły →', readLink: 'Czytaj →', ctaBody: 'Nowe artykuły o systemach AI, architekturze GTM i modelach wzrostu.' },
+    },
   },
 };
 
