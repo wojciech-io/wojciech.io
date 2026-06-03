@@ -93,6 +93,31 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: 39783e1749680bed4039662ab696c3b1
 
+  deploy-academy:
+    name: Deploy academy.wojciech.io
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://academy.wojciech.io
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - run: npm ci
+
+      - run: npm run build:academy
+
+      - name: Wrangler deploy
+        run: npx wrangler pages deploy apps/academy/dist --project-name=akademia-wojciech-io --branch=main --commit-message=deploy-academy-wojciech-io
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: 39783e1749680bed4039662ab696c3b1
+
   deploy-notch:
     name: Deploy notch.wojciech.io
     if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
