@@ -8,7 +8,7 @@ import { readFileSync } from 'fs';
 
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 const sentryDsn = process.env.PUBLIC_SENTRY_DSN ?? 'https://eeed3e8af9a62f73f7ae309873dddc50@o4511411558678528.ingest.de.sentry.io/4511411564314704';
-const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/stack/']);
+const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/stack/', '/status/', '/subscribe/', '/bites/']);
 
 const articleLocales = ['en', 'de', 'dk', 'no', 'jp', 'it', 'es', 'pl'];
 const articleSlugs = [
@@ -50,6 +50,11 @@ const isIndexableSitemapUrl = (/** @type {string} */ page) => {
   if (url.hostname !== 'wojciech.io') return false;
   if (path.startsWith('/en/') || path === '/en/') return false;
   if (path.startsWith('/it/') || path === '/it/') return false;
+  if (path.startsWith('/apps/')) return false;
+  if (path.startsWith('/decks/')) return false;
+  if (path.startsWith('/og/')) return false;
+  if (path.endsWith('/cv/')) return false;
+  if (path === '/insights/component-showcase/') return false;
   if (noindexSitemapPaths.has(path)) return false;
 
   return true;

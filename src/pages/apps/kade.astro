@@ -4,26 +4,32 @@ import CTABand from '../../components/ui/CTABand.astro';
 
 const features = [
   {
+    icon: '🔗',
     title: 'Links with context',
     body: 'Save a link with a note about why it matters. When you come back tomorrow, you remember the intent, not just the URL.',
   },
   {
+    icon: '💻',
     title: 'Local-first storage',
     body: 'Everything stays on your Mac. No cloud sync, no account, no data leaving your machine.',
   },
   {
+    icon: '🔇',
     title: 'Quiet by design',
     body: 'No notifications, no feeds, no social features. A tool that holds things and stays out of the way.',
   },
   {
+    icon: '⌨️',
     title: 'Fast capture',
     body: 'Keyboard shortcut to save the current URL with a one-line note. Takes two seconds, costs zero attention.',
   },
   {
+    icon: '🛡️',
     title: 'Trust boundary',
     body: 'Links open in your default browser. Kade never loads page content, never runs scripts, never phones home.',
   },
   {
+    icon: '🔍',
     title: 'Search and filter',
     body: 'Find links by keyword in your notes, not by trying to remember which bookmark folder you put it in.',
   },
@@ -31,8 +37,9 @@ const features = [
 ---
 
 <Layout
-  title="Kade"
+  title="Kade — private link vault"
   description="A quiet macOS tool for holding links that need a few minutes of context before they're worth opening again. Local-first, no cloud, no list to share."
+  canonical="/apps/kade/"
 >
 
   <!-- Hero -->
@@ -52,7 +59,7 @@ const features = [
       </h1>
 
       <p class="animate-fade-up [animation-delay:120ms] max-w-[34rem] mx-auto text-base md:text-lg leading-relaxed text-[var(--color-text-muted)] mb-10">
-        Kade holds links that need a few minutes of context before they're worth opening again. Local-first, no cloud, no list to share. A tool for you, not for your audience.
+        Kade holds links that need a few minutes of context before they're worth opening again. Local-first, no cloud, no list to share.
       </p>
 
       <div class="animate-fade-up [animation-delay:180ms]">
@@ -70,6 +77,23 @@ const features = [
     </div>
   </section>
 
+  <!-- Screenshot -->
+  <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-4xl px-6">
+      <div class="reveal-up rounded-[var(--radius-card)] border border-[var(--color-border)] overflow-hidden shadow-lg">
+        <img
+          src="/images/kade/dashboard.png"
+          alt="Kade link vault dashboard showing saved links with context notes"
+          width="1200"
+          height="630"
+          loading="lazy"
+          decoding="async"
+          class="w-full h-auto"
+        />
+      </div>
+    </div>
+  </section>
+
   <!-- Problem / Solution -->
   <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
     <div class="mx-auto max-w-6xl px-6 grid md:grid-cols-2 gap-px bg-[var(--color-border)] rounded-[var(--radius-card)] overflow-hidden border border-[var(--color-border)]">
@@ -84,7 +108,7 @@ const features = [
         <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)] mb-3">The fix</p>
         <h2 class="text-xl md:text-2xl font-semibold text-[var(--color-text)] leading-snug mb-4">Links that carry intent.</h2>
         <p class="text-sm md:text-base leading-relaxed text-[var(--color-text-muted)]">
-          Save the link with one line about why you saved it. When you come back, the note puts you back in the mindset. You open it or you let it go, both are fine.
+          Save the link with one line about why you saved it. When you come back, the note puts you back in the mindset. You open it or you let it go.
         </p>
       </div>
     </div>
@@ -97,10 +121,30 @@ const features = [
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[var(--color-border)] rounded-[var(--radius-card)] overflow-hidden border border-[var(--color-border)]">
         {features.map((f) => (
           <article class="reveal-up bg-[var(--color-surface)] p-6">
-            <div class="mb-4 h-px w-8 bg-[var(--color-accent-cta)]"></div>
+            <span class="block text-2xl mb-3" aria-hidden="true">{f.icon}</span>
             <h3 class="text-sm font-semibold text-[var(--color-text)] mb-2">{f.title}</h3>
             <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{f.body}</p>
           </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="border-b border-[var(--color-border)] py-[var(--space-section)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="reveal-up text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)] mb-8">How it works</p>
+      <div class="grid md:grid-cols-3 gap-8">
+        {[
+          { step: '01', title: 'Save', body: 'Hit the keyboard shortcut. Type a one-line note. Done.' },
+          { step: '02', title: 'Browse', body: 'See your links with context, ratings, and visit history. Search by keyword.' },
+          { step: '03', title: 'Open or drop', body: 'Click to open in your browser. Or let it fade. Both are fine.' },
+        ].map((s) => (
+          <div class="reveal-up">
+            <span class="text-[11px] font-semibold text-[var(--color-accent)] mb-2 block">{s.step}</span>
+            <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{s.title}</h3>
+            <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{s.body}</p>
+          </div>
         ))}
       </div>
     </div>
