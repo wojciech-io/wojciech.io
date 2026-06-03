@@ -8,6 +8,8 @@ import { SITE } from '../data/site';
 // Hosted in this public monorepo: zip download served from /public, source browsable on GitHub.
 const PAGE_OPTIMIZER_DOWNLOAD = '/bites/page-optimizer.zip';
 const PAGE_OPTIMIZER_REPO = 'https://github.com/wojciech-io/wojciech.io/tree/main/bites/page-optimizer';
+const CLAUDE_MD_DOWNLOAD = '/bites/claude-md-starter.zip';
+const CLAUDE_MD_REPO = 'https://github.com/wojciech-io/wojciech.io/tree/main/bites/claude-md-starter';
 
 interface Skill {
   command: string;
@@ -26,6 +28,24 @@ interface Bite {
 }
 
 const bites: Bite[] = [
+  {
+    name: 'CLAUDE.md Starter',
+    kicker: 'GTM agent template · v1.0',
+    summary:
+      'A ready-to-use CLAUDE.md for GTM AI agents. Fill in the brackets with your client data, point Claude Code at it, and the agent gets persistent identity, ICP scoring, tone rules, and five named skills.',
+    audience:
+      'For GTM operators building outbound research and enrichment agents with Claude Code. The template behind the agent stack described in my articles.',
+    tags: ['Claude Code', 'GTM', 'Agent', 'Template'],
+    repo: CLAUDE_MD_REPO,
+    download: CLAUDE_MD_DOWNLOAD,
+    skills: [
+      { command: '/research [company]', what: 'Full company profile: firmographics, news, tech stack, team size, stakeholders. Writes to research/[company].md.' },
+      { command: '/score [company]', what: 'ICP fit score 1-10 with three sentences of reasoning. Below 6 = skip. 8+ = priority.' },
+      { command: '/draft [company]', what: 'Personalized first-touch email from research + sequence template. Max 100 words. No merge fields.' },
+      { command: '/enrich [csv]', what: 'Batch research + score for a CSV of company names. Outputs enriched CSV with priority flags.' },
+      { command: '/log [company] [status]', what: 'Update activity log with account status and timestamp.' },
+    ],
+  },
   {
     name: 'Page Optimizer',
     kicker: 'Claude Code plugin · v0.1.0',
