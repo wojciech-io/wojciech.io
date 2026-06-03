@@ -53,6 +53,8 @@ const isIndexableSitemapUrl = (/** @type {string} */ page) => {
   if (path.startsWith('/apps/')) return false;
   if (path.startsWith('/decks/')) return false;
   if (path.startsWith('/og/')) return false;
+  if (path.endsWith('/cv/')) return false;
+  if (path === '/insights/component-showcase/') return false;
   if (noindexSitemapPaths.has(path)) return false;
 
   return true;
