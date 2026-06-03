@@ -46,7 +46,7 @@ One framing note: I distinguish between tools that **produce better output** and
 
 ### Layer 1: Reasoning
 
-**Claude Sonnet / Opus** for complex diagnostic work: ICP analysis, GTM architecture reviews, positioning synthesis. Anywhere the task requires holding multiple competing constraints at once and reaching a defensible conclusion, not just pattern-matching to a probable next token.
+[Claude Sonnet / Opus](https://www.anthropic.com/claude) for complex diagnostic work: ICP analysis, GTM architecture reviews, positioning synthesis. Anywhere the task requires holding multiple competing constraints at once and reaching a defensible conclusion, not just pattern-matching to a probable next token.
 
 I don't reach for Claude for everything. Routine drafting, simple rewrites, straightforward research queries: those don't need the full reasoning layer. Using Opus on a subject line rewrite is like using a torque wrench to hang a picture frame.
 
@@ -54,7 +54,7 @@ The operative test: *Can I get to the same answer without it?* If yes, I don't u
 
 ### Layer 2: Execution
 
-**Claude Code** runs the agent stack. Research pipelines, enrichment loops, content drafts from audit data, CRM classification: all of it runs here. This is the highest-leverage tool in the stack, not because it's the smartest, but because it's the one that connects the intelligence layer to actual work product.
+[Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) runs the agent stack. Research pipelines, enrichment loops, content drafts from audit data, CRM classification: all of it runs here. This is the highest-leverage tool in the stack, not because it's the smartest, but because it's the one that connects the intelligence layer to actual work product.
 
 The key configuration: `CLAUDE.md` per client, MCP tools for data access, Skills for named sub-tasks. I've written about [the outbound stack in detail](/insights/claude-code-vs-clay) and [how it runs in client engagements](/insights/claude-code-client-gtm). The short version: Claude Code with good operator context produces work that used to require a team.
 
@@ -64,15 +64,15 @@ They're not redundant. Claude Code is an operator; Cursor is an editor. Differen
 
 ### Layer 3: Research
 
-**Exa MCP** for real-time web research inside agent runs. Exa is purpose-built for LLM use: semantic search, clean responses, no crawler blocking drama. It replaced Brave Search in my stack after a few months because the quality of results on company research queries is consistently better.
+[Exa](https://exa.ai/) for real-time web research inside agent runs. Exa is purpose-built for LLM use: semantic search, clean responses, no crawler blocking drama. It replaced Brave Search in my stack after a few months because the quality of results on company research queries is consistently better.
 
 **Browser automation MCP** (Playwright-based) for pages that block conventional scraping: LinkedIn company pages, some SaaS pricing pages, Glassdoor signals. This is not for bulk crawling: it's for the handful of high-value pages per engagement where static search isn't enough.
 
-**Perplexity** for fast background research on industries, markets, or technical topics where I need a synthesised starting point rather than raw search results. I treat it as a research brief generator, not a source. Anything it surfaces that matters, I verify.
+[Perplexity](https://www.perplexity.ai/) for fast background research on industries, markets, or technical topics where I need a synthesised starting point rather than raw search results. I treat it as a research brief generator, not a source. Anything it surfaces that matters, I verify.
 
 ### Layer 4: CRM and data
 
-**HubSpot MCP** for CRM operations: reading contact and company records, classifying against ICP criteria, flagging data quality issues, generating update payloads. Most CRM work used to be manual and inconsistent. With the MCP in the loop, the classification logic is consistent and auditable.
+[HubSpot](https://www.hubspot.com/) MCP for CRM operations: reading contact and company records, classifying against ICP criteria, flagging data quality issues, generating update payloads. Most CRM work used to be manual and inconsistent. With the MCP in the loop, the classification logic is consistent and auditable.
 
 **GA4 / Amplitude** for analytics, not via AI tools, but as the data source for Claude to reason against. I pull report exports or use the GA4 Data API directly, then feed the structured data to the reasoning layer. "Here are the last 90 days of acquisition by channel and conversion by cohort: what's the diagnosis?" That's a task the reasoning layer handles well when the data is clean.
 
