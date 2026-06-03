@@ -7,8 +7,20 @@ const slides = document.querySelectorAll<HTMLElement>('[data-slide]');
 const counter = document.getElementById('slide-counter');
 const notesPanel = document.getElementById('notes-panel');
 const notesContent = document.getElementById('notes-content');
+const btnPrev = document.getElementById('btn-prev') as HTMLButtonElement | null;
+const btnNext = document.getElementById('btn-next') as HTMLButtonElement | null;
+const progressBar = document.getElementById('deck-progress');
 const totalSlides = slides.length;
 let current = 0;
+
+function updateNav() {
+  if (btnPrev) btnPrev.disabled = current === 0;
+  if (btnNext) btnNext.disabled = current === totalSlides - 1;
+  if (progressBar) {
+    const pct = totalSlides > 1 ? ((current + 1) / totalSlides) * 100 : 100;
+    progressBar.style.width = `${pct}%`;
+  }
+}
 
 function go(index: number) {
   if (index < 0 || index >= totalSlides) return;
@@ -16,6 +28,7 @@ function go(index: number) {
   current = index;
   slides[current].classList.add('active');
   if (counter) counter.textContent = `${current + 1} / ${totalSlides}`;
+  updateNav();
 
   // Update notes
   const note = slides[current].getAttribute('data-note');
@@ -76,6 +89,10 @@ document.addEventListener('keydown', (e) => {
       break;
   }
 });
+
+// Nav button clicks
+btnPrev?.addEventListener('click', prev);
+btnNext?.addEventListener('click', next);
 
 // Touch swipe support
 let touchStartX = 0;

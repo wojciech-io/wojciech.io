@@ -16,7 +16,7 @@ interface Props {
   accent?: string;
 }
 
-const { title, accent = '#4f8ff7' } = Astro.props;
+const { title, accent = '#EBFF00' } = Astro.props;
 ---
 
 <html lang="en">
@@ -119,34 +119,92 @@ const { title, accent = '#4f8ff7' } = Astro.props;
     /* ── Tag pills ── */
     .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
     .tag {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       font-weight: 500;
-      padding: 0.35em 0.85em;
+      padding: 0.4em 0.9em;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 100px;
       color: #d4d4d8;
+      white-space: nowrap;
+      line-height: 1.4;
     }
 
-    /* ── Counter (bottom-right) ── */
+    /* ── Navigation bar ── */
+    .deck-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      z-index: 10;
+    }
+
+    .deck-nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .deck-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: #a1a1aa;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .deck-nav-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(255,255,255,0.06);
+    }
+    .deck-nav-btn:disabled {
+      opacity: 0.25;
+      cursor: default;
+    }
+    .deck-nav-btn:disabled:hover {
+      border-color: rgba(255,255,255,0.1);
+      color: #a1a1aa;
+      background: rgba(255,255,255,0.04);
+    }
+
     .counter {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 2rem;
       font-family: 'Geist Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #52525b;
-      z-index: 10;
     }
 
-    /* ── Keyboard hint ── */
-    .hint {
+    .deck-progress {
       position: fixed;
-      bottom: 1.5rem;
-      left: 2rem;
-      font-size: 0.7rem;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+      z-index: 11;
+    }
+
+    /* ── Keyboard hint (hidden on touch) ── */
+    .hint {
+      font-size: 0.65rem;
       color: #3f3f46;
-      z-index: 10;
+      display: none;
+    }
+    @media (hover: hover) {
+      .hint { display: block; }
     }
 
     /* ── Notes panel ── */
@@ -191,17 +249,29 @@ const { title, accent = '#4f8ff7' } = Astro.props;
         height: 100vh;
         width: 100vw;
       }
-      .counter, .hint, .notes { display: none; }
+      .deck-nav, .deck-progress, .notes { display: none; }
     }
   </style>
 </head>
 <body>
+  <div class="deck-progress" id="deck-progress" style="width: 0%"></div>
+
   <div class="deck">
     <slot />
   </div>
 
-  <div class="counter" id="slide-counter">1 / ?</div>
-  <div class="hint">← → navigate &middot; F fullscreen &middot; N notes</div>
+  <nav class="deck-nav" aria-label="Slide navigation">
+    <div class="deck-nav-buttons">
+      <button class="deck-nav-btn" id="btn-prev" aria-label="Previous slide" disabled>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="deck-nav-btn" id="btn-next" aria-label="Next slide">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="counter" id="slide-counter">1 / ?</div>
+    <div class="hint">← → navigate · F fullscreen · N notes</div>
+  </nav>
 
   <div class="notes" id="notes-panel">
     <h4>Speaker notes</h4>
