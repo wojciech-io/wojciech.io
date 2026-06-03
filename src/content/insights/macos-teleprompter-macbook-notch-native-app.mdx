@@ -40,10 +40,15 @@ Nothing on the App Store matched that. So I built it.
 I came into this with minimal Swift and no recent AppKit experience. Codex changed what was feasible.
 
 The workflow was:
-1. Describe the UI I wanted in plain language
-2. Codex generates the Swift/AppKit scaffolding
-3. I review, test in simulator, adjust description
-4. Repeat until the behavior matches the mental model
+
+<Steps
+  items={[
+    { title: "Describe the UI", meta: "1", body: "Plain language description of what I wanted: window position, behavior, keyboard shortcuts." },
+    { title: "Codex generates", meta: "2", body: "Swift/AppKit scaffolding, boilerplate, window chrome, NSPanel configuration." },
+    { title: "Review and test", meta: "3", body: "Run in simulator, check behavior against the mental model, adjust the description." },
+    { title: "Repeat", meta: "4", body: "Iterate until the behavior matches. Usually 3-5 rounds per feature." }
+  ]}
+/>
 
 Codex handles boilerplate well: window chrome, keyboard shortcuts, menu bar icons, NSPanel configuration. It also handles the conceptual gaps: I'd describe behavior ("I want this window to stay on top, not appear in Mission Control, not take focus") and get back the correct NSPanel configuration flags.
 
@@ -53,10 +58,14 @@ What Codex doesn't handle is taste. The initial window size was wrong, the paddi
 
 NotchCue is a standard macOS utility with a few intentional constraints:
 
-- **NSPanel with .nonactivatingPanel**: it never steals focus from your active meeting window
-- **NSWindow.Level.floating**: always on top, but below system alerts
-- **Manual step mode**: arrow keys cycle through bullet points
-- **Notch-aware positioning**: window spawns at the correct Y offset based on display model
+<Benchmark
+  rows={[
+    { label: 'NSPanel + .nonactivatingPanel', value: 'Never steals focus from the meeting window' },
+    { label: 'NSWindow.Level.floating', value: 'Always on top, below system alerts' },
+    { label: 'Manual step mode', value: 'Arrow keys cycle through bullet points' },
+    { label: 'Notch-aware positioning', value: 'Correct Y offset per MacBook model' },
+  ]}
+/>
 
 The notch detection piece was the most interesting challenge. Codex got me 80% there; the remaining 20% (multi-display support, detecting the exact notch height per MacBook model) required digging through Apple documentation myself.
 
