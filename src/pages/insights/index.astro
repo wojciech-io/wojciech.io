@@ -209,10 +209,23 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
           return (
             <a
               href={`/insights/${slug}/`}
-              class="latest-card group flex items-start gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-4 transition-all duration-150 hover:border-[var(--color-border-2)] hover:bg-[var(--color-surface-2)]"
+              class="latest-card group flex items-start gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden transition-all duration-150 hover:border-[var(--color-border-2)] hover:bg-[var(--color-surface-2)]"
               data-category={post.data.category ?? ''}
             >
-              <div class="min-w-0 flex-1">
+              {post.data.coverImage && (
+                <div class="w-24 h-full shrink-0 overflow-hidden bg-[#0c0c0c]">
+                  <img
+                    src={post.data.coverImage}
+                    alt=""
+                    width="96"
+                    height="64"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div class="min-w-0 flex-1 py-4 pr-5" class:list={[!post.data.coverImage && 'pl-5']}>
                 <div class="flex flex-wrap items-center gap-2 mb-1.5">
                   {post.data.category && (
                     <span class="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
@@ -230,7 +243,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
                   {post.data.description}
                 </p>
               </div>
-              <div class="shrink-0 self-center text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors" aria-hidden="true">
+              <div class="shrink-0 self-center pr-4 text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors" aria-hidden="true">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                   <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -253,24 +266,36 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
             class="article-card group flex flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-200 hover:shadow-[0_6px_28px_rgb(0_0_0/0.10)] hover:border-[var(--color-border-2)] hover:-translate-y-px"
             data-category={post.data.category ?? ''}
           >
-            <!-- Cover: title sets the visual, no abstract icon. -->
+            <!-- Cover: image when available, category-color fallback -->
             <div
-              class="relative flex h-48 shrink-0 flex-col justify-between overflow-hidden p-5"
-              style={`background: ${cover.bg}; color: ${cover.fg};`}
+              class="relative h-48 shrink-0 overflow-hidden"
+              style={!post.data.coverImage ? `background: ${cover.bg};` : ''}
             >
-              <div>
-                <span
-                  class="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/80 ring-1 ring-white/15 cursor-pointer hover:bg-white/20 transition-colors"
-                  data-filter-cat={post.data.category ?? ''}
-                  role="button"
-                  tabindex="0"
-                >
-                  {post.data.category ?? 'Article'}
-                </span>
-              </div>
-              <p class="font-serif text-lg leading-tight line-clamp-3" style={`color: ${cover.fg};`}>
-                {post.data.title}
-              </p>
+              {post.data.coverImage ? (
+                <img
+                  src={post.data.coverImage}
+                  alt=""
+                  width="600"
+                  height="340"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              ) : (
+                <div class="flex items-end h-full p-5">
+                  <p class="font-serif text-lg leading-tight line-clamp-3" style={`color: ${cover.fg};`}>
+                    {post.data.title}
+                  </p>
+                </div>
+              )}
+              <span
+                class="absolute top-4 left-4 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/90 ring-1 ring-white/15 cursor-pointer hover:bg-black/70 transition-colors"
+                data-filter-cat={post.data.category ?? ''}
+                role="button"
+                tabindex="0"
+              >
+                {post.data.category ?? 'Article'}
+              </span>
             </div>
 
             <!-- Body -->
