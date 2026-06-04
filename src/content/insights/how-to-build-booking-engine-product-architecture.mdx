@@ -21,7 +21,7 @@ tldr:
 
 The Polish campsite and RV pitch market had a problem: most booking happens by phone or through a booking.com listing that costs the operator 15–18% per reservation. Neither option is good.
 
-Phone bookings are lost revenue (no late-night inquiries, no searchability, no upsell). [Booking.com](https://www.booking.com/) works for hotels; it's expensive overkill for a 40-pitch campsite with a picnic table and a composting toilet.
+Phone bookings are lost revenue (no late-night inquiries, no searchability, no upsell). Booking.com works for hotels; it's expensive overkill for a 40-pitch campsite with a picnic table and a composting toilet.
 
 So I built a vertical booking engine specifically for this gap.
 
@@ -36,9 +36,9 @@ So I built a vertical booking engine specifically for this gap.
 ## Technical decisions
 
 <Tabs labels={['Backend', 'Payments', 'Notifications', 'Admin']}>
-  <Fragment slot="0">Postgres with a straightforward availability model: pitch inventory, date blocks, reservations. The core availability check is a simple overlapping intervals query: intentionally simple because it needs to be fast and correct, not clever.</Fragment>
-  <Fragment slot="1">[Stripe](https://stripe.com/), not Przelewy24 or PayU. The developer experience is better and international card coverage matters for tourist traffic. Polish card acceptance is complete through Stripe.</Fragment>
-  <Fragment slot="2">SMS via [Twilio](https://www.twilio.com/). In testing, email confirmation had a 34% open rate within 10 minutes. SMS had a 94% open rate within 2 minutes. For a booking confirmation with gate code and pitch number, that difference matters operationally.</Fragment>
+  <Fragment slot="0">[PostgreSQL](https://postgresql.org) with a straightforward availability model: pitch inventory, date blocks, reservations. The core availability check is a simple overlapping intervals query: intentionally simple because it needs to be fast and correct, not clever.</Fragment>
+  <Fragment slot="1">[Stripe](https://stripe.com), not Przelewy24 or PayU. The developer experience is better and international card coverage matters for tourist traffic. Polish card acceptance is complete through Stripe.</Fragment>
+  <Fragment slot="2">SMS via [Twilio](https://twilio.com). In testing, email confirmation had a 34% open rate within 10 minutes. SMS had a 94% open rate within 2 minutes. For a booking confirmation with gate code and pitch number, that difference matters operationally.</Fragment>
   <Fragment slot="3">Simple CRUD interface with a visual availability calendar. Most-used views: today's arrivals, this week's calendar, and the pricing editor. Everything else is secondary.</Fragment>
 </Tabs>
 
@@ -54,7 +54,7 @@ Niche markets are not small markets. Camping in Poland is a growing category wit
 
 The right approach for niche is to do less, correctly. Generic platforms add features because their audience is broad and heterogeneous. A niche platform can do three things extremely well and win because the alternatives do thirty things adequately.
 
-This booking engine does calendar, pricing, and confirmation. It does them correctly. That's enough to matter.
+This booking engine does calendar, pricing, and confirmation. It does them correctly. That's enough to matter. See the [live demo on my work page](/work/) and read about [the broader micro-SaaS lessons](/insights/how-to-build-micro-saas-with-ai-tools/) that shaped the product thinking.
 
 ---
 

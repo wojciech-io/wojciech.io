@@ -45,12 +45,10 @@ const isIndexableSitemapUrl = (/** @type {string} */ page) => {
 
   if (url.hostname !== 'wojciech.io') return false;
   if (path.startsWith('/en/') || path === '/en/') return false;
-  if (path.startsWith('/it/') || path === '/it/') return false;
   if (path.startsWith('/apps/')) return false;
   if (path.startsWith('/decks/')) return false;
   if (path.startsWith('/og/')) return false;
   if (path.endsWith('/cv/')) return false;
-  if (path === '/insights/component-showcase/') return false;
   if (noindexSitemapPaths.has(path)) return false;
 
   return true;
@@ -59,7 +57,7 @@ const isIndexableSitemapUrl = (/** @type {string} */ page) => {
 // @ts-ignore — sitemap uses EnumChangefreq which can't be expressed in JSDoc .mjs
 const serializeSitemapItem = (/** @type {any} */ item) => {
   const path = new URL(item.url).pathname;
-  const articleMatch = path.match(/^\/(?:(de|dk|no|jp)\/)?insights\/([^/]+)\//);
+  const articleMatch = path.match(/^\/(?:(de|dk|no|jp|it|es|pl)\/)?insights\/([^/]+)\//);
   if (articleMatch) {
     const locale = articleMatch[1] ?? 'en';
     const slug = articleMatch[2];
