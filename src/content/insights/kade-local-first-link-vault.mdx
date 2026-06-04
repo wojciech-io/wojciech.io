@@ -35,14 +35,13 @@ The URL is not the memory. The reason you saved it is.
 
 Browser bookmarks are fine for stable destinations: a bank login, a docs page, a tool you open every week.
 
-They are much weaker for links that are part of thinking. A link saved during research has more state than the browser stores:
+They are much weaker for links that are part of thinking. A link saved during research has more state than the browser stores.
 
-- why it looked useful,
-- what it should be compared against,
-- whether it has already been opened,
-- how strong the signal was,
-- which project or category it belongs to,
-- what phrase will make it recognizable next week.
+<BeforeAfter
+  label="What bookmarks miss"
+  before={{ title: "Browser bookmark", body: "Stores the URL. Forgets why you saved it, what it relates to, whether you already read it, and how important it was.", caption: "Works for logins. Fails for research." }}
+  after={{ title: "Kade vault entry", body: "URL + category + monthly bucket + note + rating + preview + visit history + source status. The link carries the context that makes it useful later.", caption: "Recall, not storage." }}
+/>
 
 Once that context is gone, the link becomes work again. You reopen it, scan it, remember half of the original reason, then decide whether it still matters.
 
@@ -58,11 +57,13 @@ That changes the interface. The dashboard shows queue health, categories and pen
 
 The working model is simple:
 
-1. Drop a link or import a batch.
-2. Assign category, monthly bucket and source status.
-3. Attach a short note, rating and useful cues.
-4. Generate previews locally when possible.
-5. Track visits and push already-opened items lower in the queue.
+<Steps items={[
+  { title: "Drop a link or import a batch", body: "Single URL, clipboard paste, or bulk CSV import. Links enter the queue immediately." },
+  { title: "Assign category, monthly bucket and source status", body: "Every link gets tagged on entry. No orphan bookmarks floating in a flat list." },
+  { title: "Attach a short note, rating and useful cues", body: "The context that makes the link useful next week, not just findable." },
+  { title: "Generate previews locally", body: "Thumbnail and metadata extracted on-device. No cloud processing, no third-party scraping." },
+  { title: "Track visits and push opened items lower", body: "Already-read links sink. Fresh links stay visible. The queue self-organizes." },
+]} />
 
 This is closer to a small operating system than a bookmark folder.
 
@@ -94,17 +95,11 @@ The same rule applies to the public page: show the product, explain the operatin
 
 ## Current status
 
-The current Kade build has:
-
-- local web vault,
-- native macOS prototype,
-- product icon set,
-- clean public landing,
-- Insights note,
-- encrypted export/import path,
-- recovery/reset flow,
-- thumbnail worker direction,
-- security docs.
+<Tabs tabs={[
+  { label: "Shipped", content: "Local web vault, native macOS prototype, product icon set, clean public landing, encrypted export/import, recovery/reset flow, security docs." },
+  { label: "Next", content: "Native signing and packaging, stronger Touch ID/Keychain unlock, encrypted sync between devices, better preview worker with local thumbnail pipeline." },
+  { label: "Not planned", content: "Cloud sync to third-party servers, social sharing features, browser extension (the browser is the problem, not the solution)." },
+]} />
 
 The next useful work is native: signing, packaging, stronger Touch ID/Keychain unlock, encrypted sync and a better preview worker.
 

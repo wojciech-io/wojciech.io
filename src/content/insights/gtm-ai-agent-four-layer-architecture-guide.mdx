@@ -94,12 +94,17 @@ Each skill is a structured prompt with defined inputs, outputs, and rules. You i
 
 Most prompt-based GTM setups collapse because they're stateless. Each conversation starts from zero. The four-layer architecture solves this:
 
-- Identity is persistent (CLAUDE.md)
-- Capabilities are real (MCP tools)
-- Context accumulates (memory files)
-- Execution is consistent (skills)
+<Accordion items={[
+  { title: "Layer 1: Identity is persistent", body: "CLAUDE.md loads at session start. The agent knows who it is, what rules apply, and what constraints are non-negotiable. No re-briefing." },
+  { title: "Layer 2: Capabilities are real", body: "MCP tools connect to actual systems: CRM, search, email, notes. The agent acts on data, not just generates text about it." },
+  { title: "Layer 3: Context accumulates", body: "Memory files persist between sessions. Research from Tuesday is available Thursday. Objection handling approved last month carries forward." },
+  { title: "Layer 4: Execution is consistent", body: "Skills are defined prompt programs with structured inputs and outputs. Same quality every run, not dependent on how you phrase the request." },
+]} />
 
-The cost per full outbound run: research, enrich, draft, log: is $2–8 in Claude API costs. An equivalent commercial stack (Clay credits + Apollo seats + Outreach) runs $200–500/month for the same output volume.
+<StatRow>
+  <Stat value="$2-8" label="Cost per full outbound run" />
+  <Stat value="$200-500/mo" label="Equivalent commercial stack" />
+</StatRow>
 
 The gap isn't capability. It's the operating model.
 
