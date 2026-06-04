@@ -310,8 +310,10 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       });
       document.addEventListener('astro:before-preparation', () => {
         lenis?.destroy(); lenis = null;
-        // Kill native smooth scroll so the browser doesn't animate-scroll to top
-        // during the View Transition (double-scroll jank)
+      });
+      document.addEventListener('astro:after-swap', () => {
+        // Reset scroll position and behavior after DOM swap, not before.
+        // Doing it in before-preparation causes a visible jump during transition.
         document.documentElement.style.scrollBehavior = 'auto';
       });
       // Scroll to top AFTER the new page is swapped in, not before

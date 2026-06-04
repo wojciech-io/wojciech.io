@@ -18,7 +18,6 @@ export const SITE = {
   twitterHandle:'w_luszczynski',
   substack:    'https://substack.com/@luscinetti',
   medium:      'https://medium.com/@wluszczynski',
-  cal:         'https://cal.com/wojciech-luszczynski/30min?timezone=Europe%2FBerlin',
 
   ogImage:     '/og-default.png',
   locale:      'en_US',

@@ -16,10 +16,6 @@ describe('SITE constants', () => {
     expect(SITE.githubHandle.length).toBeGreaterThan(0);
   });
 
-  it('cal URL is reachable format', () => {
-    expect(SITE.cal).toContain('cal.com');
-  });
-
   it('ogImage path starts with slash', () => {
     expect(SITE.ogImage).toMatch(/^\//);
   });
