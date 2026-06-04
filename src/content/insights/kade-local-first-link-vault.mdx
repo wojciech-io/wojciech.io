@@ -35,14 +35,13 @@ The URL is not the memory. The reason you saved it is.
 
 Browser bookmarks are fine for stable destinations: a bank login, a docs page, a tool you open every week.
 
-They are much weaker for links that are part of thinking. A link saved during research has more state than the browser stores:
+They are much weaker for links that are part of thinking. A link saved during research has more state than the browser stores.
 
-- why it looked useful,
-- what it should be compared against,
-- whether it has already been opened,
-- how strong the signal was,
-- which project or category it belongs to,
-- what phrase will make it recognizable next week.
+<BeforeAfter
+  label="What bookmarks miss"
+  before={{ title: "Browser bookmark", body: "Stores the URL. Forgets why you saved it, what it relates to, whether you already read it, and how important it was.", caption: "Works for logins. Fails for research." }}
+  after={{ title: "Kade vault entry", body: "URL + category + monthly bucket + note + rating + preview + visit history + source status. The link carries the context that makes it useful later.", caption: "Recall, not storage." }}
+/>
 
 Once that context is gone, the link becomes work again. You reopen it, scan it, remember half of the original reason, then decide whether it still matters.
 
@@ -56,36 +55,17 @@ The better first question is: “what needs attention now?”
 
 That changes the interface. The dashboard shows queue health, categories and pending work. The link view carries the heavier surface: previews, comments, ratings, source status and best bites. Opened links move down instead of disappearing, so the vault keeps memory without pretending every link is equally urgent.
 
-The working model:
+The working model is simple:
 
-<Steps
-  items={[
-    { title: 'Drop or import', body: 'Paste a link or import a batch. The vault accepts individual URLs and bulk CSV.' },
-    { title: 'Categorize', body: 'Assign category, monthly bucket, and source status. Each link gets a slot in the structure.' },
-    { title: 'Annotate', body: 'Attach a short note, rating, and useful cues. The context that makes the link useful later.' },
-    { title: 'Preview', body: 'Generate previews locally when possible. Visual recognition is faster than re-reading titles.' },
-    { title: 'Track', body: 'Visits push already-opened items lower in the queue. The vault keeps memory without equal-weight clutter.' },
-  ]}
-/>
+<Steps items={[
+  { title: "Drop a link or import a batch", body: "Single URL, clipboard paste, or bulk CSV import. Links enter the queue immediately." },
+  { title: "Assign category, monthly bucket and source status", body: "Every link gets tagged on entry. No orphan bookmarks floating in a flat list." },
+  { title: "Attach a short note, rating and useful cues", body: "The context that makes the link useful next week, not just findable." },
+  { title: "Generate previews locally", body: "Thumbnail and metadata extracted on-device. No cloud processing, no third-party scraping." },
+  { title: "Track visits and push opened items lower", body: "Already-read links sink. Fresh links stay visible. The queue self-organizes." },
+]} />
 
 This is closer to a small operating system than a bookmark folder.
-
-<DoDont
-  doLabel="What Kade stores"
-  dontLabel="What bookmarks store"
-  do={[
-    "URL + the reason you saved it",
-    "Category, monthly bucket, source status",
-    "Notes, ratings, visit history",
-    "Encrypted local vault",
-  ]}
-  dont={[
-    "Just the URL",
-    "A flat list with no structure",
-    "Nothing about why it mattered",
-    "Cloud sync you did not ask for",
-  ]}
-/>
 
 ## Why local-first
 
@@ -99,10 +79,11 @@ That boundary matters.
 
 ## The Mac version is the real security path
 
-<Tabs labels={['Web build', 'Native macOS']}>
-  <Fragment slot="0">Useful for workflow iteration. Proves the model quickly: dashboard first, categorized links, encrypted local record, previews in the right place, visit history and export/import. Fast product shaping without native toolchain overhead.</Fragment>
-  <Fragment slot="1">The serious unlock model. [Touch ID](https://developer.apple.com/documentation/localauthentication), Keychain-protected keys, background sync worker, local metadata pipeline. No browser JavaScript handling more responsibility than it should. Durable security and background work belong here.</Fragment>
-</Tabs>
+The web build is useful for workflow iteration. It proves the model quickly: dashboard first, categorized links, encrypted local record, previews in the right place, visit history and export/import.
+
+But the serious unlock model belongs in the native app.
+
+On macOS, Kade can use [Touch ID](https://developer.apple.com/documentation/localauthentication), Keychain-protected keys, a background sync worker and a local metadata pipeline without handing browser JavaScript more responsibility than it should have. That is the right split: web for fast product shaping, native macOS for durable security and background work.
 
 ## The design rule
 
@@ -114,17 +95,11 @@ The same rule applies to the public page: show the product, explain the operatin
 
 ## Current status
 
-The current Kade build has:
-
-- local web vault,
-- native macOS prototype,
-- product icon set,
-- clean public landing,
-- Insights note,
-- encrypted export/import path,
-- recovery/reset flow,
-- thumbnail worker direction,
-- security docs.
+<Tabs tabs={[
+  { label: "Shipped", content: "Local web vault, native macOS prototype, product icon set, clean public landing, encrypted export/import, recovery/reset flow, security docs." },
+  { label: "Next", content: "Native signing and packaging, stronger Touch ID/Keychain unlock, encrypted sync between devices, better preview worker with local thumbnail pipeline." },
+  { label: "Not planned", content: "Cloud sync to third-party servers, social sharing features, browser extension (the browser is the problem, not the solution)." },
+]} />
 
 The next useful work is native: signing, packaging, stronger Touch ID/Keychain unlock, encrypted sync and a better preview worker.
 

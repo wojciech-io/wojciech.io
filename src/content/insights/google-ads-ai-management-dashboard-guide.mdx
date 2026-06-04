@@ -62,9 +62,14 @@ I added a simple ICP definition layer: industry, company size, role. The system 
 
 ## Architecture
 
-The backend is minimal: a lightweight Node service with scheduled Ads API polling, a small Postgres instance for history, and a set of rule-based scoring functions. No ML model. The "intelligence" is encoded rules: threshold violations, trend breaks, ICP mismatch signals. Simple logic applied consistently beats expensive models applied inconsistently.
+<Steps items={[
+  { title: "Ads API poller", body: "Lightweight Node service, scheduled pulls. Handles OAuth refresh for multiple accounts." },
+  { title: "Postgres history", body: "Small instance for trend data. No data warehouse, no Snowflake. Just enough history to detect breaks." },
+  { title: "Rule-based scoring", body: "Threshold violations, trend breaks, ICP mismatch signals. Simple logic applied consistently beats expensive models applied inconsistently." },
+  { title: "React frontend", body: "Tight data contract. Each view maps to a specific operator question. No unnecessary abstraction." },
+]} />
 
-The frontend is React with a tight data contract. No unnecessary abstraction: each view maps to a specific operator question.
+No ML model. The "intelligence" is encoded rules. That is a deliberate choice.
 
 ## What I'd do differently
 
