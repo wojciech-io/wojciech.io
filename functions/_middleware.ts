@@ -86,21 +86,21 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   // CSP: keep in sync with public/_headers. Middleware wins over Pages _headers
   // whenever Pages Functions run on the public site.
   // unsafe-inline required for Astro's is:inline scripts and Tailwind utilities.
-  // gh.wojciech.io is for LiveEmbed demos; Cal.com is for /contact/#book-call.
+  // gh.wojciech.io is for LiveEmbed demos.
   'content-security-policy': [
     "default-src 'self'",
     // wasm-unsafe-eval: Pagefind search compiles a WebAssembly module at runtime.
-    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com https://eu-assets.i.posthog.com",
-    "style-src 'self' 'unsafe-inline' https://app.cal.com",
+    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://eu-assets.i.posthog.com",
+    "style-src 'self' 'unsafe-inline'",
     // cdn.simpleicons.org: tech-logo chips on the /stack overview page
-    "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://app.cal.com https://cal.com https://cdn.simpleicons.org",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://cal.com https://app.cal.com https://o4511411558678528.ingest.de.sentry.io https://eu.i.posthog.com",
-    "font-src 'self' https://app.cal.com",
+    "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://cdn.simpleicons.org",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://o4511411558678528.ingest.de.sentry.io https://eu.i.posthog.com",
+    "font-src 'self'",
     // worker-src: pagefind search uses web workers served from same origin
     "worker-src 'self'",
     // manifest-src: webmanifest served from same origin
     "manifest-src 'self'",
-    "frame-src https://gh.wojciech.io https://cal.com https://app.cal.com",
+    "frame-src https://gh.wojciech.io",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
