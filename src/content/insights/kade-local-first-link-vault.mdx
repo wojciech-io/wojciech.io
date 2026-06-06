@@ -56,15 +56,36 @@ The better first question is: “what needs attention now?”
 
 That changes the interface. The dashboard shows queue health, categories and pending work. The link view carries the heavier surface: previews, comments, ratings, source status and best bites. Opened links move down instead of disappearing, so the vault keeps memory without pretending every link is equally urgent.
 
-The working model is simple:
+The working model:
 
-1. Drop a link or import a batch.
-2. Assign category, monthly bucket and source status.
-3. Attach a short note, rating and useful cues.
-4. Generate previews locally when possible.
-5. Track visits and push already-opened items lower in the queue.
+<Steps
+  items={[
+    { title: 'Drop or import', body: 'Paste a link or import a batch. The vault accepts individual URLs and bulk CSV.' },
+    { title: 'Categorize', body: 'Assign category, monthly bucket, and source status. Each link gets a slot in the structure.' },
+    { title: 'Annotate', body: 'Attach a short note, rating, and useful cues. The context that makes the link useful later.' },
+    { title: 'Preview', body: 'Generate previews locally when possible. Visual recognition is faster than re-reading titles.' },
+    { title: 'Track', body: 'Visits push already-opened items lower in the queue. The vault keeps memory without equal-weight clutter.' },
+  ]}
+/>
 
 This is closer to a small operating system than a bookmark folder.
+
+<DoDont
+  doLabel="What Kade stores"
+  dontLabel="What bookmarks store"
+  do={[
+    "URL + the reason you saved it",
+    "Category, monthly bucket, source status",
+    "Notes, ratings, visit history",
+    "Encrypted local vault",
+  ]}
+  dont={[
+    "Just the URL",
+    "A flat list with no structure",
+    "Nothing about why it mattered",
+    "Cloud sync you did not ask for",
+  ]}
+/>
 
 ## Why local-first
 
@@ -78,11 +99,10 @@ That boundary matters.
 
 ## The Mac version is the real security path
 
-The web build is useful for workflow iteration. It proves the model quickly: dashboard first, categorized links, encrypted local record, previews in the right place, visit history and export/import.
-
-But the serious unlock model belongs in the native app.
-
-On macOS, Kade can use [Touch ID](https://developer.apple.com/documentation/localauthentication), Keychain-protected keys, a background sync worker and a local metadata pipeline without handing browser JavaScript more responsibility than it should have. That is the right split: web for fast product shaping, native macOS for durable security and background work.
+<Tabs labels={['Web build', 'Native macOS']}>
+  <Fragment slot="0">Useful for workflow iteration. Proves the model quickly: dashboard first, categorized links, encrypted local record, previews in the right place, visit history and export/import. Fast product shaping without native toolchain overhead.</Fragment>
+  <Fragment slot="1">The serious unlock model. [Touch ID](https://developer.apple.com/documentation/localauthentication), Keychain-protected keys, background sync worker, local metadata pipeline. No browser JavaScript handling more responsibility than it should. Durable security and background work belong here.</Fragment>
+</Tabs>
 
 ## The design rule
 
