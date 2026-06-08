@@ -71,15 +71,16 @@ const formatDate = (date: Date) =>
 
 // Editorial covers: solid category colour, no gradient mesh, no abstract icon.
 // The article title carries the cover.
-const coverCfg: Record<string, { bg: string; fg: string }> = {
-  'AI Systems':         { bg: '#171930', fg: '#c4b5fd' },
-  'GTM Architecture':   { bg: '#2a1810', fg: '#fbbf24' },
-  'Operator Playbooks': { bg: '#0a2a26', fg: '#5eead4' },
-  'Products':           { bg: '#0f1d3a', fg: '#7dd3fc' },
-  'default':            { bg: '#1a1a1a', fg: '#e5e5e5' },
+const coverCfg: Record<string, { bg: string; fg: string; accent: string }> = {
+  'AI Systems':         { bg: '#0d1117', fg: '#e2e8f0', accent: '#a78bfa' },
+  'GTM Architecture':   { bg: '#0f0a00', fg: '#fef3c7', accent: '#f59e0b' },
+  'Operator Playbooks': { bg: '#001a10', fg: '#d1fae5', accent: '#34d399' },
+  'Products':           { bg: '#00111f', fg: '#dbeafe', accent: '#60a5fa' },
+  'default':            { bg: '#08080a', fg: '#e4e4e7', accent: '#ebff00' },
 };
 
 const getCover = (cat?: string) => coverCfg[cat ?? ''] ?? coverCfg['default'];
+type Cover = { bg: string; fg: string; accent: string };
 
 const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-[var(--color-border)]';
 ---
@@ -117,10 +118,11 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
         >
           <!-- Cover: image when available, category-color fallback -->
           <div
-            class="relative min-h-[320px] overflow-hidden"
+            class="relative flex min-h-[320px] flex-col justify-between overflow-hidden p-8"
             style={!featuredPost.data.coverImage ? `background: ${cover.bg};` : 'background: #0c0c0c;'}
           >
-            {featuredPost.data.coverImage ? (
+            <div class="absolute inset-x-0 top-0 h-0.5" style={`background: ${cover.accent};`} aria-hidden="true"></div>
+            {featuredPost.data.coverImage && (
               <img
                 src={featuredPost.data.coverImage}
                 alt=""
@@ -128,19 +130,18 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
                 height="400"
                 loading="eager"
                 decoding="async"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
-            ) : (
-              <div class="flex items-end h-full p-8">
-                <p class="font-serif text-2xl leading-tight md:text-3xl" style={`color: ${cover.fg};`}>
-                  {featuredPost.data.title}
-                </p>
-              </div>
             )}
-            <div class="absolute top-6 left-6 right-6 flex items-center justify-between">
+            <div class="relative flex items-center justify-between">
               <span class="rounded-full bg-black/50 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white/90 ring-1 ring-white/15">Featured</span>
-              <span class="rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/80">{featuredPost.data.category ?? 'Article'}</span>
+              <span class="font-mono text-[10px] font-semibold uppercase tracking-widest text-white/70">{featuredPost.data.category ?? 'Article'}</span>
             </div>
+            {!featuredPost.data.coverImage && (
+              <p class="relative text-2xl font-semibold leading-tight md:text-3xl" style={`color: ${cover.fg};`}>
+                {featuredPost.data.title}
+              </p>
+            )}
           </div>
 
           <!-- Content -->
@@ -282,10 +283,11 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
           >
             <!-- Cover: image when available, category-color fallback -->
             <div
-              class="relative h-48 shrink-0 overflow-hidden"
+              class="relative flex h-48 shrink-0 flex-col justify-between overflow-hidden p-5"
               style={!post.data.coverImage ? `background: ${cover.bg};` : ''}
             >
-              {post.data.coverImage ? (
+              <div class="absolute inset-x-0 top-0 h-0.5" style={`background: ${cover.accent};`} aria-hidden="true"></div>
+              {post.data.coverImage && (
                 <img
                   src={post.data.coverImage}
                   alt=""
@@ -293,23 +295,22 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
                   height="340"
                   loading="lazy"
                   decoding="async"
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 />
-              ) : (
-                <div class="flex items-end h-full p-5">
-                  <p class="font-serif text-lg leading-tight line-clamp-3" style={`color: ${cover.fg};`}>
-                    {post.data.title}
-                  </p>
-                </div>
               )}
               <span
-                class="absolute top-4 left-4 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/90 ring-1 ring-white/15 cursor-pointer hover:bg-black/70 transition-colors"
+                class="relative font-mono rounded-sm bg-white/8 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white/70 ring-1 ring-white/10 self-start cursor-pointer hover:bg-white/15 transition-colors"
                 data-filter-cat={post.data.category ?? ''}
                 role="button"
                 tabindex="0"
               >
                 {post.data.category ?? 'Article'}
               </span>
+              {!post.data.coverImage && (
+                <p class="relative text-[0.9rem] font-semibold leading-snug line-clamp-3" style={`color: ${cover.fg};`}>
+                  {post.data.title}
+                </p>
+              )}
             </div>
 
             <!-- Body -->

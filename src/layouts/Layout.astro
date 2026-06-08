@@ -47,7 +47,22 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
 <!doctype html>
 <html lang={htmlLang}>
   <head>
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      (function() {
+        try {
+          var t = localStorage.getItem('theme');
+          var d = document.documentElement;
+          if (t === 'dark' || (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            d.dataset.theme = 'dark';
+            d.style.colorScheme = 'dark';
+          } else {
+            d.dataset.theme = 'light';
+            d.style.colorScheme = 'light';
+          }
+        } catch(_) {}
+      })();
+    </script>
     <!-- Cross-subdomain language: write the same cookie subscribe/app/academy read. -->
     <script is:inline>
       (function () {
