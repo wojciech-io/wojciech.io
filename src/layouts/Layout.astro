@@ -81,6 +81,8 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       schema={schema}
     />
     <ClientRouter />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#ebff00" />
   </head>
   <body class="min-h-dvh flex flex-col">
     <a
@@ -334,5 +336,8 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
         data-cf-beacon={`{"token": "${import.meta.env.PUBLIC_CF_BEACON_TOKEN}"}`}
       />
     )}
+    <script is:inline>
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+    </script>
   </body>
 </html>
