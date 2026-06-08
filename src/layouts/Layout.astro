@@ -80,6 +80,8 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       updatedAt={updatedAt}
       schema={schema}
     />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#ebff00" />
     <ClientRouter />
   </head>
   <body class="min-h-dvh flex flex-col">
@@ -326,6 +328,12 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     <!-- CF_BEACON_TOKEN: set PUBLIC_CF_BEACON_TOKEN in Cloudflare Pages env vars
          Get the token from CF dashboard → Analytics → Web Analytics → Add site
          (account ID: 39783e1749680bed4039662ab696c3b1) -->
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
+      }
+    </script>
+
     {import.meta.env.PUBLIC_CF_BEACON_TOKEN && (
       <script
         is:inline
