@@ -59,10 +59,7 @@ const schema = {
         </div>
       )}
       <div class={copy.slug === 'about' ? 'max-w-3xl lg:pl-[360px]' : 'max-w-3xl'}>
-        <p class="obs-mono mb-4 inline-flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.14em] text-[var(--color-accent)]">
-          <span class="obs-status-dot" aria-hidden="true"></span>
-          {copy.eyebrow}
-        </p>
+        <span class="obs-label-accent mb-4 block">// {copy.eyebrow}</span>
         <h1 class="reveal-up mb-6 text-[length:var(--text-h1)] font-semibold leading-tight tracking-tight text-[var(--color-text)]" data-reveal-index="0">
           {copy.h1}
         </h1>
@@ -72,7 +69,7 @@ const schema = {
         <div class="reveal-up mt-8 flex flex-wrap gap-3" data-reveal-index="2">
           <a
             href={copy.primaryHref}
-            class="btn-press inline-flex rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 py-2.5 text-sm font-semibold text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
+            class="btn-press obs-mono inline-flex rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
             data-mp-cta={copy.primaryCta}
             data-mp-location={`localized_${copy.locale}_${copy.slug}_hero`}
           >
@@ -95,8 +92,8 @@ const schema = {
     <div class="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-[var(--color-border)] px-6 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
       {copy.stats.map((stat) => (
         <div class="reveal-up py-7 sm:px-6" data-reveal-index="0">
-          <p class="mb-1 text-3xl font-semibold text-[var(--color-text)]">{stat.value}</p>
-          <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{stat.label}</p>
+          <p class="obs-mono mb-1 text-3xl font-semibold text-[var(--color-text)]">{stat.value}</p>
+          <p class="obs-label">{stat.label}</p>
         </div>
       ))}
     </div>
@@ -106,8 +103,8 @@ const schema = {
     <div class="mx-auto max-w-6xl px-6">
       <div class="grid gap-5 lg:grid-cols-3">
         {copy.sections.map((section, index) => (
-          <article class="reveal-up rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6" data-reveal-index={index}>
-            <p class="mb-4 font-mono text-xs text-[var(--color-text-dim)]">{String(index + 1).padStart(2, '0')}</p>
+          <article class="reveal-up obs-panel obs-glow p-6" data-reveal-index={index}>
+            <span class="obs-mono text-2xl font-bold text-[var(--color-accent-label)] mb-4 block">{String(index + 1).padStart(2, '0')}</span>
             <h2 class="mb-3 text-xl font-semibold leading-snug text-[var(--color-text)]">{section.title}</h2>
             <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{section.body}</p>
             {section.items && (
@@ -160,7 +157,7 @@ const schema = {
 
       <div class="mt-10 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
         <div>
-          <p class="obs-mono text-[0.6875rem] uppercase tracking-widest text-[var(--color-accent)]">// {copy.eyebrow}</p>
+          <span class="obs-label-accent block">// {copy.eyebrow}</span>
           <p class="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--color-text-muted)]">
             {copy.description}
           </p>
