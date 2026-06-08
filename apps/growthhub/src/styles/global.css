@@ -1,26 +1,36 @@
-@import "tailwindcss";
+/* Self-hosted Geist: no third-party CDN (privacy + perf). */
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist Mono'; src: url('/fonts/GeistMono-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist Mono'; src: url('/fonts/GeistMono-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: optional; }
 
-/* ─── Design tokens ─────────────────────────────────────────────────────── */
+@import "tailwindcss";
+@import "@wojciech/tokens/index.css";
+
+/* ─── GrowthHub aliases: map dashboard vars to shared Obsidian tokens ──── */
 :root {
-  --bg:          #F3F2EF;
-  --bg1:         #FFFFFF;
-  --bg2:         #EBEBEB;
-  --bg3:         #E0DFDC;
-  --lime:        #EBFF00;
+  --bg:          var(--color-bg);
+  --bg1:         var(--color-surface);
+  --bg2:         var(--color-surface-2);
+  --bg3:         var(--color-border);
+  --lime:        var(--color-accent-cta);
   --lime-dim:    rgba(235,255,0,0.14);
   --lime-glow:   rgba(235,255,0,0.28);
-  --border:      rgba(0,0,0,0.08);
-  --border-hi:   rgba(0,0,0,0.18);
-  --text-1:      #080808;
-  --text-2:      #555;
-  --text-3:      #999;
-  --card-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  --good:        #16a34a;
+  --border:      var(--color-border);
+  --border-hi:   var(--color-border-2);
+  --text-1:      var(--color-text);
+  --text-2:      var(--color-text-muted);
+  --text-3:      var(--color-text-dim);
+  --card-shadow: var(--shadow-card);
+  --good:        var(--color-success);
   --bad:         #dc2626;
   --accent:      var(--lime);
   --up:          var(--good);
   --down:        var(--bad);
 
+  /* Pipeline stage colors (dashboard-specific, no shared token) */
   --stage-new:         #64748b;
   --stage-discovery:   #3b82f6;
   --stage-qualified:   #6366f1;
@@ -30,17 +40,6 @@
 }
 
 [data-theme="dark"] {
-  --bg:          #09090b;
-  --bg1:         #111113;
-  --bg2:         #18181b;
-  --bg3:         #222225;
-  --border:      rgba(255,255,255,0.07);
-  --border-hi:   rgba(255,255,255,0.14);
-  --text-1:      #f0f0f0;
-  --text-2:      #a0a0a8;
-  --text-3:      #5c5c66;
-  --card-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.5);
-  --good:        #4ade80;
   --bad:         #f87171;
 }
 
@@ -51,7 +50,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text-1);
-  font-family: 'Geist', 'Inter', system-ui, sans-serif;
+  font-family: var(--font-sans);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
