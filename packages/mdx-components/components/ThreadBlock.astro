@@ -1,0 +1,100 @@
+---
+interface Props {
+  messages: { role: 'user' | 'assistant' | 'system'; content: string; label?: string }[];
+  title?: string;
+}
+
+const { messages, title } = Astro.props;
+
+const roleStyles = {
+  user: { label: 'USER', color: 'var(--color-text)', bg: 'var(--color-surface-2)' },
+  assistant: { label: 'ASSISTANT', color: 'var(--color-accent)', bg: 'color-mix(in srgb, var(--color-accent) 6%, var(--color-surface))' },
+  system: { label: 'SYSTEM', color: 'var(--color-text-dim)', bg: 'var(--color-surface)' },
+};
+---
+
+<div class="thread-block">
+  {title && (
+    <div class="thread-header">
+      <span class="thread-dot" aria-hidden="true" />
+      <span class="thread-title">// {title.toUpperCase()}</span>
+    </div>
+  )}
+  <div class="thread-messages">
+    {messages.map((msg) => {
+      const style = roleStyles[msg.role];
+      return (
+        <div class="thread-msg" style={`--msg-bg: ${style.bg}; --msg-accent: ${style.color}`}>
+          <p class="thread-role">{msg.label ?? style.label}</p>
+          <div class="thread-content" set:html={msg.content} />
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+<style>
+  .thread-block {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    margin: 1.75rem 0;
+  }
+  .thread-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: var(--color-surface-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .thread-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+    box-shadow: 0 0 6px var(--color-accent);
+  }
+  .thread-title {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--color-text-dim);
+  }
+  .thread-messages {
+    display: flex;
+    flex-direction: column;
+  }
+  .thread-msg {
+    padding: 1rem 1.25rem;
+    background: var(--msg-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .thread-msg:last-child {
+    border-bottom: none;
+  }
+  .thread-role {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--msg-accent);
+    margin: 0 0 0.5rem 0;
+  }
+  .thread-content {
+    font-size: 0.875rem;
+    line-height: 1.65;
+    color: var(--color-text);
+  }
+  .thread-content :global(p) { margin: 0; }
+  .thread-content :global(p + p) { margin-top: 0.5rem; }
+  .thread-content :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.8125em;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    padding: 0.0625rem 0.3125rem;
+  }
+</style>
