@@ -84,7 +84,7 @@ async function sendInviteEmail(env: Env, email: string, acceptUrl: string, teamN
       html: `<div style="font-family:-apple-system,system-ui,sans-serif;max-width:560px">
         <h2 style="margin:0 0 12px;color:#0a0a0a">Masz dostęp do AI Growth OS</h2>
         <p style="color:#3f3f46;line-height:1.55">Dostałeś miejsce w ramach licencji ${escapeHtml(team)}. Kliknij, żeby aktywować dostęp do panelu z odcinkami, vaultem i materiałami.</p>
-        <p><a href="${escapeAttr(acceptUrl)}" style="display:inline-block;background:#ff7a1c;color:#0a0a0c;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none">Aktywuj dostęp</a></p>
+        <p><a href="${escapeAttr(acceptUrl)}" style="display:inline-block;background:#ebff00;color:#0c0c0c;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none">Aktywuj dostęp</a></p>
         <p style="font-size:12px;color:#71717a">Link działa 14 dni i jest jednorazowy.</p>
       </div>`,
     }),

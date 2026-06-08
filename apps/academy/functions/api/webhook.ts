@@ -162,7 +162,7 @@ async function sendWelcomeMagicLink(env: Env, email: string, request: Request): 
       html: `<div style="font-family:-apple-system,system-ui,sans-serif;max-width:560px">
         <h2 style="margin:0 0 12px;color:#0a0a0a">Dostęp do Academy jest aktywny</h2>
         <p style="color:#3f3f46;line-height:1.55">Płatność przeszła. Kliknij link, żeby wejść do panelu z odcinkami, vaultem i materiałami wdrożeniowymi.</p>
-        <p><a href="${magicUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" style="display:inline-block;background:#ff7a1c;color:#0a0a0c;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none">Otwórz panel</a></p>
+        <p><a href="${magicUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" style="display:inline-block;background:#ebff00;color:#0c0c0c;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none">Otwórz panel</a></p>
         <p style="font-size:12px;color:#71717a">Link działa 48 godzin i jest jednorazowy. Później zawsze możesz wygenerować nowy przez stronę logowania.</p>
       </div>`,
     }),

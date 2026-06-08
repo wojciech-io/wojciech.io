@@ -129,7 +129,7 @@ async function sendMagicLink(env: Env, email: string, magicUrl: string): Promise
       html: `<div style="font-family:-apple-system,system-ui,sans-serif;max-width:560px">
         <h2 style="margin:0 0 12px;color:#0a0a0a">Wejście do Academy</h2>
         <p style="color:#3f3f46;line-height:1.55">Kliknij poniższy link, żeby wejść do panelu. Link działa 30 minut i jest jednorazowy.</p>
-        <p><a href="${escapeAttr(magicUrl)}" style="display:inline-block;background:#ff7a1c;color:#0a0a0c;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none">Otwórz panel</a></p>
+        <p><a href="${escapeAttr(magicUrl)}" style="display:inline-block;background:#ebff00;color:#0c0c0c;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none">Otwórz panel</a></p>
         <p style="font-size:12px;color:#71717a">Jeśli to nie Ty, zignoruj ten email.</p>
       </div>`,
     }),
