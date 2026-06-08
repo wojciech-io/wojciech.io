@@ -95,7 +95,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
 
     <!-- Header -->
     <div class="mb-10 max-w-3xl">
-      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Insights</p>
+      <span class="obs-label-accent mb-3 block">// insights</span>
       <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4" transition:name="page-title-insights">
         Field notes on AI systems,<br class="hidden md:block" /> GTM, and revenue architecture.
       </h1>
@@ -111,7 +111,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
       return (
         <a
           href={`/insights/${slug}/`}
-          class="group mb-10 grid overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-200 hover:shadow-[0_8px_40px_rgb(0_0_0/0.12)] hover:border-[var(--color-border-2)] lg:grid-cols-[0.9fr_1.1fr]"
+          class="group mb-10 grid overflow-hidden obs-panel obs-glow transition-all duration-200 card-lift lg:grid-cols-[0.9fr_1.1fr]"
           data-category={featuredPost.data.category ?? ''}
           data-featured-article
         >
@@ -138,8 +138,8 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
               </div>
             )}
             <div class="absolute top-6 left-6 right-6 flex items-center justify-between">
-              <span class="rounded-full bg-black/50 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white/90 ring-1 ring-white/15">Featured</span>
-              <span class="rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/80">{featuredPost.data.category ?? 'Article'}</span>
+              <span class="obs-mono rounded bg-black/60 backdrop-blur-sm px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#ebff00]">Featured</span>
+              <span class="obs-mono rounded bg-black/60 backdrop-blur-sm px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-white/80">{featuredPost.data.category ?? 'Article'}</span>
             </div>
           </div>
 
@@ -198,7 +198,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
             data-cat={cat}
             aria-selected={i === 0 ? 'true' : 'false'}
             class:list={[
-              'cat-btn rounded-[var(--radius-btn)] px-4 py-2 text-sm font-medium transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]',
+              'cat-btn obs-mono rounded-[var(--radius-btn)] px-4 py-2 text-xs font-medium uppercase tracking-wider transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]',
               i === 0
                 ? 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm'
                 : 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]',
@@ -216,7 +216,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
     <!-- Latest: only shown when the catalog is large enough that the grid alone would feel overwhelming. -->
     {showLatestBand && (
     <section id="latest-section" class="mb-10" aria-label="Latest articles">
-      <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)] mb-4">Latest</p>
+      <span class="obs-label mb-4 block">// latest</span>
       <div class="flex flex-col gap-3" id="latest-list">
         {latestPosts.map(post => {
           const slug = post.id.replace(/\.mdx?$/, '');
@@ -277,7 +277,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
         return (
           <a
             href={`/insights/${slug}/`}
-            class="article-card group flex flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-200 hover:shadow-[0_6px_28px_rgb(0_0_0/0.10)] hover:border-[var(--color-border-2)] hover:-translate-y-px"
+            class="article-card group flex flex-col overflow-hidden obs-panel obs-glow card-lift"
             data-category={post.data.category ?? ''}
           >
             <!-- Cover: image when available, category-color fallback -->
@@ -303,7 +303,7 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
                 </div>
               )}
               <span
-                class="absolute top-4 left-4 rounded-full bg-black/50 backdrop-blur-sm px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/90 ring-1 ring-white/15 cursor-pointer hover:bg-black/70 transition-colors"
+                class="absolute top-4 left-4 obs-mono rounded bg-black/60 backdrop-blur-sm px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-white/80 cursor-pointer hover:bg-black/70 transition-colors"
                 data-filter-cat={post.data.category ?? ''}
                 role="button"
                 tabindex="0"
@@ -344,9 +344,9 @@ const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-
     </div>
 
     <!-- Newsletter CTA -->
-    <div class="rounded-2xl border border-[var(--color-border-2)] bg-[var(--color-surface-2)] px-8 py-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+    <div class="obs-panel obs-glow px-8 py-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
       <div class="flex-1">
-        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">Newsletter</p>
+        <span class="obs-label-accent mb-3 block">// newsletter</span>
         <h2 class="text-[length:var(--text-h2)] font-semibold text-[var(--color-text)] mb-2">Want to know more first?</h2>
         <p class="text-[var(--color-text-muted)]">
           New articles on AI systems, GTM architecture, and growth operating models, delivered when they publish.
