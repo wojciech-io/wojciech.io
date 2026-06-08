@@ -45,9 +45,22 @@ const schema = {
   <section class="relative overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-bg)]">
     <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px] opacity-70" aria-hidden="true"></div>
     <div class="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
-      <div class="max-w-3xl">
-        <p class="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-accent)]">
-          <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
+      {copy.slug === 'about' && (
+        <div class="mb-8 lg:mb-0 lg:absolute lg:left-6 lg:top-20 lg:w-[320px]">
+          <img
+            src="/images/wojciech-speaking-color.webp"
+            alt="Wojciech Łuszczyński speaking at Infoshare 2023"
+            width="640"
+            height="480"
+            loading="eager"
+            decoding="async"
+            class="w-full max-w-xs rounded-[var(--radius-card)] border border-[var(--color-border)] object-cover"
+          />
+        </div>
+      )}
+      <div class={copy.slug === 'about' ? 'max-w-3xl lg:pl-[360px]' : 'max-w-3xl'}>
+        <p class="obs-mono mb-4 inline-flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.14em] text-[var(--color-accent)]">
+          <span class="obs-status-dot" aria-hidden="true"></span>
           {copy.eyebrow}
         </p>
         <h1 class="reveal-up mb-6 text-[length:var(--text-h1)] font-semibold leading-tight tracking-tight text-[var(--color-text)]" data-reveal-index="0">
@@ -110,9 +123,44 @@ const schema = {
           </article>
         ))}
       </div>
+      {copy.slug === 'contact' && (
+        <div class="mt-10 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+          <iframe
+            src="https://cal.com/wojciech-luszczynski/30min?embed=true&layout=month_view&theme=auto"
+            width="100%"
+            height="600"
+            frameborder="0"
+            loading="lazy"
+            title="Book a call with Wojciech"
+            style="border: 0; min-height: 600px;"
+          ></iframe>
+        </div>
+      )}
+
+      {copy.slug === 'about' && (
+        <div class="mt-10 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+          <a href="https://www.youtube.com/watch?v=UWJN-DwqDbE" target="_blank" rel="noopener noreferrer" class="group relative block aspect-video">
+            <img
+              src="https://img.youtube.com/vi/UWJN-DwqDbE/maxresdefault.jpg"
+              alt="Wojciech Łuszczyński at Infoshare 2023"
+              width="1280"
+              height="720"
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover transition-opacity group-hover:opacity-80"
+            />
+            <span class="absolute inset-0 flex items-center justify-center">
+              <span class="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-accent)] text-[var(--color-accent-text)] shadow-lg">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </span>
+            </span>
+          </a>
+        </div>
+      )}
+
       <div class="mt-10 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-accent)]">{copy.eyebrow}</p>
+          <p class="obs-mono text-[0.6875rem] uppercase tracking-widest text-[var(--color-accent)]">// {copy.eyebrow}</p>
           <p class="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--color-text-muted)]">
             {copy.description}
           </p>
