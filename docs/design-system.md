@@ -103,6 +103,15 @@ Fluid sizes (scale with viewport):
 | `--text-body-lg` | `1rem → 1.25rem` | Lead paragraphs, article intros |
 | `--text-body` | `1rem` | Default body |
 
+Fluid utility sizes (Tailwind `text-fluid-*` classes, replace breakpoint pairs):
+
+| Token | Range | Tailwind class | Replaces |
+|---|---|---|---|
+| `--text-fluid-lg` | `1rem → 1.125rem` | `text-fluid-lg` | `text-base md:text-lg` |
+| `--text-fluid-xl` | `1.25rem → 1.5rem` | `text-fluid-xl` | `text-xl md:text-2xl` |
+| `--text-fluid-2xl` | `1.5rem → 1.875rem` | `text-fluid-2xl` | `text-2xl md:text-3xl` |
+| `--text-fluid-3xl` | `1.875rem → 2.25rem` | `text-fluid-3xl` | `text-3xl md:text-4xl` |
+
 ### Typography rules
 
 - Articles (`src/content/insights`) render at `--text-body-lg` for body text, `--width-prose: 65ch` max-width.
