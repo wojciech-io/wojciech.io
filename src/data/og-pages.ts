@@ -64,7 +64,7 @@ export const OG_PAGES: Record<string, OGPageMeta> = {
     eyebrow: 'Status',
     description: 'Live availability of every surface across this network, probed in real time.',
   },
-  // Locale homes — tytuł wspólny, descriptions skrócone z data/locales.ts
+  // Locale homes: tytuł wspólny, descriptions skrócone z data/locales.ts
   // do limitu OG (120 ch) z zachowaniem sensu. Eyebrow = lokalna nazwa.
   pl: {
     title: 'Wojciech Łuszczyński · AI-native GTM Operator (PL)',
