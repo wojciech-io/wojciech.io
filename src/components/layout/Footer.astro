@@ -71,14 +71,14 @@ const connect = [
 
   <div class="relative mx-auto w-full max-w-6xl px-6">
 
-    <!-- ═══ DESKTOP (lg+): brand + 4 columns ═══ -->
-    <div class="hidden lg:grid lg:grid-cols-[200px_1fr_1.4fr_1fr_1fr] lg:gap-x-10 lg:items-start py-14">
+    <!-- ═══ DESKTOP (lg+): brand + 3 columns ═══ -->
+    <div class="hidden lg:grid lg:grid-cols-[200px_1fr_1.4fr_1fr] lg:gap-x-10 lg:items-start py-14">
 
       <!-- Brand -->
       <div class="flex flex-col gap-5">
         <a href="/" class="inline-flex items-center gap-0 no-underline group">
           <span class="obs-mono text-lg font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">wojciech</span>
-          <span class="obs-mono ml-0.5 rounded-[var(--radius-btn)] bg-[var(--color-text)] dark:bg-[var(--color-accent-cta)] px-1.5 py-0.5 text-[10px] font-semibold leading-none text-[var(--color-bg)] dark:text-[var(--color-accent-text)]">.io</span>
+          <span class="obs-mono ml-0.5 inline-flex items-center justify-center rounded-[5px] bg-[var(--color-text)] dark:bg-[var(--color-accent-cta)] px-[5px] py-[3px] text-[10px] font-bold leading-none text-[var(--color-bg)] dark:text-[var(--color-accent-text)]">.io</span>
         </a>
         <p class="text-[13px] leading-relaxed text-[var(--color-text-muted)]">
           {t.footer.brandTagline}
@@ -138,26 +138,6 @@ const connect = [
         </ul>
       </div>
 
-      <!-- Connect -->
-      <div>
-        <p class="obs-label mb-5">
-          Connect
-        </p>
-        <div class="flex flex-wrap gap-2">
-          {connect.map(({ label, href, icon }) => (
-            <a
-              href={href}
-              target={href.startsWith('http') ? '_blank' : undefined}
-              rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              aria-label={label}
-              title={label}
-              class="flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur text-[var(--color-text-muted)] no-underline transition-all hover:border-[var(--color-accent-cta)] hover:text-[var(--color-text)] hover:bg-[var(--color-accent-lo)]"
-            >
-              <span set:html={icon} />
-            </a>
-          ))}
-        </div>
-      </div>
     </div>
 
     <!-- ═══ MOBILE / TABLET (< lg) ═══ -->
@@ -168,7 +148,7 @@ const connect = [
         <div>
           <a href="/" class="mb-3 inline-flex items-center gap-0 no-underline">
             <span class="obs-mono text-lg font-semibold text-[var(--color-text)]">wojciech</span>
-            <span class="obs-mono ml-0.5 rounded-[var(--radius-btn)] bg-[var(--color-text)] dark:bg-[var(--color-accent-cta)] px-1.5 py-0.5 text-[10px] font-semibold leading-none text-[var(--color-bg)] dark:text-[var(--color-accent-text)]">.io</span>
+            <span class="obs-mono ml-0.5 inline-flex items-center justify-center rounded-[5px] bg-[var(--color-text)] dark:bg-[var(--color-accent-cta)] px-[5px] py-[3px] text-[10px] font-bold leading-none text-[var(--color-bg)] dark:text-[var(--color-accent-text)]">.io</span>
           </a>
           <p class="text-[13px] leading-relaxed text-[var(--color-text-muted)]">
             {t.footer.brandTagline}
@@ -180,22 +160,6 @@ const connect = [
         >
           {t.footer.getInTouch}
         </a>
-      </div>
-
-      <!-- Social row -->
-      <div class="mb-8 flex flex-wrap gap-2">
-        {connect.map(({ label, href, icon }) => (
-          <a
-            href={href}
-            target={href.startsWith('http') ? '_blank' : undefined}
-            rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-            aria-label={label}
-            title={label}
-            class="flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur text-[var(--color-text-muted)] no-underline transition-all hover:border-[var(--color-accent-cta)] hover:text-[var(--color-text)] hover:bg-[var(--color-accent-lo)]"
-          >
-            <span set:html={icon} />
-          </a>
-        ))}
       </div>
 
       <!-- Nav columns -->
@@ -262,13 +226,23 @@ const connect = [
     </div>
 
     <!-- ═══ BOTTOM BAR ═══ -->
-    <div class="relative flex flex-wrap items-center justify-between gap-3 border-t border-[var(--color-border)] py-5">
-      <p class="text-[11px] text-[var(--color-text-dim)]">
-        &copy; {year} Wojciech Łuszczyński &middot;
-        <a href="https://wojciech.io" class="hover:text-[var(--color-text)] transition-colors">wojciech.io</a> &middot;
-        <a href="/status/" class="hover:text-[var(--color-text)] transition-colors">status</a>
+    <div class="relative flex items-center justify-between gap-4 border-t border-[var(--color-border)] py-5">
+      <p class="text-[11px] text-[var(--color-text-dim)] whitespace-nowrap">
+        &copy; {year} Wojciech Łuszczyński
       </p>
-      <p class="text-[11px] font-medium text-[var(--color-text-dim)]">{t.footer.bottomTagline}</p>
+      <div class="flex items-center gap-1.5">
+        {connect.map(({ label, href, icon }) => (
+          <a
+            href={href}
+            target={href.startsWith('http') ? '_blank' : undefined}
+            rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            aria-label={label}
+            class="inline-flex h-7 w-7 items-center justify-center rounded-[5px] text-[var(--color-text-dim)] no-underline transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]"
+          >
+            <span class="inline-flex items-center" set:html={icon} />
+          </a>
+        ))}
+      </div>
     </div>
   </div>
 </footer>
