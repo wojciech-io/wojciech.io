@@ -1,0 +1,94 @@
+---
+interface Props {
+  layers: { name: string; tech: string; badge?: string }[];
+  title?: string;
+}
+
+const { layers, title } = Astro.props;
+---
+
+<div class="stack-layer-block">
+  {title && <p class="stack-title">// {title.toUpperCase()}</p>}
+  <div class="stack-layers">
+    {layers.map((layer, i) => (
+      <div class="stack-row" style={`--delay: ${i * 60}ms`}>
+        <span class="stack-index">{String(i + 1).padStart(2, '0')}</span>
+        <div class="stack-info">
+          <span class="stack-name">{layer.name}</span>
+          <span class="stack-tech">{layer.tech}</span>
+        </div>
+        {layer.badge && <span class="stack-badge">{layer.badge}</span>}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .stack-layer-block {
+    margin: 1.75rem 0;
+  }
+  .stack-title {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin: 0 0 0.75rem 0;
+  }
+  .stack-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  .stack-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .stack-row:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+    box-shadow: 0 0 16px -4px color-mix(in srgb, var(--color-accent) 15%, transparent);
+  }
+  .stack-index {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-text-dim);
+    flex-shrink: 0;
+    width: 1.5rem;
+    text-align: right;
+  }
+  .stack-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+  .stack-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--color-text);
+  }
+  .stack-tech {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+  }
+  .stack-badge {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+    border-radius: var(--radius-badge);
+    padding: 0.125rem 0.5rem;
+    flex-shrink: 0;
+  }
+</style>

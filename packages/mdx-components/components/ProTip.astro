@@ -1,0 +1,61 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label = 'Pro tip' } = Astro.props;
+---
+
+<div class="protip">
+  <div class="protip-header">
+    <span class="protip-icon" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </span>
+    <span class="protip-label">// {label.toUpperCase()}</span>
+  </div>
+  <div class="protip-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .protip {
+    position: relative;
+    border-radius: var(--radius-card);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+    background: color-mix(in srgb, var(--color-accent) 4%, var(--color-surface));
+    padding: 1.25rem 1.5rem;
+    margin: 1.75rem 0;
+    box-shadow: 0 0 24px -8px color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
+  .protip-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .protip-icon {
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+  .protip-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+  }
+  .protip-body {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+  .protip-body :global(p) {
+    margin: 0;
+  }
+  .protip-body :global(p + p) {
+    margin-top: 0.5rem;
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+interface Props {
+  title?: string;
+  metrics: { label: string; value: string; delta?: string; unit?: string }[];
+}
+
+const { title, metrics } = Astro.props;
+---
+
+<div class="metric-board">
+  {title && <p class="metric-board-title">// {title.toUpperCase()}</p>}
+  <div class="metric-board-grid" style={`--cols: ${Math.min(metrics.length, 4)}`}>
+    {metrics.map((m) => (
+      <div class="metric-card">
+        <p class="metric-label">{m.label}</p>
+        <p class="metric-value">
+          {m.value}
+          {m.unit && <span class="metric-unit">{m.unit}</span>}
+        </p>
+        {m.delta && (
+          <p class:list={['metric-delta', m.delta.startsWith('-') ? 'negative' : 'positive']}>
+            {m.delta}
+          </p>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .metric-board {
+    margin: 2rem 0;
+  }
+  .metric-board-title {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin: 0 0 0.75rem 0;
+  }
+  .metric-board-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    gap: 0.75rem;
+  }
+  @media (max-width: 640px) {
+    .metric-board-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .metric-card {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-2);
+    padding: 1rem 1.25rem;
+    backdrop-filter: blur(12px);
+  }
+  .metric-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin: 0 0 0.375rem 0;
+  }
+  .metric-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.2;
+    margin: 0;
+  }
+  .metric-unit {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--color-text-muted);
+    margin-left: 0.25rem;
+  }
+  .metric-delta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    margin: 0.375rem 0 0 0;
+  }
+  .metric-delta.positive { color: var(--color-accent); }
+  .metric-delta.negative { color: #ef4444; }
+</style>

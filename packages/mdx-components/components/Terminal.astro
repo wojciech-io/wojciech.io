@@ -1,0 +1,86 @@
+---
+interface Props {
+  title?: string;
+  commands: { cmd: string; output?: string }[];
+}
+
+const { title = 'Terminal', commands } = Astro.props;
+---
+
+<div class="terminal">
+  <div class="terminal-bar">
+    <span class="terminal-dots" aria-hidden="true">
+      <span class="dot dot-red" /><span class="dot dot-yellow" /><span class="dot dot-green" />
+    </span>
+    <span class="terminal-title">{title}</span>
+  </div>
+  <div class="terminal-body">
+    {commands.map(({ cmd, output }) => (
+      <div class="terminal-line">
+        <span class="terminal-prompt">$</span>
+        <span class="terminal-cmd">{cmd}</span>
+        {output && <div class="terminal-output">{output}</div>}
+      </div>
+    ))}
+    <slot />
+  </div>
+</div>
+
+<style>
+  .terminal {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    overflow: hidden;
+    margin: 1.75rem 0;
+  }
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    background: var(--color-surface-2);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .terminal-dots {
+    display: flex;
+    gap: 0.375rem;
+  }
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+  }
+  .dot-red { background: #ef4444; }
+  .dot-yellow { background: #eab308; }
+  .dot-green { background: #22c55e; }
+  .terminal-title {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    color: var(--color-text-dim);
+  }
+  .terminal-body {
+    padding: 1rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.7;
+  }
+  .terminal-line + .terminal-line {
+    margin-top: 0.75rem;
+  }
+  .terminal-prompt {
+    color: var(--color-accent);
+    margin-right: 0.5rem;
+    user-select: none;
+  }
+  .terminal-cmd {
+    color: var(--color-text);
+  }
+  .terminal-output {
+    color: var(--color-text-dim);
+    padding-left: 1.125rem;
+    margin-top: 0.25rem;
+    white-space: pre-wrap;
+  }
+</style>

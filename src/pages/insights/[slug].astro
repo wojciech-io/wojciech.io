@@ -52,6 +52,11 @@ import ImageSlider from '@wojciech/mdx-components/components/ImageSlider.astro';
 import NumberTicker from '@wojciech/mdx-components/components/NumberTicker.astro';
 import EmbedDeck from '@wojciech/mdx-components/components/EmbedDeck.astro';
 import CodeBlock from '@wojciech/mdx-components/components/CodeBlock.astro';
+import Terminal from '@wojciech/mdx-components/components/Terminal.astro';
+import ProTip from '@wojciech/mdx-components/components/ProTip.astro';
+import MetricBoard from '@wojciech/mdx-components/components/MetricBoard.astro';
+import ThreadBlock from '@wojciech/mdx-components/components/ThreadBlock.astro';
+import StackLayer from '@wojciech/mdx-components/components/StackLayer.astro';
 import { SITE } from '../../data/site';
 import {
   insightSlug,
@@ -75,6 +80,7 @@ const mdxComponents = {
   KeyTakeaway,
   MetricDelta, AgentFlow, AnnotatedImage,
   Tabs, Accordion, ImageSlider, NumberTicker, EmbedDeck, CodeBlock,
+  Terminal, ProTip, MetricBoard, ThreadBlock, StackLayer,
 };
 
 export async function getStaticPaths() {
@@ -218,13 +224,13 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
         {post.data.category ? (
           <a
             href={`/insights/?cat=${encodeURIComponent(post.data.category)}`}
-            class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] hover:text-[var(--color-accent-hi)] transition-colors"
-          >{post.data.category}</a>
+            class="obs-mono text-[0.6875rem] tracking-widest uppercase text-[var(--color-accent)] hover:text-[var(--color-accent-hi)] transition-colors"
+          >// {post.data.category}</a>
         ) : (
-          <span class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)]">Insight</span>
+          <span class="obs-mono text-[0.6875rem] tracking-widest uppercase text-[var(--color-accent)]">// Insight</span>
         )}
         {post.data.tags.map((tag) => (
-          <span class="text-xs px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)]">
+          <span class="obs-mono text-[0.625rem] px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)]">
             {tag}
           </span>
         ))}
@@ -269,7 +275,7 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
 
   <section class="mx-auto max-w-3xl px-6 pb-16" data-pagefind-ignore>
     <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] p-6">
-      <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-3">About the author</p>
+      <p class="obs-mono text-[0.6875rem] tracking-widest uppercase text-[var(--color-accent)] mb-3">// About the author</p>
       <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
         <img
           src="https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=96&r=g"
