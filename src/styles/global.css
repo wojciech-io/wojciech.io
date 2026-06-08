@@ -44,6 +44,28 @@
   font-display: optional;
 }
 
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: optional;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: optional;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: optional;
+}
+
 @import './tokens.css';
 
 @import "tailwindcss";
@@ -149,10 +171,87 @@ body {
 
 /* Heading accent: second-line emphasis color for large headings */
 .heading-accent {
-  color: #171717; /* near-black for emphasis */
+  color: #0a0a0a;
 }
 [data-theme='dark'] .heading-accent {
   color: #ebff00;
+}
+
+/* ─── Obsidian Command: utility classes ─────────────────────────── */
+
+.obs-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+
+.obs-label-accent {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent-label);
+}
+
+.obs-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.obs-panel:hover {
+  border-color: var(--color-border-2);
+}
+
+[data-theme='dark'] .obs-panel:hover {
+  box-shadow: 0 0 20px rgb(235 255 0 / 0.04);
+}
+
+.obs-glow {
+  position: relative;
+}
+.obs-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgb(235 255 0 / 0.12), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+[data-theme='dark'] .obs-glow:hover::before {
+  opacity: 1;
+}
+
+.obs-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.obs-mono {
+  font-family: var(--font-mono);
+}
+
+.obs-badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-badge);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-dim);
 }
 
 .animate-fade-up {
@@ -367,12 +466,12 @@ body {
 }
 
 :root[data-theme="light"] [class~="bg-[var(--color-accent)]"] {
-  background-color: #ebff00 !important;
-  color: #080808 !important;
+  background-color: #c8d900 !important;
+  color: #0a0a0a !important;
 }
 
 :root[data-theme="light"] [class~="hover:bg-[var(--color-accent-hi)]"]:hover {
-  background-color: #d4e600 !important;
+  background-color: #b5c400 !important;
 }
 
 :root[data-theme="light"] [class~="text-[var(--color-accent)]"],
