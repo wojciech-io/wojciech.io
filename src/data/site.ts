@@ -16,7 +16,7 @@ export const SITE = {
   githubHandle:'wojciechluszczynski',
   twitter:     'https://twitter.com/w_luszczynski',
   twitterHandle:'w_luszczynski',
-  substack:    'https://substack.com/@luscinetti',
+  substack:    'https://substack.com/@wojciechluszczynski',
   medium:      'https://medium.com/@wluszczynski',
 
   ogImage:     '/og-default.png',
