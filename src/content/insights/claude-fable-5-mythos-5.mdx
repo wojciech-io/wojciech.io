@@ -215,6 +215,45 @@ I do not trust a model from its launch post. I trust it from my own workload. He
 
 I will put the results up here as a follow-up, numbers and all, including where it falls short. If you are testing too, tell me what broke. That is the part no launch post will give you.
 
+## Three surfaces, one model: where I actually run it
+
+The four tests do not live in a benchmark sandbox. They run across the three places I actually work: a chat window for fast judgment, a cowork agent on the desktop for multi-step jobs, and code in my own repo. Same model, very different work. Here is the concrete plan, on real GTM tasks, not toy prompts.
+
+<DataTable
+  columns={[
+    { key: "surface", label: "Surface" },
+    { key: "task", label: "Real task from my stack" },
+    { key: "stress", label: "What it stresses" },
+    { key: "score", label: "How I score it" }
+  ]}
+  rows={[
+    { surface: "Chat", task: "Score this inbound against my ICP and draft a two-line opener", stress: "Judgment and concision in a single turn", score: "Right ICP call, plus an opener I would actually send" },
+    { surface: "Cowork", task: "Take five LinkedIn URLs, enrich each, draft a personalised sequence, log it to the CRM", stress: "Long-horizon agentic work, tool use, no drift over many steps", score: "Full run, zero invented fields, CRM rows correct" },
+    { surface: "Code", task: "Refactor a content collection across the repo and keep the build green", stress: "Multi-file context held to the end, not just the first edit", score: "Tests pass, build clean, no orphaned references" }
+  ]}
+  caption="One real task per surface. The same model has to be good at three different jobs, and the failure mode is different in each."
+/>
+
+The code surface is the one I can show you today, because it runs here, not behind a launch embargo. To produce the numbers above I had the model build a small comparison harness: same prompt, every model, real latency, tokens and cost. This is the core of it, and it is genuinely runnable:
+
+```js
+// same prompt, every model, real numbers
+for (const test of TESTS) {
+  for (const model of MODELS) {
+    const res = await callModel(model, test.prompt, test.maxTokens);
+    const pass = test.grade ? (test.grade(res.text) ? "PASS" : "FAIL") : "--";
+    const usd = cost(model, res.inTok, res.outTok);
+    log(model, pass, res.ms, res.inTok, res.outTok, usd);
+  }
+}
+```
+
+The same session also wired this article into the site's `llms.txt`, so the discovery layer stays current. Small, but that is the point of the code surface: long-horizon edits that keep the whole system consistent, not one clever snippet.
+
+<Callout type="note" title="What is real here, and what is pending">
+  The harness, the tasks and the scoring are real and runnable today. The model-vs-model numbers are not in yet: Fable 5 is new and I run these from June 10. When the runs land, the Fable 5 column drops in right here, next to Opus 4.8, with cost per result, latency and pass rate. No borrowed benchmarks, only my own.
+</Callout>
+
 ## Sources and further reading
 
 I read the primary material so you can too. These are the real links, not a summary of a summary.
