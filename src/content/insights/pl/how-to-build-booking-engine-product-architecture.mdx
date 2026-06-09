@@ -1,0 +1,66 @@
+---
+title: "Budowa silnika rezerwacji dla rynku, którego nikt nie chciał"
+description: "Operatorzy niszowych kempingów potrzebowali kalendarza, cennika i SMS. Uniwersalne platformy przerabiały wszystko inne. Więc zbudowałem to, czego faktycznie potrzebowali."
+publishedAt: "2025-12-08"
+tags:
+  - Product
+  - Booking
+  - Web app
+  - B2C
+category: "Products"
+coverType: "product"
+featured: false
+draft: false
+locale: "pl"
+translationOf: "how-to-build-booking-engine-product-architecture"
+tldr:
+  - "Niszowe rynki rezerwacyjne są niedoinwestowane, bo uniwersalne platformy przerabiają nie te rzeczy"
+  - "Kluczowy insight: operatorzy kempingów potrzebują kalendarza, cennika i potwierdzenia SMS. Reszta nie ma znaczenia na start"
+  - "Mobile-first, bo 80%+ wyszukiwań kempingów dzieje się na telefonie, często przy samej bramie"
+  - "Model przychodowy to prowizja od transakcji, nie subskrypcja SaaS: wyrównuje motywacje z operatorami"
+---
+
+Polski rynek kempingów i miejsc dla kamperów miał problem: większość rezerwacji odbywa się telefonicznie albo przez listing na booking.com, który kosztuje operatora 15-18% od rezerwacji. Żadna z tych opcji nie jest dobra.
+
+Rezerwacje telefoniczne to utracony przychód (brak zapytań późnym wieczorem, brak wyszukiwalności, brak upsella). [Booking.com](https://www.booking.com/) działa dla hoteli; dla 40-stanowiskowego kempingu ze stołem piknikowym i kompostowym toaletą to kosztowna przesada.
+
+Więc zbudowałem pionowy silnik rezerwacji konkretnie pod tę lukę.
+
+## Ograniczenia produktowe, które ukształtowały build
+
+**Operatorzy nie są techniczni.** Interfejs admina musiał działać na Samsungu Galaxy z Chrome'em w zasięgu kempingowego wifi. Bez onboardingu telefonicznego, bez helpdocsów, bez budżetu na szkolenie. UI musiał być oczywisty sam w sobie.
+
+**Goście rezerwują z telefonu.** Analityka ze starej strony pierwszego operatora pokazywała 82% mobile. Flow rezerwacji musiał być obsługiwalny jednym kciukiem: wybierz daty, wybierz stanowisko, zapłać, gotowe. Bez konieczności zakładania konta.
+
+**Cenniki są nieregularne.** Kempingi mają ceny weekendowe, ceny w szczycie sezonu, rabaty early-bird, ceny last-minute i cenniki per stanowisko lub per osoba w zależności od operatora. Każdy uniwersalny silnik rezerwacji albo to upraszcza, albo przerabia. Zbudowałem elastyczną macierz cenową, która obsługuje 80% przypadków bez potrzeby doktoratu do konfiguracji.
+
+## Decyzje techniczne
+
+<Tabs labels={['Backend', 'Payments', 'Notifications', 'Admin']}>
+  <Fragment slot="0">Postgres z prostym modelem dostępności: inwentarz stanowisk, blokady dat, rezerwacje. Główne sprawdzenie dostępności to proste zapytanie o nakładające się przedziały: celowo proste, bo musi być szybkie i poprawne, nie sprytne.</Fragment>
+  <Fragment slot="1">[Stripe](https://stripe.com/), nie Przelewy24 ani PayU. Developer experience jest lepszy, a międzynarodowa obsługa kart ma znaczenie dla ruchu turystycznego. Polska akceptacja kart przez Stripe jest kompletna.</Fragment>
+  <Fragment slot="2">SMS przez [Twilio](https://www.twilio.com/). W testach potwierdzenie e-mailem miało 34% open rate w ciągu 10 minut. SMS miał 94% open rate w ciągu 2 minut. Przy potwierdzeniu rezerwacji z kodem do bramy i numerem stanowiska ta różnica ma znaczenie operacyjne.</Fragment>
+  <Fragment slot="3">Prosty interfejs CRUD z wizualnym kalendarzem dostępności. Najczęściej używane widoki: dzisiejsze przyjazdy, kalendarz tygodniowy i edytor cennika. Wszystko inne jest drugorzędne.</Fragment>
+</Tabs>
+
+## Co bym zmienił
+
+Adopcja płatności online była niższa niż zakładałem w pierwszej kohorcie operatorów. Polscy goście kempingowi są przyzwyczajeni do płacenia na miejscu. Konwersja na pełną przedpłatę była akceptowalna; konwersja na "zarezerwuj teraz, zapłać na miejscu" była znacznie wyższa, ale generowała problemy z anulacjami.
+
+Lepszy model: mały depozyt online, reszta na miejscu: to byłaby właściwa decyzja produktowa od pierwszego dnia. Dodałem to w trzecim miesiącu.
+
+## Lekcja z niszowego rynku
+
+<KeyTakeaway title="Nisza to nie znaczy mały rynek">
+Niszowe rynki nie są małymi rynkami. Camping w Polsce to rosnąca kategoria ze strukturalną luką w infrastrukturze rezerwacyjnej. Cały rynek nie jest mały: jest po prostu nieobsłużony. Właściwe podejście to robić mniej, ale poprawnie. Niszowa platforma może robić trzy rzeczy wybitnie dobrze i wygrywać, bo alternatywy robią trzydzieści rzeczy przeciętnie.
+</KeyTakeaway>
+
+<BeforeAfter
+  label="Payment model evolution"
+  before={{ title: "Full prepayment", body: "Higher trust signal, lower conversion. Polish campsite guests are used to paying at arrival. Cancellation handling was clean but volume was weak." }}
+  after={{ title: "Deposit + balance at arrival", body: "Small deposit online, rest on site. Higher conversion, slight cancellation risk, but operationally better for both sides. Should have shipped this on day one." }}
+/>
+
+---
+
+**Related:** [GTM Tools: Build vs Buy Decision Framework for Operators](/pl/insights/gtm-tools-build-vs-buy-decision-framework) · [How to Build Micro-SaaS with AI Tools: product lessons from 10+ shipped apps](/pl/insights/how-to-build-micro-saas-with-ai-tools)

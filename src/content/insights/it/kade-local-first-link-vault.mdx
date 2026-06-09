@@ -1,0 +1,116 @@
+---
+title: "Il segnalibro del browser è la primitiva sbagliata"
+description: "Perché ho costruito Kade come vault locale per i link: non un'altra lista di segnalibri, ma una coda privata per link che hanno bisogno di contesto prima di essere riaperti."
+publishedAt: "2026-05-30"
+tags:
+  - Products
+  - Local-first
+  - macOS
+  - Security
+featured: false
+draft: false
+category: "Products"
+coverType: "product"
+ogImage: "/images/kade/dashboard.png"
+locale: "it"
+translationOf: "kade-local-first-link-vault"
+tldr:
+  - "I segnalibri ricordano l'URL. Raramente ricordano perché quell'URL contava."
+  - "Kade tratta i link salvati come una coda con note, valutazioni, categorie, anteprime e cronologia delle visite."
+  - "La pagina pubblica del prodotto resta pulita; il vault privato e i dati generati sui link restano locali."
+---
+
+La maggior parte dei prodotti per segnalibri risolve la parte facile: tenere l'URL da qualche parte. [Raindrop](https://raindrop.io/), [Pocket](https://getpocket.com/), segnalibri del browser: tutti conservano il link. Nessuno conserva il motivo.
+
+Questo è utile finché la lista non diventa ricerca, sourcing, confronto, materiale di riferimento privato o qualsiasi cosa che richieda giudizio qualche giorno dopo. A quel punto il browser ha la cosa che è facile da recuperare e gli manca quella che è costosa: il contesto.
+
+Kade è nato da questa lacuna.
+
+È un vault locale per link salvati che hanno bisogno di un motivo allegato. Non un feed pubblico di lettura differita. Non un gestore di password nel cloud. Una coda privata dove un link può portare con sé le cose che lo rendono utile dopo: categoria, drop mensile, nota, valutazione, frammenti migliori, anteprima e cronologia delle visite.
+
+<PullQuote>
+L'URL non è la memoria. Il motivo per cui l'hai salvato lo è.
+</PullQuote>
+
+## Il problema dei segnalibri
+
+I segnalibri del browser vanno bene per destinazioni stabili: un login bancario, una pagina di documentazione, uno strumento che apri ogni settimana.
+
+Sono molto più deboli per link che fanno parte del pensiero. Un link salvato durante una ricerca ha più stato di quanto il browser memorizzi.
+
+<BeforeAfter
+  label="What bookmarks miss"
+  before={{ title: "Browser bookmark", body: "Stores the URL. Forgets why you saved it, what it relates to, whether you already read it, and how important it was.", caption: "Works for logins. Fails for research." }}
+  after={{ title: "Kade vault entry", body: "URL + category + monthly bucket + note + rating + preview + visit history + source status. The link carries the context that makes it useful later.", caption: "Recall, not storage." }}
+/>
+
+Una volta perso quel contesto, il link torna a essere lavoro. Lo riapri, lo scorri, ricordi metà del motivo originale, poi decidi se conta ancora.
+
+Questo è lo spreco che Kade è progettato per eliminare.
+
+## Kade tratta i link come oggetti operativi
+
+Il prodotto si apre su una dashboard perché la prima domanda non è "cosa ho salvato?"
+
+La prima domanda migliore è: "cosa richiede attenzione adesso?"
+
+Questo cambia l'interfaccia. La dashboard mostra la salute della coda, le categorie e il lavoro in sospeso. La vista del link porta la superficie più pesante: anteprime, commenti, valutazioni, stato della fonte e frammenti migliori. I link aperti scendono invece di sparire, così il vault conserva la memoria senza fingere che ogni link sia ugualmente urgente.
+
+Il modello di lavoro è semplice:
+
+<Steps items={[
+  { title: "Drop a link or import a batch", body: "Single URL, clipboard paste, or bulk CSV import. Links enter the queue immediately." },
+  { title: "Assign category, monthly bucket and source status", body: "Every link gets tagged on entry. No orphan bookmarks floating in a flat list." },
+  { title: "Attach a short note, rating and useful cues", body: "The context that makes the link useful next week, not just findable." },
+  { title: "Generate previews locally", body: "Thumbnail and metadata extracted on-device. No cloud processing, no third-party scraping." },
+  { title: "Track visits and push opened items lower", body: "Already-read links sink. Fresh links stay visible. The queue self-organizes." },
+]} />
+
+Questo è più vicino a un piccolo sistema operativo che a una cartella di segnalibri.
+
+## Perché local-first
+
+Un vault di link può essere sensibile anche quando non conserva password.
+
+La forma di una lista di link salvati può rivelare progetti, intento commerciale, abitudini, tempistiche e interessi privati. Questo rende il modello di archiviazione una decisione di prodotto, non un dettaglio implementativo.
+
+Kade tiene il vault di lavoro locale e crittografato. Il sito pubblico non include contenuti del vault, importazioni di segnalibri, manifesti di miniature generati, seed privati o dati di recupero locali. La pagina di marketing spiega il prodotto; non pubblica per sbaglio il grafo dei link dell'utente.
+
+Quel confine conta.
+
+## La versione Mac è il vero percorso di sicurezza
+
+La versione web è utile per iterare il workflow. Dimostra il modello velocemente: dashboard in primo piano, link categorizzati, record locale crittografato, anteprime al posto giusto, cronologia delle visite e esportazione/importazione.
+
+Ma il modello serio di sblocco appartiene all'app nativa.
+
+Su macOS, Kade può usare [Touch ID](https://developer.apple.com/documentation/localauthentication), chiavi protette da Keychain, un worker di sincronizzazione in background e una pipeline locale di metadati senza dare al JavaScript del browser più responsabilità di quanta ne dovrebbe avere. Questa è la divisione giusta: web per dare forma al prodotto velocemente, macOS nativo per sicurezza duratura e lavoro in background.
+
+## La regola di design
+
+Kade deve dare una sensazione di privacy prima di sembrare furbo.
+
+Questo significa una schermata di blocco essenziale, linguaggio di prodotto discreto, navigazione con dashboard in primo piano e anteprime solo dove aiutano il riconoscimento. L'app non deve annunciare ogni dettaglio di sicurezza nella schermata di login. Deve usare il testo sufficiente per stabilire il confine, e poi togliersi di mezzo.
+
+La stessa regola vale per la pagina pubblica: mostrare il prodotto, spiegare il modello operativo, tenere fuori i dati privati.
+
+## Stato attuale
+
+<Tabs tabs={[
+  { label: "Shipped", content: "Local web vault, native macOS prototype, product icon set, clean public landing, encrypted export/import, recovery/reset flow, security docs." },
+  { label: "Next", content: "Native signing and packaging, stronger Touch ID/Keychain unlock, encrypted sync between devices, better preview worker with local thumbnail pipeline." },
+  { label: "Not planned", content: "Cloud sync to third-party servers, social sharing features, browser extension (the browser is the problem, not the solution)." },
+]} />
+
+Il prossimo lavoro utile è nativo: firma, packaging, sblocco Touch ID/Keychain più forte, sincronizzazione crittografata e un worker di anteprime migliore.
+
+Fino ad allora, la direzione del prodotto è chiara: segnalibri come richiamo, non come archiviazione. Puoi vedere la pagina del prodotto su [/apps/kade/](/apps/kade/) e la storia della costruzione di NotchCue (un'altra app nativa macOS dallo stesso laboratorio) nell'[articolo sul teleprompter](/it/insights/macos-teleprompter-macbook-notch-native-app/).
+
+<CTABand
+  heading="Kade is the private link vault."
+  subtext="A local-first workspace for links that need context before they are opened again."
+  cta="See Kade"
+  ctaHref="/kade/"
+  ctaSecondary="See all apps"
+  ctaSecondaryHref="/apps/"
+/>

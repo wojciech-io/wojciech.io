@@ -1,0 +1,66 @@
+---
+title: "Å bygge en bookingmotor for et marked ingen andre ville ta"
+description: "Nisje-campingplassoperatører trengte kalender, prissetting og SMS. Generiske plattformer overengineeret alt annet. Så jeg bygde det de faktisk trengte."
+publishedAt: "2025-12-08"
+tags:
+  - Product
+  - Booking
+  - Web app
+  - B2C
+category: "Products"
+coverType: "product"
+featured: false
+draft: false
+locale: "no"
+translationOf: "how-to-build-booking-engine-product-architecture"
+tldr:
+  - "Nisje-bookingmarkeder er underservet fordi generiske plattformer overengineer de feil tingene"
+  - "Kjerneinnsikt: campingplassoperatører trenger kalender, prissetting og SMS-bekreftelse. Ingenting annet betyr noe ved lansering"
+  - "Bygget mobile-first fordi 80%+ av campingplass-søk skjer på telefonen, ofte ved selve porten"
+  - "Inntektsmodellen er transaksjonsgebyr, ikke SaaS-abonnement: justerer insentiver med operatørene"
+---
+
+Det polske markedet for campingplasser og bobilplasser hadde et problem: de fleste bookinger skjer over telefon eller gjennom en booking.com-listing som koster operatøren 15-18% per reservasjon. Ingen av alternativene er gode.
+
+Telefonbookinger er tapt inntekt (ingen henvendelser sent på kvelden, ingen søkbarhet, ingen upsell). [Booking.com](https://www.booking.com/) fungerer for hoteller; det er dyrt overkill for en campingplass med 40 plasser, et piknikbord og et komposttoalett.
+
+Så jeg bygde en vertikal bookingmotor spesifikt for dette gapet.
+
+## Produktbegrensninger som formet bygget
+
+**Operatører er ikke tekniske.** Admin-grensesnittet måtte fungere på en Samsung Galaxy med Chrome i campingplassens wifi-signal. Ingen onboarding-samtale, ingen hjelpedokumentasjon, ikke noe opplæringsbudsjett. UI-et måtte være selvforklarende.
+
+**Gjester booker på mobil.** Analytics fra den første operatørens gamle nettside viste 82% mobil. Bookingflyten måtte kunne betjenes med en tommel: velg datoer, velg plass, betal, ferdig. Ingen kontoopprettelse nødvendig.
+
+**Prissettingen er uregelmessig.** Campingplasser har helgepriser, høysesongpriser, early-bird-rabatter, last-minute-priser og pris per plass eller per person avhengig av operatøren. Enhver generisk bookingmotor enten forenkler for mye eller overengineer det. Jeg bygde en fleksibel prismatrise som dekker 80%-tilfellet uten at man trenger en doktorgrad for å konfigurere den.
+
+## Tekniske beslutninger
+
+<Tabs labels={['Backend', 'Payments', 'Notifications', 'Admin']}>
+  <Fragment slot="0">Postgres med en enkel tilgjengelighetsmodell: plassregister, datoblokkering, reservasjoner. Den sentrale tilgjengelighetssjekken er et enkelt spørring om overlappende intervaller: bevisst enkelt fordi det må være raskt og korrekt, ikke smart.</Fragment>
+  <Fragment slot="1">[Stripe](https://stripe.com/), ikke Przelewy24 eller PayU. Developer experience er bedre, og internasjonal kortdekning betyr noe for turisttrafikk. Polsk kortaksept via Stripe er komplett.</Fragment>
+  <Fragment slot="2">SMS via [Twilio](https://www.twilio.com/). I testing hadde e-postbekreftelse en åpningsrate på 34% innen 10 minutter. SMS hadde 94% innen 2 minutter. For en bookingbekreftelse med portkode og plassnummer gjør den forskjellen operativt.</Fragment>
+  <Fragment slot="3">Enkelt CRUD-grensesnitt med en visuell tilgjengelighetskalender. Mest brukte visninger: dagens ankomster, ukeoversikten og prisredigeringen. Alt annet er sekundært.</Fragment>
+</Tabs>
+
+## Hva jeg ville endret
+
+Online betalingsadopsjonen var lavere enn forventet i den første kohorten av operatører. Polske campinggjester er vant til å betale ved ankomst. Konverteringsraten på full forhåndsbetaling var akseptabel; raten på "book nå, betal ved ankomst" var betydelig høyere, men skapte avbestillingsproblemer.
+
+En bedre modell: lite depositum online, resten ved ankomst: ville vært riktig produktbeslutning fra dag en. Jeg la det til i tredje måned.
+
+## Nisjemarkedsleksjonen
+
+<KeyTakeaway title="Nisje betyr ikke lite">
+Nisjemarkeder er ikke små markeder. Camping i Polen er en voksende kategori med et strukturelt gap i bookinginfrastrukturen. Det totale markedet er ikke bittelite: det er rett og slett ikke betjent. Riktig tilnærming er å gjøre mindre, men korrekt. En nisjeplattform kan gjøre tre ting utmerket og vinne, fordi alternativene gjør tretti ting middelmådig.
+</KeyTakeaway>
+
+<BeforeAfter
+  label="Payment model evolution"
+  before={{ title: "Full prepayment", body: "Higher trust signal, lower conversion. Polish campsite guests are used to paying at arrival. Cancellation handling was clean but volume was weak." }}
+  after={{ title: "Deposit + balance at arrival", body: "Small deposit online, rest on site. Higher conversion, slight cancellation risk, but operationally better for both sides. Should have shipped this on day one." }}
+/>
+
+---
+
+**Related:** [GTM Tools: Build vs Buy Decision Framework for Operators](/no/insights/gtm-tools-build-vs-buy-decision-framework) · [How to Build Micro-SaaS with AI Tools: product lessons from 10+ shipped apps](/no/insights/how-to-build-micro-saas-with-ai-tools)

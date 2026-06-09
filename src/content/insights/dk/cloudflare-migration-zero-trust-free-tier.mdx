@@ -1,0 +1,228 @@
+---
+title: "Cloudflare-migration: hvad du får udover hosting"
+description: "Flytningen til Cloudflare Pages er ligetil. Det de fleste overser er den security- og identity-stack der følger gratis med: Zero Trust, Access, Tunnel og WAF."
+publishedAt: "2026-05-18"
+updatedAt: "2026-05-18"
+tags:
+  - Cloudflare
+  - Zero Trust
+  - Security
+  - Infrastructure
+  - Ops
+tldr:
+  - "Cloudflare Pages er den oplagte grund til at migrere. Zero Trust Access, Tunnels, WAF og DDoS-beskyttelse er de mindre oplagte."
+  - "Cloudflares gratis tier inkluderer en security-stack der ville koste hundredvis af dollars om måneden fra enkeltløsninger."
+  - "Zero Trust Access erstatter VPN til interne værktøjer: én konfiguration, ingen server at vedligeholde."
+  - "Tunnels eksponerer lokale services uden at åbne firewall-porte. Nyttigt til demoer, staging og udvikling."
+  - "Haken: det hele er Cloudflare-native. Nyttigt hvis du allerede er i økosystemet. Lock-in hvis ikke."
+featured: false
+draft: false
+coverType: system
+coverImage: "/images/insights/cloudflare-migration-zero-trust-free-tier.webp"
+locale: "dk"
+translationOf: "cloudflare-migration-zero-trust-free-tier"
+---
+
+[Den forrige artikel](/dk/insights/astro-cloudflare-pages-portfolio-ai-workflow) dækkede genopbygningen af dette portfolio på Astro og Cloudflare Pages: stacken, multi-agent workflowet, Terraform-konfigurationen og deployment-modellen. Denne artikel handler om det der fulgte med platformen: et security- og identity-lag som de fleste overser, fordi det ikke var grunden til at de meldte sig til.
+
+---
+
+## Hvorfor det er vigtigt
+
+De fleste tænker på Cloudflare som et CDN med en registrar vedhæftet. Det gav mening for ti år siden. I praksis leverer platformen nu en komplet security-stack tilgængelig på den gratis tier: managed WAF, DDoS-beskyttelse på L3 og L7, Zero Trust Access, Tunnels, WARP, Bot Fight Mode og rate limiting.
+
+Hvis man ville samle tilsvarende enkeltløsninger: [Akamai](https://www.akamai.com/) eller [Imperva](https://www.imperva.com/) til WAF, [Okta](https://www.okta.com/) eller Duo til identity proxy, [Tailscale](https://tailscale.com/) eller WireGuard til tunnels, Cloudflare selv eller [Fastly](https://www.fastly.com/) til CDN: så kigger man på hundredvis af dollars om måneden, endnu før enterprise-tiers. På Cloudflares gratis eller Pro plan er det meste inkluderet.
+
+Haken er at intet af det er automatisk. Man får adgang til disse funktioner ved migrering; man skal selv slå dem til.
+
+---
+
+## Hosting og deployment
+
+Før security-stacken, grundlaget: Cloudflare Pages er hosting-laget. Sitet er et statisk Astro build. Hvert push til `main` branchen på GitHub trigger et build på Cloudflares side og et deploy til det globale edge-netværk. Branch pushes får deres egen preview URL, så en ændring kan reviewes på et rigtigt domæne, før den rammer produktion.
+
+<Flow
+  steps={[
+    { label: 'Commit', sub: 'git push' },
+    { label: 'GitHub', sub: 'main branch' },
+    { label: 'Cloudflare Pages', sub: 'build + deploy', active: true },
+    { label: 'Live', sub: 'edge CDN' },
+  ]}
+  caption="Push til main er hele deploy-processen: build og globalt rollout er automatisk."
+/>
+
+Der var et reelt valg her. Vercel og Netlify er de oplagte alternativer, og begge er fremragende produkter. Den afgørende faktor var konsolidering.
+
+<Compare labelA="Cloudflare Pages" labelB="Vercel" tagA="valgt" tagB="alternativ">
+<Fragment slot="a">
+
+- Én platform: hosting, DNS, WAF, Zero Trust, Tunnels: ét API, én regning
+- Gratis tier dækker ubegrænset båndbredde og den fulde security-stack
+- Samme edge-netværk som det CDN der allerede proxyer domænet
+
+</Fragment>
+<Fragment slot="b">
+
+- Bedste framework DX og det mest polerede preview workflow
+- Førsteklasses Next.js-understøttelse og serverless/edge functions
+- En separat platform: DNS og security ville leve et andet sted
+
+</Fragment>
+</Compare>
+
+At beholde hosting på Cloudflare betyder at DNS, CDN, WAF, Zero Trust Access og deployment-målet alt sammen er den samme platform, konfigureret gennem det samme API. For et site der læner sig op ad security-stacken beskrevet nedenfor, ville det at splitte hosting til en separat udbyder betyde at manage edge to steder. Vercel er det stærkere produkt til framework-tunge applikationer; for et statisk site der allerede kører gennem Cloudflares netværk, er Pages det mest gnidningsfrie valg.
+
+---
+
+## Cloudflare WAF og DDoS
+
+Når et domæne er proxyet gennem Cloudflare (orange-cloud-indstillingen i DNS dashboardet), aktiveres L3 og L4 DDoS-beskyttelse med det samme. Det er ikke konfigurerbart eller valgfrit: det er aktivt som standard for al proxyet trafik. Cloudflares netværk absorberer volumetriske angreb, før de når origin.
+
+Layer 7 DDoS-beskyttelse, altså HTTP flood mitigation, er også tilgængelig på den gratis tier via de managed WAF rules. Disse dækker almindelige angrebssignaturer: SQLi, XSS, kendte exploit-patterns og IP-ranges fra kendte ondsindede aktører.
+
+Bot Fight Mode er en ét-klik-indstilling der udfordrer kendt bot-infrastruktur. For et statisk portfolio er den praktiske effekt minimal: der er ingen login-formular at brute-force eller API endpoint at scrape. Men det er stadig værd at aktivere: bot-trafik forvansker analytics, forbruger båndbredde og prober nogle gange stier der ikke eksisterer.
+
+Rate limiting på den gratis tier er basalt: én regel op til 100.000 requests pr. ti minutter. For et personligt site dækker det den realistiske trusselsflade. For en applikation med høj trafik skal man bruge Pro planen eller højere.
+
+Én adfærd værd at kende: aktiverer man "Block AI bots" fra Cloudflare dashboardet, injicerer det `Disallow`-regler for ClaudeBot, GPTBot, Google-Extended og andre i en syntetisk robots.txt, der overskriver repoets egen robots.txt. Det var årsagen til AI-indexeringsproblemet dokumenteret i den forrige artikel. Løsningen er at deaktivere det toggle og lade repo-level robots.txt styre adgangen.
+
+---
+
+## Zero Trust Access
+
+Cloudflare Access er en identity proxy. Den sidder foran enhver URL du definerer og håndhæver et autentificeringstjek, før requesten videresendes til origin. Brugeren rører aldrig din server direkte: de autentificerer sig mod Cloudflare først.
+
+Den praktiske use case er interne værktøjer. Kører man n8n, Grafana, Supabase Studio eller et staging-miljø på en privat server eller VPS, har man typisk to muligheder: åbne en port til internettet (dårligt), eller sætte et VPN op (vedligeholdelse). Access er en tredje mulighed: hold porten lukket, sæt en Cloudflare Access policy foran hostnavnet, og lad Cloudflare håndtere autentificering.
+
+Konfigurationen er ligetil:
+
+1. Tilføj hostnavnet til Cloudflare DNS (proxyet).
+2. Opret en Access application i Zero Trust dashboardet og peg den mod hostnavnet.
+3. Definér en policy: tillad brugere der matcher et e-mail-mønster, en GitHub org eller et Google Workspace domæne.
+4. Brugere der besøger URL'en får en Cloudflare-hostet login-skærm. De autentificerer via e-mail OTP, GitHub OAuth eller Google: ingen kontooprettelse på din side.
+
+Den gratis tier understøtter op til 50 brugere. Det er nok til de fleste solo operator- og småteam-setups.
+
+Særligt nyttigt: at give en contractor eller ekstern stakeholder midlertidig adgang til et staging-miljø uden at oprette en konto nogen steder, uden at åbne en port, og uden at sende credentials over Slack.
+
+---
+
+## Cloudflare Tunnel
+
+Tunnel løser et andet problem: at eksponere en lokalt kørende service gennem en offentlig URL uden at åbne firewall-porte.
+
+Mekanismen er en persistent udgående forbindelse fra din maskine eller server til Cloudflares edge. `cloudflared` daemon etablerer tunnelen. Cloudflare router indgående requests igennem den til den port du specificerer lokalt. Ingen indgående port behøver at være åben på hosten.
+
+<CodeBlock
+  lang="bash"
+  title="Terminal"
+  code={`# Installér cloudflared, derefter:
+cloudflared tunnel login
+cloudflared tunnel create my-tunnel
+cloudflared tunnel route dns my-tunnel staging.example.com
+cloudflared tunnel run --url http://localhost:3000 my-tunnel`}
+  caption="Named tunnels beholder det samme hostnavn permanent, i modsætning til ngroks gratis tier."
+/>
+
+Tunnelen er persistent: den udløber ikke når sessionen lukker, i modsætning til ngroks gratis tier, der afslutter tunnels når processen stopper og tildeler en ny URL ved hver genstart. En navngivet Cloudflare Tunnel beholder det samme hostnavn permanent.
+
+Typiske use cases:
+
+- **Lokal udvikling med en rigtig URL.** Webhook testing, OAuth callbacks, eller deling af WIP med en klient uden deploy-cyklus.
+- **Demo uden infrastruktur.** Kør appen lokalt, giv nogen den offentlige URL, luk tunnelen når du er færdig.
+- **Self-hosted services på et privat netværk.** En Raspberry Pi eller hjemmeserver med Home Assistant, Jellyfin eller et privat API kan være tilgængeligt via et rent domæne uden offentlig IP eller portvideresendelses-regler.
+
+Sammenlignet med ngrok er Cloudflare Tunnel gratis, persistent, har ingen båndbreddegrænser og integrerer direkte med Access policies: så man kan sætte autentificering foran en tunnel med to konfigurationsændringer.
+
+---
+
+## WARP og private netværk
+
+WARP er Cloudflares device client: en WireGuard-baseret agent der forbinder enheden til Cloudflares Zero Trust netværk. I praksis fungerer den som en letvægts VPN-erstatning.
+
+Use casen inden for Zero Trust: har man flere maskiner, en udviklingsworkstation, en staging-server, en build-maskine, kan man tilmelde hver i WARP, definere et privat netværksområde i Zero Trust dashboardet og route trafik mellem dem via Cloudflares edge, uden at nogen af maskinerne behøver offentlige IP'er eller åbne porte.
+
+Det er ikke en fuld mesh networking-løsning. For kompleks service-to-service-networking er [Tailscale](https://tailscale.com) eller WireGuard med en coordinator node mere fleksibel. Men for et lille setup hvor en udviklers laptop skal nå en staging-database eller et privat API endpoint, er WARP med en simpel netværkspolicy en ti-minutters konfiguration der erstatter en VPN-server man ellers skulle vedligeholde.
+
+<KeyTakeaway
+  icon="info"
+  title="Konsolideringsgevinsten"
+  body="Den reelle værdi af Cloudflare er ikke et enkelt feature. Det er at WAF, DDoS, Zero Trust, Tunnels, WARP og hosting alt lever i ét dashboard med ét API. Enkeltløsninger er bedre til individuelle opgaver; konsolideringen vinder på driftsomkostninger."
+/>
+
+---
+
+## Open source-alternativet
+
+Alt beskrevet ovenfor har open source-ækvivalenter. Caddy med Authelia håndterer authentication proxying på samme måde som Zero Trust Access. WireGuard eller Tailscale håndterer privat networking på samme måde som WARP og Tunnel. Fail2ban og ModSecurity håndterer WAF-lignende filtrering.
+
+Den ærlige sammenligning:
+
+| | Cloudflare | Open source |
+|---|---|---|
+| Setup-tid | Minutter | Timer til dage |
+| Driftsomkostninger | Tæt på nul | Løbende |
+| Vendor lock-in | Højt | Intet |
+| Pris | Gratis til lav | Infrastrukturomkostninger |
+| Fleksibilitet | Kun CF-økosystem | Vilkårlig |
+
+Hvis privatliv og leverandøruafhængighed er begrænsningen, eller hvis man kører infrastruktur der ikke kan routes gennem en tredjepart, er open source-vejen den rigtige. WireGuard i særdeleshed er værd at køre uanset hvad man ellers bruger; at forstå protokollen er nyttigt.
+
+Hvis begrænsningen er tid og driftsomkostninger, vinder Cloudflares stack på praktiske grunde. For en solo operator eller et lille team uden en dedikeret ops-funktion er tradeoffet klart.
+
+---
+
+## Haken
+
+Alt i denne stack er Cloudflare-native.
+
+WAF rules, Access policies, Tunnel-konfigurationer, rate limiting rules: intet af det er portabelt. Migrerer man væk fra Cloudflare, genopbygger man disse lag fra bunden på den platform man flytter til. Der er intet eksportformat, ingen åben standard for Access policies, ingen Terraform provider der får dine WAF rules til at virke et andet sted.
+
+For et personligt site eller et lille internt toolset er det en acceptabel tradeoff. Konfigurationen er simpel nok til at rekonstruere, og de operationelle besparelser over tre til fire år er betydelige.
+
+For en organisation med compliance-krav, eller en der behøver multi-cloud portabilitet, er lock-in en reel omkostning. Infrastructure-as-code (Terraform med Cloudflare provideren) holder i det mindste konfigurationen versionskontrolleret og reviewbar, men den kører stadig kun mod Cloudflares API.
+
+Den praktiske regel: brug Terraform til al Cloudflare-konfiguration fra dag ét. Dashboard-only-konfiguration er usynlig drift der bliver en migrations-liability.
+
+---
+
+## Observability
+
+WAF og DDoS-beskyttelse fortæller at sitet er tilgængeligt og beskyttet. De fortæller ikke om koden der kører i en besøgendes browser kaster fejl. Det er et separat anliggende, og Cloudflare dækker det ikke.
+
+For wojciech.io er det lag Sentry. Det er ikke et Cloudflare-produkt, men observability passer naturligt sammen med hosting- og security-stacken, og den gratis tier er nok til et site af denne størrelse. SDK'et initialiserer kun i production builds, fanger uhåndterede fejl og en stikprøve af performance traces, og rapporterer dem til et dashboard med fulde stack traces.
+
+<Callout type="tip" title="DSN'en er ikke et secret">
+
+En Sentry DSN identificerer projektet for indgående events: den er designet til at shippe i client bundlet. Det der skal beskyttes er det build-time auth token der bruges til source map uploads: det hører til i en miljøvariabel, aldrig i repositoriet.
+
+</Callout>
+
+Den praktiske værdi er signalkvalitet. For et statisk site er der ikke meget der kan gå galt, så en fejl i Sentry er en reel hændelse i stedet for baggrundsstøj. Når noget går galt: et tredjepartsscript, en browserspecifik API, et dårligt deploy: dukker det op med stack trace i stedet for at vente på at en besøgende rapporterer det.
+
+---
+
+## Hvad jeg bruger
+
+For wojciech.io er den aktive Cloudflare-stack:
+
+- **Pages**: production hosting, branch previews, custom domain
+- **WAF managed rules**: aktivt som standard via proxyet DNS
+- **Bot Fight Mode**: aktiveret
+- **Zero Trust Access**: i brug til to interne værktøjer
+
+Planlagt: en persistent Tunnel til lokal udviklingsadgang, som erstatning for det nuværende workflow med at starte ngrok efter behov.
+
+Access-konfigurationen tog cirka femten minutter at sætte op. WAF og Bot Fight Mode var ét klik. Den operationelle overhead siden aktiveringen har været nul.
+
+---
+
+## Afrunding
+
+Migration til Cloudflare Pages er primært en hosting-beslutning. Men den security-stack der følger med: WAF, DDoS-beskyttelse, Zero Trust Access, Tunnels: er den mindre oplagte grund til at blive.
+
+Er man allerede på Cloudflare, er det meste af dette tilgængeligt nu. Aktivér Bot Fight Mode, slå de managed WAF rules til, og har man interne værktøjer, opsæt en basal Access policy. Det meste tager femten minutter og koster ingenting.
+
+---
+
+**Relateret:** [Sådan genopbyggede jeg mit portfolio med Astro og Cloudflare Pages](/dk/insights/astro-cloudflare-pages-portfolio-ai-workflow) · [GTM AI Agent Starter Pack](/dk/insights/how-to-build-gtm-ai-agent-outbound-crm)

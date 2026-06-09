@@ -1,0 +1,85 @@
+---
+title: "Cuando construir tu herramienta GTM y cuando simplemente comprar una"
+description: "La zona de peligro es comprar SaaS para algo que deberia ser un workflow, y construir algo que una herramienta de 50 dolares al mes ya resuelve. Asi es como yo decido."
+publishedAt: "2026-02-28"
+tags:
+  - GTM
+  - Operator tooling
+  - AI
+  - Ops
+category: "Operator Playbooks"
+coverType: "terminal"
+coverImage: "/images/insights/gtm-tools-build-vs-buy-decision-framework.webp"
+featured: false
+draft: false
+locale: "es"
+translationOf: "gtm-tools-build-vs-buy-decision-framework"
+tldr:
+  - "Compra infraestructura, construye ventaja competitiva: la decision es sobre palanca estrategica, no costes"
+  - "La zona de peligro es comprar SaaS para algo que deberia ser un workflow, y construir algo que una herramienta de 50 dolares ya resuelve"
+  - "La AI ha cambiado el calculo de build significativamente: las herramientas internas de operator ahora se construyen a 10x menos coste"
+  - "La pregunta correcta no es 'podemos permitirnos esta herramienta?' sino 'esta herramienta hace realmente lo que necesitamos?'"
+---
+
+La decision build-or-buy para GTM tooling esta mal planteada en la mayoria de conversaciones de growth. El enfoque suele ser el coste: "no podemos permitirnos Apollo" o "construirlo nosotros es mas barato."
+
+El coste es el enfoque equivocado. El enfoque correcto es la palanca estrategica: que genera execution diferenciada frente a que es table stakes de infraestructura.
+
+## El principio
+
+**Compra table stakes. Construye edge.**
+
+Table stakes son las cosas que todo equipo de growth necesita y que el commodity SaaS maneja bien: email delivery ([SendGrid](https://sendgrid.com)), calendar scheduling ([Calendly](https://calendly.com)), CRM ([HubSpot](https://hubspot.com)/[Salesforce](https://salesforce.com)), call recording ([Gong](https://gong.io)/[Chorus](https://chorus.ai)). Son problemas resueltos. Comprarlos es correcto.
+
+Edge es lo que tu equipo hace diferente. Como puntuais cuentas. Como personalizais el outreach. Como identificais y enrutais intent signals. Como conectais product data con vuestra sales motion. Aqui es donde construir crea ventaja asimetrica.
+
+Un modelo de account scoring a medida, que tu equipo ha afinado durante 12 meses, no se sustituye con una herramienta de enrichment de 200 dolares al mes. La scoring logic en si misma es la ventaja, y deberia correr sobre infraestructura que controlas.
+
+## Las zonas de peligro
+
+<Accordion
+  items={[
+    { title: 'Zona de peligro 1: comprar SaaS para un problema de workflow', content: 'El equipo dice: "necesitamos una herramienta para X." Comprais la herramienta. Seis meses despues, X sigue sin pasar porque era un problema de proceso, no de tooling. Senial: si la herramienta necesita un "champion" para mantener adoption, esta resolviendo un problema de proceso con software. Primero arregla el proceso.' },
+    { title: 'Zona de peligro 2: construir lo que una herramienta commodity ya hace', content: '"Vamos a construir nuestro propio email sequencer porque tenemos requisitos especificos." Los requisitos especificos resultan ser: unsubscribe handling, tracking y A/B testing. Todo lo que Outreach, Apollo e Instantly ya hacen. Tres meses de tiempo de ingenieria para cero ventaja competitiva.' },
+    { title: 'Zona de peligro 3: "no puede hacer esto" vs "no lo hemos configurado"', content: 'La mayoria de herramientas enterprise SaaS son mas configurables de lo que el equipo cree. Antes de construir: dedicar un dia a un configuration audit serio. Hablar con el equipo de soporte de la herramienta. Leer los API docs. La custom integration que quereis construir podria existir ya como feature nativa.' },
+  ]}
+  openFirst
+/>
+
+## Como la AI ha cambiado el calculo
+
+Hace dos anios, construir herramientas internas de operator requeria o un equipo de ingenieria o un especialista en no-code con una inversion de tiempo significativa. El calculo era: solo construye si el ROI es muy claro.
+
+La AI ha reducido significativamente el coste de construir herramientas operativas pequenias y enfocadas. Un account scoring dashboard a medida, que habria tardado 3 meses con un desarrollador, ahora se puede construir en 2-3 semanas con Claude Code o Codex, con un operator no tecnico dirigiendo el proceso. El umbral de habilidades para construir ha bajado.
+
+Esto no significa: construye todo. Significa: el umbral para "merece la pena construir" es mas bajo que antes. Herramientas que habrian sido demasiado caras para desarrollo custom ahora son viables.
+
+## La matriz de decision
+
+| | Problema generico | Problema especifico |
+|---|---|---|
+| **Infraestructura** | Compra commodity SaaS | Configura a fondo o construye ligero |
+| **Ventaja competitiva** | Usa SaaS como base | Construye la capa propietaria |
+
+La mayoria de decisiones caen arriba a la izquierda: problema generico de infraestructura, asi que compra commodity SaaS. Las decisiones interesantes estan abajo a la derecha: ventaja competitiva, problema especifico, asi que construye la capa que importa.
+
+## Test practico
+
+<Steps title="Antes de cualquier decision de tooling" items={[
+  { title: "Es un problema de proceso disfrazado de problema de herramienta?", body: "Si es asi: arregla el proceso. Ninguna herramienta sobrevive a un workflow roto." },
+  { title: "El best-in-class SaaS ya lo resuelve?", body: "Si es asi: compra. Estas pagando por infraestructura resuelta, no por reinventarla." },
+  { title: "Es una feature configurable de herramientas que ya teneis?", body: "Si es asi: configura. Dedica un dia a un config audit serio antes de escribir codigo." },
+  { title: "El hueco es realmente una ventaja competitiva?", body: "Si es asi: construye. Es el unico caso en que el desarrollo custom crea ventaja asimetrica." },
+]} />
+
+Solo si la respuesta al paso 4 es si: construye.
+
+<KeyTakeaway
+  icon="check"
+  title="El test en una frase"
+  body="Si la respuesta a 'por que lo construimos en vez de comprarlo?' no es 'porque nos da una ventaja que los competidores no pueden replicar facilmente', habeis construido lo equivocado."
+/>
+
+---
+
+**Relacionado:** [B2B CRM como Revenue Operations System: como reconstruirlo bien](/es/insights/b2b-crm-revenue-operations-system-guide) · [Como construir un GTM AI Agent para outbound research y CRM enrichment](/es/insights/how-to-build-gtm-ai-agent-outbound-crm)

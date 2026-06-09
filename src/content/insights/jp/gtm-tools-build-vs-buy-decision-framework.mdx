@@ -1,0 +1,85 @@
+---
+title: "GTMツールを自作すべきときと、買うべきとき"
+description: "危険なのは、workflowで解決すべき問題にSaaSを買うことと、月50ドルのツールで済む問題を自作すること。私の判断基準を紹介する。"
+publishedAt: "2026-02-28"
+tags:
+  - GTM
+  - Operator tooling
+  - AI
+  - Ops
+category: "Operator Playbooks"
+coverType: "terminal"
+coverImage: "/images/insights/gtm-tools-build-vs-buy-decision-framework.webp"
+featured: false
+draft: false
+locale: "jp"
+translationOf: "gtm-tools-build-vs-buy-decision-framework"
+tldr:
+  - "インフラは買う、競争優位は作る: 判断基準はコストではなく、戦略的なレバレッジ"
+  - "危険なのは、workflowで解決すべき問題にSaaSを買うことと、月50ドルのツールで済む問題を自作すること"
+  - "AIがbuildの計算を大きく変えた: 社内operatorツールが10分の1のコストで構築可能に"
+  - "正しい問いは「このツールを買えるか?」ではなく「このツールは本当に必要なことをやるか?」"
+---
+
+GTM toolingにおけるbuild or buyの意思決定は、多くのgrowthの議論で間違ったフレームにはまっている。フレームはたいていコスト:「Apolloは高すぎる」「自作の方が安い」。
+
+コストは間違ったフレームだ。正しいフレームは戦略的レバレッジ: 何が差別化されたexecutionを生み、何がtable stakesのインフラなのか?
+
+## 原則
+
+**Table stakesは買う。Edgeは作る。**
+
+Table stakesとは、すべてのgrowthチームが必要とし、commodity SaaSがうまく処理するもの: email delivery ([SendGrid](https://sendgrid.com))、calendar scheduling ([Calendly](https://calendly.com))、CRM ([HubSpot](https://hubspot.com)/[Salesforce](https://salesforce.com))、call recording ([Gong](https://gong.io)/[Chorus](https://chorus.ai))。これらは解決済みの問題だ。買うのが正解。
+
+Edgeとは、チームが他と違うやり方をしている部分。accountのscoring方法。outreachのパーソナライズ方法。intent signalsの特定とルーティング方法。product dataとsales motionの接続方法。ここで自作することが非対称な優位性を生む。
+
+チームが12か月かけて調整したオーダーメイドのaccount scoringモデルは、月200ドルのenrichmentツールで代替できない。scoring logicそのものが優位性であり、自分たちがコントロールするインフラで動かすべきだ。
+
+## 危険ゾーン
+
+<Accordion
+  items={[
+    { title: '危険ゾーン1: workflowの問題にSaaSを買う', content: 'チームが「Xのためのツールが必要だ」と言う。ツールを買う。6か月後、Xはまだ起きていない。なぜなら、それはプロセスの問題であり、toolingの問題ではなかったから。シグナル: ツールがadoptionを維持するために「チャンピオン」を必要とするなら、それはプロセスの問題をソフトウェアで解決しようとしている。まずプロセスを直す。' },
+    { title: '危険ゾーン2: commodityツールで済むものを自作する', content: '「特定の要件があるから、独自のemail sequencerを作ろう。」その特定の要件とは: unsubscribe handling、tracking、A/B testing。Outreach、Apollo、Instantlyが既に対応している機能すべて。競争優位ゼロのために3か月のエンジニアリング工数。' },
+    { title: '危険ゾーン3: 「それはできない」vs「設定していない」', content: 'ほとんどのenterprise SaaSツールは、チームが認識しているより遥かに設定可能だ。作る前に、1日かけて真剣なconfiguration auditを行う。ツールのサポートチームに相談する。API docsを読む。自作したいcustom integrationは、既にネイティブ機能として存在しているかもしれない。' },
+  ]}
+  openFirst
+/>
+
+## AIが計算をどう変えたか
+
+2年前、社内のoperatorツールを作るにはエンジニアリングチームか、相当な時間を投資できるno-codeのスペシャリストが必要だった。計算は: ROIが非常に明確な場合のみ作る。
+
+AIが小規模で焦点を絞ったoperatorツールの構築コストを大幅に下げた。開発者がいれば3か月かかったオーダーメイドのaccount scoring dashboardが、Claude CodeやCodexを使えば2-3週間で構築でき、非技術者のoperatorがプロセスを主導できる。構築に必要なスキルの下限が下がった。
+
+すべてを作れという意味ではない。「作る価値がある」の閾値が以前より低くなったということだ。custom developmentには高すぎたツールが、今は現実的になっている。
+
+## 意思決定マトリクス
+
+| | 汎用的な問題 | 特定の問題 |
+|---|---|---|
+| **インフラ** | commodity SaaSを買う | 深く設定するか軽量に作る |
+| **競争優位** | SaaSを基盤として使う | 独自のレイヤーを構築する |
+
+ほとんどの判断は左上に該当する: 汎用的なインフラの問題なのでcommodity SaaSを買う。面白い判断は右下にある: 競争優位、特定の問題なので、重要なレイヤーを自作する。
+
+## 実践テスト
+
+<Steps title="toolingの意思決定の前に" items={[
+  { title: "これはツール問題に偽装したプロセス問題か?", body: "もしそうなら、プロセスを直す。壊れたworkflowの上でツールは機能しない。" },
+  { title: "best-in-classのSaaSが既に解決しているか?", body: "もしそうなら、買う。解決済みのインフラに対価を払うのであり、再発明するのではない。" },
+  { title: "既に持っているツールの設定可能な機能か?", body: "もしそうなら、設定する。コードを書く前に1日かけて真剣なconfig auditを行う。" },
+  { title: "そのギャップは本当に競争優位か?", body: "もしそうなら、作る。custom developmentが非対称な優位性を生む唯一のケースだ。" },
+]} />
+
+ステップ4の答えがイエスの場合のみ: 作る。
+
+<KeyTakeaway
+  icon="check"
+  title="ワンセンテンステスト"
+  body="「なぜ買わずに作ったのか?」の答えが「競合が簡単に真似できない優位性を生むから」でなければ、作るべきものを間違えている。"
+/>
+
+---
+
+**関連記事:** [B2B CRMをRevenue Operations Systemとして再構築するガイド](/jp/insights/b2b-crm-revenue-operations-system-guide) · [Outbound ResearchとCRM EnrichmentのためのGTM AI Agentの作り方](/jp/insights/how-to-build-gtm-ai-agent-outbound-crm)

@@ -1,0 +1,116 @@
+---
+title: "Nettleserens bokmerke er feil primitiv"
+description: "Hvorfor jeg bygde Kade som en local-first link-vault: ikke enda en bokmerkeliste, men en privat kø for lenker som trenger kontekst før de åpnes igjen."
+publishedAt: "2026-05-30"
+tags:
+  - Products
+  - Local-first
+  - macOS
+  - Security
+featured: false
+draft: false
+category: "Products"
+coverType: "product"
+ogImage: "/images/kade/dashboard.png"
+locale: "no"
+translationOf: "kade-local-first-link-vault"
+tldr:
+  - "Bokmerker husker URL-en. De husker sjelden hvorfor URL-en var viktig."
+  - "Kade behandler lagrede lenker som en kø med notater, vurderinger, kategorier, forhåndsvisninger og besøkshistorikk."
+  - "Den offentlige produktsiden forblir ren; den private vaulten og genererte lenkedata forblir lokale."
+---
+
+De fleste bokmerkeprodukter løser den enkle delen: lagre URL-en et sted. [Raindrop](https://raindrop.io/), [Pocket](https://getpocket.com/), nettleserbokmerker: alle lagrer lenken. Ingen av dem lagrer grunnen.
+
+Det holder til listen blir research, sourcing, sammenligning, privat referansearbeid eller noe som krever vurdering noen dager senere. Da har nettleseren den ene tingen som er billig å gjenopprette, og mangler den som er dyr: kontekst.
+
+Kade startet fra det hullet.
+
+Det er en local-first link-vault for lagrede URL-er som trenger en grunn knyttet til seg. Ikke en offentlig read-it-later-feed. Ikke en sky-passordmanager. En privat kø der en lenke kan bære tingene som gjør den nyttig senere: kategori, månedlig drop, notat, vurdering, beste biter, forhåndsvisning og besøkshistorikk.
+
+<PullQuote>
+URL-en er ikke hukommelsen. Grunnen til at du lagret den, er det.
+</PullQuote>
+
+## Problemet med bokmerker
+
+Nettleserbokmerker fungerer fint for stabile destinasjoner: en bankinnlogging, en dokumentasjonsside, et verktøy du åpner hver uke.
+
+De er mye svakere for lenker som er del av tenkning. En lenke lagret under research har mer tilstand enn nettleseren lagrer.
+
+<BeforeAfter
+  label="What bookmarks miss"
+  before={{ title: "Browser bookmark", body: "Stores the URL. Forgets why you saved it, what it relates to, whether you already read it, and how important it was.", caption: "Works for logins. Fails for research." }}
+  after={{ title: "Kade vault entry", body: "URL + category + monthly bucket + note + rating + preview + visit history + source status. The link carries the context that makes it useful later.", caption: "Recall, not storage." }}
+/>
+
+Når den konteksten er borte, blir lenken arbeid igjen. Du åpner den på nytt, skanner den, husker halvparten av den opprinnelige grunnen, og avgjør om den fortsatt betyr noe.
+
+Det er sløsingen Kade er designet for å fjerne.
+
+## Kade behandler lenker som operasjonelle objekter
+
+Produktet åpner på et dashboard fordi det første spørsmålet ikke er "hva lagret jeg?"
+
+Det bedre første spørsmålet er: "hva trenger oppmerksomhet nå?"
+
+Det endrer grensesnittet. Dashboardet viser køens helse, kategorier og ventende arbeid. Lenkevisningen bærer den tyngre overflaten: forhåndsvisninger, kommentarer, vurderinger, kildestatus og beste biter. Åpnede lenker rykker ned i stedet for å forsvinne, slik at vaulten beholder hukommelse uten å late som om hver lenke er like presserende.
+
+Arbeidsmodellen er enkel:
+
+<Steps items={[
+  { title: "Drop a link or import a batch", body: "Single URL, clipboard paste, or bulk CSV import. Links enter the queue immediately." },
+  { title: "Assign category, monthly bucket and source status", body: "Every link gets tagged on entry. No orphan bookmarks floating in a flat list." },
+  { title: "Attach a short note, rating and useful cues", body: "The context that makes the link useful next week, not just findable." },
+  { title: "Generate previews locally", body: "Thumbnail and metadata extracted on-device. No cloud processing, no third-party scraping." },
+  { title: "Track visits and push opened items lower", body: "Already-read links sink. Fresh links stay visible. The queue self-organizes." },
+]} />
+
+Dette er nærmere et lite operativsystem enn en bokmerkemappe.
+
+## Hvorfor local-first
+
+En link-vault kan være sensitiv selv når den ikke lagrer passord.
+
+Formen på en lagret lenkeliste kan avsløre prosjekter, kommersiell intensjon, vaner, timing og private interesser. Det gjør lagringsmodellen til en produktbeslutning, ikke en implementasjonsdetalj.
+
+Kade holder den fungerende vaulten lokal og kryptert. Den offentlige siden inkluderer ikke vault-innhold, bokmerkeimporter, genererte thumbnail-manifester, private seeds eller lokale gjenopprettingsdata. Markedsføringssiden forklarer produktet; den publiserer ikke brukerens lenkegraf ved et uhell.
+
+Den grensen betyr noe.
+
+## Mac-versjonen er den riktige sikkerhetsstien
+
+Web-builden er nyttig for workflow-iterasjon. Den beviser modellen raskt: dashboard først, kategoriserte lenker, kryptert lokal post, forhåndsvisninger på riktig sted, besøkshistorikk og eksport/import.
+
+Men den seriøse opplåsningsmodellen hører hjemme i den native appen.
+
+På macOS kan Kade bruke [Touch ID](https://developer.apple.com/documentation/localauthentication), Keychain-beskyttede nøkler, en bakgrunns-sync-worker og en lokal metadata-pipeline uten å gi nettleser-JavaScript mer ansvar enn det bør ha. Det er riktig deling: web for rask produktforming, nativt macOS for varig sikkerhet og bakgrunnsarbeid.
+
+## Designregelen
+
+Kade skal føles privat før det føles smart.
+
+Det betyr en sparsom låseskjerm, rolig produktspråk, dashboard-first navigasjon og forhåndsvisninger kun der de hjelper gjenkjenning. Appen skal ikke annonsere hver sikkerhetsdetalj på innloggingsskjermen. Den skal bruke nok tekst til å sette grensen, og deretter komme seg ut av veien.
+
+Samme regel gjelder den offentlige siden: vis produktet, forklar driftsmodellen, hold de private dataene ute.
+
+## Nåværende status
+
+<Tabs tabs={[
+  { label: "Shipped", content: "Local web vault, native macOS prototype, product icon set, clean public landing, encrypted export/import, recovery/reset flow, security docs." },
+  { label: "Next", content: "Native signing and packaging, stronger Touch ID/Keychain unlock, encrypted sync between devices, better preview worker with local thumbnail pipeline." },
+  { label: "Not planned", content: "Cloud sync to third-party servers, social sharing features, browser extension (the browser is the problem, not the solution)." },
+]} />
+
+Det neste nyttige arbeidet er nativt: signering, pakking, sterkere Touch ID/Keychain-opplåsning, kryptert synkronisering og en bedre preview-worker.
+
+Inntil da er produktretningen klar: bokmerker som gjenkalling, ikke lagring. Du finner produktsiden på [/apps/kade/](/apps/kade/) og byggehistorien bak NotchCue (en annen nativ macOS-app fra samme verksted) i [teleprompter-artikkelen](/no/insights/macos-teleprompter-macbook-notch-native-app/).
+
+<CTABand
+  heading="Kade is the private link vault."
+  subtext="A local-first workspace for links that need context before they are opened again."
+  cta="See Kade"
+  ctaHref="/kade/"
+  ctaSecondary="See all apps"
+  ctaSecondaryHref="/apps/"
+/>

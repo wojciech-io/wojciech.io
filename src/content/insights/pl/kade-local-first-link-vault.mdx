@@ -1,0 +1,116 @@
+---
+title: "Zakładka w przeglądarce to zły punkt wyjścia"
+description: "Dlaczego zbudowałem Kade jako lokalny sejf na linki: nie kolejna lista zakładek, ale prywatna kolejka dla linków, które potrzebują kontekstu, zanim otworzysz je ponownie."
+publishedAt: "2026-05-30"
+tags:
+  - Products
+  - Local-first
+  - macOS
+  - Security
+featured: false
+draft: false
+category: "Products"
+coverType: "product"
+ogImage: "/images/kade/dashboard.png"
+locale: "pl"
+translationOf: "kade-local-first-link-vault"
+tldr:
+  - "Zakładki pamiętają URL. Rzadko pamiętają, dlaczego ten URL miał znaczenie."
+  - "Kade traktuje zapisane linki jako kolejkę z notatkami, ocenami, kategoriami, podglądami i historią wizyt."
+  - "Publiczna strona produktu jest czysta; prywatny sejf i wygenerowane dane o linkach zostają lokalnie."
+---
+
+Większość produktów do zakładek rozwiązuje łatwą część: trzymaj URL gdzieś pod ręką. [Raindrop](https://raindrop.io/), [Pocket](https://getpocket.com/), zakładki przeglądarki: wszystkie przechowują link. Żaden z nich nie przechowuje powodu.
+
+To wystarcza, dopóki lista nie staje się researchem, sourcingiem, porównaniem, prywatnym materiałem referencyjnym albo czymkolwiek, co wymaga oceny kilka dni później. Wtedy przeglądarka ma jedną rzecz, którą łatwo odzyskać, a brakuje tej, która jest kosztowna: kontekstu.
+
+Kade powstało z tej luki.
+
+To lokalny sejf na linki, które potrzebują powodu dołączonego do siebie. Nie publiczny feed do czytania później. Nie chmurowy menedżer haseł. Prywatna kolejka, w której link może nieść rzeczy, które czynią go użytecznym potem: kategorię, miesięczny drop, notatkę, ocenę, najlepsze fragmenty, podgląd i historię wizyt.
+
+<PullQuote>
+URL to nie pamięć. Pamięcią jest powód, dla którego go zapisałeś.
+</PullQuote>
+
+## Problem z zakładkami
+
+Zakładki przeglądarki są dobre dla stabilnych destynacji: logowanie do banku, strona dokumentacji, narzędzie otwierane co tydzień.
+
+Są znacznie słabsze dla linków, które są częścią myślenia. Link zapisany w trakcie researchu ma więcej stanu niż przeglądarka przechowuje.
+
+<BeforeAfter
+  label="What bookmarks miss"
+  before={{ title: "Browser bookmark", body: "Stores the URL. Forgets why you saved it, what it relates to, whether you already read it, and how important it was.", caption: "Works for logins. Fails for research." }}
+  after={{ title: "Kade vault entry", body: "URL + category + monthly bucket + note + rating + preview + visit history + source status. The link carries the context that makes it useful later.", caption: "Recall, not storage." }}
+/>
+
+Gdy ten kontekst znika, link znów staje się pracą. Otwierasz go, skanujesz, przypominasz sobie połowę pierwotnego powodu, potem decydujesz, czy nadal ma znaczenie.
+
+To jest marnotrawstwo, które Kade ma eliminować.
+
+## Kade traktuje linki jako obiekty operacyjne
+
+Produkt otwiera się na dashboardzie, bo pierwsze pytanie nie brzmi "co zapisałem?"
+
+Lepsze pierwsze pytanie: "co wymaga uwagi teraz?"
+
+To zmienia interfejs. Dashboard pokazuje kondycję kolejki, kategorie i zaległą pracę. Widok linka niesie cięższą powierzchnię: podglądy, komentarze, oceny, status źródła i najlepsze fragmenty. Otwarte linki przesuwają się w dół zamiast znikać, więc sejf zachowuje pamięć bez udawania, że każdy link jest równie pilny.
+
+Model pracy jest prosty:
+
+<Steps items={[
+  { title: "Drop a link or import a batch", body: "Single URL, clipboard paste, or bulk CSV import. Links enter the queue immediately." },
+  { title: "Assign category, monthly bucket and source status", body: "Every link gets tagged on entry. No orphan bookmarks floating in a flat list." },
+  { title: "Attach a short note, rating and useful cues", body: "The context that makes the link useful next week, not just findable." },
+  { title: "Generate previews locally", body: "Thumbnail and metadata extracted on-device. No cloud processing, no third-party scraping." },
+  { title: "Track visits and push opened items lower", body: "Already-read links sink. Fresh links stay visible. The queue self-organizes." },
+]} />
+
+To bliżej małego systemu operacyjnego niż folderu z zakładkami.
+
+## Dlaczego local-first
+
+Sejf na linki może być wrażliwy nawet wtedy, gdy nie przechowuje haseł.
+
+Kształt zapisanej listy linków może ujawnić projekty, intencje komercyjne, nawyki, timing i prywatne zainteresowania. To sprawia, że model przechowywania jest decyzją produktową, nie detalem implementacyjnym.
+
+Kade trzyma roboczy sejf lokalnie i szyfruje go. Publiczna strona nie zawiera zawartości sejfu, importów zakładek, wygenerowanych manifestów miniatur, prywatnych seedów ani lokalnych danych odzyskiwania. Strona marketingowa wyjaśnia produkt; nie publikuje grafu linków użytkownika przez przypadek.
+
+Ta granica ma znaczenie.
+
+## Wersja na Maca to właściwa ścieżka bezpieczeństwa
+
+Wersja webowa jest przydatna do iteracji workflow. Szybko potwierdza model: dashboard na pierwszym planie, skategoryzowane linki, zaszyfrowany lokalny rekord, podglądy we właściwym miejscu, historia wizyt i eksport/import.
+
+Ale poważny model odblokowywania należy do natywnej aplikacji.
+
+Na macOS Kade może używać [Touch ID](https://developer.apple.com/documentation/localauthentication), kluczy chronionych Keychain, procesu synchronizacji w tle i lokalnego pipeline'u metadanych, nie obciążając JavaScriptu w przeglądarce większą odpowiedzialnością, niż powinien mieć. To właściwy podział: web do szybkiego kształtowania produktu, natywny macOS do trwałego bezpieczeństwa i pracy w tle.
+
+## Zasada projektowa
+
+Kade powinno dawać poczucie prywatności, zanim zacznie robić wrażenie.
+
+To oznacza oszczędny ekran blokady, spokojny język produktu, nawigację z dashboardem na pierwszym miejscu i podglądy tylko tam, gdzie pomagają w rozpoznawaniu. Aplikacja nie powinna ogłaszać każdego detalu bezpieczeństwa na ekranie logowania. Powinna użyć wystarczająco tekstu, by wyznaczyć granicę, a potem zejść z drogi.
+
+Ta sama zasada dotyczy strony publicznej: pokaż produkt, wyjaśnij model działania, trzymaj prywatne dane na zewnątrz.
+
+## Aktualny status
+
+<Tabs tabs={[
+  { label: "Shipped", content: "Local web vault, native macOS prototype, product icon set, clean public landing, encrypted export/import, recovery/reset flow, security docs." },
+  { label: "Next", content: "Native signing and packaging, stronger Touch ID/Keychain unlock, encrypted sync between devices, better preview worker with local thumbnail pipeline." },
+  { label: "Not planned", content: "Cloud sync to third-party servers, social sharing features, browser extension (the browser is the problem, not the solution)." },
+]} />
+
+Następna użyteczna praca to natywna: podpisywanie, pakowanie, silniejszy unlock przez Touch ID/Keychain, szyfrowana synchronizacja i lepszy worker podglądów.
+
+Do tego czasu kierunek produktu jest jasny: zakładki jako przypominanie, nie przechowywanie. Stronę produktu znajdziesz pod [/apps/kade/](/apps/kade/), a historię budowy NotchCue (innej natywnej aplikacji macOS z tego samego warsztatu) w [artykule o teleprompterze](/pl/insights/macos-teleprompter-macbook-notch-native-app/).
+
+<CTABand
+  heading="Kade is the private link vault."
+  subtext="A local-first workspace for links that need context before they are opened again."
+  cta="See Kade"
+  ctaHref="/kade/"
+  ctaSecondary="See all apps"
+  ctaSecondaryHref="/apps/"
+/>

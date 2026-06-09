@@ -1,0 +1,116 @@
+---
+title: "ブラウザのブックマークは間違った出発点です"
+description: "Kadeをlocal-firstのリンク保管庫として構築した理由: もう一つのブックマークリストではなく、再び開く前にコンテキストが必要なリンクのためのプライベートキューです。"
+publishedAt: "2026-05-30"
+tags:
+  - Products
+  - Local-first
+  - macOS
+  - Security
+featured: false
+draft: false
+category: "Products"
+coverType: "product"
+ogImage: "/images/kade/dashboard.png"
+locale: "jp"
+translationOf: "kade-local-first-link-vault"
+tldr:
+  - "ブックマークはURLを覚えています。なぜそのURLが重要だったかを覚えていることは、ほとんどありません。"
+  - "Kadeは保存したリンクを、メモ、評価、カテゴリ、プレビュー、訪問履歴を備えたキューとして扱います。"
+  - "公開製品ページはクリーンなまま。プライベートな保管庫と生成されたリンクデータはローカルに残ります。"
+---
+
+ほとんどのブックマーク製品は簡単な部分を解決します: URLをどこかに保存すること。[Raindrop](https://raindrop.io/)、[Pocket](https://getpocket.com/)、ブラウザのブックマーク。どれもリンクを保存します。理由を保存するものはありません。
+
+リストがリサーチ、ソーシング、比較、プライベートな参考資料、あるいは数日後に判断が必要なものに変わるまでは、それで十分です。その時点でブラウザは復元コストの低いものだけを持っていて、コストの高いものが欠けています: コンテキストです。
+
+Kadeはそのギャップから生まれました。
+
+理由を添付する必要がある保存URLのための、local-firstリンク保管庫です。公開のあとで読むフィードではありません。クラウドのパスワードマネージャーでもありません。リンクが後で役立つものを運べるプライベートキューです: カテゴリ、月次ドロップ、メモ、評価、ベストバイト、プレビュー、訪問履歴。
+
+<PullQuote>
+URLは記憶ではありません。保存した理由が記憶です。
+</PullQuote>
+
+## ブックマークの問題点
+
+ブラウザのブックマークは安定した行き先には適しています: 銀行のログイン、ドキュメントページ、毎週開くツール。
+
+思考の一部であるリンクにはずっと弱いです。リサーチ中に保存したリンクは、ブラウザが保存する以上の状態を持っています。
+
+<BeforeAfter
+  label="What bookmarks miss"
+  before={{ title: "Browser bookmark", body: "Stores the URL. Forgets why you saved it, what it relates to, whether you already read it, and how important it was.", caption: "Works for logins. Fails for research." }}
+  after={{ title: "Kade vault entry", body: "URL + category + monthly bucket + note + rating + preview + visit history + source status. The link carries the context that makes it useful later.", caption: "Recall, not storage." }}
+/>
+
+そのコンテキストが失われると、リンクは再び作業になります。もう一度開いて、ざっと見て、元の理由の半分を思い出し、まだ重要かどうかを判断します。
+
+それがKadeが取り除くように設計された無駄です。
+
+## Kadeはリンクを運用オブジェクトとして扱います
+
+製品はダッシュボードで開きます。最初の問いは「何を保存した?」ではないからです。
+
+より良い最初の問いは:「今、何に注意が必要か?」
+
+これがインターフェースを変えます。ダッシュボードはキューの健全性、カテゴリ、保留中の作業を表示します。リンクビューはより重い画面を担います: プレビュー、コメント、評価、ソースステータス、ベストバイト。開いたリンクは消えるのではなく下に移動するため、保管庫はすべてのリンクが同じ緊急度であるかのように振る舞うことなく記憶を維持します。
+
+作業モデルはシンプルです:
+
+<Steps items={[
+  { title: "Drop a link or import a batch", body: "Single URL, clipboard paste, or bulk CSV import. Links enter the queue immediately." },
+  { title: "Assign category, monthly bucket and source status", body: "Every link gets tagged on entry. No orphan bookmarks floating in a flat list." },
+  { title: "Attach a short note, rating and useful cues", body: "The context that makes the link useful next week, not just findable." },
+  { title: "Generate previews locally", body: "Thumbnail and metadata extracted on-device. No cloud processing, no third-party scraping." },
+  { title: "Track visits and push opened items lower", body: "Already-read links sink. Fresh links stay visible. The queue self-organizes." },
+]} />
+
+これはブックマークフォルダというより、小さなオペレーティングシステムに近いものです。
+
+## なぜlocal-firstなのか
+
+リンク保管庫はパスワードを保存していなくても機密性が高い場合があります。
+
+保存されたリンクリストの形は、プロジェクト、商業的意図、習慣、タイミング、プライベートな関心を明らかにすることがあります。そのため、ストレージモデルは実装の詳細ではなく、製品の判断になります。
+
+Kadeは作業用保管庫をローカルに保持し、暗号化します。公開サイトには保管庫の内容、ブックマークのインポート、生成されたサムネイルマニフェスト、プライベートシード、ローカルのリカバリデータは含まれません。マーケティングページは製品を説明します。ユーザーのリンクグラフを誤って公開することはありません。
+
+この境界は重要です。
+
+## Mac版が真のセキュリティパスです
+
+Web版はワークフローの反復に便利です。モデルを素早く実証します: ダッシュボードファースト、カテゴリ分けされたリンク、暗号化されたローカルレコード、適切な場所のプレビュー、訪問履歴、エクスポート/インポート。
+
+しかし、本格的なアンロックモデルはネイティブアプリに属します。
+
+macOSでは、Kadeは[Touch ID](https://developer.apple.com/documentation/localauthentication)、Keychainで保護されたキー、バックグラウンド同期ワーカー、ローカルメタデータパイプラインを使用でき、ブラウザのJavaScriptに本来持つべき以上の責任を負わせません。これが正しい分担です: 素早い製品形成にはWeb、永続的なセキュリティとバックグラウンド処理にはネイティブmacOS。
+
+## デザインルール
+
+Kadeは賢く感じる前に、プライベートに感じるべきです。
+
+これは、控えめなロック画面、静かな製品言語、ダッシュボードファーストのナビゲーション、認識を助ける場所にのみプレビューを配置することを意味します。アプリはログイン画面ですべてのセキュリティ詳細を告知すべきではありません。境界を設定するのに十分なテキストを使い、そこから邪魔にならないようにすべきです。
+
+同じルールが公開ページにも当てはまります: 製品を見せ、運用モデルを説明し、プライベートデータは外に置く。
+
+## 現在のステータス
+
+<Tabs tabs={[
+  { label: "Shipped", content: "Local web vault, native macOS prototype, product icon set, clean public landing, encrypted export/import, recovery/reset flow, security docs." },
+  { label: "Next", content: "Native signing and packaging, stronger Touch ID/Keychain unlock, encrypted sync between devices, better preview worker with local thumbnail pipeline." },
+  { label: "Not planned", content: "Cloud sync to third-party servers, social sharing features, browser extension (the browser is the problem, not the solution)." },
+]} />
+
+次の有用な作業はネイティブです: 署名、パッケージング、より強力なTouch ID/Keychainアンロック、暗号化された同期、より良いプレビューワーカー。
+
+それまで、製品の方向性は明確です: ブックマークは保存ではなく、想起のために。製品ページは[/apps/kade/](/apps/kade/)で、NotchCue(同じ工房の別のネイティブmacOSアプリ)の開発ストーリーは[テレプロンプター記事](/jp/insights/macos-teleprompter-macbook-notch-native-app/)でご覧いただけます。
+
+<CTABand
+  heading="Kade is the private link vault."
+  subtext="A local-first workspace for links that need context before they are opened again."
+  cta="See Kade"
+  ctaHref="/kade/"
+  ctaSecondary="See all apps"
+  ctaSecondaryHref="/apps/"
+/>

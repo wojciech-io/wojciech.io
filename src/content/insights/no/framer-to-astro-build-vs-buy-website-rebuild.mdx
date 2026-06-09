@@ -1,0 +1,285 @@
+---
+title: "Fra Framer til Astro: build vs buy-avgjørelsen bak denne siden"
+description: "De ærlige avveiningene bak ombyggingen av wojciech.io: hvorfor jeg gikk fra en visuell builder til Astro, hva MDX og i18n endret, og hvilken teknisk gjeld jeg aksepterte med vilje."
+publishedAt: "2026-05-19"
+tags:
+  - Astro
+  - MDX
+  - i18n
+  - Build vs Buy
+  - AI Workflow
+category: "Operator Playbooks"
+coverType: "builder"
+featured: false
+draft: false
+locale: "no"
+translationOf: "framer-to-astro-build-vs-buy-website-rebuild"
+tldr:
+  - "Framer var ikke feil verktøy. Det var riktig verktøy for visuell iterasjon, og deretter feil control plane for et voksende portfolio-system."
+  - "Astro ga mening fordi siden hadde blitt til innhold, routes, komponenter, deploy-regler og kildekode som agenter kan redigere."
+  - "i18n-laget er bevisst kjedelig: ekte URL-ruter, delte sidekomponenter og data-attributter der et fullt i18n-bibliotek ville vært unødvendig overhead."
+  - "MDX er vektstangspunktet: artikler kan bære diagrammer, statistikk, callouts og proof-komponenter uten å bli engangs-landing pages."
+  - "Det er gjeld i systemet. Den er navngitt, avgrenset og akseptabel til siden blir en større publikasjon."
+  - "Det egentlige build vs buy-spørsmålet handlet ikke om pris. Det handlet om kontroll, compounding og hva som måtte kunne redigeres av agenter."
+---
+
+De fleste ombyggingshistorier er for rene.
+
+Det gamle verktøyet ser naivt ut, den nye stacken uunngåelig, og migrasjonen som en rett linje fra "no-code-begrensning" til "ordentlig engineering." Det var ikke det som skjedde her.
+
+Jeg flyttet ikke denne siden fra Framer til Astro fordi Framer var dårlig. Framer gjorde det jeg trengte den gangen: det ga visuell fart. Jeg flyttet fordi sidens jobb endret seg.
+
+Siden sluttet å være et sett med polerte sider og ble til en liten driftsflate: offentlig posisjonering, proof, apper, skriving, språkvarianter, redirects, deploy-sjekker og en arbeidsflyt der AI-agenter kan gjøre endringer uten å gjette seg frem i en visuell editor.
+
+Det er en annen build vs buy-avgjørelse.
+
+<StatRow cols={3}>
+  <Stat value="3" label="Språk" sub="Engelsk, Polsk, Italiensk" />
+  <Stat value="1" label="Innholdskilde per side" sub="Delte Astro-sidekomponenter" />
+  <Stat value="MDX" label="Artikkelsystem" sub="Komponenter inne i langt innhold" />
+</StatRow>
+
+## Avgjørelsen handlet ikke om pris
+
+Den late build vs buy-rammen er pris.
+
+"Framer koster penger. Astro er gratis. Altså vinner Astro."
+
+Det er et svakt argument. En codebase er aldri gratis. Den krever vedlikehold, lokalt oppsett, build-feil, dependency-oppdateringer, routing-avgjørelser og vurdering. En visuell builder koster et abonnement, men den fjerner også en stor del av den operasjonelle overflaten.
+
+Det egentlige spørsmålet var:
+
+**Hva må jeg kontrollere, og hva kan jeg trygt leie?**
+
+For den første versjonen av siden ga det mening å leie det visuelle laget. Flaskehalsen var ikke routing eller artikkelarkitektur. Flaskehalsen var å få en skarp offentlig overflate online raskt.
+
+For den nåværende versjonen endret flaskehalsen seg. Jeg trengte versjonert innhold, MDX, gjenbrukbare artikkelkomponenter, ekte språk-URL-er, forutsigbare redirects og et repo som Claude Code og Codex kunne inspisere, patche, bygge og verifisere.
+
+På det tidspunktet var builderen ikke lenger bare en builder. Den var control plane.
+
+Og jeg ville ha control plane i kode.
+
+## Hva Framer ga meg
+
+Framer ga komposisjonsfart.
+
+Det er godt til det det er designet for: la én person få en side til å se ferdig ut uten å bygge et design system fra grunnen. For et personlig nettsted er det reell verdi. De fleste personlige nettsteder trenger ikke et framework. De trenger smak, fokus og en deadline.
+
+Problemet dukker opp når siden begynner å samle driftskrav:
+
+- lange tekniske tekster;
+- en strukturert artikkelindeks;
+- RSS- og sitemap-oppførsel;
+- kanoniske URL-er og redirects;
+- språkruter som kan deles og indekseres;
+- code-reviewede endringer;
+- gjenbrukbare proof-komponenter;
+- deploy previews;
+- produksjonsverifisering;
+- AI-assistert vedlikehold.
+
+Ingenting av dette gjør en visuell builder "dårlig." Det flytter bare tyngdepunktet bort fra visuell komposisjon og mot systemdesign.
+
+<Compare labelA="Kjøp builderen" labelB="Bygg systemet" tagA="riktig tidlig" tagB="riktig nå">
+<Fragment slot="a">
+
+- Rask visuell iterasjon
+- Lav oppstartskostnad
+- Mindre infrastruktur å eie
+- Bra for et lite antall polerte sider
+- Best når ikke-teknisk redigering er hovedbegrensningen
+
+</Fragment>
+<Fragment slot="b">
+
+- Versjonert innhold og komponenter
+- Ekte routing og redirects
+- MDX-artikler med egne primitiver
+- Build- og deploy-verifisering
+- Bedre overflate for AI-agenter og code review
+
+</Fragment>
+</Compare>
+
+## Hva Astro endret
+
+Astro passet fordi siden er stort sett statisk, men ikke enkel.
+
+Jeg trenger ikke et fullt applikasjonsrammeverk for et offentlig portfolio og skrivesystem. Jeg trenger sterk filbasert routing, komponenter, content collections, MDX og output som [Cloudflare Pages](https://pages.cloudflare.com/) kan servere billig og pålitelig.
+
+Astro gir meg den formen uten å tvinge siden inn i en klientside-app.
+
+<Diagram caption="Ombyggingen flyttet siden fra presentasjonsflate til driftsflate">
+  <Box label="Posisjonering" sub="forside, om, arbeid" />
+  <Arrow />
+  <Box label="Innholdssystem" sub="MDX, RSS, sitemap" variant="accent" />
+  <Arrow />
+  <Box label="Deploy-lag" sub="GitHub, Cloudflare Pages" />
+  <Arrow />
+  <Box label="Agent-arbeidsflyt" sub="patch, build, verify" variant="muted" />
+</Diagram>
+
+Det viktige er ikke at Astro er trendy. Det er at Astro gjorde siden lesbar.
+
+Ruter bor i `src/pages`. Delt sideinnhold bor i `src/components/pages`. Artikler bor i `src/content/insights`. Design tokens bor i CSS. Et build passerer eller ikke.
+
+Det er den typen struktur en agent kan jobbe innenfor.
+
+## MDX: her bygger siden compound-effekt
+
+Ren Markdown ville vært nok for enkle innlegg. Det var ikke nok for den typen skriving jeg vil at denne siden skal bære.
+
+Artiklene er ikke bare essays. De trenger ofte:
+
+- diagrammer;
+- sammenligninger;
+- callouts;
+- statistikk;
+- prosessflyter;
+- skjermbilder;
+- gjør/ikke gjør-seksjoner;
+- proof-kort;
+- CTA-blokker.
+
+Hvis hver artikkel håndbygger den markupen, blir siden en kirkegård av engangs-HTML. Hvis komponentene er tilgjengelige inne i MDX, blir artikkelsystemet et lite publishing-produkt.
+
+Det er vektstangen.
+
+<Callout type="tip" title="Den nyttige delen av MDX er ikke formatering">
+
+Den nyttige delen er at langt innhold kan gjenbruke de samme produksjonsklare komponentene som resten av siden. En artikkel kan bære struktur uten å bli en custom landing page.
+
+</Callout>
+
+Det praktiske resultatet er enkelt: jeg kan skrive en artikkel om et system og sette inn de samme primitivene jeg bruker for å forklare produkter og arbeidsflyter andre steder.
+
+## i18n-avgjørelsen: bevisst kjedelig
+
+Siden er nå på engelsk, polsk og italiensk. i18n-implementeringen er ikke en vakker internasjonaliseringsplattform. Det er et praktisk system for nåværende skala.
+
+Det er to mønstre:
+
+1. Forsiden bruker et typet dictionary i `src/i18n/translations.ts`.
+2. Hovedsidene bruker delte Astro-innholdskomponenter med `data-en`, `data-pl` og `data-it` attributter, byttet av et lite script basert på URL-en.
+
+Hver lokalisert side har en ekte rute: `/pl/about/`, `/it/apps/` og så videre. De engelske rotsidene forblir kanoniske.
+
+Den viktige avgjørelsen var URL-basert språk, ikke localStorage-basert språk. En delt lenke skal bære språket med seg. Søkemotorer skal se språkvarianter som ekte sider. Brukere skal ikke være avhengige av hvilken tilstand som tilfeldigvis finnes i nettleseren.
+
+<DoDont
+  do={[
+    "Bruk ekte språk-URL-er for sider folk deler",
+    "Hold sidetekst i én delt Astro-komponent",
+    "Aksepter litt markup-støy når det unngår et større framework",
+    "Navngi punktet der mønsteret slutter å skalere",
+  ]}
+  dont={[
+    "Dupliser rot- og lokaliserte sider manuelt",
+    "Legg til i18next fordi arkitekturen vil se voksen ut",
+    "Gjem språktilstand i localStorage og lat som lenker er portable",
+    "Oversett insights før det er en reell publiseringsbegrunnelse",
+  ]}
+/>
+
+Er den attributbaserte tilnærmingen elegant? Ikke spesielt.
+
+Er den riktig for omtrent et dusin offentlige sider med tre språkvarianter og én eier? Ja.
+
+Det er den delen folk hopper over i arkitekturdiskusjoner. Et enklere system med en kjent grense er ofte bedre enn et mer formelt system som legger til prosess før prosessen eksisterer.
+
+## Gjelden jeg aksepterte
+
+Det er gjeld i denne ombyggingen. Jeg aksepterte den med vilje.
+
+i18n-laget har to mønstre. Forsidetekst bor i et typet dictionary. Sidetekst bor i delte komponenter med `data-*` attributter. Insights er kun på engelsk. MDX-komponentkartet er manuelt. Det er ingen CMS. Ikke-teknisk redigering betyr å åpne repoet.
+
+Det er gjeld.
+
+Men gjeld er ikke automatisk et problem. Unavngitt gjeld er problemet. Gjeld som ingen ser, ingen kan prise, og ingen vet hvordan man løser opp.
+
+Denne gjelden er synlig og avgrenset.
+
+<Callout type="warning" title="Skaleringslinjen er klar">
+
+Hvis dette blir en publikasjon med høyt volum, bør det nåværende i18n-mønsteret erstattes med en ekte locale-innholdsmodell. Hvis flere ikke-tekniske redaktører trenger publiseringsrettigheter, blir en CMS verdt overheaden. Inntil da ville de systemene vært seremoni.
+
+</Callout>
+
+Den nåværende arkitekturen er ærlig om skalaen:
+
+<Tabs labels={['Nåværende form', 'Når oppgradere']}>
+  <Fragment slot="0">Én eier. Et lite antall offentlige sider. Insights kun på engelsk. Raske agent-assisterte patcher. Kildekodekontrollerte endringer. Ingen redaksjon. Med den formen er gjelden billigere enn abstraksjonen.</Fragment>
+  <Fragment slot="1">Hvis dette blir en publikasjon med høyt volum: ekte locale-innholdsmodell. Hvis flere redaktører trenger publiseringsrettigheter: en CMS. Hvis artikkeltallet passerer 50: trolig en søkeindeks. Inntil da ville de systemene vært seremoni som bremser shipping.</Fragment>
+</Tabs>
+
+## Hvordan AI endret build-avgjørelsen
+
+AI-agenter endret regnestykket, men ikke på den late "AI bygget nettsiden min" måten.
+
+Den nyttige endringen er at kode ble enklere å drifte.
+
+Claude Code kan implementere en større batch når retningen er dokumentert. Codex kan inspisere repoet, lage fokuserte patcher, kjøre `npm run build`, sjekke output og verifisere produksjon. Begge verktøy fungerer bedre når systemet er tekst, filer, komponenter og tester.
+
+En visuell builder kan være rask for et menneske. En codebase er mer inspiserbar for en agent.
+
+Det betød noe her, fordi siden ikke skulle fryse etter lansering. Den skal fortsette å ta opp artikler, proof, komponenter, app-lenker, sideredigeringer og deploy-sjekker.
+
+<Diagram direction="column" caption="Agent-loopen fungerer fordi systemet er inspiserbart">
+  <Box label="Menneskelig vurdering" sub="smak, scope, godkjenning" variant="accent" />
+  <Arrow direction="down" />
+  <Box label="Repo-kontekst" sub="docs, komponenter, innhold" />
+  <Arrow direction="down" />
+  <Box label="Agent-patch" sub="rediger, bygg, verifiser" />
+  <Arrow direction="down" />
+  <Box label="Produksjonssjekk" sub="custom domain er sannheten" variant="muted" />
+</Diagram>
+
+Den menneskelige rollen forsvant ikke. Den ble viktigere.
+
+Når agenter produserer raskere, produserer svak retning mer svakt output. Jobben er å holde vurderingslaget stramt: hva hører til på siden, hva skal kuttes, hva høres ut som meg, hva er proof, og hva er bare dekorativ struktur.
+
+## Når jeg ikke ville valgt denne stacken
+
+Jeg ville ikke valgt denne arkitekturen for ethvert nettsted.
+
+Jeg ville blitt i Framer, Webflow eller en annen builder når:
+
+- hovedjobben er visuelle kampanjesider;
+- redigeringsteamet er ikke-teknisk;
+- sider må settes sammen raskt av marketing uten et repo;
+- det ikke er noe system for lang teknisk publisering;
+- rutekontroll og kildehistorikk ikke er viktig;
+- siden er bedre tjent med designfart enn engineering-kontroll.
+
+Jeg ville valgt et tyngre framework eller CMS når:
+
+- det er mange redaktører;
+- hver artikkel trenger flere oversatte versjoner;
+- innholdsarbeidsflyter trenger review-tilstander og tillatelser;
+- sider genereres fra store strukturerte datasett;
+- autentisert brukeratferd blir sentralt;
+- redaksjonell hastighet vokser ut av Git.
+
+Astro er den rette midten for denne siden, fordi den er statisk nok til å forbli enkel og strukturert nok til å trenge kode.
+
+## Operator-regelen
+
+Her er regelen jeg ville gjenbrukt:
+
+**Kjøp fart når overflaten er produktet. Bygg kontroll når systemet bak overflaten er produktet.**
+
+Framer kjøpte fart for den første versjonen. Astro kjøpte kontroll for den nåværende versjonen.
+
+Byttet var ikke en avvisning av visuelle builders. Det var en erkjennelse av at siden hadde byttet jobb.
+
+Den offentlige siden er nå bare det synlige laget. Under det sitter det egentlige systemet: MDX, komponenter, ruter, i18n, deploy-sjekker, crawler-tilgang, produksjonsverifisering og en arbeidsflyt der agenter kan gjøre endringer uten å ødelegge sidens form.
+
+Det systemet er verdt å eie.
+
+Gjelden i det er også verdt å navngi.
+
+Det er den ærlige versjonen av migrasjonen.
+
+---
+
+**Relatert:** [Slik bygget jeg om porteføljen med Astro og Cloudflare Pages](/no/insights/astro-cloudflare-pages-portfolio-ai-workflow) · [Cloudflare-migrasjon: hva du får utover hosting](/no/insights/cloudflare-migration-zero-trust-free-tier) · [GTM Tools: Build vs Buy Decision Framework for Operators](/no/insights/gtm-tools-build-vs-buy-decision-framework)

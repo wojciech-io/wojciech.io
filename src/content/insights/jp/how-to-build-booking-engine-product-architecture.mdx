@@ -1,0 +1,66 @@
+---
+title: "誰も手を出さなかった市場向けの予約エンジンを構築する"
+description: "ニッチなキャンプ場運営者にはカレンダー、料金設定、SMSが必要でした。汎用プラットフォームは関係ないものばかり作り込んでいた。だから本当に必要なものを作りました。"
+publishedAt: "2025-12-08"
+tags:
+  - Product
+  - Booking
+  - Web app
+  - B2C
+category: "Products"
+coverType: "product"
+featured: false
+draft: false
+locale: "jp"
+translationOf: "how-to-build-booking-engine-product-architecture"
+tldr:
+  - "ニッチな予約市場は、汎用プラットフォームが的外れなものを作り込んでいるため、十分にサービスされていません"
+  - "核心的な気づき: キャンプ場運営者に必要なのはカレンダー、料金設定、SMS確認だけです。ローンチ時にはそれ以外は関係ありません"
+  - "モバイルファーストで構築。キャンプ場検索の80%以上がスマートフォンで行われ、多くの場合は現地のゲート前で行われます"
+  - "収益モデルはSaaSサブスクリプションではなくトランザクション手数料: 運営者とのインセンティブが一致します"
+---
+
+ポーランドのキャンプ場・RV向け区画市場には問題がありました。予約の大半は電話か、1件あたり15-18%のコストがかかるbooking.comのリスティング経由で行われていました。どちらの選択肢も良くありません。
+
+電話予約は失われた収益です（深夜の問い合わせなし、検索性なし、アップセルなし）。[Booking.com](https://www.booking.com/)はホテルには機能しますが、ピクニックテーブルとコンポストトイレがある40区画のキャンプ場にとっては、高コストな過剰仕様です。
+
+そこで、このギャップに特化した垂直型予約エンジンを構築しました。
+
+## プロダクトの制約が設計を決めた
+
+**運営者はテクノロジーに詳しくありません。** 管理画面はキャンプ場のwifi環境でSamsung GalaxyのChromeで動作する必要がありました。オンボーディングの電話もなし、ヘルプドキュメントもなし、研修予算もなし。UIは見ただけで分かるものでなければなりませんでした。
+
+**ゲストはモバイルで予約します。** 最初の運営者の旧サイトのアナリティクスでは82%がモバイルでした。予約フローは片手の親指で操作可能である必要がありました: 日付を選択、区画を選択、支払い、完了。アカウント作成は不要です。
+
+**料金設定は不規則です。** キャンプ場には週末料金、ハイシーズン料金、早期割引、直前割引があり、運営者によって区画単位か人数単位かの料金設定が異なります。汎用的な予約エンジンはこれを単純化しすぎるか、作り込みすぎるかのどちらかです。博士号がなくても設定できる、80%のケースをカバーする柔軟な料金マトリクスを構築しました。
+
+## 技術的な判断
+
+<Tabs labels={['Backend', 'Payments', 'Notifications', 'Admin']}>
+  <Fragment slot="0">シンプルな空き状況モデルを持つPostgres: 区画の在庫、日付ブロック、予約。中核の空き状況チェックは重複する区間のシンプルなクエリです。意図的にシンプルにしています。速くて正確である必要があり、賢い必要はないからです。</Fragment>
+  <Fragment slot="1">[Stripe](https://stripe.com/)を選択。Przelewy24やPayUではありません。開発者体験が優れており、観光客トラフィックには国際的なカード対応が重要です。Stripe経由でのポーランドのカード受付は完全に対応しています。</Fragment>
+  <Fragment slot="2">[Twilio](https://www.twilio.com/)経由のSMS。テストでは、メール確認は10分以内の開封率が34%でした。SMSは2分以内に94%でした。ゲートコードと区画番号を含む予約確認では、この差が運営上重要になります。</Fragment>
+  <Fragment slot="3">視覚的な空き状況カレンダーを備えたシンプルなCRUDインターフェース。最もよく使われるビュー: 本日の到着、週間カレンダー、料金エディター。それ以外は二の次です。</Fragment>
+</Tabs>
+
+## 変えたいところ
+
+最初のコホートの運営者でのオンライン決済の導入率は予想より低い結果でした。ポーランドのキャンプ場ゲストは到着時の支払いに慣れています。全額前払いのコンバージョン率は許容範囲でしたが、「今すぐ予約、到着時に支払い」のコンバージョン率は大幅に高かった一方で、キャンセル対応の問題が発生しました。
+
+より良いモデル: オンラインで少額のデポジット、残りは現地で: これが初日からの正しいプロダクト判断だったはずです。3ヶ月目に追加しました。
+
+## ニッチ市場の教訓
+
+<KeyTakeaway title="ニッチは小規模ではない">
+ニッチ市場は小さな市場ではありません。ポーランドでのキャンプは、予約インフラに構造的なギャップがある成長カテゴリーです。市場全体が小さいわけではなく、単にサービスが提供されていないだけです。正しいアプローチは、少ないことを正しく行うことです。ニッチプラットフォームは3つのことを極めて上手くやれば勝てます。なぜなら、代替手段は30のことを中途半端にやっているからです。
+</KeyTakeaway>
+
+<BeforeAfter
+  label="Payment model evolution"
+  before={{ title: "Full prepayment", body: "Higher trust signal, lower conversion. Polish campsite guests are used to paying at arrival. Cancellation handling was clean but volume was weak." }}
+  after={{ title: "Deposit + balance at arrival", body: "Small deposit online, rest on site. Higher conversion, slight cancellation risk, but operationally better for both sides. Should have shipped this on day one." }}
+/>
+
+---
+
+**Related:** [GTM Tools: Build vs Buy Decision Framework for Operators](/jp/insights/gtm-tools-build-vs-buy-decision-framework) · [How to Build Micro-SaaS with AI Tools: product lessons from 10+ shipped apps](/jp/insights/how-to-build-micro-saas-with-ai-tools)

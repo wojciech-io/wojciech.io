@@ -1,0 +1,199 @@
+---
+title: "En GTM-agent der koerer outbound, beriger CRM og koster 2 dollar per run"
+description: "Ingen Clay, ingen Apollo-credits, ingen n8n. En fire-lags Claude Code-agent der haandterer outbound research, sequence drafts og CRM enrichment nativt."
+publishedAt: "2025-04-18"
+updatedAt: "2026-05-10"
+tags:
+  - AI
+  - GTM
+  - Claude Code
+  - MCP
+tldr:
+  - "4-lags stack: CLAUDE.md operator identity, MCP tools, client memory files, 5 operator skills"
+  - "Ingen Clay, ingen Apollo-credits: Claude Code haandterer research, enrichment og sequence drafting nativt"
+  - "Pris per fuldt outbound run: ca. 2-8 dollar vs. 200-500 dollar/maaned for en tilsvarende tool stack"
+  - "Systemet koerer som operator, ikke som chatbot: strukturerede outputs, persistent hukommelse, rigtige integrationer"
+  - "Genbrugbart paa tvaers af klienter: udskift memory-filen, behold hele stacken"
+featured: true
+draft: false
+coverType: terminal
+coverImage: "/images/insights/how-to-build-gtm-ai-agent-outbound-crm.webp"
+locale: "dk"
+translationOf: "how-to-build-gtm-ai-agent-outbound-crm"
+---
+
+Det meste GTM AI-indhold falder i en af to kategorier: prompt-tips til ChatGPT eller sammenligninger af vaerktojer til 500 dollar om maaneden, som ingen reelt kan handle paa. Det her er ingen af delene.
+
+Det her er en gennemgang af et fungerende system, jeg har bygget og driver: en fire-lags [Claude Code](https://docs.anthropic.com/en/docs/claude-code) agent stack der haandterer outbound research, sequence drafting, CRM enrichment og ICP scoring. Ingen [Clay](https://clay.com). Ingen [Apollo](https://apollo.io) enrichment-credits. Ingen [n8n](https://n8n.io) flows der bryder sammen hver tredje uge.
+
+Bare Claude Code, en haandfuld [MCP](https://modelcontextprotocol.io) tools, et velstruktureret CLAUDE.md (hent [starter-templaten](/bites/)) og fem operator skills koblet sammen.
+
+---
+
+## Hvorfor Claude Code i stedet for Clay
+
+[Clay](https://www.clay.com/) er fremragende til det, det goer: strukturerede enrichment pipelines med et visuelt interface og en credit-model per raekke. Jeg har brugt det. Det er oprigtigt nyttigt for teams der har brug for enrichment i stor skala uden engineering-ressourcer.
+
+Men det har begraensninger der betyder noget for min maade at arbejde paa:
+
+- Du koeber enrichment-credits, ikke intelligens. Clay router data gennem tredjepartsudbydere: [Clearbit](https://clearbit.com/), [Apollo](https://www.apollo.io/), LinkedIn-scrapere: og fakturerer per raekke. LLM reasoning-laget er tyndt.
+- Den visuelle pipeline er kraftfuld men skroebelig. Kompleks logik bliver svaer at inspicere, versionere eller overdrage.
+- Det skriver ikke. Du kan traekke data ind i en variabel og injicere det i et template, men den faktiske raesonnering om *hvorfor denne prospect er relevant for denne account paa dette tidspunkt* er der ikke.
+
+Claude Code, specifikt agent-loopet via SDK med MCP tools tilkoblet, lader mig bygge noget anderledes: et system der **laeser kontekst, raesonnerer om fit, skriver copy og opdaterer records**, alt i et gennemlob. Intelligensen er produktet, ikke infrastrukturen.
+
+---
+
+## Fire-lags stacken
+
+Systemet har fire komponenter der arbejder sammen:
+
+### Lag 1: CLAUDE.md: operator-briefingen
+
+Hver Claude Code agent-session starter med at laese `CLAUDE.md`. Det er ikke dokumentation. Det er briefing-filen: det svarer til det du ville give en junior SDR paa foerste dag, bare det laeses af modellen ved hvert run.
+
+Min indeholder:
+
+- ICP-definition (firmografisk, teknografisk, adfaerdssignaler)
+- Tone og persona for outreach (direkte, ingen buzzwords, operator-to-operator)
+- Hvad en kvalificeret lead ser ud vs. en tidsspilder
+- Haandtering af edge cases (intet LinkedIn, udenlandske markeder, inbound vs. outbound)
+- Haarce regler (naevn aldrig konkurrenter ved navn, brug aldrig "I hope this finds you well")
+
+CLAUDE.md er den vigtigste fil i systemet. Det er her, operator-doeommekraft bliver kodet, saa modellen ikke behoever at gaette.
+
+### Lag 2: MCP tools: data access-laget
+
+Jeg koerer fire MCP-servere i stacken:
+
+**Web search** (via Brave MCP eller Exa MCP): til realtids-virksomhedsresearch, funding-nyheder, jobopslag, nyligt indhold. Erstatter "waterfall enrichment"-trinnet i Clay.
+
+**Browser automation** (via Puppeteer MCP): til sider der blokerer crawlere. LinkedIn-virksomhedssider, nogle pricing-sider, Glassdoor-signaler om teamstoerelse og burn rate.
+
+**Memory / file system** (via Claude Filesystem MCP): til at laese og skrive klientfiler: CRM export CSV, sequence templates, det loeende log over kontaktede accounts.
+
+**Custom scoring MCP** (bygget paa en weekend med MCP SDK): tager et struktureret JSON-objekt (virksomhedsdata + ICP-kriterier) og returnerer en fit-score med begrundelse. Svaerrest at bygge og mest vaerdifuldt: det giver agenten en konsistent scoring-rubrik paa tvaers af runs.
+
+### Lag 3: Client memory files
+
+Hver klient faar en mappe:
+
+<CodeBlock
+  title="/clients/acme-corp/"
+  lang="text"
+  code={`icp.md           # hvem vi targeter og hvorfor
+contacted.csv    # loeende log over kontaktede accounts
+sequences/       # godkendte sequence-varianter
+research/        # research-noter per account`}
+  caption="Agenten laeser disse ved session-start. Hver sequence er forankret i reel research."
+/>
+
+### Lag 4: De fem skills
+
+Skills er navngivne sub-tasks agenten kan kalde. Jeg har fem:
+
+<Accordion
+  items={[
+    { title: '/research [company]', content: 'Koerer en fuld virksomhedsprofil: firmographics, seneste nyheder, tech stack-signaler, teamstoerelse, funding-status, noegle-stakeholders. Skriver til research/[company].md.' },
+    { title: '/score [company]', content: 'Laeser research-filen og ICP-definitionen, returnerer en fit-score fra 1-10 med tre saetningers begrundelse. Under 6 = spring over. 8+ = prioritet.' },
+    { title: '/draft [company] [sequence-variant]', content: 'Laeser research-filen, scoren, sequence-templaten og skriver en personaliseret foerste email plus to follow-ups. Bruger aldrig merge fields. Skriver altid fra bunden baseret paa reel research.' },
+    { title: '/enrich [csv-path]', content: 'Batch-behandler en CSV med virksomhedsnavne, koerer /research og /score for hver, udskriver en beriget CSV med scores og priority flags. Det er Clay-erstatningen.' },
+    { title: '/log [company] [status]', content: 'Opdaterer contacted.csv med account-status og tidsstempel. Holder det loeende log rent uden manuel dataindtastning.' },
+  ]}
+  openFirst
+/>
+
+---
+
+## Et rigtigt run, trin for trin
+
+Saadan ser en faktisk session ud, naar jeg arbejder en ny account-liste:
+
+1. Laeg en CSV med 50 virksomhedsnavne i `/clients/acme-corp/`
+2. Koer: `claude /enrich clients/acme-corp/new-accounts.csv`
+3. Agenten looper gennem hver account: web search, browser scrape hvis noedvendigt, score, skriv research-fil, tilfoej til beriget CSV
+4. 20 minutter senere: beriget CSV med fit scores, priority flags og en research-fil for hver account over 6
+5. For top 10: `claude /draft [company] v2`, en ad gangen, review af hvert draft foer commit
+6. Log sendte sequences med `/log`
+
+Samlet tid for en 50-account-liste: cirka 45 minutters uovervaaaget agent-arbejde, plus 30 minutters mit review. Tilsvarende Clay + copywriting workflow: minimum 3-4 timer, og copy-kvaliteten er ikke sammenlignelig.
+
+---
+
+## Hvad det koster
+
+Kostnadsmodellen betyder noget. Her er en grov opgorelse per 50-account enrichment run:
+
+- Claude API (claude-sonnet-4 til aktuel pris): ca. 2-4 dollar per fuldt run afhaengig af research-dybde
+- MCP tool calls: Brave Search API er ca. 0,003 dollar/foresporgsel; Puppeteer er self-hosted saa kun compute
+- Custom scoring MCP: minimalt, det er bare struktureret JSON ind/ud
+
+Sammenlign med Clay: 800-2.400 dollar/maaned for en plan der giver meningsfulde enrichment-credits plus LLM rows. For mit volumen og min use case koerer agent-stacken til omtrent 5-10% af den pris, med bedre output-kvalitet paa reasoning- og copy-lagene.
+
+Tradeoff: det tog tid at bygge. Formentlig 20 timer fordelt paa CLAUDE.md, MCP-setup, skills og scoring-vaerktoejet. For et team uden den kapacitet er Clay det rigtige svar. For en operator der kan investere bygge-tiden, tjener det sig hurtigt ind.
+
+---
+
+## CLAUDE.md-strukturen jeg bruger
+
+Da dette er det mest genbrugbare stykke, er her template-strukturen jeg er landet paa:
+
+<CodeBlock
+  title="CLAUDE.md template"
+  lang="markdown"
+  code={`# GTM Agent: CLAUDE.md
+
+## Hvem du er
+Du er en B2B GTM research og outreach agent. Du opererer paa vegne af [Klient].
+Dit job er at researche accounts, vurdere fit og skrive outbound sequences.
+
+## ICP-definition
+**Firmografisk:** Virksomhedsstoerelse: [interval] | Branche: [liste] | Geografi: [regioner]
+**Teknografisk:** Stack-signaler der indikerer fit vs. diskvalifikation
+**Adfaerd:** Koebsintentionssignaler, timing-signaler
+
+## Tone og regler
+- Brug aldrig: "I hope this finds you well", "synergier"
+- Altid: led med en specifik observation, ikke et generisk kompliment
+- Laengde: foerste email max 100 ord. Follow-ups max 60 ord.
+
+## Haarce stopps
+Hvis en account scorer under 6, draft ikke. Log som "Low fit: skip".
+Hvis du ikke kan finde LinkedIn eller hjemmeside, log som "Research blocked" og spring over.`}
+  caption="Udfyld klammerne med klient-specifikke data. Modellen laeser dette ved hver session-start."
+/>
+
+---
+
+## Starter-pakken
+
+Jeg udgiver kernen af dette som **Claude Code GTM Agent Starter Pack**: CLAUDE.md-templaten, skills-definitionerne, mappestrukturen og scoring MCP-kildekoden.
+
+Den er tilgaengelig paa GitHub. Den er gratis. Den er designet til GTM-operatoerer der vil bygge dette selv i stedet for at vente paa en SaaS-wrapper der tager 400 dollar om maaneden for det.
+
+Pakken forudsaetter:
+- Du har en Claude API key
+- Du er komfortabel med at koere Claude Code i terminalen
+- Du forstaar din egen ICP godt nok til at udfylde et CLAUDE.md
+
+Hvis de tre ting er sande, kan du have en fungerende enrichment og outreach agent koerende paa en eftermiddag.
+
+---
+
+## Hvad der er naest
+
+Jeg tilfojer to ting til stacken:
+
+**CRM sync**: en bidirektionel MCP-connector til HubSpot der skriver berigede account-data direkte til contact/company records uden manuel CSV-import.
+
+**Signal monitoring**: et letvaegtscron der koerer `/score` ugentligt mod en watchlist af accounts og afdaekker re-engagement triggers (ny funding, ledelsesskifte, jobopslag for relevante roller).
+
+Begge dele er i gang. Jeg dokumenterer dem her, naar de er stabile.
+
+---
+
+Hvis du bygger noget lignende eller vil se starter-pakken i aktion, [book et opkald](/dk/contact#book-call). Jeg gennemgaar gerne arkitekturen.
+
+---
+
+**Relateret:** [GTM AI Agent Arkitektur: fire-lags stack guiden](/dk/insights/gtm-ai-agent-four-layer-architecture-guide) · [B2B CRM som Revenue Operations System: saadan genopbygger du det rigtigt](/dk/insights/b2b-crm-revenue-operations-system-guide)

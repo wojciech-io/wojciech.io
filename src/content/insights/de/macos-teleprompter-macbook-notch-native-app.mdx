@@ -1,0 +1,86 @@
+---
+title: "macOS Teleprompter fuer die MacBook Notch: eine native Swift App bauen"
+description: "Wie ich einen nativen macOS Teleprompter gebaut habe, der die MacBook Notch nutzt, um Sprechernotizen nah an der Kamera zu halten, ohne den Blickkontakt bei Calls zu brechen."
+publishedAt: "2026-04-10"
+tags:
+  - macOS
+  - Swift
+  - Codex
+  - AI-built
+  - Products
+category: "Products"
+coverType: "product"
+coverImage: "/images/insights/macos-teleprompter-macbook-notch-native-app.webp"
+featured: false
+draft: false
+tldr:
+  - "Native macOS App, gebaut mit Codex + Xcode: keine Swift-Vorkenntnisse noetig"
+  - "Kernidee: Notizen schweben um die Kamera-Notch, damit der Blickkontakt bei Calls natuerlich bleibt"
+  - "Codex hat Swift-Syntax uebernommen; ich habe Produktentscheidungen, UX und Iterations-Loops gemacht"
+  - "Eine native App mit AI-Unterstuetzung zu shippen ist jetzt ein realistisches Solo-Wochenendprojekt"
+locale: "de"
+translationOf: "macos-teleprompter-macbook-notch-native-app"
+---
+
+Blickkontakt bei Video-Calls ist theoretisch geloest und praktisch kaputt. Deine Notizen sind auf einem zweiten Bildschirm, in Notion, oder: schlimmer: im Kopf. Sobald du nach links schaust, merkt der Call das.
+
+Ich wollte ein Utility, das genau dort sitzt, wo die Kamera ist. Bei einem MacBook Pro ist das der Notch-Bereich am oberen Rand des Displays. Text dort ist visuell an die Kamera gebunden, was bedeutet: Lesen bei natuerlichem Blickkontakt wird zum ersten Mal moeglich.
+
+## Warum bauen statt kaufen
+
+Ich habe mir bestehende Teleprompter-Apps angesehen. Die meisten sind fuer Videoaufnahmen konzipiert: sie scrollen ein grosses Skript mit fester Geschwindigkeit. Das brauchte ich nicht. Ich brauchte:
+
+- Ein kleines, persistentes Fenster nahe der Notch
+- Aufzaehlungspunkte, die ich manuell durchsteppen kann
+- Kein Fullscreen-Takeover
+- Etwas, das startet und verschwindet ohne Tamtam
+
+Nichts im App Store passte dazu. Also habe ich es gebaut.
+
+## Der Codex Workflow
+
+Ich kam mit minimaler [Swift](https://developer.apple.com/swift/)- und keiner aktuellen [AppKit](https://developer.apple.com/documentation/appkit)-Erfahrung. [Codex](https://openai.com/index/codex/) hat veraendert, was machbar war.
+
+Der Workflow war:
+
+<Steps
+  items={[
+    { title: "UI beschreiben", meta: "1", body: "Klartextbeschreibung von dem, was ich wollte: Fensterposition, Verhalten, Tastenkuerzel." },
+    { title: "Codex generiert", meta: "2", body: "Swift/AppKit Scaffolding, Boilerplate, Window Chrome, NSPanel-Konfiguration." },
+    { title: "Reviewen und testen", meta: "3", body: "Im Simulator laufen lassen, Verhalten gegen das mentale Modell pruefen, Beschreibung anpassen." },
+    { title: "Wiederholen", meta: "4", body: "Iterieren, bis das Verhalten passt. Meistens 3-5 Runden pro Feature." }
+  ]}
+/>
+
+Codex kann Boilerplate gut: Window Chrome, Tastenkuerzel, Menueleisten-Icons, NSPanel-Konfiguration. Es schliesst auch konzeptuelle Luecken: ich beschrieb Verhalten ("Ich will, dass dieses Fenster oben bleibt, nicht in Mission Control erscheint, keinen Fokus uebernimmt") und bekam die richtigen NSPanel-Konfigurationsflags zurueck.
+
+Was Codex nicht kann, ist Geschmack. Die initiale Fenstergroesse war falsch, das Padding fuehlte sich eng an, die Schriftarten passten nicht. Jede UX-Entscheidung war meine. Codex fuehrt aus; ich entscheide.
+
+## Technische Form
+
+NotchCue ist ein Standard-macOS-Utility mit ein paar bewussten Einschraenkungen:
+
+<Benchmark
+  rows={[
+    { label: 'NSPanel + .nonactivatingPanel', value: 'Stiehlt nie den Fokus vom Meeting-Fenster' },
+    { label: 'NSWindow.Level.floating', value: 'Immer oben, unter System-Alerts' },
+    { label: 'Manueller Step-Modus', value: 'Pfeiltasten cyclen durch Aufzaehlungspunkte' },
+    { label: 'Notch-aware Positionierung', value: 'Korrekter Y-Offset je MacBook-Modell' },
+  ]}
+/>
+
+Die Notch-Erkennung war die interessanteste Herausforderung. Codex brachte mich 80% dorthin; die restlichen 20% (Multi-Display-Support, exakte Notch-Hoehe je MacBook-Modell) erforderten eigenstaendiges Graben durch die Apple-Dokumentation.
+
+## Was das beweist
+
+Die Obergrenze fuer solo, AI-gestuetzte native App-Entwicklung ist hoeher als die meisten denken. NotchCue ging von der Idee zum funktionierenden Build an einem Wochenende. Vor einem Jahr haette das entweder Swift-Vorkenntnisse oder einen Auftragnehmer erfordert.
+
+Das Muster: Intent beschreiben, Output reviewen, Geschmack anpassen, shippen: ist reproduzierbar. Ich habe es seitdem fuer drei weitere kleine macOS Utilities genutzt.
+
+<Callout type="tip" title="Das Muster ist reproduzierbar">
+Intent beschreiben, Output reviewen, Geschmack anpassen, shippen. Funktioniert fuer Swift, funktioniert fuer Astro, funktioniert fuer alles, wo die Syntax lernbar ist, aber die Produktentscheidungen bei dir liegen. Klein anfangen, Entscheidungen besitzen, das Modell die Syntax machen lassen.
+</Callout>
+
+---
+
+**Verwandt:** [How to Build Micro-SaaS with AI Tools: product lessons from 10+ shipped apps](/de/insights/how-to-build-micro-saas-with-ai-tools) · [How to Build a Booking Engine: product architecture decisions for vertical markets](/de/insights/how-to-build-booking-engine-product-architecture)
