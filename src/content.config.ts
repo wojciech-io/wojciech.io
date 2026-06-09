@@ -61,6 +61,7 @@ const testimonials = defineCollection({
     quote: z.string(),                               // the actual testimonial body
     // Curation metadata
     featured: z.boolean().default(false),            // surface on homepage
+    hero: z.boolean().default(false),                // top-3 prominent cards
     order: z.number().default(99),                   // sort within featured subset
     date: z.coerce.date().optional(),                // when given
     voiceFit: z.enum(['high', 'medium', 'low']).default('medium'), // tone alignment

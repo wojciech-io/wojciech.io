@@ -14,16 +14,19 @@ const t = {
 };
 
 const testimonialsCollection = await getCollection('testimonials', ({ data }) => data.featured && !data.draft);
-const testimonials = testimonialsCollection
-  .sort((a, b) => a.data.order - b.data.order)
-  .map((t) => ({
-    quote: t.data.quote,
-    name: t.data.author,
-    role: t.data.role,
-    company: t.data.company,
-    linkedin: t.data.href,
-    avatar: t.data.avatar,
-  }));
+const sorted = testimonialsCollection.sort((a, b) => a.data.order - b.data.order);
+
+const toCard = (t: typeof sorted[number]) => ({
+  quote: t.data.quote,
+  name: t.data.author,
+  role: t.data.role,
+  company: t.data.company,
+  linkedin: t.data.href,
+  avatar: t.data.avatar,
+});
+
+const heroTestimonials = sorted.filter((t) => t.data.hero).map(toCard);
+const secondaryTestimonials = sorted.filter((t) => !t.data.hero).map(toCard);
 ---
 
 <section class="py-[var(--space-section)] bg-[var(--color-surface)] border-t border-[var(--color-border)] section-fade">
@@ -36,6 +39,6 @@ const testimonials = testimonialsCollection
         <span class="heading-accent">{t.titleSecondary}</span>
       </h2>
     </div>
-    <TestimonialSlider testimonials={testimonials} />
+    <TestimonialSlider hero={heroTestimonials} secondary={secondaryTestimonials} />
   </div>
 </section>
