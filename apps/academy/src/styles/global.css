@@ -1,33 +1,33 @@
+/* Self-hosted Geist: no third-party CDN (privacy + perf). */
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist Mono'; src: url('/fonts/GeistMono-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: optional; }
+@font-face { font-family: 'Geist Mono'; src: url('/fonts/GeistMono-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: optional; }
+
 @import "tailwindcss";
+@import "@wojciech/tokens/index.css";
 @import "./animations.css";
 
-/* Palette ported from akademia-wojciech-io live deploy.
-   Inter + JetBrains Mono. Dark base with --orange accent.
-   Light mode lifted from app.wojciech.io for parity inside the workspace. */
-
+/* Academy aliases: map legacy vars to shared Obsidian tokens so
+   the .ac-* component CSS keeps working untouched.
+   --orange now resolves to lime (#ebff00) from the design system. */
 :root {
-  --bg: #0a0a0c;
-  --bg1: #121215;
-  --bg2: #1a1a1e;
-  --orange: #ff7a1c;
-  --orange-dim: rgba(255, 122, 28, 0.14);
-  --orange-glow: rgba(255, 122, 28, 0.28);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hi: rgba(255, 255, 255, 0.16);
-  --text: #f4f4f5;
-  --text-2: #a1a1aa;
-  --text-3: #71717a;
-  --radial: radial-gradient(ellipse at 50% -10%, rgba(255,122,28,0.18) 0%, transparent 55%);
+  --bg: var(--color-bg);
+  --bg1: var(--color-surface);
+  --bg2: var(--color-surface-2);
+  --orange: var(--color-accent-cta);
+  --orange-dim: rgb(235 255 0 / 0.14);
+  --orange-glow: rgb(235 255 0 / 0.28);
+  --border: var(--color-border);
+  --border-hi: var(--color-border-2);
+  --text: var(--color-text);
+  --text-2: var(--color-text-muted);
+  --text-3: var(--color-text-dim);
+  --radial: radial-gradient(ellipse at 50% -10%, rgb(235 255 0 / 0.18) 0%, transparent 55%);
 }
 [data-theme="light"] {
-  --bg: #fafaf8;
-  --bg1: #ffffff;
-  --bg2: #f1f0ec;
-  --border: rgba(0, 0, 0, 0.08);
-  --border-hi: rgba(0, 0, 0, 0.16);
-  --text: #0a0a0a;
-  --text-2: #555;
-  --text-3: #999;
   --radial: transparent;
 }
 
@@ -38,13 +38,13 @@ body {
   background: var(--bg);
   background-image: var(--radial);
   color: var(--text);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-sans);
   min-height: 100vh;
   display: flex; flex-direction: column;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-code, pre, .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+code, pre, .mono { font-family: var(--font-mono); }
 a { color: inherit; text-decoration: none; }
 
 /* Header */
@@ -73,7 +73,7 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: center; gap: 10px;
 }
 .ac-header-cta {
-  background: var(--orange); color: #0a0a0c;
+  background: var(--orange); color: var(--color-accent-text);
   padding: 8px 16px; border-radius: 8px;
   font-size: 13px; font-weight: 700;
   transition: filter .15s;
@@ -122,7 +122,7 @@ a { color: inherit; text-decoration: none; }
   display: inline-flex; align-items: center; gap: 8px;
   transition: filter .15s, background .15s, border-color .15s;
 }
-.ac-btn-primary { background: var(--orange); color: #0a0a0c; }
+.ac-btn-primary { background: var(--orange); color: var(--color-accent-text); }
 .ac-btn-primary:hover { filter: brightness(1.1); }
 .ac-btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border-hi); }
 .ac-btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
@@ -274,7 +274,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--border);
   border-radius: 18px;
   background:
-    radial-gradient(circle at 86% 0%, rgba(255,122,28,0.16), transparent 42%),
+    radial-gradient(circle at 86% 0%, rgb(235 255 0 / 0.16), transparent 42%),
     rgba(18,18,21,0.76);
   box-shadow: 0 28px 90px rgba(0,0,0,0.28);
   backdrop-filter: blur(16px);
@@ -306,7 +306,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 12px;
   background: rgba(255,255,255,0.025);
 }
-.ac-ranker-row.hot { background: rgba(255,122,28,0.06); }
+.ac-ranker-row.hot { background: rgb(235 255 0 / 0.06); }
 .ac-ranker-model {
   display: flex;
   align-items: center;
@@ -325,7 +325,7 @@ a { color: inherit; text-decoration: none; }
   font-weight: 900;
   text-transform: uppercase;
 }
-.ac-ranker-row.hot .ac-ranker-model > span { background: var(--orange); color: #0a0a0c; }
+.ac-ranker-row.hot .ac-ranker-model > span { background: var(--orange); color: var(--color-accent-text); }
 .ac-ranker-model strong { display: block; font-size: 13px; line-height: 1.2; }
 .ac-ranker-model small {
   display: block;
@@ -345,7 +345,7 @@ a { color: inherit; text-decoration: none; }
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--orange), #ffb01c);
+  background: linear-gradient(90deg, var(--orange), #f5ff66);
 }
 .ac-ranker-row b { color: var(--orange); font-size: 12px; text-align: right; }
 
@@ -414,7 +414,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--border-hi);
   border-radius: 22px;
   background:
-    radial-gradient(circle at 70% 0%, rgba(255,122,28,0.18), transparent 38%),
+    radial-gradient(circle at 70% 0%, rgb(235 255 0 / 0.18), transparent 38%),
     linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
   box-shadow: 0 30px 100px rgba(0,0,0,0.32);
 }
@@ -497,7 +497,7 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   place-items: center;
   background: var(--orange) !important;
-  color: #0a0a0c !important;
+  color: var(--color-accent-text) !important;
   border-color: var(--orange) !important;
 }
 .ac-sample-play svg { width: 22px; height: 22px; }
@@ -539,7 +539,7 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   place-items: center;
   border-radius: 12px;
-  border: 1px solid rgba(255,122,28,0.38);
+  border: 1px solid rgb(235 255 0 / 0.38);
   color: var(--orange);
   background: var(--orange-dim);
 }
@@ -564,7 +564,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--border);
   border-radius: 20px;
   background:
-    radial-gradient(circle at 84% 8%, rgba(255,122,28,0.12), transparent 34%),
+    radial-gradient(circle at 84% 8%, rgb(235 255 0 / 0.12), transparent 34%),
     rgba(18,18,21,0.78);
   overflow: hidden;
 }
@@ -591,7 +591,7 @@ a { color: inherit; text-decoration: none; }
   border: 0;
   border-radius: 50%;
   background: var(--orange);
-  color: #0a0a0c;
+  color: var(--color-accent-text);
 }
 .ac-mini-player svg { width: 18px; height: 18px; }
 .ac-mini-wave {
@@ -604,7 +604,7 @@ a { color: inherit; text-decoration: none; }
   flex: 1;
   min-width: 2px;
   border-radius: 999px 999px 0 0;
-  background: linear-gradient(var(--orange), rgba(255,122,28,0.22));
+  background: linear-gradient(var(--orange), rgb(235 255 0 / 0.22));
 }
 .ac-kit-card small { display: block; margin-top: 18px; color: var(--text-3); font-size: 12px; }
 .ac-file-list {
@@ -626,7 +626,7 @@ a { color: inherit; text-decoration: none; }
   width: 38px;
   color: var(--orange);
   font-size: 10px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--font-mono);
 }
 .ac-quiz-preview {
   margin-top: 18px;
@@ -659,9 +659,9 @@ a { color: inherit; text-decoration: none; }
   place-items: center;
   text-align: center;
   padding: 20px;
-  border: 1px solid rgba(255,122,28,0.28);
+  border: 1px solid rgb(235 255 0 / 0.28);
   border-radius: 16px;
-  background: radial-gradient(circle at 50% 0%, rgba(255,122,28,0.16), transparent 55%);
+  background: radial-gradient(circle at 50% 0%, rgb(235 255 0 / 0.16), transparent 55%);
 }
 .ac-cert-preview i {
   width: 48px;
@@ -699,7 +699,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--border-hi);
   border-radius: 22px;
   background:
-    radial-gradient(circle at 86% 10%, rgba(255,122,28,0.14), transparent 38%),
+    radial-gradient(circle at 86% 10%, rgb(235 255 0 / 0.14), transparent 38%),
     rgba(18,18,21,0.78);
   box-shadow: 0 28px 90px rgba(0,0,0,0.24);
   overflow: hidden;
@@ -766,7 +766,7 @@ a { color: inherit; text-decoration: none; }
   background:
     linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
     linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    radial-gradient(circle at 80% 0%, rgba(255,122,28,0.16), transparent 40%),
+    radial-gradient(circle at 80% 0%, rgb(235 255 0 / 0.16), transparent 40%),
     rgba(10,10,12,0.82);
   background-size: 44px 44px, 44px 44px, auto, auto;
 }
@@ -790,7 +790,7 @@ a { color: inherit; text-decoration: none; }
 .ac-workbench-top span:first-child { background: var(--orange); }
 .ac-workbench-top strong {
   color: var(--text-2);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
   overflow-wrap: anywhere;
 }
@@ -853,7 +853,7 @@ a { color: inherit; text-decoration: none; }
   place-items: center;
   border-radius: 12px;
   background: var(--orange);
-  color: #0a0a0c;
+  color: var(--color-accent-text);
   font-size: 13px;
 }
 .ac-action-row {
@@ -866,8 +866,8 @@ a { color: inherit; text-decoration: none; }
   line-height: 1.35;
 }
 .ac-action-row.active {
-  border-color: rgba(255,122,28,0.36);
-  background: rgba(255,122,28,0.08);
+  border-color: rgb(235 255 0 / 0.36);
+  background: rgb(235 255 0 / 0.08);
   color: var(--text);
 }
 .ac-action-row span {
@@ -901,7 +901,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--border-hi);
   border-radius: 22px;
   background:
-    radial-gradient(circle at 82% 12%, rgba(255,122,28,0.20), transparent 34%),
+    radial-gradient(circle at 82% 12%, rgb(235 255 0 / 0.20), transparent 34%),
     linear-gradient(145deg, var(--bg1), var(--bg2));
 }
 .ac-checkout-form {
@@ -931,7 +931,7 @@ a { color: inherit; text-decoration: none; }
   background:
     linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
     linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    radial-gradient(circle at 50% 50%, rgba(255,122,28,0.22), transparent 42%),
+    radial-gradient(circle at 50% 50%, rgb(235 255 0 / 0.22), transparent 42%),
     var(--bg1);
   background-size: 44px 44px, 44px 44px, auto, auto;
   overflow: hidden;
@@ -944,15 +944,15 @@ a { color: inherit; text-decoration: none; }
   top: 50%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  border: 1px solid rgba(255,122,28,0.38);
-  box-shadow: 0 0 80px rgba(255,122,28,0.22), inset 0 0 70px rgba(255,122,28,0.12);
+  border: 1px solid rgb(235 255 0 / 0.38);
+  box-shadow: 0 0 80px rgb(235 255 0 / 0.22), inset 0 0 70px rgb(235 255 0 / 0.12);
 }
 .ac-login-orb::before,
 .ac-login-orb::after {
   content: '';
   position: absolute;
   inset: 28px;
-  border: 1px dashed rgba(255,122,28,0.32);
+  border: 1px dashed rgb(235 255 0 / 0.32);
   border-radius: 50%;
   animation: ac-spin 18s linear infinite;
 }
@@ -968,7 +968,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--border);
   border-radius: 16px;
   background: rgba(10,10,12,0.72);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 13px;
   color: var(--text-2);
   backdrop-filter: blur(14px);
@@ -999,10 +999,10 @@ a { color: inherit; text-decoration: none; }
 
 /* Member app */
 .ac-app-body {
-  background: #07070a;
+  background: var(--color-bg);
   background-image:
-    radial-gradient(circle at 16% 8%, rgba(255,122,28,0.18), transparent 30%),
-    radial-gradient(circle at 88% 24%, rgba(255,176,28,0.11), transparent 28%),
+    radial-gradient(circle at 16% 8%, rgb(235 255 0 / 0.18), transparent 30%),
+    radial-gradient(circle at 88% 24%, rgb(235 255 0 / 0.11), transparent 28%),
     linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
     linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
   background-size: auto, auto, 52px 52px, 52px 52px;
@@ -1019,8 +1019,8 @@ a { color: inherit; text-decoration: none; }
   position: absolute;
   inset: 0;
   background:
-    repeating-linear-gradient(90deg, transparent 0 84px, rgba(255,122,28,0.08) 85px, transparent 86px),
-    radial-gradient(circle at 50% 0%, rgba(255,122,28,0.13), transparent 45%);
+    repeating-linear-gradient(90deg, transparent 0 84px, rgb(235 255 0 / 0.08) 85px, transparent 86px),
+    radial-gradient(circle at 50% 0%, rgb(235 255 0 / 0.13), transparent 45%);
   animation: ac-grid-shift 28s linear infinite;
 }
 .ac-app-topbar {
@@ -1048,7 +1048,7 @@ a { color: inherit; text-decoration: none; }
   height: 34px;
   border-radius: 10px;
   background: var(--orange);
-  color: #0a0a0c;
+  color: var(--color-accent-text);
   font-size: 13px;
 }
 .ac-app-nav {
@@ -1067,7 +1067,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 13px;
 }
 .ac-app-nav a:hover,
-.ac-app-logout:hover { color: var(--orange); border-color: rgba(255,122,28,0.35); }
+.ac-app-logout:hover { color: var(--orange); border-color: rgb(235 255 0 / 0.35); }
 .ac-app-logout { margin-left: auto; cursor: pointer; }
 .ac-app-main {
   max-width: 1280px;
@@ -1084,7 +1084,7 @@ a { color: inherit; text-decoration: none; }
   border: 1px solid var(--border-hi);
   border-radius: 28px;
   background:
-    radial-gradient(circle at 78% 20%, rgba(255,122,28,0.22), transparent 32%),
+    radial-gradient(circle at 78% 20%, rgb(235 255 0 / 0.22), transparent 32%),
     linear-gradient(145deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
   box-shadow: 0 32px 110px rgba(0,0,0,0.34);
 }
@@ -1127,7 +1127,7 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   place-items: center;
   background: conic-gradient(var(--orange) var(--p), rgba(255,255,255,0.08) 0);
-  box-shadow: 0 0 70px rgba(255,122,28,0.16);
+  box-shadow: 0 0 70px rgb(235 255 0 / 0.16);
 }
 .ac-orbit::before {
   content: '';
@@ -1139,7 +1139,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: #09090b;
+  background: var(--color-bg);
   font-size: 34px;
   font-weight: 900;
 }
@@ -1171,7 +1171,7 @@ a { color: inherit; text-decoration: none; }
 .ac-app-panel h2 { margin: 0 0 10px; font-size: 24px; line-height: 1.1; letter-spacing: 0; }
 .ac-muted { color: var(--text-2); line-height: 1.55; }
 .ac-live-pill {
-  border: 1px solid rgba(255,122,28,0.35);
+  border: 1px solid rgb(235 255 0 / 0.35);
   color: var(--orange);
   border-radius: 999px;
   padding: 5px 10px;
@@ -1234,7 +1234,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 14px;
   background: rgba(255,255,255,0.025);
 }
-.ac-episode-row:hover { border-color: rgba(255,122,28,0.28); background: rgba(255,122,28,0.06); }
+.ac-episode-row:hover { border-color: rgb(235 255 0 / 0.28); background: rgb(235 255 0 / 0.06); }
 .ac-episode-state {
   width: 34px;
   height: 34px;
@@ -1247,7 +1247,7 @@ a { color: inherit; text-decoration: none; }
   font-weight: 800;
 }
 .ac-episode-state.done { background: rgba(34,197,94,0.14); color: #86efac; }
-.ac-episode-state.active { background: var(--orange); color: #0a0a0c; }
+.ac-episode-state.active { background: var(--orange); color: var(--color-accent-text); }
 .ac-episode-row strong { display: block; font-size: 14px; overflow-wrap: anywhere; }
 .ac-episode-row p { margin: 3px 0 0; color: var(--text-3); font-size: 12px; overflow-wrap: anywhere; }
 .ac-episode-row > span:last-child { color: var(--text-3); font-size: 12px; white-space: nowrap; }
@@ -1288,9 +1288,9 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   place-items: center;
   background:
-    radial-gradient(circle at 50% 50%, rgba(255,122,28,0.24), transparent 36%),
+    radial-gradient(circle at 50% 50%, rgb(235 255 0 / 0.24), transparent 36%),
     linear-gradient(130deg, rgba(255,255,255,0.08), transparent),
-    #09090b;
+    var(--color-bg);
   overflow: hidden;
 }
 .ac-wave {
@@ -1317,9 +1317,9 @@ a { color: inherit; text-decoration: none; }
   place-items: center;
   border-radius: 50%;
   background: var(--orange);
-  color: #0a0a0c;
+  color: var(--color-accent-text);
   font-size: 30px;
-  box-shadow: 0 0 80px rgba(255,122,28,0.36);
+  box-shadow: 0 0 80px rgb(235 255 0 / 0.36);
   z-index: 1;
 }
 .ac-player-meta { padding: 26px 28px 8px; }
@@ -1346,7 +1346,7 @@ a { color: inherit; text-decoration: none; }
   background: rgba(255,255,255,0.04);
   color: var(--text);
 }
-.ac-player-controls button.primary { background: var(--orange); color: #0a0a0c; border-color: var(--orange); font-weight: 800; }
+.ac-player-controls button.primary { background: var(--orange); color: var(--color-accent-text); border-color: var(--orange); font-weight: 800; }
 .ac-player-controls strong { margin-left: auto; color: var(--text-3); font-size: 13px; }
 .ac-work-list {
   padding-left: 18px;
@@ -1355,10 +1355,10 @@ a { color: inherit; text-decoration: none; }
 }
 .ac-quiz-card {
   margin-top: 18px;
-  border: 1px dashed rgba(255,122,28,0.34);
+  border: 1px dashed rgb(235 255 0 / 0.34);
   border-radius: 16px;
   padding: 16px;
-  background: rgba(255,122,28,0.06);
+  background: rgb(235 255 0 / 0.06);
 }
 .ac-quiz-card span { color: var(--orange); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
 .ac-quiz-card strong { display: block; margin: 6px 0; }
@@ -1372,7 +1372,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-2);
   line-height: 1.5;
 }
-.ac-transcript span { color: var(--orange); font-family: 'JetBrains Mono', ui-monospace, monospace; margin-right: 10px; }
+.ac-transcript span { color: var(--orange); font-family: var(--font-mono); margin-right: 10px; }
 
 /* Vault */
 .ac-vault-grid {
@@ -1389,7 +1389,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 22px;
   padding: 22px;
   background:
-    radial-gradient(circle at 80% 12%, rgba(255,122,28,0.14), transparent 36%),
+    radial-gradient(circle at 80% 12%, rgb(235 255 0 / 0.14), transparent 36%),
     rgba(18,18,21,0.82);
   display: flex;
   flex-direction: column;

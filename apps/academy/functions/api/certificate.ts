@@ -122,7 +122,7 @@ async function renderCertificate(
 
   const ink = rgb(0.04, 0.04, 0.05);
   const muted = rgb(0.45, 0.45, 0.5);
-  const accent = rgb(1, 0.478, 0.11); // --orange #ff7a1c
+  const accent = rgb(0.922, 1, 0); // --accent-cta #ebff00
 
   const center = (text: string, font: typeof sans, size: number, y: number, color = ink) => {
     const w = font.widthOfTextAtSize(text, size);

@@ -17,10 +17,10 @@ export interface Episode {
 }
 
 export const series: Series[] = [
-  { id: 's1', n: 1, title: 'AI jako narzędzie operatora', short: 'model, koszt, proces', color: '#ff7a1c' },
-  { id: 's2', n: 2, title: 'Outbound jako system', short: 'ICP, sygnały, sekwencje', color: '#ffb01c' },
-  { id: 's3', n: 3, title: 'Content jako infrastruktura', short: 'research, dystrybucja, repurpose', color: '#f97316' },
-  { id: 's4', n: 4, title: 'Operating system dla GTM', short: 'dashboardy, agenci, rytm', color: '#fb923c' },
+  { id: 's1', n: 1, title: 'AI jako narzędzie operatora', short: 'model, koszt, proces', color: '#ebff00' },
+  { id: 's2', n: 2, title: 'Outbound jako system', short: 'ICP, sygnały, sekwencje', color: '#d4e600' },
+  { id: 's3', n: 3, title: 'Content jako infrastruktura', short: 'research, dystrybucja, repurpose', color: '#bfcc00' },
+  { id: 's4', n: 4, title: 'Operating system dla GTM', short: 'dashboardy, agenci, rytm', color: '#f5ff66' },
 ];
 
 const episodeTopics = [
