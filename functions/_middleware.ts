@@ -90,11 +90,11 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   'content-security-policy': [
     "default-src 'self'",
     // wasm-unsafe-eval: Pagefind search compiles a WebAssembly module at runtime.
-    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://eu-assets.i.posthog.com",
+    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline'",
     // cdn.simpleicons.org: tech-logo chips on the /stack overview page
     "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://cdn.simpleicons.org",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://o4511411558678528.ingest.de.sentry.io https://eu.i.posthog.com",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://o4511411558678528.ingest.de.sentry.io",
     "font-src 'self'",
     // worker-src: pagefind search uses web workers served from same origin
     "worker-src 'self'",
