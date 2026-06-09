@@ -271,7 +271,7 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
       work: { eyebrow: 'Trabajo seleccionado', title: 'Proyectos entregados.', titleSecondary: 'Sistemas que siguen funcionando.', allLink: 'Todo el trabajo →', ctaEyebrow: 'Colaborar', ctaHeading: '¿Un problema de ingresos que vale la pena resolver?', ctaBody: '30 minutos. Encontramos el cuello de botella y si merece la pena trabajar juntos.', ctaLink: 'Reserva una llamada →' },
       ai: { eyebrow: 'Sistemas AI', title: 'AI en la arquitectura.', titleSecondary: 'No añadida al final.', link: 'Cómo construyo con AI →', stackLabel: 'Tech stack' },
       writing: { eyebrow: 'Escritos', title: 'Notas de operador.', allLink: 'Todos los artículos →', readLink: 'Leer →', ctaBody: 'Nuevos artículos sobre sistemas AI, arquitectura GTM y modelos de crecimiento.' },
-      testimonials: { eyebrow: 'Testimonios', title: 'Cmo es', titleSecondary: 'trabajar conmigo.' },
+      testimonials: { eyebrow: 'Testimonios', title: 'Cómo es', titleSecondary: 'trabajar conmigo.' },
     },
   },
   pl: {

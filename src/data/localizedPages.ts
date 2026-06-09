@@ -169,7 +169,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: 'B2B', label: 'SaaS og teknologi' },
         { value: 'AI', label: 'Arbejdsgange og agenter' },
-        { value: 'CRM', label: 'Indtægtsdækket virksomhed' },
+        { value: 'CRM', label: 'Revenue Operations' },
       ],
       sections: [
         { title: 'revenue-arkitektur', body: 'Pipeline, CRM, attribution og GTM motion behandles som ét system. Målet er en gentagelig driftsrytme, ikke endnu et dashboard.' },
@@ -211,7 +211,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: '30m', label: 'Første opkald' },
         { value: '24h', label: 'Svartid' },
-        { value: 'EU', label: 'Fjernbetjening først' },
+        { value: 'EU', label: 'Remote-first' },
       ],
       sections: [
         { title: 'Gode emner', body: 'GTM-revision, CRM-operating model, AI-workflow-design, indholdsdrift, betalt erhvervelse, pipeline-diagnose og interne værktøjer.' },
@@ -232,7 +232,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: 'MDX', label: 'Komponenter' },
         { value: 'AI', label: 'Produktionsstakken' },
-        { value: 'GTM', label: 'Bemærkninger til operatøren' },
+        { value: 'GTM', label: 'Operator-noter' },
       ],
       sections: [
         { title: 'Hvad du finder', body: 'Build-vs-buy-beslutninger, CRM-første AI-anvendelse, Claude Code i GTM-arbejde og reelle valg af produktionsstack.' },
@@ -276,11 +276,11 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: 'B2B', label: 'SaaS og teknologi' },
         { value: 'AI', label: 'Arbeidsflyter og agenter' },
-        { value: 'CRM', label: 'Driftsinntekter' },
+        { value: 'CRM', label: 'Revenue Operations' },
       ],
       sections: [
         { title: 'revenue-arkitektur', body: 'Pipeline, CRM, attribusjon og GTM motion behandles som ett system. Målet er en repeterbar driftsrytme, ikke et nytt dashbord.' },
-        { title: 'AI-innfødt utførelse', body: 'Claude Code, MCP, automatisering og interne apper brukes der de virkelig gir resultater: research, CRM-hygiene, innholdsoperasjoner, salgsaktivering og rapportering.' },
+        { title: 'AI-native utførelse', body: 'Claude Code, MCP, automatisering og interne apper brukes der de virkelig gir resultater: research, CRM-hygiene, innholdsoperasjoner, salgsaktivering og rapportering.' },
         { title: 'Produkter som bevis', body: 'Produktene i økosystemet viser hvor raskt operatørstyrte systemer kan bygges, testes og leveres.' },
       ],
     },
@@ -318,7 +318,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: '30m', label: 'Første samtale' },
         { value: '24h', label: 'Svartid' },
-        { value: 'EU', label: 'Fjernstyrt først' },
+        { value: 'EU', label: 'Remote-first' },
       ],
       sections: [
         { title: 'Gode temaer', body: 'GTM-revisjon, CRM-operating model, AI-arbeidsflytdesign, innholdsoperasjoner, betalt anskaffelse, pipeline-diagnose og interne verktøy.' },
@@ -339,7 +339,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: 'MDX', label: 'Komponenter' },
         { value: 'AI', label: 'Produksjonsstabel' },
-        { value: 'GTM', label: 'Notater fra operatøren' },
+        { value: 'GTM', label: 'Operator-notater' },
       ],
       sections: [
         { title: 'Hva du finner', body: 'Avgjørelser om å bygge eller kjøpe, CRM-først AI-innføring, Claude Code i GTM-arbeid og reelle valg av produksjonsstack.' },
