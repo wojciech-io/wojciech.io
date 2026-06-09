@@ -72,6 +72,13 @@ This matters for anyone building on the API. A silent fallback is better UX than
 
 The pattern across the claims is consistent: the longer and more agentic the task, the larger the reported lead. Not "smarter answers," but "holds the thread across millions of tokens without losing the plot."
 
+<Tabs
+  tabs={[
+    { label: "Hard numbers", content: "Published with model-vs-model comparisons, so they are checkable: SWE-Bench Pro 80.3% against Opus 4.8 at 69.2% and GPT-5.5 at 58.6%. FrontierCode 29.3% against Opus 4.8 at 13.4%. ExploitBench 78% for Mythos 5 against Opus 4.8 at 40%. Reference points exist, so you can argue with them." },
+    { label: "Still a vendor claim", content: "Partner-reported, no shared methodology: the 50-million-line Ruby migration in a day, the first-past-90% analytics result, the protein-design help and the physics speedup. Plausible and directional, and exactly the kind of number that only counts once it survives your own workload." }
+  ]}
+/>
+
 <DataTable
   columns={[
     { key: "eval", label: "Evaluation" },
@@ -90,7 +97,29 @@ The pattern across the claims is consistent: the longer and more agentic the tas
   caption="Figures from Anthropic's launch material and the named partner evals. Numbers are theirs, not mine: I have not reproduced them. Sources linked at the end."
 />
 
-Two results are worth pulling out of the table.
+The numbers I would actually put on a slide:
+
+<MetricRow
+  items={[
+    { value: "80.3%", label: "SWE-Bench Pro", delta: "+21.7 vs GPT-5.5", deltaPositive: true },
+    { value: "29.3%", label: "FrontierCode", delta: "+15.9 vs Opus 4.8", deltaPositive: true },
+    { value: "78%", label: "ExploitBench, Mythos 5", delta: "+38 vs Opus 4.8", deltaPositive: true },
+    { value: "1 day", label: "50M-line Ruby migration", delta: "≈ 2 months by hand", deltaPositive: true }
+  ]}
+  caption="Verified model-vs-model figures plus Stripe's headline migration. Deltas are against the reference model Anthropic published."
+/>
+
+Two results are worth pulling out on their own.
+
+<Benchmark
+  label="SWE-Bench Pro"
+  yours={80.3}
+  baseline={58.6}
+  yoursLabel="Fable 5"
+  baselineLabel="GPT-5.5"
+  unit="%"
+  caption="From the launch material. Opus 4.8 sits at 69.2% on the same eval, so the lead is real generation-over-generation, not only a competitor gap."
+/>
 
 <Benchmark
   label="Core analytics benchmark"

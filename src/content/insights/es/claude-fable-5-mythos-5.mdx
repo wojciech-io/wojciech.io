@@ -1,6 +1,6 @@
 ---
 title: "Claude Fable 5 y «Mythos 5»: lo que ha lanzado Anthropic y lo que estoy probando"
-description: "Anthropic lanzó dos modelos «Frontier» el 9 de junio. Fable 5 para todo el mundo, Mythos 5 para socios acreditados en ciberseguridad y biología. A continuación, explico qué es real, qué sigue siendo una afirmación y las pruebas que realizaré a partir de mañana."
+description: "Anthropic lanzó dos modelos «Frontier» el 9 de junio. Fable 5 para todo el mundo, Mythos 5 para socios acreditados en ciberseguridad y biología. A continuación, explico qué es cierto, qué sigue siendo una afirmación y las pruebas que realizaré a partir de mañana."
 publishedAt: "2026-06-09"
 tags:
   - AI
@@ -13,7 +13,7 @@ draft: false
 locale: "es"
 translationOf: "claude-fable-5-mythos-5"
 tldr:
-  - "Fable 5 y Mythos 5 son el mismo modelo. La única diferencia radica en las medidas de seguridad: Fable está restringido para uso general, mientras que Mythos funciona con algunas medidas de seguridad suspendidas para socios verificados en los ámbitos cibernético y biológico."
+  - "Fable 5 y Mythos 5 son el mismo modelo. La única diferencia radica en las medidas de seguridad: Fable está restringido para uso general, mientras que Mythos funciona con algunas medidas de seguridad desactivadas para socios verificados de los ámbitos cibernético y biológico."
   - "Los informes de Anthropic hablan de resultados punteros en la mayoría de las evaluaciones, una migración de 50 millones de líneas de código Ruby realizada en un solo día y una ayuda en el diseño de proteínas que igualó a la de expertos humanos. Las comparativas de los proveedores no son más que afirmaciones hasta que se comprueban."
   - "El precio es de 10 $ por cada millón de tokens entrantes y de 50 $ por cada millón de tokens salientes. Es gratuito en los planes Pro, Max y Team hasta el 22 de junio; a partir de entonces, se pasará a un sistema de créditos de uso."
   - "Lo realmente importante es la capa de seguridad: clasificadores cibernéticos, biológicos y de destilación, una política de retención de 30 días y un acuerdo de «Project Glasswing» con el Gobierno de los Estados Unidos."
@@ -42,11 +42,11 @@ Esa última frase lo dice todo, y la mayoría de los artículos no lo mencionar�
 
 ## Dos modelos, un mismo cerebro
 
-El nombre lo dice todo. Según Anthropic, «fable» proviene del latín *fabula*, «lo que se cuenta», cercano al griego *mythos*. La misma raíz, dos caras. La diferencia no radica en la capacidad. Radica en lo que se le permite hacer al modelo.
+El nombre lo dice todo. Según Anthropic, «fable» proviene del latín *fabula*, «lo que se cuenta», cercano al griego *mythos*. La misma raíz, dos caras. La diferencia no radica en la capacidad, sino en lo que se le permite hacer al modelo.
 
 <Comparison
   items={[
-    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "En la API y en todos los planes a día de hoy. Las medidas de seguridad están activadas. Cuando una solicitud se encuentra con un tema marcado, no la rechaza, sino que responde discretamente con un «Opus 4.8». Según Anthropic, esto ocurre en menos del 5 % de las sesiones." },
+    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "En la API y en todos los planes actuales. Las medidas de seguridad están activadas. Cuando una solicitud se encuentra con un tema marcado, no se rechaza, sino que responde discretamente con un «Opus 4.8». Según Anthropic, esto ocurre en menos del 5 % de las sesiones." },
     { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "El mismo modelo subyacente, pero con algunas medidas de seguridad eliminadas. Acceso restringido a defensores cibernéticos previamente evaluados a través de Project Glasswing, y un futuro programa de biología. Según Anthropic, esta es la versión con las capacidades cibernéticas más potentes de todos los modelos." }
   ]}
 />
@@ -63,7 +63,7 @@ Así que, cuando llega una solicitud, la ruta queda así:
   <Box label="Opus 4.8 respuestas" sub="opción alternativa, sin rechazo" variant="muted" />
 </Diagram>
 
-Esto es importante para cualquiera que desarrolle aplicaciones basadas en la API. Un recurso alternativo silencioso ofrece una mejor experiencia de usuario que un rechazo directo, pero implica que dos modelos diferentes pueden responder dentro de una misma sesión. Si estás ejecutando evaluaciones o bucles de agentes, te interesa saber cuál de ellos ha respondido.
+Esto es importante para cualquiera que desarrolle aplicaciones basadas en la API. Un recurso alternativo silencioso ofrece una mejor experiencia de usuario que un rechazo directo, pero implica que dos modelos diferentes pueden responder dentro de una misma sesión. Si estás ejecutando evaluaciones o bucles de agentes, querrás saber cuál de ellos ha respondido.
 
 ## Las pruebas de rendimiento, con una advertencia previa
 
@@ -72,6 +72,13 @@ Esto es importante para cualquiera que desarrolle aplicaciones basadas en la API
 </Callout>
 
 El patrón que se observa en todas las afirmaciones es el mismo: cuanto más larga y más activa es la tarea, mayor es la ventaja señalada. No se trata de «respuestas más inteligentes», sino de «mantener el hilo conductor a lo largo de millones de tokens sin perder el rumbo».
+
+<Tabs
+  tabs={[
+    { label: "Cifras concretas", content: "Publicado con comparativas entre modelos, por lo que se pueden verificar: SWE-Bench Pro (80,3 %) frente a Opus 4.8 (69,2 %) y GPT-5.5 (58,6 %). FrontierCode 29,3 % frente a Opus 4.8 con un 13,4 %. ExploitBench 78 % para Mythos 5 frente a Opus 4.8 con un 40 %. Existen puntos de referencia, por lo que se pueden rebatir." },
+    { label: "Sigue siendo una reclamación del proveedor", content: "Datos facilitados por los socios, sin una metodología común: la migración de 50 millones de líneas de código Ruby en un día, el resultado analítico del «primero en superar el 90 %», la ayuda en el diseño de proteínas y la mejora del rendimiento en física. Son cifras verosímiles y orientativas, y precisamente el tipo de datos que solo cuentan si superan la prueba de tu propia carga de trabajo." }
+  ]}
+/>
 
 <DataTable
   columns={[
@@ -91,21 +98,43 @@ El patrón que se observa en todas las afirmaciones es el mismo: cuanto más lar
   caption="Datos extraídos del material de lanzamiento de Anthropic y de las evaluaciones de los socios mencionados. Las cifras son suyas, no mías: no las he reproducido. Las fuentes se indican al final."
 />
 
-Hay dos resultados que vale la pena destacar de la tabla.
+Las cifras que incluiría realmente en una diapositiva:
+
+<MetricRow
+  items={[
+    { value: "80,3 %", label: "SWE-Bench Pro", delta: "+21,7 frente aGPT-5.5", deltaPositive: true },
+    { value: "29,3 %", label: "FrontierCode", delta: "+15,9 frente a Opus 4.8", deltaPositive: true },
+    { value: "78 %", label: "ExploitBench, Mythos 5", delta: "+38 contra Opus 4.8", deltaPositive: true },
+    { value: "1 día", label: "Migración de Ruby en la línea 50M", delta: "≈ 2 meses a mano", deltaPositive: true }
+  ]}
+  caption="Cifras contrastadas entre modelos, además de la migración más destacada de Stripe. Las diferencias se comparan con el modelo de referencia publicado por Anthropic."
+/>
+
+Hay dos resultados que merece la pena destacar por separado.
+
+<Benchmark
+  label="SWE-Bench Pro"
+  yours={80.3}
+  baseline={58.6}
+  yoursLabel="Fable 5"
+  baselineLabel="GPT-5.5"
+  unit="%"
+  caption="Según el material de lanzamiento. «Opus 4.8» se sitúa en el 69,2 % en la misma evaluación, por lo que la ventaja es real de una generación a otra, y no solo una diferencia con respecto a la competencia."
+/>
 
 <Benchmark
   label="Prueba de rendimiento de análisis básicos"
   yours={90}
   baseline={80}
-  yoursLabel="Fable 5 (el primero en superar el 90 %)"
+  yoursLabel="Fable 5 (el primero que supere el 90 %)"
   baselineLabel="Opus 4.8 (según la afirmación de +10)"
   unit="%"
   caption="Un socio informa de que «Fable 5» es el primer modelo en superar el 90 %, lo que supone un avance de 10 puntos con respecto a «Opus». Un avance de tal magnitud en un índice de referencia que se encuentra en fase de saturación suele requerir dos versiones."
 />
 
-En lo que respecta a la investigación en física de vanguardia, uno de los socios afirma que Fable 5 llegó «casi al punto al que GPT-5.5 llegó tras cuatro días» en tan solo 36 horas. Si se mantiene este ritmo, la eficiencia de los tokens es lo que debería preocupar a los operadores. Un razonamiento más económico por unidad de progreso cambia lo que merece la pena automatizar.
+En lo que respecta a la investigación en física de vanguardia, uno de los socios afirma que Fable 5 llegó «casi al punto en el que GPT-5.5 había llegado tras cuatro días» en tan solo 36 horas. Si se mantiene este ritmo, la eficiencia de los tokens es lo que debería preocupar a los operadores. Un razonamiento más económico por unidad de progreso cambia lo que merece la pena automatizar.
 
-La afirmación más llamativa es la relativa a la ingeniería de software: Stripe llevó a cabo una migración de todo su código fuente —50 millones de líneas de Ruby— en un solo día, un trabajo que, según Anthropic, habría llevado a un equipo dos meses si se hubiera realizado manualmente. Si tan solo la mitad de eso se aplica a un código fuente normal, el análisis de si conviene desarrollar o adquirir herramientas internas cambia de nuevo.
+La afirmación más llamativa es la relativa a la ingeniería de software: Stripe llevó a cabo una migración de todo su código fuente —50 millones de líneas de Ruby— en un solo día, un trabajo que, según Anthropic, de otro modo habría llevado a un equipo dos meses realizarlo manualmente. Si tan solo la mitad de eso se aplica a un código fuente normal, el análisis de costes entre «desarrollar o comprar» en lo que respecta a las herramientas internas cambia de nuevo.
 
 <PullQuote source="Michael Truell, Cursor" role="tal y como se cita en la publicación de lanzamiento de Anthropic">
   Claude Fable 5 es el modelo más avanzado de CursorBench. Ha abierto una nueva categoría de problemas a largo plazo que estaban fuera del alcance de los modelos anteriores.
@@ -141,7 +170,7 @@ Y luego está **Project Glasswing**: la iniciativa de colaboración del Gobierno
 
 Esta es la frase que debería llamarte la atención: la misma consulta que resulta defensiva en manos de un ciberdefensor acreditado se convierte en un ataque en manos de otra persona. La respuesta de Anthropic no es un filtro más inteligente. Es un control de acceso. Tu identidad actual determina qué modelo te corresponde.
 
-## El rodillo tiene un reloj incorporado
+## El rodillo tiene un reloj
 
 <ArticleTimeline
   items={[
@@ -185,7 +214,7 @@ No me fío de un modelo por lo que dice en su publicación de lanzamiento. Me f�
   ]}
 />
 
-Publicaré aquí los resultados como seguimiento, con todas las cifras y todo, incluyendo los aspectos en los que se queda corto. Si tú también estás probándolo, dime qué es lo que falla. Esa es la parte que ningún artículo sobre el lanzamiento te va a contar.
+Publicaré aquí los resultados como seguimiento, con todas las cifras y todo, incluyendo los aspectos en los que se queda corto. Si tú también estás probándolo, cuéntame qué es lo que no funciona. Esa es la parte que ningún artículo sobre el lanzamiento te va a contar.
 
 ## Fuentes y lecturas recomendadas
 
@@ -199,7 +228,7 @@ He leído los documentos originales para que tú también puedas hacerlo. Estos 
     { name: "El anuncio del lanzamiento", description: "El artículo completo de Anthropic en Fable 5 y Mythos 5.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
     { name: "Tarjeta del sistema", description: "Detalles de las pruebas de seguridad y rendimiento que respaldan las afirmaciones.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
     { name: "Project Glasswing", description: "La colaboración del Gobierno de EE. UU. en materia de ciberdefensa.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
-    { name: "Mythos Preview actualización cibernética", description: "Leí hace un tiempo sobre la curva de capacidad cibernética.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
+    { name: "Mythos Preview actualización cibernética", description: "Leí hace un rato sobre la curva de capacidad cibernética.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
     { name: "Cognition FrontierCode", description: "La evaluación del código Fable 5 se ha comunicado a top.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
     { name: "Estudio de biología de validación", description: "Un trabajo independiente citado como respaldo a una hipótesis sobre el Mito.", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["Science"] }
   ]}
@@ -209,7 +238,7 @@ Si te interesa el contexto operativo que rodea a todo esto, he escrito sobre [c�
 
 <CTABand
   heading="Publico los resultados de las pruebas."
-  subtext="Coste por ejecución, dónde se produjo el fallo, qué ha cambiado en mi pila. Suscríbete a AI Espresso y sé el primero en recibirlo."
+  subtext="Coste por ejecución, dónde falló, qué cambió en mi pila. Suscríbete a AI Espresso y sé el primero en recibirlo."
   cta="Suscríbete a AI Espresso"
   ctaHref="https://subscribe.wojciech.io"
 />

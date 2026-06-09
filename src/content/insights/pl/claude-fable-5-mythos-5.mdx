@@ -1,6 +1,6 @@
 ---
 title: "Claude Fable 5 oraz „Mythos 5”: co firma Anthropic wprowadziła na rynek i co obecnie testuję"
-description: "9 czerwca firma Anthropic udostępniła dwa modele z serii Frontier. Model „Fable 5” jest dostępny dla wszystkich, natomiast model „Mythos 5” – wyłącznie dla sprawdzonych partnerów z branży cyberbezpieczeństwa i biologii. Poniżej przedstawiam, co jest faktem, a co pozostaje w sferze przypuszczeń, oraz opisuję testy, które zamierzam przeprowadzić od jutra."
+description: "9 czerwca firma Anthropic udostępniła dwa modele z serii Frontier. Model „Fable 5” jest dostępny dla wszystkich, natomiast model „Mythos 5” – wyłącznie dla sprawdzonych partnerów z branży cyberbezpieczeństwa i biologii. Poniżej przedstawiam, co jest faktem, a co pozostaje na razie tylko deklaracją, oraz opisuję testy, które zamierzam przeprowadzić od jutra."
 publishedAt: "2026-06-09"
 tags:
   - AI
@@ -15,11 +15,11 @@ translationOf: "claude-fable-5-mythos-5"
 tldr:
   - "Fable 5 a Mythos 5 to ten sam model. Jedyna różnica dotyczy zabezpieczeń: Fable jest przeznaczony do powszechnego użytku, natomiast Mythos działa z częściowo zniesionymi zabezpieczeniami dla sprawdzonych partnerów z branży cyberbezpieczeństwa i biologii."
   - "Raporty firmy Anthropic wskazują na najnowocześniejsze rozwiązania w większości testów porównawczych, migrację 50 milionów linii kodu w języku Ruby zrealizowaną w ciągu jednego dnia oraz wsparcie w projektowaniu białek dorównujące umiejętnościom doświadczonych specjalistów. Wyniki testów porównawczych dostawców pozostają jedynie twierdzeniami, dopóki się ich nie sprawdzi."
-  - "Opłata za wpłatę wynosi 10 USD, a za wypłatę 50 USD za każdy milion tokenów. W planach Pro, Max i Team usługa jest bezpłatna do 22 czerwca, a następnie zostanie wprowadzony system kredytów za użytkowanie."
-  - "Najważniejsze są jednak zabezpieczenia: klasyfikatory cyberzagrożeń, zagrożeń biologicznych i danych dotyczących destylacji, 30-dniowa polityka przechowywania danych oraz umowa o wymianie informacji (Project Glasswing) zawarta z rządem Stanów Zjednoczonych."
+  - "Opłata za wpłatę wynosi 10 USD, a za wypłatę 50 USD za każdy milion tokenów. W planach Pro, Max i Team usługa jest bezpłatna do 22 czerwca, a następnie zacznie się rozliczać w ramach limitów użytkowania."
+  - "Najważniejsze są jednak zabezpieczenia: klasyfikatory cyberbezpieczeństwa, biologiczne i destylacyjne, polityka przechowywania danych przez 30 dni oraz umowa o wymianie informacji (Project Glasswing) zawarta z rządem Stanów Zjednoczonych."
 ---
 
-Firma Anthropic udostępniła dzisiaj, 9 czerwca 2026 r., dwa modele Frontier: [Claude Fable 5 oraz Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Jeden z nich jest dostępny dla wszystkich. Drugi jest dostępny wyłącznie w ramach programu zaufanego dostępu. Pod względem technicznym są to te same modele.
+Firma Anthropic udostępniła dzisiaj, 9 czerwca 2026 r., dwa modele Frontier: [Claude Fable 5 oraz Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Jeden z nich jest dostępny dla wszystkich. Drugi jest objęty programem zastrzeżonego dostępu. Pod względem technicznym są to te same modele.
 
 To ostatnie zdanie zawiera całą istotę sprawy, a większość relacji pominie ten fakt. Zanim więc zrzuty ekranu z testów porównawczych zapełnią wasze kanały informacyjne, oto co faktycznie się zmieniło, co nadal pozostaje tylko twierdzeniem producenta oraz cztery testy, które zamierzam przeprowadzić od jutra.
 
@@ -42,18 +42,18 @@ To ostatnie zdanie zawiera całą istotę sprawy, a większość relacji pominie
 
 ## Dwa modele, jeden mózg
 
-Wszystko zdradza nazwa. Firma Anthropic twierdzi, że słowo „fable” wywodzi się od łacińskiego *fabula*, oznaczającego „to, co opowiadane”, bliskiego greckiemu *mythos*. Ten sam rdzeń, dwie twarze. Różnica nie polega na możliwościach. Chodzi o to, na co modelowi wolno.
+Wszystko zdradza nazwa. Firma Anthropic twierdzi, że słowo „fable” wywodzi się od łacińskiego *fabula*, oznaczającego „to, co jest opowiadane”, bliskiego greckiemu *mythos*. Ten sam rdzeń, dwie twarze. Różnica nie polega na możliwościach. Chodzi o to, na co modelowi wolno.
 
 <Comparison
   items={[
-    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "Obecnie dotyczy to API i wszystkich planów. Zabezpieczenia są włączone. Gdy żądanie dotyczy tematu oznaczonego jako wrażliwy, nie jest ono odrzucane: zamiast tego system po cichu zwraca odpowiedź „Opus 4.8”. Według firmy Anthropic zdarza się to w mniej niż 5% sesji." },
+    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "Obecnie dotyczy to API i wszystkich planów. Zabezpieczenia są włączone. Gdy żądanie dotyczy tematu oznaczonego jako wrażliwy, nie jest ono odrzucane: zamiast tego system dyskretnie zwraca odpowiedź „Opus 4.8”. Według firmy Anthropic sytuacja ta ma miejsce w mniej niż 5% sesji." },
     { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Ten sam model bazowy, z pewnymi zniesionymi zabezpieczeniami. Dostęp ograniczony do sprawdzonych cyberobrońców poprzez program „Project Glasswing” oraz przyszły program biologiczny. Według Anthropic jest to wersja o największych możliwościach cybernetycznych spośród wszystkich modeli." }
   ]}
 />
 
 Gdy więc wpływa żądanie, ścieżka wygląda następująco:
 
-<Diagram caption="Jak biblioteka „Fable 5” obsługuje zgłoszone żądanie: nie odrzuca go, a jedynie stosuje model o mniejszej widoczności">
+<Diagram caption="Jak biblioteka „Fable 5” obsługuje zgłoszone żądanie: nie odrzuca go, a jedynie stosuje model o mniejszym obciążeniu">
   <Box label="Twoje zgłoszenie" />
   <Arrow label="klasyfikator" />
   <Box label="Kontrola bezpieczeństwa" sub="cyber · bio · destylacja" variant="accent" />
@@ -63,15 +63,22 @@ Gdy więc wpływa żądanie, ścieżka wygląda następująco:
   <Box label="Opus 4.8 odpowiedzi" sub="rozwiązanie awaryjne, brak odmowy" variant="muted" />
 </Diagram>
 
-Ma to znaczenie dla każdego, kto korzysta z tego API. Ciche przełączenie na rezerwę zapewnia lepszy komfort użytkowania niż bezpośrednia odmowa, ale oznacza to, że w ramach jednej sesji mogą odpowiadać dwa różne modele. Jeśli korzystasz z funkcji `evals` lub pętli agentów, warto wiedzieć, który z nich udzielił odpowiedzi.
+Ma to znaczenie dla każdego, kto tworzy aplikacje w oparciu o ten interfejs API. Ciche przejście na rezerwę zapewnia lepszy komfort użytkowania niż bezpośrednia odmowa, ale oznacza to, że w ramach jednej sesji mogą odpowiadać dwa różne modele. Jeśli korzystasz z funkcji `evals` lub pętli agentów, warto wiedzieć, który z nich udzielił odpowiedzi.
 
 ## Wyniki testów porównawczych, z pewnym zastrzeżeniem
 
-<Callout type="warning" title="Przeczytaj to przed zapoznaniem się z danymi liczbowymi">
+<Callout type="warning" title="Przeczytaj to przed zapoznaniem się z danymi">
   Wszystkie poniższe informacje pochodzą od firmy Anthropic lub jej partnerów wprowadzających produkt na rynek. Wyniki testów porównawczych partnerów mają charakter marketingowy, dopóki nie sprawdzą się w praktyce przy Twoim obciążeniu pracą. Przytaczam je, ponieważ wskazują, na co warto zwrócić uwagę, a nie dlatego, że udało mi się je odtworzyć.
 </Callout>
 
 We wszystkich przypadkach obserwuje się spójną tendencję: im dłuższe i bardziej wymagające zadanie, tym większa zgłaszana przewaga. Nie chodzi o „mądrzejsze odpowiedzi”, ale o to, by „nie zgubić wątku wśród milionów tokenów”.
+
+<Tabs
+  tabs={[
+    { label: "Twarde dane", content: "Wyniki opublikowano wraz z porównaniami między poszczególnymi modelami, dzięki czemu można je zweryfikować: SWE-Bench Pro – 80,3% w porównaniu z modelem „Opus 4.8” (69,2%) oraz „GPT-5.5” (58,6%). FrontierCode 29,3% w porównaniu z Opus 4.8 (13,4%). ExploitBench 78% dla Mythos 5 w porównaniu z Opus 4.8 (40%). Istnieją punkty odniesienia, więc można je podważyć." },
+    { label: "Nadal chodzi o roszczenie dostawcy", content: "Dane podane przez partnerów, bez ujawnionej metodologii: migracja 50 milionów linii kodu w języku Ruby w ciągu jednego dnia, wynik analityczny „pierwsze przekroczenie 90%”, pomoc w projektowaniu białek oraz przyspieszenie obliczeń fizycznych. Brzmi to wiarygodnie i wskazuje kierunek rozwoju – to właśnie ten rodzaj liczb, które mają znaczenie dopiero wtedy, gdy sprawdzają się w praktyce przy Twoim własnym obciążeniu pracą." }
+  ]}
+/>
 
 <DataTable
   columns={[
@@ -91,7 +98,29 @@ We wszystkich przypadkach obserwuje się spójną tendencję: im dłuższe i bar
   caption="Dane pochodzą z materiałów promocyjnych firmy Anthropic oraz z ocen wymienionych partnerów. Liczby są ich, a nie moje: nie przytoczyłem ich samodzielnie. Źródła podano w linkach na końcu."
 />
 
-Warto zwrócić uwagę na dwa wyniki z tej tabeli.
+Liczby, które faktycznie umieściłbym na slajdzie:
+
+<MetricRow
+  items={[
+    { value: "80,3%", label: "SWE-Bench Pro", delta: "+21,7 w porównaniu z GPT-5.5", deltaPositive: true },
+    { value: "29,3%", label: "FrontierCode", delta: "+15,9 w porównaniu z Opus 4.8", deltaPositive: true },
+    { value: "78%", label: "ExploitBench, Mythos 5", delta: "+38:Opus 4.8", deltaPositive: true },
+    { value: "1 dzień", label: "Migracja linii 50M-line Ruby", delta: "≈ 2 miesiące przy ręcznej pracy", deltaPositive: true }
+  ]}
+  caption="Zweryfikowane dane porównawcze między modelami oraz najważniejsze informacje dotyczące migracji serwisu Stripe. Różnice podano w odniesieniu do modelu referencyjnego opublikowanego przez firmę Anthropic."
+/>
+
+Warto zwrócić uwagę na dwa wyniki.
+
+<Benchmark
+  label="SWE-Bench Pro"
+  yours={80.3}
+  baseline={58.6}
+  yoursLabel="Fable 5"
+  baselineLabel="GPT-5.5"
+  unit="%"
+  caption="Z materiałów promocyjnych. W tym samym teście „Opus 4.8” osiągnął wynik 69,2%, więc przewaga wynika z rzeczywistego postępu między generacjami, a nie tylko z różnicy w stosunku do konkurencji."
+/>
 
 <Benchmark
   label="Podstawowy test porównawczy narzędzi analitycznych"
@@ -103,19 +132,19 @@ Warto zwrócić uwagę na dwa wyniki z tej tabeli.
   caption="Jeden z partnerów podaje, że model „Fable 5” jako pierwszy przekroczył próg 90%, co stanowi 10-punktowy skok w stosunku do modelu „Opus”. Tak duży wzrost w przypadku nasycającego się rynku zazwyczaj wymaga dwóch kolejnych premier."
 />
 
-Jeśli chodzi o badania z zakresu fizyki najnowocześniejszej, jeden z partnerów twierdzi, że w ciągu 36 godzin platforma „Fable 5” osiągnęła „prawie taki sam poziom, jaki osiągnął projekt „GPT-5.5” po czterech dniach”. Jeśli tempo to się utrzyma, operatorzy powinni zwrócić uwagę przede wszystkim na wydajność tokenów. Niższe koszty obliczeniowe w przeliczeniu na jednostkę postępu zmieniają to, co warto zautomatyzować.
+Jeśli chodzi o badania z zakresu fizyki najnowszych osiągnięć, jeden z partnerów twierdzi, że w ciągu 36 godzin projekt „Fable 5” osiągnął „prawie ten sam poziom, na którym po czterech dniach znalazł się projekt „GPT-5.5”. Jeśli tempo to się utrzyma, operatorzy powinni zwrócić uwagę przede wszystkim na wydajność tokenów. Niższy koszt obliczeń w przeliczeniu na jednostkę postępu zmienia to, co warto zautomatyzować.
 
-Najbardziej przekonujące są argumenty dotyczące inżynierii oprogramowania: firma Stripe przeprowadziła w ciągu jednego dnia migrację całego kodu obejmującego 50 milionów linii kodu w języku Ruby – według Anthropic ręczne wykonanie tej pracy zajęłoby zespołowi dwa miesiące. Jeśli nawet połowa tych wyników sprawdzi się w przypadku zwykłego kodu źródłowego, to kalkulacja dotycząca wyboru między tworzeniem a zakupem narzędzi wewnętrznych znów ulegnie zmianie.
+Najbardziej przekonujące są argumenty dotyczące inżynierii oprogramowania: firma Stripe przeprowadziła w ciągu jednego dnia migrację całego kodu obejmującego 50 milionów linii kodu w języku Ruby, co według Anthropic zajęłoby zespołowi dwa miesiące, gdyby trzeba było wykonać to ręcznie. Jeśli nawet połowa tych wyników sprawdzi się w przypadku zwykłego kodu źródłowego, to kalkulacja dotycząca wyboru między tworzeniem a kupowaniem narzędzi wewnętrznych znów ulegnie zmianie.
 
 <PullQuote source="Michael Truell, Cursor" role="jak podano w poście inauguracyjnym firmy Anthropic">
-  Claude Fable 5 jest najnowocześniejszym modelem w serwisie CursorBench. Otworzyło to nową klasę zadań o długim horyzoncie czasowym, które były poza zasięgiem wcześniejszych modeli.
+  Claude Fable 5 jest najnowocześniejszym modelem w serwisie CursorBench. Otworzył on nową klasę zadań o długim horyzoncie czasowym, które były poza zasięgiem wcześniejszych modeli.
 </PullQuote>
 
-GitHub, Replit, Hebbia, Morgan Stanley i Harvey – wszyscy oni mówili o tym samym: o wyraźnym kroku naprzód w stosunku do długotrwałej, wymagającej zaangażowania i wieloetapowej pracy. To spora grupa partnerów o wspólnych celach. To też dokładnie ci, których można by się spodziewać, że zabiorą głos w dniu premiery. Pamiętajcie o obu tych kwestiach.
+GitHub, Replit, Hebbia, Morgan Stanley i Harvey zgodnie stwierdzili to samo: to wyraźny krok naprzód w stosunku do długotrwałej, wymagającej zaangażowania i wieloetapowej pracy. To spora grupa partnerów o wspólnych celach. To też dokładnie ci, których można by się spodziewać, że zabiorą głos w dniu premiery. Pamiętaj o obu tych kwestiach.
 
 ## Warstwa bezpieczeństwa to właściwy start
 
-Pomijając wyniki testów porównawczych, jest to aktualizacja wprowadzona ze względów bezpieczeństwa. Firma Anthropic wyraźnie stwierdza, że modele klasy Mythos „osiągnęły próg, powyżej którego stwarzają poważne zagrożenie”, a cała struktura Fable i Mythos ma na celu właśnie zarządzanie tym ryzykiem.
+Pomijając wyniki testów porównawczych, jest to aktualizacja wprowadzająca poprawki bezpieczeństwa. Firma Anthropic wyraźnie stwierdza, że modele klasy Mythos „osiągnęły próg, powyżej którego stwarzają poważne zagrożenie”, a cała struktura Fable i Mythos służy właśnie zarządzaniu tym ryzykiem.
 
 Przed adresem Fable 5 znajdują się trzy klasyfikatory:
 
@@ -134,12 +163,12 @@ Przed adresem Fable 5 znajdują się trzy klasyfikatory:
 Towarzyszy temu nowa polityka dotycząca danych: 30-dniowy okres przechowywania całego ruchu klasy Mythos, który nie jest wykorzystywany do szkolenia nowych modeli, przy czym każdy dostęp użytkownika jest rejestrowany, a dane są usuwane po 30 dniach w niemal wszystkich przypadkach. Jako powód podaje się wykrywanie: wykrywanie nowych ataków i eliminowanie fałszywych alarmów, zanim osiągną one większą skalę.
 
 <Callout type="note" title="Szczery kompromis, który firma Anthropic sama sobie wyznacza">
-  Zabezpieczenia są ustawione na ostrożność, a firma Anthropic przyznaje, że są one „nadal bardziej rygorystyczne, niż byłoby to idealne” i będą irytować niektórych użytkowników fałszywymi alarmami. Celem nie jest całkowite wyeliminowanie przypadków obejścia zabezpieczeń. Chodzi o to, by każde takie obejście było na tyle powolne i kosztowne, by można je było wykryć, zanim zostanie wykorzystane na szeroką skalę. Jest to stanowisko, które można uzasadnić, i zostało to jasno powiedziane. Szanuję to bardziej niż twierdzenie o „całkowitym bezpieczeństwie”.
+  Zabezpieczenia są ustawione na ostrożność, a firma Anthropic przyznaje, że są one „nadal bardziej rygorystyczne, niż byłoby to idealne” i będą irytować niektórych użytkowników fałszywymi alarmami. Celem nie jest całkowite wyeliminowanie przypadków obejścia zabezpieczeń. Chodzi o to, by każde takie obejście było na tyle powolne i kosztowne, by można je było wykryć, zanim zostanie wykorzystane na szeroką skalę. Jest to stanowisko, które można uzasadnić, powiedziane wprost. Szanuję to bardziej niż twierdzenie o „całkowitym bezpieczeństwie”.
 </Callout>
 
 Jest też **program Project Glasswing**: inicjatywa realizowana we współpracy z rządem USA, działająca od kwietnia 2026 r., w ramach której modele klasy Mythos z wyłączonymi zabezpieczeniami cybernetycznymi są przekazywane niewielkiej grupie specjalistów ds. cyberbezpieczeństwa oraz dostawców infrastruktury krytycznej. Partnerzy Glasswing otrzymują teraz ulepszenie z poziomu „Mythos Preview” do „Mythos 5”. Dla wybranych naukowców przygotowywany jest program zaufanego dostępu oparty na biologii, w którym zabezpieczenia biologiczne zostaną usunięte, a zabezpieczenia cybernetyczne pozostaną aktywne.
 
-To zdanie powinno was zaniepokoić: to samo zapytanie, które w rękach sprawdzonego specjalisty ds. cyberbezpieczeństwa stanowi środek obronny, w rękach kogoś innego staje się atakiem. Rozwiązaniem firmy Anthropic nie jest inteligentniejszy filtr. Jest to kontrola dostępu. To, kim jesteś, decyduje teraz o tym, który model otrzymasz.
+To zdanie powinno zwrócić waszą uwagę: to samo zapytanie, które w rękach sprawdzonego specjalisty ds. cyberbezpieczeństwa stanowi działanie obronne, w rękach kogoś innego staje się atakiem. Rozwiązaniem firmy Anthropic nie jest inteligentniejszy filtr. Jest to kontrola dostępu. To, kim jesteś, decyduje teraz o tym, który model otrzymasz.
 
 ## Na obudowie znajduje się zegar
 
@@ -148,22 +177,22 @@ To zdanie powinno was zaniepokoić: to samo zapytanie, które w rękach sprawdzo
     { date: "Apr 2026", title: "Project Glasswing rozpoczyna się", body: "Claude Mythos Preview dołącza do niewielkiej grupy specjalistów ds. cyberbezpieczeństwa w ramach współpracy z rządem Stanów Zjednoczonych.", tag: "Context" },
     { date: "Jun 9, 2026", title: "Fable 5 oraz premiera serwisu Mythos 5", body: "Fable 5 w ramach API oraz wszystkich planów. Usługa „Mythos 5” jest dostępna dla partnerów Glasswing. Usługa „Fable 5” jest dostępna bezpłatnie w planach Pro, Max, Team oraz Enterprise opartym na liczbie stanowisk.", tag: "Today", highlight: true },
     { date: "Jun 22, 2026", title: "Ostatni dzień bezpłatny w ramach abonamentów", body: "Ostatni dzień – usługa „Fable 5” jest dostępna bez dodatkowych opłat w ramach abonamentów." },
-    { date: "Jun 23, 2026", title: "Przeniesienie środków na konto kredytowe", body: "Fable 5 jest wyłączane zgodnie z dołączonymi planami i działa w oparciu o kredyty użytkowe, dopóki pojemność nie pozwoli na przywrócenie standardowego trybu działania." },
+    { date: "Jun 23, 2026", title: "Przeniesienie środków na konto kredytowe", body: "Fable 5 jest wyłączane zgodnie z dołączonymi planami i działa w oparciu o kredyty użytkowe, dopóki przepustowość nie pozwoli na przywrócenie standardowego trybu działania." },
     { date: "Coming weeks", title: "Biologia – sprawdzony dostęp", body: "Wybrani naukowcy zajmujący się naukami przyrodniczymi otrzymują dostęp do serwisu „Mythos 5” bez ograniczeń dotyczących bezpieczeństwa biologicznego, ponieważ środki bezpieczeństwa są stale udoskonalane." }
   ]}
   caption="Jeśli chcesz przetestować Fable 5 za darmo, masz na to czas od 9 do 22 czerwca. Po tym terminie dostęp będzie kosztował kredyty."
 />
 
-To właśnie ten bezpłatny okres jest najważniejszą praktyczną wskazówką. Mamy dwa tygodnie na intensywne działania, zanim zacznie działać licznik.
+To właśnie ten bezpłatny okres jest najważniejszym wnioskiem. Mamy dwa tygodnie, by dać z siebie wszystko, zanim zacznie bić zegar.
 
 ## Co zamierzam testować od jutra
 
-Nie ufam modelowi na podstawie jego pierwszego wpisu. Ufam mu dopiero po przetestowaniu go na moich własnych zadaniach. Oto, co od jutra będzie przechodziło przez Fable 5 – prawdziwe zadania, a nie zabawkowe zapytania.
+Nie ufam modelowi na podstawie jego pierwszego wpisu. Ufam mu dopiero po przetestowaniu go na moich własnych zadaniach. Oto, co od jutra będzie przetwarzane przez Fable 5 – na prawdziwych zadaniach, a nie na przykładowych zapytaniach.
 
 <Steps
   title="Cztery testy"
   items={[
-    { title: "Przebudowa z długoterminową perspektywą w prawdziwym repozytorium", body: "Zróbcie prawdziwą migrację w całym tym kodzie i zobaczcie, czy zachowa spójność do samego końca, czy też zacznie się rozchodzić już po dwóch godzinach. Twierdzenie o 50 milionach linii to tylko nagłówek. Moje repozytorium to sprawdzian rzeczywistości.", meta: "01 / agentic" },
+    { title: "Przebudowa z długoterminową perspektywą w rzeczywistym repozytorium", body: "Zróbcie prawdziwą migrację w całym tym kodzie i zobaczcie, czy zachowa spójność do samego końca, czy też zacznie się rozchodzić już po dwóch godzinach. Twierdzenie o 50 milionach linii to tylko nagłówek. Moje repozytorium to sprawdzian rzeczywistości.", meta: "01 / agentic" },
     { title: "Praca z arkuszami kalkulacyjnymi i analizy moich własnych danych", body: "Porównaj deklarowaną wydajność narzędzi analitycznych z rzeczywistym przebiegiem procesu raportowania, a nie z wynikami testów porównawczych. Szybkość ma znaczenie tylko wtedy, gdy wyniki są prawidłowe.", meta: "02 / knowledge work" },
     { title: "Od pomysłu do kodu", body: "Prześlij zrzut ekranu strony docelowej i poproś o kod źródłowy. Firma Anthropic twierdzi, że odtwarza aplikacje internetowe wyłącznie na podstawie obrazów. Chcę sprawdzić, jak dokładny będzie pierwszy wynik.", meta: "03 / vision" },
     { title: "Koszt na jedno uruchomienie agenta a model „Opus 4.8”", body: "Ta sama pętla wzbogacania w GTM, oba modele obok siebie. To właśnie twierdzenie o wydajności tokenów wnioskowania faktycznie zmienia moje podejście. Opublikuję dane liczbowe.", meta: "04 / unit economics" }
@@ -180,12 +209,12 @@ Nie ufam modelowi na podstawie jego pierwszego wpisu. Ufam mu dopiero po przetes
   dont={[
     "Powtórz testy wydajności z dnia premiery tak, jakbyś je przeprowadzał",
     "Podłącz wyjście klasy Mythos do dowolnego urządzenia bez zapoznawania się z zasadami przechowywania danych",
-    "Załóżmy, że zabezpieczenia nie zablokują uzasadnionego żądania",
+    "Załóżmy, że zabezpieczenia nie zablokują prawidłowego żądania",
     "Poczekaj do 23 czerwca, a potem narzekaj, że to kosztuje kredyty"
   ]}
 />
 
-W tym miejscu opublikuję wyniki wraz z danymi liczbowymi, w tym również informacje o tym, co nie działało zgodnie z oczekiwaniami. Jeśli też przeprowadzacie testy, dajcie mi znać, co się nie udało. Tego właśnie nie znajdziecie w żadnym poście dotyczącym premiery.
+W tym miejscu opublikuję wyniki wraz ze szczegółowymi danymi, w tym również informacje o tym, co nie wyszło zgodnie z planem. Jeśli też przeprowadzacie testy, dajcie znać, co nie zadziałało. Tego właśnie nie znajdziecie w żadnym poście dotyczącym premiery.
 
 ## Źródła i literatura uzupełniająca
 
@@ -197,7 +226,7 @@ Przeczytałem oryginalne materiały, żebyście i wy mogli to zrobić. Oto prawd
   caption="Własne strony firmy Anthropic oraz wyniki testów przeprowadzonych przez niezależne podmioty, o których wspomniano w dniu premiery."
   items={[
     { name: "Ogłoszenie o premierze", description: "Pełna treść wpisu firmy Anthropic na stronie Fable 5 oraz Mythos 5.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
-    { name: "Karta systemowa", description: "Szczegóły testów bezpieczeństwa i wydajności potwierdzające te twierdzenia.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
+    { name: "Karta systemowa", description: "Szczegóły dotyczące testów bezpieczeństwa i wydajności potwierdzające te twierdzenia.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
     { name: "Project Glasswing", description: "Współpraca w zakresie cyberobrony z rządem Stanów Zjednoczonych.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
     { name: "Mythos Preview aktualności z cyberprzestrzeni", description: "Wcześniej przeczytaj o krzywej zdolności cybernetycznych.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
     { name: "Cognition FrontierCode", description: "Wyniki oceny kodu Fable 5 zostały przesłane do serwisu Top.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
@@ -205,7 +234,7 @@ Przeczytałem oryginalne materiały, żebyście i wy mogli to zrobić. Oto prawd
   ]}
 />
 
-Jeśli interesuje Cię kontekst operacyjny tej kwestii, opisałem już [uruchamianie Claude Code jako stosu agentów GTM](/pl/insights/claude-code-vs-clay/) oraz [stos produkcyjny AI, z którego faktycznie korzystam](/pl/insights/ai-production-stack/). Zasada jest taka sama jak tutaj: model stanowi jedną warstwę, a otaczający go system to zadanie.
+Jeśli interesuje Cię kontekst operacyjny tej kwestii, opisałem już [uruchamianie Claude Code jako stosu agenta GTM](/pl/insights/claude-code-vs-clay/) oraz [stos produkcyjny AI, z którego faktycznie korzystam](/pl/insights/ai-production-stack/). Zasada jest taka sama jak tutaj: model stanowi jedną warstwę, a otaczający go system to zadanie.
 
 <CTABand
   heading="Publikuję wyniki testów."

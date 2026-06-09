@@ -13,15 +13,15 @@ draft: false
 locale: "it"
 translationOf: "claude-fable-5-mythos-5"
 tldr:
-  - "Fable 5 e Mythos 5 sono lo stesso modello. L'unica differenza riguarda le misure di sicurezza: Fable è riservato all'uso generale, mentre Mythos opera con alcune misure di sicurezza disattivate per partner verificati nei settori informatico e biologico."
+  - "Fable 5 e Mythos 5 sono lo stesso modello. L'unica differenza sta nelle misure di sicurezza: Fable è riservato all'uso generale, mentre Mythos opera con alcune misure di sicurezza disattivate per partner verificati nei settori informatico e biologico."
   - "I rapporti di Anthropic indicano risultati all'avanguardia nella maggior parte delle valutazioni, una migrazione di 50 milioni di righe di codice Ruby completata in un giorno e un supporto alla progettazione di proteine pari a quello offerto da esperti umani. I benchmark dei fornitori rimangono semplici affermazioni finché non vengono verificati."
-  - "Il costo è di 10 $ per l'invio e 50 $ per la ricezione ogni milione di token. Gratuito per i piani Pro, Max e Team fino al 22 giugno, dopodiché passerà a un sistema a crediti di utilizzo."
+  - "Il costo è di 10 $ per l'inserimento e 50 $ per l'estrazione ogni milione di token. Gratuito per i piani Pro, Max e Team fino al 22 giugno, dopodiché passerà a un sistema di crediti di utilizzo."
   - "Il vero punto di forza è il livello di sicurezza: classificatori informatici, biologici e di distillazione, una politica di conservazione dei dati di 30 giorni e unProject Glasswinge con il governo degli Stati Uniti."
 ---
 
 Anthropic ha pubblicato oggi, 9 giugno 2026, due modelli Frontier: [Claude Fable 5 e Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Uno è accessibile a tutti, mentre l'altro è riservato agli utenti del programma di accesso privilegiato. Si tratta, in sostanza, dello stesso modello.
 
-Quell'ultima frase riassume tutto, ma la maggior parte degli articoli non ne terrà conto. Quindi, prima che gli screenshot dei benchmark invadano il vostro feed, ecco cosa è realmente cambiato, cosa rimane ancora una semplice affermazione del produttore e i quattro test che inizierò a eseguire da domani.
+Quell'ultima frase riassume tutto, e la maggior parte degli articoli non ne terrà conto. Quindi, prima che gli screenshot dei benchmark invadano il vostro feed, ecco cosa è realmente cambiato, cosa rimane ancora una semplice affermazione del produttore e i quattro test che inizierò a eseguire da domani.
 
 <KeyTakeaway
   icon="info"
@@ -47,13 +47,13 @@ Quell'ultima frase riassume tutto, ma la maggior parte degli articoli non ne ter
 <Comparison
   items={[
     { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "Sull'API e su tutti i piani attuali. Misure di sicurezza attive. Quando una richiesta riguarda un argomento segnalato, non viene rifiutata: risponde invece in modo discreto con ”Opus 4.8”. Secondo Anthropic, ciò accade in meno del 5% delle sessioni." },
-    { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Stesso modello di base, con alcune restrizioni rimosse. L'accesso è limitato ai ”cyberdefender” selezionati tramite Project Glasswing e un programma di biologia di prossima introduzione. Secondo Anthropic, questa è la versione con le capacità informatiche più avanzate tra tutti i modelli." }
+    { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Stesso modello di base, con alcune restrizioni rimosse. L'accesso è limitato ai cyberdifensori selezionati tramite Project Glasswing e un programma di biologia di prossima introduzione. Secondo Anthropic, questa è la versione con le capacità informatiche più avanzate tra tutti i modelli." }
   ]}
 />
 
 Quindi, quando arriva una richiesta, il percorso è il seguente:
 
-<Diagram caption="Come gestisce Fable 5 una richiesta segnalata: nessun rifiuto, solo un modello più silenzioso">
+<Diagram caption="Come gestisce Fable 5 una richiesta contrassegnata: nessun rifiuto, solo un modello più silenzioso">
   <Box label="La tua richiesta" />
   <Arrow label="classificatore" />
   <Box label="Controllo di sicurezza" sub="cibernetica · biologia · distillazione" variant="accent" />
@@ -73,6 +73,13 @@ Questo è importante per chiunque sviluppi applicazioni basate sull'API. Un fall
 
 Il quadro che emerge dai vari casi è coerente: più il compito è lungo e richiede un approccio attivo, maggiore è il vantaggio segnalato. Non si tratta di «risposte più intelligenti», ma della capacità di «mantenere il filo conduttore attraverso milioni di token senza perdere il senso generale».
 
+<Tabs
+  tabs={[
+    { label: "Dati concreti", content: "Pubblicati con confronti tra modelli, in modo da poter essere verificati: SWE-Bench Pro all'80,3% contro l'Opus 4.8, al 69,2%, e l'GPT-5.5, al 58,6%. FrontierCode 29,3% contro Opus 4.8 al 13,4%. ExploitBench 78% per Mythos 5 contro Opus 4.8 al 40%. Esistono punti di riferimento, quindi è possibile discuterne." },
+    { label: "È ancora una richiesta di risarcimento da parte del fornitore", content: "Dati forniti dai partner, senza una metodologia condivisa: la migrazione di 50 milioni di righe di codice Ruby in un giorno, il risultato analitico del ”first-past-90%”, l'assistenza nella progettazione di proteine e l'accelerazione dei calcoli fisici. Dati plausibili e indicativi, esattamente il tipo di cifre che contano solo se reggono alla prova del proprio carico di lavoro." }
+  ]}
+/>
+
 <DataTable
   columns={[
     { key: "eval", label: "Valutazione" },
@@ -91,10 +98,32 @@ Il quadro che emerge dai vari casi è coerente: più il compito è lungo e richi
   caption="I dati provengono dal materiale di lancio di Anthropic e dalle valutazioni dei partner citati. I numeri sono loro, non miei: non li ho riprodotti. I link alle fonti sono riportati alla fine."
 />
 
-Vale la pena sottolineare due risultati riportati nella tabella.
+I dati che inserirei effettivamente in una diapositiva:
+
+<MetricRow
+  items={[
+    { value: "80,3%", label: "SWE-Bench Pro", delta: "+21,7 contro l'GPT-5.5", deltaPositive: true },
+    { value: "29,3%", label: "FrontierCode", delta: "+15,9 contro l'Opus 4.8", deltaPositive: true },
+    { value: "78%", label: "ExploitBench, Mythos 5", delta: "+38 contro l'Opus 4.8", deltaPositive: true },
+    { value: "1 giorno", label: "Migrazione della linea 50M-line Ruby", delta: "circa 2 mesi a mano", deltaPositive: true }
+  ]}
+  caption="Dati verificati modello contro modello, oltre alla migrazione principale di Stripe. Le differenze sono rispetto al modello di riferimento pubblicato da Anthropic."
+/>
+
+Due risultati meritano di essere sottolineati in modo particolare.
 
 <Benchmark
-  label="Benchmark analitico di base"
+  label="SWE-Bench Pro"
+  yours={80.3}
+  baseline={58.6}
+  yoursLabel="Fable 5"
+  baselineLabel="GPT-5.5"
+  unit="%"
+  caption="Dal materiale di lancio. L'Opus 4.8 registra un dato pari al 69,2% nella stessa valutazione, quindi il vantaggio è reale di generazione in generazione, non solo un divario rispetto alla concorrenza."
+/>
+
+<Benchmark
+  label="Benchmark di analisi dei dati fondamentali"
   yours={90}
   baseline={80}
   yoursLabel="Fable 5 (maggioranza relativa del 90%)"
@@ -111,11 +140,11 @@ Il dato più significativo riguarda l'ingegneria del software: Stripe ha effettu
   Claude Fable 5 è il modello all'avanguardia su CursorBench. Ha aperto la strada a una categoria di problemi a lungo termine che erano fuori dalla portata dei modelli precedenti.
 </PullQuote>
 
-GitHub, Replit, Hebbia, Morgan Stanley e Harvey hanno tutti espresso più o meno lo stesso concetto: un netto passo avanti rispetto al lavoro lungo, autonomo e articolato in più fasi. Si tratta di un numero considerevole di partner allineati. Sono anche esattamente i nomi che ci si aspetterebbe di sentire citare il giorno del lancio. Tenete a mente entrambe queste considerazioni.
+GitHub, Replit, Hebbia, Morgan Stanley e Harvey hanno tutti espresso più o meno lo stesso concetto: un netto passo avanti rispetto al lavoro lungo, autonomo e articolato in più fasi. Si tratta di un numero considerevole di partner allineati. Sono anche esattamente i nomi che ci si aspetterebbe di sentire citare nel giorno del lancio. Tenete a mente entrambe queste considerazioni.
 
 ## Il livello di sicurezza è il lancio vero e proprio
 
-Se si escludono i benchmark, si tratta di una versione di sicurezza. Anthropic afferma chiaramente che i modelli della classe Mythos «hanno raggiunto una soglia oltre la quale presentano rischi significativi», e l'intera struttura di Fable rispetto a Mythos esiste proprio per gestire tale situazione.
+Se si escludono i benchmark, si tratta di un aggiornamento di sicurezza. Anthropic afferma chiaramente che i modelli della classe Mythos «hanno raggiunto una soglia oltre la quale presentano rischi significativi», e l'intera struttura di Fable rispetto a Mythos esiste proprio per gestire tale situazione.
 
 Davanti all'Fable 5 si trovano tre classificatori:
 
@@ -131,15 +160,15 @@ Davanti all'Fable 5 si trovano tre classificatori:
   </KeyPoint>
 </Grid>
 
-A ciò si aggiunge una nuova politica sui dati: conservazione per 30 giorni di tutto il traffico della classe Mythos, che non viene utilizzato per addestrare nuovi modelli, con registrazione di tutti gli accessi umani e cancellazione dopo 30 giorni nella quasi totalità dei casi. La motivazione addotta è la rilevazione: individuare attacchi inediti ed eliminare i falsi positivi prima che assumano proporzioni significative.
+A ciò si aggiunge una nuova politica sui dati: conservazione per 30 giorni di tutto il traffico della classe Mythos, che non viene utilizzato per addestrare nuovi modelli, con registrazione di tutti gli accessi da parte di utenti umani e cancellazione dopo 30 giorni nella quasi totalità dei casi. La motivazione dichiarata è la rilevazione: individuare attacchi inediti ed eliminare i falsi positivi prima che assumano proporzioni significative.
 
 <Callout type="note" title="Il compromesso onesto che Anthropic si è data come nome">
   Le misure di sicurezza sono impostate in modo prudente, e Anthropic ammette che sono «ancora più rigide di quanto sarebbe auspicabile» e che potrebbero infastidire alcuni utenti con falsi positivi. L'obiettivo non è azzerare i jailbreak, bensì rendere ogni tentativo di jailbreak così lento e dispendioso da poter essere individuato prima che venga utilizzato su larga scala. Si tratta di una posizione difendibile, espressa in modo chiaro. La rispetto più di una dichiarazione di ”sicurezza perfetta”.
 </Callout>
 
-E poi c'è **Project Glasswing**: l'iniziativa di collaborazione del governo statunitense, attiva dall'aprile 2026, in cui modelli di classe Mythos privi delle protezioni informatiche vengono affidati a un ristretto gruppo di esperti di sicurezza informatica e fornitori di infrastrutture critiche. I partner di Glasswing passano ora da Mythos Preview a Mythos 5. È in arrivo un programma di accesso affidabile in ambito biologico per ricercatori selezionati, con le protezioni biologiche rimosse e quelle informatiche mantenute.
+E poi c'è **Project Glasswing**: l'iniziativa di collaborazione del governo statunitense, attiva dall'aprile 2026, in cui modelli di classe Mythos privi delle misure di sicurezza informatica vengono consegnati a un ristretto gruppo di esperti di sicurezza informatica e fornitori di infrastrutture critiche. I partner di Glasswing passano ora da Mythos Preview a Mythos 5. È in arrivo un programma di accesso affidabile in ambito biologico per ricercatori selezionati, con le protezioni biologiche rimosse e quelle informatiche mantenute.
 
-Ecco la frase che dovrebbe farvi riflettere: la stessa query che nelle mani di un esperto di sicurezza informatica è una misura difensiva, nelle mani di qualcun altro diventa un attacco. La risposta di Anthropic non è un filtro più intelligente. È un controllo degli accessi. È la vostra identità a determinare quale modello vi verrà fornito.
+Ecco la frase che dovrebbe farvi riflettere: la stessa query che nelle mani di un esperto di sicurezza informatica è una misura difensiva, nelle mani di qualcun altro diventa un attacco. La risposta di Anthropic non è un filtro più intelligente, bensì un controllo degli accessi. È la vostra identità a determinare quale modello vi verrà fornito.
 
 ## Il rotolo è dotato di un orologio
 
@@ -154,18 +183,18 @@ Ecco la frase che dovrebbe farvi riflettere: la stessa query che nelle mani di u
   caption="Se vuoi provare gratuitamente ”Fable 5”, il periodo è dal 9 al 22 giugno. Dopodiché sarà necessario acquistare dei crediti."
 />
 
-Il punto fondamentale è proprio questo lasso di tempo gratuito. Due settimane per dare il massimo prima che scatti il contatore.
+Il punto fondamentale è proprio questo lasso di tempo gratuito. Due settimane per darci dentro prima che scatti il contatore.
 
 ## Quello che proverò a partire da domani
 
-Non mi fido di un modello solo sulla base del suo post di lancio. Mi fido solo dopo averlo testato con il mio carico di lavoro. Ecco cosa passerà attraverso Fable 5 a partire da domani, con compiti reali, non con prompt di prova.
+Non mi fido di un modello solo sulla base del suo post di lancio. Mi fido solo dopo averlo testato con il mio carico di lavoro. Ecco cosa passerà attraverso Fable 5 a partire da domani, con compiti reali, non semplici prompt di prova.
 
 <Steps
   title="I quattro test"
   items={[
-    { title: "Una riorganizzazione a lungo termine su un repository reale", body: "Prova a trasferirlo davvero in questo codice e vedrai se mantiene il contesto fino alla fine o se va alla deriva già dopo un'ora. L'affermazione dei 50 milioni di righe è solo una notizia da prima pagina. Il mio repository è la prova della realtà.", meta: "01 / agentic" },
+    { title: "Una riorganizzazione a lungo termine su un repository reale", body: "Prova a trasferirlo integralmente in questo codice e verifica se mantiene la coerenza fino alla fine o se va alla deriva già dopo un paio d'ore. L'affermazione dei 50 milioni di righe è solo una notizia da prima pagina. Il mio repository è la prova della realtà.", meta: "01 / agentic" },
     { title: "Operazioni su fogli di calcolo e analisi dei miei dati", body: "Confronta le prestazioni dichiarate con un flusso di lavoro di reporting reale, non con un semplice foglio di benchmark. La velocità conta solo se il risultato è corretto.", meta: "02 / knowledge work" },
-    { title: "Dall'idea al codice", body: "Fagli vedere uno screenshot di una landing page e chiedigli il codice sorgente. Anthropic sostiene di riuscire a ricostruire le app web basandosi esclusivamente sulle immagini. Voglio vedere quanto ci si avvicina al risultato nel primo tentativo.", meta: "03 / vision" },
+    { title: "Dall'idea al codice", body: "Fagli vedere uno screenshot di una landing page e chiedigli il codice sorgente. Anthropic sostiene di riuscire a ricostruire le app web basandosi esclusivamente sulle immagini. Voglio vedere quanto ci va vicino al primo tentativo.", meta: "03 / vision" },
     { title: "Costo per esecuzione dell'agente rispetto all'Opus 4.8", body: "Lo stesso ciclo di arricchimento GTM, entrambi i modelli, a confronto. L'efficienza dei token di ragionamento è l'aspetto che mi ha davvero convinto. Pubblicherò i dati.", meta: "04 / unit economics" }
   ]}
 />
@@ -180,12 +209,12 @@ Non mi fido di un modello solo sulla base del suo post di lancio. Mi fido solo d
   dont={[
     "Ripeti i test delle prestazioni del giorno del lancio come se li avessi già effettuati",
     "Collegare l'uscita della classe Mythos a qualsiasi dispositivo senza consultare la politica di conservazione",
-    "Si presume che le misure di sicurezza non blocchino una richiesta legittima",
+    "Si presuma che le misure di sicurezza non blocchino una richiesta legittima",
     "Aspetta fino al 23 giugno e poi lamentati che costa crediti"
   ]}
 />
 
-Pubblicherò qui i risultati come aggiornamento, con tutti i dati, comprese le carenze. Se anche voi state effettuando dei test, fatemi sapere cosa non ha funzionato. Questa è la parte che nessun post di lancio vi dirà mai.
+Pubblicherò qui i risultati come aggiornamento, con tutti i dati, compresi i punti in cui il prodotto non è all'altezza. Se anche voi lo state testando, fatemi sapere cosa non ha funzionato. Questa è la parte che nessun post di lancio vi dirà mai.
 
 ## Fonti e approfondimenti
 
@@ -198,14 +227,14 @@ Ho letto i testi originali, così puoi farlo anche tu. Questi sono i link origin
   items={[
     { name: "L'annuncio del lancio", description: "Il post completo di Anthropic su Fable 5 e Mythos 5.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
     { name: "Scheda di sistema", description: "I dettagli dei test di sicurezza e prestazioni alla base delle affermazioni.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
-    { name: "Project Glasswing", description: "La collaborazione in materia di difesa informatica del governo statunitense.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
+    { name: "Project Glasswing", description: "La collaborazione del governo statunitense in materia di difesa informatica.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
     { name: "Mythos Preview aggiornamento informatico", description: "Leggi qui di seguito la curva delle capacità informatiche.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
     { name: "Cognition FrontierCode", description: "I risultati della valutazione del codice Fable 5 vengono inviati a top.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
     { name: "Studio di biologia a conferma", description: "Lavoro indipendente citato a sostegno di un'ipotesi relativa al Mythos.", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["Science"] }
   ]}
 />
 
-Se volete approfondire il contesto operativo, ho scritto un articolo su [come eseguire Claude Code come stack di agenti GTM](/it/insights/claude-code-vs-clay/) e [sullo stack di produzione AI che utilizzo effettivamente](/it/insights/ai-production-stack/). Il principio è lo stesso: il modello è un singolo livello, mentre il sistema che lo circonda costituisce il lavoro vero e proprio.
+Se volete approfondire il contesto operativo, ho scritto un articolo su [come eseguire Claude Code come stack di agenti GTM](/it/insights/claude-code-vs-clay/) e [lo stack di produzione AI che utilizzo effettivamente](/it/insights/ai-production-stack/). Il principio è lo stesso: il modello è un singolo livello, mentre il sistema che lo circonda costituisce il lavoro vero e proprio.
 
 <CTABand
   heading="Pubblico i risultati dei test."

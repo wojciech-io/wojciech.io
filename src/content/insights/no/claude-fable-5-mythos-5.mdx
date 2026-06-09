@@ -19,7 +19,7 @@ tldr:
   - "Det viktigste er sikkerhetslaget: klassifiseringssystemer for cybersikkerhet, biologi og destillasjon, en oppbevaringsfrist på 30 dager og en avtale om deling av informasjon (Project Glasswing) med den amerikanske regjeringen."
 ---
 
-Anthropic har i dag, 9. juni 2026, lansert to Frontier-modeller: [Claude Fable 5 og Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Den ene er tilgjengelig for alle. Den andre er begrenset til et program for pålitelig tilgang. Under overflaten er det snakk om samme modell.
+Anthropic har i dag, 9. juni 2026, lansert to Frontier-modeller: [Claude Fable 5 og Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Den ene er tilgjengelig for alle. Den andre er begrenset til et program for pålitelig tilgang. Under overflaten er det samme modell.
 
 Den siste setningen sier alt, og det meste av nyhetsdekningen vil overse den. Så før skjermbildene fra ytelsestestene fyller nyhetsfeeden din, skal jeg her fortelle hva som faktisk har endret seg, hva som fortsatt er en påstand fra produsenten, og hvilke fire tester jeg skal gjennomføre fra i morgen.
 
@@ -63,7 +63,7 @@ Så når en forespørsel kommer inn, ser banen slik ut:
   <Box label="Opus 4.8 svar" sub="reserve, ingen avslag" variant="muted" />
 </Diagram>
 
-Dette er viktig for alle som bygger på API-et. En stille fallback gir bedre brukeropplevelse enn et direkte avslag, men det betyr at to forskjellige modeller kan svare i løpet av én og samme økt. Hvis du kjører evalueringer eller agentløkker, vil du vite hvilken av dem som svarte.
+Dette er viktig for alle som bygger på API-et. En stille fallback gir bedre brukeropplevelse enn et direkte avslag, men det betyr at to forskjellige modeller kan svare i løpet av én økt. Hvis du kjører evalueringer eller agentløkker, vil du vite hvilken av dem som svarte.
 
 ## Referansetestene, med et forbehold på forhånd
 
@@ -72,6 +72,13 @@ Dette er viktig for alle som bygger på API-et. En stille fallback gir bedre bru
 </Callout>
 
 Mønsteret går igjen i alle påstandene: Jo lengre og mer handlingsorientert oppgaven er, desto større er den rapporterte fordelen. Ikke «smartere svar», men «holder tråden gjennom millioner av eksempler uten å miste oversikten».
+
+<Tabs
+  tabs={[
+    { label: "Konkrete tall", content: "Publisert med sammenligninger mellom ulike modeller, slik at resultatene kan verifiseres: SWE-Bench Pro 80,3 % mot Opus 4.8 på 69,2 % og GPT-5.5 på 58,6 %. FrontierCode 29,3 % mot Opus 4.8 på 13,4 %. ExploitBench 78 % for Mythos 5 mot Opus 4.8 på 40 %. Det finnes referansepunkter, så du kan diskutere dem." },
+    { label: "Fortsatt en påstand fra leverandøren", content: "Oppgitt av partneren, uten felles metodikk: migreringen av 50 millioner linjer Ruby-kode på én dag, analyseresultatet som nådde 90 % først, hjelpen til proteindesign og hastighetsøkningen innen fysikk. Det virker troverdig og gir en retning, og er akkurat den typen tall som bare teller når de tåler din egen arbeidsbelastning." }
+  ]}
+/>
 
 <DataTable
   columns={[
@@ -91,7 +98,29 @@ Mønsteret går igjen i alle påstandene: Jo lengre og mer handlingsorientert op
   caption="Tallene stammer fra Anthropics lanseringsmateriale og evalueringene fra de nevnte partnerne. Tallene er deres, ikke mine: Jeg har ikke gjengitt dem selv. Kildene er oppgitt i lenker nederst."
 />
 
-To resultater er verdt å trekke frem fra tabellen.
+Tallene jeg faktisk ville ha med på et lysbilde:
+
+<MetricRow
+  items={[
+    { value: "80,3 %", label: "SWE-Bench Pro", delta: "+21,7 mot GPT-5.5", deltaPositive: true },
+    { value: "29,3 %", label: "FrontierCode", delta: "+15,9 motOpus 4.8", deltaPositive: true },
+    { value: "78 %", label: "ExploitBench, Mythos 5", delta: "+38 mot Opus 4.8", deltaPositive: true },
+    { value: "1 dag", label: "Overføring av Ruby fra 50M-linjen", delta: "≈ 2 måneder for hånd", deltaPositive: true }
+  ]}
+  caption="Verifiserte tall fra modell-mot-modell-sammenligningen samt Stripes hovedmigrering. Avvikene er målt opp mot referansemodellen som Anthropic har publisert."
+/>
+
+To resultater er verdt å trekke frem spesielt.
+
+<Benchmark
+  label="SWE-Bench Pro"
+  yours={80.3}
+  baseline={58.6}
+  yoursLabel="Fable 5"
+  baselineLabel="GPT-5.5"
+  unit="%"
+  caption="Fra lanseringsmaterialet. «Opus 4.8» ligger på 69,2 % i den samme vurderingen, så forspranget er reelt fra generasjon til generasjon, ikke bare et forsprang i forhold til konkurrentene."
+/>
 
 <Benchmark
   label="Referanseindeks for kjerneanalyse"
@@ -100,7 +129,7 @@ To resultater er verdt å trekke frem fra tabellen.
   yoursLabel="Fable 5 (flest stemmer, over 90 %)"
   baselineLabel="Opus 4.8 (i henhold til påstanden om +10)"
   unit="%"
-  caption="En partner oppgir at «Fable 5» er den første modellen som har passert 90 %, noe som utgjør et hopp på 10 prosentpoeng i forhold til Opus. En slik økning i en mestringsstandard som nærmer seg metning, krever vanligvis to utgivelser."
+  caption="En partner oppgir at «Fable 5» er den første modellen som har passert 90 %, noe som utgjør et hopp på 10 prosentpoeng i forhold til Opus. En slik økning i en referanseindeks som nærmer seg metningspunktet krever vanligvis to utgivelser."
 />
 
 Når det gjelder banebrytende fysikkforskning, sier en av partnerne at «Fable 5» på 36 timer kom «nesten like langt som GPT-5.5 gjorde på fire dager». Hvis denne hastigheten holder seg, er det token-effektiviteten operatørene bør fokusere på. Lavere kostnader per enhet fremgang endrer hva som er verdt å automatisere.
@@ -111,7 +140,7 @@ Påstanden fra programvareutviklingssiden er den mest fremtredende: Stripe gjenn
   Claude Fable 5 er den mest avanserte modellen på CursorBench. Den har åpnet for en klasse av problemer med lang tidshorisont som tidligere modeller ikke klarte å håndtere.
 </PullQuote>
 
-GitHub, Replit, Hebbia, Morgan Stanley og Harvey ga alle uttrykk for det samme: et klart fremskritt i forhold til langvarig, agentbasert arbeid med flere runder. Det er mange partnere som står samlet om dette. Det er også akkurat de man ville forvente å se sitert på lanseringsdagen. Hold begge tankene i bakhodet.
+GitHub, Replit, Hebbia, Morgan Stanley og Harvey uttrykte alle det samme: et tydelig fremskritt i forhold til langvarig, agentbasert arbeid med flere runder. Det er mange partnere som står samlet om dette. Det er også akkurat de man ville forvente å se sitert på lanseringsdagen. Hold begge tankene i bakhodet.
 
 ## Sikkerhetslaget er selve oppskytingen
 
@@ -131,13 +160,13 @@ Fable 5 har tre klassifikatorer:
   </KeyPoint>
 </Grid>
 
-I tillegg innføres en ny datapolicy: 30 dagers lagring av all trafikk i Mythos-klassen, som ikke skal brukes til å trene nye modeller, med loggføring av all menneskelig tilgang og sletting etter 30 dager i nesten alle tilfeller. Den oppgitte begrunnelsen er deteksjon: å oppdage nye angrep og filtrere bort falske alarmer før de får større omfang.
+I tillegg innføres en ny datapolicy: 30 dagers lagringstid for all trafikk i Mythos-klassen, som ikke skal brukes til å trene nye modeller, med loggføring av all menneskelig tilgang og sletting etter 30 dager i nesten alle tilfeller. Den oppgitte begrunnelsen er deteksjon: å oppdage nye angrep og filtrere bort falske alarmer før de får større omfang.
 
 <Callout type="note" title="Den ærlige avveiningen som Anthropic har gitt seg selv navnet">
-  Sikkerhetstiltakene er innstilt på å være forsiktige, og Anthropic innrømmer at de «fortsatt er strengere enn det som ville vært ideelt» og vil irritere noen brukere med falske alarmer. Målet er ikke null jailbreaks. Det er å gjøre ethvert jailbreak så tidkrevende og kostbart at det kan oppdages før det tas i bruk i stor skala. Det er en forsvarlig holdning, sagt rett ut. Jeg respekterer det mer enn en påstand om at det er «helt trygt».
+  Sikkerhetstiltakene er innstilt på å være forsiktige, og Anthropic innrømmer at de «fortsatt er strengere enn det som ville vært ideelt» og vil irritere noen brukere med falske alarmer. Målet er ikke null jailbreaks. Det er å gjøre ethvert jailbreak så tidkrevende og kostbart at det kan oppdages før det tas i bruk i stor skala. Det er en forsvarlig holdning, sagt rett ut. Jeg respekterer det mer enn en påstand om «perfekt sikkerhet».
 </Callout>
 
-Og så har vi **Project Glasswing**: et samarbeidsprosjekt i regi av den amerikanske regjeringen som har vært i gang siden april 2026, der modeller av Mythos-klassen uten cybersikkerhetsbegrensninger blir utlevert til en liten gruppe cybersikkerhetseksperter og leverandører av kritisk infrastruktur. Glasswing-partnere oppgraderes nå fra Mythos Preview til Mythos 5. Et program for pålitelig tilgang til biologi er på vei for utvalgte forskere, der biosikkerhetsfunksjonene fjernes mens cybersikkerhetsfunksjonene beholdes.
+Og så har vi **Project Glasswing**: et samarbeidsprosjekt i regi av den amerikanske regjeringen som har vært i gang siden april 2026, der modeller av Mythos-klassen med opphevet cybersikkerhetsovervåking blir overlevert til en liten gruppe cybersikkerhetseksperter og leverandører av kritisk infrastruktur. Glasswing-partnere oppgraderes nå fra Mythos Preview til Mythos 5. Et program for pålitelig tilgang til biologi er på vei for utvalgte forskere, der biosikkerhetsfunksjonene fjernes, mens cybersikkerhetsfunksjonene beholdes.
 
 Dette er setningen som bør få deg til å spisse ørene: Den samme forespørselen som er defensiv i hendene på en godkjent cyberforsvarer, er et angrep i hendene på noen andre. Anthropics løsning er ikke et smartere filter. Det er tilgangskontroll. Hvem du er, avgjør nå hvilken modell du får.
 
@@ -148,8 +177,8 @@ Dette er setningen som bør få deg til å spisse ørene: Den samme forespørsel
     { date: "Apr 2026", title: "Project Glasswing begynner", body: "Claude Mythos Preview henvender seg til en liten gruppe nettforsvarere i regi av et samarbeidsprosjekt med den amerikanske regjeringen.", tag: "Context" },
     { date: "Jun 9, 2026", title: "Fable 5 og lanseringen av «Mythos 5»", body: "Fable 5 i API-et og i alle abonnementer. Mythos 5 for Glasswing-partnere. Fable 5 er inkludert gratis i Pro-, Max-, Team- og lisensbaserte Enterprise-abonnementer.", tag: "Today", highlight: true },
     { date: "Jun 22, 2026", title: "Siste dag gratis på abonnementene", body: "Den siste dagen av «Fable 5» er inkludert uten ekstra kostnad i abonnementsplanene." },
-    { date: "Jun 23, 2026", title: "Overføring til brukskreditter", body: "Fable 5 blir fjernet fra de medfølgende planene og kjører på brukskreditter inntil kapasiteten igjen tillater standardtilbudet." },
-    { date: "Coming weeks", title: "Biologi – pålitelig tilgang", body: "Utvalgte forskere innen biovitenskap får tilgang til «Mythos 5» etter at smittevernrestriksjonene er opphevet, samtidig som smittevernet stadig forbedres." }
+    { date: "Jun 23, 2026", title: "Overføring til brukskreditter", body: "Fable 5 blir fjernet fra de medfølgende planene og kjører på brukskreditter inntil kapasiteten igjen tillater standardoppsettet." },
+    { date: "Coming weeks", title: "Biologi – pålitelig tilgang", body: "Utvalgte forskere innen biovitenskap får tilgang til «Mythos 5» etter at biosikkerhetsrestriksjonene er opphevet, ettersom sikkerhetstiltakene stadig forbedres." }
   ]}
   caption="Hvis du vil prøve «Fable 5» gratis, kan du gjøre det i perioden 9. til 22. juni. Etter det må du betale med kredittpoeng."
 />
@@ -163,10 +192,10 @@ Jeg stoler ikke på en modell basert på lanseringsinnlegget. Jeg stoler på den
 <Steps
   title="De fire testene"
   items={[
-    { title: "En refaktorisering med lang tidshorisont på et ekte repositorium", body: "Gi den en skikkelig gjennomgang av hele kodebasen, og se om den holder sammenhengen helt til slutten eller begynner å miste tråden etter to timer. Påstanden om 50 millioner linjer er overskriften. Repoen min er realitetssjekken.", meta: "01 / agentic" },
+    { title: "En refaktorisering med lang tidshorisont på et ekte repositorium", body: "Gi den en skikkelig gjennomgang av hele denne kodebasen, og se om den holder sammenhengen helt til slutten eller begynner å spore av etter to timer. Påstanden om 50 millioner linjer er overskriften. Repoen min er realitetssjekken.", meta: "01 / agentic" },
     { title: "Regneark og analyse av egne data", body: "Sammenlign hastighetspåstandene fra analysene med en faktisk rapporteringsprosess, ikke med et referanseark. Hastigheten teller bare hvis resultatet er riktig.", meta: "02 / knowledge work" },
     { title: "Fra idé til kode", body: "Send dem et skjermbilde av en landingsside og be om kildekoden. Anthropic hevder at de kan gjenskape nettapplikasjoner utelukkende basert på bilder. Jeg vil se hvor nærme resultatet blir i første omgang.", meta: "03 / vision" },
-    { title: "Kostnad per agentkjøring sammenlignet med «Opus 4.8»", body: "Samme GTM-berikelsessløyfe, begge modellene, side om side. Det er påstanden om effektiviteten til resonnementstokenene som virkelig endrer min tilnærming. Jeg skal publisere tallene.", meta: "04 / unit economics" }
+    { title: "Kostnad per agentkjøring sammenlignet med «Opus 4.8»", body: "Samme GTM-berikelsessløyfe, begge modellene, side om side. Effektiviteten i resonnementstokenene er det som virkelig gjør en forskjell for meg. Jeg skal publisere tallene.", meta: "04 / unit economics" }
   ]}
 />
 
@@ -175,17 +204,17 @@ Jeg stoler ikke på en modell basert på lanseringsinnlegget. Jeg stoler på den
     "Test Fable 5 på din mest krevende oppgave i løpet av prøveperioden",
     "Logg hvilken modell som svarte når fallback utløses i agentløkkene",
     "Kjør dine egne evalueringer på nytt før du stoler på et partnernummer",
-    "Se på nedgangen i kostnad per resultat som den virkelige nøkkelen til suksess, ikke ranglisten"
+    "Se på nedgangen i kostnad per resultat som den virkelige fremgangen, ikke rangeringen"
   ]}
   dont={[
     "Gjenta ytelsestestene fra lanseringsdagen som om du hadde målt dem",
-    "Koble utgangen fra Mythos-klassen til hva som helst uten å lese oppbevaringsreglene",
-    "Gå ut fra at sikkerhetsmekanismene ikke vil blokkere en legitim forespørsel",
-    "Vent til 23. juni, og klag deretter over at det koster kredittpoeng"
+    "Koble utgangen fra Mythos-klassen til hva som helst uten å lese retningslinjene for oppbevaring",
+    "Gå ut fra at sikkerhetstiltakene ikke vil blokkere en legitim forespørsel",
+    "Vent til 23. juni, og klag deretter over at det koster kreditter"
   ]}
 />
 
-Jeg skal legge ut resultatene her som en oppfølging, med tall og alt, inkludert hva som ikke fungerte som det skulle. Hvis du også tester, fortell meg hva som gikk galt. Det er den delen ingen lanseringsinnlegg vil gi deg.
+Jeg skal legge ut resultatene her som en oppfølging, med tall og alt, inkludert der det ikke helt fungerer. Hvis du også tester, fortell meg hva som gikk galt. Det er den delen ingen lanseringsinnlegg vil gi deg.
 
 ## Kilder og videre lesning
 
@@ -196,7 +225,7 @@ Jeg har lest kildematerialet, slik at du også kan gjøre det. Dette er de fakti
   title="Primærkilder"
   caption="Anthropics egne sider samt evalueringene fra tredjeparter som ble sitert på lanseringsdagen."
   items={[
-    { name: "Lanseringsmeldingen", description: "Anthropics fullstendige innlegg «Fable 5» og «Mythos 5».", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
+    { name: "Lanseringsmeldingen", description: "Anthropics fullstendige innlegg på Fable 5 og Mythos 5.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
     { name: "Systemkort", description: "Detaljer om sikkerhets- og ytelsestester som underbygger påstandene.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
     { name: "Project Glasswing", description: "Det amerikanske regjeringens samarbeid om cyberforsvar.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
     { name: "Mythos Preview cyberoppdatering", description: "Les mer om utviklingen av cyberkapasitet.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
