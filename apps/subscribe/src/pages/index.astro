@@ -5,61 +5,60 @@ import { editions, totalIssues } from '../data/editions';
 const latest = editions[0];
 const inbox = editions.slice(0, 8);
 
-const PL_MONTHS = [
-  'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
-  'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia',
+const EN_MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
 ];
-function plDate(iso: string): string {
+function fmtDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);
-  return `${d} ${PL_MONTHS[m - 1]} ${y}`;
+  return `${EN_MONTHS[m - 1]} ${d}, ${y}`;
 }
 function shortDate(iso: string): string {
   const [, m, d] = iso.split('-').map(Number);
-  return `${d} ${PL_MONTHS[m - 1].slice(0, 3)}`;
+  return `${EN_MONTHS[m - 1].slice(0, 3)} ${d}`;
 }
 
 const previewItems = [
   {
     tag: 'GTM',
-    title: 'Copilot idzie w usage based billing, policz to na raportach.',
-    body: 'GitHub udostępnia raporty, żeby przygotować się do AI Credits. Warto teraz wpiąć to do budżetu i zasad użycia.',
-    link: 'github.blog',
+    title: 'Apple opens Core AI for on-device models and agents in Xcode.',
+    body: 'Mobile teams can build private AI features without a server, without per-token fees, and without cloud latency.',
+    link: 'developer.apple.com',
   },
   {
-    tag: 'SDK',
-    title: 'Vercel publikuje SDK, które działa też jako MCP server.',
-    body: 'Mniej własnych wrapperów na API. Szybciej dodasz: deploy, env vars, projekty, logi.',
-    link: 'github.com/vercel/sdk',
+    tag: 'OPS',
+    title: 'Vercel shows model routing is now a financial decision.',
+    body: 'In May, DeepSeek jumped to 17% of tokens but stayed near 1% of cost. Anthropic grew to 32% of tokens and 65% of spend.',
+    link: 'vercel.com/blog',
   },
   {
     tag: 'SEC',
-    title: 'OpenAI Privacy Filter: open weight model do redakcji PII.',
-    body: 'Wykrywa dane wrażliwe zanim trafią do modelu. Przydaje się gdy agent czyta tickety, maile, logi.',
-    link: 'openai.com',
+    title: 'Okta scopes MCP tools by real user permissions.',
+    body: 'MCP without tool pruning quickly becomes an overly broad admin panel. Okta shows the pattern: least privilege, fewer tokens in context.',
+    link: 'developer.okta.com',
   },
 ];
 
-// Realne wydania AI Espresso (tytuł + lead wprost z wysłanych edycji).
-// Lead = pierwszy substancjonalny akapit wydania. Najnowsze u góry.
-// Hero-preview inbox uses human-formatted dates ("27 maja"). The dedicated
+// Real AI Espresso editions (title + lead from sent issues). Newest first.
+// Hero-preview inbox uses human-formatted dates ("Jun 9"). The dedicated
 // inbox section below uses ISO-dated `inbox` from ../data/editions.ts.
 const heroInboxEditions = [
-  { date: '27 maja', title: 'Trwały runtime dla agentów.',                       lead: 'W 2026 wygrywa nie tylko model, ale infrastruktura wykonania. Dziś widać trzy klocki: trwały stan, powtarzalne procedury i twarde dopuszczanie integracji.' },
-  { date: '26 maja', title: 'MCP bez sesji.',                                    lead: 'Agent stack idzie w stronę zwykłej infrastruktury: skalowanie jak HTTP, audyt jak w SaaS i rozliczanie za wynik, a nie za obietnicę.' },
-  { date: '25 maja', title: 'Governance dla agentów.',                           lead: 'Agenci w firmie zaczynają być traktowani jak normalna aplikacja w stacku. Liczą się uprawnienia, audyt, zgodność i szybkie poprawki po review.' },
-  { date: '24 maja', title: 'Agenci za firewallem.',                             lead: 'Dwa sygnały na dziś: MCP wchodzi do kolejnych produktów, i rośnie presja na bezpieczne uwierzytelnianie zdalnych serwerów.' },
-  { date: '22 maja', title: 'Agent ops w terminalu.',                            lead: 'Widoczny trend: modele stają się wymienne, a przewaga idzie w stronę obserwowalności, kontroli kosztów i stabilnych interfejsów narzędzi.' },
-  { date: '21 maja', title: 'MCP zamiast bety.',                                 lead: 'Tydzień, w którym widać szybki pivot: mniej jednorazowych „AI akcji", więcej standardu MCP, kontroli uprawnień i uruchamiania agentów na zdalnej infrastrukturze.' },
-  { date: '20 maja', title: 'Zaufanie i koszty w stacku.',                       lead: 'Widać dwa trendy: provenance dla mediów i coraz twardsze podejście do jakości integracji, modeli i kosztów w produkcji.' },
-  { date: '19 maja', title: 'Kontekst i koszty w ryzach.',                       lead: 'Nowości idą w dwóch kierunkach: mniej przełączania kontekstu i mniej niespodzianek w kosztach oraz dostępach.' },
-  { date: '18 maja', title: 'Agenci przechodzą na platformę.',                   lead: 'Widać kolejną falę produkcyjnych klocków: desktop do pracy w sesjach, API do odpalania agentów oraz governance i routing po stronie infra.' },
-  { date: '15 maja', title: 'Koszt agenta staje się policzalny.',                lead: 'Widać mocny trend: billing, metryki i polityki narzędzi wchodzą do agent stacku. To dobra wiadomość, bo dopiero wtedy automaty da się skalować w firmie.' },
-  { date: '14 maja', title: 'Orkiestracja wchodzi do enterprise.',               lead: 'Dziś najmocniejszy sygnał to nie kolejny model, tylko to, kto daje wykonanie, kontrolę i integracje pod duże systemy.' },
-  { date: '13 maja', title: 'Agenci w Teams. Review na usage.',                  lead: 'Dziś liczy się to, czy agent wchodzi w narzędzia zespołu i czy da się policzyć koszt per wykonana akcja.' },
-  { date: '12 maja', title: 'Głos, przeglądarka, agenci.',                       lead: 'Dzisiejszy update od OpenAI dobrze pokazuje kierunek: modele są ważne, ale przewaga zaczyna siedzieć w runtime, sandboxach, przeglądarce, danych i gotowych workflow.' },
-  { date: '11 maja', title: 'MCP bez wpadek.',                                   lead: 'Dziś wchodzi praktyczny temat: jak podkręcić agent stack i jednocześnie nie otworzyć sobie drzwi do wycieków i RCE. Są już twarde sygnały: GA dla secret scanning przez MCP, plus konkretne checklisty.' },
-  { date: '10 maja', title: 'MCP wchodzi na produkcję.',                         lead: 'Dwa sygnały na dziś: limity dla narzędzi kodujących rosną, a integracje MCP przesuwają się w stronę governance, audytu i dystrybucji skills.' },
-  { date: '8 maja',  title: "Głos wchodzi do produktu. Agenty do pipeline'u.",   lead: 'W tym wydaniu: nowe realtime modele głosowe w API, świeższa „Instant" jako domyślny runtime w czacie, twardsze testy przed wdrożeniem (CAISI/NIST) oraz dwa ruchy w stronę „AI jako SDLC/workflow engine".' },
+  { date: 'Jun 9',  title: 'Local models, scopes, and a hard token bill.',       lead: 'Agents stop being a separate chat window. They enter Xcode, IAM, model routing, business metrics, and voice ops.' },
+  { date: 'Jun 8',  title: 'Agents within boundaries.',                          lead: 'The winning bet is not the agent itself, but its environment: org context, secure execution, and cost audit.' },
+  { date: 'Jun 6',  title: 'The interesting moves are below the model.',         lead: 'Models keep changing, but the edge increasingly comes from runtime: where the agent stores files, who installs plugins, and whether actions can be audited.' },
+  { date: 'Jun 5',  title: 'Agents get an operational backbone.',                lead: 'Less about models today, more about putting them into CRM, edge, code, and visibility measurement without gluing everything from scratch.' },
+  { date: 'Jun 4',  title: 'Agents come under control.',                         lead: 'The strongest signal: the edge shifts from the model itself to sandbox, cost, telemetry, and ready-made runtimes for specific workflows.' },
+  { date: 'Jun 3',  title: 'Agents descend into daily workflow.',                lead: 'The agent is no longer just a dev add-on. It enters analytics, operations, review, browser work, and daily GTM.' },
+  { date: 'Jun 2',  title: 'Agent stack gets a counter.',                        lead: 'Vendors stop selling the model alone. Increasingly they sell cost control, change monitoring, and ready-made agent workflows.' },
+  { date: 'Jun 1',  title: 'Agent cost enters the budget.',                      lead: 'Token billing, team budgets, no free fallbacks, and hard tool limits become the standard, not the exception.' },
+  { date: 'May 29', title: 'MCP goes to production.',                            lead: 'Zapier sunsets AI Actions for MCP, GitHub and Vercel add cost policies, and execution isolation becomes the norm.' },
+  { date: 'May 28', title: 'Agent stack without slip-ups.',                      lead: 'Two practical signals: safer integration defaults in CLI and a real CVE in a popular workflow tool.' },
+  { date: 'May 27', title: 'Durable runtime for agents.',                        lead: 'In 2026 the edge is not just the model, but the execution infrastructure: persistent state, repeatable procedures, and hard integration gates.' },
+  { date: 'May 25', title: 'Governance for agents.',                             lead: 'Agents in the enterprise start being treated like a normal app in the stack. Permissions, audit, compliance, and fast patches after review.' },
+  { date: 'May 24', title: 'Agents behind the firewall.',                        lead: 'Two signals today: MCP enters more products, and pressure grows for secure authentication of remote servers.' },
+  { date: 'May 22', title: 'Agent ops in the terminal.',                         lead: 'Clear trend: models become interchangeable, and the edge moves toward observability, cost control, and stable tool interfaces.' },
+  { date: 'May 21', title: 'MCP over beta.',                                     lead: 'A week where you see the pivot: fewer one-off AI actions, more MCP standard, permission control, and agents on remote infra.' },
+  { date: 'May 20', title: 'Trust and cost in the stack.',                       lead: 'Two trends: media provenance and a harder stance on integration quality, model quality, and production costs.' },
 ];
 ---
 
@@ -224,7 +223,7 @@ const heroInboxEditions = [
               <div style="width: 11px; height: 11px; border-radius: 50%; background: #28ca41;"></div>
             </div>
             <div style="flex: 1; background: #d8d4cb; border-radius: 5px; height: 22px; display: flex; align-items: center; padding: 0 10px; min-width: 0;">
-              <span style="font-size: 11px; color: #555; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">AI Espresso · {plDate(latest.date)} · hello@wojciech.io</span>
+              <span style="font-size: 11px; color: #555; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">AI Espresso · {fmtDate(latest.date)} · hello@wojciech.io</span>
             </div>
           </div>
 
@@ -239,7 +238,7 @@ const heroInboxEditions = [
                   <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #111; white-space: nowrap;">AI Espresso</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
-                  <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8a86;">{plDate(latest.date)}</span>
+                  <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8a86;">{fmtDate(latest.date)}</span>
                   <img src="/wojciech-avatar.webp" width="30" height="30" alt="Wojciech" style="border-radius: 50%; display: block; object-fit: cover; object-position: top; flex-shrink: 0;" />
                 </div>
               </div>
@@ -247,7 +246,7 @@ const heroInboxEditions = [
 
             <!-- Headline card -->
             <div style="max-width: 680px; margin: 0 auto 10px; background: #fff; border-radius: 20px; padding: 24px 28px; text-align: center;">
-              <span style="display: inline-block; background: #ebff00; color: #080808; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;">Poranny skrót</span>
+              <span style="display: inline-block; background: #ebff00; color: #080808; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;">Morning brief</span>
               <h3 style="margin: 0 0 10px; font-size: 22px; line-height: 1.15; font-weight: 700; color: #080808; letter-spacing: -0.01em;">{latest.title}</h3>
               <p style="margin: 0 auto; max-width: 480px; font-size: 14px; line-height: 1.5; color: #3d3d3d;">{latest.lead}</p>
             </div>
@@ -274,10 +273,10 @@ const heroInboxEditions = [
               data-en="New issue every morning. In English, straight to the point."
               data-pl="Nowe wydanie co rano. Po polsku, do rzeczy."
               data-it="Una nuova edizione ogni mattina. In italiano, dritti al punto."
-            >Nowe wydanie co rano. Po polsku, do rzeczy.</p>
+            >New issue every morning. In English, straight to the point.</p>
             <a href="#top" style="display: inline-flex; align-items: center; height: 2rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); padding: 0 0.875rem; font-size: 0.75rem; font-weight: 600; color: var(--color-accent-text); text-decoration: none; white-space: nowrap;"
               data-en="Subscribe →" data-pl="Zapisz się →" data-it="Iscriviti →"
-            >Zapisz się →</a>
+            >Subscribe →</a>
           </div>
         </div>
 
@@ -285,9 +284,9 @@ const heroInboxEditions = [
         <div class="editions-inbox" style="margin-top: 1.25rem; border-radius: 14px; border: 1px solid var(--color-border); background: var(--color-surface); overflow: hidden;">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-border);">
             <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-dim);"
-              data-en="Inbox" data-pl="Skrzynka" data-it="Inbox">Skrzynka</span>
+              data-en="Inbox" data-pl="Skrzynka" data-it="Inbox">Inbox</span>
             <span style="font-size: 0.6875rem; color: var(--color-text-dim);">{heroInboxEditions.length} {''}
-              <span data-en="recent issues" data-pl="ostatnich wydań" data-it="numeri recenti">ostatnich wydań</span>
+              <span data-en="recent issues" data-pl="ostatnich wydań" data-it="numeri recenti">recent issues</span>
             </span>
           </div>
           <div style="max-height: 420px; overflow-y: auto;">
@@ -298,7 +297,7 @@ const heroInboxEditions = [
                   <span style="font-size: 0.8125rem; line-height: 1.35; color: var(--color-text); font-weight: 500;">{e.title}</span>
                   {i === 0 && (
                     <span style="flex-shrink: 0; margin-left: auto; align-self: center; font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-text); background: var(--color-accent-cta); border-radius: 999px; padding: 2px 7px;"
-                      data-en="New" data-pl="Nowe" data-it="Nuovo">Nowe</span>
+                      data-en="New" data-pl="Nowe" data-it="Nuovo">New</span>
                   )}
                   <span class="edition-chevron" aria-hidden="true" style="flex-shrink: 0; color: var(--color-text-dim); font-size: 0.75rem; transition: transform 0.18s ease; margin-left: 0.5rem;">▾</span>
                 </summary>
@@ -369,7 +368,7 @@ const heroInboxEditions = [
           </div>
           <p style="font-size: 0.8125rem; color: var(--color-text-muted);">
             <span style="color: var(--color-text); font-weight: 600;">{totalIssues}</span>
-            <span data-en="issues sent" data-pl="wydań wysłanych" data-it="numeri inviati"> wydań wysłanych</span>
+            <span data-en="issues sent" data-pl="wydań wysłanych" data-it="numeri inviati"> issues sent</span>
           </p>
         </div>
 
@@ -392,7 +391,7 @@ const heroInboxEditions = [
           data-en="A new one most mornings. Subscribe above to get the next one."
           data-pl="Nowe prawie co rano. Zapisz się wyżej, żeby dostać kolejne."
           data-it="Uno nuovo quasi ogni mattina. Iscriviti sopra per ricevere il prossimo."
-        >Nowe prawie co rano. Zapisz się wyżej, żeby dostać kolejne.</p>
+        >A new one most mornings. Subscribe above to get the next one.</p>
 
       </div>
     </section>

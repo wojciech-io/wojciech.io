@@ -18,66 +18,66 @@ export interface Edition {
 
 export const editions: Edition[] = [
   {
-    date: '2026-05-27',
+    date: '2026-06-09',
     tag: 'Runtime',
-    title: 'Trwały runtime dla agentów.',
-    lead: 'Sygnały o agentach, narzędziach i automatyzacjach. Tylko to, co da się wdrożyć.',
+    title: 'Local models, scopes, and a hard token bill.',
+    lead: 'Agents enter Xcode, IAM, model routing, business metrics, and voice ops.',
   },
   {
-    date: '2026-05-26',
-    tag: 'MCP',
-    title: 'MCP bez sesji.',
-    lead: 'Stateless MCP wchodzi do stacku. Mniej stanu, więcej przewidywalności.',
-  },
-  {
-    date: '2026-05-25',
-    tag: 'Governance',
-    title: 'Governance dla agentów.',
-    lead: 'Polityki, uprawnienia i audyt obok modelu, nie zamiast niego.',
-  },
-  {
-    date: '2026-05-24',
-    tag: 'Security',
-    title: 'Agenci za firewallem.',
-    lead: 'Agent stack zamknięty w sieci firmy. Tak, żeby dało się to wdrożyć.',
-  },
-  {
-    date: '2026-05-22',
+    date: '2026-06-08',
     tag: 'Ops',
-    title: 'Agent ops w terminalu.',
-    lead: 'Krótko o modelach, narzędziach i operacji. Tak, żeby dało się to wdrożyć.',
+    title: 'Agents within boundaries.',
+    lead: 'Org context, secure execution, and cost audit matter more than the agent itself.',
   },
   {
-    date: '2026-05-21',
-    tag: 'MCP',
-    title: 'MCP zamiast bety.',
-    lead: 'MCP i agent hosty przechodzą z demo do operacji.',
-  },
-  {
-    date: '2026-05-20',
-    tag: 'Stack',
-    title: 'Zaufanie i koszty w stacku.',
-    lead: 'Rośnie znaczenie zaufania do treści, jakości SDK i przewidywalnych kosztów.',
-  },
-  {
-    date: '2026-05-19',
-    tag: 'Cost',
-    title: 'Kontekst i koszty w ryzach.',
-    lead: 'Agenci dostają lepszy kontekst, stabilniejsze sesje i twardsze zasady kosztu.',
-  },
-  {
-    date: '2026-05-18',
+    date: '2026-06-06',
     tag: 'Platform',
-    title: 'Agenci przechodzą na platformę.',
-    lead: 'Agent stack przenosi się z edytora do platformy, polityk i automatyzacji.',
+    title: 'The interesting moves are below the model.',
+    lead: 'Persistent storage, managed plugins, tool payments, and auditable agent actions.',
   },
   {
-    date: '2026-05-15',
+    date: '2026-06-05',
+    tag: 'Skills',
+    title: 'Agents get an operational backbone.',
+    lead: 'Cloudflare agent skills, OpenAI on AWS, CRM automations, and AI visibility metrics.',
+  },
+  {
+    date: '2026-06-04',
+    tag: 'FinOps',
+    title: 'Agents come under control.',
+    lead: 'Usage billing, browser harness, cost telemetry, and repeatable runtimes.',
+  },
+  {
+    date: '2026-06-03',
+    tag: 'Workflow',
+    title: 'Agents descend into daily workflow.',
+    lead: 'Codex beyond devs, Auto model mixing, governance, and reusable browser skills.',
+  },
+  {
+    date: '2026-06-02',
     tag: 'Cost',
-    title: 'Koszt agenta staje się policzalny.',
-    lead: 'Jak mierzyć koszty agentów, bezpiecznie podpinać narzędzia i domykać governance.',
+    title: 'Agent stack gets a counter.',
+    lead: 'Copilot budgets, new gateway models, web change monitoring, and AI visibility.',
+  },
+  {
+    date: '2026-06-01',
+    tag: 'FinOps',
+    title: 'Agent cost enters the budget.',
+    lead: 'Token billing, team budgets, no free fallbacks, and hard tool limits become standard.',
+  },
+  {
+    date: '2026-05-29',
+    tag: 'MCP',
+    title: 'MCP goes to production.',
+    lead: 'Zapier migrates to MCP, GitHub and Vercel add cost policies and execution isolation.',
+  },
+  {
+    date: '2026-05-28',
+    tag: 'Security',
+    title: 'Agent stack without slip-ups.',
+    lead: 'Safer integration gates, predictable MCP defaults, and a real CVE in a popular workflow tool.',
   },
 ];
 
 /** Total issues sent to date (inbox shows a recent slice of this). */
-export const totalIssues = 17;
+export const totalIssues = 25;
