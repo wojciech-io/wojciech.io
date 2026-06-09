@@ -75,41 +75,42 @@ The pattern across the claims is consistent: the longer and more agentic the tas
 <DataTable
   columns={[
     { key: "eval", label: "Evaluation" },
-    { key: "source", label: "Reported by" },
-    { key: "result", label: "Claimed result" }
+    { key: "result", label: "Fable 5" },
+    { key: "compare", label: "For reference" }
   ]}
   rows={[
-    { eval: "FrontierCode", source: "Cognition", result: "Highest of any frontier model at medium effort" },
-    { eval: "Finance reasoning", source: "Hebbia", result: "Highest score of any model tested" },
-    { eval: "ViBench (vibe coding)", source: "Replit", result: "Highest-performing model on the benchmark" },
-    { eval: "Core analytics", source: "Databricks", result: "First model past 90%, a 10-point jump over Opus 4.8" },
-    { eval: "Spreadsheet suite", source: "Anaconda", result: "Beats Opus 4.8 at every effort level, 25 to 30% faster" }
+    { eval: "SWE-Bench Pro", result: "80.3%", compare: "Opus 4.8 69.2% · GPT-5.5 58.6%" },
+    { eval: "FrontierCode (Cognition)", result: "29.3%", compare: "Opus 4.8 13.4% · GPT-5.5 5.7%" },
+    { eval: "ViBench, vibe coding (Replit)", result: "Top model Replit has tested", compare: "Replit's own end-to-end benchmark" },
+    { eval: "Finance reasoning (Hebbia)", result: "Highest of any model tested", compare: "Document reasoning, chart and table reading" },
+    { eval: "Core analytics", result: "First past 90%", compare: "Reported as +10 points over Opus" },
+    { eval: "ExploitBench (Mythos 5)", result: "78%", compare: "Mythos Preview 69% · Opus 4.8 40%" }
   ]}
-  highlight={[3]}
-  caption="Third-party evals cited in the launch post. Sources linked at the end."
+  highlight={[0]}
+  caption="Figures from Anthropic's launch material and the named partner evals. Numbers are theirs, not mine: I have not reproduced them. Sources linked at the end."
 />
 
 Two results are worth pulling out of the table.
 
 <Benchmark
-  label="Databricks core analytics benchmark"
+  label="Core analytics benchmark"
   yours={90}
   baseline={80}
   yoursLabel="Fable 5 (first past 90%)"
-  baselineLabel="Opus 4.8"
+  baselineLabel="Opus 4.8 (per the +10 claim)"
   unit="%"
-  caption="Reported by Databricks. A 10-point jump on a saturating benchmark is the kind of move that usually takes two releases."
+  caption="A partner reports Fable 5 as the first model past 90%, a 10-point jump over Opus. A move that size on a saturating benchmark usually takes two releases."
 />
 
-On frontier physics research, Anthropic says Fable 5 got "nearly to where GPT-5.5 landed after four days" in 36 hours, using a third of the reasoning tokens. The token efficiency is the part operators should care about. Cheaper reasoning per unit of progress changes what is worth automating.
+On frontier physics research, one partner says Fable 5 got "nearly to where GPT-5.5 landed after four days" in 36 hours. If the speed holds, the token efficiency is the part operators should care about. Cheaper reasoning per unit of progress changes what is worth automating.
 
 The software engineering claim is the loudest: Stripe ran a codebase-wide migration across 50 million lines of Ruby in a single day, work Anthropic says would otherwise take a team two months by hand. If even half of that holds on a normal codebase, the build-versus-buy math on internal tooling moves again.
 
 <PullQuote source="Michael Truell, Cursor" role="as quoted in Anthropic's launch post">
-  Claude Fable 5 is the state of the art model on CursorBench. It opened up a class of long-horizon problems that were out of reach.
+  Claude Fable 5 is the state of the art model on CursorBench. It's opened up a class of long-horizon problems that were out of reach for earlier models.
 </PullQuote>
 
-GitHub, Replit, Databricks, Morgan Stanley and Harvey all said versions of the same thing: a clear step up on long, agentic, multi-turn work. That is a lot of aligned partners. It is also exactly who you would expect to be quoted on launch day. Hold both thoughts.
+GitHub, Replit, Hebbia, Morgan Stanley and Harvey all said versions of the same thing: a clear step up on long, agentic, multi-turn work. That is a lot of aligned partners. It is also exactly who you would expect to be quoted on launch day. Hold both thoughts.
 
 ## The safety layer is the actual launch
 
@@ -162,7 +163,7 @@ I do not trust a model from its launch post. I trust it from my own workload. He
   title="The four tests"
   items={[
     { title: "A long-horizon refactor on a real repo", body: "Hand it a genuine migration across this codebase and watch whether it holds context to the end or drifts at hour two. The 50-million-line claim is the headline. My repo is the reality check.", meta: "01 / agentic" },
-    { title: "Spreadsheet and analytics ops on my own data", body: "Run the 25 to 30% faster claim against a real reporting workflow, not a benchmark sheet. Speed only counts if the output is right.", meta: "02 / knowledge work" },
+    { title: "Spreadsheet and analytics ops on my own data", body: "Run the analytics speed claims against a real reporting workflow, not a benchmark sheet. Speed only counts if the output is right.", meta: "02 / knowledge work" },
     { title: "Vision to code", body: "Give it a screenshot of a landing page and ask for the source. Anthropic says it rebuilds web apps from images alone. I want to see how close the first pass lands.", meta: "03 / vision" },
     { title: "Cost per agent run versus Opus 4.8", body: "Same GTM enrichment loop, both models, side by side. The reasoning-token efficiency is the claim that actually changes my stack. I will publish the numbers.", meta: "04 / unit economics" }
   ]}

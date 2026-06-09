@@ -1,6 +1,6 @@
 ---
-title: "Claude Fable 5 og Mythos 5: hva Anthropic lanserte og hva jeg tester"
-description: "Anthropic lanserte to frontier-modeller 9. juni. Fable 5 for alle, Mythos 5 for verifiserte cyber- og biologipartnere. Her er hva som er reelt, hva som fortsatt er en paastand, og testene jeg kjorer fra i morgen."
+title: "Claude Fable 5 og «Mythos 5»: hva Anthropic har levert, og hva jeg tester"
+description: "Anthropic lanserte to «Frontier»-modeller 9. juni. Fable 5 for alle, Mythos 5 for godkjente partnere innen cybersikkerhet og biologi. Her er hva som er bekreftet, hva som fortsatt er en påstand, og testene jeg skal gjennomføre fra i morgen."
 publishedAt: "2026-06-09"
 tags:
   - AI
@@ -13,202 +13,203 @@ draft: false
 locale: "no"
 translationOf: "claude-fable-5-mythos-5"
 tldr:
-  - "Fable 5 og Mythos 5 er samme modell. Eneste forskjell er sikkerhetstiltakene: Fable er filtrert for generell bruk, Mythos kjorer med noen sikkerhetstiltak fjernet for verifiserte cyber- og biologipartnere."
-  - "Anthropic rapporterer state of the art paa de fleste eval, en 50-millioner-linjer Ruby-migrering paa en dag, og proteindesign-hjelp paa nivaa med erfarne mennesker. Leverandorbenchmarks er paastander til du tester dem selv."
-  - "Priser: 10 dollar inn og 50 ut per million tokens. Gratis paa Pro, Max og Team til 22. juni, deretter paa brukskreditter."
-  - "Den egentlige historien er sikkerhetslaget: cyber-, bio- og destillasjonsklassifikatorer, en 30-dagers oppbevaringspolicy og Project Glasswing med den amerikanske regjeringen."
+  - "Fable 5 og Mythos 5 er den samme modellen. Den eneste forskjellen ligger i sikkerhetstiltakene: Fable er begrenset til allmenn bruk, mens Mythos kjører med noen av sikkerhetstiltakene opphevet for godkjente partnere innen cybersikkerhet og biologi."
+  - "Anthropic rapporterer om toppnivå i de fleste evalueringer, en migrering av 50 millioner linjer Ruby-kode gjennomført på én dag, samt hjelp til proteindesign som kan måle seg med dyktige fagfolk. Leverandørers ytelsestester er bare påstander inntil man tester dem selv."
+  - "Prisen er 10 dollar ved innskudd og 50 dollar ved uttak per million tokens. Gratis for Pro-, Max- og Team-abonnenter frem til 22. juni, deretter overgår det til brukskreditter."
+  - "Det viktigste er sikkerhetslaget: klassifiseringssystemer for cybersikkerhet, biologi og destillasjon, en oppbevaringsfrist på 30 dager og en avtale om deling av informasjon (Project Glasswing) med den amerikanske regjeringen."
 ---
 
-Anthropic lanserte to frontier-modeller i dag, 9. juni 2026: [Claude Fable 5 og Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). En er for alle. Den andre er bak et trusted access-program. Under panseret er det samme modell.
+Anthropic har i dag, 9. juni 2026, lansert to Frontier-modeller: [Claude Fable 5 og Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Den ene er tilgjengelig for alle. Den andre er begrenset til et program for pålitelig tilgang. Under overflaten er det snakk om samme modell.
 
-Den siste setningen er hele historien, og det meste av dekningen vil overse den. Saa for benchmark-skjermbilder tar over feedet ditt, her er hva som faktisk endret seg, hva som fortsatt er en leverandorpaastand, og de fire testene jeg kjorer fra i morgen.
+Den siste setningen sier alt, og det meste av nyhetsdekningen vil overse den. Så før skjermbildene fra ytelsestestene fyller nyhetsfeeden din, skal jeg her fortelle hva som faktisk har endret seg, hva som fortsatt er en påstand fra produsenten, og hvilke fire tester jeg skal gjennomføre fra i morgen.
 
 <KeyTakeaway
   icon="info"
-  title="Versjonen i en setning"
-  body="Fable 5 og Mythos 5 deler en hjerne. Sikkerhetstiltakene er produktforskjellen. Fable er den sikre generelle versjonen som faller tilbake til Opus 4.8 paa flaggede temaer. Mythos er samme modell med noen sikkerhetstiltak fjernet, kun gitt til verifiserte cyberforsvarere og biologipartnere."
+  title="Den korte versjonen"
+  body="Fable 5 og Mythos 5 deler én og samme plattform. Sikkerhetsmekanismene utgjør forskjellen mellom produktene. Fable er den sikre versjonen for allmenn bruk, som faller tilbake på Opus 4.8 ved merket innhold. Mythos er den samme modellen, men med noen sikkerhetsmekanismer deaktivert, og tilbys kun til godkjente partnere innen cyberforsvar og biologi."
 />
 
 <StatGrid
   columns={4}
   stats={[
-    { value: "$10 / $50", label: "Pris per M tokens", sub: "input / output" },
-    { value: "< 5%", label: "Filtrerte sesjoner", sub: "faller tilbake til Opus 4.8" },
-    { value: "50 mill. linjer", label: "Ruby-migrering", sub: "en dag, ifolge Stripe" },
-    { value: "9 / 14", label: "Proteintargets", sub: "sterke legemiddelkandidater" },
+    { value: "10 $ / 50 $", label: "Pris per M-tokens", sub: "inngang / utgang" },
+    { value: "< 5 %", label: "Sesjoner med tilgangskontroll", sub: "gå til Opus 4.8" },
+    { value: "50 millioner linjer", label: "Ruby-migrering", sub: "én dag, ifølge Stripe" },
+    { value: "9 / 14", label: "Proteinmål", sub: "lovende legemiddelkandidater" },
   ]}
-  caption="Tall fra Anthropics lanseringspost. Behandle dem som paastander aa verifisere, ikke fakta aa gjenta."
+  caption="Hovedtall fra Anthropics lanseringsinnlegg. Betrakt dem som påstander som bør verifiseres, ikke som fakta som skal gjentas."
 />
 
-## To modeller, en hjerne
+## To modeller, én hjerne
 
-Navngivningen avslorer det. Anthropic sier at fable kommer fra det latinske *fabula*, "det som fortelles," naert det greske *mythos*. Samme rot, to masker. Forskjellen er ikke kapasitet. Det er hva modellen faar lov til.
+Navnet avslører alt. Anthropic sier at «fable» stammer fra det latinske *fabula*, «det som fortelles», som ligger nær det greske *mythos*. Samme rot, to ansikter. Forskjellen ligger ikke i evnen. Det handler om hva modellen får lov til å gjøre.
 
 <Comparison
   items={[
-    { label: "Claude Fable 5", tag: "Generell bruk", tone: "accent", body: "Paa API-en og alle planer i dag. Sikkerhetstiltak aktive. Naar en foresporsel treffer et flagget tema, nekter den ikke: den svarer stille med Opus 4.8 i stedet. Anthropic sier dette skjer i under 5% av sesjonene." },
-    { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Samme underliggende modell, noen sikkerhetstiltak fjernet. Begrenset til verifiserte cyberforsvarere gjennom Project Glasswing og et kommende biologiprogram. Ifolge Anthropic den versjonen med de sterkeste cyber-kapasitetene av noen modell." }
+    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "Gjelder API-et og alle abonnementer fra og med i dag. Sikkerhetsmekanismene er aktivert. Når en forespørsel treffer et merket emne, blir den ikke avvist: den svarer i stedet diskret med «Opus 4.8». Anthropic opplyser at dette skjer i under 5 % av øktene." },
+    { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Samme grunnleggende modell, men med noen sikkerhetsrestriksjoner opphevet. Begrenset til godkjente cyberforsvarere gjennom Project Glasswing, samt et kommende biologiprogram. Ifølge Anthropic er dette den modellen som har de sterkeste cyberkapasitetene av alle." }
   ]}
 />
 
-Saa naar en foresporsel lander, ser stien slik ut:
+Så når en forespørsel kommer inn, ser banen slik ut:
 
-<Diagram caption="Hvordan Fable 5 haandterer en flagget foresporsel: ingen avvisning, bare en stillere modell">
-  <Box label="Din foresporsel" />
+<Diagram caption="Slik håndterer «Fable 5» en flagget forespørsel: ingen avvisning, bare en roligere modell">
+  <Box label="Din forespørsel" />
   <Arrow label="klassifikator" />
-  <Box label="Sikkerhetssjekk" sub="cyber - bio - destillasjon" variant="accent" />
+  <Box label="Sikkerhetskontroll" sub="cyber · bio · destillasjon" variant="accent" />
   <Arrow label="ren" />
-  <Box label="Fable 5 svarer" sub="full kapasitet" />
-  <Arrow label="flagget" dashed />
-  <Box label="Opus 4.8 svarer" sub="fallback, ingen avvisning" variant="muted" />
+  <Box label="Fable 5 svar" sub="full funksjonalitet" />
+  <Arrow label="merket" dashed />
+  <Box label="Opus 4.8 svar" sub="reserve, ingen avslag" variant="muted" />
 </Diagram>
 
-Dette betyr noe for alle som bygger paa API-en. En stille fallback er bedre UX enn en hard avvisning, men det betyr at to forskjellige modeller kan svare innenfor en sesjon. Hvis du kjorer eval eller agent-loops, vil du vite hvilken som svarte.
+Dette er viktig for alle som bygger på API-et. En stille fallback gir bedre brukeropplevelse enn et direkte avslag, men det betyr at to forskjellige modeller kan svare i løpet av én og samme økt. Hvis du kjører evalueringer eller agentløkker, vil du vite hvilken av dem som svarte.
 
-## Benchmarks, med forbeholdet forst
+## Referansetestene, med et forbehold på forhånd
 
-<Callout type="warning" title="Les dette for tallene">
-  Alt nedenfor er rapportert av Anthropic eller deres lanseringspartnere. Partnerbenchmarks er markedsforing til de overlever ditt eget workload. Jeg gjentar dem fordi de peker paa hvor man skal se, ikke fordi jeg har reprodusert dem.
+<Callout type="warning" title="Les dette før du ser på tallene">
+  Alt nedenfor er oppgitt av Anthropic eller selskapets lanseringspartnere. Partnernes ytelsestester er kun markedsføring inntil de klarer å håndtere din egen arbeidsbelastning. Jeg gjengir dem fordi de viser hva man bør se etter, ikke fordi jeg har oppnådd de samme resultatene.
 </Callout>
 
-Monsteret i paastandene er konsistent: jo lengre og mer agentisk oppgaven er, desto storre er det rapporterte forspranget. Ikke "smartere svar," men "holder traaden over millioner av tokens uten aa miste poenget."
+Mønsteret går igjen i alle påstandene: Jo lengre og mer handlingsorientert oppgaven er, desto større er den rapporterte fordelen. Ikke «smartere svar», men «holder tråden gjennom millioner av eksempler uten å miste oversikten».
 
 <DataTable
   columns={[
     { key: "eval", label: "Evaluering" },
-    { key: "source", label: "Rapportert av" },
-    { key: "result", label: "Paastaaet resultat" }
+    { key: "result", label: "Fable 5" },
+    { key: "compare", label: "Til orientering" }
   ]}
   rows={[
-    { eval: "FrontierCode", source: "Cognition", result: "Hoyest av alle frontier-modeller ved middels innsats" },
-    { eval: "Finansiell resonering", source: "Hebbia", result: "Hoyeste score av alle testede modeller" },
-    { eval: "ViBench (vibe coding)", source: "Replit", result: "Best ytende modell paa benchmarket" },
-    { eval: "Core analytics", source: "Databricks", result: "Forste modell over 90%, et 10-poengs hopp over Opus 4.8" },
-    { eval: "Regnearksuite", source: "Anaconda", result: "Slaar Opus 4.8 paa alle innsatsnivaaer, 25 til 30% raskere" }
+    { eval: "SWE-Bench Pro", result: "80,3 %", compare: "Opus 4.8 69,2 % · GPT-5.5 58,6 %" },
+    { eval: "FrontierCode (Cognition)", result: "29,3 %", compare: "Opus 4.8 13,4 % · GPT-5.5 5,7 %" },
+    { eval: "ViBench, vibe-koding (Replit)", result: "Toppmodellen Replit har testet", compare: "Replits egen helhetlige ytelsestest" },
+    { eval: "Finansielt resonnement (Hebbia)", result: "Høyest av alle testede modeller", compare: "Dokumentert begrunnelse, tolkning av diagrammer og tabeller" },
+    { eval: "Kjerneanalyse", result: "Først over 90 %", compare: "Rapportert som +10 poeng over Opus" },
+    { eval: "ExploitBench (Mythos 5)", result: "78 %", compare: "Mythos Preview 69 % · Opus 4.8 40 %" }
   ]}
-  highlight={[3]}
-  caption="Tredjepartsevalueringer sitert i lanseringsposten. Kilder lenket til slutt."
+  highlight={[0]}
+  caption="Tallene stammer fra Anthropics lanseringsmateriale og evalueringene fra de nevnte partnerne. Tallene er deres, ikke mine: Jeg har ikke gjengitt dem selv. Kildene er oppgitt i lenker nederst."
 />
 
-To resultater er verdt aa trekke ut av tabellen.
+To resultater er verdt å trekke frem fra tabellen.
 
 <Benchmark
-  label="Databricks core analytics benchmark"
+  label="Referanseindeks for kjerneanalyse"
   yours={90}
   baseline={80}
-  yoursLabel="Fable 5 (forste over 90%)"
-  baselineLabel="Opus 4.8"
+  yoursLabel="Fable 5 (flest stemmer, over 90 %)"
+  baselineLabel="Opus 4.8 (i henhold til påstanden om +10)"
   unit="%"
-  caption="Rapportert av Databricks. Et 10-poengs hopp paa et mettet benchmark er den typen bevegelse som vanligvis tar to releases."
+  caption="En partner oppgir at «Fable 5» er den første modellen som har passert 90 %, noe som utgjør et hopp på 10 prosentpoeng i forhold til Opus. En slik økning i en mestringsstandard som nærmer seg metning, krever vanligvis to utgivelser."
 />
 
-Innen frontier-fysikkforskning sier Anthropic at Fable 5 naaede "naesten dit GPT-5.5 landet etter fire dager" paa 36 timer, med en tredjedel av reasoning-tokens. Token-effektiviteten er delen operatorer bor bry seg om. Billigere resonering per fremskrittenhet endrer hva som er verdt aa automatisere.
+Når det gjelder banebrytende fysikkforskning, sier en av partnerne at «Fable 5» på 36 timer kom «nesten like langt som GPT-5.5 gjorde på fire dager». Hvis denne hastigheten holder seg, er det token-effektiviteten operatørene bør fokusere på. Lavere kostnader per enhet fremgang endrer hva som er verdt å automatisere.
 
-Den hoylydte paastanden er fra programvareutvikling: Stripe kjorte en codebase-bred migrering paa tvers av 50 millioner linjer Ruby paa en enkelt dag, arbeid Anthropic sier ellers ville tatt et team to maaneder for haand. Hvis bare halvparten av det holder paa en normal codebase, forskyves build-versus-buy-regnestykket for internt verktoy igjen.
+Påstanden fra programvareutviklingssiden er den mest fremtredende: Stripe gjennomførte en migrering av hele kodebasen – 50 millioner linjer med Ruby – på én eneste dag, et arbeid som ifølge Anthropic ellers ville tatt et team to måneder å utføre manuelt. Hvis bare halvparten av dette stemmer for en vanlig kodebase, endres beregningene rundt «bygge eller kjøpe» når det gjelder interne verktøy.
 
-<PullQuote source="Michael Truell, Cursor" role="sitert i Anthropics lanseringspost">
-  Claude Fable 5 er state of the art-modellen paa CursorBench. Den aapnet en klasse av langtidshorisontproblemer som var utenfor rekkevidde.
+<PullQuote source="Michael Truell, Cursor" role="som sitert i Anthropics lanseringsinnlegg">
+  Claude Fable 5 er den mest avanserte modellen på CursorBench. Den har åpnet for en klasse av problemer med lang tidshorisont som tidligere modeller ikke klarte å håndtere.
 </PullQuote>
 
-GitHub, Replit, Databricks, Morgan Stanley og Harvey sa alle versjoner av det samme: et klart steg opp paa langt, agentisk, multi-turn arbeid. Det er mange samstemte partnere. Det er ogsaa noyaktig de du ville forvente aa se sitert paa lanseringsdagen. Hold begge tankene.
+GitHub, Replit, Hebbia, Morgan Stanley og Harvey ga alle uttrykk for det samme: et klart fremskritt i forhold til langvarig, agentbasert arbeid med flere runder. Det er mange partnere som står samlet om dette. Det er også akkurat de man ville forvente å se sitert på lanseringsdagen. Hold begge tankene i bakhodet.
 
-## Sikkerhetslaget er den egentlige lanseringen
+## Sikkerhetslaget er selve oppskytingen
 
-Fjern benchmarks og det er en sikkerhetsrelease. Anthropic er eksplisitt om at Mythos-klasse-modeller "har naaedt en terskel der de utgjor betydelige risikoer," og hele Fable-versus-Mythos-strukturen eksisterer for aa haandtere det.
+Ser man bort fra ytelsestestene, er dette en sikkerhetsoppdatering. Anthropic slår fast at modellene i Mythos-klassen «har nådd et nivå der de utgjør en betydelig risiko», og hele strukturen med Fable og Mythos er laget for å håndtere nettopp dette.
 
-Tre klassifikatorer staar foran Fable 5:
+Fable 5 har tre klassifikatorer:
 
 <Grid cols={3}>
   <KeyPoint title="Cybersikkerhet" type="warning">
-    <p>Blokkerer offensive cyber- og utnyttelsesoppgaver. Anthropic rapporterer null vellykkede universelle jailbreaks over 1 000+ timer med ekstern red-teaming, og sier at eksterne partnere vurderte disse som de mest robuste cyber-sikkerhetstiltakene av noen modell de har testet.</p>
+    <p>Blocks offensive cyber and exploitation tasks. Anthropic reports zero successful universal jailbreaks across 1,000+ hours of external red-teaming, and says outside partners rated these the most robust cyber safeguards of any model they have tested.</p>
   </KeyPoint>
   <KeyPoint title="Biologi og kjemi" type="warning">
-    <p>Blokkerer biovaapen-relaterte og dobbeltbruk-foresporsler. Bevisst bredt for naa, noe som betyr flere falske positiver. Anthropic planlegger aa snevre det inn etter hvert som tilliten vokser.</p>
+    <p>Blocks bioweapon-related and dual-use queries. Deliberately broad for now, which means more false positives. Anthropic says it plans to narrow it as confidence grows.</p>
   </KeyPoint>
   <KeyPoint title="Destillasjon" type="warning">
-    <p>Blokkerer forsok paa aa trekke ut modellens kapasiteter for trening av en konkurrent. En kapasitetsproliferasjonskontroll, ikke en brukersikkerhetskontroll.</p>
+    <p>Blocks attempts to extract the model's capability for training a competitor. A capability-proliferation control, not a user-safety one.</p>
   </KeyPoint>
 </Grid>
 
-I tillegg kommer en ny datapolicy: 30 dagers oppbevaring av all Mythos-klasse-trafikk, ikke brukt til trening av nye modeller, med logging av all menneskelig tilgang og sletting etter 30 dager i nesten alle tilfeller. Den oppgitte grunnen er deteksjon: fange nye angrep og tune ut falske positiver for de skalerer.
+I tillegg innføres en ny datapolicy: 30 dagers lagring av all trafikk i Mythos-klassen, som ikke skal brukes til å trene nye modeller, med loggføring av all menneskelig tilgang og sletting etter 30 dager i nesten alle tilfeller. Den oppgitte begrunnelsen er deteksjon: å oppdage nye angrep og filtrere bort falske alarmer før de får større omfang.
 
-<Callout type="note" title="Den aerlige avveiningen Anthropic nevner selv">
-  Sikkerhetstiltakene er stilt inn forsiktig, og Anthropic innrommer at de er "fortsatt strengere enn ideelt" og vil frustrere noen brukere med falske alarmer. Maalet er ikke null jailbreaks. Maalet er aa gjore ethvert jailbreak saa sakte og dyrt at det kan fanges for det brukes i skala. Det er en forsvarlig posisjon, sagt rett ut. Jeg respekterer det mer enn et lofte om "perfekt sikkerhet."
+<Callout type="note" title="Den ærlige avveiningen som Anthropic har gitt seg selv navnet">
+  Sikkerhetstiltakene er innstilt på å være forsiktige, og Anthropic innrømmer at de «fortsatt er strengere enn det som ville vært ideelt» og vil irritere noen brukere med falske alarmer. Målet er ikke null jailbreaks. Det er å gjøre ethvert jailbreak så tidkrevende og kostbart at det kan oppdages før det tas i bruk i stor skala. Det er en forsvarlig holdning, sagt rett ut. Jeg respekterer det mer enn en påstand om at det er «helt trygt».
 </Callout>
 
-Og saa er det **Project Glasswing**: samarbeidet med den amerikanske regjeringen, aktivt siden april 2026, der Mythos-klasse-modeller med lempede cyber-sikkerhetstiltak gis til en liten gruppe cyberforsvarere og kritiske infrastrukturleverandorer. Glasswing-partnere faar naa oppgradering fra Mythos Preview til Mythos 5. Et biologisk trusted access-program er paa vei for utvalgte forskere, med bio-sikkerhetstiltak fjernet og cyber-sikkerhetstiltak beholdt.
+Og så har vi **Project Glasswing**: et samarbeidsprosjekt i regi av den amerikanske regjeringen som har vært i gang siden april 2026, der modeller av Mythos-klassen uten cybersikkerhetsbegrensninger blir utlevert til en liten gruppe cybersikkerhetseksperter og leverandører av kritisk infrastruktur. Glasswing-partnere oppgraderes nå fra Mythos Preview til Mythos 5. Et program for pålitelig tilgang til biologi er på vei for utvalgte forskere, der biosikkerhetsfunksjonene fjernes mens cybersikkerhetsfunksjonene beholdes.
 
-Denne linjen bor faa deg til aa reagere: samme foresporsel som er defensiv i en verifisert cyberforsvares hender er et angrep i andres. Anthropics svar er ikke et smartere filter. Det er tilgangskontroll. Hvem du er avgjor naa hvilken modell du faar.
+Dette er setningen som bør få deg til å spisse ørene: Den samme forespørselen som er defensiv i hendene på en godkjent cyberforsvarer, er et angrep i hendene på noen andre. Anthropics løsning er ikke et smartere filter. Det er tilgangskontroll. Hvem du er, avgjør nå hvilken modell du får.
 
-## Utrullingen har en klokke
+## Utløperen har en klokke på seg
 
 <ArticleTimeline
   items={[
-    { date: "Apr 2026", title: "Project Glasswing starter", body: "Claude Mythos Preview gaar til en liten gruppe cyberforsvarere under et samarbeid med den amerikanske regjeringen.", tag: "Kontekst" },
-    { date: "9. jun 2026", title: "Fable 5 og Mythos 5 lanseres", body: "Fable 5 paa API-en og alle planer. Mythos 5 til Glasswing-partnere. Fable 5 gratis paa Pro, Max, Team og setebasert Enterprise.", tag: "I dag", highlight: true },
-    { date: "22. jun 2026", title: "Siste gratisdag", body: "Siste dag Fable 5 er inkludert uten ekstra kostnad paa abonnementsplaner." },
-    { date: "23. jun 2026", title: "Gaar over til brukskreditter", body: "Fable 5 forlater de inkluderte planene og kjorer paa brukskreditter til kapasiteten tillater det som standard igjen." },
-    { date: "Kommende uker", title: "Biologi trusted access", body: "Utvalgte life science-forskere faar Mythos 5 med lempede bio-sikkerhetstiltak, mens sikkerhetstiltakene fortsetter aa forbedres." }
+    { date: "Apr 2026", title: "Project Glasswing begynner", body: "Claude Mythos Preview henvender seg til en liten gruppe nettforsvarere i regi av et samarbeidsprosjekt med den amerikanske regjeringen.", tag: "Context" },
+    { date: "Jun 9, 2026", title: "Fable 5 og lanseringen av «Mythos 5»", body: "Fable 5 i API-et og i alle abonnementer. Mythos 5 for Glasswing-partnere. Fable 5 er inkludert gratis i Pro-, Max-, Team- og lisensbaserte Enterprise-abonnementer.", tag: "Today", highlight: true },
+    { date: "Jun 22, 2026", title: "Siste dag gratis på abonnementene", body: "Den siste dagen av «Fable 5» er inkludert uten ekstra kostnad i abonnementsplanene." },
+    { date: "Jun 23, 2026", title: "Overføring til brukskreditter", body: "Fable 5 blir fjernet fra de medfølgende planene og kjører på brukskreditter inntil kapasiteten igjen tillater standardtilbudet." },
+    { date: "Coming weeks", title: "Biologi – pålitelig tilgang", body: "Utvalgte forskere innen biovitenskap får tilgang til «Mythos 5» etter at smittevernrestriksjonene er opphevet, samtidig som smittevernet stadig forbedres." }
   ]}
-  caption="Hvis du vil teste Fable 5 gratis, er vinduet 9. til 22. juni. Etter det koster det kreditter."
+  caption="Hvis du vil prøve «Fable 5» gratis, kan du gjøre det i perioden 9. til 22. juni. Etter det må du betale med kredittpoeng."
 />
 
-Det gratis vinduet er den praktiske konklusjonen. To uker til aa kjore det hardt for maaleren starter.
+Det er det viktigste å ta med seg. To uker på å gi alt før taksameteret starter.
 
-## Hva jeg tester fra i morgen
+## Det jeg skal teste fra i morgen
 
-Jeg stoler ikke paa en modell fra lanseringsposten. Jeg stoler paa den fra mitt eget workload. Her er hva som gaar gjennom Fable 5 fra i morgen, paa ekte arbeid, ikke leketoysprompts.
+Jeg stoler ikke på en modell basert på lanseringsinnlegget. Jeg stoler på den ut fra min egen arbeidsmengde. Her er hva som skal kjøres gjennom Fable 5 fra og med i morgen – på ekte oppgaver, ikke leketøysprompter.
 
 <Steps
   title="De fire testene"
   items={[
-    { title: "En langtidshorisont-refaktor paa et ekte repo", body: "Gir den en ekte migrering i denne codebasen og ser om den holder kontekst til slutten eller driver av i time to. 50-millioner-linjer-paastanden er overskriften. Mitt repo er virkelighetssjekken.", meta: "01 / agentisk" },
-    { title: "Regneark og analytics-ops paa mine data", body: "Kjorer 25-til-30%-raskere-paastanden mot en ekte rapporteringsworkflow, ikke et benchmark-ark. Hastighet teller bare hvis outputtet er riktig.", meta: "02 / kunnskapsarbeid" },
-    { title: "Visjon til kode", body: "Gir den et skjermbilde av en landingsside og ber om kilden. Anthropic sier den bygger opp webapper fra bilder alene. Jeg vil se hvor naert forste forsok lander.", meta: "03 / visjon" },
-    { title: "Kostnad per agent-kjoring vs. Opus 4.8", body: "Samme GTM-enrichment-loop, begge modeller, side om side. Reasoning-token-effektiviteten er paastanden som faktisk endrer stacken min. Jeg publiserer tallene.", meta: "04 / enhetsokononomi" }
+    { title: "En refaktorisering med lang tidshorisont på et ekte repositorium", body: "Gi den en skikkelig gjennomgang av hele kodebasen, og se om den holder sammenhengen helt til slutten eller begynner å miste tråden etter to timer. Påstanden om 50 millioner linjer er overskriften. Repoen min er realitetssjekken.", meta: "01 / agentic" },
+    { title: "Regneark og analyse av egne data", body: "Sammenlign hastighetspåstandene fra analysene med en faktisk rapporteringsprosess, ikke med et referanseark. Hastigheten teller bare hvis resultatet er riktig.", meta: "02 / knowledge work" },
+    { title: "Fra idé til kode", body: "Send dem et skjermbilde av en landingsside og be om kildekoden. Anthropic hevder at de kan gjenskape nettapplikasjoner utelukkende basert på bilder. Jeg vil se hvor nærme resultatet blir i første omgang.", meta: "03 / vision" },
+    { title: "Kostnad per agentkjøring sammenlignet med «Opus 4.8»", body: "Samme GTM-berikelsessløyfe, begge modellene, side om side. Det er påstanden om effektiviteten til resonnementstokenene som virkelig endrer min tilnærming. Jeg skal publisere tallene.", meta: "04 / unit economics" }
   ]}
 />
 
 <DoDont
   do={[
-    "Test Fable 5 paa din vanskeligste ekte oppgave i det gratis vinduet",
-    "Logg hvilken modell som svarte naar fallback utloses i agent-loops",
-    "Kjor dine egne eval for du stoler paa et partnertall",
-    "Behandle pris-per-resultat-fallet som det ekte unlock, ikke rangeringen"
+    "Test Fable 5 på din mest krevende oppgave i løpet av prøveperioden",
+    "Logg hvilken modell som svarte når fallback utløses i agentløkkene",
+    "Kjør dine egne evalueringer på nytt før du stoler på et partnernummer",
+    "Se på nedgangen i kostnad per resultat som den virkelige nøkkelen til suksess, ikke ranglisten"
   ]}
   dont={[
-    "Gjenta lanseringsdag-benchmarks som om du selv maalte dem",
-    "Koble Mythos-klasse output til noe uten aa lese oppbevaringspolicyen",
-    "Anta at sikkerhetstiltakene ikke vil blokkere en legitim foresporsel",
-    "Vente til 23. juni og saa klage paa at det koster kreditter"
+    "Gjenta ytelsestestene fra lanseringsdagen som om du hadde målt dem",
+    "Koble utgangen fra Mythos-klassen til hva som helst uten å lese oppbevaringsreglene",
+    "Gå ut fra at sikkerhetsmekanismene ikke vil blokkere en legitim forespørsel",
+    "Vent til 23. juni, og klag deretter over at det koster kredittpoeng"
   ]}
 />
 
-Resultatene legger jeg ut her som oppfolging, med tall, inkludert hvor det feiler. Hvis du ogsaa tester, fortell meg hva som gikk i stykker. Det er den delen ingen lanseringspost gir deg.
+Jeg skal legge ut resultatene her som en oppfølging, med tall og alt, inkludert hva som ikke fungerte som det skulle. Hvis du også tester, fortell meg hva som gikk galt. Det er den delen ingen lanseringsinnlegg vil gi deg.
 
 ## Kilder og videre lesning
 
-Jeg har lest primaermaterialet saa du ogsaa kan. Her er de ekte lenkene, ikke et sammendrag av et sammendrag.
+Jeg har lest kildematerialet, slik at du også kan gjøre det. Dette er de faktiske lenkene, ikke et sammendrag av et sammendrag.
 
 <ToolCard
   cols={3}
-  title="Primaerkilder"
-  caption="Anthropics egne sider pluss tredjepartsevalueringer sitert paa lanseringsdagen."
+  title="Primærkilder"
+  caption="Anthropics egne sider samt evalueringene fra tredjeparter som ble sitert på lanseringsdagen."
   items={[
-    { name: "Lanseringsannonseringen", description: "Anthropics fulle Fable 5 og Mythos 5 post.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
-    { name: "System card", description: "Sikkerhets- og kapasitetstestdetaljer bak paastandene.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Sikkerhet"] },
-    { name: "Project Glasswing", description: "Det amerikanske regjeringens cyberforsvarsamarbeid.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
-    { name: "Mythos Preview cyber-oppdatering", description: "Tidligere lesning av cyber-kapasitetskurven.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
-    { name: "Cognition FrontierCode", description: "Coding-evalen Fable 5 rapporteres aa toppe.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
-    { name: "Bekreftende biologistudie", description: "Uavhengig arbeid sitert som stotte for en Mythos-hypotese.", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["Vitenskap"] }
+    { name: "Lanseringsmeldingen", description: "Anthropics fullstendige innlegg «Fable 5» og «Mythos 5».", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
+    { name: "Systemkort", description: "Detaljer om sikkerhets- og ytelsestester som underbygger påstandene.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
+    { name: "Project Glasswing", description: "Det amerikanske regjeringens samarbeid om cyberforsvar.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
+    { name: "Mythos Preview cyberoppdatering", description: "Les mer om utviklingen av cyberkapasitet.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
+    { name: "Cognition FrontierCode", description: "Kodevurderingen Fable 5 er sendt inn til top.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
+    { name: "Bekreftende biologisk studie", description: "En uavhengig studie som støtter en Mythos-hypotese.", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["Science"] }
   ]}
 />
 
-Hvis du vil ha operatorkonteksten rundt dette, har jeg skrevet om [bruk av Claude Code som GTM-agent-stack](/no/insights/claude-code-vs-clay/) og [AI-produksjonsstacken jeg faktisk shipper paa](/no/insights/ai-production-stack/). Samme prinsipp som her: modellen er et lag, systemet rundt er jobben.
+Hvis du vil vite mer om operatørkonteksten rundt dette, har jeg skrevet om [hvordan man kjører «Claude Code» som en GTM-agentstakk](/no/insights/claude-code-vs-clay/) og [AI-produksjonsstakken jeg faktisk bruker](/no/insights/ai-production-stack/). Det er samme prinsipp som her: modellen utgjør ett lag, mens systemet rundt den utgjør oppgaven.
 
 <CTABand
   heading="Jeg publiserer testresultatene."
-  subtext="Kostnad per kjoring, hvor det feilet, hva som endret seg i stacken min. Abonner paa AI Espresso og du faar dem forst."
-  cta="Abonner paa AI Espresso"
+  subtext="Kostnad per kjøring, hvor det gikk galt, hva som endret seg i stakken min. Abonner på AI Espresso, så får du dem først."
+  cta="Abonner på AI Espresso"
   ctaHref="https://subscribe.wojciech.io"
 />

@@ -1,6 +1,6 @@
 ---
-title: "Claude Fable 5 und Mythos 5: Was Anthropic veröffentlicht hat und was ich teste"
-description: "Anthropic hat am 9. Juni zwei Frontier-Modelle veröffentlicht. Fable 5 für alle, Mythos 5 für geprüfte Cyber- und Biologie-Partner. Was davon real ist, was noch eine Behauptung bleibt, und die Tests, die ich ab morgen fahre."
+title: "Claude Fable 5 und „Mythos 5“: Was Anthropic ausgeliefert hat und was ich gerade teste"
+description: "Anthropic hat am 9. Juni zwei „Frontier“-Modelle veröffentlicht. „Fable 5“ ist für alle zugänglich, „Mythos 5“ ist für geprüfte Partner aus den Bereichen Cybersicherheit und Biologie bestimmt. Hier erfährst du, was bereits Realität ist, was noch eine Ankündigung ist und welche Tests ich ab morgen durchführen werde."
 publishedAt: "2026-06-09"
 tags:
   - AI
@@ -13,202 +13,203 @@ draft: false
 locale: "de"
 translationOf: "claude-fable-5-mythos-5"
 tldr:
-  - "Fable 5 und Mythos 5 sind dasselbe Modell. Der einzige Unterschied sind die Sicherungen: Fable ist für den allgemeinen Gebrauch gefiltert, Mythos läuft mit teilweise gelockerten Sicherungen für geprüfte Cyber- und Biologie-Partner."
-  - "Anthropic meldet State of the Art in den meisten Evals, eine 50-Millionen-Zeilen-Ruby-Migration an einem Tag und Proteindesign-Hilfe auf dem Niveau erfahrener Menschen. Hersteller-Benchmarks sind Behauptungen, bis du sie selbst testest."
-  - "Preise: 10 Dollar rein, 50 Dollar raus pro Million Tokens. Gratis auf Pro, Max und Team bis 22. Juni, dann auf Usage-Credits."
-  - "Die eigentliche Story ist die Sicherheitsschicht: Cyber-, Bio- und Destillations-Klassifikatoren, eine 30-Tage-Speicherrichtlinie und Project Glasswing mit der US-Regierung."
+  - "Fable 5 und „Mythos 5“ sind dasselbe Modell. Der einzige Unterschied besteht in den Sicherheitsvorkehrungen: „Fable“ ist für den allgemeinen Gebrauch gesperrt, während bei „Mythos“ einige Sicherheitsvorkehrungen für geprüfte Partner aus den Bereichen Cyber- und Biowissenschaften aufgehoben sind."
+  - "Anthropic berichtet von Spitzenleistungen bei den meisten Bewertungen, einer Ruby-Migration von 50 Millionen Zeilen, die an einem Tag durchgeführt wurde, sowie Unterstützung beim Proteindesign, die mit der Leistung erfahrener Fachleute mithalten konnte. Anbieter-Benchmarks sind nur Behauptungen, bis man sie selbst testet."
+  - "Die Kosten betragen 10 $ für den Einzug und 50 $ für die Auszahlung pro Million Token. Für die Tarife „Pro“, „Max“ und „Team“ ist der Dienst bis zum 22. Juni kostenlos; danach wird auf Nutzungskredite umgestellt."
+  - "Das Wesentliche ist die Sicherheitsebene: Klassifizierungssysteme für Cyber-, Bio- und Destillationsdaten, eine Aufbewahrungsfrist von 30 Tagen sowie die „Project Glasswing“ mit der US-Regierung."
 ---
 
-Anthropic hat heute, am 9. Juni 2026, zwei Frontier-Modelle veröffentlicht: [Claude Fable 5 und Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Eines ist für alle. Das andere steckt hinter einem Trusted-Access-Programm. Unter der Haube ist es dasselbe Modell.
+Anthropic hat heute, am 9. Juni 2026, zwei Frontier-Modelle veröffentlicht: [Claude Fable 5 und Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Das eine ist für alle zugänglich. Das andere ist im Rahmen eines Trusted-Access-Programms gesperrt. Technisch gesehen handelt es sich um dasselbe Modell.
 
-Dieser letzte Satz ist die ganze Geschichte, und die meiste Berichterstattung wird ihn übersehen. Bevor also die Benchmark-Screenshots deinen Feed übernehmen, hier was sich tatsächlich geändert hat, was noch eine Herstellerbehauptung ist und die vier Tests, die ich ab morgen fahre.
+Dieser letzte Satz fasst alles zusammen, und die meisten Berichte werden ihn übersehen. Bevor also die Benchmark-Screenshots Ihren Feed überschwemmen, hier eine Übersicht darüber, was sich tatsächlich geändert hat, was nach wie vor eine Herstellerangabe ist und welche vier Tests ich ab morgen durchführen werde.
 
 <KeyTakeaway
   icon="info"
-  title="Die Kurzversion"
-  body="Fable 5 und Mythos 5 teilen sich ein Gehirn. Die Sicherungen sind der Produktunterschied. Fable ist der sichere Build für den allgemeinen Gebrauch, der bei markierten Themen leise auf Opus 4.8 zurückfällt. Mythos ist dasselbe Modell mit teilweise gelockerten Sicherungen, nur für geprüfte Cyberverteidiger und Biologie-Partner."
+  title="Die Einzeiler-Version"
+  body="Fable 5 und „Mythos 5“ basieren auf derselben Technologie. Der Unterschied liegt in den Sicherheitsvorkehrungen. „Fable“ ist die sichere Version für den allgemeinen Gebrauch, die bei markierten Themen auf „Opus 4.8“ zurückgreift. „Mythos“ ist dasselbe Modell, bei dem einige Sicherheitsvorkehrungen aufgehoben wurden; es wird ausschließlich an geprüfte Partner aus den Bereichen Cyberabwehr und Biologie weitergegeben."
 />
 
 <StatGrid
   columns={4}
   stats={[
-    { value: "$10 / $50", label: "Preis pro M Tokens", sub: "Input / Output" },
-    { value: "< 5%", label: "Gefilterte Sessions", sub: "Fallback auf Opus 4.8" },
-    { value: "50 Mio. Zeilen", label: "Ruby-Migration", sub: "ein Tag, laut Stripe" },
-    { value: "9 / 14", label: "Protein-Targets", sub: "starke Wirkstoffkandidaten" },
+    { value: "10 $ / 50 $", label: "Preis pro M Token", sub: "Eingabe / Ausgabe" },
+    { value: "< 5 %", label: "Sitzungen mit Zeitlimit", sub: "auf Opus 4.8 ausweichen" },
+    { value: "50 Millionen Zeilen", label: "Ruby-Migration", sub: "einmal pro Tag, laut Stripe" },
+    { value: "9 / 14", label: "Protein-Targets", sub: "vielversprechende Wirkstoffkandidaten" },
   ]}
-  caption="Zahlen aus Anthropics Launch-Post. Behandle sie als Behauptungen zum Prüfen, nicht als Fakten zum Wiederholen."
+  caption="Die wichtigsten Zahlen aus dem Startbeitrag von Anthropic. Betrachten Sie diese als Behauptungen, die es zu überprüfen gilt, und nicht als Fakten, die man einfach so weitergeben sollte."
 />
 
 ## Zwei Modelle, ein Gehirn
 
-Die Namensgebung verrät es. Anthropic sagt, Fable kommt vom lateinischen *fabula*, "das, was erzählt wird," nah am griechischen *mythos*. Gleiche Wurzel, zwei Masken. Der Unterschied liegt nicht in den Fähigkeiten. Er liegt darin, was dem Modell erlaubt ist.
+Der Name verrät es. Anthropic sagt, „fable“ stamme vom lateinischen *fabula* ab, „das, was erzählt wird“, und sei dem griechischen *mythos* sehr ähnlich. Gleiche Wurzel, zwei Gesichter. Der Unterschied liegt nicht in der Leistungsfähigkeit. Es geht darum, was das Modell tun darf.
 
 <Comparison
   items={[
-    { label: "Claude Fable 5", tag: "Allgemeiner Gebrauch", tone: "accent", body: "Heute auf der API und in jedem Plan. Sicherungen aktiv. Wenn eine Anfrage ein markiertes Thema trifft, verweigert es nicht: Es antwortet leise mit Opus 4.8 stattdessen. Anthropic sagt, das passiert in weniger als 5% der Sessions." },
-    { label: "Claude Mythos 5", tag: "Trusted Access", tone: "muted", body: "Dasselbe Modell, einige Sicherungen gelockert. Beschränkt auf geprüfte Cyberverteidiger über Project Glasswing und ein kommendes Biologie-Programm. Laut Anthropic der Build mit den stärksten Cyber-Fähigkeiten aller Modelle." }
+    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "Gilt ab heute für die API und alle Tarife. Schutzmaßnahmen sind aktiviert. Wenn eine Anfrage ein markiertes Thema betrifft, wird sie nicht abgelehnt, sondern stillschweigend mit „Opus 4.8“ beantwortet. Laut Anthropic tritt dies in weniger als 5 % der Sitzungen auf." },
+    { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Gleiches Grundmodell, einige Sicherheitsvorkehrungen wurden aufgehoben. Der Zugang ist auf geprüfte Cyberverteidiger beschränkt, die über „Project Glasswing“ zugelassen wurden, sowie auf ein künftiges Biologieprogramm. Nach Angaben von Anthropic handelt es sich hierbei um die Version mit den stärksten Cyberfähigkeiten aller Modelle." }
   ]}
 />
 
-Wenn also eine Anfrage eintrifft, sieht der Pfad so aus:
+Wenn also eine Anfrage eingeht, sieht der Pfad wie folgt aus:
 
-<Diagram caption="Wie Fable 5 eine markierte Anfrage behandelt: keine Verweigerung, nur ein leiseres Modell">
-  <Box label="Deine Anfrage" />
+<Diagram caption="Wie „Fable 5“ mit einer markierten Anfrage umgeht: keine Ablehnung, sondern lediglich ein leiseres Modell">
+  <Box label="Ihre Anfrage" />
   <Arrow label="Klassifikator" />
-  <Box label="Sicherheitsprüfung" sub="Cyber · Bio · Destillation" variant="accent" />
+  <Box label="Sicherheitscheck" sub="Cyber · Bio · Destillation" variant="accent" />
   <Arrow label="sauber" />
-  <Box label="Fable 5 antwortet" sub="volle Fähigkeiten" />
+  <Box label="Fable 5 Antworten" sub="voller Funktionsumfang" />
   <Arrow label="markiert" dashed />
-  <Box label="Opus 4.8 antwortet" sub="Fallback, keine Verweigerung" variant="muted" />
+  <Box label="Opus 4.8 Antworten" sub="Ausweichlösung, keine Ablehnung" variant="muted" />
 </Diagram>
 
-Das ist wichtig für jeden, der auf der API baut. Ein stiller Fallback ist bessere UX als eine harte Verweigerung, aber es bedeutet, dass zwei verschiedene Modelle in einer Session antworten können. Wenn du Evals oder Agent-Loops fährst, willst du wissen, welches geantwortet hat.
+Das ist für jeden wichtig, der auf der API aufbaut. Ein stillschweigender Fallback bietet eine bessere Benutzererfahrung als eine direkte Ablehnung, bedeutet aber, dass innerhalb einer Sitzung zwei verschiedene Modelle antworten können. Wenn Sie Eval-Prozeduren oder Agent-Loops ausführen, möchten Sie wissen, welches Modell geantwortet hat.
 
-## Die Benchmarks, mit Vorbehalt vorweg
+## Die Benchmarks – mit einem Vorbehalt
 
-<Callout type="warning" title="Lies das vor den Zahlen">
-  Alles unten wird von Anthropic oder seinen Launch-Partnern gemeldet. Partner-Benchmarks sind Marketing, bis sie deinem eigenen Workload standhalten. Ich wiederhole sie, weil sie zeigen, wo man hinschauen sollte, nicht weil ich sie reproduziert habe.
+<Callout type="warning" title="Lesen Sie dies, bevor Sie sich die Zahlen ansehen">
+  Alle folgenden Angaben stammen von Anthropic oder dessen Einführungs-Partnern. Die von den Partnern angegebenen Leistungswerte sind reine Marketingangaben, solange sie nicht unter Ihrer eigenen Arbeitslast bestehen. Ich gebe sie hier wieder, weil sie Aufschluss darüber geben, worauf man achten sollte, nicht weil ich sie selbst reproduziert habe.
 </Callout>
 
-Das Muster in den Behauptungen ist konsistent: Je länger und agentischer die Aufgabe, desto größer der gemeldete Vorsprung. Nicht "klügere Antworten", sondern "hält den Faden über Millionen von Tokens, ohne den Überblick zu verlieren."
+Das Muster zieht sich durch alle Aussagen: Je länger und aktiver die Aufgabe ist, desto größer ist der gemeldete Vorsprung. Nicht „klügere Antworten“, sondern „den Faden über Millionen von Tokens hinweg im Blick behalten, ohne den Überblick zu verlieren“.
 
 <DataTable
   columns={[
-    { key: "eval", label: "Evaluation" },
-    { key: "source", label: "Gemeldet von" },
-    { key: "result", label: "Behauptetes Ergebnis" }
+    { key: "eval", label: "Bewertung" },
+    { key: "result", label: "Fable 5" },
+    { key: "compare", label: "Zur Information" }
   ]}
   rows={[
-    { eval: "FrontierCode", source: "Cognition", result: "Höchstes aller Frontier-Modelle bei mittlerem Aufwand" },
-    { eval: "Finanz-Reasoning", source: "Hebbia", result: "Höchster Score aller getesteten Modelle" },
-    { eval: "ViBench (Vibe Coding)", source: "Replit", result: "Leistungsstärkstes Modell im Benchmark" },
-    { eval: "Core Analytics", source: "Databricks", result: "Erstes Modell über 90%, 10-Punkte-Sprung über Opus 4.8" },
-    { eval: "Spreadsheet-Suite", source: "Anaconda", result: "Schlägt Opus 4.8 auf jedem Aufwandsniveau, 25 bis 30% schneller" }
+    { eval: "SWE-Bench Pro", result: "80,3 %", compare: "Opus 4.8 69,2 % · GPT-5.5 58,6 %" },
+    { eval: "FrontierCode (Kognition)", result: "29,3 %", compare: "Opus 4.8 13,4 % · GPT-5.5 5,7 %" },
+    { eval: "ViBench, Vibe-Programmierung (Replit)", result: "Das Topmodel Replit hat getestet", compare: "Replits eigener End-to-End-Benchmark" },
+    { eval: "Finanzlogik (Hebbia)", result: "Der höchste Wert aller getesteten Modelle", compare: "Argumentation anhand von Dokumenten, Auswerten von Diagrammen und Tabellen" },
+    { eval: "Kernanalytik", result: "Wer zuerst die 90-Prozent-Marke erreicht", compare: "Laut Angaben +10 Punkte gegenüber Opus" },
+    { eval: "ExploitBench (Mythos 5)", result: "78 %", compare: "Mythos Preview 69 % · Opus 4.8 40 %" }
   ]}
-  highlight={[3]}
-  caption="Drittanbieter-Evals aus dem Launch-Post. Quellen am Ende verlinkt."
+  highlight={[0]}
+  caption="Zahlen aus den Einführungsunterlagen von Anthropic und den Bewertungen der genannten Partner. Die Zahlen stammen von ihnen, nicht von mir: Ich habe sie nicht selbst erstellt. Die Quellen sind am Ende verlinkt."
 />
 
-Zwei Ergebnisse lohnt es, aus der Tabelle herauszuziehen.
+Zwei Ergebnisse sind besonders hervorzuheben.
 
 <Benchmark
-  label="Databricks Core Analytics Benchmark"
+  label="Benchmark für Kernanalysen"
   yours={90}
   baseline={80}
-  yoursLabel="Fable 5 (erstmals über 90%)"
-  baselineLabel="Opus 4.8"
+  yoursLabel="Fable 5 (ab 90 %)"
+  baselineLabel="Opus 4.8 (gemäß der +10-Behauptung)"
   unit="%"
-  caption="Gemeldet von Databricks. Ein 10-Punkte-Sprung auf einem sättigenden Benchmark ist die Art von Bewegung, die normalerweise zwei Releases braucht."
+  caption="Ein Partner meldet, dass „Fable 5“ als erstes Modell die 90-Prozent-Marke überschritten hat – ein Sprung von 10 Prozentpunkten gegenüber „Opus“. Ein solcher Sprung bei einem ausgereiften Benchmark-Titel erfordert normalerweise zwei Veröffentlichungen."
 />
 
-Bei der Frontier-Physikforschung sagt Anthropic, dass Fable 5 "fast dahin kam, wo GPT-5.5 nach vier Tagen landete" in 36 Stunden, mit einem Drittel der Reasoning-Tokens. Die Token-Effizienz ist der Teil, der Operatoren interessieren sollte. Günstigeres Reasoning pro Fortschrittseinheit verändert, was sich zu automatisieren lohnt.
+Im Bereich der Spitzenforschung in der Physik sagt ein Partner, dass „Fable 5“ in 36 Stunden „fast dort angekommen ist, wo ‚GPT-5.5‘ nach vier Tagen gelandet ist“. Wenn dieses Tempo anhält, ist die Token-Effizienz der Aspekt, auf den Betreiber achten sollten. Günstigere Rechenkosten pro Fortschrittseinheit verändern die Frage, was sich zu automatisieren lohnt.
 
-Die lauteste Behauptung kommt aus dem Software Engineering: Stripe hat eine codebase-weite Migration über 50 Millionen Zeilen Ruby an einem einzigen Tag durchgeführt, Arbeit, die laut Anthropic sonst zwei Monate Handarbeit gekostet hätte. Wenn auch nur die Hälfte davon auf einer normalen Codebase hält, verschiebt sich die Build-versus-Buy-Rechnung bei internem Tooling erneut.
+Die Behauptung aus dem Bereich Softwareentwicklung ist am eindrucksvollsten: Stripe führte an einem einzigen Tag eine Migration des gesamten Code-Bestands mit 50 Millionen Zeilen Ruby durch – eine Arbeit, die laut Anthropic ein Team manuell zwei Monate gekostet hätte. Sollte sich dies auch nur zur Hälfte auf einen normalen Code-Bestand übertragen lassen, verschiebt sich die Abwägung zwischen Eigenentwicklung und Kauf bei internen Tools erneut.
 
-<PullQuote source="Michael Truell, Cursor" role="zitiert in Anthropics Launch-Post">
-  Claude Fable 5 ist das State-of-the-Art-Modell auf CursorBench. Es hat eine Klasse von Langzeit-Problemen eröffnet, die vorher unerreichbar waren.
+<PullQuote source="Michael Truell, Cursor" role="wie im Startbeitrag von Anthropic zitiert">
+  Claude Fable 5 ist das derzeit führende Modell auf CursorBench. Es hat eine Klasse von Problemen mit langem Zeithorizont erschlossen, die für frühere Modelle unerreichbar waren.
 </PullQuote>
 
-GitHub, Replit, Databricks, Morgan Stanley und Harvey haben alle Varianten desselben gesagt: ein klarer Sprung bei langer, agentischer, Multi-Turn-Arbeit. Das sind viele übereinstimmende Partner. Es sind auch genau die, die du am Launch-Tag erwarten würdest. Halte beide Gedanken fest.
+GitHub, Replit, Hebbia, Morgan Stanley und Harvey äußerten sich alle in ähnlicher Weise: ein deutlicher Fortschritt gegenüber langwierigen, agentenbasierten Projekten mit mehreren Interaktionsrunden. Das sind eine ganze Reihe von Partnern, die an einem Strang ziehen. Es sind auch genau die Akteure, von denen man erwarten würde, dass sie am Tag der Markteinführung zitiert werden. Behalten Sie beide Gedanken im Hinterkopf.
 
-## Die Sicherheitsschicht ist der eigentliche Launch
+## Die Sicherheitsschicht ist der eigentliche Start
 
-Streiche die Benchmarks und es bleibt ein Sicherheits-Release. Anthropic sagt ausdrücklich, dass Mythos-Klasse-Modelle "eine Schwelle erreicht haben, an der sie erhebliche Risiken darstellen," und die gesamte Fable-versus-Mythos-Struktur existiert, um das zu managen.
+Lässt man die Benchmark-Ergebnisse einmal außer Acht, handelt es sich hier um eine Sicherheitsmaßnahme. Anthropic stellt ausdrücklich fest, dass Modelle der Mythos-Klasse „eine Schwelle erreicht haben, ab der sie erhebliche Risiken bergen“, und die gesamte Struktur von Fable im Vergleich zu Mythos dient genau dazu, diese Risiken zu bewältigen.
 
-Drei Klassifikatoren stehen vor Fable 5:
+Vor „Fable 5“ befinden sich drei Klassifikatoren:
 
 <Grid cols={3}>
   <KeyPoint title="Cybersicherheit" type="warning">
-    <p>Blockiert offensive Cyber- und Exploitation-Aufgaben. Anthropic meldet null erfolgreiche universelle Jailbreaks über 1.000+ Stunden externem Red-Teaming und sagt, dass externe Partner diese als die robustesten Cyber-Sicherungen aller getesteten Modelle bewertet haben.</p>
+    <p>Blocks offensive cyber and exploitation tasks. Anthropic reports zero successful universal jailbreaks across 1,000+ hours of external red-teaming, and says outside partners rated these the most robust cyber safeguards of any model they have tested.</p>
   </KeyPoint>
   <KeyPoint title="Biologie und Chemie" type="warning">
-    <p>Blockiert Biowaffen- und Dual-Use-Anfragen. Absichtlich breit gefasst, was mehr falsch-positive Ergebnisse bedeutet. Anthropic plant, es einzuengen, wenn das Vertrauen wächst.</p>
+    <p>Blocks bioweapon-related and dual-use queries. Deliberately broad for now, which means more false positives. Anthropic says it plans to narrow it as confidence grows.</p>
   </KeyPoint>
   <KeyPoint title="Destillation" type="warning">
-    <p>Blockiert Versuche, die Fähigkeiten des Modells für das Training eines Konkurrenten zu extrahieren. Eine Fähigkeits-Proliferationskontrolle, keine Nutzersicherheits-Kontrolle.</p>
+    <p>Blocks attempts to extract the model's capability for training a competitor. A capability-proliferation control, not a user-safety one.</p>
   </KeyPoint>
 </Grid>
 
-Dazu kommt eine neue Datenrichtlinie: 30 Tage Speicherung des gesamten Mythos-Klasse-Traffics, nicht zum Training neuer Modelle genutzt, mit Protokollierung jedes menschlichen Zugriffs und Löschung nach 30 Tagen in fast allen Fällen. Der angegebene Grund ist Erkennung: Neue Angriffe fangen und False Positives dämmen, bevor sie skalieren.
+Damit einher geht eine neue Datenrichtlinie: Eine Aufbewahrungsfrist von 30 Tagen für den gesamten Datenverkehr der Mythos-Klasse, der nicht zum Trainieren neuer Modelle verwendet wird, wobei jeder Zugriff durch Menschen protokolliert und die Daten in fast allen Fällen nach 30 Tagen gelöscht werden. Als Grund wird die Erkennung genannt: neue Angriffe aufspüren und Fehlalarme ausfiltern, bevor sie sich ausbreiten.
 
-<Callout type="note" title="Der ehrliche Trade-off, den Anthropic selbst benennt">
-  Die Sicherungen sind vorsichtig eingestellt, und Anthropic gibt zu, dass sie "noch strenger sind als ideal" und einige Nutzer mit falschen Alarmen frustrieren werden. Das Ziel sind nicht null Jailbreaks. Das Ziel ist, jeden Jailbreak so langsam und teuer zu machen, dass er gefangen werden kann, bevor er skaliert. Das ist eine vertretbare Position, offen ausgesprochen. Ich respektiere das mehr als ein Versprechen von "perfekter Sicherheit."
+<Callout type="note" title="Der ehrliche Kompromiss, den Anthropic selbst nennt">
+  Die Sicherheitsvorkehrungen sind konservativ ausgelegt, und Anthropic räumt ein, dass sie „immer noch strenger sind, als es ideal wäre“, und einige Nutzer durch Fehlalarme verärgern werden. Das Ziel ist nicht, Jailbreaks vollständig zu verhindern. Vielmehr soll jeder Jailbreak so zeitaufwendig und kostspielig gestaltet werden, dass er aufgedeckt wird, bevor er in großem Umfang genutzt werden kann. Das ist, klar ausgedrückt, eine vertretbare Position. Das respektiere ich mehr als die Behauptung, das System sei „absolut sicher“.
 </Callout>
 
-Und dann ist da **Project Glasswing**: die US-Regierungskollaboration, aktiv seit April 2026, bei der Mythos-Klasse-Modelle mit gelockerten Cyber-Sicherungen an eine kleine Gruppe von Cyberverteidigern und kritischen Infrastrukturanbietern gehen. Glasswing-Partner bekommen jetzt das Upgrade von Mythos Preview auf Mythos 5. Ein biologisches Trusted-Access-Programm kommt für ausgewählte Forscher, mit gelockerten Bio-Sicherungen und aktiven Cyber-Sicherungen.
+Und dann gibt es noch **„Project Glasswing“**: eine seit April 2026 laufende Initiative der US-Regierung, bei der Modelle der Mythos-Klasse, deren Cybersicherheitsvorkehrungen aufgehoben wurden, an eine kleine Gruppe von Cyber-Sicherheitsexperten und Betreibern kritischer Infrastrukturen übergeben werden. Glasswing-Partner erhalten nun ein Upgrade von „Mythos Preview“ auf „Mythos 5“. Für ausgewählte Forscher ist ein „Biology Trusted Access Program“ in Vorbereitung, bei dem die biologischen Sicherheitsvorkehrungen aufgehoben, die Cybersicherheitsvorkehrungen jedoch beibehalten werden.
 
-Diese Zeile sollte dich aufmerken lassen: Dieselbe Anfrage, die defensiv in den Händen eines geprüften Cyberverteidigers ist, ist ein Angriff in den Händen anderer. Anthropics Antwort ist kein klügerer Filter. Es ist Zugangskontrolle. Wer du bist, entscheidet jetzt, welches Modell du bekommst.
+Dieser Satz sollte Ihnen zu denken geben: Dieselbe Abfrage, die in den Händen eines geprüften Cyber-Verteidigers defensiv ist, wird in den Händen eines anderen zum Angriff. Die Antwort von Anthropic ist kein intelligenterer Filter. Es ist Zugriffskontrolle. Wer Sie sind, entscheidet nun darüber, welches Modell Sie erhalten.
 
-## Der Rollout hat eine Frist
+## Auf der Rolle ist eine Uhr angebracht
 
 <ArticleTimeline
   items={[
-    { date: "Apr 2026", title: "Project Glasswing startet", body: "Claude Mythos Preview geht an eine kleine Gruppe von Cyberverteidigern im Rahmen einer US-Regierungskollaboration.", tag: "Kontext" },
-    { date: "9. Jun 2026", title: "Launch von Fable 5 und Mythos 5", body: "Fable 5 auf der API und in jedem Plan. Mythos 5 für Glasswing-Partner. Fable 5 gratis auf Pro, Max, Team und Enterprise pro Sitz.", tag: "Heute", highlight: true },
-    { date: "22. Jun 2026", title: "Letzter Gratis-Tag", body: "Letzter Tag, an dem Fable 5 ohne Aufpreis in Abo-Plänen enthalten ist." },
-    { date: "23. Jun 2026", title: "Wechsel auf Usage-Credits", body: "Fable 5 verlässt die inkludierten Pläne und läuft auf Usage-Credits, bis die Kapazität es als Standard zurückbringt." },
-    { date: "Kommende Wochen", title: "Biologie Trusted Access", body: "Ausgewählte Life-Science-Forscher bekommen Mythos 5 mit gelockerten Bio-Sicherungen, während die Sicherungen weiter verbessert werden." }
+    { date: "Apr 2026", title: "Project Glasswing beginnt", body: "Claude Mythos Preview wendet sich im Rahmen einer Zusammenarbeit mit der US-Regierung an eine kleine Gruppe von Cyber-Verteidigern.", tag: "Context" },
+    { date: "Jun 9, 2026", title: "Fable 5 und die Einführung von „Mythos 5“", body: "Fable 5 über die API und in allen Tarifen. „Mythos 5“ für Glasswing-Partner. „Fable 5“ ist in den Tarifen Pro, Max, Team und im lizenzbasierten Enterprise-Tarif kostenlos enthalten.", tag: "Today", highlight: true },
+    { date: "Jun 22, 2026", title: "Kostenloser letzter Tag bei den Tarifen", body: "Der „Final Day“-Fable 5t bei den Abonnements ohne Aufpreis enthalten." },
+    { date: "Jun 23, 2026", title: "Übertragung auf Nutzungskredite", body: "Fable 5 wird aus den enthaltenen Tarifen herausgenommen und läuft auf Nutzungskredite, bis die Kapazität eine Rückkehr zum Standardtarif wieder zulässt." },
+    { date: "Coming weeks", title: "Biologie – vertrauenswürdiger Zugriff", body: "Ausgewählte Forscher aus dem Bereich der Biowissenschaften erhalten Zugang zu „Mythos 5“, da die Biosicherheitsmaßnahmen aufgehoben wurden und sich die Sicherheitsvorkehrungen kontinuierlich verbessern." }
   ]}
-  caption="Wenn du Fable 5 gratis testen willst, ist das Fenster vom 9. bis 22. Juni. Danach kostet es Credits."
+  caption="Wenn du „Fable 5“ kostenlos testen möchtest, hast du vom 9. bis zum 22. Juni die Gelegenheit dazu. Danach kostet es Credits."
 />
 
-Das Gratis-Fenster ist die praktische Erkenntnis. Zwei Wochen, um es hart zu testen, bevor der Zähler startet.
+Das ist der praktische Tipp: Zwei Wochen, in denen man noch richtig Gas geben kann, bevor der Zähler läuft.
 
 ## Was ich ab morgen teste
 
-Ich vertraue einem Modell nicht aufgrund seines Launch-Posts. Ich vertraue ihm aufgrund meines eigenen Workloads. Hier ist, was ab morgen durch Fable 5 geht, mit echter Arbeit, nicht mit Spielzeug-Prompts.
+Ich verlasse mich nicht auf ein Modell, nur weil es gerade erst veröffentlicht wurde. Ich verlasse mich darauf, weil ich es in meiner eigenen Arbeitsumgebung getestet habe. Hier ist, was ab morgen über Fable 5 läuft – bei echten Aufgaben, nicht bei Spielerei-Prompts.
 
 <Steps
   title="Die vier Tests"
   items={[
-    { title: "Ein Langzeit-Refactor auf einem echten Repo", body: "Ich gebe ihm eine echte Migration in dieser Codebase und schaue, ob es den Kontext bis zum Ende hält oder in Stunde zwei abdriftet. Die 50-Millionen-Zeilen-Behauptung ist die Schlagzeile. Mein Repo ist der Reality-Check.", meta: "01 / agentisch" },
-    { title: "Spreadsheet- und Analytics-Ops auf meinen Daten", body: "Die 25-bis-30%-schneller-Behauptung gegen einen echten Reporting-Workflow testen, nicht gegen ein Benchmark-Sheet. Geschwindigkeit zählt nur, wenn das Ergebnis stimmt.", meta: "02 / Wissensarbeit" },
-    { title: "Vision zu Code", body: "Einen Screenshot einer Landing Page geben und nach dem Source fragen. Anthropic sagt, es baut Web-Apps aus Bildern nach. Ich will sehen, wie nah der erste Versuch landet.", meta: "03 / Vision" },
-    { title: "Kosten pro Agent-Run vs. Opus 4.8", body: "Dieselbe GTM-Enrichment-Loop, beide Modelle, Seite an Seite. Die Reasoning-Token-Effizienz ist die Behauptung, die meinen Stack tatsächlich verändert. Ich veröffentliche die Zahlen.", meta: "04 / Stückkosten" }
+    { title: "Eine Refaktorisierung mit langfristiger Perspektive an einem echten Repo", body: "Führen Sie eine echte Migration durch diese Codebasis durch und beobachten Sie, ob sie bis zum Schluss den Überblick behält oder schon nach zwei Stunden ins Straucheln gerät. Die Behauptung von 50 Millionen Zeilen ist die Schlagzeile. Mein Repo ist der Realitätscheck.", meta: "01 / agentic" },
+    { title: "Tabellenkalkulation und Datenanalyse anhand meiner eigenen Daten", body: "Vergleichen Sie die angegebenen Analysegeschwindigkeiten mit einem echten Berichtsworkflow und nicht mit einer Benchmark-Tabelle. Geschwindigkeit zählt nur, wenn das Ergebnis stimmt.", meta: "02 / knowledge work" },
+    { title: "Von der Idee zum Code", body: "Zeig ihm einen Screenshot einer Landingpage und frag nach der Quelle. Anthropic behauptet, Webanwendungen allein anhand von Bildern nachbauen zu können. Ich möchte sehen, wie nah das Ergebnis beim ersten Durchgang am Original liegt.", meta: "03 / vision" },
+    { title: "Kosten pro Agent-Ausführung im Vergleich zu „Opus 4.8“", body: "Derselbe GTM-Enrichment-Loop, beide Modelle nebeneinander. Die Effizienz der Reasoning-Token ist der Punkt, der meinen Stack tatsächlich verändert. Ich werde die Zahlen veröffentlichen.", meta: "04 / unit economics" }
   ]}
 />
 
 <DoDont
   do={[
-    "Fable 5 während des Gratis-Fensters an deiner härtesten echten Aufgabe testen",
-    "Loggen, welches Modell geantwortet hat, wenn der Fallback in Agent-Loops feuert",
-    "Eigene Evals fahren, bevor du einer Partner-Zahl vertraust",
-    "Den Kosten-pro-Ergebnis-Drop als den echten Unlock behandeln, nicht die Rangliste"
+    "Testen Sie „Fable 5“ während des kostenlosen Zeitfensters bei Ihrer anspruchsvollsten realen Aufgabe",
+    "Protokolliere, welches Modell geantwortet hat, wenn in den Agenten-Schleifen der Fallback ausgelöst wird",
+    "Führen Sie Ihre eigenen Auswertungen erneut durch, bevor Sie einer Partnernummer vertrauen",
+    "Betrachte den Rückgang der Kosten pro Ergebnis als den eigentlichen Durchbruch, nicht die Rangliste"
   ]}
   dont={[
-    "Launch-Day-Benchmarks wiederholen, als hättest du sie selbst gemessen",
-    "Mythos-Klasse-Output in irgendetwas einbinden, ohne die Speicherrichtlinie zu lesen",
-    "Annehmen, dass die Sicherungen eine legitime Anfrage nicht blockieren werden",
-    "Bis zum 23. Juni warten und sich dann beschweren, dass es Credits kostet"
+    "Wiederholen Sie die Benchmarks vom Tag der Veröffentlichung, als hätten Sie sie gemessen",
+    "Die Ausgabe der Mythos-Klasse an ein beliebiges Ziel weiterleiten, ohne die Aufbewahrungsrichtlinie zu lesen",
+    "Gehen Sie davon aus, dass die Sicherheitsvorkehrungen eine berechtigte Anfrage nicht blockieren",
+    "Warte bis zum 23. Juni und beschwere dich dann, dass es Credits kostet"
   ]}
 />
 
-Die Ergebnisse stelle ich hier als Follow-up rein, mit Zahlen, inklusive wo es scheitert. Wenn du auch testest, sag mir, was kaputtgegangen ist. Das ist der Teil, den dir kein Launch-Post gibt.
+Ich werde die Ergebnisse hier als Nachbericht veröffentlichen – mit allen Zahlen und auch den Schwachstellen. Falls ihr ebenfalls testet, lasst mich wissen, was nicht funktioniert hat. Das ist der Teil, den euch kein Startbericht verraten wird.
 
-## Quellen und weiterführende Lektüre
+## Quellen und weiterführende Literatur
 
-Ich habe das Primärmaterial gelesen, damit du es auch kannst. Hier sind die echten Links, nicht die Zusammenfassung einer Zusammenfassung.
+Ich habe die Originalquellen gelesen, damit du das auch tun kannst. Das sind die echten Links, keine Zusammenfassung einer Zusammenfassung.
 
 <ToolCard
   cols={3}
   title="Primärquellen"
-  caption="Anthropics eigene Seiten plus die Drittanbieter-Evals vom Launch-Tag."
+  caption="Die eigenen Seiten von Anthropic sowie die am Tag der Veröffentlichung zitierten Bewertungen von Drittanbietern."
   items={[
-    { name: "Launch-Ankündigung", description: "Anthropics vollständiger Fable 5 und Mythos 5 Post.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
-    { name: "System Card", description: "Sicherheits- und Fähigkeitstestdetails hinter den Behauptungen.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Sicherheit"] },
-    { name: "Project Glasswing", description: "Die US-Regierung-Cyberverteidigungskollaboration.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
-    { name: "Mythos Preview Cyber-Update", description: "Früherer Blick auf die Cyber-Fähigkeitskurve.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red Team"] },
-    { name: "Cognition FrontierCode", description: "Die Coding-Eval, die Fable 5 anführen soll.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
-    { name: "Bestätigende Biologie-Studie", description: "Unabhängige Arbeit, die als Stütze einer Mythos-Hypothese zitiert wird.", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["Wissenschaft"] }
+    { name: "Die Ankündigung der Markteinführung", description: "Der vollständige Beitrag von Anthropic unter Fable 5 und Mythos 5.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
+    { name: "Systemkarte", description: "Details zu den Sicherheits- und Leistungsprüfungen, die den Angaben zugrunde liegen.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
+    { name: "Project Glasswing", description: "Die Zusammenarbeit der US-Regierung im Bereich Cyberabwehr.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
+    { name: "Mythos Preview Cyber-Update", description: "Lesen Sie hier mehr über die Cyber-Fähigkeitskurve.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
+    { name: "Cognition FrontierCode", description: "Die Ergebnisse der Code-Auswertung Fable 5 werden an „top“ übermittelt.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
+    { name: "Eine bestätigende biologische Studie", description: "Eine unabhängige Studie, die als Beleg für eine Mythos-Hypothese angeführt wird.", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["Science"] }
   ]}
 />
 
-Wenn du den Operator-Kontext dazu willst, habe ich über [den Einsatz von Claude Code als GTM-Agent-Stack](/de/insights/claude-code-vs-clay/) und [den AI-Produktions-Stack, auf dem ich tatsächlich arbeite](/de/insights/ai-production-stack/) geschrieben. Gleiches Prinzip wie hier: Das Modell ist eine Schicht, das System drumherum ist die Arbeit.
+Falls Sie den operativen Kontext dazu interessieren, habe ich über [den Einsatz von „Claude Code“ als GTM-Agent-Stack](/de/insights/claude-code-vs-clay/) und [den KI-Produktionsstack, den ich tatsächlich nutze](/de/insights/ai-production-stack/) geschrieben. Das Prinzip ist dasselbe wie hier: Das Modell ist eine Ebene, das System drumherum ist die Aufgabe.
 
 <CTABand
   heading="Ich veröffentliche die Testergebnisse."
-  subtext="Kosten pro Run, wo es gescheitert ist, was sich in meinem Stack geändert hat. Abonniere AI Espresso und du bekommst sie zuerst."
+  subtext="Kosten pro Durchlauf, wo es schiefgelaufen ist, was sich in meinem Stack geändert hat. Abonnieren Sie AI Espresso und Sie erfahren es als Erste."
   cta="AI Espresso abonnieren"
   ctaHref="https://subscribe.wojciech.io"
 />

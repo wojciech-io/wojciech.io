@@ -5,7 +5,7 @@ import yaml from 'js-yaml';
 
 const INSIGHTS_DIR = resolve('./src/content/insights');
 const VALID_CATEGORIES = ['AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products'] as const;
-const VALID_COVER_TYPES = ['terminal', 'builder', 'chart', 'product', 'system', 'default'] as const;
+const VALID_COVER_TYPES = ['terminal', 'builder', 'chart', 'product', 'system', 'launch', 'default'] as const;
 
 function parseFrontmatter(raw: string): Record<string, unknown> {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
