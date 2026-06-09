@@ -1,0 +1,214 @@
+---
+title: "Claude Fable 5とMythos 5：Anthropicが出したもの、明日から僕がテストすること"
+description: "Anthropicが6月9日にフロンティアモデルを2つリリース。Fable 5は全員向け、Mythos 5は認定済みのサイバー・生物学パートナー限定。何が本物で、何がまだ宣伝文句で、明日から回すテスト4つ。"
+publishedAt: "2026-06-09"
+tags:
+  - AI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "launch"
+featured: true
+draft: false
+locale: "jp"
+translationOf: "claude-fable-5-mythos-5"
+tldr:
+  - "Fable 5とMythos 5は同じモデル。違いはセーフガードだけ：Fableは一般用にフィルタリングされ、Mythosは認定済みサイバー・生物学パートナー向けに一部のセーフガードが解除されている。"
+  - "Anthropicはほとんどのevalでstate of the artを報告、5000万行のRuby移行を1日で、熟練した人間レベルのタンパク質設計支援。ベンダーベンチマークは自分でテストするまで宣伝文句。"
+  - "価格：100万トークンあたり入力10ドル、出力50ドル。6月22日までPro、Max、Teamで無料、その後は使用クレジットに移行。"
+  - "本当のストーリーはセキュリティレイヤー：サイバー、バイオ、蒸留の分類器、30日間のデータ保持ポリシー、米国政府とのProject Glasswing。"
+---
+
+Anthropicは本日、2026年6月9日、フロンティアモデルを2つリリースした：[Claude Fable 5とClaude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5)。1つは全員向け。もう1つはトラステッドアクセスプログラムの裏にある。中身は同じモデルだ。
+
+最後の一文がこのニュースの全て。ほとんどの報道はそこを見逃す。ベンチマークのスクリーンショットがフィードを埋め尽くす前に、実際に何が変わったのか、何がまだベンダーの宣伝文句なのか、明日から回す4つのテストを書いておく。
+
+<KeyTakeaway
+  icon="info"
+  title="一行バージョン"
+  body="Fable 5とMythos 5は脳を共有している。セーフガードが製品の違い。Fableはフラグ付きトピックでOpus 4.8にフォールバックする安全な一般向けビルド。Mythosは同じモデルで一部のセーフガードが解除され、認定済みのサイバー防御者と生物学パートナーにのみ提供される。"
+/>
+
+<StatGrid
+  columns={4}
+  stats={[
+    { value: "$10 / $50", label: "100万トークン単価", sub: "入力 / 出力" },
+    { value: "< 5%", label: "フィルタされるセッション", sub: "Opus 4.8にフォールバック" },
+    { value: "5000万行", label: "Ruby移行", sub: "1日、Stripeの報告" },
+    { value: "9 / 14", label: "タンパク質ターゲット", sub: "有力な薬剤候補" },
+  ]}
+  caption="Anthropicのローンチポストからの数字。検証すべき主張として扱い、繰り返すべき事実としては扱わない。"
+/>
+
+## 2つのモデル、1つの脳
+
+名前が本質を表している。Anthropicによれば、fableはラテン語の*fabula*（語られるもの）から来ており、ギリシャ語の*mythos*に近い。同じ語源、2つの仮面。違いは能力ではない。モデルに何が許可されているかだ。
+
+<Comparison
+  items={[
+    { label: "Claude Fable 5", tag: "一般利用", tone: "accent", body: "今日からAPIと全プランで利用可能。セーフガード有効。リクエストがフラグ付きトピックに当たると、拒否はしない：代わりに静かにOpus 4.8で回答する。Anthropicによれば、これが起きるのはセッションの5%未満。" },
+    { label: "Claude Mythos 5", tag: "トラステッドアクセス", tone: "muted", body: "同じ基盤モデル、一部のセーフガードが解除。Project Glasswingを通じた認定済みサイバー防御者と、今後のバイオロジープログラムに限定。Anthropicによれば、あらゆるモデルの中で最も強力なサイバー能力を持つビルド。" }
+  ]}
+/>
+
+リクエストが到着すると、パスは次のようになる：
+
+<Diagram caption="Fable 5がフラグ付きリクエストを処理する方法：拒否なし、より静かなモデルに切り替え">
+  <Box label="あなたのリクエスト" />
+  <Arrow label="分類器" />
+  <Box label="セキュリティチェック" sub="サイバー・バイオ・蒸留" variant="accent" />
+  <Arrow label="クリーン" />
+  <Box label="Fable 5が回答" sub="フル能力" />
+  <Arrow label="フラグ" dashed />
+  <Box label="Opus 4.8が回答" sub="フォールバック、拒否なし" variant="muted" />
+</Diagram>
+
+APIで構築する全ての人にとって重要だ。サイレントフォールバックはハードリジェクトより良いUXだが、1つのセッション内で2つの異なるモデルが回答する可能性がある。evalやエージェントループを走らせているなら、どちらが回答したか知りたいはず。
+
+## ベンチマーク、先に注意書き
+
+<Callout type="warning" title="数字を見る前にこれを読んで">
+  以下は全てAnthropicまたはローンチパートナーの報告。パートナーベンチマークは、自分のワークロードで生き残るまではマーケティング。再掲するのは、どこを見るべきか示すためであり、再現したからではない。
+</Callout>
+
+主張のパターンは一貫している：タスクが長くエージェント的であるほど、報告されるリードが大きい。「より賢い回答」ではなく「数百万トークンにわたってスレッドを保ち、筋を見失わない」。
+
+<DataTable
+  columns={[
+    { key: "eval", label: "評価" },
+    { key: "source", label: "報告元" },
+    { key: "result", label: "主張される結果" }
+  ]}
+  rows={[
+    { eval: "FrontierCode", source: "Cognition", result: "中程度の努力でフロンティアモデル中最高" },
+    { eval: "金融推論", source: "Hebbia", result: "テスト済み全モデル中最高スコア" },
+    { eval: "ViBench (vibe coding)", source: "Replit", result: "ベンチマークで最高性能のモデル" },
+    { eval: "コアアナリティクス", source: "Databricks", result: "90%超の初モデル、Opus 4.8より10ポイント上昇" },
+    { eval: "スプレッドシートスイート", source: "Anaconda", result: "全努力レベルでOpus 4.8を上回り、25〜30%高速" }
+  ]}
+  highlight={[3]}
+  caption="ローンチポストで引用されたサードパーティeval。ソースは末尾にリンク。"
+/>
+
+2つの結果はテーブルから抜き出す価値がある。
+
+<Benchmark
+  label="Databricksコアアナリティクスベンチマーク"
+  yours={90}
+  baseline={80}
+  yoursLabel="Fable 5（初の90%超え）"
+  baselineLabel="Opus 4.8"
+  unit="%"
+  caption="Databricksの報告。飽和しつつあるベンチマークでの10ポイントジャンプは、通常2リリースかかる動き。"
+/>
+
+フロンティア物理学研究では、Anthropicはfable 5が推論トークンの3分の1で「GPT-5.5が4日後に到達した地点にほぼ到達」を36時間で達成したと述べている。オペレーターが気にすべきはトークン効率だ。進捗単位あたりの推論コストが安くなれば、自動化する価値のあるものが変わる。
+
+最も大きな主張はソフトウェアエンジニアリングから：Stripeが5000万行のRuby全体の移行を1日で実行、Anthropicによれば手作業なら2ヶ月かかる仕事。通常のコードベースでその半分でも成立すれば、内部ツールのbuild vs buyの計算がまた動く。
+
+<PullQuote source="Michael Truell, Cursor" role="Anthropicのローンチポストでの引用">
+  Claude Fable 5はCursorBenchでstate of the artモデル。手が届かなかった長期ホライズンの問題クラスを開いた。
+</PullQuote>
+
+GitHub、Replit、Databricks、Morgan Stanley、Harveyが全員同じことを言った：長い、エージェント的な、マルチターン作業で明確なステップアップ。多くの一致するパートナー。ローンチ当日に引用されると予想される面々でもある。両方の考えを持っておく。
+
+## セキュリティレイヤーが本当のローンチ
+
+ベンチマークを取り除くとセキュリティリリースが残る。Anthropicは、Mythosクラスのモデルが「重大なリスクを呈する閾値に達した」と明言しており、Fable対Mythosの構造全体がそれを管理するために存在する。
+
+3つの分類器がFable 5の前に立つ：
+
+<Grid cols={3}>
+  <KeyPoint title="サイバーセキュリティ" type="warning">
+    <p>攻撃的サイバーおよびエクスプロイトタスクをブロック。Anthropicは1,000時間以上の外部レッドチーミングでユニバーサルジェイルブレイク成功ゼロを報告、外部パートナーはテスト済み全モデル中最も堅牢なサイバーセーフガードと評価したと述べている。</p>
+  </KeyPoint>
+  <KeyPoint title="生物学と化学" type="warning">
+    <p>生物兵器関連およびデュアルユースクエリをブロック。現時点では意図的に広く設定、つまり偽陽性が多い。Anthropicは信頼度が上がるにつれ狭めると述べている。</p>
+  </KeyPoint>
+  <KeyPoint title="蒸留" type="warning">
+    <p>競合のトレーニングのためにモデルの能力を抽出する試みをブロック。能力拡散の制御であり、ユーザー安全の制御ではない。</p>
+  </KeyPoint>
+</Grid>
+
+これに加え、新しいデータポリシー：Mythosクラスの全トラフィックを30日間保持、新モデルのトレーニングには使用せず、全ての人間アクセスを記録し、ほぼ全てのケースで30日後に削除。表明された理由は検出：新しい攻撃を捉え、偽陽性をスケールする前にチューニングする。
+
+<Callout type="note" title="Anthropicが自ら名指す正直なトレードオフ">
+  セーフガードは慎重に調整されており、Anthropicは「理想よりまだ厳しい」と認め、偽陽性で一部ユーザーをフラストレーションさせると認めている。目標はジェイルブレイクゼロではない。全てのジェイルブレイクを、スケールで使われる前に捕まえられるほど遅く高コストにすること。それは率直に述べられた防御可能な立場だ。「完全な安全」の約束より尊重できる。
+</Callout>
+
+そして**Project Glasswing**：2026年4月から運用されている米国政府との協力で、サイバーセーフガードが解除されたMythosクラスモデルが少数のサイバー防御者と重要インフラ提供者に渡される。GlasswingパートナーはMythos PreviewからMythos 5へアップグレードされる。一部の研究者向けに生物学トラステッドアクセスプログラムが予定されており、バイオセーフガードは解除、サイバーセーフガードは維持。
+
+この一文は立ち止まるべき：認定済みサイバー防御者の手にある同じクエリが防御的で、他の人の手にあれば攻撃になる。Anthropicの回答はより賢いフィルターではない。アクセス制御だ。あなたが誰かが、どのモデルを受け取るかを決める。
+
+## ロールアウトには期限がある
+
+<ArticleTimeline
+  items={[
+    { date: "2026年4月", title: "Project Glasswing開始", body: "Claude Mythos Previewが米国政府協力の下、少数のサイバー防御者に提供。", tag: "文脈" },
+    { date: "2026年6月9日", title: "Fable 5とMythos 5ローンチ", body: "Fable 5がAPIと全プランで利用可能。Mythos 5はGlasswingパートナーに。Fable 5はPro、Max、Team、シートベースEnterpriseで無料。", tag: "今日", highlight: true },
+    { date: "2026年6月22日", title: "無料期間最終日", body: "Fable 5がサブスクリプションプランに追加費用なしで含まれる最終日。" },
+    { date: "2026年6月23日", title: "使用クレジットに移行", body: "Fable 5が含まれるプランから外れ、容量がスタンダードに戻るまで使用クレジットで動作。" },
+    { date: "今後数週間", title: "バイオロジートラステッドアクセス", body: "選ばれたライフサイエンス研究者がバイオセーフガード解除のMythos 5を取得、セーフガードの改善は継続。" }
+  ]}
+  caption="Fable 5を無料でテストしたいなら、ウィンドウは6月9日から22日。それ以降はクレジットがかかる。"
+/>
+
+無料ウィンドウが実用的なポイント。メーターが始まる前にハードに回す2週間。
+
+## 明日からテストすること
+
+ローンチポストでモデルを信用しない。自分のワークロードで信用する。明日からFable 5に通すもの、本番の仕事で、おもちゃのプロンプトではなく。
+
+<Steps
+  title="4つのテスト"
+  items={[
+    { title: "リアルレポでの長期ホライズンリファクタ", body: "このコードベースで本物の移行を渡し、最後までコンテキストを保つか2時間目でドリフトするか観察する。5000万行の数字は見出し。僕のレポがリアリティチェック。", meta: "01 / エージェント的" },
+    { title: "自分のデータでスプレッドシートとアナリティクス", body: "25〜30%高速の主張を、ベンチマークシートではなくリアルなレポーティングワークフローで検証。速度は出力が正しい場合にのみ意味がある。", meta: "02 / ナレッジワーク" },
+    { title: "ビジョンからコードへ", body: "ランディングページのスクリーンショットを渡してソースを要求。Anthropicは画像だけからWebアプリを再構築すると言う。最初のパスがどれだけ近いか見たい。", meta: "03 / ビジョン" },
+    { title: "エージェント実行コスト vs. Opus 4.8", body: "同じGTMエンリッチメントループ、両モデル、サイドバイサイド。推論トークン効率は僕のスタックを実際に変える主張。数字を公開する。", meta: "04 / ユニットエコノミクス" }
+  ]}
+/>
+
+<DoDont
+  do={[
+    "無料ウィンドウ中に最も難しいリアルタスクでFable 5をテスト",
+    "エージェントループでフォールバック発動時にどのモデルが回答したかログ",
+    "パートナーの数字を信じる前に自分のevalを実行",
+    "コスト/結果の低下をリーダーボードではなく本当のアンロックとして扱う"
+  ]}
+  dont={[
+    "ローンチ日のベンチマークを自分で計測したかのように繰り返す",
+    "保持ポリシーを読まずにMythosクラスの出力を何かに接続する",
+    "セーフガードが正当なリクエストをブロックしないと想定する",
+    "6月23日まで待ってからクレジットがかかると文句を言う"
+  ]}
+/>
+
+結果はフォローアップとしてここに上げる、数字付きで、ダメだったところも含めて。あなたもテストしているなら、何が壊れたか教えてほしい。それはどのローンチポストもくれない部分。
+
+## ソースと関連リンク
+
+一次資料を読んだ。あなたも読めるように。本物のリンク、要約の要約ではなく。
+
+<ToolCard
+  cols={3}
+  title="一次ソース"
+  caption="Anthropic自身のページとローンチ日に引用されたサードパーティeval。"
+  items={[
+    { name: "ローンチ発表", description: "AnthropicのFable 5とMythos 5フルポスト。", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
+    { name: "System card", description: "主張の背後にあるセキュリティと能力テストの詳細。", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["セキュリティ"] },
+    { name: "Project Glasswing", description: "米国政府サイバー防御協力。", href: "https://www.anthropic.com/glasswing", tags: ["サイバー"] },
+    { name: "Mythos Previewサイバーアップデート", description: "サイバー能力カーブの初期読み取り。", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
+    { name: "Cognition FrontierCode", description: "Fable 5がトップと報告されるコーディングeval。", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
+    { name: "裏付け生物学研究", description: "Mythos仮説の裏付けとして引用された独立研究。", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["科学"] }
+  ]}
+/>
+
+この周辺のオペレーターコンテキストが欲しければ、[Claude CodeをGTMエージェントスタックとして使う](/jp/insights/claude-code-vs-clay/)記事と[実際に使っているAIプロダクションスタック](/jp/insights/ai-production-stack/)を書いている。ここと同じ原則：モデルは一つのレイヤー、その周りのシステムが仕事。
+
+<CTABand
+  heading="テスト結果を公開します。"
+  subtext="実行あたりのコスト、どこで壊れたか、スタックの何が変わったか。AI Espressoに登録すれば最初に届きます。"
+  cta="AI Espressoに登録"
+  ctaHref="https://subscribe.wojciech.io"
+/>
