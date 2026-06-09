@@ -96,10 +96,18 @@ const image = `${SITE}/og-default.png`;
 
     <!-- Theme init (before paint) -->
     <script is:inline>
-      (() => {
-        const t = localStorage.getItem('theme');
-        document.documentElement.dataset.theme = t === 'dark' ? 'dark' : 'light';
-        document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : 'light';
+      (function() {
+        try {
+          var t = localStorage.getItem('theme');
+          var d = document.documentElement;
+          if (t === 'dark' || (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            d.dataset.theme = 'dark';
+            d.style.colorScheme = 'dark';
+          } else {
+            d.dataset.theme = 'light';
+            d.style.colorScheme = 'light';
+          }
+        } catch(_) {}
       })();
     </script>
     <!-- Language init -->
