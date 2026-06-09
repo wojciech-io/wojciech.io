@@ -128,14 +128,18 @@ const schemaItems = [...baseSchema, ...pageSchema];
   </script>
   <script is:inline>
     (function(){
-      // Mark JS available BEFORE first paint so reveal animations only hide
-      // content when we can actually reveal it. No-JS users see everything.
       document.documentElement.classList.add('js');
       try {
-        var saved = localStorage.getItem('theme');
-        var mode = saved ? saved : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'dark');
-        document.documentElement.setAttribute('data-theme', mode);
-      } catch(e) { document.documentElement.setAttribute('data-theme','dark'); }
+        var t = localStorage.getItem('theme');
+        var d = document.documentElement;
+        if (t === 'dark' || (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          d.dataset.theme = 'dark';
+          d.style.colorScheme = 'dark';
+        } else {
+          d.dataset.theme = 'light';
+          d.style.colorScheme = 'light';
+        }
+      } catch(_) { document.documentElement.dataset.theme = 'dark'; document.documentElement.style.colorScheme = 'dark'; }
     })();
   </script>
 </head>

@@ -41,7 +41,9 @@ const className = Astro.props.class ?? '';
   }
 
   const initial = root.dataset.theme === 'dark' ? 'dark' : 'light';
-  setTheme(initial);
+  toggles().forEach((toggle) => {
+    toggle.setAttribute('aria-pressed', initial === 'dark' ? 'true' : 'false');
+  });
 
   if (!root.dataset.themeToggleReady) {
     root.dataset.themeToggleReady = 'true';
