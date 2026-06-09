@@ -30,7 +30,7 @@ const languageOptions = [
 ];
 ---
 
-<header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgb(var(--color-bg-rgb)/0.86)] backdrop-blur-md">
+<header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgb(var(--color-bg-rgb)/0.86)] backdrop-blur-md transform-gpu">
   <div class="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-8">
 
     <!-- Wordmark -->
@@ -110,7 +110,8 @@ const languageOptions = [
 <!-- Mobile full-screen overlay -->
 <div
   id="mobile-nav-overlay"
-  class="fixed inset-0 z-[100] flex flex-col bg-[var(--color-bg)] transition-all duration-300 ease-out translate-x-full opacity-0 pointer-events-none lg:hidden"
+  class="fixed inset-0 z-[100] flex flex-col bg-[var(--color-bg)] duration-300 ease-out translate-x-full opacity-0 pointer-events-none lg:hidden"
+  style="transition-property: transform, opacity; will-change: transform, opacity;"
   aria-hidden="true"
   role="dialog"
   aria-modal="true"
@@ -245,10 +246,12 @@ const languageOptions = [
     openBtn.addEventListener('click', openMobileNav);
     closeBtn.addEventListener('click', closeMobileNav);
 
-    // Search button in overlay: close nav then open search modal
+    // Search button in overlay: close nav, wait for transition to finish,
+    // then open search modal. Without the delay, the nav overlay's
+    // pointer-events-none hasn't kicked in yet and blocks touch input.
     searchBtn?.addEventListener('click', () => {
       closeMobileNav();
-      (window as any).openSearch?.();
+      setTimeout(() => (window as any).openSearch?.(), 320);
     });
 
     // Close when a nav link is followed

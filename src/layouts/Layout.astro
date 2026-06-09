@@ -297,6 +297,35 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       document.addEventListener('astro:page-load', () => { initReveal(); initScrollProgress(); });
     </script>
 
+    <!-- View Transitions: theme persistence + scroll-to-top ──────────────
+         Re-apply theme immediately after DOM swap so there's zero flash.
+         Scroll to top with scroll-behavior forced to 'auto' so mobile Safari
+         doesn't animate the jump. Single handler avoids ordering races. -->
+    <script>
+      function applyStoredTheme() {
+        try {
+          const d = document.documentElement;
+          const t = localStorage.getItem('theme');
+          const mode = t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+          d.dataset.theme = mode;
+          d.style.colorScheme = mode;
+        } catch (_) {}
+      }
+
+      if (!document.documentElement.dataset.vtReady) {
+        document.documentElement.dataset.vtReady = '1';
+
+        document.addEventListener('astro:after-swap', () => {
+          // 1. Re-apply theme before paint (prevents dark→light→dark flash)
+          applyStoredTheme();
+          // 2. Kill smooth scroll so scrollTo is truly instant
+          document.documentElement.style.scrollBehavior = 'auto';
+          // 3. Scroll to top
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        });
+      }
+    </script>
+
     <!-- Lenis smooth scroll: desktop/trackpad only, destroys on View Transitions navigation -->
     <script>
       import Lenis from 'lenis';
@@ -325,16 +354,6 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       });
       document.addEventListener('astro:before-preparation', () => {
         lenis?.destroy(); lenis = null;
-      });
-      document.addEventListener('astro:after-swap', () => {
-        // Reset scroll position and behavior after DOM swap, not before.
-        // Doing it in before-preparation causes a visible jump during transition.
-        document.documentElement.style.scrollBehavior = 'auto';
-      });
-      // Scroll to top AFTER the new page is swapped in, not before
-      // (scrollTo before swap causes a visible flash of the old page jumping)
-      document.addEventListener('astro:after-swap', () => {
-        window.scrollTo({ top: 0, behavior: 'instant' });
       });
     </script>
 
