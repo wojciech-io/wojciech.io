@@ -143,9 +143,15 @@ describe('localizedPages', () => {
     }
   });
 
-  it('primaryHref is a valid internal path', () => {
+  it('primaryHref is a valid path or Cal.com booking URL', () => {
     for (const copy of localizedPages) {
-      expect(copy.primaryHref, `${copy.locale}/${copy.slug} primaryHref`).toMatch(/^\//);
+      if (copy.slug === 'contact') {
+        expect(copy.primaryHref, `${copy.locale}/contact primaryHref`).toBe(
+          'https://cal.com/wojciech-luszczynski/30min',
+        );
+      } else {
+        expect(copy.primaryHref, `${copy.locale}/${copy.slug} primaryHref`).toMatch(/^\//);
+      }
     }
   });
 
@@ -153,7 +159,7 @@ describe('localizedPages', () => {
     for (const copy of localizedPages) {
       if (copy.slug === 'contact') {
         expect(copy.primaryHref, `${copy.locale}/contact primaryHref`).toBe(
-          `/${copy.locale}/contact/#book-call`,
+          'https://cal.com/wojciech-luszczynski/30min',
         );
       }
       if (copy.slug === 'insights') {

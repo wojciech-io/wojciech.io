@@ -98,7 +98,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Wenn das System feststeckt, reden wir ganz konkret.',
       lead: 'Schick Kontext, Stack und Bottleneck. Bei dem Anruf legen wir fest, ob der nächste Schritt ein Audit, ein Build Sprint oder eine konkrete Lösung ist.',
       primaryCta: '30 Minuten buchen',
-      primaryHref: '/de/contact/#book-call',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
       secondaryCta: 'LinkedIn öffnen',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -169,7 +169,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: 'B2B', label: 'SaaS og teknologi' },
         { value: 'AI', label: 'Arbejdsgange og agenter' },
-        { value: 'CRM', label: 'Indtægtsdækket virksomhed' },
+        { value: 'CRM', label: 'Revenue Operations' },
       ],
       sections: [
         { title: 'revenue-arkitektur', body: 'Pipeline, CRM, attribution og GTM motion behandles som ét system. Målet er en gentagelig driftsrytme, ikke endnu et dashboard.' },
@@ -205,13 +205,13 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Når systemet sidder fast, taler vi konkret.',
       lead: 'Send kontekst, stak og flaskehals. Under samtalen afgør vi, om næste skridt er en audit, en build sprint eller en konkret løsning.',
       primaryCta: 'Book 30 minutter',
-      primaryHref: '/dk/contact/#book-call',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
       secondaryCta: 'Åbn LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
         { value: '30m', label: 'Første opkald' },
         { value: '24h', label: 'Svartid' },
-        { value: 'EU', label: 'Fjernbetjening først' },
+        { value: 'EU', label: 'Remote-first' },
       ],
       sections: [
         { title: 'Gode emner', body: 'GTM-revision, CRM-operating model, AI-workflow-design, indholdsdrift, betalt erhvervelse, pipeline-diagnose og interne værktøjer.' },
@@ -232,7 +232,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: 'MDX', label: 'Komponenter' },
         { value: 'AI', label: 'Produktionsstakken' },
-        { value: 'GTM', label: 'Bemærkninger til operatøren' },
+        { value: 'GTM', label: 'Operator-noter' },
       ],
       sections: [
         { title: 'Hvad du finder', body: 'Build-vs-buy-beslutninger, CRM-første AI-anvendelse, Claude Code i GTM-arbejde og reelle valg af produktionsstack.' },
@@ -276,11 +276,11 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: 'B2B', label: 'SaaS og teknologi' },
         { value: 'AI', label: 'Arbeidsflyter og agenter' },
-        { value: 'CRM', label: 'Driftsinntekter' },
+        { value: 'CRM', label: 'Revenue Operations' },
       ],
       sections: [
         { title: 'revenue-arkitektur', body: 'Pipeline, CRM, attribusjon og GTM motion behandles som ett system. Målet er en repeterbar driftsrytme, ikke et nytt dashbord.' },
-        { title: 'AI-innfødt utførelse', body: 'Claude Code, MCP, automatisering og interne apper brukes der de virkelig gir resultater: research, CRM-hygiene, innholdsoperasjoner, salgsaktivering og rapportering.' },
+        { title: 'AI-native utførelse', body: 'Claude Code, MCP, automatisering og interne apper brukes der de virkelig gir resultater: research, CRM-hygiene, innholdsoperasjoner, salgsaktivering og rapportering.' },
         { title: 'Produkter som bevis', body: 'Produktene i økosystemet viser hvor raskt operatørstyrte systemer kan bygges, testes og leveres.' },
       ],
     },
@@ -312,13 +312,13 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Når systemet sitter fast, snakker vi konkret.',
       lead: 'Send kontekst, stakk og flaskehals. Under samtalen avgjør vi om neste trinn er en revisjon, en byggespurt eller en konkret løsning.',
       primaryCta: 'Bestill 30 minutter',
-      primaryHref: '/no/contact/#book-call',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
       secondaryCta: 'Åpne LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
         { value: '30m', label: 'Første samtale' },
         { value: '24h', label: 'Svartid' },
-        { value: 'EU', label: 'Fjernstyrt først' },
+        { value: 'EU', label: 'Remote-first' },
       ],
       sections: [
         { title: 'Gode temaer', body: 'GTM-revisjon, CRM-operating model, AI-arbeidsflytdesign, innholdsoperasjoner, betalt anskaffelse, pipeline-diagnose og interne verktøy.' },
@@ -339,7 +339,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       stats: [
         { value: 'MDX', label: 'Komponenter' },
         { value: 'AI', label: 'Produksjonsstabel' },
-        { value: 'GTM', label: 'Notater fra operatøren' },
+        { value: 'GTM', label: 'Operator-notater' },
       ],
       sections: [
         { title: 'Hva du finner', body: 'Avgjørelser om å bygge eller kjøpe, CRM-først AI-innføring, Claude Code i GTM-arbeid og reelle valg av produksjonsstack.' },
@@ -419,7 +419,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'システムが行き詰まったら、具体的に話しましょう。',
       lead: 'コンテキスト、スタック、ボトルネックを送ってください。通話で、次の一手が監査か、ビルドスプリントか、具体的な打ち手かを一緒に決めます。',
       primaryCta: '30分を予約',
-      primaryHref: '/jp/contact/#book-call',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
       secondaryCta: 'LinkedInを開く',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -526,7 +526,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Se il sistema è bloccato, parliamo concretamente.',
       lead: 'Invia contesto, stack e collo di bottiglia. Durante la call stabiliamo se il prossimo passo è un audit, uno sprint di build o una soluzione concreta.',
       primaryCta: 'Prenota 30 minuti',
-      primaryHref: '/it/contact/#book-call',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
       secondaryCta: 'Apri LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -633,7 +633,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Si el sistema está atascado, hablamos concretamente.',
       lead: 'Envía contexto, stack y cuello de botella. En la llamada determinamos si el siguiente paso es una auditoría, un sprint de build o una solución concreta.',
       primaryCta: 'Reservar 30 minutos',
-      primaryHref: '/es/contact/#book-call',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
       secondaryCta: 'Abrir LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -794,7 +794,7 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
       h1: 'Kiedy system się blokuje, rozmawiamy konkretnie.',
       lead: 'Wyślij kontekst, stos i wąskie gardło. Na rozmowie ustalamy, czy następny krok to audyt, build sprint, czy konkretny fix.',
       primaryCta: 'Zarezerwuj 30 minut',
-      primaryHref: '/pl/contact/#book-call',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
       secondaryCta: 'LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
