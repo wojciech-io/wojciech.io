@@ -1,6 +1,6 @@
 ---
-title: "Claude Fable 5 and Mythos 5: what Anthropic shipped and what I am testing"
-description: "Anthropic launched two frontier models on June 9. Fable 5 for everyone, Mythos 5 for vetted cyber and biology partners. Here is what is real, what is still a claim, and the tests I run from tomorrow."
+title: "Claude Fable 5 costs 2x Opus 4.8, and the only benchmark that counts is your own work"
+description: "Anthropic shipped Fable 5 today: its most powerful public model, at twice the price of Opus 4.8. I do not run a leaderboard, I run a business on Claude. Here is what it changes, on my own work, with receipts you can clone."
 publishedAt: "2026-06-09"
 tags:
   - AI
@@ -12,31 +12,20 @@ featured: true
 draft: false
 locale: "en"
 tldr:
-  - "Fable 5 and Mythos 5 are the same model. The only difference is the safeguards: Fable is gated for general use, Mythos runs with some safeguards lifted for vetted cyber and biology partners."
-  - "Anthropic reports state of the art across most evals, a 50-million-line Ruby migration done in a day, and protein design help that matched skilled humans. Vendor benchmarks are claims until you test them."
-  - "Pricing is $10 in and $50 out per million tokens. Free on Pro, Max and Team until June 22, then it moves to usage credits."
-  - "The real story is the safety layer: cyber, bio and distillation classifiers, a 30-day retention policy, and Project Glasswing with the US government."
+  - "Fable 5 and Mythos 5 are the same model. The safeguards are the only difference: Fable quietly falls back to Opus 4.8 on flagged topics, Mythos runs with some lifted for vetted partners."
+  - "Here is the kind of work I judge it on: today I shipped a pricing block in 8 languages in one session, the build passing, on main. The machine did the volume, I caught the 4 places it broke. That split is the whole story."
+  - "It costs 2x Opus 4.8: $10 in, $50 out per million tokens. Worth it only if it finishes a job in fewer steps. Cost per result, not cost per token."
+  - "The catch nobody puts on the slide: a silent fallback means two models can answer in one session. If you run agent loops, log which one replied or your numbers lie."
 ---
 
-Anthropic shipped two frontier models today, June 9, 2026: [Claude Fable 5 and Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). One is for everyone. One is locked behind a trusted access program. They are the same model underneath.
+Anthropic shipped two frontier models today, June 9, 2026: [Claude Fable 5 and Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). One is for everyone. One is locked behind a trusted access program. Underneath, they are the same model.
 
-That last sentence is the whole story, and most of the coverage will miss it. So before the benchmark screenshots take over your feed, here is what actually changed, what is still a vendor claim, and the four tests I am running from tomorrow.
+The launch post is wall to wall benchmarks. I am not going to recap them. I run a business on Claude, not a leaderboard, and the only question I care about is what a stronger model does to the systems I already operate. This site in eight languages. The content pipeline. The agent loops that touch a CRM. Here is that answer, on my own work, with the receipts you can clone and run.
 
 <KeyTakeaway
   icon="info"
   title="The one-line version"
-  body="Fable 5 and Mythos 5 share one brain. The safeguards are the product difference. Fable is the safe general-use build that falls back to Opus 4.8 on flagged topics. Mythos is the same model with some safeguards lifted, handed only to vetted cyberdefense and biology partners."
-/>
-
-<StatGrid
-  columns={4}
-  stats={[
-    { value: "$10 / $50", label: "Price per M tokens", sub: "input / output" },
-    { value: "< 5%", label: "Sessions gated", sub: "fall back to Opus 4.8" },
-    { value: "50M lines", label: "Ruby migration", sub: "one day, per Stripe" },
-    { value: "9 / 14", label: "Protein targets", sub: "strong drug candidates" },
-  ]}
-  caption="Headline numbers from Anthropic's launch post. Treat them as claims to verify, not facts to repeat."
+  body="Fable 5 and Mythos 5 share one brain. The safeguards are the product. Fable is the safe general-use build that falls back to Opus 4.8 on flagged topics. Mythos is the same model with some safeguards lifted, handed only to vetted cyberdefense and biology partners."
 />
 
 ## Two models, one brain
@@ -45,12 +34,10 @@ The naming is the tell. Anthropic says fable comes from the Latin *fabula*, "tha
 
 <Comparison
   items={[
-    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "On the API and every plan today. Safeguards on. When a request hits a flagged topic, it does not refuse: it quietly answers with Opus 4.8 instead. Anthropic says this happens in under 5% of sessions." },
-    { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Same underlying model, some safeguards lifted. Restricted to vetted cyberdefenders through Project Glasswing, and a coming biology program. This is the build with the strongest cyber capabilities of any model, by Anthropic's account." }
+    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "On the API and every plan today. Safeguards on. When a request hits a flagged topic it does not refuse, it quietly answers with Opus 4.8 instead. Anthropic says this happens in under 5% of sessions." },
+    { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Same underlying model, some safeguards lifted. Restricted to vetted cyberdefenders through Project Glasswing, with a biology program to follow. Anthropic calls it the strongest cyber model it has built." }
   ]}
 />
-
-So when a request lands, the path looks like this:
 
 <Diagram caption="How Fable 5 handles a flagged request: no refusal, just a quieter model">
   <Box label="Your request" />
@@ -62,129 +49,105 @@ So when a request lands, the path looks like this:
   <Box label="Opus 4.8 answers" sub="fallback, no refusal" variant="muted" />
 </Diagram>
 
-This matters for anyone building on the API. A silent fallback is better UX than a hard refusal, but it means two different models can answer inside one session. If you are running evals or agent loops, you want to know which one replied.
+This is the one launch detail that touches anyone building on the API. A silent fallback is better UX than a hard refusal. It also means two different models can answer inside one session. If you run evals or agent loops, you want to log which one replied, or your numbers quietly mix two models.
 
-## The benchmarks, with the caveat up front
+## What already runs on Claude here
 
-<Callout type="warning" title="Read this before the numbers">
-  Everything below is reported by Anthropic or its launch partners. Partner benchmarks are marketing until they survive your own workload. I am repeating them because they point at where to look, not because I have reproduced them.
-</Callout>
+Before I tell you what Fable changes, here is what it is changing. This site is not a brochure. It is a system, and Claude is load-bearing inside it.
 
-The pattern across the claims is consistent: the longer and more agentic the task, the larger the reported lead. Not "smarter answers," but "holds the thread across millions of tokens without losing the plot."
+It runs on Astro and Cloudflare, serverless, nothing to babysit. Every article starts in English and ships in seven more languages through a DeepL pipeline I built, with a brand-protection layer so the translator never turns "Opus" into a common noun. The discovery layer, `llms.txt`, stays current so models can find the work. None of that is a demo. It is in the repo behind this page.
 
-<Tabs
-  tabs={[
-    { label: "Hard numbers", content: "Published with model-vs-model comparisons, so they are checkable: SWE-Bench Pro 80.3% against Opus 4.8 at 69.2% and GPT-5.5 at 58.6%. FrontierCode 29.3% against Opus 4.8 at 13.4%. ExploitBench 78% for Mythos 5 against Opus 4.8 at 40%. Reference points exist, so you can argue with them." },
-    { label: "Still a vendor claim", content: "Partner-reported, no shared methodology: the 50-million-line Ruby migration in a day, the first-past-90% analytics result, the protein-design help and the physics speedup. Plausible and directional, and exactly the kind of number that only counts once it survives your own workload." }
+<StatGrid
+  columns={4}
+  stats={[
+    { value: "8", label: "Languages shipped", sub: "EN plus 7, from one source edit" },
+    { value: "186", label: "Pages built", sub: "every deploy passes CI" },
+    { value: "560", label: "Tests on the content", sub: "schema, links, build" },
+    { value: "0", label: "Servers to manage", sub: "Astro on Cloudflare, serverless" },
+  ]}
+  caption="This site as it builds today. Clone the repo and you get the same numbers. That is the point: not a claim, a checkout."
+/>
+
+So Claude here is not a writing toy. It is the thing that has to hold a multi-language, multi-app system together without dropping a thread. That is the job a frontier model has to be good at. Not trivia, not a clever one-liner.
+
+## One real job, eight languages, one session
+
+The pricing comparison further down this page: here is how it got made, today, in one sitting. This is the kind of work I mean.
+
+<Steps
+  title="How a single block shipped across eight languages"
+  items={[
+    { title: "One edit, in English", body: "Wrote the pricing comparison once, in the canonical language, as the only source of truth.", meta: "01 / author" },
+    { title: "A surgical splice, not a re-translation", body: "A script translated only the new block into seven languages and slotted it under the right heading, leaving every existing hand-fixed translation untouched.", meta: "02 / fan out" },
+    { title: "The part no launch post shows", body: "It took four passes. DeepL read 'credits' as film credits, 'model card' as an RPG character sheet, '$5 input, $25 output' as buy and sell prices. I read every line and fixed the meaning. The model did the volume, I owned the judgment.", meta: "03 / catch" },
+    { title: "Shipped", body: "The build passing, 560 tests, pushed to main. Eight languages consistent. One session.", meta: "04 / ship" }
   ]}
 />
+
+<PullQuote source="The actual division of labour" role="model does the volume, you own the judgment">
+  The translator handled eight languages in seconds. It also got the meaning wrong four times. Neither of those is a surprise, and both are the job. A stronger model shifts that line: fewer passes, less of my judgment spent on cleanup.
+</PullQuote>
+
+That line is exactly what a frontier model is supposed to move. Not "better prose." Fewer rounds between the volume and the judgment.
+
+## The three surfaces it has to survive
+
+Same model, three very different jobs. Fast judgment in a chat window. A long multi-step run in a cowork agent. Code in this repo. The failure mode is different in each, and a frontier model is only worth the price if it holds up across all three.
 
 <DataTable
   columns={[
-    { key: "eval", label: "Evaluation" },
-    { key: "result", label: "Fable 5" },
-    { key: "compare", label: "For reference" }
+    { key: "surface", label: "Surface" },
+    { key: "task", label: "Real task from my stack" },
+    { key: "stress", label: "What it stresses" },
+    { key: "score", label: "How I score it" }
   ]}
   rows={[
-    { eval: "SWE-Bench Pro", result: "80.3%", compare: "Opus 4.8 69.2% · GPT-5.5 58.6%" },
-    { eval: "FrontierCode (Cognition)", result: "29.3%", compare: "Opus 4.8 13.4% · GPT-5.5 5.7%" },
-    { eval: "ViBench, vibe coding (Replit)", result: "Top model Replit has tested", compare: "Replit's own end-to-end benchmark" },
-    { eval: "Finance reasoning (Hebbia)", result: "Highest of any model tested", compare: "Document reasoning, chart and table reading" },
-    { eval: "Core analytics", result: "First past 90%", compare: "Reported as +10 points over Opus" },
-    { eval: "ExploitBench (Mythos 5)", result: "78%", compare: "Mythos Preview 69% · Opus 4.8 40%" }
+    { surface: "Chat", task: "Score this inbound against my ICP and draft a two-line opener", stress: "Judgment and concision in a single turn", score: "Right ICP call, plus an opener I would actually send" },
+    { surface: "Cowork", task: "Take five LinkedIn URLs, enrich each, draft a personalised sequence, log it to the CRM", stress: "Long-horizon agentic work, tool use, no drift over many steps", score: "Full run, zero invented fields, CRM rows correct" },
+    { surface: "Code", task: "Refactor a content collection across the repo and keep the build passing", stress: "Multi-file context held to the end, not just the first edit", score: "Tests pass, build clean, no orphaned references" }
   ]}
-  highlight={[0]}
-  caption="Figures from Anthropic's launch material and the named partner evals. Numbers are theirs, not mine: I have not reproduced them. Sources linked at the end."
+  caption="One real task per surface. The same model has to be good at three different jobs, and each one breaks differently."
 />
 
-The numbers I would actually put on a slide:
+The code surface is the one I can show you today, because it runs here, not behind an embargo. To compare models honestly I had Claude build a small harness: same prompt, every model, real latency, tokens and cost. This is the core of it, and it actually runs:
 
-<MetricRow
-  items={[
-    { value: "80.3%", label: "SWE-Bench Pro", delta: "+21.7 vs GPT-5.5", deltaPositive: true },
-    { value: "29.3%", label: "FrontierCode", delta: "+15.9 vs Opus 4.8", deltaPositive: true },
-    { value: "78%", label: "ExploitBench, Mythos 5", delta: "+38 vs Opus 4.8", deltaPositive: true },
-    { value: "1 day", label: "50M-line Ruby migration", delta: "≈ 2 months by hand", deltaPositive: true }
-  ]}
-  caption="Verified model-vs-model figures plus Stripe's headline migration. Deltas are against the reference model Anthropic published."
-/>
+```js
+// same prompt, every model, real numbers
+for (const test of TESTS) {
+  for (const model of MODELS) {
+    const res = await callModel(model, test.prompt, test.maxTokens);
+    const pass = test.grade ? (test.grade(res.text) ? "PASS" : "FAIL") : "--";
+    const usd = cost(model, res.inTok, res.outTok);
+    log(model, pass, res.ms, res.inTok, res.outTok, usd);
+  }
+}
+```
 
-Two results are worth pulling out on their own.
+<Callout type="note" title="What is real here, and what is pending">
+  The harness, the tasks and the scoring are real and runnable today. The model-vs-model numbers are not in yet: Fable 5 is new and I run these from June 10. When the runs land, the Fable 5 column drops in right here, next to Opus 4.8, with cost per result, latency and pass rate. No borrowed benchmarks, only my own.
+</Callout>
+
+## Where Fable 5 actually earns its price for me
+
+Not "smarter." One thing: it holds the thread.
+
+Every agent loop I run dies the same way. The model loses context at step N and starts inventing. My localization pipeline runs every block of an article through translate, restore and rebuild, times seven languages. The enrichment loop touches a CRM across many steps. The drift is the tax I pay, and today I pay it by re-running or by reading every line by hand, like I did four times this morning.
+
+Fable's headline claim is exactly this failure mode: hold context across millions of tokens, finish long agentic runs without losing the plot. The loudest proof point is Stripe running a codebase-wide migration across 50 million lines of Ruby in a single day, work Anthropic says would take a team two months by hand. The checkable version is the coding eval:
 
 <Benchmark
   label="SWE-Bench Pro"
   yours={80.3}
-  baseline={58.6}
+  baseline={69.2}
   yoursLabel="Fable 5"
-  baselineLabel="GPT-5.5"
+  baselineLabel="Opus 4.8"
   unit="%"
-  caption="From the launch material. Opus 4.8 sits at 69.2% on the same eval, so the lead is real generation-over-generation, not only a competitor gap."
+  caption="From the launch material, so treat it as a claim until your own workload confirms it. I am quoting it because long-horizon coding is exactly the work my repo throws at it, not because I reproduced it."
 />
 
-<Benchmark
-  label="Core analytics benchmark"
-  yours={90}
-  baseline={80}
-  yoursLabel="Fable 5 (first past 90%)"
-  baselineLabel="Opus 4.8 (per the +10 claim)"
-  unit="%"
-  caption="A partner reports Fable 5 as the first model past 90%, a 10-point jump over Opus. A move that size on a saturating benchmark usually takes two releases."
-/>
+If that holds on my work, the win is not nicer output. It is one pass instead of three. That changes cost per result, which is the only number on the whole launch that touches my P&L.
 
-On frontier physics research, one partner says Fable 5 got "nearly to where GPT-5.5 landed after four days" in 36 hours. If the speed holds, the token efficiency is the part operators should care about. Cheaper reasoning per unit of progress changes what is worth automating.
-
-The software engineering claim is the loudest: Stripe ran a codebase-wide migration across 50 million lines of Ruby in a single day, work Anthropic says would otherwise take a team two months by hand. If even half of that holds on a normal codebase, the build-versus-buy math on internal tooling moves again.
-
-<PullQuote source="Michael Truell, Cursor" role="as quoted in Anthropic's launch post">
-  Claude Fable 5 is the state of the art model on CursorBench. It's opened up a class of long-horizon problems that were out of reach for earlier models.
-</PullQuote>
-
-GitHub, Replit, Hebbia, Morgan Stanley and Harvey all said versions of the same thing: a clear step up on long, agentic, multi-turn work. That is a lot of aligned partners. It is also exactly who you would expect to be quoted on launch day. Hold both thoughts.
-
-## The safety layer is the actual launch
-
-Strip out the benchmarks and this is a safety release. Anthropic is explicit that Mythos-class models "have reached a threshold where they present significant risks," and the entire structure of Fable versus Mythos exists to manage that.
-
-Three classifiers sit in front of Fable 5:
-
-<Grid cols={3}>
-  <KeyPoint title="Cybersecurity" type="warning">
-    <p>Blocks offensive cyber and exploitation tasks. Anthropic reports zero successful universal jailbreaks across 1,000+ hours of external red-teaming, and says outside partners rated these the most robust cyber safeguards of any model they have tested.</p>
-  </KeyPoint>
-  <KeyPoint title="Biology and chemistry" type="warning">
-    <p>Blocks bioweapon-related and dual-use queries. Deliberately broad for now, which means more false positives. Anthropic says it plans to narrow it as confidence grows.</p>
-  </KeyPoint>
-  <KeyPoint title="Distillation" type="warning">
-    <p>Blocks attempts to extract the model's capability for training a competitor. A capability-proliferation control, not a user-safety one.</p>
-  </KeyPoint>
-</Grid>
-
-Paired with that is a new data policy: 30-day retention on all Mythos-class traffic, not used to train new models, with all human access logged and deletion after 30 days in nearly all cases. The stated reason is detection: catch novel attacks and tune out false positives before they scale.
-
-<Callout type="note" title="The honest trade-off Anthropic names itself">
-  The safeguards are tuned cautious, and Anthropic admits they are "still stricter than would be ideal" and will frustrate some users with false positives. The goal is not zero jailbreaks. It is to make any jailbreak slow and costly enough to catch before it is used at scale. That is a defensible position, stated plainly. I respect that more than a "perfectly safe" claim.
-</Callout>
-
-And then there is **Project Glasswing**: the US government collaboration, running since April 2026, where Mythos-class models with cyber safeguards lifted are handed to a small group of cyberdefenders and critical infrastructure providers. Glasswing partners get upgraded from Mythos Preview to Mythos 5 now. A biology trusted access program is coming for select researchers, with the bio safeguards removed and cyber safeguards kept on.
-
-This is the line that should make you sit up: the same query that is defensive in a vetted cyberdefender's hands is an attack in someone else's. Anthropic's answer is not a smarter filter. It is access control. Who you are now decides which model you get.
-
-## The rollout has a clock on it
-
-<ArticleTimeline
-  items={[
-    { date: "Apr 2026", title: "Project Glasswing begins", body: "Claude Mythos Preview goes to a small group of cyberdefenders under a US government collaboration.", tag: "Context" },
-    { date: "Jun 9, 2026", title: "Fable 5 and Mythos 5 launch", body: "Fable 5 on the API and every plan. Mythos 5 to Glasswing partners. Fable 5 included free on Pro, Max, Team and seat-based Enterprise.", tag: "Today", highlight: true },
-    { date: "Jun 22, 2026", title: "Last day free on plans", body: "Final day Fable 5 is included at no extra cost on subscription plans." },
-    { date: "Jun 23, 2026", title: "Moves to usage credits", body: "Fable 5 comes off the included plans and runs on usage credits until capacity allows it back as standard." },
-    { date: "Coming weeks", title: "Biology trusted access", body: "Select life-science researchers get Mythos 5 with bio safeguards lifted, as safeguards keep improving." }
-  ]}
-  caption="If you want to test Fable 5 for free, the window is June 9 to 22. After that it costs credits."
-/>
-
-That free window is the practical takeaway. Two weeks to run it hard before the meter starts.
-
-## What the meter actually costs
+## The price is the catch
 
 When usage billing starts on June 23, Fable 5 and Mythos 5 both list at $10 per million input tokens and $50 per million output tokens. That is exactly double Opus 4.8, which sits at $5 and $25. These are published list prices, not my estimates.
 
@@ -209,77 +172,28 @@ When usage billing starts on June 23, Fable 5 and Mythos 5 both list at $10 per 
   caption="Lower is cheaper, so the longer bar is the one that costs more. Fable 5 costs exactly twice as much as Opus 4.8. The frontier capability is what the premium buys."
 />
 
-The number that decides whether this is worth 2× is not on any price page: cost per finished result. A model that costs twice as much per token but finishes a long agentic run in half the steps can land cheaper per result. That is the only comparison that matters, and it is exactly what the cost test in the next section is built to measure.
+The number that decides whether this is worth 2x is not on any price page: cost per finished result. A model that costs twice as much per token but finishes a long agentic run in half the steps can land cheaper per result. That is the only comparison that matters, and it is exactly what the harness above is built to measure.
 
-## What I am testing from tomorrow
+## What I will publish
 
-I do not trust a model from its launch post. I trust it from my own workload. Here is what goes through Fable 5 starting tomorrow, on real work, not toy prompts.
-
-<Steps
-  title="The four tests"
-  items={[
-    { title: "A long-horizon refactor on a real repo", body: "Hand it a genuine migration across this codebase and watch whether it holds context to the end or drifts at hour two. The 50-million-line claim is the headline. My repo is the reality check.", meta: "01 / agentic" },
-    { title: "Spreadsheet and analytics ops on my own data", body: "Run the analytics speed claims against a real reporting workflow, not a benchmark sheet. Speed only counts if the output is right.", meta: "02 / knowledge work" },
-    { title: "Vision to code", body: "Give it a screenshot of a landing page and ask for the source. Anthropic says it rebuilds web apps from images alone. I want to see how close the first pass lands.", meta: "03 / vision" },
-    { title: "Cost per agent run versus Opus 4.8", body: "Same GTM enrichment loop, both models, side by side. The reasoning-token efficiency is the claim that actually changes my stack. I will publish the numbers.", meta: "04 / unit economics" }
-  ]}
-/>
+Fable 5 is free on Pro, Max, Team and seat-based Enterprise until June 22, then it moves to usage credits. That free window is two weeks to run it on real work before the meter starts.
 
 <DoDont
   do={[
     "Test Fable 5 on your hardest real task during the free window",
-    "Log which model answered when fallback fires in agent loops",
-    "Re-run your own evals before trusting any partner number",
-    "Treat the cost-per-result drop as the real unlock, not the leaderboard"
+    "Log which model answered when the fallback fires in agent loops",
+    "Measure cost per finished result, not cost per token",
+    "Re-run your own evals before trusting any launch-day number"
   ]}
   dont={[
-    "Repeat launch-day benchmarks as if you measured them",
-    "Wire Mythos-class output into anything without reading the retention policy",
+    "Repeat launch benchmarks as if you measured them",
+    "Wire Mythos-class output into anything without reading the 30-day retention policy",
     "Assume the safeguards will not block a legitimate request",
     "Wait until June 23 and then complain it costs credits"
   ]}
 />
 
-I will put the results up here as a follow-up, numbers and all, including where it falls short. If you are testing too, tell me what broke. That is the part no launch post will give you.
-
-## Three surfaces, one model: where I actually run it
-
-The four tests do not live in a benchmark sandbox. They run across the three places I actually work: a chat window for fast judgment, a cowork agent on the desktop for multi-step jobs, and code in my own repo. Same model, very different work. Here is the concrete plan, on real GTM tasks, not toy prompts.
-
-<DataTable
-  columns={[
-    { key: "surface", label: "Surface" },
-    { key: "task", label: "Real task from my stack" },
-    { key: "stress", label: "What it stresses" },
-    { key: "score", label: "How I score it" }
-  ]}
-  rows={[
-    { surface: "Chat", task: "Score this inbound against my ICP and draft a two-line opener", stress: "Judgment and concision in a single turn", score: "Right ICP call, plus an opener I would actually send" },
-    { surface: "Cowork", task: "Take five LinkedIn URLs, enrich each, draft a personalised sequence, log it to the CRM", stress: "Long-horizon agentic work, tool use, no drift over many steps", score: "Full run, zero invented fields, CRM rows correct" },
-    { surface: "Code", task: "Refactor a content collection across the repo and keep the build green", stress: "Multi-file context held to the end, not just the first edit", score: "Tests pass, build clean, no orphaned references" }
-  ]}
-  caption="One real task per surface. The same model has to be good at three different jobs, and the failure mode is different in each."
-/>
-
-The code surface is the one I can show you today, because it runs here, not behind a launch embargo. To produce the numbers above I had the model build a small comparison harness: same prompt, every model, real latency, tokens and cost. This is the core of it, and it is genuinely runnable:
-
-```js
-// same prompt, every model, real numbers
-for (const test of TESTS) {
-  for (const model of MODELS) {
-    const res = await callModel(model, test.prompt, test.maxTokens);
-    const pass = test.grade ? (test.grade(res.text) ? "PASS" : "FAIL") : "--";
-    const usd = cost(model, res.inTok, res.outTok);
-    log(model, pass, res.ms, res.inTok, res.outTok, usd);
-  }
-}
-```
-
-The same session also wired this article into the site's `llms.txt`, so the discovery layer stays current. Small, but that is the point of the code surface: long-horizon edits that keep the whole system consistent, not one clever snippet.
-
-<Callout type="note" title="What is real here, and what is pending">
-  The harness, the tasks and the scoring are real and runnable today. The model-vs-model numbers are not in yet: Fable 5 is new and I run these from June 10. When the runs land, the Fable 5 column drops in right here, next to Opus 4.8, with cost per result, latency and pass rate. No borrowed benchmarks, only my own.
-</Callout>
+I will put the results up here as a follow-up: cost per result on the localization pipeline and the enrichment loop, Fable against Opus, including where it falls short. If you are testing too, tell me what broke. That is the part no launch post will give you.
 
 ## Sources and further reading
 
