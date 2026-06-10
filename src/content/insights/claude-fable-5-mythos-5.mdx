@@ -241,8 +241,50 @@ The verdict is less tidy than a leaderboard. Fable 5 found the most and was the 
 
 One more honest line the leaderboards never print. All three models flagged a finding my answer key had explicitly marked as a false positive: I believed my locale list was centralized in one file. They said it is declared independently in five places. I checked. They were right and my answer key was wrong. The benchmark audited the examiner.
 
+### What each model found outside the answer key
+
+The score table only counts what was in my answer key. But every model also surfaced real, verified findings I had not listed. These are not bonus points. They are the reason you run three models instead of one.
+
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "finding", label: "Off-key finding (verified)" },
+    { key: "impact", label: "Impact" }
+  ]}
+  rows={[
+    { model: "Fable 5", finding: "Azure backup is dist-only, no API routes, no redirects, no security headers after failover", impact: "Partial outage: site renders, forms and headers vanish" },
+    { model: "Fable 5", finding: "Two competing deploy pipelines with different env vars", impact: "Silent config drift between CI and Wrangler" },
+    { model: "Fable 5", finding: "CSP in middleware and in Pages config already diverged (PostHog missing from one)", impact: "Analytics breakage on a subset of pages" },
+    { model: "Opus 4.6", finding: "hreflang tags advertise locale URLs that return 404", impact: "Search engines crawl dead links, index trust erodes" },
+    { model: "Opus 4.6", finding: "Terraform and wrangler.toml manage overlapping resources with no shared state", impact: "Infra drift that neither tool can detect" },
+    { model: "Sonnet 4.6", finding: "Subscribe endpoint proxies to a legacy Vercel app nothing maintains", impact: "Subscribers silently drop into a dead pipeline" },
+    { model: "Sonnet 4.6", finding: "crypto.ts duplicated across three apps, two copies byte-identical", impact: "Fix one, forget the other, ship a mismatch" }
+  ]}
+  caption="Every finding in this table is verified in the code. The subscribe endpoint was the single most actionable discovery of the whole benchmark, and it came from the model that scored lowest."
+/>
+
+### How the reports read, not just what they found
+
+Numbers do not tell you what it is like to read a 2,000 word audit at 11 pm and decide whether to ship a fix. I scored each report on four qualities, 1 to 5.
+
+<DataTable
+  columns={[
+    { key: "quality", label: "Report quality" },
+    { key: "fable", label: "Fable 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.6", align: "center", mono: true },
+    { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
+  ]}
+  rows={[
+    { quality: "File and line precision", fable: "5", opus: "4", sonnet: "4" },
+    { quality: "Severity accuracy", fable: "5", opus: "4", sonnet: "3" },
+    { quality: "Conciseness", fable: "4", opus: "5", sonnet: "4" },
+    { quality: "Actionability of recommendations", fable: "5", opus: "4", sonnet: "4" }
+  ]}
+  caption="Subjective, my read. Fable quoted the code verbatim and got every severity right. Opus was the tightest writer. Sonnet overcalled severity on one finding but gave the clearest fix steps."
+/>
+
 <Callout type="note" title="The artifacts, so you can rerun this">
-  Models: `claude-fable-5`, `claude-opus-4-6`, `claude-sonnet-4-6`, one headless `claude -p` run each. Base: [commit 612c367](https://github.com/wojciech-io/wojciech.io/commit/612c367) of this repo, three identical clones. Harness: empty MCP config, no plugins, no memory, read-only tools plus one file write. Prompt: audit the architecture, name the top five risks with files and mechanisms, write the report. Answer key: six findings I verified in the code first, weighted by severity to 11 points; naming the file without the mechanism scores nothing. The raw audit outputs stay unpublished for now: they map real, partly unfixed surface of a live site. Once the remaining fixes land, they go up too.
+  Models: `claude-fable-5`, `claude-opus-4-6`, `claude-sonnet-4-6`, one headless `claude -p` run each. Base: [commit 612c367](https://github.com/wojciech-io/wojciech.io/commit/612c367) of this repo, three identical clones. Harness: empty MCP config, no plugins, no memory, read-only tools plus one file write. Prompt: audit the architecture, name the top five risks with files and mechanisms, write the report. Answer key: six findings I verified in the code first, weighted by severity to 11 points; naming the file without the mechanism scores nothing.
 </Callout>
 
 Which model when, in one table:
@@ -326,7 +368,7 @@ The launch was yesterday and the useful material is already piling up. This is t
   ]}
 />
 
-## What I will publish
+## What to do with the free window
 
 Fable 5 is free on Pro, Max, Team and seat-based Enterprise until June 22, then it moves to usage credits. That free window is two weeks to run it on real work before the meter starts.
 
@@ -345,7 +387,7 @@ Fable 5 is free on Pro, Max, Team and seat-based Enterprise until June 22, then 
   ]}
 />
 
-I will put the results up here as a follow-up: cost per result on the localization pipeline and the enrichment loop, Fable against Opus, including where it falls short. If you are testing too, tell me what broke. That is the part no launch post will give you.
+The full benchmark results are above: scores, costs, off-key findings, report quality. Next up: cost per result on the localization pipeline and the enrichment loop, Fable against Opus on sustained work. If you are testing too, tell me what broke. That is the part no launch post will give you.
 
 ## FAQ: Claude Fable 5 and Mythos 5
 
@@ -386,8 +428,8 @@ I read the primary material so you can too. These are the real links, not a summ
 If you want the operator context around this, I have written about [running Claude Code as a GTM agent stack](/insights/claude-code-vs-clay/) and [the AI production stack I actually ship on](/insights/ai-production-stack/). Same principle as here: the model is one layer, the system around it is the job.
 
 <CTABand
-  heading="I am publishing the test results."
-  subtext="Cost per run, where it broke, what changed in my stack. Subscribe to AI Espresso and you get them first."
+  heading="The benchmark results are in. Next: sustained workloads."
+  subtext="Cost per result on the localization pipeline and the enrichment loop, Fable against Opus on real jobs. Subscribe to AI Espresso and you get them first."
   cta="Subscribe to AI Espresso"
   ctaHref="https://subscribe.wojciech.io"
 />

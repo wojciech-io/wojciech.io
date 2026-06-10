@@ -242,8 +242,50 @@ Werdykt jest mniej elegancki niż leaderboard. Fable 5 znalazł najwięcej i jak
 
 Jeszcze jedna uczciwa linijka, której leaderboardy nigdy nie drukują. Wszystkie trzy modele zgłosiły znalezisko, które mój klucz odpowiedzi jawnie oznaczał jako fałszywy alarm: byłem przekonany, że lista locale jest scentralizowana w jednym pliku. One powiedziały, że jest deklarowana niezależnie w pięciu miejscach. Sprawdziłem. Miały rację, a mój klucz się mylił. Benchmark zaudytował egzaminatora.
 
+### Co każdy model znalazł poza kluczem odpowiedzi
+
+Tabela wyników liczy tylko to, co było w moim kluczu. Ale każdy model przyniósł też prawdziwe, zweryfikowane znaleziska, których nie wpisałem. To nie punkty bonusowe. To powód, dla którego puszczasz trzy modele zamiast jednego.
+
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "finding", label: "Znalezisko spoza klucza (zweryfikowane)" },
+    { key: "impact", label: "Wpływ" }
+  ]}
+  rows={[
+    { model: "Fable 5", finding: "Backup Azure to sam dist, brak route'ów API, redirectów i nagłówków bezpieczeństwa po failoverze", impact: "Częściowa awaria: strona się renderuje, formularze i nagłówki znikają" },
+    { model: "Fable 5", finding: "Dwa konkurencyjne pipeline'y deploy z różnymi zmiennymi env", impact: "Cichy dryf konfiguracji między CI a Wranglerem" },
+    { model: "Fable 5", finding: "CSP w middleware i w konfiguracji Pages już rozjechane (PostHog brakuje w jednej)", impact: "Analityka nie działa na części stron" },
+    { model: "Opus 4.6", finding: "Tagi hreflang reklamują URL-e locale, które zwracają 404", impact: "Wyszukiwarki crawlują martwe linki, zaufanie indeksu spada" },
+    { model: "Opus 4.6", finding: "Terraform i wrangler.toml zarządzają nakładającymi się zasobami bez współdzielonego stanu", impact: "Dryf infrastruktury, którego żadne narzędzie nie wykryje" },
+    { model: "Sonnet 4.6", finding: "Endpoint zapisu proxuje na starą appkę na Vercelu, której nikt nie utrzymuje", impact: "Subskrybenci lądują w martwym pipeline" },
+    { model: "Sonnet 4.6", finding: "crypto.ts zduplikowany w trzech appkach, dwie kopie bajt w bajt identyczne", impact: "Napraw jedną, zapomnij o drugiej, wyślij niespójność" }
+  ]}
+  caption="Każde znalezisko w tej tabeli jest zweryfikowane w kodzie. Endpoint zapisu to najbardziej akcjonalne odkrycie całego benchmarku, a przyszło od modelu z najniższym wynikiem."
+/>
+
+### Jak się czytają raporty, nie tylko co znalazły
+
+Liczby nie mówią, jak to jest czytać dwutysięczny raport o 23:00 i decydować, czy puszczać fixa. Każdy raport oceniłem na czterech osiach, 1 do 5.
+
+<DataTable
+  columns={[
+    { key: "quality", label: "Jakość raportu" },
+    { key: "fable", label: "Fable 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.6", align: "center", mono: true },
+    { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
+  ]}
+  rows={[
+    { quality: "Precyzja plików i linii", fable: "5", opus: "4", sonnet: "4" },
+    { quality: "Trafność severity", fable: "5", opus: "4", sonnet: "3" },
+    { quality: "Zwięzłość", fable: "4", opus: "5", sonnet: "4" },
+    { quality: "Wykonalność rekomendacji", fable: "5", opus: "4", sonnet: "4" }
+  ]}
+  caption="Subiektywna ocena, moja lektura. Fable cytował kod dosłownie i trafił każdą severity. Opus pisał najzwięźlej. Sonnet przeszacował jedno severity, ale dał najczystsze kroki naprawcze."
+/>
+
 <Callout type="note" title="Artefakty, żebyś mógł to powtórzyć">
-  Modele: `claude-fable-5`, `claude-opus-4-6`, `claude-sonnet-4-6`, po jednym przebiegu headless `claude -p`. Baza: [commit 612c367](https://github.com/wojciech-io/wojciech.io/commit/612c367) tego repo, trzy identyczne klony. Harness: pusta konfiguracja MCP, zero pluginów, zero pamięci, narzędzia tylko do odczytu plus zapis jednego pliku. Prompt: zaudytuj architekturę, wskaż pięć największych ryzyk z plikami i mechanizmami, spisz raport. Klucz odpowiedzi: sześć znalezisk zweryfikowanych najpierw przeze mnie w kodzie, ważonych do 11 punktów; nazwanie pliku bez mechanizmu nie daje nic. Surowych raportów na razie nie publikuję: mapują prawdziwą, częściowo niezałataną powierzchnię żywej strony. Jak wejdą pozostałe poprawki, też pójdą na publikę.
+  Modele: `claude-fable-5`, `claude-opus-4-6`, `claude-sonnet-4-6`, po jednym przebiegu headless `claude -p`. Baza: [commit 612c367](https://github.com/wojciech-io/wojciech.io/commit/612c367) tego repo, trzy identyczne klony. Harness: pusta konfiguracja MCP, zero pluginów, zero pamięci, narzędzia tylko do odczytu plus zapis jednego pliku. Prompt: zaudytuj architekturę, wskaż pięć największych ryzyk z plikami i mechanizmami, spisz raport. Klucz odpowiedzi: sześć znalezisk zweryfikowanych najpierw przeze mnie w kodzie, ważonych do 11 punktów; nazwanie pliku bez mechanizmu nie daje nic.
 </Callout>
 
 Kiedy który model, w jednej tabeli:
@@ -327,7 +369,7 @@ Premiera była wczoraj, a użytecznego materiału już przybywa. To jest krótka
   ]}
 />
 
-## Co opublikuję
+## Co zrobić z darmowym oknem
 
 Fable 5 jest darmowy w planach Pro, Max, Team i Enterprise na stanowiska do 22 czerwca, potem przechodzi na kredyty za użycie. To darmowe okno to dwa tygodnie na przetestowanie go na prawdziwej robocie, zanim ruszy licznik.
 
@@ -348,7 +390,7 @@ Fable 5 jest darmowy w planach Pro, Max, Team i Enterprise na stanowiska do 22 c
   ]}
 />
 
-Wyniki wrzucę tutaj jako follow-up: koszt wyniku na pipelinie lokalizacji i pętli wzbogacania, Fable kontra Opus, łącznie z tym, gdzie zawodzi. Jeśli też testujesz, napisz mi, co się u ciebie wyłożyło. Tego żaden wpis premierowy ci nie da.
+Pełne wyniki benchmarku masz wyżej: punkty, koszty, znaleziska spoza klucza, jakość raportów. Dalej: koszt wyniku na pipelinie lokalizacji i pętli wzbogacania, Fable kontra Opus na ciągłej robocie. Jeśli też testujesz, napisz mi, co się u ciebie wyłożyło. Tego żaden wpis premierowy ci nie da.
 
 ## FAQ: Claude Fable 5 i Mythos 5
 
@@ -390,8 +432,8 @@ Jeśli chcesz kontekstu operatora wokół tego tematu, pisałem już o [Claude C
 
 <CTABand
   kicker="// Następny krok"
-  heading="Opublikuję wyniki testów."
-  subtext="Koszt przebiegu, gdzie się wyłożyło, co zmieniło się w moim stacku. Zapisz się na AI Espresso, a dostaniesz je pierwszy."
+  heading="Wyniki benchmarku są. Teraz: ciągłe obciążenia."
+  subtext="Koszt wyniku na pipelinie lokalizacji i pętli wzbogacania, Fable kontra Opus na prawdziwych zadaniach. Zapisz się na AI Espresso, a dostaniesz je pierwszy."
   cta="Zapisz się na AI Espresso"
   ctaHref="https://subscribe.wojciech.io"
 />
