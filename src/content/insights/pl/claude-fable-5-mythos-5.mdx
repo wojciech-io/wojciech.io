@@ -58,12 +58,9 @@ Wpis premierowy to benchmark na benchmarku. Nie zamierzam ich streszczać. Na Cl
 
 Nazwa zdradza wszystko. Anthropic tłumaczy, że fable pochodzi od łacińskiego *fabula*, „to, co opowiedziane", blisko greckiego *mythos*. Ten sam rdzeń, dwie maski. Różnica nie leży w możliwościach. Leży w tym, co modelowi wolno.
 
-<Comparison
-  items={[
-    { label: "Claude Fable 5", tag: "Ogólny dostęp", tone: "accent", body: "Od dziś w API i w każdym planie. Zabezpieczenia włączone. Gdy żądanie trafi w oznaczony temat, model nie odmawia, tylko po cichu odpowiada jako Opus 4.8. Według Anthropic dzieje się tak w mniej niż 5% sesji." },
-    { label: "Claude Mythos 5", tag: "Zaufany dostęp", tone: "muted", body: "Ten sam model pod spodem, część zabezpieczeń zdjęta. Dostęp tylko dla zweryfikowanych zespołów cyberobrony przez Project Glasswing, program biologiczny ma dojść później. Anthropic nazywa go najmocniejszym modelem cyber, jaki zbudował." }
-  ]}
-/>
+**Claude Fable 5** jest od dziś w API i w każdym planie. Zabezpieczenia włączone. Gdy żądanie trafi w oznaczony temat, model nie odmawia, tylko po cichu odpowiada jako Opus 4.8. Według Anthropic dzieje się tak w mniej niż 5% sesji.
+
+**Claude Mythos 5** to ten sam model pod spodem, część zabezpieczeń zdjęta. Dostęp tylko dla zweryfikowanych zespołów cyberobrony przez Project Glasswing, program biologiczny ma dojść później. Anthropic nazywa go najmocniejszym modelem cyber, jaki zbudował.
 
 <Diagram caption="Jak Fable 5 obsługuje oznaczone żądanie: bez odmowy, po prostu cichszym modelem">
   <Box label="Twoje żądanie" />
@@ -83,15 +80,19 @@ Zanim powiem, co Fable zmienia, pokażę, w czym ma coś zmieniać. Ta strona to
 
 Działa na Astro i Cloudflare, serverless, nie ma czym się opiekować. Strona wychodzi w ośmiu językach przez pipeline na DeepL, który zbudowałem, z warstwą ochrony marek, żeby tłumacz nigdy nie zrobił z „Opusa" rzeczownika pospolitego. Ten pipeline wyprodukował 89 zlokalizowanych wersji artykułów w siedmiu językach i każda z nich siedzi w kolekcjach treści tego repo, gdzie możesz je policzyć. Warstwa odkrywania, `llms.txt`, jest na bieżąco, żeby modele mogły znaleźć tę robotę. Nic z tego nie jest demem. Wszystko siedzi w repo za tą stroną.
 
-<StatGrid
-  columns={4}
-  stats={[
-    { value: "8", label: "Języki na produkcji", sub: "EN plus 7, z jednej edycji źródła" },
-    { value: "180", label: "Zbudowanych stron", sub: "każdy deploy przechodzi CI" },
-    { value: "560", label: "Testów na treści", sub: "schema, linki, build" },
-    { value: "0", label: "Serwerów do zarządzania", sub: "Astro na Cloudflare, serverless" },
+<DataTable
+  columns={[
+    { key: "metric", label: "Metryka", mono: true },
+    { key: "value", label: "Wartość", align: "center", mono: true },
+    { key: "note", label: "" }
   ]}
-  caption="Ta strona, tak jak buduje się dzisiaj. Sklonuj repo i dostaniesz te same liczby. O to chodzi: nie deklaracja, tylko checkout."
+  rows={[
+    { metric: "Języki", value: "8", note: "EN plus 7, z jednej edycji źródła" },
+    { metric: "Zbudowanych stron", value: "180", note: "każdy deploy przechodzi CI" },
+    { metric: "Testów", value: "560", note: "schema, linki, build" },
+    { metric: "Serwerów", value: "0", note: "Astro na Cloudflare, serverless" }
+  ]}
+  caption="Ta strona, tak jak buduje się dzisiaj. Sklonuj repo i dostaniesz te same liczby."
 />
 
 Claude nie jest tu więc zabawką do pisania. Jest tym, co musi utrzymać wielojęzyczny, wieloaplikacyjny system w całości, nie gubiąc wątku. To jest robota, w której model frontier musi być dobry. Nie ciekawostki, nie błyskotliwy one-liner.
@@ -100,19 +101,12 @@ Claude nie jest tu więc zabawką do pisania. Jest tym, co musi utrzymać wieloj
 
 Porównanie cen, które znajdziesz niżej na tej stronie: oto jak powstało, dzisiaj, za jednym posiedzeniem. Taką robotę mam na myśli.
 
-<Steps
-  title="Jak jeden blok wszedł na produkcję w ośmiu językach"
-  items={[
-    { title: "Jedna edycja, po angielsku", body: "Napisałem porównanie cen raz, w języku kanonicznym, jako jedyne źródło prawdy.", meta: "01 / autor" },
-    { title: "Chirurgiczna wstawka, nie re-tłumaczenie", body: "Skrypt przetłumaczył tylko nowy blok na siedem języków i wpiął go pod właściwy nagłówek, nie ruszając żadnego z ręcznie poprawionych tłumaczeń.", meta: "02 / fan out" },
-    { title: "Część, której nie pokaże żaden wpis premierowy", body: "Zajęło to cztery podejścia. DeepL odczytał 'credits' jako napisy końcowe filmu, 'model card' jako kartę postaci z RPG, a '5 $ wejście, 25 $ wyjście' jako ceny kupna i sprzedaży. Przeczytałem każdą linię i poprawiłem sens. Model zrobił wolumen, osąd należał do mnie.", meta: "03 / wyłap" },
-    { title: "Na produkcji", body: "Build zielony, 560 testów, push na maina. Osiem języków spójnych. Jedna sesja.", meta: "04 / ship" }
-  ]}
-/>
+1. **Jedna edycja, po angielsku.** Napisałem porównanie cen raz, w języku kanonicznym, jako jedyne źródło prawdy.
+2. **Chirurgiczna wstawka, nie re-tłumaczenie.** Skrypt przetłumaczył tylko nowy blok na siedem języków i wpiął go pod właściwy nagłówek, nie ruszając żadnego z ręcznie poprawionych tłumaczeń.
+3. **Część, której nie pokaże żaden wpis premierowy.** Zajęło to cztery podejścia. DeepL odczytał "credits" jako napisy końcowe filmu, "model card" jako kartę postaci z RPG, a "$5 wejście, $25 wyjście" jako ceny kupna i sprzedaży. Przeczytałem każdą linię i poprawiłem sens. Model zrobił wolumen, osąd należał do mnie.
+4. **Na produkcji.** Build zielony, 560 testów, push na maina. Osiem języków spójnych. Jedna sesja.
 
-<PullQuote source="Faktyczny podział pracy" role="model robi wolumen, ty trzymasz osąd">
-  Tłumacz ogarnął osiem języków w kilka sekund. Cztery razy pomylił też sens. Żadna z tych rzeczy nie jest niespodzianką i obie są częścią roboty. Mocniejszy model przesuwa tę granicę: mniej podejść, mniej mojego osądu spalanego na sprzątanie.
-</PullQuote>
+> Tłumacz ogarnął osiem języków w kilka sekund. Cztery razy pomylił też sens. Żadna z tych rzeczy nie jest niespodzianką i obie są częścią roboty. Mocniejszy model przesuwa tę granicę: mniej podejść, mniej mojego osądu spalanego na sprzątanie.
 
 Dokładnie tę granicę ma przesuwać model frontier. Nie „ładniejszą prozę". Mniej rund między wolumenem a osądem.
 
@@ -312,13 +306,16 @@ Każda pętla agentowa, którą puszczam, umiera tak samo. Model gubi kontekst n
 
 Główna obietnica Fable'a celuje dokładnie w ten tryb awarii: trzymać kontekst przez miliony tokenów, kończyć długie przebiegi agentowe bez gubienia wątku. Najgłośniejszy dowód to Stripe, który w jeden dzień przeprowadził migrację 50 milionów linii Ruby w całym kodzie, robota, która według Anthropic zajęłaby zespołowi dwa miesiące ręcznie. Wersja do sprawdzenia to eval kodowania:
 
-<Benchmark
-  label="SWE-Bench Pro"
-  yours={80.3}
-  baseline={69.2}
-  yoursLabel="Fable 5"
-  baselineLabel="Opus 4.8"
-  unit="%"
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "score", label: "SWE-Bench Pro", align: "center", mono: true }
+  ]}
+  rows={[
+    { model: "Fable 5", score: "80,3%" },
+    { model: "Opus 4.8", score: "69,2%" }
+  ]}
+  highlight={[0]}
   caption="Z materiałów premierowych, więc traktuj to jako deklarację, dopóki twój własny workload jej nie potwierdzi. Cytuję ją, bo długie kodowanie to dokładnie ta robota, którą rzuca w model moje repo, a nie dlatego, że ją odtworzyłem."
 />
 
@@ -328,25 +325,20 @@ Jeśli to się potwierdzi na mojej robocie, wygrana to nie ładniejszy output. T
 
 Gdy 23 czerwca ruszy rozliczanie za użycie, Fable 5 i Mythos 5 będą kosztować po 10 $ za milion tokenów wejściowych i 50 $ za milion wyjściowych. To dokładnie dwa razy tyle co Opus 4.8, który stoi na 5 $ i 25 $. To opublikowane ceny katalogowe, nie moje szacunki.
 
-<MetricRow
-  items={[
-    { value: "10 $ / 50 $", label: "Fable 5, tokeny wejściowe i wyjściowe, za milion" },
-    { value: "2×", label: "Opus 4.8 jest o połowę tańszy, 5 $ i 25 $ za milion tokenów" },
-    { value: "<5%", label: "Sesji przekazanych do Opus 4.8 jako fallback" },
-    { value: "23 cze", label: "Koniec darmowego okna, start rozliczeń" }
+<DataTable
+  columns={[
+    { key: "metric", label: "" },
+    { key: "fable", label: "Fable 5 / Mythos 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.8", align: "center", mono: true }
   ]}
-  caption="Ceny katalogowe z opublikowanych materiałów Anthropic dla tej premiery. Zweryfikowane z publicznym cennikiem, nie modelowane przeze mnie."
-/>
-
-<Benchmark
-  label="Cena tokenów wyjściowych, USD za milion"
-  yours={50}
-  baseline={25}
-  yoursLabel="Fable 5 / Mythos 5"
-  baselineLabel="Opus 4.8"
-  unit=""
-  lowerIsBetter={true}
-  caption="Niżej znaczy taniej, więc dłuższy słupek to ten, który kosztuje więcej. Fable 5 kosztuje dokładnie dwa razy tyle co Opus 4.8. Premia kupuje możliwości frontier."
+  rows={[
+    { metric: "Tokeny wejściowe, za milion", fable: "$10", opus: "$5" },
+    { metric: "Tokeny wyjściowe, za milion", fable: "$50", opus: "$25" },
+    { metric: "Mnożnik vs Opus", fable: "2x", opus: "1x" },
+    { metric: "Koniec darmowego okna", fable: "23 cze", opus: "n/d" },
+    { metric: "Cichy fallback do Opus 4.8", fable: "<5% sesji", opus: "n/d" }
+  ]}
+  caption="Opublikowane ceny katalogowe. Fable 5 kosztuje dokładnie dwa razy tyle co Opus 4.8. Premia kupuje możliwości frontier."
 />
 
 Liczby, która rozstrzyga, czy to jest warte 2x, nie znajdziesz na żadnym cenniku: koszt skończonego wyniku. Model dwa razy droższy za token, który kończy długi przebieg agentowy w połowie kroków, może wyjść taniej na wynik. To jedyne porównanie, które się liczy, i dokładnie to ma mierzyć harness wyżej.
@@ -430,10 +422,3 @@ Przeczytałem materiały źródłowe, żebyś ty też mógł. To prawdziwe linki
 
 Jeśli chcesz kontekstu operatora wokół tego tematu, pisałem już o [Claude Code jako stacku agentów GTM](/pl/insights/claude-code-vs-clay/) i o [stacku produkcyjnym AI, na którym realnie wydaję](/pl/insights/ai-production-stack/). Zasada ta sama co tutaj: model to jedna warstwa, system wokół niego to jest robota.
 
-<CTABand
-  kicker="// Następny krok"
-  heading="Wyniki benchmarku są. Teraz: ciągłe obciążenia."
-  subtext="Koszt wyniku na pipelinie lokalizacji i pętli wzbogacania, Fable kontra Opus na prawdziwych zadaniach. Zapisz się na AI Espresso, a dostaniesz je pierwszy."
-  cta="Zapisz się na AI Espresso"
-  ctaHref="https://subscribe.wojciech.io"
-/>

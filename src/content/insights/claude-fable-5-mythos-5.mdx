@@ -57,12 +57,9 @@ The launch post is wall to wall benchmarks. I am not going to recap them. I run 
 
 The naming is the tell. Anthropic says fable comes from the Latin *fabula*, "that which is told," close to the Greek *mythos*. Same root, two masks. The difference is not capability. It is what the model is allowed to do.
 
-<Comparison
-  items={[
-    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "On the API and every plan today. Safeguards on. When a request hits a flagged topic it does not refuse, it quietly answers with Opus 4.8 instead. Anthropic says this happens in under 5% of sessions." },
-    { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Same underlying model, some safeguards lifted. Restricted to vetted cyberdefenders through Project Glasswing, with a biology program to follow. Anthropic calls it the strongest cyber model it has built." }
-  ]}
-/>
+**Claude Fable 5** is on the API and every plan today. Safeguards on. When a request hits a flagged topic it does not refuse, it quietly answers with Opus 4.8 instead. Anthropic says this happens in under 5% of sessions.
+
+**Claude Mythos 5** is the same underlying model, some safeguards lifted. Restricted to vetted cyberdefenders through Project Glasswing, with a biology program to follow. Anthropic calls it the strongest cyber model it has built.
 
 <Diagram caption="How Fable 5 handles a flagged request: no refusal, just a quieter model">
   <Box label="Your request" />
@@ -82,15 +79,19 @@ Before I tell you what Fable changes, here is what it is changing. This site is 
 
 It runs on Astro and Cloudflare, serverless, nothing to babysit. The site ships in eight languages through a DeepL pipeline I built, with a brand-protection layer so the translator never turns "Opus" into a common noun. That pipeline has produced 89 localized article versions across seven languages, every one of them sitting in this repo's content collections where you can count them. The discovery layer, `llms.txt`, stays current so models can find the work. None of that is a demo. It is in the repo behind this page.
 
-<StatGrid
-  columns={4}
-  stats={[
-    { value: "8", label: "Languages shipped", sub: "EN plus 7, from one source edit" },
-    { value: "180", label: "Pages built", sub: "every deploy passes CI" },
-    { value: "560", label: "Tests on the content", sub: "schema, links, build" },
-    { value: "0", label: "Servers to manage", sub: "Astro on Cloudflare, serverless" },
+<DataTable
+  columns={[
+    { key: "metric", label: "Metric", mono: true },
+    { key: "value", label: "Value", align: "center", mono: true },
+    { key: "note", label: "" }
   ]}
-  caption="This site as it builds today. Clone the repo and you get the same numbers. That is the point: not a claim, a checkout."
+  rows={[
+    { metric: "Languages", value: "8", note: "EN plus 7, from one source edit" },
+    { metric: "Pages built", value: "180", note: "every deploy passes CI" },
+    { metric: "Tests", value: "560", note: "schema, links, build" },
+    { metric: "Servers", value: "0", note: "Astro on Cloudflare, serverless" }
+  ]}
+  caption="This site as it builds today. Clone the repo and you get the same numbers."
 />
 
 So Claude here is not a writing toy. It is the thing that has to hold a multi-language, multi-app system together without dropping a thread. That is the job a frontier model has to be good at. Not trivia, not a clever one-liner.
@@ -99,19 +100,12 @@ So Claude here is not a writing toy. It is the thing that has to hold a multi-la
 
 The pricing comparison further down this page: here is how it got made, today, in one sitting. This is the kind of work I mean.
 
-<Steps
-  title="How a single block shipped across eight languages"
-  items={[
-    { title: "One edit, in English", body: "Wrote the pricing comparison once, in the canonical language, as the only source of truth.", meta: "01 / author" },
-    { title: "A surgical splice, not a re-translation", body: "A script translated only the new block into seven languages and slotted it under the right heading, leaving every existing hand-fixed translation untouched.", meta: "02 / fan out" },
-    { title: "The part no launch post shows", body: "It took four passes. DeepL read 'credits' as film credits, 'model card' as an RPG character sheet, '$5 input, $25 output' as buy and sell prices. I read every line and fixed the meaning. The model did the volume, I owned the judgment.", meta: "03 / catch" },
-    { title: "Shipped", body: "The build passing, 560 tests, pushed to main. Eight languages consistent. One session.", meta: "04 / ship" }
-  ]}
-/>
+1. **One edit, in English.** Wrote the pricing comparison once, in the canonical language, as the only source of truth.
+2. **A surgical splice, not a re-translation.** A script translated only the new block into seven languages and slotted it under the right heading, leaving every existing hand-fixed translation untouched.
+3. **The part no launch post shows.** It took four passes. DeepL read "credits" as film credits, "model card" as an RPG character sheet, "$5 input, $25 output" as buy and sell prices. I read every line and fixed the meaning. The model did the volume, I owned the judgment.
+4. **Shipped.** The build passing, 560 tests, pushed to main. Eight languages consistent. One session.
 
-<PullQuote source="The actual division of labour" role="model does the volume, you own the judgment">
-  The translator handled eight languages in seconds. It also got the meaning wrong four times. Neither of those is a surprise, and both are the job. A stronger model shifts that line: fewer passes, less of my judgment spent on cleanup.
-</PullQuote>
+> The translator handled eight languages in seconds. It also got the meaning wrong four times. Neither of those is a surprise, and both are the job. A stronger model shifts that line: fewer passes, less of my judgment spent on cleanup.
 
 That line is exactly what a frontier model is supposed to move. Not "better prose." Fewer rounds between the volume and the judgment.
 
@@ -311,13 +305,16 @@ Every agent loop I run dies the same way. The model loses context at step N and 
 
 Fable's headline claim is exactly this failure mode: hold context across millions of tokens, finish long agentic runs without losing the plot. The loudest proof point is Stripe running a codebase-wide migration across 50 million lines of Ruby in a single day, work Anthropic says would take a team two months by hand. The checkable version is the coding eval:
 
-<Benchmark
-  label="SWE-Bench Pro"
-  yours={80.3}
-  baseline={69.2}
-  yoursLabel="Fable 5"
-  baselineLabel="Opus 4.8"
-  unit="%"
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "score", label: "SWE-Bench Pro", align: "center", mono: true }
+  ]}
+  rows={[
+    { model: "Fable 5", score: "80.3%" },
+    { model: "Opus 4.8", score: "69.2%" }
+  ]}
+  highlight={[0]}
   caption="From the launch material, so treat it as a claim until your own workload confirms it. I am quoting it because long-horizon coding is exactly the work my repo throws at it, not because I reproduced it."
 />
 
@@ -327,25 +324,20 @@ If that holds on my work, the win is not nicer output. It is one pass instead of
 
 When usage billing starts on June 23, Fable 5 and Mythos 5 both list at $10 per million input tokens and $50 per million output tokens. That is exactly double Opus 4.8, which sits at $5 and $25. These are published list prices, not my estimates.
 
-<MetricRow
-  items={[
-    { value: "$10 / $50", label: "Fable 5 input and output tokens, per million" },
-    { value: "2×", label: "Opus 4.8 is half the price, $5 and $25 per million tokens" },
-    { value: "<5%", label: "Sessions handed to Opus 4.8 as a fallback" },
-    { value: "Jun 23", label: "Free window ends, billing starts" }
+<DataTable
+  columns={[
+    { key: "metric", label: "" },
+    { key: "fable", label: "Fable 5 / Mythos 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.8", align: "center", mono: true }
   ]}
-  caption="List pricing from Anthropic's published numbers for this launch. Verified against the public pricing, not modelled by me."
-/>
-
-<Benchmark
-  label="Output-token price, USD per million"
-  yours={50}
-  baseline={25}
-  yoursLabel="Fable 5 / Mythos 5"
-  baselineLabel="Opus 4.8"
-  unit=""
-  lowerIsBetter={true}
-  caption="Lower is cheaper, so the longer bar is the one that costs more. Fable 5 costs exactly twice as much as Opus 4.8. The frontier capability is what the premium buys."
+  rows={[
+    { metric: "Input tokens, per million", fable: "$10", opus: "$5" },
+    { metric: "Output tokens, per million", fable: "$50", opus: "$25" },
+    { metric: "Multiplier vs Opus", fable: "2x", opus: "1x" },
+    { metric: "Free window ends", fable: "Jun 23", opus: "n/a" },
+    { metric: "Silent fallback to Opus 4.8", fable: "<5% of sessions", opus: "n/a" }
+  ]}
+  caption="Published list prices. Fable 5 costs exactly twice as much as Opus 4.8. The frontier capability is what the premium buys."
 />
 
 The number that decides whether this is worth 2x is not on any price page: cost per finished result. A model that costs twice as much per token but finishes a long agentic run in half the steps can land cheaper per result. That is the only comparison that matters, and it is exactly what the harness above is built to measure.
@@ -427,9 +419,3 @@ I read the primary material so you can too. These are the real links, not a summ
 
 If you want the operator context around this, I have written about [running Claude Code as a GTM agent stack](/insights/claude-code-vs-clay/) and [the AI production stack I actually ship on](/insights/ai-production-stack/). Same principle as here: the model is one layer, the system around it is the job.
 
-<CTABand
-  heading="The benchmark results are in. Next: sustained workloads."
-  subtext="Cost per result on the localization pipeline and the enrichment loop, Fable against Opus on real jobs. Subscribe to AI Espresso and you get them first."
-  cta="Subscribe to AI Espresso"
-  ctaHref="https://subscribe.wojciech.io"
-/>
