@@ -125,7 +125,7 @@ for (const test of TESTS) {
 ```
 
 <Callout type="note" title="Co tu jest prawdziwe, a co dopiero będzie">
-  Harness, zadania i punktacja są prawdziwe i odpalisz je już dziś. Liczb model kontra model jeszcze nie ma: Fable 5 jest nowy, a ja puszczam te testy od 10 czerwca. Gdy przebiegi się skończą, kolumna Fable 5 wskoczy dokładnie tutaj, obok Opus 4.8, z kosztem wyniku, latencją i pass rate. Żadnych pożyczonych benchmarków, tylko moje własne.
+  Harness, zadania i punktacja są prawdziwe i odpalisz je już dziś. Pierwsze liczby model kontra model spłynęły 10 czerwca: trzy sterylne przebiegi headless na audycie repo tej strony, ocenione względem klucza odpowiedzi, który najpierw zweryfikowałem ręcznie. Pełne tabele, z kosztem znalezionego buga włącznie, są w sekcji z paragonami niżej. Żadnych pożyczonych benchmarków, tylko moje własne.
 </Callout>
 
 ## Pierwszy paragon: Fable 5 znalazł żywego buga w moim failoverze
@@ -152,7 +152,50 @@ Poprawka weszła tego samego dnia: monitor sprawdza teraz bezpośrednio origin p
   Mój codzienny Claude Code dźwiga około 90 integracji pluginów i MCP. W tym środowisku sesje audytu zamiast audytować, raz za razem zjeżdżały w workflow reklam Spotify, który wstrzykiwał jeden z pluginów. Wyrzuciłem te przebiegi i przebudowałem test na sterylnie: zero pluginów, zero pamięci, świeże klony jednego commita, przebiegi headless, identyczny prompt. Jeśli twój benchmark agentów chodzi w twoim codziennym setupie, benchmarkujesz też swoje pluginy.
 </Callout>
 
-Tabela trzech modeli, Fable 5 kontra Opus 4.6 i Sonnet 4.6 na dokładnie tym audycie, ze zweryfikowanymi bugami jako kluczem odpowiedzi, leci dziś w tym sterylnym harnessie. Liczby wskoczą dokładnie tutaj, gdy spłyną: koszt znalezionego buga, nie koszt tokena.
+## Trzy modele, jeden klucz odpowiedzi, liczby
+
+Przebiegi spłynęły tego samego popołudnia. Trzy headlessowe audyty w tym sterylnym harnessie: identyczne klony jednego commita, identyczny prompt, identyczne limity narzędzi tylko do odczytu, po jednym przebiegu dla Fable 5, Opus 4.6 i Sonnet 4.6. Kluczem odpowiedzi było sześć bugów, które zweryfikowałem w kodzie ręcznie, zanim jakikolwiek model wystartował, ważonych po severity, jedenaście punktów łącznie. Punkt wymaga nazwania mechanizmu, nie samego pliku.
+
+<DataTable
+  columns={[
+    { key: "finding", label: "Zweryfikowane znalezisko (waga)" },
+    { key: "fable", label: "Fable 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.6", align: "center", mono: true },
+    { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
+  ]}
+  rows={[
+    { finding: "Flip-flop failovera: health check odpytuje żywą domenę, nie origin primary (3)", fable: "3", opus: "3", sonnet: "0" },
+    { finding: "Worker i workflow nie zgadzają się, co znaczy zdrowy: worker przepuszcza 404, workflow go oblewa (2)", fable: "2", opus: "0", sonnet: "1" },
+    { finding: "Hostname primary zahardkodowany w trzech miejscach (2)", fable: "2", opus: "0", sonnet: "0" },
+    { finding: "Rekord DNS poza Terraformem, backend stanu lokalny (2)", fable: "1", opus: "1", sonnet: "0" },
+    { finding: "Wartość env wpisana na sztywno w publicznym IaC (1)", fable: "0.5", opus: "0.5", sonnet: "0" },
+    { finding: "Stały komentarz o locale w _redirects (1)", fable: "0", opus: "0", sonnet: "0" },
+    { finding: "Wynik na 11", fable: "8.5", opus: "4.5", sonnet: "1" }
+  ]}
+  highlight={[6]}
+  caption="Każde znalezisko zweryfikowałem w kodzie, zanim którykolwiek model ruszył. Wymyślone ryzyko kosztowałoby punkt; nikt żadnego nie wymyślił."
+/>
+
+<DataTable
+  columns={[
+    { key: "metric", label: "Metryka" },
+    { key: "fable", label: "Fable 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.6", align: "center", mono: true },
+    { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
+  ]}
+  rows={[
+    { metric: "Koszt, USD", fable: "2.57", opus: "1.26", sonnet: "0.76" },
+    { metric: "Czas zegarowy", fable: "7m 18s", opus: "3m 16s", sonnet: "4m 37s" },
+    { metric: "Tury agenta", fable: "32", opus: "46", sonnet: "40" },
+    { metric: "Koszt znalezionego punktu", fable: "$0.30", opus: "$0.28", sonnet: "$0.76" }
+  ]}
+  highlight={[3]}
+  caption="Koszt na punkt to wiersz, który się liczy: tokeny są wejściem, znalezione bugi wyjściem."
+/>
+
+Werdykt jest mniej elegancki niż leaderboard. Fable 5 znalazł najwięcej i jako jedyny zgarnął całą warstwę failovera: flip-flop, dwie sprzeczne definicje zdrowia, dryf hostname. Opus 4.6 trafił głównego buga równie precyzyjnie za połowę ceny i na koszcie za punkt wygrywa, ale był ślepy na operacyjne detale wokół. Sonnet 4.6 w ogóle nie zobaczył flip-flopa, a i tak zarobił na swój przebieg: przyniósł najbardziej akcjonalne znalezisko spoza mojego klucza, endpoint zapisu na newsletter, który po cichu spada na starą appkę na Vercelu, której nikt już nie utrzymuje.
+
+Jeszcze jedna uczciwa linijka, której leaderboardy nigdy nie drukują. Wszystkie trzy modele zgłosiły znalezisko, które mój klucz odpowiedzi jawnie oznaczał jako fałszywy alarm: byłem przekonany, że lista locale jest scentralizowana w jednym pliku. One powiedziały, że jest deklarowana niezależnie w pięciu miejscach. Sprawdziłem. Miały rację, a mój klucz się mylił. Benchmark zaudytował egzaminatora.
 
 ## Gdzie Fable 5 naprawdę zarabia u mnie na swoją cenę
 
