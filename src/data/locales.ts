@@ -1,4 +1,6 @@
-export type LocaleKey = 'de' | 'dk' | 'no' | 'jp' | 'it' | 'es' | 'pl';
+import type { LocaleKey } from './locale-codes';
+
+export type { LocaleKey } from './locale-codes';
 
 export interface SectionStrings {
   work: { eyebrow: string; title: string; titleSecondary: string; allLink: string; ctaEyebrow: string; ctaHeading: string; ctaBody: string; ctaLink: string };

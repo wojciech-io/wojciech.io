@@ -5,12 +5,13 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import sentry from '@sentry/astro';
 import { readFileSync, readdirSync, existsSync } from 'fs';
+import { ALL_LOCALES } from './src/data/locale-codes.ts';
 
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 const sentryDsn = process.env.PUBLIC_SENTRY_DSN ?? 'https://eeed3e8af9a62f73f7ae309873dddc50@o4511411558678528.ingest.de.sentry.io/4511411564314704';
 const noindexSitemapPaths = new Set(['/cv/', '/privacy/', '/apps/', '/stack/', '/status/', '/subscribe/', '/bites/']);
 
-const articleLocales = ['en', 'de', 'dk', 'no', 'jp', 'it', 'es', 'pl'];
+const articleLocales = ALL_LOCALES;
 /** @returns {Map<string, string>} locale:slug → ISO date string (YYYY-MM-DD) */
 function buildArticleDateMap() {
   const map = new Map();

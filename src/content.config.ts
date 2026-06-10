@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { ALL_LOCALES } from './data/locale-codes';
 
 const insights = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/insights' }),
@@ -16,7 +17,7 @@ const insights = defineCollection({
     coverImage: z.string().optional(),
     coverType: z.enum(['terminal', 'builder', 'chart', 'product', 'system', 'launch', 'default']).default('default'),
     category: z.enum(['AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products']).optional(),
-    locale: z.enum(['en', 'de', 'dk', 'no', 'jp', 'it', 'es', 'pl']).default('en'),
+    locale: z.enum(ALL_LOCALES).default('en'),
     translationOf: z.string().optional(),
   }),
 });

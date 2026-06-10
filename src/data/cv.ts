@@ -6,8 +6,12 @@
  * levels and education degrees translate fully.
  */
 
-export type CvLang = 'en' | 'pl' | 'de' | 'dk' | 'no' | 'jp' | 'it' | 'es';
+import type { SiteLocale } from './locale-codes';
 
+export type CvLang = SiteLocale;
+
+// Explicit order (en, pl first) kept for the hreflang alternates; `satisfies`
+// pins every entry to the locale source of truth so a drifted code fails to compile.
 export const cvSeoLang = ['en', 'pl', 'de', 'dk', 'no', 'jp', 'it', 'es'] as const satisfies readonly CvLang[];
 export const cvLocalizedLangs = cvSeoLang.filter((lang) => lang !== 'en');
 
