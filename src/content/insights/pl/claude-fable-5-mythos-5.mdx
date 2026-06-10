@@ -1,6 +1,6 @@
 ---
-title: "Claude Fable 5 oraz „Mythos 5”: co firma Anthropic wprowadziła na rynek i co obecnie testuję"
-description: "9 czerwca firma Anthropic udostępniła dwa modele z serii Frontier. Model „Fable 5” jest dostępny dla wszystkich, natomiast model „Mythos 5” – wyłącznie dla sprawdzonych partnerów z branży cyberbezpieczeństwa i biologii. Poniżej przedstawiam, co jest faktem, a co wciąż pozostaje tylko deklaracją, oraz opisuję testy, które zamierzam przeprowadzić od jutra."
+title: "Claude Fable 5 kosztuje 2x tyle co Opus 4.8, a jedyny benchmark, który się liczy, to twoja własna robota"
+description: "Anthropic wypuścił dziś Fable 5: swój najmocniejszy publiczny model, dwa razy droższy od Opus 4.8. Nie prowadzę leaderboardu, prowadzę biznes na Claude. Oto co ta premiera zmienia na mojej własnej robocie, z dowodami, które możesz sklonować."
 publishedAt: "2026-06-09"
 tags:
   - AI
@@ -13,259 +13,107 @@ draft: false
 locale: "pl"
 translationOf: "claude-fable-5-mythos-5"
 tldr:
-  - "Fable 5 a Mythos 5 to ten sam model. Jedyna różnica dotyczy zabezpieczeń: Fable jest przeznaczony do ogólnego użytku, natomiast Mythos działa z częściowo zniesionymi zabezpieczeniami dla sprawdzonych partnerów z branży cyberbezpieczeństwa i biologii."
-  - "Raporty firmy Anthropic wskazują na najnowocześniejsze rozwiązania w większości testów porównawczych, migrację 50 milionów linii kodu w języku Ruby zrealizowaną w ciągu jednego dnia oraz wsparcie w projektowaniu białek dorównujące umiejętnościom doświadczonych specjalistów. Wyniki testów porównawczych dostawców pozostają jedynie twierdzeniami, dopóki się ich nie sprawdzi."
-  - "Opłata za wpłatę wynosi 10 USD, a za wypłatę 50 USD za każdy milion tokenów. W planach Pro, Max i Team usługa jest bezpłatna do 22 czerwca, a następnie zacznie być rozliczana w ramach limitów użytkowania."
-  - "Najważniejsze są jednak zabezpieczenia: klasyfikatory cyberzagrożeń, zagrożeń biologicznych i danych dotyczących destylacji, polityka przechowywania danych przez 30 dni oraz umowa o wymianie informacji (Project Glasswing) zawarta z rządem Stanów Zjednoczonych."
+  - "Fable 5 i Mythos 5 to ten sam model. Jedyna różnica to zabezpieczenia: Fable przy oznaczonych tematach po cichu przełącza się na Opus 4.8, Mythos działa z częścią zabezpieczeń zdjętą dla zweryfikowanych partnerów."
+  - "Oceniam go po takiej robocie: dziś w jednej sesji wypuściłem blok cenowy w 8 językach, z zielonym buildem, na maina. Maszyna zrobiła wolumen, ja wyłapałem 4 miejsca, w których się wyłożyła. Ten podział pracy to cała historia."
+  - "Kosztuje 2x tyle co Opus 4.8: 10 $ za tokeny wejściowe i 50 $ za wyjściowe, za milion. Opłaca się tylko wtedy, gdy kończy zadanie w mniejszej liczbie kroków. Liczy się koszt wyniku, nie koszt tokena."
+  - "Haczyk, którego nikt nie pokazuje na slajdzie: cichy fallback oznacza, że w jednej sesji mogą odpowiadać dwa różne modele. Jeśli puszczasz pętle agentowe, loguj, który odpowiedział, inaczej twoje liczby kłamią."
 ---
 
-Firma Anthropic udostępniła dzisiaj, 9 czerwca 2026 r., dwa modele Frontier: [Claude Fable 5 oraz Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Jeden z nich jest dostępny dla wszystkich. Drugi jest dostępny wyłącznie w ramach programu zaufanego dostępu. Pod względem technicznym są to te same modele.
+Anthropic wypuścił dziś, 9 czerwca 2026, dwa modele frontier: [Claude Fable 5 i Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Jeden jest dla wszystkich. Drugi siedzi za programem zaufanego dostępu. Pod spodem to ten sam model.
 
-To ostatnie zdanie zawiera całą istotę sprawy, a większość relacji pominie ten fakt. Zanim więc zrzuty ekranu z testów porównawczych zapełnią wasze kanały informacyjne, oto co faktycznie się zmieniło, co nadal pozostaje tylko twierdzeniem producenta oraz cztery testy, które zamierzam przeprowadzić od jutra.
+Wpis premierowy to benchmark na benchmarku. Nie zamierzam ich streszczać. Na Claude prowadzę biznes, nie leaderboard, i obchodzi mnie jedno pytanie: co mocniejszy model robi z systemami, które już dziś u mnie działają. Ta strona w ośmiu językach. Pipeline treści. Pętle agentowe, które dotykają CRM-u. Oto ta odpowiedź, na mojej własnej robocie, z dowodami, które możesz sklonować i odpalić u siebie.
 
 <KeyTakeaway
   icon="info"
-  title="Wersja skrócona"
-  body="Fable 5 a wersje „Mythos 5” działają na tej samej platformie. Różnica polega na zabezpieczeniach. Fable to bezpieczna wersja do ogólnego użytku, która w przypadku oznaczonych tematów przechodzi w tryb „Opus 4.8”. Mythos to ten sam model z częściowo zniesionymi zabezpieczeniami, udostępniany wyłącznie sprawdzonym partnerom z branży cyberobrony i biologii."
-/>
-
-<StatGrid
-  columns={4}
-  stats={[
-    { value: "10 $ / 50 $", label: "Cena za milion tokenów", sub: "wejście / wyjście" },
-    { value: "< 5%", label: "Sesje z ograniczeniami dostępu", sub: "w razie potrzeby skorzystaj z adresu Opus 4.8" },
-    { value: "50 mln wierszy", label: "Migracja w języku Ruby", sub: "jednego dnia, źródło: Stripe" },
-    { value: "9 / 14", label: "Cele białkowe", sub: "obiecujące leki" },
-  ]}
-  caption="Najważniejsze dane z wpisu Anthropic z okazji premiery. Traktuj je jako tezy do zweryfikowania, a nie fakty do powtórzenia."
+  title="Wersja jednozdaniowa"
+  body="Fable 5 i Mythos 5 mają jeden mózg. Produktem są zabezpieczenia. Fable to bezpieczna wersja do ogólnego użytku, która przy oznaczonych tematach przełącza się na Opus 4.8. Mythos to ten sam model z częścią zabezpieczeń zdjętą, trafia wyłącznie do zweryfikowanych partnerów z cyberobrony i biologii."
 />
 
 ## Dwa modele, jeden mózg
 
-Wszystko zdradza nazwa. Firma Anthropic twierdzi, że słowo „fable” wywodzi się od łacińskiego *fabula*, oznaczającego „to, co opowiadane”, bliskiego greckiemu *mythos*. Ten sam rdzeń, dwie twarze. Różnica nie polega na możliwościach. Chodzi o to, na co modelowi wolno.
+Nazwa zdradza wszystko. Anthropic tłumaczy, że fable pochodzi od łacińskiego *fabula*, „to, co opowiedziane", blisko greckiego *mythos*. Ten sam rdzeń, dwie maski. Różnica nie leży w możliwościach. Leży w tym, co modelowi wolno.
 
 <Comparison
   items={[
-    { label: "Claude Fable 5", tag: "General use", tone: "accent", body: "Obecnie dotyczy to API i wszystkich planów. Zabezpieczenia są włączone. Gdy żądanie dotyczy tematu oznaczonego jako wrażliwy, nie jest ono odrzucane: zamiast tego system dyskretnie zwraca odpowiedź „Opus 4.8”. Według firmy Anthropic sytuacja ta ma miejsce w mniej niż 5% sesji." },
-    { label: "Claude Mythos 5", tag: "Trusted access", tone: "muted", body: "Ten sam model bazowy, z pewnymi zniesionymi zabezpieczeniami. Dostęp ograniczony do sprawdzonych specjalistów ds. cyberbezpieczeństwa poprzez program „Project Glasswing” oraz przyszły program biologiczny. Według firmy Anthropic jest to wersja o największych możliwościach w zakresie cyberbezpieczeństwa spośród wszystkich modeli." }
+    { label: "Claude Fable 5", tag: "Ogólny dostęp", tone: "accent", body: "Od dziś w API i w każdym planie. Zabezpieczenia włączone. Gdy żądanie trafi w oznaczony temat, model nie odmawia, tylko po cichu odpowiada jako Opus 4.8. Według Anthropic dzieje się tak w mniej niż 5% sesji." },
+    { label: "Claude Mythos 5", tag: "Zaufany dostęp", tone: "muted", body: "Ten sam model pod spodem, część zabezpieczeń zdjęta. Dostęp tylko dla zweryfikowanych zespołów cyberobrony przez Project Glasswing, program biologiczny ma dojść później. Anthropic nazywa go najmocniejszym modelem cyber, jaki zbudował." }
   ]}
 />
 
-Gdy więc wpływa żądanie, ścieżka wygląda następująco:
-
-<Diagram caption="Jak Fable 5 obsługuje oznaczone żądanie: nie odrzuca, tylko sięga po cichszy model">
-  <Box label="Twoje zgłoszenie" />
+<Diagram caption="Jak Fable 5 obsługuje oznaczone żądanie: bez odmowy, po prostu cichszym modelem">
+  <Box label="Twoje żądanie" />
   <Arrow label="klasyfikator" />
   <Box label="Kontrola bezpieczeństwa" sub="cyber · bio · destylacja" variant="accent" />
-  <Arrow label="czysty" />
-  <Box label="Fable 5 odpowiedzi" sub="pełna funkcjonalność" />
+  <Arrow label="czyste" />
+  <Box label="Odpowiada Fable 5" sub="pełne możliwości" />
   <Arrow label="oznaczone" dashed />
-  <Box label="Opus 4.8 odpowiedzi" sub="rozwiązanie awaryjne, brak odmowy" variant="muted" />
+  <Box label="Odpowiada Opus 4.8" sub="fallback, bez odmowy" variant="muted" />
 </Diagram>
 
-Ma to znaczenie dla każdego, kto tworzy aplikacje w oparciu o ten interfejs API. Ciche przejście na rezerwę zapewnia lepszy komfort użytkowania niż jawna odmowa, ale oznacza to, że w ramach jednej sesji mogą odpowiadać dwa różne modele. Jeśli korzystasz z funkcji ewaluacyjnych lub pętli agentów, z pewnością chcesz wiedzieć, który z nich udzielił odpowiedzi.
+To jedyny detal tej premiery, który dotyka każdego, kto buduje na API. Cichy fallback to lepszy UX niż twarda odmowa. Oznacza też, że w jednej sesji mogą odpowiadać dwa różne modele. Jeśli puszczasz evale albo pętle agentowe, musisz logować, który odpowiedział, inaczej twoje liczby po cichu mieszają dwa modele.
 
-## Wyniki testów porównawczych, z pewnym zastrzeżeniem
+## Co już dziś działa tu na Claude
 
-<Callout type="warning" title="Przeczytaj to przed zapoznaniem się z danymi">
-  Wszystkie poniższe informacje pochodzą od firmy Anthropic lub jej partnerów wprowadzających produkt na rynek. Wyniki testów wydajnościowych partnerów mają charakter marketingowy, dopóki nie sprawdzą się w rzeczywistym obciążeniu. Przytaczam je, ponieważ wskazują, na co warto zwrócić uwagę, a nie dlatego, że udało mi się je odtworzyć.
-</Callout>
+Zanim powiem, co Fable zmienia, pokażę, w czym ma coś zmieniać. Ta strona to nie wizytówka. To system, a Claude jest w nim elementem nośnym.
 
-We wszystkich przypadkach obserwuje się spójną tendencję: im dłuższe i bardziej wymagające zadanie, tym większa zgłaszana przewaga. Nie chodzi o „mądrzejsze odpowiedzi”, ale o to, by „nie zgubić wątku wśród milionów tokenów”.
+Działa na Astro i Cloudflare, serverless, nie ma czym się opiekować. Strona wychodzi w ośmiu językach przez pipeline na DeepL, który zbudowałem, z warstwą ochrony marek, żeby tłumacz nigdy nie zrobił z „Opusa" rzeczownika pospolitego. Warstwa odkrywania, `llms.txt`, jest na bieżąco, żeby modele mogły znaleźć tę robotę. Nic z tego nie jest demem. Wszystko siedzi w repo za tą stroną.
 
-<Tabs
-  tabs={[
-    { label: "Twarde dane", content: "Wyniki opublikowano wraz z porównaniami między modelami, dzięki czemu można je zweryfikować: SWE-Bench Pro – 80,3% w porównaniu z Opus 4.8 (69,2%) i GPT-5.5 (58,6%). FrontierCode – 29,3% w porównaniu z Opus 4.8 (13,4%). ExploitBench – 78% dla Mythos 5 w porównaniu z Opus 4.8 (40%). Istnieją punkty odniesienia, więc można się z nimi spierać." },
-    { label: "Nadal chodzi o roszczenie sprzedawcy", content: "Dane podane przez partnerów, bez ujawnionej metodologii: migracja 50 milionów linii kodu w języku Ruby w ciągu jednego dnia, wynik analityczny „pierwszy, kto przekroczy 90%”, pomoc w projektowaniu białek oraz przyspieszenie obliczeń fizycznych. Brzmi to wiarygodnie i wskazuje kierunek rozwoju – to właśnie ten rodzaj liczb, które mają znaczenie dopiero wtedy, gdy sprawdzają się w praktyce przy Twoim własnym obciążeniu pracą." }
+<StatGrid
+  columns={4}
+  stats={[
+    { value: "8", label: "Języki na produkcji", sub: "EN plus 7, z jednej edycji źródła" },
+    { value: "180", label: "Zbudowanych stron", sub: "każdy deploy przechodzi CI" },
+    { value: "560", label: "Testów na treści", sub: "schema, linki, build" },
+    { value: "0", label: "Serwerów do zarządzania", sub: "Astro na Cloudflare, serverless" },
   ]}
+  caption="Ta strona, tak jak buduje się dzisiaj. Sklonuj repo i dostaniesz te same liczby. O to chodzi: nie deklaracja, tylko checkout."
 />
 
-<DataTable
-  columns={[
-    { key: "eval", label: "Ocena" },
-    { key: "result", label: "Fable 5" },
-    { key: "compare", label: "Dla porównania" }
-  ]}
-  rows={[
-    { eval: "SWE-Bench Pro", result: "80,3%", compare: "Opus 4.8 69,2% · GPT-5.5 58,6%" },
-    { eval: "FrontierCode (Cognition)", result: "29,3%", compare: "Opus 4.8 13,4% · GPT-5.5 5,7%" },
-    { eval: "ViBench, vibe coding (Replit)", result: "Replit, znana modelka, przetestowała", compare: "Replit" },
-    { eval: "Rozumowanie finansowe (Hebbia)", result: "Najwyższy wynik spośród wszystkich testowanych modeli", compare: "Uzasadnianie wniosków, interpretacja wykresów i tabel" },
-    { eval: "Podstawowe narzędzia analityczne", result: "Kto pierwszy osiągnie 90%", compare: "Wynik o 10 punktów lepszy od Opusa" },
-    { eval: "ExploitBench (Mythos 5)", result: "78%", compare: "Mythos Preview 69% · Opus 4.8 40%" }
-  ]}
-  highlight={[0]}
-  caption="Dane pochodzą z materiałów promocyjnych firmy Anthropic oraz z ocen wymienionych partnerów. Liczby są ich, a nie moje: nie przytoczyłem ich. Źródła podano w linkach na końcu."
-/>
+Claude nie jest tu więc zabawką do pisania. Jest tym, co musi utrzymać wielojęzyczny, wieloaplikacyjny system w całości, nie gubiąc wątku. To jest robota, w której model frontier musi być dobry. Nie ciekawostki, nie błyskotliwy one-liner.
 
-Liczby, które faktycznie umieściłbym na slajdzie:
+## Jedna prawdziwa robota, osiem języków, jedna sesja
 
-<MetricRow
-  items={[
-    { value: "80,3%", label: "SWE-Bench Pro", delta: "+21,7 w porównaniu z GPT-5.5", deltaPositive: true },
-    { value: "29,3%", label: "FrontierCode", delta: "+15,9 w porównaniu z Opus 4.8", deltaPositive: true },
-    { value: "78%", label: "ExploitBench, Mythos 5", delta: "+38:Opus 4.8", deltaPositive: true },
-    { value: "1 dzień", label: "Migracja linii 50M-line Ruby", delta: "≈ 2 miesiące przy ręcznej pracy", deltaPositive: true }
-  ]}
-  caption="Zweryfikowane dane porównawcze między modelami oraz główne wyniki dotyczące migracji opublikowane przez „Stripe”. Różnice podano w odniesieniu do modelu referencyjnego opublikowanego przez firmę Anthropic."
-/>
-
-Warto zwrócić uwagę na dwa wyniki.
-
-<Benchmark
-  label="SWE-Bench Pro"
-  yours={80.3}
-  baseline={58.6}
-  yoursLabel="Fable 5"
-  baselineLabel="GPT-5.5"
-  unit="%"
-  caption="Z materiałów promocyjnych. W tym samym teście „Opus 4.8” osiągnął wynik 69,2%, więc przewaga wynika z rzeczywistego postępu między generacjami, a nie tylko z różnicy w stosunku do konkurencji."
-/>
-
-<Benchmark
-  label="Podstawowy test porównawczy narzędzi analitycznych"
-  yours={90}
-  baseline={80}
-  yoursLabel="Fable 5 (kto przekroczy 90%)"
-  baselineLabel="Opus 4.8 (zgodnie z twierdzeniem o +10)"
-  unit="%"
-  caption="Jeden z partnerów podaje, że model „Fable 5” jako pierwszy przekroczył próg 90%, co stanowi 10-punktowy skok w stosunku do modelu „Opus”. Tak duży wzrost w przypadku nasycającego się rynku zazwyczaj wymaga dwóch kolejnych premier."
-/>
-
-Jeśli chodzi o badania z zakresu fizyki najnowszych odkryć, jeden z partnerów twierdzi, że w ciągu 36 godzin platforma „Fable 5” osiągnęła „prawie ten sam poziom, na którym po czterech dniach znalazła się platforma „GPT-5.5”. Jeśli tempo to się utrzyma, operatorzy powinni zwrócić uwagę przede wszystkim na wydajność tokenów. Niższe koszty obliczeniowe w przeliczeniu na jednostkę postępu zmieniają to, co warto zautomatyzować.
-
-Najbardziej przekonujące są argumenty dotyczące inżynierii oprogramowania: firma „Stripe” przeprowadziła w ciągu jednego dnia migrację obejmującą cały kod źródłowy, liczący 50 milionów linii kodu w języku Ruby – według Anthropic ręczne wykonanie tej pracy zajęłoby zespołowi dwa miesiące. Jeśli nawet połowa tych wyników sprawdzi się w przypadku zwykłego kodu źródłowego, to kalkulacja dotycząca tego, czy lepiej stworzyć narzędzie wewnętrzne, czy je kupić, znów ulegnie zmianie.
-
-<PullQuote source="Michael Truell, Cursor" role="jak podano w poście inauguracyjnym firmy Anthropic">
-  Claude Fable 5 jest to najnowocześniejszy model dostępny na stronie CursorBench. Otworzył on nowe możliwości w zakresie rozwiązywania zadań o długim horyzoncie czasowym, które były poza zasięgiem wcześniejszych modeli.
-</PullQuote>
-
-GitHub, Replit, Hebbia, Morgan Stanley i Harvey – wszyscy oni wyrazili podobne opinie: to wyraźny krok naprzód w stosunku do długotrwałej, wymagającej zaangażowania i wieloetapowej pracy. To spora grupa partnerów o zbieżnych poglądach. To też dokładnie ci, których można by się spodziewać, że zabiorą głos w dniu premiery. Należy mieć na uwadze obie te kwestie.
-
-## Warstwa bezpieczeństwa to właściwy start
-
-Pomijając wyniki testów porównawczych, jest to aktualizacja wprowadzająca poprawki bezpieczeństwa. Firma Anthropic wyraźnie stwierdza, że modele klasy Mythos „osiągnęły próg, powyżej którego stwarzają poważne zagrożenie”, a cała struktura Fable i Mythos służy właśnie zarządzaniu tym ryzykiem.
-
-Przed adresem Fable 5 znajdują się trzy klasyfikatory:
-
-<Grid cols={3}>
-  <KeyPoint title="Cyberbezpieczeństwo" type="warning">
-    <p>Blocks offensive cyber and exploitation tasks. Anthropic reports zero successful universal jailbreaks across 1,000+ hours of external red-teaming, and says outside partners rated these the most robust cyber safeguards of any model they have tested.</p>
-  </KeyPoint>
-  <KeyPoint title="Biologia i chemia" type="warning">
-    <p>Blocks bioweapon-related and dual-use queries. Deliberately broad for now, which means more false positives. Anthropic says it plans to narrow it as confidence grows.</p>
-  </KeyPoint>
-  <KeyPoint title="Destylacja" type="warning">
-    <p>Blocks attempts to extract the model's capability for training a competitor. A capability-proliferation control, not a user-safety one.</p>
-  </KeyPoint>
-</Grid>
-
-Towarzyszy temu nowa polityka dotycząca danych: 30-dniowy okres przechowywania całego ruchu klasy Mythos, który nie jest wykorzystywany do szkolenia nowych modeli, przy czym każdy dostęp użytkownika jest rejestrowany, a dane są usuwane po 30 dniach w niemal wszystkich przypadkach. Jako powód podaje się wykrywanie: wykrywanie nowych ataków i eliminowanie fałszywych alarmów, zanim osiągną one większą skalę.
-
-<Callout type="note" title="Szczery kompromis, który firma Anthropic sama sobie nadaje">
-  Zabezpieczenia są ustawione na ostrożność, a firma Anthropic przyznaje, że są one „nadal bardziej rygorystyczne, niż byłoby to idealne” i będą irytować niektórych użytkowników fałszywymi alarmami. Celem nie jest całkowite wyeliminowanie przypadków obejścia zabezpieczeń. Chodzi o to, by każde takie obejście było na tyle powolne i kosztowne, by można je było wykryć, zanim zostanie wykorzystane na szeroką skalę. Jest to stanowisko, które można uzasadnić, powiedziane wprost. Szanuję to bardziej niż twierdzenie o „całkowitym bezpieczeństwie”.
-</Callout>
-
-Jest też **program Project Glasswing**: inicjatywa realizowana we współpracy z rządem USA, działająca od kwietnia 2026 r., w ramach której modele klasy Mythos z wyłączonymi zabezpieczeniami cybernetycznymi są przekazywane niewielkiej grupie specjalistów ds. cyberbezpieczeństwa oraz dostawców infrastruktury krytycznej. Partnerzy Glasswing otrzymują teraz ulepszenie z poziomu „Mythos Preview” do „Mythos 5”. Dla wybranych naukowców przygotowywany jest program zaufanego dostępu oparty na biologii, w którym zabezpieczenia biologiczne zostaną usunięte, a zabezpieczenia cybernetyczne pozostaną aktywne.
-
-To zdanie powinno zwrócić waszą uwagę: to samo zapytanie, które w rękach sprawdzonego specjalisty ds. cyberbezpieczeństwa ma charakter obronny, w rękach kogoś innego staje się atakiem. Rozwiązaniem firmy Anthropic nie jest inteligentniejszy filtr. Jest to kontrola dostępu. To, kim jesteś, decyduje teraz o tym, który model otrzymasz.
-
-## Na obudowie znajduje się zegar
-
-<ArticleTimeline
-  items={[
-    { date: "Apr 2026", title: "Project Glasswing rozpoczyna się", body: "Claude Mythos Preview dołącza do niewielkiej grupy specjalistów ds. cyberbezpieczeństwa w ramach współpracy z rządem Stanów Zjednoczonych.", tag: "Context" },
-    { date: "Jun 9, 2026", title: "Fable 5 oraz premiera serwisu Mythos 5", body: "Fable 5 w ramach API oraz wszystkich planów. Usługa „Mythos 5” jest dostępna dla partnerów Glasswing. Usługa „Fable 5” jest dostępna bezpłatnie w planach Pro, Max, Team oraz Enterprise opartym na liczbie stanowisk.", tag: "Today", highlight: true },
-    { date: "Jun 22, 2026", title: "Ostatni dzień bezpłatny w ramach abonamentów", body: "Ostatni dzień – usługa „Fable 5” jest dostępna bez dodatkowych opłat w ramach abonamentów." },
-    { date: "Jun 23, 2026", title: "Przeniesienie środków na konto kredytowe", body: "Fable 5 jest wyłączane zgodnie z dołączonymi planami i działa w oparciu o kredyty użytkowe, dopóki przepustowość nie pozwoli na przywrócenie standardowego trybu działania." },
-    { date: "Coming weeks", title: "Biologia – sprawdzony dostęp", body: "Wybrani naukowcy zajmujący się naukami przyrodniczymi otrzymują dostęp do serwisu „Mythos 5” bez ograniczeń dotyczących bezpieczeństwa biologicznego, ponieważ środki bezpieczeństwa są stale udoskonalane." }
-  ]}
-  caption="Jeśli chcesz przetestować Fable 5 za darmo, masz na to czas od 9 do 22 czerwca. Po tym terminie dostęp będzie kosztował kredyty."
-/>
-
-To właśnie ten bezpłatny okres jest najważniejszą praktyczną wskazówką. Mamy dwa tygodnie, by dać z siebie wszystko, zanim zacznie biec licznik.
-
-## Ile faktycznie kosztuje licznik
-
-Kiedy 23 czerwca rozpocznie się rozliczanie oparte na rzeczywistym zużyciu, na stronach Fable 5 i Mythos 5 ceny wyniosą odpowiednio 10 dolarów za milion tokenów wejściowych i 50 dolarów za milion tokenów wyjściowych. To dokładnie dwukrotność cen podanych na stronie Opus 4.8, gdzie wynoszą one 5 i 25 dolarów. Są to opublikowane ceny katalogowe, a nie moje szacunki.
-
-<MetricRow
-  items={[
-    { value: "$10 / $50", label: "Fable 5 liczba tokenów wejściowych i wyjściowych na milion" },
-    { value: "2×", label: "Opus 4.8 kosztuje o połowę mniej, czyli 5 i 25 dolarów za milion tokenów" },
-    { value: "<5%", label: "Sesje przekazywane do serwisu Opus 4.8 jako rozwiązanie awaryjne" },
-    { value: "Jun 23", label: "Kończy się bezpłatny okres, rozpoczyna się rozliczenie" }
-  ]}
-  caption="Ceny katalogowe na podstawie danych opublikowanych przez firmę Anthropic w związku z tą premierą. Dane zweryfikowano w oparciu o ceny publiczne; nie są to moje własne obliczenia."
-/>
-
-<Benchmark
-  label="Cena za token, w USD za milion"
-  yours={50}
-  baseline={25}
-  yoursLabel="Fable 5 / Mythos 5"
-  baselineLabel="Opus 4.8"
-  unit=""
-  lowerIsBetter={true}
-  caption="Im niższa cena, tym tańszy produkt, więc dłuższy pręt jest droższy. Strona Fable 5 kosztuje dokładnie dwa razy więcej niż Opus 4.8. Za tę wyższą cenę otrzymujemy zaawansowane funkcje."
-/>
-
-Wartość, która decyduje o tym, czy coś jest warte dwukrotnej ceny, nie pojawia się na żadnej stronie z cennikiem: chodzi o koszt jednego zakończonego zadania. Model, który kosztuje dwa razy więcej za token, ale kończy długi przebieg agentyczny w połowie liczby kroków, może okazać się tańszy w przeliczeniu na jeden wynik. To jedyne porównanie, które ma znaczenie, i właśnie to ma na celu test kosztów omówiony w następnej sekcji.
-
-## Co zamierzam testować od jutra
-
-Nie ufam modelowi na podstawie jego pierwszego wpisu. Ufam mu dopiero po przetestowaniu go na moich własnych zadaniach. Oto, co od jutra będzie przechodziło przez Fable 5 – prawdziwe zadania, a nie zabawkowe polecenia.
+Porównanie cen, które znajdziesz niżej na tej stronie: oto jak powstało, dzisiaj, za jednym posiedzeniem. Taką robotę mam na myśli.
 
 <Steps
-  title="Cztery testy"
+  title="Jak jeden blok wszedł na produkcję w ośmiu językach"
   items={[
-    { title: "Przebudowa z długoterminową perspektywą w prawdziwym repozytorium", body: "Zróbcie prawdziwą migrację w całym tym kodzie i zobaczcie, czy zachowa spójność do samego końca, czy też zacznie się rozbiegać już po dwóch godzinach. Twierdzenie o 50 milionach linii to tylko nagłówek. Moje repozytorium to sprawdzian rzeczywistości.", meta: "01 / agentic" },
-    { title: "Praca z arkuszami kalkulacyjnymi i analizy moich własnych danych", body: "Porównaj deklarowaną wydajność narzędzi analitycznych z rzeczywistym przebiegiem procesu raportowania, a nie z wynikami testów porównawczych. Szybkość ma znaczenie tylko wtedy, gdy wyniki są prawidłowe.", meta: "02 / knowledge work" },
-    { title: "Od pomysłu do kodu", body: "Prześlij zrzut ekranu strony docelowej i poproś o kod źródłowy. Firma Anthropic twierdzi, że odtwarza aplikacje internetowe wyłącznie na podstawie obrazów. Chcę sprawdzić, jak dokładny będzie pierwszy wynik.", meta: "03 / vision" },
-    { title: "Koszt na jedno uruchomienie agenta a model „Opus 4.8”", body: "Ta sama pętla wzbogacania w GTM, oba modele obok siebie. To właśnie twierdzenie o wydajności tokenów wnioskowania faktycznie zmienia moje podejście. Opublikuję dane liczbowe.", meta: "04 / unit economics" }
+    { title: "Jedna edycja, po angielsku", body: "Napisałem porównanie cen raz, w języku kanonicznym, jako jedyne źródło prawdy.", meta: "01 / autor" },
+    { title: "Chirurgiczna wstawka, nie re-tłumaczenie", body: "Skrypt przetłumaczył tylko nowy blok na siedem języków i wpiął go pod właściwy nagłówek, nie ruszając żadnego z ręcznie poprawionych tłumaczeń.", meta: "02 / fan out" },
+    { title: "Część, której nie pokaże żaden wpis premierowy", body: "Zajęło to cztery podejścia. DeepL odczytał 'credits' jako napisy końcowe filmu, 'model card' jako kartę postaci z RPG, a '5 $ wejście, 25 $ wyjście' jako ceny kupna i sprzedaży. Przeczytałem każdą linię i poprawiłem sens. Model zrobił wolumen, osąd należał do mnie.", meta: "03 / wyłap" },
+    { title: "Na produkcji", body: "Build zielony, 560 testów, push na maina. Osiem języków spójnych. Jedna sesja.", meta: "04 / ship" }
   ]}
 />
 
-<DoDont
-  do={[
-    "Przetestuj Fable 5 na swoim najtrudniejszym realnym zadaniu w trakcie darmowego okna",
-    "Rejestruj, który model udzielił odpowiedzi w momencie uruchomienia procedury awaryjnej w pętlach agenta",
-    "Przed zaufaniem jakiemukolwiek numerowi partnera należy ponownie przeprowadzić własne testy",
-    "Traktuj spadek kosztu za wynik jako prawdziwy przełom, a nie pozycję w rankingu"
-  ]}
-  dont={[
-    "Powtórz testy wydajności z dnia premiery tak, jakbyś je przeprowadzał",
-    "Podłącz wyjście klasy Mythos do dowolnego urządzenia bez zapoznawania się z zasadami przechowywania danych",
-    "Załóżmy, że zabezpieczenia nie zablokują uzasadnionego żądania",
-    "Poczekaj do 23 czerwca, a potem narzekaj, że to kosztuje kredyty"
-  ]}
-/>
+<PullQuote source="Faktyczny podział pracy" role="model robi wolumen, ty trzymasz osąd">
+  Tłumacz ogarnął osiem języków w kilka sekund. Cztery razy pomylił też sens. Żadna z tych rzeczy nie jest niespodzianką i obie są częścią roboty. Mocniejszy model przesuwa tę granicę: mniej podejść, mniej mojego osądu spalanego na sprzątanie.
+</PullQuote>
 
-W tym miejscu opublikuję wyniki wraz ze szczegółowymi danymi, w tym również informacje o tym, co nie wyszło zgodnie z planem. Jeśli też przeprowadzasz testy, daj mi znać, co nie zadziałało. Tego właśnie nie znajdziesz w żadnym poście dotyczącym premiery.
+Dokładnie tę granicę ma przesuwać model frontier. Nie „ładniejszą prozę". Mniej rund między wolumenem a osądem.
 
-## Trzy powierzchnie, jeden model: gdzie faktycznie go uruchamiam
+## Trzy fronty, które musi przetrwać
 
-Te cztery testy nie odbywają się w środowisku testowym. Są one przeprowadzane w trzech miejscach, w których faktycznie pracuję: w oknie czatu, gdzie potrzebna jest szybka ocena sytuacji, w aplikacji Cowork na komputerze stacjonarnym, gdzie wykonuję wieloetapowe zadania, oraz w kodzie w moim własnym repozytorium. Ten sam model, zupełnie inne zastosowania. Oto konkretny plan oparty na rzeczywistych zadaniach GTM, a nie na sztucznych przykładach.
+Ten sam model, trzy zupełnie różne roboty. Szybki osąd w oknie czatu. Długi, wielokrokowy przebieg w agencie cowork. Kod w tym repo. Na każdym froncie psuje się inaczej, a model frontier jest wart swojej ceny tylko wtedy, gdy trzyma się na wszystkich trzech.
 
 <DataTable
   columns={[
-    { key: "surface", label: "Powierzchnia" },
-    { key: "task", label: "Prawdziwe zadanie z mojego stosu" },
-    { key: "stress", label: "Na co kładzie nacisk" },
+    { key: "surface", label: "Front" },
+    { key: "task", label: "Prawdziwe zadanie z mojego stacku" },
+    { key: "stress", label: "Co testuje" },
     { key: "score", label: "Jak to oceniam" }
   ]}
   rows={[
-    { surface: "Czat", task: "Oceń ten lead pod kątem mojego profilu idealnego klienta (ICP) i przygotuj dwuwierszowy tekst na rozpoczęcie rozmowy", stress: "Rozwaga i zwięzłość w jednym ruchu", score: "Dobra decyzja w ICP, a do tego otwarcie, które faktycznie bym zagrał" },
-    { surface: "Cowork", task: "Wybierz pięć adresów URL z serwisu LinkedIn, uzupełnij informacje przy każdym z nich, przygotuj spersonalizowaną sekwencję działań i zapisz ją w systemie CRM", stress: "Długotrwała aktywność, posługiwanie się narzędziami, brak odchyleń na wielu etapach", score: "Pełny przebieg, brak pól zmyślonych, wiersze CRM poprawne" },
-    { surface: "Kod", task: "Przeprojektuj zbiór treści w całym repozytorium i zadbaj o to, by kompilacja przebiegała bezbłędnie", stress: "Kontekst wielu plików zachowywany do końca, a nie tylko do pierwszej edycji", score: "Testy zakończyły się powodzeniem, kompilacja przebiegła bezbłędnie, brak osieroconych odwołań" }
+    { surface: "Czat", task: "Oceń tego inbounda względem mojego ICP i napisz dwulinijkowy opener", stress: "Osąd i zwięzłość w jednej turze", score: "Trafna ocena ICP plus opener, którego naprawdę bym wysłał" },
+    { surface: "Cowork", task: "Weź pięć URL-i z LinkedIna, wzbogać każdy, przygotuj spersonalizowaną sekwencję, zapisz do CRM-u", stress: "Długa robota agentowa, użycie narzędzi, zero dryfu przez wiele kroków", score: "Pełny przebieg, zero zmyślonych pól, poprawne wiersze w CRM" },
+    { surface: "Kod", task: "Zrefaktoruj kolekcję treści w całym repo i utrzymaj zielony build", stress: "Kontekst wielu plików trzymany do końca, nie tylko przy pierwszej edycji", score: "Testy przechodzą, build czysty, zero osieroconych referencji" }
   ]}
-  caption="Jedno konkretne zadanie na każdą powierzchnię. Ten sam model musi sprawdzić się w trzech różnych zadaniach, a sposób, w jaki może zawieść, jest w każdym z nich inny."
+  caption="Jedno prawdziwe zadanie na front. Ten sam model musi być dobry w trzech różnych robotach, a każda psuje się inaczej."
 />
 
-Ten fragment kodu mogę wam dzisiaj pokazać, ponieważ działa on tutaj i nie podlega ograniczeniom dotyczącym wczesnego dostępu. Aby uzyskać powyższe wyniki, zleciłem modelowi stworzenie niewielkiego zestawu testowego do porównania: ten sam prompt, wszystkie modele, rzeczywiste opóźnienia, liczba tokenów i koszt. To jest jego sedno i naprawdę działa:
+Front kodu mogę pokazać już dziś, bo działa tutaj, a nie za embargiem. Żeby uczciwie porównać modele, kazałem Claude'owi zbudować mały harness: ten sam prompt, każdy model, realna latencja, tokeny i koszt. To jego rdzeń i naprawdę się uruchamia:
 
 ```js
-// same prompt, every model, real numbers
+// ten sam prompt, każdy model, prawdziwe liczby
 for (const test of TESTS) {
   for (const model of MODELS) {
     const res = await callModel(model, test.prompt, test.maxTokens);
@@ -276,35 +124,101 @@ for (const test of TESTS) {
 }
 ```
 
-Podczas tej samej sesji artykuł ten został również dodany do pliku `llms.txt` serwisu, dzięki czemu warstwa wyszukiwania pozostaje aktualna. To drobna zmiana, ale właśnie o to chodzi w kodzie: o długofalowe modyfikacje, które zapewniają spójność całego systemu, a nie o pojedyncze sprytne fragmenty kodu.
-
-<Callout type="note" title="Co jest tu faktem, a co pozostaje kwestią otwartą">
-  Zestaw testów, zadania i system punktacji są już gotowe i można je uruchomić już dziś. Wyniki porównawcze między modelami nie są jeszcze dostępne: serwis Fable 5 jest nowy, a testy przeprowadzam od 10 czerwca. Gdy wyniki zostaną opublikowane, kolumna „Fable 5” pojawi się właśnie tutaj, obok „Opus 4.8”, wraz z kosztem na wynik, opóźnieniem i wskaźnikiem powodzenia. Żadnych zapożyczonych testów porównawczych, tylko moje własne.
+<Callout type="note" title="Co tu jest prawdziwe, a co dopiero będzie">
+  Harness, zadania i punktacja są prawdziwe i odpalisz je już dziś. Liczb model kontra model jeszcze nie ma: Fable 5 jest nowy, a ja puszczam te testy od 10 czerwca. Gdy przebiegi się skończą, kolumna Fable 5 wskoczy dokładnie tutaj, obok Opus 4.8, z kosztem wyniku, latencją i pass rate. Żadnych pożyczonych benchmarków, tylko moje własne.
 </Callout>
 
-## Źródła i literatura uzupełniająca
+## Gdzie Fable 5 naprawdę zarabia u mnie na swoją cenę
 
-Przeczytałem oryginalne materiały, żebyście i wy mogli to zrobić. Oto prawdziwe linki, a nie streszczenie streszczenia.
+Nie „mądrzejszy". Jedna rzecz: trzyma wątek.
+
+Każda pętla agentowa, którą puszczam, umiera tak samo. Model gubi kontekst na kroku N i zaczyna zmyślać. Mój pipeline lokalizacji przepuszcza każdy blok artykułu przez tłumaczenie, odtworzenie i ponowne złożenie, razy siedem języków. Pętla wzbogacania dotyka CRM-u przez wiele kroków. Dryf to podatek, który płacę, a dziś płacę go ponownymi przebiegami albo czytaniem każdej linii ręcznie, jak dziś rano, cztery razy.
+
+Główna obietnica Fable'a celuje dokładnie w ten tryb awarii: trzymać kontekst przez miliony tokenów, kończyć długie przebiegi agentowe bez gubienia wątku. Najgłośniejszy dowód to Stripe, który w jeden dzień przeprowadził migrację 50 milionów linii Ruby w całym kodzie, robota, która według Anthropic zajęłaby zespołowi dwa miesiące ręcznie. Wersja do sprawdzenia to eval kodowania:
+
+<Benchmark
+  label="SWE-Bench Pro"
+  yours={80.3}
+  baseline={69.2}
+  yoursLabel="Fable 5"
+  baselineLabel="Opus 4.8"
+  unit="%"
+  caption="Z materiałów premierowych, więc traktuj to jako deklarację, dopóki twój własny workload jej nie potwierdzi. Cytuję ją, bo długie kodowanie to dokładnie ta robota, którą rzuca w model moje repo, a nie dlatego, że ją odtworzyłem."
+/>
+
+Jeśli to się potwierdzi na mojej robocie, wygrana to nie ładniejszy output. To jeden przebieg zamiast trzech. A to zmienia koszt wyniku, jedyną liczbę z całej premiery, która dotyka mojego P&L.
+
+## Cena to haczyk
+
+Gdy 23 czerwca ruszy rozliczanie za użycie, Fable 5 i Mythos 5 będą kosztować po 10 $ za milion tokenów wejściowych i 50 $ za milion wyjściowych. To dokładnie dwa razy tyle co Opus 4.8, który stoi na 5 $ i 25 $. To opublikowane ceny katalogowe, nie moje szacunki.
+
+<MetricRow
+  items={[
+    { value: "10 $ / 50 $", label: "Fable 5, tokeny wejściowe i wyjściowe, za milion" },
+    { value: "2×", label: "Opus 4.8 jest o połowę tańszy, 5 $ i 25 $ za milion tokenów" },
+    { value: "<5%", label: "Sesji przekazanych do Opus 4.8 jako fallback" },
+    { value: "23 cze", label: "Koniec darmowego okna, start rozliczeń" }
+  ]}
+  caption="Ceny katalogowe z opublikowanych materiałów Anthropic dla tej premiery. Zweryfikowane z publicznym cennikiem, nie modelowane przeze mnie."
+/>
+
+<Benchmark
+  label="Cena tokenów wyjściowych, USD za milion"
+  yours={50}
+  baseline={25}
+  yoursLabel="Fable 5 / Mythos 5"
+  baselineLabel="Opus 4.8"
+  unit=""
+  lowerIsBetter={true}
+  caption="Niżej znaczy taniej, więc dłuższy słupek to ten, który kosztuje więcej. Fable 5 kosztuje dokładnie dwa razy tyle co Opus 4.8. Premia kupuje możliwości frontier."
+/>
+
+Liczby, która rozstrzyga, czy to jest warte 2x, nie znajdziesz na żadnym cenniku: koszt skończonego wyniku. Model dwa razy droższy za token, który kończy długi przebieg agentowy w połowie kroków, może wyjść taniej na wynik. To jedyne porównanie, które się liczy, i dokładnie to ma mierzyć harness wyżej.
+
+## Co opublikuję
+
+Fable 5 jest darmowy w planach Pro, Max, Team i Enterprise na stanowiska do 22 czerwca, potem przechodzi na kredyty za użycie. To darmowe okno to dwa tygodnie na przetestowanie go na prawdziwej robocie, zanim ruszy licznik.
+
+<DoDont
+  do={[
+    "Przetestuj Fable 5 na swoim najtrudniejszym prawdziwym zadaniu w darmowym oknie",
+    "Loguj, który model odpowiedział, gdy w pętlach agentowych odpali się fallback",
+    "Mierz koszt skończonego wyniku, nie koszt tokena",
+    "Przepuść własne evale, zanim uwierzysz w jakąkolwiek liczbę z dnia premiery"
+  ]}
+  dont={[
+    "Powtarzać benchmarków z premiery, jakbyś sam je zmierzył",
+    "Wpinać outputu klasy Mythos w cokolwiek bez przeczytania polityki 30-dniowej retencji",
+    "Zakładać, że zabezpieczenia nie zablokują uzasadnionego żądania",
+    "Czekać do 23 czerwca i potem narzekać, że kosztuje kredyty"
+  ]}
+/>
+
+Wyniki wrzucę tutaj jako follow-up: koszt wyniku na pipelinie lokalizacji i pętli wzbogacania, Fable kontra Opus, łącznie z tym, gdzie zawodzi. Jeśli też testujesz, napisz mi, co się u ciebie wyłożyło. Tego żaden wpis premierowy ci nie da.
+
+## Źródła i dalsza lektura
+
+Przeczytałem materiały źródłowe, żebyś ty też mógł. To prawdziwe linki, nie streszczenie streszczenia.
 
 <ToolCard
   cols={3}
   title="Źródła pierwotne"
-  caption="Własne strony firmy Anthropic oraz wyniki testów przeprowadzonych przez niezależne podmioty, o których wspomniano w dniu premiery."
+  caption="Strony samego Anthropic plus zewnętrzne evale cytowane w dniu premiery."
   items={[
-    { name: "Ogłoszenie o premierze", description: "Pełna treść wpisu firmy Anthropic na stronie Fable 5 oraz Mythos 5.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
-    { name: "Karta systemowa", description: "Szczegóły testów bezpieczeństwa i wydajności potwierdzające te twierdzenia.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
-    { name: "Project Glasswing", description: "Współpraca w zakresie cyberobrony z rządem Stanów Zjednoczonych.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
-    { name: "Mythos Preview aktualizacja dotycząca cyberbezpieczeństwa", description: "Wcześniej przeczytaj o krzywej zdolności cybernetycznych.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
-    { name: "Cognition FrontierCode", description: "Wyniki oceny kodu Fable 5 zostały przesłane do serwisu Top.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
-    { name: "Badanie potwierdzające wyniki badań biologicznych", description: "Praca niezależna przytoczona jako poparcie dla hipotezy dotyczącej Mitosu.", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["Science"] }
+    { name: "Ogłoszenie premiery", description: "Pełny wpis Anthropic o Fable 5 i Mythos 5.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
+    { name: "System card", description: "Szczegóły testów bezpieczeństwa i możliwości stojące za deklaracjami.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
+    { name: "Project Glasswing", description: "Współpraca z rządem USA w obszarze cyberobrony.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
+    { name: "Mythos Preview, aktualizacja cyber", description: "Wcześniejszy odczyt krzywej możliwości cyber.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
+    { name: "Cognition FrontierCode", description: "Eval kodowania, w którym Fable 5 ma być na szczycie.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
+    { name: "Niezależne badanie z biologii", description: "Praca cytowana jako potwierdzenie jednej z hipotez Mythosa.", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["Science"] }
   ]}
 />
 
-Jeśli interesuje Cię kontekst operacyjny tej kwestii, opisałem już [uruchamianie Claude Code jako stosu agentów GTM](/pl/insights/claude-code-vs-clay/) oraz [stos produkcyjny AI, z którego faktycznie korzystam](/pl/insights/ai-production-stack/). Zasada jest taka sama jak tutaj: model stanowi jedną warstwę, a otaczający go system to zadanie.
+Jeśli chcesz kontekstu operatora wokół tego tematu, pisałem już o [Claude Code jako stacku agentów GTM](/pl/insights/claude-code-vs-clay/) i o [stacku produkcyjnym AI, na którym realnie wydaję](/pl/insights/ai-production-stack/). Zasada ta sama co tutaj: model to jedna warstwa, system wokół niego to jest robota.
 
 <CTABand
-  heading="Publikuję wyniki testów."
-  subtext="Koszt na uruchomienie, gdzie wystąpił błąd, co się zmieniło w moim stosie. Zapisz się do AI Espresso, a otrzymasz te informacje jako pierwszy."
-  cta="Zapisz się do AI Espresso"
+  heading="Opublikuję wyniki testów."
+  subtext="Koszt przebiegu, gdzie się wyłożyło, co zmieniło się w moim stacku. Zapisz się na AI Espresso, a dostaniesz je pierwszy."
+  cta="Zapisz się na AI Espresso"
   ctaHref="https://subscribe.wojciech.io"
 />
