@@ -18,7 +18,7 @@ export default {
 };
 
 async function monitor(env) {
-  const healthy = await checkHealth();
+  const healthy = await checkHealth('https://wojciech.io');
   const target = await getDnsTarget(env);
 
   if (target === null) {
@@ -35,18 +35,27 @@ async function monitor(env) {
     }
     await updateDns(env, env.AZURE_SWA_HOSTNAME);
     console.log(`FAILOVER → Azure: ${env.AZURE_SWA_HOSTNAME}`);
-  } else if (healthy && !onPrimary) {
-    await updateDns(env, CF_PAGES_HOSTNAME);
-    console.log(`RESTORE → CF Pages: ${CF_PAGES_HOSTNAME}`);
+  } else if (!onPrimary) {
+    // After a failover the apex serves the backup, so apex health says
+    // nothing about the primary. Restore only when the primary origin
+    // itself responds — otherwise DNS flip-flops every cron tick while
+    // the primary is down.
+    const primaryHealthy = await checkHealth(`https://${CF_PAGES_HOSTNAME}`);
+    if (primaryHealthy) {
+      await updateDns(env, CF_PAGES_HOSTNAME);
+      console.log(`RESTORE → CF Pages: ${CF_PAGES_HOSTNAME}`);
+    } else {
+      console.log(`HOLD — serving backup, primary still unhealthy`);
+    }
   } else {
     console.log(`OK — healthy=${healthy}, target=${target}`);
   }
 }
 
-async function checkHealth() {
+async function checkHealth(url) {
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const resp = await fetch('https://wojciech.io', {
+      const resp = await fetch(url, {
         method: 'HEAD',
         redirect: 'follow',
         signal: AbortSignal.timeout(8_000),
