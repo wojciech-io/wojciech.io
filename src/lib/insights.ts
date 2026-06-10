@@ -17,6 +17,7 @@ export const insightLocaleLabels: Record<InsightLocale, {
   newsletterBody: string;
   readArticle: string;
   readTimeSuffix: string;
+  tldrTitle: string;
   subscribe: string;
   moreFromInsights: string;
   previous: string;
@@ -35,6 +36,7 @@ export const insightLocaleLabels: Record<InsightLocale, {
     newsletterBody: "When I publish a new article on AI systems, GTM architecture, or growth operating models, you'll be the first to know.",
     readArticle: 'Read article',
     readTimeSuffix: 'min read',
+    tldrTitle: 'TL;DR · Key insights',
     subscribe: 'Subscribe',
     moreFromInsights: 'More from insights',
     previous: 'Previous',
@@ -53,6 +55,7 @@ export const insightLocaleLabels: Record<InsightLocale, {
     newsletterBody: 'Wenn ein neuer Artikel zu AI-Systemen, GTM-Architektur oder Growth Operating Models erscheint, bekommst du ihn zuerst.',
     readArticle: 'Artikel lesen',
     readTimeSuffix: 'Min. Lesezeit',
+    tldrTitle: 'TL;DR · Wichtigste Erkenntnisse',
     subscribe: 'Abonnieren',
     moreFromInsights: 'Mehr aus den Insights',
     previous: 'Zurück',
@@ -71,6 +74,7 @@ export const insightLocaleLabels: Record<InsightLocale, {
     newsletterBody: 'Når jeg udgiver en ny artikel om AI-systemer, GTM-arkitektur eller growth operating models, får du den først.',
     readArticle: 'Læs artikel',
     readTimeSuffix: 'min læsning',
+    tldrTitle: 'TL;DR · Vigtigste pointer',
     subscribe: 'Abonnér',
     moreFromInsights: 'Mere fra insights',
     previous: 'Forrige',
@@ -89,6 +93,7 @@ export const insightLocaleLabels: Record<InsightLocale, {
     newsletterBody: 'Når jeg publiserer en ny artikkel om AI-systemer, GTM-arkitektur eller growth operating models, får du den først.',
     readArticle: 'Les artikkel',
     readTimeSuffix: 'min lesing',
+    tldrTitle: 'TL;DR · Viktigste poenger',
     subscribe: 'Abonner',
     moreFromInsights: 'Mer fra insights',
     previous: 'Forrige',
@@ -107,6 +112,7 @@ export const insightLocaleLabels: Record<InsightLocale, {
     newsletterBody: 'AI systems、GTM architecture、growth operating modelsに関する新しい記事を公開したら、最初にお知らせします。',
     readArticle: '記事を読む',
     readTimeSuffix: '分で読めます',
+    tldrTitle: 'TL;DR · 重要ポイント',
     subscribe: '購読する',
     moreFromInsights: '関連Insights',
     previous: '前の記事',
@@ -125,6 +131,7 @@ export const insightLocaleLabels: Record<InsightLocale, {
     newsletterBody: 'Quando pubblico un nuovo articolo su sistemi AI, architettura GTM o growth operating model, sarai il primo a saperlo.',
     readArticle: "Leggi l'articolo",
     readTimeSuffix: 'min di lettura',
+    tldrTitle: 'TL;DR · Punti chiave',
     subscribe: 'Iscriviti',
     moreFromInsights: 'Altri Insights',
     previous: 'Precedente',
@@ -143,6 +150,7 @@ export const insightLocaleLabels: Record<InsightLocale, {
     newsletterBody: 'Cuando publique un nuevo artículo sobre sistemas de IA, arquitectura GTM o modelos operativos de crecimiento, serás el primero en saberlo.',
     readArticle: 'Leer el artículo',
     readTimeSuffix: 'min de lectura',
+    tldrTitle: 'TL;DR · Ideas clave',
     subscribe: 'Suscribirse',
     moreFromInsights: 'Más Insights',
     previous: 'Anterior',
@@ -161,6 +169,7 @@ export const insightLocaleLabels: Record<InsightLocale, {
     newsletterBody: 'Kiedy opublikuję nowy artykuł na temat systemów AI, architektury GTM lub modeli operacyjnych wzrostu, dowiesz się o tym jako pierwszy.',
     readArticle: 'Przeczytaj artykuł',
     readTimeSuffix: 'min czytania',
+    tldrTitle: 'TL;DR · Najważniejsze wnioski',
     subscribe: 'Subskrybuj',
     moreFromInsights: 'Więcej informacji',
     previous: 'Poprzedni',

@@ -165,13 +165,24 @@ const schema = [
       { '@type': 'ListItem', position: 3, name: post.data.title, item: canonicalURL },
     ],
   },
+  ...(post.data.faq?.length
+    ? [{
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: post.data.faq.map(({ q, a }) => ({
+          '@type': 'Question',
+          name: q,
+          acceptedAnswer: { '@type': 'Answer', text: a },
+        })),
+      }]
+    : []),
 ];
 ---
 
 <Layout
   htmlLang={localeCopy.htmlLang}
   ogLocale={localeCopy.ogLocale}
-  title={post.data.title}
+  title={post.data.seoTitle ?? post.data.title}
   description={post.data.description}
   canonical={canonicalPath}
   ogImage={ogImage}
@@ -237,7 +248,7 @@ const schema = [
       </div>
     </header>
 
-    {post.data.tldr && post.data.tldr.length > 0 && <TLDR items={post.data.tldr} />}
+    {post.data.tldr && post.data.tldr.length > 0 && <TLDR items={post.data.tldr} title={labels.tldrTitle} />}
 
     <div class="prose-content">
       <Content components={mdxComponents} />

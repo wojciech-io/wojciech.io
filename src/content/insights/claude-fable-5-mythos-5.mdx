@@ -1,7 +1,9 @@
 ---
 title: "Claude Fable 5 found a live bug on my site on day one, so I made it compete with Opus and Sonnet"
-description: "Anthropic's new Claude Fable 5 costs twice as much as Opus 4.8. Instead of repeating launch benchmarks I let Fable 5, Opus and Sonnet each audit my own site's repo. Fable found a bug that would have broken my site during a real outage, Opus was cheaper per result, Sonnet missed it entirely. Full scores, costs and the fix, all public."
+seoTitle: "Claude Fable 5 vs Opus 4.6 vs Sonnet 4.6: my own benchmark"
+description: "I let Claude Fable 5, Opus 4.6 and Sonnet 4.6 each audit my own site's repo. Fable found a live failover bug, Opus was cheaper per result, Sonnet missed it. Scores, costs, fix: all public."
 publishedAt: "2026-06-09"
+updatedAt: "2026-06-10"
 tags:
   - AI
   - Claude
@@ -16,11 +18,24 @@ tldr:
   - "I let Fable 5, Opus 4.6 and Sonnet 4.6 each audit this site's repo, scored against six bugs I had verified by hand first. Fable found the most by far, including a live production bug in my DNS failover. Opus caught the same headline bug at half the cost. Sonnet missed it. The fix is a public commit, linked below."
   - "It costs 2x Opus 4.8: $10 in, $50 out per million tokens. Worth it only if it finishes a job in fewer steps. Cost per result, not cost per token."
   - "The catch nobody puts on the slide: a silent fallback means two models can answer in one session. If you run agent loops, log which one replied or your numbers lie."
+faq:
+  - q: "Is Claude Fable 5 the same model as Claude Mythos 5?"
+    a: "Yes. Anthropic confirms they share the same underlying model. Fable 5 is the general release that silently falls back to Opus 4.8 on flagged topics; Mythos 5 runs with some safeguards lifted and is restricted to vetted cyberdefense partners through Project Glasswing."
+  - q: "How much does Claude Fable 5 cost?"
+    a: "$10 per million input tokens and $50 per million output tokens, exactly twice Opus 4.8 ($5 and $25). It is free on Pro, Max, Team and seat-based Enterprise plans until June 22, 2026; usage billing starts June 23."
+  - q: "Is Claude Fable 5 better than Opus or Sonnet?"
+    a: "On my own benchmark, an audit of this site's repo scored against a hand-verified answer key, Fable 5 took 8.5 of 11 points against 4.5 for Opus 4.6 and 1 for Sonnet 4.6. On cost per found bug Opus 4.6 won, $0.28 against $0.30. Treat all of it as input for your own eval, not a verdict."
+  - q: "Why did Opus 4.8 answer my Fable 5 request?"
+    a: "Fable 5 does not refuse flagged topics, it silently answers with Opus 4.8 instead. Anthropic says this happens in under 5% of sessions. If you run agent loops or evals, log which model replied, otherwise your numbers mix two models."
 ---
 
 Anthropic shipped two frontier models today, June 9, 2026: [Claude Fable 5 and Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). One is for everyone. One is locked behind a trusted access program. Underneath, they are the same model.
 
 The launch post is wall to wall benchmarks. I am not going to recap them. I run a business on Claude, not a leaderboard, and the only question I care about is what a stronger model does to the systems I already operate. This site in eight languages. The content pipeline. The agent loops that touch a CRM. Here is that answer, on my own work, with the receipts you can clone and run.
+
+<Callout type="note" title="What this test proves, and what it does not">
+  **It proves:** on one real repo, with a hand-verified answer key, the three models found very different things at very different costs, and the gaps were big enough to change what I pay for. **It does not prove:** which model is better for you. This is n=1, one repo, one task type, my own scoring. Strong operator evidence, not a universal leaderboard. Run your own.
+</Callout>
 
 <KeyTakeaway
   icon="info"
@@ -129,7 +144,7 @@ for (const test of TESTS) {
 
 ## The first receipt: Fable 5 found a live bug in my failover
 
-The comparison table is still running. Setting it up already paid for itself, because a fair test needs an answer key.
+The full three-model numbers are two sections down. Setting them up already paid for itself, because a fair test needs an answer key.
 
 To score models on an audit of this repo I first had to know what is actually wrong with it. So on day one I put Fable 5 on the infrastructure behind this site: the failover worker, the GitHub Actions escape hatch, the Terraform. It came back with six findings I could verify line by line in the code. One of them was a production incident waiting for a date.
 
@@ -215,6 +230,26 @@ The runs landed the same afternoon. Three headless audits in that sterile harnes
 The verdict is less tidy than a leaderboard. Fable 5 found the most and was the only model to sweep the whole failover layer: the flip-flop, the two contradictory definitions of healthy, the hostname drift. Opus 4.6 nailed the headline bug just as precisely at half the total cost, and on cost per point it actually wins, but it went blind on the operational details around it. Sonnet 4.6 never saw the flip-flop at all, and still earned its run: it surfaced the single most actionable finding outside my answer key, a subscribe endpoint that silently falls back to a legacy Vercel app nothing maintains anymore.
 
 One more honest line the leaderboards never print. All three models flagged a finding my answer key had explicitly marked as a false positive: I believed my locale list was centralized in one file. They said it is declared independently in five places. I checked. They were right and my answer key was wrong. The benchmark audited the examiner.
+
+<Callout type="note" title="The artifacts, so you can rerun this">
+  Models: `claude-fable-5`, `claude-opus-4-6`, `claude-sonnet-4-6`, one headless `claude -p` run each. Base: [commit 612c367](https://github.com/wojciech-io/wojciech.io/commit/612c367) of this repo, three identical clones. Harness: empty MCP config, no plugins, no memory, read-only tools plus one file write. Prompt: audit the architecture, name the top five risks with files and mechanisms, write the report. Answer key: six findings I verified in the code first, weighted by severity to 11 points; naming the file without the mechanism scores nothing. The raw audit outputs stay unpublished for now: they map real, partly unfixed surface of a live site. Once the remaining fixes land, they go up too.
+</Callout>
+
+Which model when, in one table:
+
+<DataTable
+  columns={[
+    { key: "kiedy", label: "Situation" },
+    { key: "model", label: "My pick" },
+    { key: "czemu", label: "Why" }
+  ]}
+  rows={[
+    { kiedy: "Auditing a system the business depends on", model: "Fable 5", czemu: "The only model to sweep the whole failover layer; against a production outage the 2x price difference is noise" },
+    { kiedy: "Daily agent work where budget matters", model: "Opus 4.6", czemu: "Found the same headline bug at half the cost; cheapest per point at $0.28" },
+    { kiedy: "A fast, cheap pass over concrete code issues", model: "Sonnet 4.6", czemu: "Missed the scariest bug, but brought the single most actionable finding outside my answer key" }
+  ]}
+  caption="My split after one benchmark run. Your repo may vote differently, which is exactly why you should run your own."
+/>
 
 ## Where Fable 5 actually earns its price for me
 

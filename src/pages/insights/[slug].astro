@@ -172,12 +172,23 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 3, name: post.data.title, item: canonicalURL },
   ],
 };
-const insightsSchema = [articleSchema, breadcrumbSchema];
+const faqSchema = post.data.faq?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: post.data.faq.map(({ q, a }) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: a },
+      })),
+    }
+  : null;
+const insightsSchema = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [])];
 
 ---
 
 <Layout
-  title={post.data.title}
+  title={post.data.seoTitle ?? post.data.title}
   description={post.data.description}
   canonical={canonicalPath}
   ogImage={ogImage}

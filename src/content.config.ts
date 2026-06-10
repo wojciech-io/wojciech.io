@@ -6,9 +6,13 @@ const insights = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/insights' }),
   schema: z.object({
     title: z.string(),
+    // Short variant for the <title> tag and og:title; the long human title stays the H1.
+    seoTitle: z.string().optional(),
     description: z.string(),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
+    // Q&A pairs emitted as FAQPage JSON-LD; keep in sync with the visible FAQ section.
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
     tags: z.array(z.string()).default([]),
     tldr: z.array(z.string()).optional(),
     featured: z.boolean().default(false),
