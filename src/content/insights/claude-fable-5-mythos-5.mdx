@@ -127,6 +127,32 @@ for (const test of TESTS) {
   The harness, the tasks and the scoring are real and runnable today. The model-vs-model numbers are not in yet: Fable 5 is new and I run these from June 10. When the runs land, the Fable 5 column drops in right here, next to Opus 4.8, with cost per result, latency and pass rate. No borrowed benchmarks, only my own.
 </Callout>
 
+## The first receipt: Fable 5 found a live bug in my failover
+
+The comparison table is still running. Setting it up already paid for itself, because a fair test needs an answer key.
+
+To score models on an audit of this repo I first had to know what is actually wrong with it. So on day one I put Fable 5 on the infrastructure behind this site: the failover worker, the GitHub Actions escape hatch, the Terraform. It came back with six findings I could verify line by line in the code. One of them was a production incident waiting for a date.
+
+The monitor that guards this site checks the health of `wojciech.io`, the live domain. After a failover that domain points at the backup. So during any real outage the monitor would see a healthy backup, decide the outage was over, and flip DNS back to the broken primary. Five minutes later: failover again. For the whole length of the outage, my site would have see-sawed between working and broken on a five-minute clock.
+
+<Diagram caption="The loop my failover monitor would have run during a real outage">
+  <Box label="Primary down" />
+  <Arrow label="monitor" />
+  <Box label="Failover to backup" variant="accent" />
+  <Arrow label="next tick" />
+  <Box label="Apex looks healthy" sub="it is serving the backup" />
+  <Arrow label="restore" dashed />
+  <Box label="Broken primary again" variant="muted" />
+</Diagram>
+
+The fix shipped the same day: the monitor now checks the primary origin directly before restoring DNS, and holds on the backup otherwise. The commit is in the public repo behind this page. That is the division of labour from the pricing-block story again, on infrastructure this time: the model read the system and named the mechanism, I checked every line before it landed.
+
+<Callout type="warning" title="Three benchmark runs went in the bin first">
+  My daily Claude Code setup carries about 90 plugin and MCP integrations. Inside that environment the audit sessions kept drifting into a Spotify ads workflow one plugin injected, instead of auditing anything. I binned those runs and rebuilt the test sterile: zero plugins, zero memory, fresh clones of one commit, headless runs, identical prompt. If your agent benchmark runs inside your daily setup, you are benchmarking your plugins too.
+</Callout>
+
+The three-way table, Fable 5 against Opus 4.6 and Sonnet 4.6 on this exact audit with the verified bugs as the answer key, runs in that sterile harness today. The numbers drop in right here when they land: cost per found bug, not cost per token.
+
 ## Where Fable 5 actually earns its price for me
 
 Not "smarter." One thing: it holds the thread.

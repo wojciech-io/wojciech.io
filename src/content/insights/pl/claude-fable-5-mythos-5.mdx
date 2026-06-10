@@ -128,6 +128,32 @@ for (const test of TESTS) {
   Harness, zadania i punktacja są prawdziwe i odpalisz je już dziś. Liczb model kontra model jeszcze nie ma: Fable 5 jest nowy, a ja puszczam te testy od 10 czerwca. Gdy przebiegi się skończą, kolumna Fable 5 wskoczy dokładnie tutaj, obok Opus 4.8, z kosztem wyniku, latencją i pass rate. Żadnych pożyczonych benchmarków, tylko moje własne.
 </Callout>
 
+## Pierwszy paragon: Fable 5 znalazł żywego buga w moim failoverze
+
+Tabela porównawcza wciąż się liczy. Samo jej przygotowanie już się zwróciło, bo uczciwy test potrzebuje klucza odpowiedzi.
+
+Żeby punktować modele za audyt tego repo, najpierw musiałem wiedzieć, co w nim naprawdę jest nie tak. Więc pierwszego dnia posadziłem Fable 5 nad infrastrukturą tej strony: worker failovera, ręczna zapadnia w GitHub Actions, Terraform. Wrócił z sześcioma znaleziskami, które zweryfikowałem w kodzie linia po linii. Jedno z nich to awaria produkcyjna czekająca na swój termin.
+
+Monitor, który pilnuje tej strony, sprawdza zdrowie `wojciech.io`, czyli żywej domeny. Po failoverze ta domena wskazuje na backup. Podczas prawdziwej awarii monitor widziałby więc zdrowy backup, uznałby, że awaria minęła, i przepiąłby DNS z powrotem na zepsuty primary. Pięć minut później: znowu failover. Przez całą awarię moja strona huśtałaby się między działającą a zepsutą w rytmie pięciu minut.
+
+<Diagram caption="Pętla, którą mój monitor failovera odpaliłby podczas prawdziwej awarii">
+  <Box label="Primary leży" />
+  <Arrow label="monitor" />
+  <Box label="Failover na backup" variant="accent" />
+  <Arrow label="następny tick" />
+  <Box label="Apex wygląda zdrowo" sub="bo serwuje backup" />
+  <Arrow label="restore" dashed />
+  <Box label="Znowu zepsuty primary" variant="muted" />
+</Diagram>
+
+Poprawka weszła tego samego dnia: monitor sprawdza teraz bezpośrednio origin primary, zanim przywróci DNS, a w innym wypadku zostaje na backupie. Commit jest w publicznym repo za tą stroną. To ten sam podział pracy co w historii z blokiem cenowym, tym razem na infrastrukturze: model przeczytał system i nazwał mechanizm, ja sprawdziłem każdą linię, zanim weszło.
+
+<Callout type="warning" title="Trzy przebiegi benchmarku najpierw poszły do kosza">
+  Mój codzienny Claude Code dźwiga około 90 integracji pluginów i MCP. W tym środowisku sesje audytu zamiast audytować, raz za razem zjeżdżały w workflow reklam Spotify, który wstrzykiwał jeden z pluginów. Wyrzuciłem te przebiegi i przebudowałem test na sterylnie: zero pluginów, zero pamięci, świeże klony jednego commita, przebiegi headless, identyczny prompt. Jeśli twój benchmark agentów chodzi w twoim codziennym setupie, benchmarkujesz też swoje pluginy.
+</Callout>
+
+Tabela trzech modeli, Fable 5 kontra Opus 4.6 i Sonnet 4.6 na dokładnie tym audycie, ze zweryfikowanymi bugami jako kluczem odpowiedzi, leci dziś w tym sterylnym harnessie. Liczby wskoczą dokładnie tutaj, gdy spłyną: koszt znalezionego buga, nie koszt tokena.
+
 ## Gdzie Fable 5 naprawdę zarabia u mnie na swoją cenę
 
 Nie „mądrzejszy". Jedna rzecz: trzyma wątek.
