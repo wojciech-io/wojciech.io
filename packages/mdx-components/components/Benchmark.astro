@@ -44,6 +44,10 @@ const delta       = lowerIsBetter
   ? ((baseline - yours) / baseline * 100).toFixed(0)
   : ((yours - baseline) / baseline * 100).toFixed(0);
 const deltaSign   = Number(delta) > 0 ? '+' : '';
+// Accent is reserved for a better result. A worse result (e.g. a higher
+// price with lowerIsBetter) must not render in the positive colour.
+const yoursValueCls = yoursAhead ? 'text-[var(--color-accent)]' : 'text-red-400';
+const yoursBarCls   = yoursAhead ? 'bg-[var(--color-accent)]' : 'bg-red-400/80';
 ---
 
 <figure class="my-8 not-prose rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-hidden">
@@ -65,11 +69,11 @@ const deltaSign   = Number(delta) > 0 ? '+' : '';
     <div>
       <div class="flex items-center justify-between mb-1.5">
         <span class="text-xs font-medium text-[var(--color-text)]">{yoursLabel}</span>
-        <span class="text-xs font-bold tabular-nums text-[var(--color-accent)]">{yours}{unit}</span>
+        <span class:list={['text-xs font-bold tabular-nums', yoursValueCls]}>{yours}{unit}</span>
       </div>
       <div class="h-2.5 rounded-full bg-[var(--color-surface)] overflow-hidden">
         <div
-          class="h-full rounded-full bg-[var(--color-accent)] transition-all"
+          class:list={['h-full rounded-full transition-all', yoursBarCls]}
           style={`width: ${yoursWidth}%`}
           role="presentation"
         />
