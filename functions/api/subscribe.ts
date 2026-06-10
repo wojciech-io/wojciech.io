@@ -1,9 +1,14 @@
-const DEFAULT_SUBSCRIBE_API_URL = 'https://subscribe-wojciech.vercel.app/api/subscribe';
+// The maintained double-opt-in app (apps/subscribe, KV + Resend). The previous
+// default pointed at a legacy Vercel deployment nothing maintains anymore.
+const DEFAULT_SUBSCRIBE_API_URL = 'https://subscribe.wojciech.io/api/subscribe';
+
+import { rateLimit, clientIp } from '../_utils/ratelimit';
 
 interface PagesFunctionContext {
   request: Request;
   env: {
     SUBSCRIBE_API_URL?: string;
+    RATE_LIMIT?: KVNamespace;
   };
 }
 
@@ -25,6 +30,11 @@ function json(data: unknown, init: ResponseInit = {}) {
 }
 
 export async function onRequestPost({ request, env }: PagesFunctionContext) {
+  // Anti-abuse: 5 signups / 10 min / IP, mirroring the downstream app's limit
+  // so abusive traffic stops here instead of consuming the proxy hop.
+  const rl = await rateLimit(env.RATE_LIMIT, `subscribe:${clientIp(request)}`, 5, 600);
+  if (!rl.ok) return rl.response!;
+
   let payload: SubscribePayload;
 
   try {
@@ -46,7 +56,12 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
 async function proxySubscribe(subscribeApiUrl: string, payload: Required<SubscribePayload>) {
   const response = await fetch(subscribeApiUrl, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: {
+      'content-type': 'application/json',
+      // Workers fetch sends no User-Agent; the zone-level scanner guard 403s
+      // curl-style or empty agents, so identify as a regular client.
+      'user-agent': 'Mozilla/5.0 (compatible; wojciech.io-subscribe-proxy)',
+    },
     body: JSON.stringify({
       email: payload.email,
       newsletter: true,
