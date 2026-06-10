@@ -1,6 +1,6 @@
 ---
-title: "Claude Fable 5 costs 2x Opus 4.8, and the only benchmark that counts is your own work"
-description: "Anthropic shipped Fable 5 today: its most powerful public model, at twice the price of Opus 4.8. I do not run a leaderboard, I run a business on Claude. Here is what it changes, on my own work, with receipts you can clone."
+title: "I benchmarked Claude Fable 5 vs Opus 4.6 vs Sonnet 4.6 on my own repo: 8.5 to 4.5 to 1, and Fable found a live bug on day one"
+description: "Anthropic shipped Claude Fable 5 and Mythos 5 at twice the price of Opus 4.8. I did not repeat the launch benchmarks: I ran Fable 5, Opus 4.6 and Sonnet 4.6 head to head on an audit of this site's own repo. Fable 5 scored 8.5 of 11, found a live production bug in my DNS failover, and the fix is a public commit you can read."
 publishedAt: "2026-06-09"
 tags:
   - AI
@@ -13,7 +13,7 @@ draft: false
 locale: "en"
 tldr:
   - "Fable 5 and Mythos 5 are the same model. The safeguards are the only difference: Fable quietly falls back to Opus 4.8 on flagged topics, Mythos runs with some lifted for vetted partners."
-  - "Here is the kind of work I judge it on: today I shipped a pricing block in 8 languages in one session, the build passing, on main. The machine did the volume, I caught the 4 places it broke. That split is the whole story."
+  - "I ran Claude Fable 5, Opus 4.6 and Sonnet 4.6 head to head on an audit of this repo, scored against an answer key I verified by hand first: 8.5 to 4.5 to 1 out of 11. Fable 5 found a live production bug in my DNS failover. The fix is a public commit, linked below."
   - "It costs 2x Opus 4.8: $10 in, $50 out per million tokens. Worth it only if it finishes a job in fewer steps. Cost per result, not cost per token."
   - "The catch nobody puts on the slide: a silent fallback means two models can answer in one session. If you run agent loops, log which one replied or your numbers lie."
 ---
@@ -28,7 +28,7 @@ The launch post is wall to wall benchmarks. I am not going to recap them. I run 
   body="Fable 5 and Mythos 5 share one brain. The safeguards are the product. Fable is the safe general-use build that falls back to Opus 4.8 on flagged topics. Mythos is the same model with some safeguards lifted, handed only to vetted cyberdefense and biology partners."
 />
 
-## Two models, one brain
+## Fable 5 and Mythos 5: two models, one brain
 
 The naming is the tell. Anthropic says fable comes from the Latin *fabula*, "that which is told," close to the Greek *mythos*. Same root, two masks. The difference is not capability. It is what the model is allowed to do.
 
@@ -90,7 +90,7 @@ The pricing comparison further down this page: here is how it got made, today, i
 
 That line is exactly what a frontier model is supposed to move. Not "better prose." Fewer rounds between the volume and the judgment.
 
-## The three surfaces it has to survive
+## The three surfaces Claude Fable 5 has to survive: chat, agents, code
 
 Same model, three very different jobs. Fast judgment in a chat window. A long multi-step run in a cowork agent. Code in this repo. The failure mode is different in each, and a frontier model is only worth the price if it holds up across all three.
 
@@ -145,13 +145,33 @@ The monitor that guards this site checks the health of `wojciech.io`, the live d
   <Box label="Broken primary again" variant="muted" />
 </Diagram>
 
-The fix shipped the same day: the monitor now checks the primary origin directly before restoring DNS, and holds on the backup otherwise. The commit is in the public repo behind this page. That is the division of labour from the pricing-block story again, on infrastructure this time: the model read the system and named the mechanism, I checked every line before it landed.
+The fix shipped the same day: the monitor now checks the primary origin directly before restoring DNS, and holds on the backup otherwise. This is the heart of it, from [commit e734c2f in the public repo](https://github.com/wojciech-io/wojciech.io/commit/e734c2f0585771000ab080649db2558f95788c4c), so you can read every line instead of taking my word:
+
+```diff
+-  } else if (healthy && !onPrimary) {
+-    await updateDns(env, CF_PAGES_HOSTNAME);
+-    console.log(`RESTORE -> CF Pages: ${CF_PAGES_HOSTNAME}`);
++  } else if (!onPrimary) {
++    // After a failover the apex serves the backup, so apex health says
++    // nothing about the primary. Restore only when the primary origin
++    // itself responds, otherwise DNS flip-flops every cron tick while
++    // the primary is down.
++    const primaryHealthy = await checkHealth(`https://${CF_PAGES_HOSTNAME}`);
++    if (primaryHealthy) {
++      await updateDns(env, CF_PAGES_HOSTNAME);
++      console.log(`RESTORE -> CF Pages: ${CF_PAGES_HOSTNAME}`);
++    } else {
++      console.log(`HOLD: serving backup, primary still unhealthy`);
++    }
+```
+
+That is the division of labour from the pricing-block story again, on infrastructure this time: Fable 5 read the system and named the mechanism, I checked every line before it landed.
 
 <Callout type="note" title="Three benchmark runs went in the bin first">
   My daily Claude Code setup carries about 90 plugin and MCP integrations. Inside that environment the audit sessions kept drifting into a Spotify ads workflow one plugin injected, instead of auditing anything. I binned those runs and rebuilt the test sterile: zero plugins, zero memory, fresh clones of one commit, headless runs, identical prompt. If your agent benchmark runs inside your daily setup, you are benchmarking your plugins too.
 </Callout>
 
-## Three models, one answer key, the numbers
+## Fable 5 vs Opus 4.6 vs Sonnet 4.6: one answer key, the numbers
 
 The runs landed the same afternoon. Three headless audits in that sterile harness: identical clones of one commit, identical prompt, identical read-only tool limits, one run each for Fable 5, Opus 4.6 and Sonnet 4.6. The answer key was six bugs I had verified in the code by hand before any model started, weighted by severity, eleven points total. A point requires naming the mechanism, not just the file.
 
@@ -216,7 +236,7 @@ Fable's headline claim is exactly this failure mode: hold context across million
 
 If that holds on my work, the win is not nicer output. It is one pass instead of three. That changes cost per result, which is the only number on the whole launch that touches my P&L.
 
-## The price is the catch
+## Fable 5 pricing: 2x Opus 4.8, and the catch
 
 When usage billing starts on June 23, Fable 5 and Mythos 5 both list at $10 per million input tokens and $50 per million output tokens. That is exactly double Opus 4.8, which sits at $5 and $25. These are published list prices, not my estimates.
 
@@ -243,7 +263,7 @@ When usage billing starts on June 23, Fable 5 and Mythos 5 both list at $10 per 
 
 The number that decides whether this is worth 2x is not on any price page: cost per finished result. A model that costs twice as much per token but finishes a long agentic run in half the steps can land cheaper per result. That is the only comparison that matters, and it is exactly what the harness above is built to measure.
 
-## What the first 48 hours produced
+## What the first 48 hours of Fable 5 produced
 
 The launch was yesterday and the useful material is already piling up. This is the short list I actually opened, watched or read to the end, not a link dump.
 
@@ -287,6 +307,24 @@ Fable 5 is free on Pro, Max, Team and seat-based Enterprise until June 22, then 
 />
 
 I will put the results up here as a follow-up: cost per result on the localization pipeline and the enrichment loop, Fable against Opus, including where it falls short. If you are testing too, tell me what broke. That is the part no launch post will give you.
+
+## FAQ: Claude Fable 5 and Mythos 5
+
+### Is Claude Fable 5 the same model as Claude Mythos 5?
+
+Yes. Anthropic confirms they share the same underlying model. The difference is the safeguards: Fable 5 is the general-release build that silently falls back to Opus 4.8 on flagged topics, Mythos 5 runs with some safeguards lifted and is restricted to vetted cyberdefense partners through Project Glasswing.
+
+### How much does Claude Fable 5 cost?
+
+$10 per million input tokens and $50 per million output tokens, exactly twice Opus 4.8 ($5 and $25). It is free on Pro, Max, Team and seat-based Enterprise plans until June 22, 2026; usage billing starts June 23.
+
+### Is Claude Fable 5 better than Opus or Sonnet?
+
+On my own benchmark, an audit of this site's repo scored against a hand-verified answer key, Fable 5 took 8.5 of 11 points against 4.5 for Opus 4.6 and 1 for Sonnet 4.6, and it was the only model to sweep the whole failover layer. On cost per found bug, Opus 4.6 actually won, $0.28 against $0.30. Anthropic's own headline number is SWE-Bench Pro: 80.3% for Fable 5 against 69.2% for Opus 4.8. Treat all of it as input for your own eval, not a verdict.
+
+### Why did Opus 4.8 answer my Fable 5 request?
+
+Fable 5 does not refuse flagged topics, it silently answers with Opus 4.8 instead. Anthropic says this happens in under 5% of sessions. If you run agent loops or evals, log which model replied, otherwise your numbers mix two models.
 
 ## Sources and further reading
 
