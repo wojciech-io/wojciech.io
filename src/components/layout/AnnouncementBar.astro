@@ -9,9 +9,10 @@ const SLUG = 'claude-fable-5-mythos-5';
 const pathname = Astro.url.pathname;
 const locale = getLocaleFromPath(pathname); // 'en' | 'pl' | 'it' | 'de' | 'dk' | 'no' | 'jp' | 'es'
 
-const href = locale === 'en'
-  ? `/insights/${SLUG}/`
-  : `/${locale}/insights/${SLUG}/`;
+// The article is published in EN + PL only; other locales link to the EN original.
+const href = locale === 'pl'
+  ? `/pl/insights/${SLUG}/`
+  : `/insights/${SLUG}/`;
 
 type Copy = { tag: string; text: string; cta: string };
 const COPY: Record<string, Copy> = {
