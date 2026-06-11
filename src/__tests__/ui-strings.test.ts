@@ -96,9 +96,10 @@ describe('getUiStringsForPath', () => {
 });
 
 describe('getPrimaryNavLinks', () => {
-  it('returns seven links with localized labels and locale-prefixed hrefs', () => {
+  it('returns six links with localized labels and locale-prefixed hrefs', () => {
     const plLinks = getPrimaryNavLinks('/pl/');
-    expect(plLinks).toHaveLength(7);
+    // Stack moved to the footer in the IA consolidation; primary nav is six items.
+    expect(plLinks).toHaveLength(6);
     const labels = plLinks.map((l) => l.label);
     expect(labels).toContain('Praca');
     expect(labels).toContain('Kontakt');
@@ -107,9 +108,9 @@ describe('getPrimaryNavLinks', () => {
     expect(hrefs).toContain('/pl/work/');
     expect(hrefs).toContain('/pl/contact/');
     expect(hrefs).toContain('/pl/about/');
-    // /resources/ and /stack/ stay canonical (EN-only):
+    // /resources/ stays canonical (EN-only); /stack/ is no longer in primary nav.
     expect(hrefs).toContain('/resources/');
-    expect(hrefs).toContain('/stack/');
+    expect(hrefs).not.toContain('/stack/');
   });
 
   it('keeps EN paths canonical on the root path', () => {
