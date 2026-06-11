@@ -60,6 +60,18 @@ Wpis premierowy to benchmark na benchmarku. Nie zamierzam ich streszczać. Na Cl
 
 Nazwa zdradza wszystko. Anthropic tłumaczy, że fable pochodzi od łacińskiego *fabula*, „to, co opowiedziane", blisko greckiego *mythos*. Ten sam rdzeń, dwie maski. Różnica nie leży w możliwościach. Leży w tym, co modelowi wolno.
 
+<figure>
+  <img
+    src="/images/insights/claude-fable-5-anthropic-five.webp"
+    alt="Premierowa grafika Anthropic dla generacji Claude 5: cyfra pięć ułożona z ilustracji motyli i ciem w stylu vintage na kremowym tle"
+    width="1600"
+    height="900"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>Oficjalna grafika premierowa: piątka ułożona z motyli. Piąta generacja, metamorfoza, sam rozumiesz. Grafika: Anthropic.</figcaption>
+</figure>
+
 **Claude Fable 5** jest od dziś w API i w każdym planie. Zabezpieczenia włączone. Gdy żądanie trafi w oznaczony temat, model nie odmawia, tylko po cichu odpowiada jako Opus 4.8. Według Anthropic dzieje się tak w mniej niż 5% sesji.
 
 **Claude Mythos 5** to ten sam model pod spodem, część zabezpieczeń zdjęta. Dostęp tylko dla zweryfikowanych zespołów cyberobrony przez Project Glasswing, program biologiczny ma dojść później. Anthropic nazywa go najmocniejszym modelem cyber, jaki zbudował.
@@ -75,6 +87,18 @@ Nazwa zdradza wszystko. Anthropic tłumaczy, że fable pochodzi od łacińskiego
 </Diagram>
 
 To jedyny detal tej premiery, który dotyka każdego, kto buduje na API. Cichy fallback to lepszy UX niż twarda odmowa. Oznacza też, że w jednej sesji mogą odpowiadać dwa różne modele. Jeśli puszczasz evale albo pętle agentowe, musisz logować, który odpowiedział, inaczej twoje liczby po cichu mieszają dwa modele.
+
+<figure>
+  <img
+    src="/images/insights/claude-fable-5-anthropic-benchmarks.webp"
+    alt="Oficjalna tabela benchmarków Anthropic porównująca Claude Mythos 5 i Fable 5 z Claude Opus 4.8, GPT 5.5 i Gemini 3.1 Pro w kodowaniu agentowym, pracy z wiedzą, użyciu narzędzi, prawie, biologii i cyberbezpieczeństwie"
+    width="1400"
+    height="1545"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>Premierowa tabela Anthropic: 80,3% na SWE-Bench Pro, 78% na ExploitBench, prowadzenie w prawie każdym wierszu. Liczby vendora na benchmarkach vendora. Moje, na moim własnym repo, znajdziesz niżej. Wykres: Anthropic.</figcaption>
+</figure>
 
 ## Co już dziś działa tu na Claude
 
@@ -116,19 +140,15 @@ Dokładnie tę granicę ma przesuwać model frontier. Nie „ładniejszą prozę
 
 Ten sam model, trzy zupełnie różne roboty. Szybki osąd w oknie czatu. Długi, wielokrokowy przebieg w agencie cowork. Kod w tym repo. Na każdym froncie psuje się inaczej, a model frontier jest wart swojej ceny tylko wtedy, gdy trzyma się na wszystkich trzech.
 
-<DataTable
-  columns={[
-    { key: "surface", label: "Front" },
-    { key: "task", label: "Prawdziwe zadanie z mojego stacku" },
-    { key: "stress", label: "Co testuje" },
-    { key: "score", label: "Jak to oceniam" }
+<ToolCard
+  cols={3}
+  title="Jedno prawdziwe zadanie na front"
+  caption="Ten sam model musi być dobry w trzech różnych robotach, a każda psuje się inaczej."
+  items={[
+    { icon: "chat", name: "Czat", description: "Oceń inbounda względem mojego ICP i napisz dwulinijkowy opener. Testuje osąd i zwięzłość w jednej turze.", meta: "Zalicza: opener, którego naprawdę bym wysłał" },
+    { icon: "cowork", name: "Cowork", description: "Weź pięć URL-i z LinkedIna, wzbogać każdy, przygotuj spersonalizowaną sekwencję, zapisz do CRM-u. Testuje długą robotę agentową bez dryfu przez wiele kroków.", meta: "Zalicza: zero zmyślonych pól, poprawne wiersze w CRM" },
+    { icon: "code", name: "Claude Code", description: "Zrefaktoruj kolekcję treści w całym repo i utrzymaj zielony build. Testuje kontekst wielu plików trzymany do końca, nie tylko przy pierwszej edycji.", meta: "Zalicza: testy zielone, build czysty" }
   ]}
-  rows={[
-    { surface: "Czat", task: "Oceń tego inbounda względem mojego ICP i napisz dwulinijkowy opener", stress: "Osąd i zwięzłość w jednej turze", score: "Trafna ocena ICP plus opener, którego naprawdę bym wysłał" },
-    { surface: "Cowork", task: "Weź pięć URL-i z LinkedIna, wzbogać każdy, przygotuj spersonalizowaną sekwencję, zapisz do CRM-u", stress: "Długa robota agentowa, użycie narzędzi, zero dryfu przez wiele kroków", score: "Pełny przebieg, zero zmyślonych pól, poprawne wiersze w CRM" },
-    { surface: "Kod", task: "Zrefaktoruj kolekcję treści w całym repo i utrzymaj zielony build", stress: "Kontekst wielu plików trzymany do końca, nie tylko przy pierwszej edycji", score: "Testy przechodzą, build czysty, zero osieroconych referencji" }
-  ]}
-  caption="Jedno prawdziwe zadanie na front. Ten sam model musi być dobry w trzech różnych robotach, a każda psuje się inaczej."
 />
 
 Front kodu mogę pokazać już dziś, bo działa tutaj, a nie za embargiem. Żeby uczciwie porównać modele, kazałem Claude'owi zbudować mały harness: ten sam prompt, każdy model, realna latencja, tokeny i koszt. To jego rdzeń i naprawdę się uruchamia:
@@ -197,6 +217,13 @@ To ten sam podział pracy co w historii z blokiem cenowym, tym razem na infrastr
 
 Przebiegi poszły w tym sterylnym harnessie: identyczne klony jednego commita, identyczny prompt, identyczne limity narzędzi tylko do odczytu, po jednym przebiegu dla Fable 5, Opus 4.8 i Sonnet 4.6. Kluczem odpowiedzi było sześć bugów, które zweryfikowałem w kodzie ręcznie, zanim jakikolwiek model wystartował, ważonych po severity, jedenaście punktów łącznie. Punkt wymaga nazwania mechanizmu, nie samego pliku.
 
+<Screenshot
+  src="/images/insights/claude-fable-5-arena-prompt.webp"
+  alt="Setup benchmarku: komenda claude -p z przyciętą listą narzędzi i pełny prompt audytu R1, który każdy model dostał słowo w słowo"
+  url="~/claude-arena"
+  caption="Prawdziwy przebieg, nie jego opis. Jeden prompt, identyczne klony commita 612c367, zero MCP, zero pluginów, zero pamięci. Każdy model dostał dokładnie to."
+/>
+
 <DataTable
   columns={[
     { key: "finding", label: "Zweryfikowane znalezisko (waga)" },
@@ -264,7 +291,30 @@ Tabela wyników liczy tylko to, co było w moim kluczu. Ale każdy model przyni�
 
 ### Jak się czytają raporty, nie tylko co znalazły
 
-Liczby nie mówią, jak to jest czytać dwutysięczny raport o 23:00 i decydować, czy puszczać fixa. Każdy raport oceniłem na czterech osiach, 1 do 5.
+Liczby nie mówią, jak to jest czytać dwutysięczny raport o 23:00 i decydować, czy puszczać fixa. Oto pierwsze linie każdego raportu, dokładnie tak, jak modele je napisały, z rachunkiem obok.
+
+<Screenshot
+  src="/images/insights/claude-fable-5-report-fable.webp"
+  alt="Początek raportu Fable 5: zaczyna od Workera failovera odpytującego hostname, który sam przepisuje, podaje dokładne pliki i linie, severity High, wynik 8.5 na 11 za 2,57 dolara"
+  url="results/fable5-AUDIT.md"
+  caption="Fable 5 zaczyna od najgroźniejszego buga i cytuje dokładne linie. Jedyny model, który zgarnął całą warstwę failovera."
+/>
+
+<Screenshot
+  src="/images/insights/claude-fable-5-report-opus.webp"
+  alt="Początek raportu Opus 4.8: ten sam flip-flop failovera znaleziony, zdrowie mierzone względem żywego celu DNS zamiast originu primary, wynik 8.0 na 11 za 0,86 dolara"
+  url="results/opus48-AUDIT.md"
+  caption="Opus 4.8 łapie ten sam flip-flop w połowie czasu i za jedną trzecią ceny. To jest raport, przy którym warto się zatrzymać."
+/>
+
+<Screenshot
+  src="/images/insights/claude-fable-5-report-sonnet.webp"
+  alt="Początek raportu Sonnet 4.6: Risk 1 to rozjazd CSP blokujący PostHoga, flip-flop failovera w ogóle nie występuje, wynik 1 na 11 za 0,76 dolara"
+  url="results/sonnet46-AUDIT.md"
+  caption="Sonnet 4.6, ten sam prompt. Spójrz, czym Risk 1 nie jest: flip-flop nie pojawia się w raporcie ani razu. To 1 na 11 widać na tym jednym ekranie."
+/>
+
+Czytanie ich obok siebie to najszybszy sposób, żeby poczuć różnicę. Poza pierwszym wrażeniem oceniłem każdy raport na czterech osiach, 1 do 5.
 
 <DataTable
   columns={[
