@@ -59,6 +59,18 @@ The launch post is wall to wall benchmarks. I am not going to recap them. I run 
 
 The naming is the tell. Anthropic says fable comes from the Latin *fabula*, "that which is told," close to the Greek *mythos*. Same root, two masks. The difference is not capability. It is what the model is allowed to do.
 
+<figure>
+  <img
+    src="/images/insights/claude-fable-5-anthropic-five.webp"
+    alt="Anthropic's launch art for the Claude 5 generation: the number five composed of vintage butterfly and moth illustrations on a cream background"
+    width="1600"
+    height="900"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>The official launch art: a five made of butterflies. Fifth generation, metamorphosis, you get it. Image: Anthropic.</figcaption>
+</figure>
+
 **Claude Fable 5** is on the API and every plan today. Safeguards on. When a request hits a flagged topic it does not refuse, it quietly answers with Opus 4.8 instead. Anthropic says this happens in under 5% of sessions.
 
 **Claude Mythos 5** is the same underlying model, some safeguards lifted. Restricted to vetted cyberdefenders through Project Glasswing, with a biology program to follow. Anthropic calls it the strongest cyber model it has built.
@@ -74,6 +86,18 @@ The naming is the tell. Anthropic says fable comes from the Latin *fabula*, "tha
 </Diagram>
 
 This is the one launch detail that touches anyone building on the API. A silent fallback is better UX than a hard refusal. It also means two different models can answer inside one session. If you run evals or agent loops, you want to log which one replied, or your numbers quietly mix two models.
+
+<figure>
+  <img
+    src="/images/insights/claude-fable-5-anthropic-benchmarks.webp"
+    alt="Anthropic's official benchmark table comparing Claude Mythos 5 and Fable 5 against Claude Opus 4.8, GPT 5.5 and Gemini 3.1 Pro across agentic coding, knowledge work, tool use, legal, biology and cybersecurity"
+    width="1400"
+    height="1545"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>Anthropic's launch table: 80.3% on SWE-Bench Pro, 78% on ExploitBench, the lead in nearly every row. Vendor numbers on vendor benchmarks. Mine, on my own repo, are further down. Chart: Anthropic.</figcaption>
+</figure>
 
 ## What already runs on Claude here
 
@@ -115,19 +139,15 @@ That line is exactly what a frontier model is supposed to move. Not "better pros
 
 Same model, three very different jobs. Fast judgment in a chat window. A long multi-step run in a cowork agent. Code in this repo. The failure mode is different in each, and a frontier model is only worth the price if it holds up across all three.
 
-<DataTable
-  columns={[
-    { key: "surface", label: "Surface" },
-    { key: "task", label: "Real task from my stack" },
-    { key: "stress", label: "What it stresses" },
-    { key: "score", label: "How I score it" }
+<ToolCard
+  cols={3}
+  title="One real task per surface"
+  caption="The same model has to be good at three different jobs, and each one breaks differently."
+  items={[
+    { icon: "chat", name: "Chat", description: "Score an inbound lead against my ICP and draft a two-line opener. Stresses judgment and concision in a single turn.", meta: "Pass: an opener I would actually send" },
+    { icon: "cowork", name: "Cowork", description: "Take five LinkedIn URLs, enrich each, draft a personalised sequence, log it to the CRM. Stresses long-horizon tool use with no drift over many steps.", meta: "Pass: zero invented fields, CRM rows correct" },
+    { icon: "code", name: "Claude Code", description: "Refactor a content collection across this repo and keep the build passing. Stresses multi-file context held to the end, not just the first edit.", meta: "Pass: tests green, build clean" }
   ]}
-  rows={[
-    { surface: "Chat", task: "Score this inbound against my ICP and draft a two-line opener", stress: "Judgment and concision in a single turn", score: "Right ICP call, plus an opener I would actually send" },
-    { surface: "Cowork", task: "Take five LinkedIn URLs, enrich each, draft a personalised sequence, log it to the CRM", stress: "Long-horizon agentic work, tool use, no drift over many steps", score: "Full run, zero invented fields, CRM rows correct" },
-    { surface: "Code", task: "Refactor a content collection across the repo and keep the build passing", stress: "Multi-file context held to the end, not just the first edit", score: "Tests pass, build clean, no orphaned references" }
-  ]}
-  caption="One real task per surface. The same model has to be good at three different jobs, and each one breaks differently."
 />
 
 The code surface is the one I can show you today, because it runs here, not behind an embargo. To compare models honestly I had Claude build a small harness: same prompt, every model, real latency, tokens and cost. This is the core of it, and it actually runs:
@@ -196,6 +216,13 @@ That is the division of labour from the pricing-block story again, on infrastruc
 
 The runs ran in that sterile harness: identical clones of one commit, identical prompt, identical read-only tool limits, one run each for Fable 5, Opus 4.8 and Sonnet 4.6. The answer key was six bugs I had verified in the code by hand before any model started, weighted by severity, eleven points total. A point requires naming the mechanism, not just the file.
 
+<Screenshot
+  src="/images/insights/claude-fable-5-arena-prompt.webp"
+  alt="The benchmark setup: the claude -p command with a locked-down tool list, and the full R1 audit prompt that every model received verbatim"
+  url="~/claude-arena"
+  caption="The actual run, not a description of one. One prompt, identical clones of commit 612c367, no MCP, no plugins, no memory. Every model got exactly this."
+/>
+
 <DataTable
   columns={[
     { key: "finding", label: "Verified finding (weight)" },
@@ -263,7 +290,30 @@ The score table only counts what was in my answer key. But every model also surf
 
 ### How the reports read, not just what they found
 
-Numbers do not tell you what it is like to read a 2,000 word audit at 11 pm and decide whether to ship a fix. I scored each report on four qualities, 1 to 5.
+Numbers do not tell you what it is like to read a 2,000 word audit at 11 pm and decide whether to ship a fix. Here are the opening lines of each report, exactly as the models wrote them, with the bill attached.
+
+<Screenshot
+  src="/images/insights/claude-fable-5-report-fable.webp"
+  alt="Opening of Fable 5's audit report: it leads with the failover Worker probing the hostname it rewrites, names exact files and lines, severity High, scored 8.5 of 11 at $2.57"
+  url="results/fable5-AUDIT.md"
+  caption="Fable 5 leads with the scariest bug and quotes the exact lines. The only model to sweep the whole failover layer."
+/>
+
+<Screenshot
+  src="/images/insights/claude-fable-5-report-opus.webp"
+  alt="Opening of Opus 4.8's audit report: same failover flip-flop found, measured against the live DNS target instead of the primary origin, scored 8.0 of 11 at $0.86"
+  url="results/opus48-AUDIT.md"
+  caption="Opus 4.8 catches the same flip-flop in half the wall time and at a third of the cost. This is the report that should stop you."
+/>
+
+<Screenshot
+  src="/images/insights/claude-fable-5-report-sonnet.webp"
+  alt="Opening of Sonnet 4.6's audit report: Risk 1 is CSP drift blocking PostHog, the failover flip-flop is absent, scored 1 of 11 at $0.76"
+  url="results/sonnet46-AUDIT.md"
+  caption="Sonnet 4.6, same prompt. Look at what Risk 1 is not: the flip-flop never appears in the report. The 1 of 11 is visible right on this screen."
+/>
+
+Reading them side by side is the fastest way to feel the gap. Beyond the first impression, I scored each report on four qualities, 1 to 5.
 
 <DataTable
   columns={[

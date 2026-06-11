@@ -1,5 +1,6 @@
 ---
 type StatusType = 'live' | 'beta' | 'wip' | 'archived';
+type IconType = 'chat' | 'cowork' | 'code' | 'spark';
 
 interface Tool {
   name: string;
@@ -8,6 +9,7 @@ interface Tool {
   status?: StatusType;
   tags?: string[];
   meta?: string;
+  icon?: IconType;
 }
 
 interface Props {
@@ -24,6 +26,15 @@ const statusLabels: Record<StatusType, string> = {
   beta: 'Beta',
   wip: 'In progress',
   archived: 'Archived',
+};
+
+const iconPaths: Record<IconType, string> = {
+  chat: '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',
+  cowork:
+    '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  code: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
+  spark:
+    '<path d="M12 2l1.9 5.7a2 2 0 0 0 1.3 1.3L21 11l-5.8 2a2 2 0 0 0-1.3 1.3L12 20l-1.9-5.7a2 2 0 0 0-1.3-1.3L3 11l5.8-2a2 2 0 0 0 1.3-1.3L12 2z"/>',
 };
 ---
 
@@ -47,7 +58,22 @@ const statusLabels: Record<StatusType, string> = {
             rel={item.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
           >
             <header class="tool-card__head">
-              <span class="tool-card__name">{item.name}</span>
+              <span class="tool-card__name">
+                {item.icon && (
+                  <svg
+                    class="tool-card__icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                    set:html={iconPaths[item.icon]}
+                  />
+                )}
+                {item.name}
+              </span>
               {item.status && (
                 <span class={`tool-card__status tool-card__status--${item.status}`}>
                   {statusLabels[item.status]}
@@ -145,10 +171,20 @@ const statusLabels: Record<StatusType, string> = {
   }
 
   .tool-card__name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.9375rem;
     font-weight: 700;
     line-height: 1.3;
     color: var(--color-text);
+  }
+
+  .tool-card__icon {
+    width: 1.05rem;
+    height: 1.05rem;
+    flex-shrink: 0;
+    color: var(--color-accent-hi);
   }
 
   .tool-card__status {
