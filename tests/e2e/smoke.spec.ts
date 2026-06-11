@@ -76,7 +76,7 @@ test('article page has h1, canonical, og:image, and reading progress bar', async
 
   const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content');
   expect(ogImage, 'og:image missing on article').toBeTruthy();
-  expect(ogImage).toMatch(/\/og\//);
+  expect(ogImage).toMatch(/\/og\/|\/images\//);
 
   await expect(page.locator('#progress-bar')).toBeAttached();
 });

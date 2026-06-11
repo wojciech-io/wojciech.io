@@ -15,7 +15,8 @@ const LOCALE_PAGES = [
   { path: '/jp/', htmlLang: 'ja-JP', ogLocale: 'ja_JP' },
 ] as const;
 
-const LOCALE_SUBPAGES = ['about', 'work', 'ai-systems', 'contact', 'insights'] as const;
+// Insights live only in EN+PL; the remaining locales keep about/work/etc.
+const LOCALE_SUBPAGES = ['about', 'work', 'ai-systems', 'contact'] as const;
 
 for (const { path, htmlLang, ogLocale } of LOCALE_PAGES) {
   test(`${path} renders html[lang="${htmlLang}"]`, async ({ page }) => {

@@ -1,0 +1,101 @@
+---
+// Site-wide announcement strip, sits above the sticky header and scrolls away.
+// Localized + dismissible (localStorage). Bump STORAGE_KEY to re-show after a new drop.
+import { getLocaleFromPath } from '../../data/uiStrings';
+
+const STORAGE_KEY = 'wio-anno-fable5';
+const SLUG = 'claude-fable-5-mythos-5';
+
+const pathname = Astro.url.pathname;
+const locale = getLocaleFromPath(pathname); // 'en' | 'pl' | 'it' | 'de' | 'dk' | 'no' | 'jp' | 'es'
+
+// The article is published in EN + PL only; other locales link to the EN original.
+const href = locale === 'pl'
+  ? `/pl/insights/${SLUG}/`
+  : `/insights/${SLUG}/`;
+
+type Copy = { tag: string; text: string; cta: string };
+const COPY: Record<string, Copy> = {
+  en: { tag: 'New', text: 'Claude Fable 5 and Mythos 5: the operator breakdown', cta: 'Read' },
+  pl: { tag: 'Nowość', text: 'Claude Fable 5 i Mythos 5: rozkład na czynniki dla operatorów', cta: 'Czytaj' },
+  it: { tag: 'Novità', text: "Claude Fable 5 e Mythos 5: l'analisi per chi costruisce", cta: 'Leggi' },
+  de: { tag: 'Neu', text: 'Claude Fable 5 und Mythos 5: die Analyse für Operator', cta: 'Lesen' },
+  dk: { tag: 'Nyt', text: 'Claude Fable 5 og Mythos 5: gennemgangen for buildere', cta: 'Læs' },
+  no: { tag: 'Nytt', text: 'Claude Fable 5 og Mythos 5: gjennomgangen for buildere', cta: 'Les' },
+  jp: { tag: '新着', text: 'Claude Fable 5 と Mythos 5：実務目線の解説', cta: '読む' },
+  es: { tag: 'Nuevo', text: 'Claude Fable 5 y Mythos 5: el análisis para quien construye', cta: 'Leer' },
+};
+const c = COPY[locale] ?? COPY.en;
+const closeLabel = locale === 'pl' ? 'Zamknij' : locale === 'de' ? 'Schließen' : locale === 'es' ? 'Cerrar' : locale === 'it' ? 'Chiudi' : locale === 'jp' ? '閉じる' : locale === 'dk' ? 'Luk' : locale === 'no' ? 'Lukk' : 'Dismiss';
+---
+
+<aside
+  id="wio-announcement"
+  data-anno-key={STORAGE_KEY}
+  class="relative border-b border-[var(--color-border)] bg-[var(--color-surface-2)]"
+  aria-label="Site announcement"
+>
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="flex items-center justify-center gap-3 py-2 pr-8 text-center">
+      <a
+        href={href}
+        class="group inline-flex items-center gap-2.5 text-xs leading-snug text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
+        data-mp-cta="announcement"
+        data-mp-location="announcement_bar"
+      >
+        <span class="inline-flex shrink-0 items-center gap-1.5">
+          <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-cta)]" style="box-shadow:0 0 10px rgb(235 255 0 / 0.6);" aria-hidden="true"></span>
+          <span class="obs-mono text-[0.625rem] font-bold uppercase tracking-widest text-[var(--color-accent-hi)]">{c.tag}</span>
+        </span>
+        <span class="font-medium">{c.text}</span>
+        <span class="hidden sm:inline-flex shrink-0 items-center gap-1 font-semibold text-[var(--color-text)] underline-offset-2 group-hover:underline">
+          {c.cta}
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+  <button
+    type="button"
+    id="wio-announcement-close"
+    class="absolute right-3 top-1/2 -translate-y-1/2 grid h-6 w-6 place-items-center rounded-[var(--radius-btn)] text-[var(--color-text-dim)] transition-colors hover:text-[var(--color-text)]"
+    aria-label={closeLabel}
+  >
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+</aside>
+
+<script is:inline>
+  // Hide synchronously if previously dismissed (runs during parse, before paint).
+  (function () {
+    try {
+      var el = document.getElementById('wio-announcement');
+      if (el && localStorage.getItem(el.dataset.annoKey || '') === '1') {
+        el.style.display = 'none';
+      }
+    } catch (_) {}
+  })();
+</script>
+
+<script>
+  function initAnnouncement() {
+    const el = document.getElementById('wio-announcement');
+    const btn = document.getElementById('wio-announcement-close');
+    if (!el || !btn) return;
+    const key = el.dataset.annoKey || '';
+    try {
+      if (localStorage.getItem(key) === '1') { el.style.display = 'none'; return; }
+    } catch (_) {}
+    el.style.display = '';
+    btn.addEventListener('click', () => {
+      el.style.display = 'none';
+      try { localStorage.setItem(key, '1'); } catch (_) {}
+    });
+  }
+  initAnnouncement();
+  document.addEventListener('astro:page-load', initAnnouncement);
+</script>

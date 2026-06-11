@@ -57,12 +57,12 @@ const contactHref = `/${copy.path}/contact/`;
 
     <div class="relative mx-auto max-w-6xl px-6">
       <div class="flex flex-col justify-center py-10 md:py-20 lg:py-32 md:max-w-[560px] lg:max-w-[48%]">
-        <div class="inline-flex self-start items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] px-3.5 py-2 mb-8 shadow-[var(--shadow-card)] backdrop-blur">
-          <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)] shadow-[0_0_14px_rgb(235_255_0/0.55)]"></span>
-          <span class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text)]">{copy.eyebrow}</span>
+        <div class="inline-flex self-start items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] px-3.5 py-2 mb-5 md:mb-8 shadow-[var(--shadow-card)] backdrop-blur">
+          <span class="obs-status-dot"></span>
+          <span class="obs-label-accent">// {copy.eyebrow}</span>
         </div>
 
-        <div class="lg:hidden flex items-center gap-3 mb-8">
+        <div class="lg:hidden flex items-center gap-3 mb-5 md:mb-8">
           <img
             src="/images/wojciech-avatar-384.webp"
             alt="Wojciech Łuszczyński"
@@ -70,33 +70,33 @@ const contactHref = `/${copy.path}/contact/`;
             height="56"
             loading="eager"
             decoding="async"
-            class="w-14 h-14 rounded-full object-cover border border-[var(--color-accent)]/35 shrink-0"
+            class="w-14 h-14 rounded-full object-cover border border-[var(--color-border-2)] shrink-0"
           />
           <div>
-            <p class="text-sm font-semibold text-[var(--color-text)]">Wojciech Łuszczyński</p>
+            <p class="obs-mono text-sm font-semibold text-[var(--color-text)]">Wojciech Łuszczyński</p>
             <p class="text-xs text-[var(--color-text-muted)]">{copy.eyebrow}</p>
           </div>
         </div>
 
-        <h1 class="reveal-up text-[length:var(--text-hero)] font-bold leading-[1.08] tracking-tight mb-6" data-reveal-index="0">
+        <h1 class="reveal-up text-[length:var(--text-hero)] font-bold leading-[1.08] tracking-tight mb-4 md:mb-6" data-reveal-index="0" transition:name="page-title-home">
           <span class="text-[var(--color-text)]">{copy.h1Primary}</span><br class="hidden md:block" />
-          <span class="text-[var(--color-text-muted)]">{copy.h1Secondary}</span>
+          <span class="heading-accent">{copy.h1Secondary}</span>
         </h1>
 
-        <p class="reveal-up text-[length:var(--text-lead)] text-[var(--color-text-muted)] leading-relaxed mb-10 max-w-lg" data-reveal-index="1">
+        <p class="reveal-up text-[length:var(--text-lead)] text-[var(--color-text-muted)] leading-relaxed mb-7 md:mb-10 max-w-lg" data-reveal-index="1">
           {copy.lead}
         </p>
 
         <div class="reveal-up flex flex-wrap gap-3 mb-5" data-reveal-index="2">
           <a
             href={workHref}
-            class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] text-sm sm:text-base font-semibold px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
+            class="btn-press obs-mono inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] text-xs font-semibold uppercase tracking-wider px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
           >
             {copy.primaryCta}
           </a>
           <a
             href={contactHref}
-            class="btn-press inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-bg)] text-[var(--color-text)] text-sm sm:text-base font-medium px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors"
+            class="btn-press obs-mono inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs font-medium uppercase tracking-wider px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-text)] transition-colors"
             data-mp-cta="Book a call"
             data-mp-location={`localized_${copy.path}_hero`}
           >
@@ -107,14 +107,13 @@ const contactHref = `/${copy.path}/contact/`;
     </div>
   </section>
 
-  <section class="relative bg-[var(--color-surface-2)]">
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border)] to-transparent" aria-hidden="true"></div>
+  <section class="relative section-fade border-y border-[var(--color-border)] bg-[var(--color-surface)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[var(--color-border)]">
         {copy.proof.map(({ value, label }, index) => (
           <div class="reveal-up flex flex-col items-center py-8 px-4 text-center" data-reveal-index={index}>
-            <p class="text-3xl font-bold text-[var(--color-text)] mb-1">{value}</p>
-            <p class="text-xs text-[var(--color-text-dim)] uppercase tracking-widest">{label}</p>
+            <p class="obs-mono text-3xl font-bold text-[var(--color-text)] mb-1">{value}</p>
+            <p class="obs-label">{label}</p>
           </div>
         ))}
       </div>
@@ -122,25 +121,21 @@ const contactHref = `/${copy.path}/contact/`;
   </section>
 
   <section class="relative py-[var(--space-section)] bg-[var(--color-bg)] overflow-hidden">
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/20 to-transparent" aria-hidden="true"></div>
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,var(--color-border)_1px,transparent_1px)] bg-[size:36px_36px] opacity-[0.35]" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border-2)] to-transparent" aria-hidden="true"></div>
     <div class="relative mx-auto max-w-6xl px-6">
-      <div class="mb-12">
-        <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
-          <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
-          <span>{copy.sectionEyebrow}</span>
-        </p>
+      <div class="reveal-blur mb-12">
+        <span class="obs-label-accent mb-4 block">// {copy.sectionEyebrow}</span>
         <h2 class="text-[length:var(--text-h2)] font-semibold leading-[1.15] tracking-tight max-w-xl">
           <span class="text-[var(--color-text)]">{copy.sectionTitlePrimary}</span><br />
-          <span class="text-[var(--color-text-muted)]">{copy.sectionTitleSecondary}</span>
+          <span class="heading-accent">{copy.sectionTitleSecondary}</span>
         </h2>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {copy.steps.map(({ step, title, body }) => (
-          <div class="reveal-up relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 card-lift hover:border-[var(--color-accent)]/30 group">
-            <p class="relative text-xs font-semibold text-[var(--color-accent)] uppercase tracking-widest mb-5">{step}</p>
-            <h3 class="relative text-base font-semibold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors">{title}</h3>
-            <p class="relative text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
+          <div class="reveal-up obs-panel obs-glow p-6 card-lift group">
+            <span class="obs-mono text-2xl font-bold text-[var(--color-accent-label)] mb-4 block">{step}</span>
+            <h3 class="text-base font-semibold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors">{title}</h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
           </div>
         ))}
       </div>
@@ -150,7 +145,7 @@ const contactHref = `/${copy.path}/contact/`;
   <ProjectsSection i18n={copy.sections.work} />
   <AILeverage i18n={copy.sections.ai} />
   <TestimonialsSection i18n={copy.sections.testimonials} />
-  <InsightsPreview i18n={copy.sections.writing} />
+  <InsightsPreview i18n={copy.sections.writing} locale={copy.path === 'pl' ? 'pl' : 'en'} />
 
   <CTABand
     heading={copy.finalHeading}

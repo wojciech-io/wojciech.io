@@ -46,6 +46,17 @@ import CaseStudyBlock from '@wojciech/mdx-components/components/CaseStudyBlock.a
 import MetricDelta from '@wojciech/mdx-components/components/MetricDelta.astro';
 import AgentFlow from '@wojciech/mdx-components/components/AgentFlow.astro';
 import AnnotatedImage from '@wojciech/mdx-components/components/AnnotatedImage.astro';
+import Tabs from '@wojciech/mdx-components/components/Tabs.astro';
+import Accordion from '@wojciech/mdx-components/components/Accordion.astro';
+import ImageSlider from '@wojciech/mdx-components/components/ImageSlider.astro';
+import NumberTicker from '@wojciech/mdx-components/components/NumberTicker.astro';
+import EmbedDeck from '@wojciech/mdx-components/components/EmbedDeck.astro';
+import CodeBlock from '@wojciech/mdx-components/components/CodeBlock.astro';
+import Terminal from '../../../../packages/mdx-components/components/Terminal.astro';
+import ProTip from '../../../../packages/mdx-components/components/ProTip.astro';
+import MetricBoard from '../../../../packages/mdx-components/components/MetricBoard.astro';
+import ThreadBlock from '../../../../packages/mdx-components/components/ThreadBlock.astro';
+import StackLayer from '../../../../packages/mdx-components/components/StackLayer.astro';
 import { SITE } from '../../../data/site';
 import { localizedHome, type LocaleKey } from '../../../data/locales';
 import {
@@ -71,6 +82,8 @@ const mdxComponents = {
   MetricDelta, AgentFlow, AnnotatedImage,
   ToolCard, ProcessFlow, Grid,
   ResultCard, Benchmark, CaseStudyBlock,
+  Tabs, Accordion, ImageSlider, NumberTicker, EmbedDeck, CodeBlock,
+  Terminal, ProTip, MetricBoard, ThreadBlock, StackLayer,
 };
 
 export async function getStaticPaths() {
@@ -152,13 +165,24 @@ const schema = [
       { '@type': 'ListItem', position: 3, name: post.data.title, item: canonicalURL },
     ],
   },
+  ...(post.data.faq?.length
+    ? [{
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: post.data.faq.map(({ q, a }) => ({
+          '@type': 'Question',
+          name: q,
+          acceptedAnswer: { '@type': 'Answer', text: a },
+        })),
+      }]
+    : []),
 ];
 ---
 
 <Layout
   htmlLang={localeCopy.htmlLang}
   ogLocale={localeCopy.ogLocale}
-  title={post.data.title}
+  title={post.data.seoTitle ?? post.data.title}
   description={post.data.description}
   canonical={canonicalPath}
   ogImage={ogImage}
@@ -168,7 +192,8 @@ const schema = [
   alternates={localizedInsightAlternates(post.data.translationOf ?? slug)}
   schema={schema}
 >
-  <div id="progress-bar" class="fixed left-0 top-0 z-50 h-0.5 w-0 bg-[var(--color-accent)] transition-none" role="progressbar" aria-label="Reading progress" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100} />
+  <div class="fixed left-0 top-0 z-40 h-1 w-full bg-[color-mix(in_srgb,var(--color-border)_55%,transparent)]" aria-hidden="true" />
+  <div id="progress-bar" class="fixed left-0 top-0 z-50 h-1 w-0 bg-[var(--color-accent)] shadow-[0_0_8px_2px_color-mix(in_srgb,var(--color-accent)_55%,transparent)] transition-none" role="progressbar" aria-label="Reading progress" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100} />
 
   <ArticleCover coverType={post.data.coverType} coverImage={post.data.coverImage} tags={post.data.tags} title={post.data.title} />
 
@@ -224,7 +249,7 @@ const schema = [
       </div>
     </header>
 
-    {post.data.tldr && post.data.tldr.length > 0 && <TLDR items={post.data.tldr} />}
+    {post.data.tldr && post.data.tldr.length > 0 && <TLDR items={post.data.tldr} title={labels.tldrTitle} />}
 
     <div class="prose-content">
       <Content components={mdxComponents} />

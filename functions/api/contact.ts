@@ -1,7 +1,10 @@
+import { rateLimit, clientIp } from '../_utils/ratelimit';
+
 interface PagesFunctionContext {
   request: Request;
   env: {
     RESEND_API_KEY?: string;
+    RATE_LIMIT?: KVNamespace;
   };
 }
 
@@ -25,6 +28,10 @@ function json(data: unknown, init: ResponseInit = {}) {
 }
 
 export async function onRequestPost({ request, env }: PagesFunctionContext) {
+  // Anti-abuse: 5 messages / 10 min / IP (protects Resend quota and the inbox).
+  const rl = await rateLimit(env.RATE_LIMIT, `contact:${clientIp(request)}`, 5, 600);
+  if (!rl.ok) return rl.response!;
+
   let payload: ContactPayload;
 
   try {

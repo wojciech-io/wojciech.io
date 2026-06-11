@@ -1,22 +1,27 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { ALL_LOCALES } from './data/locale-codes';
 
 const insights = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/insights' }),
   schema: z.object({
     title: z.string(),
+    // Short variant for the <title> tag and og:title; the long human title stays the H1.
+    seoTitle: z.string().optional(),
     description: z.string(),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
+    // Q&A pairs emitted as FAQPage JSON-LD; keep in sync with the visible FAQ section.
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
     tags: z.array(z.string()).default([]),
     tldr: z.array(z.string()).optional(),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
     ogImage: z.string().optional(),
     coverImage: z.string().optional(),
-    coverType: z.enum(['terminal', 'builder', 'chart', 'product', 'system', 'default']).default('default'),
+    coverType: z.enum(['terminal', 'builder', 'chart', 'product', 'system', 'launch', 'default']).default('default'),
     category: z.enum(['AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products']).optional(),
-    locale: z.enum(['en', 'de', 'dk', 'no', 'jp', 'it', 'es', 'pl']).default('en'),
+    locale: z.enum(ALL_LOCALES).default('en'),
     translationOf: z.string().optional(),
   }),
 });
@@ -61,6 +66,7 @@ const testimonials = defineCollection({
     quote: z.string(),                               // the actual testimonial body
     // Curation metadata
     featured: z.boolean().default(false),            // surface on homepage
+    hero: z.boolean().default(false),                // top-3 prominent cards
     order: z.number().default(99),                   // sort within featured subset
     date: z.coerce.date().optional(),                // when given
     voiceFit: z.enum(['high', 'medium', 'low']).default('medium'), // tone alignment

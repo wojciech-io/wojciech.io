@@ -28,8 +28,13 @@ export const GET: APIRoute = async ({ site }) => {
       },
     ],
     items: posts.map((post) => {
-      const slug = post.id.replace(/\.mdx?$/, '');
-      const url = `${origin}/insights/${slug}/`;
+      const id = post.id.replace(/\.mdx?$/, '');
+      // Localized posts live at /{locale}/insights/{slug}/, not /insights/{locale}/{slug}/.
+      const localeMatch = id.match(/^([a-z]{2})\/(.+)$/);
+      const slug = localeMatch ? localeMatch[2] : id;
+      const url = localeMatch
+        ? `${origin}/${localeMatch[1]}/insights/${slug}/`
+        : `${origin}/insights/${slug}/`;
       const ogImage = post.data.ogImage
         ? `${origin}${post.data.ogImage}`
         : `${origin}/og/${slug}.png`;
@@ -41,6 +46,7 @@ export const GET: APIRoute = async ({ site }) => {
         summary: post.data.description,
         content_text: post.data.description,
         image: ogImage,
+        language: localeMatch ? localeMatch[1] : 'en',
         date_published: post.data.publishedAt.toISOString(),
         ...(post.data.updatedAt
           ? { date_modified: post.data.updatedAt.toISOString() }

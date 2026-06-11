@@ -1,0 +1,478 @@
+---
+title: "Claude Fable 5 pierwszego dnia znalazł u mnie żywego buga, więc zderzyłem go z Opusem i Sonnetem"
+seoTitle: "Claude Fable 5 vs Opus 4.8 vs Sonnet 4.6: mój własny benchmark"
+description: "Dałem Claude Fable 5, Opusowi 4.8 i Sonnetowi 4.6 do audytu repo własnej strony. Fable znalazł żywego buga w failoverze, Opus 4.8 był tańszy na wynik, Sonnet go przegapił. Wyniki, koszty, poprawka: wszystko publiczne."
+publishedAt: "2026-06-09"
+updatedAt: "2026-06-11"
+tags:
+  - AI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "launch"
+coverImage: "/images/insights/claude-fable-5-mythos-5.webp"
+ogImage: "/images/insights/claude-fable-5-mythos-5.webp"
+featured: true
+draft: false
+locale: "pl"
+translationOf: "claude-fable-5-mythos-5"
+tldr:
+  - "Fable 5 i Mythos 5 to ten sam model. Jedyna różnica to zabezpieczenia: Fable przy oznaczonych tematach po cichu przełącza się na Opus 4.8, Mythos działa z częścią zabezpieczeń zdjętą dla zweryfikowanych partnerów."
+  - "Dałem Fable 5, Opusowi 4.6 i Sonnetowi 4.6 do audytu repo tej strony, punktowane względem sześciu bugów, które najpierw zweryfikowałem ręcznie. Fable znalazł zdecydowanie najwięcej, w tym żywego buga produkcyjnego w moim failoverze DNS. Opus złapał tego samego głównego buga za połowę ceny. Sonnet go przegapił. Poprawka to publiczny commit, podlinkowany niżej."
+  - "Kosztuje 2x tyle co Opus 4.8: 10 $ za tokeny wejściowe i 50 $ za wyjściowe, za milion. Opłaca się tylko wtedy, gdy kończy zadanie w mniejszej liczbie kroków. Liczy się koszt wyniku, nie koszt tokena."
+  - "Haczyk, którego nikt nie pokazuje na slajdzie: cichy fallback oznacza, że w jednej sesji mogą odpowiadać dwa różne modele. Jeśli puszczasz pętle agentowe, loguj, który odpowiedział, inaczej twoje liczby kłamią."
+faq:
+  - q: "Czy Claude Fable 5 to ten sam model co Claude Mythos 5?"
+    a: "Tak. Anthropic potwierdza, że pod spodem to ten sam model. Fable 5 to wersja ogólnodostępna, która przy oznaczonych tematach po cichu przełącza się na Opus 4.8, a Mythos 5 działa z częścią zabezpieczeń zdjętą i trafia tylko do zweryfikowanych partnerów cyberobrony przez Project Glasswing."
+  - q: "Ile kosztuje Claude Fable 5?"
+    a: "10 $ za milion tokenów wejściowych i 50 $ za milion wyjściowych, dokładnie dwa razy tyle co Opus 4.8 (5 $ i 25 $). Do 22 czerwca 2026 jest darmowy w planach Pro, Max, Team i Enterprise na stanowiska; rozliczanie za użycie rusza 23 czerwca."
+  - q: "Czy Claude Fable 5 jest lepszy od Opusa i Sonneta?"
+    a: "Na moim własnym benchmarku, audycie repo tej strony punktowanym względem ręcznie zweryfikowanego klucza odpowiedzi, Fable 5 wziął 8.5 z 11 punktów przy 8.0 dla Opus 4.8 i 1 dla Sonnet 4.6. Na koszcie znalezionego buga Opus 4.8 wygrał na całej linii: 0,11 $ wobec 0,30 $. Traktuj to jako wsad do własnego evala, nie jako werdykt."
+  - q: "Czemu na moje zapytanie do Fable 5 odpowiedział Opus 4.8?"
+    a: "Fable 5 nie odmawia przy oznaczonych tematach, tylko po cichu odpowiada jako Opus 4.8. Według Anthropic dotyczy to mniej niż 5% sesji. Jeśli puszczasz pętle agentowe albo evale, loguj, który model odpowiedział, inaczej twoje liczby mieszają dwa modele."
+---
+
+Anthropic wypuścił dziś, 9 czerwca 2026, dwa modele frontier: [Claude Fable 5 i Claude Mythos 5](https://www.anthropic.com/news/claude-fable-5-mythos-5). Jeden jest dla wszystkich. Drugi siedzi za programem zaufanego dostępu. Pod spodem to ten sam model.
+
+Wpis premierowy to benchmark na benchmarku. Nie zamierzam ich streszczać. Na Claude prowadzę biznes, nie leaderboard, i obchodzi mnie jedno pytanie: co mocniejszy model robi z systemami, które już dziś u mnie działają. Ta strona w ośmiu językach. Pipeline treści. Pętle agentowe, które dotykają CRM-u. Oto ta odpowiedź, na mojej własnej robocie, z dowodami, które możesz sklonować i odpalić u siebie.
+
+<Callout type="note" title="Czego ten test dowodzi, a czego nie">
+  **Dowodzi:** na jednym prawdziwym repo, z ręcznie zweryfikowanym kluczem odpowiedzi, trzy modele znalazły bardzo różne rzeczy za bardzo różne pieniądze, a różnice były na tyle duże, że zmieniają to, za co płacę. **Nie dowodzi:** który model jest lepszy dla ciebie. To n=1, jedno repo, jeden typ zadania, moja własna punktacja. Mocny dowód operatorski, nie uniwersalny leaderboard. Odpal własny.
+</Callout>
+
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "score", label: "Wynik / 11", align: "center", mono: true },
+    { key: "cost", label: "Koszt / znaleziony bug", align: "center", mono: true },
+    { key: "verdict", label: "W jednym zdaniu" }
+  ]}
+  rows={[
+    { model: "Claude Fable 5", score: "8.5", cost: "$0.30", verdict: "Znalazł najwięcej i jako jedyny w pełni złapał żywego buga failovera" },
+    { model: "Claude Opus 4.8", score: "8.0", cost: "$0.11", verdict: "Złapał prawie tyle samo za jedną trzecią ceny na buga: najtańszy na wynik" },
+    { model: "Claude Sonnet 4.6", score: "1", cost: "$0.76", verdict: "Przegapił najgroźniejszego, ale przyniósł realnego buga spoza mojego klucza" }
+  ]}
+  highlight={[0]}
+  caption="Cały benchmark w jednej tabeli. Punktacja per znalezisko, koszty i dokładna metoda są niżej."
+/>
+
+## Fable 5 i Mythos 5: dwa modele, jeden mózg
+
+Nazwa zdradza wszystko. Anthropic tłumaczy, że fable pochodzi od łacińskiego *fabula*, „to, co opowiedziane", blisko greckiego *mythos*. Ten sam rdzeń, dwie maski. Różnica nie leży w możliwościach. Leży w tym, co modelowi wolno.
+
+<figure>
+  <img
+    src="/images/insights/claude-fable-5-anthropic-five.webp"
+    alt="Premierowa grafika Anthropic dla generacji Claude 5: cyfra pięć ułożona z ilustracji motyli i ciem w stylu vintage na kremowym tle"
+    width="1600"
+    height="900"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>Oficjalna grafika premierowa: piątka ułożona z motyli. Piąta generacja, metamorfoza, sam rozumiesz. Grafika: Anthropic.</figcaption>
+</figure>
+
+**Claude Fable 5** jest od dziś w API i w każdym planie. Zabezpieczenia włączone. Gdy żądanie trafi w oznaczony temat, model nie odmawia, tylko po cichu odpowiada jako Opus 4.8. Według Anthropic dzieje się tak w mniej niż 5% sesji.
+
+**Claude Mythos 5** to ten sam model pod spodem, część zabezpieczeń zdjęta. Dostęp tylko dla zweryfikowanych zespołów cyberobrony przez Project Glasswing, program biologiczny ma dojść później. Anthropic nazywa go najmocniejszym modelem cyber, jaki zbudował.
+
+<Diagram caption="Jak Fable 5 obsługuje oznaczone żądanie: bez odmowy, po prostu cichszym modelem">
+  <Box label="Twoje żądanie" />
+  <Arrow label="klasyfikator" />
+  <Box label="Kontrola bezpieczeństwa" sub="cyber · bio · destylacja" variant="accent" />
+  <Arrow label="czyste" />
+  <Box label="Odpowiada Fable 5" sub="pełne możliwości" />
+  <Arrow label="oznaczone" dashed />
+  <Box label="Odpowiada Opus 4.8" sub="fallback, bez odmowy" variant="muted" />
+</Diagram>
+
+To jedyny detal tej premiery, który dotyka każdego, kto buduje na API. Cichy fallback to lepszy UX niż twarda odmowa. Oznacza też, że w jednej sesji mogą odpowiadać dwa różne modele. Jeśli puszczasz evale albo pętle agentowe, musisz logować, który odpowiedział, inaczej twoje liczby po cichu mieszają dwa modele.
+
+<figure>
+  <img
+    src="/images/insights/claude-fable-5-anthropic-benchmarks.webp"
+    alt="Oficjalna tabela benchmarków Anthropic porównująca Claude Mythos 5 i Fable 5 z Claude Opus 4.8, GPT 5.5 i Gemini 3.1 Pro w kodowaniu agentowym, pracy z wiedzą, użyciu narzędzi, prawie, biologii i cyberbezpieczeństwie"
+    width="1400"
+    height="1545"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>Premierowa tabela Anthropic: 80,3% na SWE-Bench Pro, 78% na ExploitBench, prowadzenie w prawie każdym wierszu. Liczby vendora na benchmarkach vendora. Moje, na moim własnym repo, znajdziesz niżej. Wykres: Anthropic.</figcaption>
+</figure>
+
+## Co już dziś działa tu na Claude
+
+Zanim powiem, co Fable zmienia, pokażę, w czym ma coś zmieniać. Ta strona to nie wizytówka. To system, a Claude jest w nim elementem nośnym.
+
+Działa na Astro i Cloudflare, serverless, nie ma czym się opiekować. Strona wychodzi w ośmiu językach przez pipeline na DeepL, który zbudowałem, z warstwą ochrony marek, żeby tłumacz nigdy nie zrobił z „Opusa" rzeczownika pospolitego. Ten pipeline wyprodukował 89 zlokalizowanych wersji artykułów w siedmiu językach i każda z nich siedzi w kolekcjach treści tego repo, gdzie możesz je policzyć. Warstwa odkrywania, `llms.txt`, jest na bieżąco, żeby modele mogły znaleźć tę robotę. Nic z tego nie jest demem. Wszystko siedzi w repo za tą stroną.
+
+<DataTable
+  columns={[
+    { key: "metric", label: "Metryka", mono: true },
+    { key: "value", label: "Wartość", align: "center", mono: true },
+    { key: "note", label: "" }
+  ]}
+  rows={[
+    { metric: "Języki", value: "8", note: "EN plus 7, z jednej edycji źródła" },
+    { metric: "Zbudowanych stron", value: "180", note: "każdy deploy przechodzi CI" },
+    { metric: "Testów", value: "560", note: "schema, linki, build" },
+    { metric: "Serwerów", value: "0", note: "Astro na Cloudflare, serverless" }
+  ]}
+  caption="Ta strona, tak jak buduje się dzisiaj. Sklonuj repo i dostaniesz te same liczby."
+/>
+
+Claude nie jest tu więc zabawką do pisania. Jest tym, co musi utrzymać wielojęzyczny, wieloaplikacyjny system w całości, nie gubiąc wątku. To jest robota, w której model frontier musi być dobry. Nie ciekawostki, nie błyskotliwy one-liner.
+
+## Jedna prawdziwa robota, osiem języków, jedna sesja
+
+Porównanie cen, które znajdziesz niżej na tej stronie: oto jak powstało, dzisiaj, za jednym posiedzeniem. Taką robotę mam na myśli.
+
+1. **Jedna edycja, po angielsku.** Napisałem porównanie cen raz, w języku kanonicznym, jako jedyne źródło prawdy.
+2. **Chirurgiczna wstawka, nie re-tłumaczenie.** Skrypt przetłumaczył tylko nowy blok na siedem języków i wpiął go pod właściwy nagłówek, nie ruszając żadnego z ręcznie poprawionych tłumaczeń.
+3. **Część, której nie pokaże żaden wpis premierowy.** Zajęło to cztery podejścia. DeepL odczytał "credits" jako napisy końcowe filmu, "model card" jako kartę postaci z RPG, a "$5 wejście, $25 wyjście" jako ceny kupna i sprzedaży. Przeczytałem każdą linię i poprawiłem sens. Model zrobił wolumen, osąd należał do mnie.
+4. **Na produkcji.** Build zielony, 560 testów, push na maina. Osiem języków spójnych. Jedna sesja.
+
+> Tłumacz ogarnął osiem języków w kilka sekund. Cztery razy pomylił też sens. Żadna z tych rzeczy nie jest niespodzianką i obie są częścią roboty. Mocniejszy model przesuwa tę granicę: mniej podejść, mniej mojego osądu spalanego na sprzątanie.
+
+Dokładnie tę granicę ma przesuwać model frontier. Nie „ładniejszą prozę". Mniej rund między wolumenem a osądem.
+
+## Trzy fronty, które Claude Fable 5 musi przetrwać: czat, agenci, kod
+
+Ten sam model, trzy zupełnie różne roboty. Szybki osąd w oknie czatu. Długi, wielokrokowy przebieg w agencie cowork. Kod w tym repo. Na każdym froncie psuje się inaczej, a model frontier jest wart swojej ceny tylko wtedy, gdy trzyma się na wszystkich trzech.
+
+<ToolCard
+  cols={3}
+  title="Jedno prawdziwe zadanie na front"
+  caption="Ten sam model musi być dobry w trzech różnych robotach, a każda psuje się inaczej."
+  items={[
+    { icon: "chat", name: "Czat", description: "Oceń inbounda względem mojego ICP i napisz dwulinijkowy opener. Testuje osąd i zwięzłość w jednej turze.", meta: "Zalicza: opener, którego naprawdę bym wysłał" },
+    { icon: "cowork", name: "Cowork", description: "Weź pięć URL-i z LinkedIna, wzbogać każdy, przygotuj spersonalizowaną sekwencję, zapisz do CRM-u. Testuje długą robotę agentową bez dryfu przez wiele kroków.", meta: "Zalicza: zero zmyślonych pól, poprawne wiersze w CRM" },
+    { icon: "code", name: "Claude Code", description: "Zrefaktoruj kolekcję treści w całym repo i utrzymaj zielony build. Testuje kontekst wielu plików trzymany do końca, nie tylko przy pierwszej edycji.", meta: "Zalicza: testy zielone, build czysty" }
+  ]}
+/>
+
+Front kodu mogę pokazać już dziś, bo działa tutaj, a nie za embargiem. Żeby uczciwie porównać modele, kazałem Claude'owi zbudować mały harness: ten sam prompt, każdy model, realna latencja, tokeny i koszt. To jego rdzeń i naprawdę się uruchamia:
+
+```js
+// ten sam prompt, każdy model, prawdziwe liczby
+for (const test of TESTS) {
+  for (const model of MODELS) {
+    const res = await callModel(model, test.prompt, test.maxTokens);
+    const pass = test.grade ? (test.grade(res.text) ? "PASS" : "FAIL") : "--";
+    const usd = cost(model, res.inTok, res.outTok);
+    log(model, pass, res.ms, res.inTok, res.outTok, usd);
+  }
+}
+```
+
+<Callout type="note" title="Co tu jest prawdziwe, a co dopiero będzie">
+  Harness, zadania i punktacja są prawdziwe i odpalisz je już dziś. Pierwsze liczby model kontra model spłynęły 10 czerwca: trzy sterylne przebiegi headless na audycie repo tej strony, ocenione względem klucza odpowiedzi, który najpierw zweryfikowałem ręcznie. Pełne tabele, z kosztem znalezionego buga włącznie, są w sekcji z paragonami niżej. Żadnych pożyczonych benchmarków, tylko moje własne.
+</Callout>
+
+## Pierwszy paragon: Fable 5 znalazł żywego buga w moim failoverze
+
+Pełne liczby trzech modeli są dwie sekcje niżej. Samo ich przygotowanie już się zwróciło, bo uczciwy test potrzebuje klucza odpowiedzi.
+
+Żeby punktować modele za audyt tego repo, najpierw musiałem wiedzieć, co w nim naprawdę jest nie tak. Więc pierwszego dnia posadziłem Fable 5 nad infrastrukturą tej strony: worker failovera, ręczna zapadnia w GitHub Actions, Terraform. Wrócił z sześcioma znaleziskami, które zweryfikowałem w kodzie linia po linii. Jedno z nich to awaria produkcyjna czekająca na swój termin.
+
+Monitor, który pilnuje tej strony, sprawdza zdrowie `wojciech.io`, czyli żywej domeny. Po failoverze ta domena wskazuje na backup. Podczas prawdziwej awarii monitor widziałby więc zdrowy backup, uznałby, że awaria minęła, i przepiąłby DNS z powrotem na zepsuty primary. Pięć minut później: znowu failover. Przez całą awarię moja strona huśtałaby się między działającą a zepsutą w rytmie pięciu minut.
+
+<Diagram caption="Pętla, którą mój monitor failovera odpaliłby podczas prawdziwej awarii">
+  <Box label="Primary leży" />
+  <Arrow label="monitor" />
+  <Box label="Failover na backup" variant="accent" />
+  <Arrow label="następny tick" />
+  <Box label="Apex wygląda zdrowo" sub="bo serwuje backup" />
+  <Arrow label="restore" dashed />
+  <Box label="Znowu zepsuty primary" variant="muted" />
+</Diagram>
+
+Poprawka weszła tego samego dnia: monitor sprawdza teraz bezpośrednio origin primary, zanim przywróci DNS, a w innym wypadku zostaje na backupie. To jej serce, z [commita e734c2f w publicznym repo](https://github.com/wojciech-io/wojciech.io/commit/e734c2f0585771000ab080649db2558f95788c4c), więc możesz przeczytać każdą linię zamiast wierzyć mi na słowo:
+
+```diff
+-  } else if (healthy && !onPrimary) {
+-    await updateDns(env, CF_PAGES_HOSTNAME);
+-    console.log(`RESTORE -> CF Pages: ${CF_PAGES_HOSTNAME}`);
++  } else if (!onPrimary) {
++    // After a failover the apex serves the backup, so apex health says
++    // nothing about the primary. Restore only when the primary origin
++    // itself responds, otherwise DNS flip-flops every cron tick while
++    // the primary is down.
++    const primaryHealthy = await checkHealth(`https://${CF_PAGES_HOSTNAME}`);
++    if (primaryHealthy) {
++      await updateDns(env, CF_PAGES_HOSTNAME);
++      console.log(`RESTORE -> CF Pages: ${CF_PAGES_HOSTNAME}`);
++    } else {
++      console.log(`HOLD: serving backup, primary still unhealthy`);
++    }
+```
+
+To ten sam podział pracy co w historii z blokiem cenowym, tym razem na infrastrukturze: Fable 5 przeczytał system i nazwał mechanizm, ja sprawdziłem każdą linię, zanim weszło.
+
+<Callout type="note" title="Trzy przebiegi benchmarku najpierw poszły do kosza">
+  Mój codzienny Claude Code dźwiga około 90 integracji pluginów i MCP. W tym środowisku sesje audytu zamiast audytować, raz za razem zjeżdżały w workflow reklam Spotify, który wstrzykiwał jeden z pluginów. Wyrzuciłem te przebiegi i przebudowałem test na sterylnie: zero pluginów, zero pamięci, świeże klony jednego commita, przebiegi headless, identyczny prompt. Jeśli twój benchmark agentów chodzi w twoim codziennym setupie, benchmarkujesz też swoje pluginy.
+</Callout>
+
+## Fable 5 vs Opus 4.8 vs Sonnet 4.6: jeden klucz odpowiedzi, liczby
+
+Przebiegi poszły w tym sterylnym harnessie: identyczne klony jednego commita, identyczny prompt, identyczne limity narzędzi tylko do odczytu, po jednym przebiegu dla Fable 5, Opus 4.8 i Sonnet 4.6. Kluczem odpowiedzi było sześć bugów, które zweryfikowałem w kodzie ręcznie, zanim jakikolwiek model wystartował, ważonych po severity, jedenaście punktów łącznie. Punkt wymaga nazwania mechanizmu, nie samego pliku.
+
+<Screenshot
+  src="/images/insights/claude-fable-5-arena-prompt.webp"
+  alt="Setup benchmarku: komenda claude -p z przyciętą listą narzędzi i pełny prompt audytu R1, który każdy model dostał słowo w słowo"
+  url="~/claude-arena"
+  caption="Prawdziwy przebieg, nie jego opis. Jeden prompt, identyczne klony commita 612c367, zero MCP, zero pluginów, zero pamięci. Każdy model dostał dokładnie to."
+/>
+
+<DataTable
+  columns={[
+    { key: "finding", label: "Zweryfikowane znalezisko (waga)" },
+    { key: "fable", label: "Fable 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.8", align: "center", mono: true },
+    { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
+  ]}
+  rows={[
+    { finding: "Flip-flop failovera: health check odpytuje żywą domenę, nie origin primary (3)", fable: "3", opus: "3", sonnet: "0" },
+    { finding: "Worker i workflow nie zgadzają się, co znaczy zdrowy: worker przepuszcza 404, workflow go oblewa (2)", fable: "2", opus: "2", sonnet: "1" },
+    { finding: "Hostname primary zahardkodowany w trzech miejscach (2)", fable: "2", opus: "1.5", sonnet: "0" },
+    { finding: "Rekord DNS poza Terraformem, backend stanu lokalny (2)", fable: "1", opus: "1", sonnet: "0" },
+    { finding: "Wartość env wpisana na sztywno w publicznym IaC (1)", fable: "0.5", opus: "0.5", sonnet: "0" },
+    { finding: "Stały komentarz o locale w _redirects (1)", fable: "0", opus: "0", sonnet: "0" },
+    { finding: "Wynik na 11", fable: "8.5", opus: "8.0", sonnet: "1" }
+  ]}
+  highlight={[6]}
+  caption="Każde znalezisko zweryfikowałem w kodzie, zanim którykolwiek model ruszył. Wymyślone ryzyko kosztowałoby punkt; nikt żadnego nie wymyślił."
+/>
+
+<DataTable
+  columns={[
+    { key: "metric", label: "Metryka" },
+    { key: "fable", label: "Fable 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.8", align: "center", mono: true },
+    { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
+  ]}
+  rows={[
+    { metric: "Koszt, USD", fable: "2.57", opus: "0.86", sonnet: "0.76" },
+    { metric: "Czas zegarowy", fable: "7m 18s", opus: "3m 39s", sonnet: "4m 37s" },
+    { metric: "Tury agenta", fable: "32", opus: "22", sonnet: "40" },
+    { metric: "Koszt znalezionego punktu", fable: "$0.30", opus: "$0.11", sonnet: "$0.76" }
+  ]}
+  highlight={[3]}
+  caption="Koszt na punkt to wiersz, który się liczy: tokeny są wejściem, znalezione bugi wyjściem. Opus 4.8 znalazł prawie tyle co Fable za jedną trzecią ceny na buga."
+/>
+
+Werdykt jest mniej elegancki niż leaderboard. Fable 5 znalazł najwięcej: 8.5 na 11, jako jedyny zgarnął całą warstwę failovera, flip-flop i dwie sprzeczne definicje zdrowia i dryf hostname. Ale to Opus 4.8 jest wynikiem, przy którym warto się zatrzymać. Dostał 8.0, pół punktu za Fable, za 0,86 $ wobec 2,57 $. To 0,11 $ na znalezionego buga wobec 0,30 $ u Fable: model, od którego Fable jest dwa razy droższy, złapał prawie wszystko to co Fable, za jedną trzecią ceny na wynik. Sonnet 4.6 w ogóle nie zobaczył flip-flopa, a i tak zarobił na swój przebieg: przyniósł najbardziej akcjonalne znalezisko spoza mojego klucza, endpoint zapisu na newsletter, który po cichu spada na starą appkę na Vercelu, której nikt już nie utrzymuje.
+
+Jedno uczciwe zastrzeżenie o moim własnym setupie. Rano w dniu premiery miałem dostęp API tylko do starszego Opus 4.6, więc pierwsza wersja tego testu punktowała właśnie jego. Wyszło 4.5 na 11: złapał flip-flop, ale był ślepy na warstwę operacyjną wokół. Powtórzyłem cały test na Opus 4.8, aktualnym punkcie odniesienia ceny, względem którego mierzony jest Fable, a skok z 4.5 do 8.0 na dokładnie tym samym prompcie to osobny datapoint. Liczby powyżej są w całości z 4.8.
+
+Jeszcze jedna uczciwa linijka, której leaderboardy nigdy nie drukują. Wszystkie trzy modele zgłosiły znalezisko, które mój klucz odpowiedzi jawnie oznaczał jako fałszywy alarm: byłem przekonany, że lista locale jest scentralizowana w jednym pliku. One powiedziały, że jest deklarowana niezależnie w pięciu miejscach. Sprawdziłem. Miały rację, a mój klucz się mylił. Benchmark zaudytował egzaminatora.
+
+### Co każdy model znalazł poza kluczem odpowiedzi
+
+Tabela wyników liczy tylko to, co było w moim kluczu. Ale każdy model przyniósł też prawdziwe, zweryfikowane znaleziska, których nie wpisałem. To nie punkty bonusowe. To powód, dla którego puszczasz trzy modele zamiast jednego.
+
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "finding", label: "Znalezisko spoza klucza (zweryfikowane)" },
+    { key: "impact", label: "Wpływ" }
+  ]}
+  rows={[
+    { model: "Fable 5", finding: "Backup Azure to sam dist, brak route'ów API, redirectów i nagłówków bezpieczeństwa po failoverze", impact: "Częściowa awaria: strona się renderuje, formularze i nagłówki znikają" },
+    { model: "Fable 5", finding: "Dwa konkurencyjne pipeline'y deploy z różnymi zmiennymi env", impact: "Cichy dryf konfiguracji między CI a Wranglerem" },
+    { model: "Fable 5", finding: "CSP w middleware i w konfiguracji Pages już rozjechane (PostHog brakuje w jednej)", impact: "Analityka nie działa na części stron" },
+    { model: "Opus 4.8", finding: "Backup failovera na Azure odbudowuje się raz w tygodniu z gołego builda bez zmiennych env", impact: "Failover może serwować tydzień stary, inaczej zbudowany serwis" },
+    { model: "Opus 4.8", finding: "ID konta Cloudflare wpisane na sztywno w pięciu jobach deployu", impact: "Jedno ID skopiowane pięć razy, brak jednego źródła do rotacji" },
+    { model: "Sonnet 4.6", finding: "Endpoint zapisu proxuje na starą appkę na Vercelu, której nikt nie utrzymuje", impact: "Subskrybenci lądują w martwym pipeline" },
+    { model: "Sonnet 4.6", finding: "crypto.ts zduplikowany w trzech appkach, dwie kopie bajt w bajt identyczne", impact: "Napraw jedną, zapomnij o drugiej, wyślij niespójność" }
+  ]}
+  caption="Każde znalezisko w tej tabeli jest zweryfikowane w kodzie. Endpoint zapisu to najbardziej akcjonalne odkrycie całego benchmarku, a przyszło od modelu z najniższym wynikiem."
+/>
+
+### Jak się czytają raporty, nie tylko co znalazły
+
+Liczby nie mówią, jak to jest czytać dwutysięczny raport o 23:00 i decydować, czy puszczać fixa. Oto pierwsze linie każdego raportu, dokładnie tak, jak modele je napisały, z rachunkiem obok.
+
+<Screenshot
+  src="/images/insights/claude-fable-5-report-fable.webp"
+  alt="Początek raportu Fable 5: zaczyna od Workera failovera odpytującego hostname, który sam przepisuje, podaje dokładne pliki i linie, severity High, wynik 8.5 na 11 za 2,57 dolara"
+  url="results/fable5-AUDIT.md"
+  caption="Fable 5 zaczyna od najgroźniejszego buga i cytuje dokładne linie. Jedyny model, który zgarnął całą warstwę failovera."
+/>
+
+<Screenshot
+  src="/images/insights/claude-fable-5-report-opus.webp"
+  alt="Początek raportu Opus 4.8: ten sam flip-flop failovera znaleziony, zdrowie mierzone względem żywego celu DNS zamiast originu primary, wynik 8.0 na 11 za 0,86 dolara"
+  url="results/opus48-AUDIT.md"
+  caption="Opus 4.8 łapie ten sam flip-flop w połowie czasu i za jedną trzecią ceny. To jest raport, przy którym warto się zatrzymać."
+/>
+
+<Screenshot
+  src="/images/insights/claude-fable-5-report-sonnet.webp"
+  alt="Początek raportu Sonnet 4.6: Risk 1 to rozjazd CSP blokujący PostHoga, flip-flop failovera w ogóle nie występuje, wynik 1 na 11 za 0,76 dolara"
+  url="results/sonnet46-AUDIT.md"
+  caption="Sonnet 4.6, ten sam prompt. Spójrz, czym Risk 1 nie jest: flip-flop nie pojawia się w raporcie ani razu. To 1 na 11 widać na tym jednym ekranie."
+/>
+
+Czytanie ich obok siebie to najszybszy sposób, żeby poczuć różnicę. Poza pierwszym wrażeniem oceniłem każdy raport na czterech osiach, 1 do 5.
+
+<DataTable
+  columns={[
+    { key: "quality", label: "Jakość raportu" },
+    { key: "fable", label: "Fable 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.8", align: "center", mono: true },
+    { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
+  ]}
+  rows={[
+    { quality: "Precyzja plików i linii", fable: "5", opus: "5", sonnet: "4" },
+    { quality: "Trafność severity", fable: "5", opus: "5", sonnet: "3" },
+    { quality: "Zwięzłość", fable: "4", opus: "5", sonnet: "4" },
+    { quality: "Wykonalność rekomendacji", fable: "5", opus: "4", sonnet: "4" }
+  ]}
+  caption="Subiektywna ocena, moja lektura. Fable i Opus 4.8 oba cytowały kod dosłownie i trafiły severity; Opus pisał zwięźlej, w mniejszej liczbie tur. Sonnet przeszacował jedno severity, ale dał najczystsze kroki naprawcze."
+/>
+
+<Callout type="note" title="Artefakty, żebyś mógł to powtórzyć">
+  Modele: `claude-fable-5`, `claude-opus-4-8`, `claude-sonnet-4-6` (plus `claude-opus-4-6` do porównania skoku wersji), po jednym przebiegu headless `claude -p`. Baza: [commit 612c367](https://github.com/wojciech-io/wojciech.io/commit/612c367) tego repo, identyczne klony. Harness: pusta konfiguracja MCP, zero pluginów, zero pamięci, narzędzia tylko do odczytu plus zapis jednego pliku. Prompt: zaudytuj architekturę, wskaż pięć największych ryzyk z plikami i mechanizmami, spisz raport. Klucz odpowiedzi: sześć znalezisk zweryfikowanych najpierw przeze mnie w kodzie, ważonych do 11 punktów; nazwanie pliku bez mechanizmu nie daje nic.
+</Callout>
+
+Kiedy który model, w jednej tabeli:
+
+<DataTable
+  columns={[
+    { key: "kiedy", label: "Sytuacja" },
+    { key: "model", label: "Mój wybór" },
+    { key: "czemu", label: "Dlaczego" }
+  ]}
+  rows={[
+    { kiedy: "Audyt systemu, od którego zależy biznes", model: "Fable 5", czemu: "Jako jedyny zebrał całą warstwę failovera; przy awarii produkcyjnej różnica 2x w cenie nie gra roli" },
+    { kiedy: "Codzienna robota agentowa, budżet się liczy", model: "Opus 4.8", czemu: "Dostał 8.0 przy 8.5 Fable za jedną trzecią ceny na buga; najtańszy na punkt: 0,11 $" },
+    { kiedy: "Szybkie, tanie przejście po koderskich konkretach", model: "Sonnet 4.6", czemu: "Najgroźniejszego buga nie zobaczył, ale przyniósł najbardziej akcjonalne znalezisko spoza klucza" }
+  ]}
+  caption="Mój podział po jednym przebiegu benchmarku. Na twoim repo może wyjść inaczej i właśnie dlatego warto odpalić własny."
+/>
+
+## Gdzie Fable 5 naprawdę zarabia u mnie na swoją cenę
+
+Nie „mądrzejszy". Jedna rzecz: trzyma wątek.
+
+Każda pętla agentowa, którą puszczam, umiera tak samo. Model gubi kontekst na kroku N i zaczyna zmyślać. Mój pipeline lokalizacji przepuszcza każdy blok artykułu przez tłumaczenie, odtworzenie i ponowne złożenie, razy siedem języków. Pętla wzbogacania dotyka CRM-u przez wiele kroków. Dryf to podatek, który płacę, a dziś płacę go ponownymi przebiegami albo czytaniem każdej linii ręcznie, jak dziś rano, cztery razy.
+
+Główna obietnica Fable'a celuje dokładnie w ten tryb awarii: trzymać kontekst przez miliony tokenów, kończyć długie przebiegi agentowe bez gubienia wątku. Najgłośniejszy dowód to Stripe, który w jeden dzień przeprowadził migrację 50 milionów linii Ruby w całym kodzie, robota, która według Anthropic zajęłaby zespołowi dwa miesiące ręcznie. Wersja do sprawdzenia to eval kodowania:
+
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "score", label: "SWE-Bench Pro", align: "center", mono: true }
+  ]}
+  rows={[
+    { model: "Fable 5", score: "80,3%" },
+    { model: "Opus 4.8", score: "69,2%" }
+  ]}
+  highlight={[0]}
+  caption="Z materiałów premierowych, więc traktuj to jako deklarację, dopóki twój własny workload jej nie potwierdzi. Cytuję ją, bo długie kodowanie to dokładnie ta robota, którą rzuca w model moje repo, a nie dlatego, że ją odtworzyłem."
+/>
+
+Jeśli to się potwierdzi na mojej robocie, wygrana to nie ładniejszy output. To jeden przebieg zamiast trzech. A to zmienia koszt wyniku, jedyną liczbę z całej premiery, która dotyka mojego P&L.
+
+## Cennik Fable 5: 2x Opus 4.8, i haczyk
+
+Gdy 23 czerwca ruszy rozliczanie za użycie, Fable 5 i Mythos 5 będą kosztować po 10 $ za milion tokenów wejściowych i 50 $ za milion wyjściowych. To dokładnie dwa razy tyle co Opus 4.8, który stoi na 5 $ i 25 $. To opublikowane ceny katalogowe, nie moje szacunki.
+
+<DataTable
+  columns={[
+    { key: "metric", label: "" },
+    { key: "fable", label: "Fable 5 / Mythos 5", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.8", align: "center", mono: true }
+  ]}
+  rows={[
+    { metric: "Tokeny wejściowe, za milion", fable: "$10", opus: "$5" },
+    { metric: "Tokeny wyjściowe, za milion", fable: "$50", opus: "$25" },
+    { metric: "Mnożnik vs Opus", fable: "2x", opus: "1x" },
+    { metric: "Koniec darmowego okna", fable: "23 cze", opus: "n/d" },
+    { metric: "Cichy fallback do Opus 4.8", fable: "<5% sesji", opus: "n/d" }
+  ]}
+  caption="Opublikowane ceny katalogowe. Fable 5 kosztuje dokładnie dwa razy tyle co Opus 4.8. Premia kupuje możliwości frontier."
+/>
+
+Liczby, która rozstrzyga, czy to jest warte 2x, nie znajdziesz na żadnym cenniku: koszt skończonego wyniku. Model dwa razy droższy za token, który kończy długi przebieg agentowy w połowie kroków, może wyjść taniej na wynik. To jedyne porównanie, które się liczy, i dokładnie to ma mierzyć harness wyżej.
+
+## Co urodziło pierwsze 48 godzin Fable 5
+
+Premiera była wczoraj, a użytecznego materiału już przybywa. To jest krótka lista rzeczy, które naprawdę otworzyłem i doczytałem do końca, nie wysypisko linków.
+
+<ToolCard
+  cols={3}
+  title="Warte twojego czasu od premiery"
+  caption="Wszystko zweryfikowane i otwarte przeze mnie 10 czerwca. Jeśli coś jest na tej liście, to to przeczytałem."
+  items={[
+    { name: "Pierwsze wrażenia Simona Willisona", description: "5,5 godziny testów na żywym kodzie. Werdykt: powolna, droga bestia, która przerabia wszystko. Zgadza się z moimi liczbami.", href: "https://simonwillison.net/2026/Jun/9/claude-fable-5/", tags: ["Hands-on"] },
+    { name: "Fable 5 w GitHub Copilot", description: "Ogólnodostępny w Copilocie od dnia premiery. Najszybsza droga, żeby spróbować go w edytorze, który już masz.", href: "https://github.blog/changelog/2026-06-09-claude-fable-5-is-generally-available-for-github-copilot/", tags: ["GitHub"] },
+    { name: "Strona migracji API", description: "Identyfikatory modeli, mechanizm fallbacku, nowe sygnały odmowy. Przeczytaj, zanim twoje pętle agentowe spotkają klasyfikator.", href: "https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5", tags: ["Dokumentacja"] },
+    { name: "TechCrunch o timingu", description: "Wątek dyskursu: najmocniejszy publiczny model kilka dni po tym, jak Anthropic ostrzegał, że możliwości robią się niebezpieczne.", href: "https://techcrunch.com/2026/06/09/anthropics-claude-fable-5-is-a-version-of-mythos-the-public-can-access-today/", tags: ["Prasa"] },
+    { name: "Recenzja produktowa Lenny'ego", description: "Co nowy model robi dobrze, a co bardzo źle, od strony produktu, nie benchmarku.", href: "https://www.lennysnewsletter.com/p/claude-fable-5-review-what-the-new", tags: ["Recenzja"] },
+    { name: "Wyciekły system prompt", description: "120 000 znaków instrukcji, na GitHubie w dobę po premierze. Przeczytaj, co model dostaje, zanim odezwie się do ciebie.", href: "https://github.com/elder-plinius/CL4R1T4S/blob/main/ANTHROPIC/CLAUDE-FABLE-5.md", tags: ["GitHub"] }
+  ]}
+/>
+
+## Co zrobić z darmowym oknem
+
+Fable 5 jest darmowy w planach Pro, Max, Team i Enterprise na stanowiska do 22 czerwca, potem przechodzi na kredyty za użycie. To darmowe okno to dwa tygodnie na przetestowanie go na prawdziwej robocie, zanim ruszy licznik.
+
+<DoDont
+  doLabel="Rób"
+  dontLabel="Nie rób"
+  do={[
+    "Przetestuj Fable 5 na swoim najtrudniejszym prawdziwym zadaniu w darmowym oknie",
+    "Loguj, który model odpowiedział, gdy w pętlach agentowych odpali się fallback",
+    "Mierz koszt skończonego wyniku, nie koszt tokena",
+    "Przepuść własne evale, zanim uwierzysz w jakąkolwiek liczbę z dnia premiery"
+  ]}
+  dont={[
+    "Powtarzać benchmarków z premiery, jakbyś sam je zmierzył",
+    "Wpinać outputu klasy Mythos w cokolwiek bez przeczytania polityki 30-dniowej retencji",
+    "Zakładać, że zabezpieczenia nie zablokują uzasadnionego żądania",
+    "Czekać do 23 czerwca i potem narzekać, że kosztuje kredyty"
+  ]}
+/>
+
+Pełne wyniki benchmarku masz wyżej: punkty, koszty, znaleziska spoza klucza, jakość raportów. Dalej: koszt wyniku na pipelinie lokalizacji i pętli wzbogacania, Fable kontra Opus na ciągłej robocie. Jeśli też testujesz, napisz mi, co się u ciebie wyłożyło. Tego żaden wpis premierowy ci nie da.
+
+## FAQ: Claude Fable 5 i Mythos 5
+
+### Czy Claude Fable 5 to ten sam model co Claude Mythos 5?
+
+Tak. Anthropic potwierdza, że pod spodem to ten sam model. Różnica to zabezpieczenia: Fable 5 to wersja ogólnodostępna, która przy oznaczonych tematach po cichu przełącza się na Opus 4.8, a Mythos 5 działa z częścią zabezpieczeń zdjętą i trafia tylko do zweryfikowanych partnerów cyberobrony przez Project Glasswing.
+
+### Ile kosztuje Claude Fable 5?
+
+10 $ za milion tokenów wejściowych i 50 $ za milion wyjściowych, dokładnie dwa razy tyle co Opus 4.8 (5 $ i 25 $). Do 22 czerwca 2026 jest darmowy w planach Pro, Max, Team i Enterprise na stanowiska; rozliczanie za użycie rusza 23 czerwca.
+
+### Czy Claude Fable 5 jest lepszy od Opusa i Sonneta?
+
+Na moim własnym benchmarku, audycie repo tej strony punktowanym względem ręcznie zweryfikowanego klucza odpowiedzi, Fable 5 wziął 8.5 z 11 punktów przy 8.0 dla Opus 4.8 i 1 dla Sonnet 4.6, i jako jedyny zgarnął całą warstwę failovera. Na koszcie znalezionego buga Opus 4.8 wygrał z dużym zapasem: 0,11 $ wobec 0,30 $, łapiąc prawie tyle samo za jedną trzecią ceny. Sztandarowa liczba samego Anthropic to SWE-Bench Pro: 80,3% dla Fable 5 wobec 69,2% dla Opus 4.8. Wszystko to traktuj jako wsad do własnego evala, nie jako werdykt.
+
+### Czemu na moje zapytanie do Fable 5 odpowiedział Opus 4.8?
+
+Fable 5 nie odmawia przy oznaczonych tematach, tylko po cichu odpowiada jako Opus 4.8. Według Anthropic dotyczy to mniej niż 5% sesji. Jeśli puszczasz pętle agentowe albo evale, loguj, który model odpowiedział, inaczej twoje liczby mieszają dwa modele.
+
+## Źródła i dalsza lektura
+
+Przeczytałem materiały źródłowe, żebyś ty też mógł. To prawdziwe linki, nie streszczenie streszczenia.
+
+<ToolCard
+  cols={3}
+  title="Źródła pierwotne"
+  caption="Strony samego Anthropic plus zewnętrzne evale cytowane w dniu premiery."
+  items={[
+    { name: "Ogłoszenie premiery", description: "Pełny wpis Anthropic o Fable 5 i Mythos 5.", href: "https://www.anthropic.com/news/claude-fable-5-mythos-5", tags: ["Anthropic"] },
+    { name: "System card", description: "Szczegóły testów bezpieczeństwa i możliwości stojące za deklaracjami.", href: "https://anthropic.com/claude-fable-5-mythos-5-system-card", tags: ["Safety"] },
+    { name: "Project Glasswing", description: "Współpraca z rządem USA w obszarze cyberobrony.", href: "https://www.anthropic.com/glasswing", tags: ["Cyber"] },
+    { name: "Mythos Preview, aktualizacja cyber", description: "Wcześniejszy odczyt krzywej możliwości cyber.", href: "https://red.anthropic.com/2026/mythos-preview/", tags: ["Red team"] },
+    { name: "Cognition FrontierCode", description: "Eval kodowania, w którym Fable 5 ma być na szczycie.", href: "https://cognition.ai/blog/frontier-code", tags: ["Eval"] },
+    { name: "Niezależne badanie z biologii", description: "Praca cytowana jako potwierdzenie jednej z hipotez Mythosa.", href: "https://www.biorxiv.org/content/10.64898/2026.03.12.711259v1", tags: ["Science"] }
+  ]}
+/>
+
+Jeśli chcesz kontekstu operatora wokół tego tematu, pisałem już o [Claude Code jako stacku agentów GTM](/pl/insights/claude-code-vs-clay/) i o [stacku produkcyjnym AI, na którym realnie wydaję](/pl/insights/ai-production-stack/). Zasada ta sama co tutaj: model to jedna warstwa, system wokół niego to jest robota.
+

@@ -172,12 +172,23 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 3, name: post.data.title, item: canonicalURL },
   ],
 };
-const insightsSchema = [articleSchema, breadcrumbSchema];
+const faqSchema = post.data.faq?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: post.data.faq.map(({ q, a }) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: a },
+      })),
+    }
+  : null;
+const insightsSchema = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [])];
 
 ---
 
 <Layout
-  title={post.data.title}
+  title={post.data.seoTitle ?? post.data.title}
   description={post.data.description}
   canonical={canonicalPath}
   ogImage={ogImage}
@@ -187,10 +198,11 @@ const insightsSchema = [articleSchema, breadcrumbSchema];
   updatedAt={updatedAt}
   schema={insightsSchema}
 >
-  <!-- Reading progress bar -->
+  <!-- Reading progress bar: faint full-width track + accent fill -->
+  <div class="fixed top-0 left-0 z-40 h-1 w-full bg-[color-mix(in_srgb,var(--color-border)_55%,transparent)]" aria-hidden="true" />
   <div
     id="progress-bar"
-    class="fixed top-0 left-0 z-50 h-0.5 bg-[var(--color-accent)] w-0 transition-none"
+    class="fixed top-0 left-0 z-50 h-1 bg-[var(--color-accent)] w-0 shadow-[0_0_8px_2px_color-mix(in_srgb,var(--color-accent)_55%,transparent)] transition-none"
     role="progressbar"
     aria-label="Reading progress"
     aria-valuenow={0}
