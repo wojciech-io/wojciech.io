@@ -1,9 +1,9 @@
 ---
 title: "Claude Fable 5 pierwszego dnia znalazł u mnie żywego buga, więc zderzyłem go z Opusem i Sonnetem"
-seoTitle: "Claude Fable 5 vs Opus 4.6 vs Sonnet 4.6: mój własny benchmark"
+seoTitle: "Claude Fable 5 vs Opus 4.8 vs Sonnet 4.6: mój własny benchmark"
 description: "Dałem Claude Fable 5, Opusowi 4.6 i Sonnetowi 4.6 do audytu repo własnej strony. Fable znalazł żywego buga w failoverze, Opus był tańszy na wynik, Sonnet go przegapił. Wyniki, koszty, poprawka: wszystko publiczne."
 publishedAt: "2026-06-09"
-updatedAt: "2026-06-10"
+updatedAt: "2026-06-11"
 tags:
   - AI
   - Claude
@@ -25,7 +25,7 @@ faq:
   - q: "Ile kosztuje Claude Fable 5?"
     a: "10 $ za milion tokenów wejściowych i 50 $ za milion wyjściowych, dokładnie dwa razy tyle co Opus 4.8 (5 $ i 25 $). Do 22 czerwca 2026 jest darmowy w planach Pro, Max, Team i Enterprise na stanowiska; rozliczanie za użycie rusza 23 czerwca."
   - q: "Czy Claude Fable 5 jest lepszy od Opusa i Sonneta?"
-    a: "Na moim własnym benchmarku, audycie repo tej strony punktowanym względem ręcznie zweryfikowanego klucza odpowiedzi, Fable 5 wziął 8.5 z 11 punktów przy 4.5 dla Opus 4.6 i 1 dla Sonnet 4.6. Na koszcie znalezionego buga wygrał Opus 4.6: 0,28 $ wobec 0,30 $. Traktuj to jako wsad do własnego evala, nie jako werdykt."
+    a: "Na moim własnym benchmarku, audycie repo tej strony punktowanym względem ręcznie zweryfikowanego klucza odpowiedzi, Fable 5 wziął 8.5 z 11 punktów przy 8.0 dla Opus 4.8 i 1 dla Sonnet 4.6. Na koszcie znalezionego buga Opus 4.8 wygrał na całej linii: 0,11 $ wobec 0,30 $. Traktuj to jako wsad do własnego evala, nie jako werdykt."
   - q: "Czemu na moje zapytanie do Fable 5 odpowiedział Opus 4.8?"
     a: "Fable 5 nie odmawia przy oznaczonych tematach, tylko po cichu odpowiada jako Opus 4.8. Według Anthropic dotyczy to mniej niż 5% sesji. Jeśli puszczasz pętle agentowe albo evale, loguj, który model odpowiedział, inaczej twoje liczby mieszają dwa modele."
 ---
@@ -47,7 +47,7 @@ Wpis premierowy to benchmark na benchmarku. Nie zamierzam ich streszczać. Na Cl
   ]}
   rows={[
     { model: "Claude Fable 5", score: "8.5", cost: "$0.30", verdict: "Znalazł najwięcej i jako jedyny w pełni złapał żywego buga failovera" },
-    { model: "Claude Opus 4.6", score: "4.5", cost: "$0.28", verdict: "Złapał głównego buga za połowę ceny, najtańszy na wynik" },
+    { model: "Claude Opus 4.8", score: "8.0", cost: "$0.11", verdict: "Złapał prawie tyle samo za jedną trzecią ceny na buga: najtańszy na wynik" },
     { model: "Claude Sonnet 4.6", score: "1", cost: "$0.76", verdict: "Przegapił najgroźniejszego, ale przyniósł realnego buga spoza mojego klucza" }
   ]}
   highlight={[0]}
@@ -191,25 +191,25 @@ To ten sam podział pracy co w historii z blokiem cenowym, tym razem na infrastr
   Mój codzienny Claude Code dźwiga około 90 integracji pluginów i MCP. W tym środowisku sesje audytu zamiast audytować, raz za razem zjeżdżały w workflow reklam Spotify, który wstrzykiwał jeden z pluginów. Wyrzuciłem te przebiegi i przebudowałem test na sterylnie: zero pluginów, zero pamięci, świeże klony jednego commita, przebiegi headless, identyczny prompt. Jeśli twój benchmark agentów chodzi w twoim codziennym setupie, benchmarkujesz też swoje pluginy.
 </Callout>
 
-## Fable 5 vs Opus 4.6 vs Sonnet 4.6: jeden klucz odpowiedzi, liczby
+## Fable 5 vs Opus 4.8 vs Sonnet 4.6: jeden klucz odpowiedzi, liczby
 
-Przebiegi spłynęły tego samego popołudnia. Trzy headlessowe audyty w tym sterylnym harnessie: identyczne klony jednego commita, identyczny prompt, identyczne limity narzędzi tylko do odczytu, po jednym przebiegu dla Fable 5, Opus 4.6 i Sonnet 4.6. Kluczem odpowiedzi było sześć bugów, które zweryfikowałem w kodzie ręcznie, zanim jakikolwiek model wystartował, ważonych po severity, jedenaście punktów łącznie. Punkt wymaga nazwania mechanizmu, nie samego pliku.
+Przebiegi poszły w tym sterylnym harnessie: identyczne klony jednego commita, identyczny prompt, identyczne limity narzędzi tylko do odczytu, po jednym przebiegu dla Fable 5, Opus 4.8 i Sonnet 4.6. Kluczem odpowiedzi było sześć bugów, które zweryfikowałem w kodzie ręcznie, zanim jakikolwiek model wystartował, ważonych po severity, jedenaście punktów łącznie. Punkt wymaga nazwania mechanizmu, nie samego pliku.
 
 <DataTable
   columns={[
     { key: "finding", label: "Zweryfikowane znalezisko (waga)" },
     { key: "fable", label: "Fable 5", align: "center", mono: true },
-    { key: "opus", label: "Opus 4.6", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.8", align: "center", mono: true },
     { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
   ]}
   rows={[
     { finding: "Flip-flop failovera: health check odpytuje żywą domenę, nie origin primary (3)", fable: "3", opus: "3", sonnet: "0" },
-    { finding: "Worker i workflow nie zgadzają się, co znaczy zdrowy: worker przepuszcza 404, workflow go oblewa (2)", fable: "2", opus: "0", sonnet: "1" },
-    { finding: "Hostname primary zahardkodowany w trzech miejscach (2)", fable: "2", opus: "0", sonnet: "0" },
+    { finding: "Worker i workflow nie zgadzają się, co znaczy zdrowy: worker przepuszcza 404, workflow go oblewa (2)", fable: "2", opus: "2", sonnet: "1" },
+    { finding: "Hostname primary zahardkodowany w trzech miejscach (2)", fable: "2", opus: "1.5", sonnet: "0" },
     { finding: "Rekord DNS poza Terraformem, backend stanu lokalny (2)", fable: "1", opus: "1", sonnet: "0" },
     { finding: "Wartość env wpisana na sztywno w publicznym IaC (1)", fable: "0.5", opus: "0.5", sonnet: "0" },
     { finding: "Stały komentarz o locale w _redirects (1)", fable: "0", opus: "0", sonnet: "0" },
-    { finding: "Wynik na 11", fable: "8.5", opus: "4.5", sonnet: "1" }
+    { finding: "Wynik na 11", fable: "8.5", opus: "8.0", sonnet: "1" }
   ]}
   highlight={[6]}
   caption="Każde znalezisko zweryfikowałem w kodzie, zanim którykolwiek model ruszył. Wymyślone ryzyko kosztowałoby punkt; nikt żadnego nie wymyślił."
@@ -219,20 +219,22 @@ Przebiegi spłynęły tego samego popołudnia. Trzy headlessowe audyty w tym ste
   columns={[
     { key: "metric", label: "Metryka" },
     { key: "fable", label: "Fable 5", align: "center", mono: true },
-    { key: "opus", label: "Opus 4.6", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.8", align: "center", mono: true },
     { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
   ]}
   rows={[
-    { metric: "Koszt, USD", fable: "2.57", opus: "1.26", sonnet: "0.76" },
-    { metric: "Czas zegarowy", fable: "7m 18s", opus: "3m 16s", sonnet: "4m 37s" },
-    { metric: "Tury agenta", fable: "32", opus: "46", sonnet: "40" },
-    { metric: "Koszt znalezionego punktu", fable: "$0.30", opus: "$0.28", sonnet: "$0.76" }
+    { metric: "Koszt, USD", fable: "2.57", opus: "0.86", sonnet: "0.76" },
+    { metric: "Czas zegarowy", fable: "7m 18s", opus: "3m 39s", sonnet: "4m 37s" },
+    { metric: "Tury agenta", fable: "32", opus: "22", sonnet: "40" },
+    { metric: "Koszt znalezionego punktu", fable: "$0.30", opus: "$0.11", sonnet: "$0.76" }
   ]}
   highlight={[3]}
-  caption="Koszt na punkt to wiersz, który się liczy: tokeny są wejściem, znalezione bugi wyjściem."
+  caption="Koszt na punkt to wiersz, który się liczy: tokeny są wejściem, znalezione bugi wyjściem. Opus 4.8 znalazł prawie tyle co Fable za jedną trzecią ceny na buga."
 />
 
-Werdykt jest mniej elegancki niż leaderboard. Fable 5 znalazł najwięcej i jako jedyny zgarnął całą warstwę failovera: flip-flop, dwie sprzeczne definicje zdrowia, dryf hostname. Opus 4.6 trafił głównego buga równie precyzyjnie za połowę ceny i na koszcie za punkt wygrywa, ale był ślepy na operacyjne detale wokół. Sonnet 4.6 w ogóle nie zobaczył flip-flopa, a i tak zarobił na swój przebieg: przyniósł najbardziej akcjonalne znalezisko spoza mojego klucza, endpoint zapisu na newsletter, który po cichu spada na starą appkę na Vercelu, której nikt już nie utrzymuje.
+Werdykt jest mniej elegancki niż leaderboard. Fable 5 znalazł najwięcej: 8.5 na 11, jako jedyny zgarnął całą warstwę failovera, flip-flop i dwie sprzeczne definicje zdrowia i dryf hostname. Ale to Opus 4.8 jest wynikiem, przy którym warto się zatrzymać. Dostał 8.0, pół punktu za Fable, za 0,86 $ wobec 2,57 $. To 0,11 $ na znalezionego buga wobec 0,30 $ u Fable: model, od którego Fable jest dwa razy droższy, złapał prawie wszystko to co Fable, za jedną trzecią ceny na wynik. Sonnet 4.6 w ogóle nie zobaczył flip-flopa, a i tak zarobił na swój przebieg: przyniósł najbardziej akcjonalne znalezisko spoza mojego klucza, endpoint zapisu na newsletter, który po cichu spada na starą appkę na Vercelu, której nikt już nie utrzymuje.
+
+Jedno uczciwe zastrzeżenie o moim własnym setupie. Rano w dniu premiery miałem dostęp API tylko do starszego Opus 4.6, więc pierwsza wersja tego testu punktowała właśnie jego. Wyszło 4.5 na 11: złapał flip-flop, ale był ślepy na warstwę operacyjną wokół. Powtórzyłem cały test na Opus 4.8, aktualnym punkcie odniesienia ceny, względem którego mierzony jest Fable, a skok z 4.5 do 8.0 na dokładnie tym samym prompcie to osobny datapoint. Liczby powyżej są w całości z 4.8.
 
 Jeszcze jedna uczciwa linijka, której leaderboardy nigdy nie drukują. Wszystkie trzy modele zgłosiły znalezisko, które mój klucz odpowiedzi jawnie oznaczał jako fałszywy alarm: byłem przekonany, że lista locale jest scentralizowana w jednym pliku. One powiedziały, że jest deklarowana niezależnie w pięciu miejscach. Sprawdziłem. Miały rację, a mój klucz się mylił. Benchmark zaudytował egzaminatora.
 
@@ -250,8 +252,8 @@ Tabela wyników liczy tylko to, co było w moim kluczu. Ale każdy model przyni�
     { model: "Fable 5", finding: "Backup Azure to sam dist, brak route'ów API, redirectów i nagłówków bezpieczeństwa po failoverze", impact: "Częściowa awaria: strona się renderuje, formularze i nagłówki znikają" },
     { model: "Fable 5", finding: "Dwa konkurencyjne pipeline'y deploy z różnymi zmiennymi env", impact: "Cichy dryf konfiguracji między CI a Wranglerem" },
     { model: "Fable 5", finding: "CSP w middleware i w konfiguracji Pages już rozjechane (PostHog brakuje w jednej)", impact: "Analityka nie działa na części stron" },
-    { model: "Opus 4.6", finding: "Tagi hreflang reklamują URL-e locale, które zwracają 404", impact: "Wyszukiwarki crawlują martwe linki, zaufanie indeksu spada" },
-    { model: "Opus 4.6", finding: "Terraform i wrangler.toml zarządzają nakładającymi się zasobami bez współdzielonego stanu", impact: "Dryf infrastruktury, którego żadne narzędzie nie wykryje" },
+    { model: "Opus 4.8", finding: "Backup failovera na Azure odbudowuje się raz w tygodniu z gołego builda bez zmiennych env", impact: "Failover może serwować tydzień stary, inaczej zbudowany serwis" },
+    { model: "Opus 4.8", finding: "ID konta Cloudflare wpisane na sztywno w pięciu jobach deployu", impact: "Jedno ID skopiowane pięć razy, brak jednego źródła do rotacji" },
     { model: "Sonnet 4.6", finding: "Endpoint zapisu proxuje na starą appkę na Vercelu, której nikt nie utrzymuje", impact: "Subskrybenci lądują w martwym pipeline" },
     { model: "Sonnet 4.6", finding: "crypto.ts zduplikowany w trzech appkach, dwie kopie bajt w bajt identyczne", impact: "Napraw jedną, zapomnij o drugiej, wyślij niespójność" }
   ]}
@@ -266,20 +268,20 @@ Liczby nie mówią, jak to jest czytać dwutysięczny raport o 23:00 i decydowa�
   columns={[
     { key: "quality", label: "Jakość raportu" },
     { key: "fable", label: "Fable 5", align: "center", mono: true },
-    { key: "opus", label: "Opus 4.6", align: "center", mono: true },
+    { key: "opus", label: "Opus 4.8", align: "center", mono: true },
     { key: "sonnet", label: "Sonnet 4.6", align: "center", mono: true }
   ]}
   rows={[
-    { quality: "Precyzja plików i linii", fable: "5", opus: "4", sonnet: "4" },
-    { quality: "Trafność severity", fable: "5", opus: "4", sonnet: "3" },
+    { quality: "Precyzja plików i linii", fable: "5", opus: "5", sonnet: "4" },
+    { quality: "Trafność severity", fable: "5", opus: "5", sonnet: "3" },
     { quality: "Zwięzłość", fable: "4", opus: "5", sonnet: "4" },
     { quality: "Wykonalność rekomendacji", fable: "5", opus: "4", sonnet: "4" }
   ]}
-  caption="Subiektywna ocena, moja lektura. Fable cytował kod dosłownie i trafił każdą severity. Opus pisał najzwięźlej. Sonnet przeszacował jedno severity, ale dał najczystsze kroki naprawcze."
+  caption="Subiektywna ocena, moja lektura. Fable i Opus 4.8 oba cytowały kod dosłownie i trafiły severity; Opus pisał zwięźlej, w mniejszej liczbie tur. Sonnet przeszacował jedno severity, ale dał najczystsze kroki naprawcze."
 />
 
 <Callout type="note" title="Artefakty, żebyś mógł to powtórzyć">
-  Modele: `claude-fable-5`, `claude-opus-4-6`, `claude-sonnet-4-6`, po jednym przebiegu headless `claude -p`. Baza: [commit 612c367](https://github.com/wojciech-io/wojciech.io/commit/612c367) tego repo, trzy identyczne klony. Harness: pusta konfiguracja MCP, zero pluginów, zero pamięci, narzędzia tylko do odczytu plus zapis jednego pliku. Prompt: zaudytuj architekturę, wskaż pięć największych ryzyk z plikami i mechanizmami, spisz raport. Klucz odpowiedzi: sześć znalezisk zweryfikowanych najpierw przeze mnie w kodzie, ważonych do 11 punktów; nazwanie pliku bez mechanizmu nie daje nic.
+  Modele: `claude-fable-5`, `claude-opus-4-8`, `claude-sonnet-4-6` (plus `claude-opus-4-6` do porównania skoku wersji), po jednym przebiegu headless `claude -p`. Baza: [commit 612c367](https://github.com/wojciech-io/wojciech.io/commit/612c367) tego repo, identyczne klony. Harness: pusta konfiguracja MCP, zero pluginów, zero pamięci, narzędzia tylko do odczytu plus zapis jednego pliku. Prompt: zaudytuj architekturę, wskaż pięć największych ryzyk z plikami i mechanizmami, spisz raport. Klucz odpowiedzi: sześć znalezisk zweryfikowanych najpierw przeze mnie w kodzie, ważonych do 11 punktów; nazwanie pliku bez mechanizmu nie daje nic.
 </Callout>
 
 Kiedy który model, w jednej tabeli:
@@ -292,7 +294,7 @@ Kiedy który model, w jednej tabeli:
   ]}
   rows={[
     { kiedy: "Audyt systemu, od którego zależy biznes", model: "Fable 5", czemu: "Jako jedyny zebrał całą warstwę failovera; przy awarii produkcyjnej różnica 2x w cenie nie gra roli" },
-    { kiedy: "Codzienna robota agentowa, budżet się liczy", model: "Opus 4.6", czemu: "Tego samego głównego buga znalazł za połowę ceny; najtańszy na punkt: 0,28 $" },
+    { kiedy: "Codzienna robota agentowa, budżet się liczy", model: "Opus 4.8", czemu: "Dostał 8.0 przy 8.5 Fable za jedną trzecią ceny na buga; najtańszy na punkt: 0,11 $" },
     { kiedy: "Szybkie, tanie przejście po koderskich konkretach", model: "Sonnet 4.6", czemu: "Najgroźniejszego buga nie zobaczył, ale przyniósł najbardziej akcjonalne znalezisko spoza klucza" }
   ]}
   caption="Mój podział po jednym przebiegu benchmarku. Na twoim repo może wyjść inaczej i właśnie dlatego warto odpalić własny."
@@ -396,7 +398,7 @@ Tak. Anthropic potwierdza, że pod spodem to ten sam model. Różnica to zabezpi
 
 ### Czy Claude Fable 5 jest lepszy od Opusa i Sonneta?
 
-Na moim własnym benchmarku, audycie repo tej strony punktowanym względem ręcznie zweryfikowanego klucza odpowiedzi, Fable 5 wziął 8.5 z 11 punktów przy 4.5 dla Opus 4.6 i 1 dla Sonnet 4.6, i jako jedyny zgarnął całą warstwę failovera. Na koszcie znalezionego buga wygrał jednak Opus 4.6: 0,28 $ wobec 0,30 $. Sztandarowa liczba samego Anthropic to SWE-Bench Pro: 80,3% dla Fable 5 wobec 69,2% dla Opus 4.8. Wszystko to traktuj jako wsad do własnego evala, nie jako werdykt.
+Na moim własnym benchmarku, audycie repo tej strony punktowanym względem ręcznie zweryfikowanego klucza odpowiedzi, Fable 5 wziął 8.5 z 11 punktów przy 8.0 dla Opus 4.8 i 1 dla Sonnet 4.6, i jako jedyny zgarnął całą warstwę failovera. Na koszcie znalezionego buga Opus 4.8 wygrał z dużym zapasem: 0,11 $ wobec 0,30 $, łapiąc prawie tyle samo za jedną trzecią ceny. Sztandarowa liczba samego Anthropic to SWE-Bench Pro: 80,3% dla Fable 5 wobec 69,2% dla Opus 4.8. Wszystko to traktuj jako wsad do własnego evala, nie jako werdykt.
 
 ### Czemu na moje zapytanie do Fable 5 odpowiedział Opus 4.8?
 
