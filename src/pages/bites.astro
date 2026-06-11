@@ -25,6 +25,8 @@ interface Bite {
   repo: string;
   download: string;
   skills: Skill[];
+  install: { step: string; text: string }[];
+  demos: boolean;
 }
 
 const bites: Bite[] = [
@@ -45,6 +47,12 @@ const bites: Bite[] = [
       { command: '/enrich [csv]', what: 'Batch research + score for a CSV of company names. Outputs enriched CSV with priority flags.' },
       { command: '/log [company] [status]', what: 'Update activity log with account status and timestamp.' },
     ],
+    install: [
+      { step: '1', text: 'Download claude-md-starter.zip below and unzip it.' },
+      { step: '2', text: 'Fill the brackets with your own client data: ICP, tone, the five skills.' },
+      { step: '3', text: 'Point Claude Code at the folder. The agent picks up the identity.' },
+    ],
+    demos: false,
   },
   {
     name: 'Page Optimizer',
@@ -82,14 +90,16 @@ const bites: Bite[] = [
         what: 'Catches visual dissonance: inconsistent border-radius, broken type scales, random shadows and off-grid spacing.',
       },
     ],
+    install: [
+      { step: '1', text: 'Download page-optimizer.zip below and unzip it.' },
+      { step: '2', text: 'Run install.sh on macOS or Linux, install.ps1 on Windows.' },
+      { step: '3', text: 'Restart Claude Code. The skills show up on their own.' },
+    ],
+    demos: true,
   },
 ];
 
-const install = [
-  { step: '1', text: 'Download page-optimizer.zip below and unzip it.' },
-  { step: '2', text: 'Run install.sh on macOS or Linux, install.ps1 on Windows.' },
-  { step: '3', text: 'Restart Claude Code. The skills show up on their own.' },
-];
+const pageOptimizer = bites.find((bite) => bite.download === PAGE_OPTIMIZER_DOWNLOAD) ?? bites[0];
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -106,7 +116,7 @@ const softwareSchema = {
   name: 'Page Optimizer',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'macOS, Linux, Windows',
-  description: bites[0].summary,
+  description: pageOptimizer.summary,
   url: SITE.url + '/bites/',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
 };
@@ -175,7 +185,7 @@ const softwareSchema = {
           <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7">
             <h3 class="text-sm font-semibold text-[var(--color-text)] mb-5">Install in three steps</h3>
             <ol class="flex flex-col gap-4">
-              {install.map(({ step, text }) => (
+              {bite.install.map(({ step, text }) => (
                 <li class="flex gap-3">
                   <span class="flex-none grid place-items-center w-6 h-6 rounded-full border border-[var(--color-border)] text-xs font-semibold text-[var(--color-accent-hi)] bg-[var(--color-surface-2)]">{step}</span>
                   <span class="text-sm text-[var(--color-text-muted)] leading-relaxed">{text}</span>
@@ -185,7 +195,9 @@ const softwareSchema = {
           </div>
         </div>
 
-        <!-- Before / after: live, interactive demos -->
+        <!-- Before / after: live, interactive demos. Page Optimizer only. -->
+        {bite.demos && (
+        <Fragment>
         <h3 class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-muted)] mb-5">Before and after</h3>
         <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-2xl mb-2">
           Real fixes shown side by side. Each block shows both states at the same time, so the difference is obvious without hovering or clicking.
@@ -354,6 +366,8 @@ const softwareSchema = {
           </BeforeAfterDemo>
 
         </div>
+        </Fragment>
+        )}
 
         <!-- Skills -->
         <h3 class="text-xs font-semibold tracking-widest uppercase text-[var(--color-text-muted)] mb-5">What is inside</h3>
