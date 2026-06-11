@@ -1,0 +1,76 @@
+---
+title: "Google Ads AI Management Dashboard: erstat standard-UI med et beslutnings-cockpit"
+description: "Hvorfor jeg byggede et AI-native Google Ads management dashboard i stedet for at bruge standard-UI, og hvordan arkitekturen ser ud indefra."
+publishedAt: "2026-03-22"
+tags:
+  - AI
+  - Ads
+  - GTM
+  - Operator tooling
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "dk"
+translationOf: "google-ads-ai-management-dashboard-guide"
+tldr:
+  - "Google Ads UI er optimeret til Googles revenue, ikke til operator-beslutninger"
+  - "AdsAI samler budget, ROAS, ICP-fit, alerts og næste handlinger i ét workspace"
+  - "Bygget med React og et letvægts-backend der poller Ads API på dine vegne"
+  - "Operatoren ser hvad der skal pauses, analyseres eller skaleres. Ingen jagt i rapporter"
+---
+
+Google Ads-interfacet er ikke bygget til beslutningstagning. Det er bygget til konfiguration. Der er forskel.
+
+Du går ind i Ads for at se, hvordan tingene performer. Du ender med at klikke gennem fem faner, sammenligne tal i to browserfaner og bygge et mentalt billede, der fordamper inden næste session. Det egentlige spørgsmål: "hvad skal jeg gøre lige nu?": får aldrig et svar.
+
+AdsAI er mit forsøg på at besvare det.
+
+## Problemet med annonce-dashboards
+
+De fleste annonce-dashboards (Supermetrics, Looker, Data Studio) giver dig mere data i flottere grafer. Det er ikke hullet. Hullet er mellem "her er din ROAS pr. kampagne" og "her er hvad du skal gøre ved det."
+
+De beslutninger der har betydning i paid performance er repetitive og for det meste logiske:
+
+- Hvilke kampagner brænder budget af uden ICP-relevant trafik?
+- Hvilke keywords har høj CTR men lav konvertering: og hvorfor?
+- Hvor er der plads til at skalere uden faldende afkast?
+- Hvad er galt, som jeg endnu ikke har opdaget?
+
+Disse spørgsmål har svar. Svarene findes i data. At hente dem kræver enten en erfaren analytiker til daglige tjek eller et system der klarer det automatisk.
+
+## Sådan ser AdsAI ud
+
+Interfacet har tre sektioner:
+
+**Decision queue**: en prioriteret liste med handlinger: "Pause [Kampagne X], under ICP-tærsklen i 7 dage." "Øg budget på [Kampagne Y] med 20%, ROAS 4.2, headroom bekræftet." Hvert element har de understøttende data inline. Et klik for at handle, et klik for at udskyde.
+
+**Campaign status board**: alle aktive kampagner med statusindikatorer: sund, underpræsterende, pauseret, kræver gennemgang. Farvekodede. Ingen grafer, ingen trends: kun aktuel tilstand.
+
+**Alert rail**: budgetanomalier, pludselige CTR-fald, problemer med spend-tempo. Ting der normalt kræver et dagligt tjek for at opdage.
+
+## ICP-laget
+
+Den del der tog længst tid at bygge var ICP-matching. Ikke al trafik er værd at købe, selv ved et rentabelt ROAS. Hvis du er i B2B SaaS, QSR-franchise eller et segment hvor køberprofilen har betydning, er råt konverteringsvolumen et misvisende signal.
+
+Jeg tilføjede et simpelt ICP-definitionslag: branche, virksomhedsstørrelse, rolle. Systemet krydser kampagne-niveau-signaler (søgeord, landingsside, konverterende jobtitler hvor tilgængeligt) med ICP-definitionen og flagger uoverensstemmelser. Det fanger kampagner der ser rentable ud, men trækker det forkerte segment til.
+
+## Arkitektur
+
+Backend er minimal: en letvægts Node-service med scheduleret Ads API-polling, en lille Postgres-instans til historik og et sæt regelbaserede scoring-funktioner. Ingen ML-model. "Intelligensen" er kodede regler: grænseovertrædelser, trendbrud, ICP-mismatch-signaler. Simpel logik anvendt konsekvent slår dyre modeller anvendt inkonsekvent.
+
+Frontend er React med en stram datakontrakt. Ingen unødig abstraktion: hvert view besvarer et specifikt operator-spørgsmål.
+
+## Hvad jeg ville gøre anderledes
+
+Den største ting jeg undervurderede var auth-kompleksiteten i Ads API. OAuth refresh-håndtering for flere konti er genuint irriterende. Det ville jeg abstrahere tidligere.
+
+Jeg ville også starte med alert rail som MVP, ikke det fulde cockpit. Den mest værdifulde handling er at fange dårlige ting tidligt. Optimeringsqueuen kommer på andenpladsen.
+
+## Konklusionen
+
+Operator-grade tooling til paid performance behøver ikke at være dyrt eller kompliceret. Google Ads UI ændrer sig ikke: de har intet incitament til at hjælpe dig med at bruge mere effektivt. Byg det lag der tjener dine beslutninger, ikke deres interface.
+
+---
+
+**Relaterede artikler:** [B2B Revenue System Design: hvordan operatorer tænker anderledes om vækst](/insights/b2b-revenue-system-design-operator-framework) · [Sådan bygger du en GTM AI Agent til outbound research og CRM-berigelse](/insights/how-to-build-gtm-ai-agent-outbound-crm)

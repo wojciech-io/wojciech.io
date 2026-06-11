@@ -1,6 +1,18 @@
 ---
 import { getCollection } from 'astro:content';
 import TestimonialSlider from '../ui/TestimonialSlider.astro';
+import type { LocalizedHomeCopy } from '../../data/locales';
+
+interface Props {
+  copy?: LocalizedHomeCopy;
+}
+
+const { copy } = Astro.props as Props;
+
+// English fallbacks
+const eyebrow = copy?.testimonialsEyebrow ?? 'Testimonials';
+const heading1 = copy?.testimonialsHeading1 ?? 'What it\'s like';
+const heading2 = copy?.testimonialsHeading2 ?? 'to work with me.';
 
 const testimonialsCollection = await getCollection('testimonials', ({ data }) => data.featured && !data.draft);
 const testimonials = testimonialsCollection
@@ -19,10 +31,10 @@ const testimonials = testimonialsCollection
   <div class="mx-auto max-w-6xl px-6">
     <div class="relative mb-12">
       <span class="pointer-events-none absolute -top-6 left-0 text-[8rem] font-bold leading-none select-none text-white opacity-5" aria-hidden="true">"</span>
-      <p class="relative text-xs font-semibold tracking-widest uppercase text-[#ebff00] mb-4">Testimonials</p>
+      <p class="relative text-xs font-semibold tracking-widest uppercase text-[#ebff00] mb-4">{eyebrow}</p>
       <h2 class="reveal-up relative text-[length:var(--text-h2)] font-semibold leading-[1.15] tracking-tight" data-reveal-index="0">
-        <span class="text-white">What it's like</span><br />
-        <span class="text-white/50">to work with me.</span>
+        <span class="text-white">{heading1}</span><br />
+        <span class="text-white/50">{heading2}</span>
       </h2>
     </div>
     <TestimonialSlider testimonials={testimonials} />

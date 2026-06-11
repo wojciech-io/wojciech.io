@@ -23,6 +23,18 @@ export interface LocalizedHomeCopy {
   steps: Array<{ step: string; title: string; body: string }>;
   finalHeading: string;
   finalSubtext: string;
+  projectsEyebrow: string;
+  projectsHeading1: string;
+  projectsHeading2: string;
+  projectsLink: string;
+  aiEyebrow: string;
+  aiHeading1: string;
+  aiHeading2: string;
+  testimonialsEyebrow: string;
+  testimonialsHeading1: string;
+  testimonialsHeading2: string;
+  insightsEyebrow: string;
+  insightsHeading: string;
 }
 
 export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
@@ -59,6 +71,18 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: 'Gibt es ein System, das es wert ist, repariert zu werden?',
     finalSubtext: 'Schick den Kontext, den Engpass und den aktuellen Stack. Ich werde dir sagen, wo ich anfangen würde.',
+    projectsEyebrow: 'Ausgewählte Arbeiten',
+    projectsHeading1: 'Projekte, die live gegangen sind.',
+    projectsHeading2: 'Systeme, die noch laufen.',
+    projectsLink: 'Alle Arbeiten →',
+    aiEyebrow: 'AI-Systeme',
+    aiHeading1: 'AI in der Architektur.',
+    aiHeading2: 'Nicht am Ende draufgeschraubt.',
+    testimonialsEyebrow: 'Referenzen',
+    testimonialsHeading1: 'Wie die Zusammenarbeit',
+    testimonialsHeading2: 'mit mir ist.',
+    insightsEyebrow: 'Schreiben',
+    insightsHeading: 'Notizen eines Operators.',
   },
   dk: {
     key: 'dk',
@@ -93,6 +117,18 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: 'Er der et system, der er værd at reparere?',
     finalSubtext: 'Send kontekst, flaskehals og nuværende stak. Jeg vil fortælle dig, hvor jeg ville starte.',
+    projectsEyebrow: 'Udvalgt arbejde',
+    projectsHeading1: 'Projekter der shipped.',
+    projectsHeading2: 'Systemer der stadig kører.',
+    projectsLink: 'Alt arbejde →',
+    aiEyebrow: 'AI-systemer',
+    aiHeading1: 'AI i arkitekturen.',
+    aiHeading2: 'Ikke boltet på til sidst.',
+    testimonialsEyebrow: 'Anbefalinger',
+    testimonialsHeading1: 'Hvordan det er',
+    testimonialsHeading2: 'at arbejde med mig.',
+    insightsEyebrow: 'Skriveri',
+    insightsHeading: 'Operatørens noter.',
   },
   no: {
     key: 'no',
@@ -127,6 +163,18 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: 'Finnes det et system som er verdt å fikse?',
     finalSubtext: 'Send kontekst, flaskehals og nåværende stack. Jeg skal si deg hvor jeg ville begynt.',
+    projectsEyebrow: 'Utvalgt arbeid',
+    projectsHeading1: 'Prosjekter som ble levert.',
+    projectsHeading2: 'Systemer som fortsatt kjører.',
+    projectsLink: 'Alt arbeid →',
+    aiEyebrow: 'AI-systemer',
+    aiHeading1: 'AI i arkitekturen.',
+    aiHeading2: 'Ikke boltet på til slutt.',
+    testimonialsEyebrow: 'Anbefalinger',
+    testimonialsHeading1: 'Hvordan det er',
+    testimonialsHeading2: 'å jobbe med meg.',
+    insightsEyebrow: 'Skriving',
+    insightsHeading: 'Operatørens notater.',
   },
   jp: {
     key: 'jp',
@@ -161,6 +209,18 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: '立て直す価値のあるシステムはありますか？',
     finalSubtext: 'コンテキスト、ボトルネック、現在のスタックを送ってください。どこから手をつけるかをお伝えします。',
+    projectsEyebrow: '実績紹介',
+    projectsHeading1: '出荷されたプロジェクト。',
+    projectsHeading2: '今も稼働するシステム。',
+    projectsLink: 'すべての実績 →',
+    aiEyebrow: 'AIシステム',
+    aiHeading1: 'AIをアーキテクチャの中に。',
+    aiHeading2: '後付けではなく。',
+    testimonialsEyebrow: '推薦の声',
+    testimonialsHeading1: '私との仕事は',
+    testimonialsHeading2: 'どんな感じか。',
+    insightsEyebrow: 'ライティング',
+    insightsHeading: 'オペレーターの記録。',
   },
   it: {
     key: 'it',
@@ -195,6 +255,18 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: 'C\'è un sistema che vale la pena riparare?',
     finalSubtext: 'Inviami il contesto, il punto critico e lo stack attuale. Ti dirò da dove inizierei.',
+    projectsEyebrow: 'Lavori selezionati',
+    projectsHeading1: 'Progetti consegnati.',
+    projectsHeading2: 'Sistemi ancora in funzione.',
+    projectsLink: 'Tutti i lavori →',
+    aiEyebrow: 'Sistemi AI',
+    aiHeading1: 'AI nell\'architettura.',
+    aiHeading2: 'Non aggiunta alla fine.',
+    testimonialsEyebrow: 'Testimonianze',
+    testimonialsHeading1: 'Com\'è lavorare',
+    testimonialsHeading2: 'con me.',
+    insightsEyebrow: 'Scrittura',
+    insightsHeading: 'Note dell\'operatore.',
   },
   es: {
     key: 'es',
@@ -229,6 +301,18 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     ],
     finalHeading: '¿Hay un sistema que merezca la pena arreglar?',
     finalSubtext: 'Envía el contexto, el cuello de botella y el stack actual. Te diré por dónde empezaría.',
+    projectsEyebrow: 'Trabajo seleccionado',
+    projectsHeading1: 'Proyectos que salieron.',
+    projectsHeading2: 'Sistemas que siguen funcionando.',
+    projectsLink: 'Todo el trabajo →',
+    aiEyebrow: 'Sistemas AI',
+    aiHeading1: 'AI en la arquitectura.',
+    aiHeading2: 'No pegada al final.',
+    testimonialsEyebrow: 'Testimonios',
+    testimonialsHeading1: 'Cómo es trabajar',
+    testimonialsHeading2: 'conmigo.',
+    insightsEyebrow: 'Escritura',
+    insightsHeading: 'Notas del operador.',
   },
   pl: {
     key: 'pl',

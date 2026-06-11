@@ -1,0 +1,76 @@
+---
+title: "Google Ads AI Management Dashboard: reemplazar la UI nativa con un cockpit de decisiones"
+description: "Por qué construí un dashboard de gestión de Google Ads nativo con AI en lugar de usar la UI nativa, y cómo luce la arquitectura por dentro."
+publishedAt: "2026-03-22"
+tags:
+  - AI
+  - Ads
+  - GTM
+  - Operator tooling
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "es"
+translationOf: "google-ads-ai-management-dashboard-guide"
+tldr:
+  - "La UI de Google Ads está optimizada para el revenue de Google, no para las decisiones del operator"
+  - "AdsAI concentra presupuesto, ROAS, ajuste al ICP, alertas y próximas acciones en un solo workspace"
+  - "Construido con React y un backend liviano que consulta la Ads API en tu nombre"
+  - "El operator ve qué pausar, analizar o escalar. Sin buscar entre reportes"
+---
+
+La interfaz de Google Ads no está construida para tomar decisiones. Está construida para configurar. Hay una diferencia.
+
+Entras a Ads para ver cómo están rindiendo las cosas. Terminas haciendo clic por cinco pestañas, comparando números en dos ventanas del navegador y construyendo un modelo mental que se evapora para tu próxima sesión. La pregunta real: "¿qué debería hacer ahora mismo?": nunca recibe respuesta.
+
+AdsAI es mi intento de responderla.
+
+## El problema con los dashboards de anuncios
+
+La mayoría de los dashboards de anuncios (Supermetrics, Looker, Data Studio) te dan más datos en gráficos más bonitos. Ese no es el problema. El problema está entre "aquí tienes tu ROAS por campaña" y "aquí tienes qué hacer al respecto."
+
+Las decisiones que importan en paid performance son repetitivas y en su mayoría lógicas:
+
+- ¿Qué campañas están quemando presupuesto sin tráfico con fit al ICP?
+- ¿Qué keywords tienen CTR alto pero conversión baja: y por qué?
+- ¿Dónde hay espacio para escalar sin rendimientos decrecientes?
+- ¿Qué está roto que todavía no noté?
+
+Estas preguntas tienen respuestas. Las respuestas viven en los datos. Obtenerlas requiere o un analista experto haciendo revisiones diarias, o un sistema que lo haga automáticamente.
+
+## Cómo luce AdsAI
+
+La interfaz tiene tres secciones:
+
+**Cola de decisiones**: una lista priorizada de acciones: "Pausa [Campaña X], por debajo del umbral del ICP por 7 días." "Aumenta el presupuesto de [Campaña Y] un 20%, ROAS 4.2, headroom confirmado." Cada ítem tiene los datos de soporte inline. Un clic para actuar, un clic para diferir.
+
+**Tablero de estado de campañas**: todas las campañas activas con indicadores de estado: saludable, bajo rendimiento, pausada, necesita revisión. Codificado por colores. Sin gráficos, sin tendencias: solo el estado actual.
+
+**Rail de alertas**: anomalías de presupuesto, caídas repentinas de CTR, problemas de ritmo de gasto. Cosas que normalmente requerirían una revisión diaria para detectar.
+
+## La capa del ICP
+
+La parte que más tiempo llevó construir fue el matching de ICP. No todo el tráfico vale la pena comprarlo aunque el ROAS sea rentable. Si estás en B2B SaaS, franquicia QSR o cualquier segmento donde el perfil del comprador importa, el volumen bruto de conversiones es una señal engañosa.
+
+Agregué una capa simple de definición del ICP: industria, tamaño de empresa, rol. El sistema cruza señales a nivel de campaña (términos de búsqueda, landing page, cargos de los que convierten donde está disponible) con la definición del ICP y marca las desalineaciones. Esto detecta campañas que parecen rentables pero están atrayendo al segmento equivocado.
+
+## Arquitectura
+
+El backend es mínimo: un servicio Node liviano con polling programado a la Ads API, una pequeña instancia de Postgres para el historial y un conjunto de funciones de scoring basadas en reglas. Sin modelo de ML. La "inteligencia" son reglas codificadas: violaciones de umbrales, rupturas de tendencias, señales de mismatch con el ICP. La lógica simple aplicada consistentemente supera a los modelos caros aplicados de forma inconsistente.
+
+El frontend es React con un contrato de datos ajustado. Sin abstracciones innecesarias: cada vista responde a una pregunta específica del operator.
+
+## Qué haría diferente
+
+Lo que más subestimé fue la complejidad de auth de la Ads API. El manejo del refresh de OAuth para múltiples cuentas es genuinamente molesto. Lo abstraería antes.
+
+También empezaría con el rail de alertas como MVP, no con el cockpit completo. La acción de mayor valor es detectar problemas temprano. La cola de optimización viene en segundo lugar.
+
+## La conclusión
+
+Las herramientas de nivel operator para paid performance no tienen que ser caras ni complicadas. La UI de Google Ads no va a cambiar: no tienen ningún incentivo para ayudarte a gastar de forma más eficiente. Construye la capa que sirve tus decisiones, no su interfaz.
+
+---
+
+**Relacionados:** [B2B Revenue System Design: cómo los operadores piensan el crecimiento de otra manera](/insights/b2b-revenue-system-design-operator-framework) · [Cómo construir un GTM AI Agent para outbound research y enriquecimiento del CRM](/insights/how-to-build-gtm-ai-agent-outbound-crm)

@@ -1,0 +1,289 @@
+---
+title: "Von Framer zu Astro: die Build-vs-Buy-Entscheidung hinter dieser Seite"
+description: "Die ehrlichen Abwägungen hinter dem Neuaufbau von wojciech.io: warum ich von einem visuellen Builder zu Astro gewechselt habe, was MDX und i18n verändert haben, und welche technischen Schulden ich bewusst akzeptiert habe."
+publishedAt: "2026-05-19"
+tags:
+  - Astro
+  - MDX
+  - i18n
+  - Build vs Buy
+  - AI Workflow
+category: "Operator Playbooks"
+coverType: "builder"
+featured: false
+draft: false
+locale: "de"
+translationOf: "framer-to-astro-build-vs-buy-website-rebuild"
+tldr:
+  - "Framer war nicht das falsche Werkzeug. Es war das richtige Werkzeug für visuelle Iteration, dann die falsche Control Plane für ein wachsendes Portfolio-System."
+  - "Astro ergab Sinn, weil die Seite zu Content, Routen, Komponenten, Deploy-Regeln und agentenbearbeitbarem Quellcode geworden war."
+  - "Die i18n-Schicht ist absichtlich schlicht: echte URL-Routen, gemeinsame Seitenkomponenten und Data-Attribute, wo eine vollständige i18n-Bibliothek unnötiger Overhead wäre."
+  - "MDX ist der Hebelpunkt: Artikel können Diagramme, Statistiken, Callouts und Proof-Komponenten tragen, ohne zu einzelnen Landing Pages zu werden."
+  - "Es gibt technische Schulden im System. Sie sind benannt, begrenzt und akzeptabel, bis die Seite eine größere Publikation wird."
+  - "Die eigentliche Build-vs-Buy-Frage betraf nicht die Kosten. Sie betraf Kontrolle, Kompoundierung und was von AI-Agenten bearbeitbar sein muss."
+---
+
+Die meisten Rebuild-Geschichten sind zu glatt.
+
+Sie lassen das alte Werkzeug naiv wirken, den neuen Stack unvermeidlich und die Migration wie eine gerade Linie von "No-Code-Beschränkung" zu "ordentlichem Engineering" aussehen. So war das hier nicht.
+
+Ich habe diese Seite nicht von Framer zu Astro migriert, weil Framer schlecht war. Framer tat, was ich zu dem Zeitpunkt brauchte: es kaufte visuelle Geschwindigkeit. Ich wechselte, weil sich die Aufgabe der Seite verändert hatte.
+
+Die Seite hörte auf, eine Sammlung polierter Seiten zu sein, und wurde zu einer kleinen operativen Oberfläche: öffentliche Positionierung, Nachweise, Apps, Texte, Sprachvarianten, Weiterleitungen, Deploy-Überprüfungen und ein Workflow, in dem AI-Agenten Änderungen vornehmen können, ohne in einem visuellen Editor zu raten.
+
+Das ist eine andere Build-vs-Buy-Entscheidung.
+
+<StatRow cols={3}>
+  <Stat value="3" label="Sprachen" sub="Englisch, Polnisch, Italienisch" />
+  <Stat value="1" label="Content-Quelle pro Seite" sub="Gemeinsame Astro-Seitenkomponenten" />
+  <Stat value="MDX" label="Artikelsystem" sub="Komponenten innerhalb von Langformtexten" />
+</StatRow>
+
+## Die Entscheidung betraf nicht die Kosten
+
+Der faule Build-vs-Buy-Rahmen ist der Preis.
+
+"Framer kostet Geld. Astro ist kostenlos. Also gewinnt Astro."
+
+Das ist ein schlechtes Argument. Eine Codebasis ist niemals kostenlos. Sie verlangt Wartung, lokales Setup, Build-Fehler, Dependency-Updates, Routing-Entscheidungen und Urteilsvermögen. Ein visueller Builder verlangt eine Subscription, aber er entfernt auch viel operative Komplexität.
+
+Die eigentliche Frage lautete:
+
+**Was muss ich kontrollieren, und was kann ich sicher mieten?**
+
+Für die erste Version der Seite war es sinnvoll, die visuelle Schicht zu mieten. Der Engpass war nicht Routing oder Artikelarchitektur. Der Engpass war, schnell eine scharfe öffentliche Präsenz online zu bringen.
+
+Für die aktuelle Version hatte sich der Engpass verschoben. Ich brauchte versionierten Content, MDX, wiederverwendbare Artikelkomponenten, echte Sprach-URLs, vorhersagbare Weiterleitungen und ein Repository, das Claude Code und Codex inspizieren, patchen, bauen und verifizieren können.
+
+Zu diesem Zeitpunkt war der Builder nicht mehr nur ein Builder. Er war die Control Plane.
+
+Und ich wollte die Control Plane im Code.
+
+## Was Framer mir gebracht hat
+
+Framer kaufte Kompositionsgeschwindigkeit.
+
+Es ist gut in dem, wofür es entwickelt wurde: einer Person zu ermöglichen, eine Seite fertig wirken zu lassen, ohne ein Design-System von Grund auf aufzubauen. Für eine persönliche Seite ist das echter Mehrwert. Die meisten persönlichen Seiten brauchen kein Framework. Sie brauchen Geschmack, Fokus und einen Termin.
+
+Das Problem entsteht, wenn die Seite operative Anforderungen anhäuft:
+
+- Langform-Texte für technische Inhalte;
+- ein strukturierter Artikelindex;
+- RSS- und Sitemap-Verhalten;
+- kanonische URLs und Weiterleitungen;
+- Sprachrouten, die geteilt und indexiert werden können;
+- codereviewed Änderungen;
+- wiederverwendbare Proof-Komponenten;
+- Deploy-Vorschauen;
+- Produktionsverifikation;
+- AI-unterstützte Wartung.
+
+Nichts davon macht einen visuellen Builder "schlecht." Es verschiebt nur das Gravitationszentrum weg von der visuellen Komposition hin zum Systemdesign.
+
+<Compare labelA="Builder kaufen" labelB="System aufbauen" tagA="anfangs richtig" tagB="jetzt richtig">
+<Fragment slot="a">
+
+- Schnelle visuelle Iteration
+- Geringer Setup-Aufwand
+- Weniger Infrastruktur zu verwalten
+- Gut für eine kleine Anzahl polierter Seiten
+- Am besten, wenn nicht-technisches Bearbeiten die Hauptbeschränkung ist
+
+</Fragment>
+<Fragment slot="b">
+
+- Versionierter Content und Komponenten
+- Echtes Routing und Weiterleitungen
+- MDX-Artikel mit eigenen Primitiven
+- Build- und Deploy-Verifizierung
+- Bessere Oberfläche für AI-Agenten und Code Review
+
+</Fragment>
+</Compare>
+
+## Was Astro verändert hat
+
+Astro passte, weil die Seite größtenteils statisch ist, aber nicht simpel.
+
+Ich brauche kein vollständiges Anwendungs-Framework für ein öffentliches Portfolio und Schreibsystem. Ich brauche starkes dateibasiertes Routing, Komponenten, Content Collections, MDX und Output, den Cloudflare Pages günstig und zuverlässig ausliefern kann.
+
+Astro gibt mir diese Form, ohne die Seite in eine clientseitige App zu zwingen.
+
+<Diagram caption="Der Neuaufbau hat die Seite von einer Seitenoberfläche zu einer operativen Oberfläche verschoben">
+  <Box label="Positionierung" sub="Startseite, Über mich, Projekte" />
+  <Arrow />
+  <Box label="Content-System" sub="MDX, RSS, Sitemap" variant="accent" />
+  <Arrow />
+  <Box label="Deploy-Schicht" sub="GitHub, Cloudflare Pages" />
+  <Arrow />
+  <Box label="Agenten-Workflow" sub="Patch, Build, Verify" variant="muted" />
+</Diagram>
+
+Der wichtige Punkt ist nicht, dass Astro gerade trendy ist. Es ist, dass Astro die Seite lesbar gemacht hat.
+
+Routen liegen in `src/pages`. Gemeinsame Seiteninhalte liegen in `src/components/pages`. Artikel liegen in `src/content/insights`. Design-Tokens liegen in CSS. Ein Build schlägt entweder durch oder nicht.
+
+Das ist die Art von Struktur, in der ein Agent arbeiten kann.
+
+## MDX ist der Punkt, an dem die Seite sich kumuliert
+
+Einfaches Markdown hätte für einfache Posts gereicht. Es reichte nicht für die Art von Texten, die diese Seite tragen soll.
+
+Die Artikel sind nicht nur Essays. Sie brauchen häufig:
+
+- Diagramme;
+- Vergleiche;
+- Callouts;
+- Statistiken;
+- Prozessabläufe;
+- Screenshots;
+- Do-/Don't-Abschnitte;
+- Proof-Karten;
+- CTA-Blöcke.
+
+Wenn jeder Artikel dieses Markup von Hand erstellt, wird die Seite zu einem Friedhof einmaliger HTML-Konstrukte. Wenn die Komponenten innerhalb von MDX verfügbar sind, wird das Artikelsystem zu einem kleinen Verlagsprodukt.
+
+Das ist der Hebel.
+
+<Callout type="tip" title="Das Nützliche an MDX ist nicht die Formatierung">
+
+Das Nützliche ist, dass Langformtexte dieselben produktreifen Komponenten wie der Rest der Seite wiederverwenden können. Ein Artikel kann Struktur haben, ohne zu einer eigenen Landing Page zu werden.
+
+</Callout>
+
+Das praktische Ergebnis ist einfach: Ich kann einen Artikel über ein System schreiben und dieselben Primitive einsetzen, die ich anderswo zur Erklärung von Produkten und Workflows verwende.
+
+## Die i18n-Entscheidung: bewusst unspektakulär
+
+Die Seite läuft jetzt auf Englisch, Polnisch und Italienisch. Die i18n-Implementierung ist keine ausgefeilte Internationalisierungsplattform. Es ist ein praktisches System für die aktuelle Größenordnung.
+
+Es gibt zwei Muster:
+
+1. Die Startseite verwendet ein typisiertes Dictionary in `src/i18n/translations.ts`.
+2. Die Hauptseiten verwenden gemeinsame Astro-Content-Komponenten mit `data-en`-, `data-pl`- und `data-it`-Attributen, die durch ein kleines Skript basierend auf der URL umgeschaltet werden.
+
+Jede lokalisierte Seite hat eine echte Route: `/pl/about/`, `/it/apps/` und so weiter. Die englischen Root-Seiten bleiben kanonisch.
+
+Die wichtige Entscheidung war URL-basierte Sprache, nicht nur localStorage-basierte Sprache. Ein geteilter Link sollte die Sprache mitführen. Suchmaschinen sollten Sprachvarianten als echte Seiten sehen. Nutzer sollten nicht davon abhängen, was in ihrem Browser gespeichert ist.
+
+<DoDont
+  do={[
+    "Echte Sprach-URLs für Seiten verwenden, die Nutzer teilen",
+    "Seitentext in einer gemeinsamen Astro-Komponente halten",
+    "Etwas Markup-Rauschen akzeptieren, wenn es ein größeres Framework vermeidet",
+    "Den Punkt benennen, an dem das Muster nicht mehr skaliert",
+  ]}
+  dont={[
+    "Root- und lokalisierte Seiten von Hand duplizieren",
+    "i18next hinzufügen, weil die Architektur erwachsen wirken soll",
+    "Sprachstatus in localStorage verstecken und so tun, als ob Links portabel wären",
+    "Insights übersetzen, bevor es einen echten Veröffentlichungsgrund gibt",
+  ]}
+/>
+
+Ist der attributbasierte Ansatz elegant? Nicht besonders.
+
+Ist er richtig für ungefähr ein Dutzend öffentliche Seiten mit drei Sprachvarianten und einem einzigen Eigentümer? Ja.
+
+Das ist der Teil, den die Leute in Architektur-Diskussionen überspringen. Ein einfacheres System mit einer bekannten Grenze ist oft besser als ein formaleres System, das Prozesse hinzufügt, bevor diese Prozesse existieren.
+
+## Die Schulden, die ich akzeptiert habe
+
+In diesem Neuaufbau stecken technische Schulden. Ich habe sie bewusst akzeptiert.
+
+Die i18n-Schicht hat zwei Muster. Der Startseiten-Text lebt in einem typisierten Dictionary. Der Seitentext lebt in gemeinsamen Komponenten mit `data-*`-Attributen. Insights sind nur auf Englisch. Die MDX-Komponentenzuordnung ist manuell. Es gibt kein CMS. Nicht-technisches Bearbeiten bedeutet, das Repository zu öffnen.
+
+Das sind Schulden.
+
+Aber Schulden sind nicht automatisch ein Problem. Unbenannte Schulden sind das Problem. Schulden, die niemand sehen, niemand bewerten und niemand abbauen kann.
+
+Diese Schulden sind sichtbar und begrenzt.
+
+<Callout type="warning" title="Die Skalierungslinie ist klar">
+
+Wenn dies zu einer hochvolumigen Publikation wird, sollte das aktuelle i18n-Muster durch ein echtes locale Content-Modell ersetzt werden. Wenn mehrere nicht-technische Redakteure Veröffentlichungsrechte benötigen, wird ein CMS den Overhead wert. Bis dahin wären diese Systeme nur Zeremonie.
+
+</Callout>
+
+Die aktuelle Architektur ist ehrlich hinsichtlich der Größenordnung:
+
+- ein Eigentümer;
+- eine kleine Anzahl öffentlicher Seiten;
+- Insights nur auf Englisch;
+- Bedarf an schnellen agentenunterstützten Patches;
+- Präferenz für quellkontrollierte Änderungen;
+- kein Redaktionsteam.
+
+Für diese Struktur sind die Schulden günstiger als die Abstraktion.
+
+## Wie AI die Build-Entscheidung verändert hat
+
+AI-Agenten haben die Kalkulation verändert, aber nicht auf die oberflächliche "AI hat meine Seite gebaut"-Weise.
+
+Die nützliche Veränderung ist, dass Code einfacher zu betreiben wurde.
+
+Claude Code kann einen größeren Batch implementieren, wenn die Richtung dokumentiert ist. Codex kann das Repository inspizieren, fokussierte Patches vornehmen, `npm run build` ausführen, den Output prüfen und die Produktion verifizieren. Beide Tools funktionieren besser, wenn das System aus Text, Dateien, Komponenten und Tests besteht.
+
+Ein visueller Builder kann für einen Menschen schnell sein. Eine Codebasis ist für einen Agenten besser inspizierbar.
+
+Das war hier wichtig, weil die Seite nicht nach dem Launch einfrieren soll. Sie soll weiterhin Artikel, Nachweise, Komponenten, App-Links, Seitenbearbeitungen und Deploy-Überprüfungen aufnehmen.
+
+<Diagram direction="column" caption="Die Agenten-Schleife funktioniert, weil das System inspizierbar ist">
+  <Box label="Menschliches Urteil" sub="Geschmack, Umfang, Freigabe" variant="accent" />
+  <Arrow direction="down" />
+  <Box label="Repository-Kontext" sub="Docs, Komponenten, Content" />
+  <Arrow direction="down" />
+  <Box label="Agenten-Patch" sub="Bearbeiten, Bauen, Verifizieren" />
+  <Arrow direction="down" />
+  <Box label="Produktionsprüfung" sub="eigene Domain ist die Wahrheit" variant="muted" />
+</Diagram>
+
+Die Rolle des Menschen verschwand nicht. Sie wurde wichtiger.
+
+Wenn Agenten schneller produzieren können, erzeugt schwache Richtungsvorgabe mehr schwachen Output. Die Aufgabe ist, die Urteilsschicht straff zu halten: was auf die Seite gehört, was gestrichen werden sollte, was nach mir klingt, was ein Nachweis ist und was nur dekorative Struktur.
+
+## Wann ich diesen Stack nicht wählen würde
+
+Ich würde diese Architektur nicht für jede Seite wählen.
+
+Ich würde in Framer, Webflow oder einem anderen Builder bleiben, wenn:
+
+- die Hauptaufgabe visuelle Kampagnenseiten sind;
+- das Bearbeitungsteam nicht technisch ist;
+- Seiten schnell vom Marketing ohne Repository zusammengestellt werden müssen;
+- es kein Langform-Technik-Publishingsystem gibt;
+- Routenkontrolle und Quellhistorie unwichtig sind;
+- die Seite besser von Design-Geschwindigkeit als von Engineering-Kontrolle bedient wird.
+
+Ich würde ein schwereres Framework oder CMS wählen, wenn:
+
+- es viele Redakteure gibt;
+- jeder Artikel mehrere übersetzte Versionen benötigt;
+- Content-Workflows Review-Zustände und Berechtigungen erfordern;
+- Seiten aus großen strukturierten Datensätzen generiert werden;
+- authentifiziertes Nutzerverhalten zentral wird;
+- die redaktionelle Geschwindigkeit Git überwächst.
+
+Astro ist die richtige Mitte für diese Seite, weil sie statisch genug ist, um einfach zu bleiben, und strukturiert genug, um Code zu benötigen.
+
+## Die Regel des Operators
+
+Hier ist die Regel, die ich wiederverwenden würde:
+
+**Kaufe Geschwindigkeit, wenn die Oberfläche das Produkt ist. Baue Kontrolle, wenn das System hinter der Oberfläche das Produkt ist.**
+
+Framer kaufte Geschwindigkeit für die erste Version. Astro kaufte Kontrolle für die aktuelle Version.
+
+Der Wechsel war keine Ablehnung visueller Builder. Er war die Erkenntnis, dass die Seite ihre Aufgabe verändert hatte.
+
+Die öffentliche Seite ist jetzt nur die sichtbare Schicht. Darunter sitzt das eigentliche System: MDX, Komponenten, Routen, i18n, Deploy-Überprüfungen, Crawler-Zugang, Produktionsverifizierung und ein Workflow, in dem Agenten Änderungen vornehmen können, ohne die Form der Seite zu zerstören.
+
+Dieses System lohnt sich zu besitzen.
+
+Die Schulden darin lohnen sich ebenfalls zu benennen.
+
+Das ist die ehrliche Version dieser Migration.
+
+---
+
+**Verwandte Artikel:** [Wie ich mein Portfolio mit Astro und Cloudflare Pages aufgebaut habe](/insights/astro-cloudflare-pages-portfolio-ai-workflow) · [Cloudflare-Migration: was Sie über Hosting hinaus bekommen](/insights/cloudflare-migration-zero-trust-free-tier) · [GTM Tools: Build-vs-Buy-Entscheidungsrahmen für Operators](/insights/gtm-tools-build-vs-buy-decision-framework)

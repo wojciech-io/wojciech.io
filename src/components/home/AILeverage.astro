@@ -1,4 +1,17 @@
 ---
+import type { LocalizedHomeCopy } from '../../data/locales';
+
+interface Props {
+  copy?: LocalizedHomeCopy;
+}
+
+const { copy } = Astro.props as Props;
+
+// English fallbacks
+const eyebrow = copy?.aiEyebrow ?? 'AI systems';
+const heading1 = copy?.aiHeading1 ?? 'AI in the architecture.';
+const heading2 = copy?.aiHeading2 ?? 'Not bolted on at the end.';
+
 const rows = [
   { label: 'Ad creation loop',    before: 'Days',              after: 'Minutes'         },
   { label: 'CRM enrichment',      before: 'Manual / BDR time', after: 'Automated'       },
@@ -25,11 +38,11 @@ const stack = [
       <div>
         <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
           <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
-          <span>AI systems</span>
+          <span>{eyebrow}</span>
         </p>
         <h2 class="reveal-blur text-[length:var(--text-h2)] font-semibold leading-[1.15] tracking-tight mb-5">
-          <span class="text-[var(--color-text)]">AI in the architecture.</span><br />
-          <span class="text-[var(--color-text-muted)]">Not bolted on at the end.</span>
+          <span class="text-[var(--color-text)]">{heading1}</span><br />
+          <span class="text-[var(--color-text-muted)]">{heading2}</span>
         </h2>
         <p class="text-sm text-[var(--color-text-muted)] leading-snug mb-4">
           Not for faster copy. For a different operating model. AI goes into prospecting, enrichment,

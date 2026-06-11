@@ -1,0 +1,107 @@
+---
+title: "GTM AI Agent: guida all'architettura a quattro livelli"
+description: "Un'analisi dettagliata dell'architettura del GTM AI agent: identità dell'operator, strumenti MCP, memoria del cliente e skill riutilizzabili che lo rendono funzionale in produzione."
+publishedAt: "2026-03-08"
+tags:
+  - AI
+  - GTM
+  - Claude Code
+  - MCP
+  - Operator tooling
+category: "AI Systems"
+coverType: "terminal"
+featured: false
+draft: false
+locale: "it"
+translationOf: "gtm-ai-agent-four-layer-architecture-guide"
+tldr:
+  - "Livello 1: CLAUDE.md definisce chi è l'agente. Identità dell'operator, contesto del cliente, regole operative"
+  - "Livello 2: Gli strumenti MCP danno all'agente capacità reali: ricerca web, scrittura nel CRM, invio email"
+  - "Livello 3: I file di memoria del cliente contengono ICP, storico degli account e contesto di personalizzazione"
+  - "Livello 4: Le skill dell'operator sono programmi prompt riutilizzabili: ricerca, arricchimento, bozza, aggiornamento"
+---
+
+Il Claude Code GTM Agent Starter Pack ha un'architettura a quattro livelli. Ogni livello svolge un compito specifico. Capire i livelli è la differenza tra gestire un sistema e gestire un chatbot che dimentica tutto tra una sessione e l'altra.
+
+Questa è la visione interna: come funziona ogni livello, perché è separato e cosa si rompe se ne salti uno.
+
+## Livello 1: CLAUDE.md, l'identità dell'operator
+
+CLAUDE.md è il primo file che Claude Code legge all'avvio di una sessione. Definisce chi è l'agente, non cosa sa fare.
+
+Per un GTM agent, CLAUDE.md contiene:
+
+```markdown
+# Identità dell'operator
+Sei un GTM operator senior integrato nel team di crescita di [nome cliente].
+Il tuo compito è accelerare l'outbound pipeline attraverso ricerca, arricchimento ed esecuzione di sequenze.
+
+# Regole operative
+- Non inviare mai un'email senza approvazione umana
+- La definizione ICP si trova in /memory/icp.md: consultala sempre prima di valutare un lead
+- I template delle sequenze si trovano in /memory/sequences/: personalizza, non creare mai da zero
+- Registra tutte le azioni completate in /memory/activity-log.md
+```
+
+Il principio di progettazione centrale: l'identità è persistente. Claude Code legge CLAUDE.md all'avvio della sessione, il che significa che l'agente ha gli stessi vincoli operativi ogni volta. Non devi rispiegare il contesto a ogni sessione.
+
+## Livello 2: Strumenti MCP, le capacità reali
+
+Gli strumenti MCP (Model Context Protocol) danno all'agente la capacità di agire su sistemi esterni, non solo di generare testo.
+
+Il GTM stack utilizza:
+
+- **Brave Search MCP**: ricerca web senza rischio di allucinazioni (legge pagine reali)
+- **HubSpot MCP** (o webhook Clay): lettura/scrittura CRM
+- **Gmail MCP**: creazione di bozze (mai invio, solo bozza, secondo le regole in CLAUDE.md)
+- **Notion MCP**: registrazione dei brief di ricerca completati nel workspace condiviso
+
+Senza strumenti MCP hai un modello linguistico. Con loro hai un agente che può cercare un'azienda, verificare se è nel CRM, redigere un'email personalizzata e registrare il lavoro: in un'unica sessione.
+
+## Livello 3: File di memoria del cliente, il contesto persistente
+
+La directory `/memory/` contiene tutto ciò che l'agente deve sapere sul cliente e che non cambia da una sessione all'altra:
+
+```
+/memory/
+  icp.md         : definizione ICP: settore, dimensioni, ruoli, criteri di esclusione
+  sequences/     : template email per vertical, per fase
+  accounts/      : brief di ricerca per account (generati automaticamente, revisionati da persone)
+  activity-log.md: registro delle azioni completate
+  objections.md  : obiezioni comuni e risposte approvate
+```
+
+Questo è ciò che rende l'agente cumulativo. La ricerca della sessione di martedì è disponibile il giovedì. La gestione delle obiezioni approvata il mese scorso è presente in ogni sessione successiva. L'agente non ha bisogno di essere re-informato, legge i file di memoria.
+
+## Livello 4: Skill dell'operator, i programmi prompt riutilizzabili
+
+Le skill sono programmi prompt definiti che svolgono un compito GTM specifico. Lo starter pack ne include cinque:
+
+**research**: Dato il nome di un'azienda, produce un brief di ricerca strutturato: panoramica aziendale, segnali recenti, probabili pain point, punteggio di compatibilità con l'ICP.
+
+**enrich**: Dato il nome di un contatto e la sua azienda, trova il profilo LinkedIn, il ruolo, le priorità probabili e li aggiunge al file di memoria degli account.
+
+**draft**: Dato un contatto e il suo brief di account, produce un'email di primo contatto personalizzata usando il template di sequenza appropriato.
+
+**update**: Data un'azione completata, la registra nel log delle attività e aggiorna il file account rilevante nel CRM.
+
+**score**: Dato un gruppo di lead, assegna un punteggio a ciascuno rispetto alla definizione ICP e restituisce una lista prioritizzata.
+
+Ogni skill è un prompt strutturato con input, output e regole definiti. Richiami una skill per nome: `/research Acme Corp`. L'agente legge la definizione della skill, la esegue e restituisce output strutturato.
+
+## Perché i livelli contano
+
+La maggior parte dei setup GTM basati su prompt collassa perché sono privi di stato. Ogni conversazione riparte da zero. L'architettura a quattro livelli risolve questo:
+
+- L'identità è persistente (CLAUDE.md)
+- Le capacità sono reali (strumenti MCP)
+- Il contesto si accumula (file di memoria)
+- L'esecuzione è coerente (skill)
+
+Il costo per un outbound run completo, ricerca, arricchimento, bozza, registro, è di 2-8 dollari in costi API Claude. Uno stack commerciale equivalente (crediti Clay, seat Apollo, Outreach) costa 200-500 dollari al mese per lo stesso volume di output.
+
+Il divario non riguarda le capacità. Riguarda il modello operativo.
+
+---
+
+**Correlato:** [Come costruire un GTM AI Agent per outbound research e arricchimento CRM](/insights/how-to-build-gtm-ai-agent-outbound-crm) · [Strumenti GTM: framework di decisione build vs buy per operator](/insights/gtm-tools-build-vs-buy-decision-framework)

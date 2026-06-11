@@ -1,0 +1,107 @@
+---
+title: "GTM AI Agent Architektur: der Vier-Schichten-Stack"
+description: "Eine detaillierte Aufschlüsselung der GTM AI Agent Architektur: Operator-Identität, MCP Tools, Client Memory und wiederverwendbare Skills, die das System produktionsreif machen."
+publishedAt: "2026-03-08"
+tags:
+  - AI
+  - GTM
+  - Claude Code
+  - MCP
+  - Operator tooling
+category: "AI Systems"
+coverType: "terminal"
+featured: false
+draft: false
+locale: "de"
+translationOf: "gtm-ai-agent-four-layer-architecture-guide"
+tldr:
+  - "Schicht 1: CLAUDE.md definiert die Identität des Agenten. Operator-Identität, Client-Kontext, Verhaltensregeln"
+  - "Schicht 2: MCP Tools geben dem Agenten echte Fähigkeiten: Websuche, CRM-Schreibzugriff, E-Mail-Versand"
+  - "Schicht 3: Client Memory Files speichern ICP, Account-Historie und Personalisierungskontext"
+  - "Schicht 4: Operator Skills sind wiederverwendbare Prompt-Programme: Research, Anreicherung, Draft, Update"
+---
+
+Das Claude Code GTM Agent Starter Pack hat eine Vier-Schichten-Architektur. Jede Schicht übernimmt eine spezifische Aufgabe. Wer die Schichten versteht, betreibt ein System statt eines Chatbots, der zwischen Sessions alles vergisst.
+
+Das hier ist der interne Blick: wie jede Schicht funktioniert, warum sie getrennt ist und was kaputtgeht, wenn man eine überspringt.
+
+## Schicht 1: CLAUDE.md, die Operator-Identität
+
+CLAUDE.md ist die erste Datei, die Claude Code beim Start einer Session einliest. Sie definiert, wer der Agent ist, nicht was er kann.
+
+Für einen GTM Agent enthält CLAUDE.md:
+
+```markdown
+# Operator-Identität
+Sie sind ein erfahrener GTM Operator, eingebettet in das Growth-Team von [Kundenname].
+Ihre Aufgabe ist es, den outbound Pipeline durch Research, Anreicherung und Sequence-Ausführung zu beschleunigen.
+
+# Verhaltensregeln
+- Niemals eine E-Mail ohne menschliche Freigabe versenden
+- ICP-Definition liegt in /memory/icp.md: immer prüfen, bevor ein Lead bewertet wird
+- Sequence-Templates liegen in /memory/sequences/: anpassen, nie von Grund auf neu erstellen
+- Alle abgeschlossenen Aktionen in /memory/activity-log.md protokollieren
+```
+
+Das zentrale Design-Prinzip: die Identität ist persistent. Claude Code liest CLAUDE.md beim Session-Start, was bedeutet, dass der Agent jedes Mal dieselben Betriebsbeschränkungen hat. Der Kontext muss nicht jede Session neu erklärt werden.
+
+## Schicht 2: MCP Tools, die echten Fähigkeiten
+
+MCP (Model Context Protocol) Tools geben dem Agenten die Fähigkeit, auf externe Systeme zu wirken, statt nur Text zu generieren.
+
+Der GTM Stack verwendet:
+
+- **Brave Search MCP**: Web-Research ohne Halluzinationsrisiko (liest echte Seiten)
+- **HubSpot MCP** (oder Clay Webhook): CRM Lesen/Schreiben
+- **Gmail MCP**: Draft-Erstellung (niemals senden, nur Draft, gemäß den Regeln in CLAUDE.md)
+- **Notion MCP**: abgeschlossene Research Briefs in den gemeinsamen Workspace loggen
+
+Ohne MCP Tools hat man ein Sprachmodell. Mit ihnen hat man einen Agenten, der ein Unternehmen nachschlagen, prüfen ob es im CRM ist, eine personalisierte E-Mail entwerfen und die Arbeit protokollieren kann: in einer einzigen Session.
+
+## Schicht 3: Client Memory Files, der persistente Kontext
+
+Das `/memory/`-Verzeichnis enthält alles, was der Agent über den Client wissen muss und was sich zwischen Sessions nicht ändert:
+
+```
+/memory/
+  icp.md         : ICP-Definition: Branche, Größe, Rollen, Disqualifikatoren
+  sequences/     : E-Mail-Templates je Vertical, je Stage
+  accounts/      : Account-Research-Briefs (automatisch generiert, menschlich geprüft)
+  activity-log.md: Log abgeschlossener Aktionen
+  objections.md  : häufige Einwände und genehmigte Antworten
+```
+
+Das macht den Agenten kumulativ. Der Research aus der Session vom Dienstag ist am Donnerstag verfügbar. Die letzten Monat genehmigte Einwandbehandlung ist in jeder folgenden Session enthalten. Der Agent muss nicht neu gebrieft werden, er liest die Memory Files.
+
+## Schicht 4: Operator Skills, die wiederverwendbaren Prompt-Programme
+
+Skills sind definierte Prompt-Programme, die einen spezifischen GTM Job ausführen. Das Starter Pack enthält fünf:
+
+**research**: Auf Basis eines Unternehmensnamens erstellt der Agent einen strukturierten Research Brief: Unternehmensüberblick, aktuelle Signale, wahrscheinliche Pain Points, ICP-Fit-Score.
+
+**enrich**: Auf Basis von Kontaktname und Unternehmen findet der Agent das LinkedIn-Profil, die Rolle, wahrscheinliche Prioritäten und fügt alles zur Accounts Memory File hinzu.
+
+**draft**: Auf Basis eines Kontakts und seines Account Briefs erstellt der Agent eine personalisierte Erstkontakt-E-Mail mit dem passenden Sequence-Template.
+
+**update**: Auf Basis einer abgeschlossenen Aktion protokolliert der Agent diese im Activity Log und aktualisiert die entsprechende Account-Datei im CRM.
+
+**score**: Auf Basis einer Gruppe von Leads bewertet der Agent jeden gegen die ICP-Definition und gibt eine priorisierte Liste zurück.
+
+Jeder Skill ist ein strukturierter Prompt mit definierten Eingaben, Ausgaben und Regeln. Ein Skill wird per Name aufgerufen: `/research Acme Corp`. Der Agent liest die Skill-Definition, führt sie aus und liefert strukturierten Output.
+
+## Warum die Schichten entscheidend sind
+
+Die meisten prompt-basierten GTM-Setups scheitern, weil sie zustandslos sind. Jedes Gespräch beginnt bei null. Die Vier-Schichten-Architektur löst das:
+
+- Identität ist persistent (CLAUDE.md)
+- Fähigkeiten sind real (MCP Tools)
+- Kontext akkumuliert sich (Memory Files)
+- Ausführung ist konsistent (Skills)
+
+Die Kosten für einen vollständigen outbound Run, also Research, Anreicherung, Draft, Log, liegen bei 2-8 Dollar in Claude API-Kosten. Ein vergleichbarer kommerzieller Stack (Clay Credits, Apollo Seats, Outreach) kostet 200-500 Dollar pro Monat für dasselbe Output-Volumen.
+
+Die Lücke liegt nicht in den Fähigkeiten. Sie liegt im Operating Model.
+
+---
+
+**Verwandt:** [Wie man einen GTM AI Agent für outbound Research und CRM-Anreicherung baut](/insights/how-to-build-gtm-ai-agent-outbound-crm) · [GTM Tools: Build vs Buy Entscheidungsrahmen für Operators](/insights/gtm-tools-build-vs-buy-decision-framework)

@@ -1,0 +1,218 @@
+---
+title: "Cloudflare-Migration: was Sie über Hosting hinaus bekommen"
+description: "Der Umzug auf Cloudflare Pages ist unkompliziert. Was die meisten übersehen: der Security- und Identity-Stack, der kostenlos dazukommt. Zero Trust, Access, Tunnel und WAF."
+publishedAt: "2026-05-18"
+updatedAt: "2026-05-18"
+tags:
+  - Cloudflare
+  - Zero Trust
+  - Security
+  - Infrastructure
+  - Ops
+featured: false
+draft: false
+coverType: system
+locale: "de"
+translationOf: "cloudflare-migration-zero-trust-free-tier"
+tldr:
+  - "Cloudflare Pages ist der offensichtliche Grund zu migrieren. Zero Trust Access, Tunnels, WAF und DDoS-Schutz sind die weniger offensichtlichen."
+  - "Das kostenlose Cloudflare-Kontingent enthält einen Security-Stack, der als Einzellösungen hunderte Dollar pro Monat kosten würde."
+  - "Zero Trust Access ersetzt das VPN für interne Tools: eine Konfiguration, kein Server zu betreiben."
+  - "Tunnels machen lokale Dienste öffentlich erreichbar, ohne Firewall-Ports zu öffnen. Nützlich für Demos, Staging und Development."
+  - "Der Haken: alles ist Cloudflare-nativ. Sinnvoll, wenn Sie bereits im Ökosystem sind. Vendor-Lock-in, wenn nicht."
+---
+
+[Der vorige Artikel](/insights/astro-cloudflare-pages-portfolio-ai-workflow) beschrieb den Neuaufbau dieses Portfolios auf Astro und Cloudflare Pages: den Stack, den Multi-Agent-Workflow, die Terraform-Konfiguration und das Deployment-Modell. Jener Artikel handelte vom Bauen der Seite. Dieser handelt davon, was mit der Plattform mitgeliefert wurde: eine Security- und Identity-Schicht, die die meisten übersehen, weil sie nicht der Grund für die Migration war.
+
+---
+
+## Warum das relevant ist
+
+Die meisten denken bei Cloudflare an ein CDN mit angeschlossenem Registrar. Vor zehn Jahren war das zutreffend. In der Praxis liefert die Plattform heute einen vollständigen Security-Stack im kostenlosen Kontingent: verwaltetes WAF, DDoS-Schutz auf L3 und L7, Zero Trust Access, Tunnels, WARP, Bot Fight Mode und Rate Limiting.
+
+Wollte man gleichwertige Einzellösungen zusammenstellen: Akamai oder Imperva für WAF, Okta oder Duo als Identity Proxy, Tailscale oder WireGuard für Tunnels, Cloudflare oder Fastly als CDN: läge man bei hunderten Dollar pro Monat, noch vor Enterprise-Tiers. Im kostenlosen oder Pro-Plan von Cloudflare ist das meiste bereits enthalten.
+
+Der Haken: nichts davon aktiviert sich automatisch. Sie erhalten Zugang zu diesen Funktionen mit der Migration; Sie müssen sie selbst einschalten.
+
+---
+
+## Hosting und Deployment
+
+Vor dem Security-Stack die Basis: Cloudflare Pages ist die Hosting-Schicht. Die Seite ist ein statischer Astro-Build. Jeder Push auf den `main`-Branch bei GitHub löst einen Build auf Cloudflare-Seite und ein Deployment ins globale Edge-Netzwerk aus. Branch-Pushes erhalten ihre eigene Preview-URL, sodass eine Änderung auf einer echten Domain geprüft werden kann, bevor sie in Produktion geht.
+
+<Flow
+  steps={[
+    { label: 'Commit', sub: 'git push' },
+    { label: 'GitHub', sub: 'main branch' },
+    { label: 'Cloudflare Pages', sub: 'Build + Deployment', active: true },
+    { label: 'Live', sub: 'Edge CDN' },
+  ]}
+  caption="Push auf main ist der gesamte Deployment-Prozess: Build und globaler Rollout laufen automatisch."
+/>
+
+Es gab eine echte Entscheidung hier. Vercel und Netlify sind die naheliegenden Alternativen, und beide sind ausgezeichnete Produkte. Der ausschlaggebende Faktor war Konsolidierung.
+
+<Compare labelA="Cloudflare Pages" labelB="Vercel" tagA="chosen" tagB="alternative">
+<Fragment slot="a">
+
+- Eine Plattform: Hosting, DNS, WAF, Zero Trust, Tunnels: eine API, eine Rechnung
+- Kostenloses Kontingent deckt unbegrenzte Bandbreite und den vollständigen Security-Stack ab
+- Dasselbe Edge-Netzwerk wie das CDN, das die Domain bereits proxyt
+
+</Fragment>
+<Fragment slot="b">
+
+- Erstklassiges Framework-DX und der ausgefeilteste Preview-Workflow
+- Native Next.js-Unterstützung und Serverless-/Edge-Funktionen
+- Eine separate Plattform: DNS und Security lägen woanders
+
+</Fragment>
+</Compare>
+
+Hosting auf Cloudflare zu behalten bedeutet, dass DNS, CDN, WAF, Zero Trust Access und das Deployment-Ziel alle auf derselben Plattform liegen, konfiguriert über dieselbe API. Für eine Seite, die auf den unten beschriebenen Security-Stack angewiesen ist, würde Hosting bei einem anderen Anbieter bedeuten, die Edge an zwei Stellen zu verwalten. Vercel ist das stärkere Produkt für framework-lastige Anwendungen; für eine statische Seite, die bereits über Cloudflares Netzwerk läuft, ist Pages die reibungsärmere Wahl.
+
+---
+
+## Cloudflare WAF und DDoS
+
+Wenn eine Domain über Cloudflare proxyt wird (die Orange-Cloud-Einstellung im DNS-Dashboard), aktiviert sich DDoS-Schutz auf L3 und L4 sofort. Das ist weder konfigurierbar noch optional: er ist standardmäßig für den gesamten proxierten Traffic aktiv. Cloudflares Netzwerk absorbiert volumetrische Angriffe, bevor sie den Origin erreichen.
+
+Layer-7-DDoS-Schutz, also HTTP-Flood-Mitigation, ist ebenfalls im kostenlosen Kontingent über die verwalteten WAF-Regeln verfügbar. Diese decken gängige Angriffssignaturen ab: SQLi, XSS, bekannte Exploit-Muster und IP-Bereiche schlechter Akteure.
+
+Bot Fight Mode ist eine Ein-Klick-Einstellung, die bekannte Bot-Infrastruktur herausfordert. Für ein statisches Portfolio ist der praktische Effekt minimal: es gibt kein Login-Formular für Brute-Force und keinen API-Endpunkt zum Scrapen. Aktivieren lohnt sich trotzdem: Bot-Traffic bläht Analysen auf, verbraucht Bandbreite und sondiert manchmal nach Pfaden, die nicht existieren.
+
+Rate Limiting im kostenlosen Kontingent ist einfach: eine Regel, bis zu 100.000 Anfragen pro zehn Minuten. Für eine private Seite deckt das die realistische Bedrohungsfläche. Für eine stark frequentierte Anwendung wäre der Pro-Plan oder höher nötig.
+
+Eine Verhaltensweise, die man kennen sollte: wenn Sie "Block AI bots" im Cloudflare-Dashboard aktivieren, injiziert die Plattform `Disallow`-Regeln für ClaudeBot, GPTBot, Google-Extended und andere in eine synthetische robots.txt und überschreibt dabei die eigene robots.txt aus dem Repository. Das war die Ursache des AI-Indexierungsproblems, das im vorigen Artikel dokumentiert wurde. Die Lösung: diesen Schalter deaktivieren und die robots.txt aus dem Repository den Zugriff kontrollieren lassen.
+
+---
+
+## Zero Trust Access
+
+Cloudflare Access ist ein Identity Proxy. Er steht vor jeder URL, die Sie definieren, und erzwingt eine Authentifizierungsprüfung, bevor er die Anfrage an den Origin weiterleitet. Der Nutzer berührt Ihren Server nie direkt: er authentifiziert sich zunächst bei Cloudflare.
+
+Der praktische Anwendungsfall sind interne Tools. Wenn Sie n8n, Grafana, Supabase Studio oder eine Staging-Umgebung auf einem privaten Server oder VPS betreiben, haben Sie typischerweise zwei Optionen: einen Port ins Internet öffnen (schlecht) oder ein VPN aufsetzen (Wartungsaufwand). Access ist die dritte Option: Port bleibt geschlossen, eine Cloudflare-Access-Policy steht vor dem Hostname, Cloudflare übernimmt die Authentifizierung.
+
+Die Konfiguration ist geradlinig:
+
+1. Hostname in Cloudflare DNS hinzufügen (mit Proxy).
+2. Eine Access-Anwendung im Zero Trust Dashboard anlegen, auf den Hostname zeigen.
+3. Eine Policy definieren: Nutzer mit passendem E-Mail-Muster, einer GitHub-Organisation oder einer Google-Workspace-Domain zulassen.
+4. Nutzer, die die URL aufrufen, sehen einen von Cloudflare gehosteten Login-Screen. Sie authentifizieren sich per E-Mail-OTP, GitHub-OAuth oder Google. Kein Account auf Ihrer Seite nötig.
+
+Das kostenlose Kontingent unterstützt bis zu 50 Nutzer. Das reicht für die meisten Solo-Operator-Setups und kleine Teams.
+
+Besonders nützlich: einem Auftragnehmer oder externen Stakeholder temporären Zugang zu einer Staging-Umgebung geben, ohne irgendwo einen Account anzulegen, ohne einen Port zu öffnen und ohne Zugangsdaten über Slack zu schicken.
+
+---
+
+## Cloudflare Tunnel
+
+Tunnel löst ein anderes Problem: einen lokal laufenden Dienst über eine öffentliche URL zugänglich machen, ohne Firewall-Ports zu öffnen.
+
+Der Mechanismus ist eine dauerhafte ausgehende Verbindung von Ihrem Rechner oder Server zum Cloudflare-Edge. Der `cloudflared`-Daemon stellt den Tunnel her. Cloudflare leitet eingehende Anfragen darüber an den lokal angegebenen Port weiter. Kein eingehender Port am Host muss geöffnet sein.
+
+```bash
+# cloudflared installieren, dann:
+cloudflared tunnel login
+cloudflared tunnel create my-tunnel
+cloudflared tunnel route dns my-tunnel staging.example.com
+cloudflared tunnel run --url http://localhost:3000 my-tunnel
+```
+
+Der Tunnel ist dauerhaft: er läuft nicht ab, wenn die Session endet, anders als beim kostenlosen ngrok-Kontingent, das Tunnels beim Stoppen des Prozesses beendet und bei jedem Neustart eine neue URL vergibt. Ein benannter Cloudflare-Tunnel behält denselben Hostname dauerhaft.
+
+Typische Anwendungsfälle:
+
+- **Lokales Development mit echter URL.** Webhook-Tests, OAuth-Callbacks oder einen WIP einem Kunden zeigen, ohne einen Deployment-Zyklus.
+- **Demo ohne Infrastruktur.** Anwendung lokal starten, jemandem die öffentliche URL geben, Tunnel nach Abschluss schließen.
+- **Selbst gehostete Dienste im privaten Netzwerk.** Ein Raspberry Pi oder Heimserver mit Home Assistant, Jellyfin oder einer privaten API, erreichbar über eine saubere Domain, ohne öffentliche IP oder Port-Forwarding-Regeln.
+
+Im Vergleich zu ngrok: Cloudflare Tunnel ist kostenlos, dauerhaft, ohne Bandbreitenlimits und integriert sich direkt mit Access-Policies. Authentifizierung vor einem Tunnel lässt sich mit zwei Konfigurationsänderungen einrichten.
+
+---
+
+## WARP und private Netzwerke
+
+WARP ist Cloudflares Geräte-Client: ein WireGuard-basierter Agent, der das Gerät mit Cloudflares Zero-Trust-Netzwerk verbindet. In der Praxis funktioniert er als leichtgewichtiger VPN-Ersatz.
+
+Der Anwendungsfall innerhalb von Zero Trust: Wenn Sie mehrere Maschinen haben (eine Entwicklungsstation, einen Staging-Server, eine Build-Maschine), können Sie jede in WARP einschreiben, im Zero Trust Dashboard einen privaten Netzwerkbereich definieren und Traffic zwischen ihnen über Cloudflares Edge leiten, ohne dass eine der Maschinen eine öffentliche IP oder offene Ports benötigt.
+
+Das ist keine vollständige Mesh-Networking-Lösung. Für komplexe Service-zu-Service-Vernetzung ist Tailscale oder WireGuard mit einem Koordinator-Knoten flexibler. Für ein kleines Setup, in dem der Laptop eines Entwicklers eine Staging-Datenbank oder einen privaten API-Endpunkt erreichen soll, ist WARP mit einer einfachen Netzwerk-Policy eine Zehn-Minuten-Konfiguration, die einen VPN-Server ersetzt, den Sie sonst betreiben müssten.
+
+---
+
+## Die Open-Source-Alternative
+
+Alles oben Beschriebene hat Open-Source-Äquivalente. Caddy mit Authelia übernimmt Authentication Proxying ähnlich wie Zero Trust Access. WireGuard oder Tailscale übernimmt privates Networking ähnlich wie WARP und Tunnel. Fail2ban und ModSecurity übernehmen WAF-ähnliches Filtering.
+
+Der ehrliche Vergleich:
+
+| | Cloudflare | Open Source |
+|---|---|---|
+| Setup-Zeit | Minuten | Stunden bis Tage |
+| Ops-Overhead | Nahe null | Laufend |
+| Vendor-Lock-in | Hoch | Keiner |
+| Kosten | Kostenlos bis günstig | Infrastrukturkosten |
+| Flexibilität | Nur CF-Ökosystem | Beliebig |
+
+Wenn Datenschutz und Anbieterunabhängigkeit die Nebenbedingung sind, oder wenn Sie Infrastruktur betreiben, die nicht über einen Dritten geroutet werden darf: der Open-Source-Weg ist der richtige. WireGuard insbesondere lohnt sich unabhängig vom Rest; das Protokoll zu verstehen ist nützlich.
+
+Wenn Zeit und Betriebsaufwand die Nebenbedingung sind, gewinnt Cloudflares Stack auf praktischer Basis. Für einen Solo-Operator oder ein kleines Team ohne dedizierte Ops-Funktion ist der Kompromiss eindeutig.
+
+---
+
+## Der Haken
+
+Alles in diesem Stack ist Cloudflare-nativ.
+
+WAF-Regeln, Access-Policies, Tunnel-Konfigurationen, Rate-Limiting-Regeln: nichts davon ist portierbar. Wenn Sie von Cloudflare wegmigrieren, bauen Sie diese Schichten auf der Zielplattform von Grund auf neu auf. Es gibt kein Exportformat, keinen offenen Standard für Access-Policies, keinen Terraform-Provider, der Ihre WAF-Regeln woanders zum Laufen bringt.
+
+Für eine private Seite oder ein kleines internes Toolset ist das ein akzeptabler Kompromiss. Die Konfiguration ist einfach genug, um sie neu aufzubauen, und die operativen Einsparungen über drei oder vier Jahre sind erheblich.
+
+Für eine Organisation mit Compliance-Anforderungen oder mit Bedarf an Multi-Cloud-Portierbarkeit ist der Lock-in ein realer Kostenfaktor. Infrastructure-as-Code (Terraform mit dem Cloudflare-Provider) hält die Konfiguration zumindest versioniert und prüfbar, läuft aber immer noch nur gegen Cloudflares API.
+
+Die praktische Regel: Terraform ab dem ersten Tag für alle Cloudflare-Konfigurationen verwenden. Nur-Dashboard-Konfiguration ist unsichtbarer Drift, der zur Migrationslast wird.
+
+---
+
+## Observability
+
+WAF und DDoS-Schutz zeigen, dass die Seite erreichbar und abgesichert ist. Sie sagen nicht, ob der Code im Browser eines Besuchers Fehler wirft. Das ist ein separates Anliegen, das Cloudflare nicht abdeckt.
+
+Für wojciech.io übernimmt Sentry diese Schicht. Es ist kein Cloudflare-Produkt, aber Observability ergänzt sich natürlich mit Hosting und Security-Stack. Das kostenlose Kontingent reicht für eine Seite dieser Größe. Das SDK initialisiert sich nur in Produktions-Builds, erfasst unbehandelte Fehler und eine Stichprobe von Performance-Traces und meldet sie an ein Dashboard mit vollständigen Stack-Traces.
+
+<Callout type="tip" title="Der DSN ist kein Geheimnis">
+
+Ein Sentry-DSN identifiziert das Projekt für eingehende Events: er ist dafür konzipiert, im Client-Bundle zu stecken. Was geschützt werden muss, ist der Build-Zeit-Auth-Token für Source-Map-Uploads: der gehört in eine Umgebungsvariable, nie ins Repository.
+
+</Callout>
+
+Der praktische Wert liegt in der Signalqualität. Bei einer statischen Seite kann nicht viel kaputtgehen, also ist ein Fehler in Sentry ein echtes Ereignis und kein Hintergrundrauschen. Wenn etwas kaputt geht, ein Drittanbieter-Script, eine browserspezifische API, ein schlechtes Deployment, taucht es mit Stack-Trace auf, anstatt auf einen Besucherbericht zu warten.
+
+---
+
+## Was ich nutze
+
+Für wojciech.io ist der aktive Cloudflare-Stack:
+
+- **Pages**: Produktions-Hosting, Branch-Previews, eigene Domain
+- **WAF-verwaltete Regeln**: standardmäßig über proxiiertes DNS aktiv
+- **Bot Fight Mode**: aktiviert
+- **Zero Trust Access**: im Einsatz für zwei interne Tools
+
+Geplant: ein dauerhafter Tunnel für lokalen Development-Zugriff, der den aktuellen Workflow mit bedarfsweisem ngrok-Start ablöst.
+
+Die Access-Konfiguration dauerte etwa fünfzehn Minuten. WAF und Bot Fight Mode waren Ein-Klick-Aktionen. Der Betriebsaufwand seit der Aktivierung: null.
+
+---
+
+## Abschluss
+
+Die Migration auf Cloudflare Pages ist primär eine Hosting-Entscheidung. Aber der Security-Stack, der mitkommt: WAF, DDoS-Schutz, Zero Trust Access, Tunnels: ist der weniger offensichtliche Grund zu bleiben.
+
+Wenn Sie bereits auf Cloudflare sind, steht das meiste davon jetzt zur Verfügung. Bot Fight Mode aktivieren, verwaltete WAF-Regeln einschalten, und falls Sie interne Tools haben, eine grundlegende Access-Policy einrichten. Das meiste dauert fünfzehn Minuten und kostet nichts.
+
+---
+
+**Verwandte Artikel:** [Wie ich mein Portfolio mit Astro und Cloudflare Pages neu gebaut habe](/insights/astro-cloudflare-pages-portfolio-ai-workflow) · [GTM AI Agent Starter Pack](/insights/how-to-build-gtm-ai-agent-outbound-crm)

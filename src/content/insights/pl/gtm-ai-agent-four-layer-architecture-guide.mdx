@@ -1,0 +1,107 @@
+---
+title: "GTM AI Agent: architektura czterech warstw"
+description: "Szczegółowe omówienie architektury GTM AI agenta: tożsamość operatora, narzędzia MCP, pamięć klienta i reużywalne skille, które działają na produkcji."
+publishedAt: "2026-03-08"
+tags:
+  - AI
+  - GTM
+  - Claude Code
+  - MCP
+  - Operator tooling
+category: "AI Systems"
+coverType: "terminal"
+featured: false
+draft: false
+locale: "pl"
+translationOf: "gtm-ai-agent-four-layer-architecture-guide"
+tldr:
+  - "Warstwa 1: CLAUDE.md definiuje, kim jest agent. Tożsamość operatora, kontekst klienta, zasady działania"
+  - "Warstwa 2: Narzędzia MCP dają agentowi realne możliwości: wyszukiwanie w sieci, zapis do CRM, wysyłka emaili"
+  - "Warstwa 3: Pliki pamięci klienta przechowują ICP, historię kont i kontekst personalizacji"
+  - "Warstwa 4: Skille operatora to reużywalne programy promptowe: research, wzbogacanie, draft, aktualizacja"
+---
+
+Claude Code GTM Agent Starter Pack ma architekturę czterech warstw. Każda warstwa robi jedno konkretne zadanie. Zrozumienie tych warstw to różnica między prowadzeniem systemu a prowadzeniem chatbota, który zapomina wszystkiego między sesjami.
+
+To jest widok od środka: jak działa każda warstwa, dlaczego jest oddzielna i co się psuje, gdy pominiesz którąś.
+
+## Warstwa 1: CLAUDE.md, czyli tożsamość operatora
+
+CLAUDE.md to pierwszy plik, który Claude Code czyta przy starcie sesji. Definiuje, kim jest agent, nie to, co potrafi zrobić.
+
+Dla agenta GTM CLAUDE.md zawiera:
+
+```markdown
+# Tożsamość operatora
+Jesteś doświadczonym operatorem GTM osadzonym w zespole wzrostu [nazwa klienta].
+Twoim zadaniem jest przyspieszenie outbound pipeline przez research, wzbogacanie danych i uruchamianie sekwencji.
+
+# Zasady działania
+- Nigdy nie wysyłaj emaila bez zgody człowieka
+- Definicja ICP jest w /memory/icp.md: zawsze sprawdź ją przed oceną leada
+- Szablony sekwencji są w /memory/sequences/: dostosowuj, nie twórz od zera
+- Loguj wszystkie zakończone działania do /memory/activity-log.md
+```
+
+Kluczowa zasada projektowa: tożsamość jest trwała. Claude Code czyta CLAUDE.md przy starcie sesji, co oznacza, że agent ma te same ograniczenia operacyjne za każdym razem. Nie musisz wyjaśniać kontekstu od nowa przy każdej sesji.
+
+## Warstwa 2: Narzędzia MCP, czyli realne możliwości
+
+Narzędzia MCP (Model Context Protocol) dają agentowi zdolność działania na zewnętrznych systemach, nie tylko generowania tekstu.
+
+Stos GTM używa:
+
+- **Brave Search MCP**: research w sieci bez ryzyka halucynacji (czyta prawdziwe strony)
+- **HubSpot MCP** (lub webhook Clay): odczyt/zapis CRM
+- **Gmail MCP**: tworzenie draftów (nigdy wysyłka, tylko draft, zgodnie z zasadami w CLAUDE.md)
+- **Notion MCP**: logowanie gotowych briefów badawczych do wspólnego workspace
+
+Bez narzędzi MCP masz model językowy. Z nimi masz agenta, który potrafi sprawdzić firmę, zweryfikować czy jest w CRM, przygotować spersonalizowany email i zalogować pracę: w jednej sesji.
+
+## Warstwa 3: Pliki pamięci klienta, czyli trwały kontekst
+
+Katalog `/memory/` przechowuje wszystko, co agent musi wiedzieć o kliencie i co nie zmienia się między sesjami:
+
+```
+/memory/
+  icp.md         : definicja ICP: branża, rozmiar, role, dyskwalifikatory
+  sequences/     : szablony emaili per vertical, per etap
+  accounts/      : briefe badawcze per konto (auto-generowane, weryfikowane przez człowieka)
+  activity-log.md: log zakończonych działań
+  objections.md  : typowe obiekcje i zatwierdzone odpowiedzi
+```
+
+To właśnie sprawia, że agent jest kumulatywny. Research z wtorkowej sesji jest dostępny w czwartek. Obsługa obiekcji zatwierdzona w poprzednim miesiącu jest w każdej kolejnej sesji. Agent nie potrzebuje ponownego briefingu, czyta pliki pamięci.
+
+## Warstwa 4: Skille operatora, czyli reużywalne programy promptowe
+
+Skille to zdefiniowane programy promptowe, które wykonują konkretne zadanie GTM. Starter pack zawiera pięć:
+
+**research**: Na podstawie nazwy firmy tworzy ustrukturyzowany brief badawczy: przegląd firmy, ostatnie sygnały, prawdopodobne pain points, ocena dopasowania do ICP.
+
+**enrich**: Na podstawie imienia i nazwy firmy kontaktu, znajduje profil LinkedIn, rolę, prawdopodobne priorytety i dodaje do pliku pamięci kont.
+
+**draft**: Na podstawie kontaktu i jego briefa konta, tworzy spersonalizowany email pierwszego kontaktu używając odpowiedniego szablonu sekwencji.
+
+**update**: Na podstawie zakończonego działania, loguje je do logu aktywności i aktualizuje odpowiedni plik konta w CRM.
+
+**score**: Na podstawie grupy leadów, ocenia każdy względem definicji ICP i zwraca priorytetyzowaną listę.
+
+Każdy skill to ustrukturyzowany prompt z zdefiniowanymi wejściami, wyjściami i zasadami. Uruchamiasz skill po nazwie: `/research Acme Corp`. Agent czyta definicję skilla, wykonuje go i zwraca ustrukturyzowany wynik.
+
+## Dlaczego warstwy mają znaczenie
+
+Większość GTM opartych na promptach rozpada się, bo są bezstanowe. Każda rozmowa zaczyna się od zera. Architektura czterech warstw to rozwiązuje:
+
+- Tożsamość jest trwała (CLAUDE.md)
+- Możliwości są realne (narzędzia MCP)
+- Kontekst się kumuluje (pliki pamięci)
+- Wykonanie jest spójne (skille)
+
+Koszt pełnego outbound run: research, wzbogacanie, draft, log: to 2-8 dolarów w kosztach Claude API. Równoważny komercyjny stos (kredyty Clay + miejsca Apollo + Outreach) kosztuje 200-500 dolarów miesięcznie za ten sam wolumen działań.
+
+Różnica nie leży w możliwościach. Leży w modelu operacyjnym.
+
+---
+
+**Powiązane:** [Jak zbudować GTM AI Agenta do outbound research i wzbogacania CRM](/insights/how-to-build-gtm-ai-agent-outbound-crm) · [Narzędzia GTM: framework decyzji build vs buy dla operatorów](/insights/gtm-tools-build-vs-buy-decision-framework)

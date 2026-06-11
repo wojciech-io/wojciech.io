@@ -1,0 +1,107 @@
+---
+title: "GTM AI Agent arkitektur: guiden til de fire lag"
+description: "En detaljeret gennemgang af GTM AI agent arkitekturen: operator-identitet, MCP-værktøjer, klient-hukommelse og genanvendelige skills, der gør det hele produktionsklar."
+publishedAt: "2026-03-08"
+tags:
+  - AI
+  - GTM
+  - Claude Code
+  - MCP
+  - Operator tooling
+category: "AI Systems"
+coverType: "terminal"
+featured: false
+draft: false
+locale: "dk"
+translationOf: "gtm-ai-agent-four-layer-architecture-guide"
+tldr:
+  - "Lag 1: CLAUDE.md definerer, hvem agenten er. Operator-identitet, klientkontekst, spilleregler"
+  - "Lag 2: MCP-værktøjer giver agenten reel handlekraft: websøgning, CRM-skrivning, e-mailafsendelse"
+  - "Lag 3: Klient-hukommelsefiler gemmer ICP, kontohistorik og personaliseringskontekst"
+  - "Lag 4: Operator-skills er genanvendelige prompt-programmer: research, berigelse, kladde, opdatering"
+---
+
+Claude Code GTM Agent Starter Pack bygger på en fire-lags arkitektur. Hvert lag har en specifik opgave. Forstår du lagene, driver du et system. Gør du ikke, ender du med en chatbot, der glemmer alt mellem sessions.
+
+Her er det interne overblik: hvordan hvert lag fungerer, hvorfor det er adskilt, og hvad der går i stykker, hvis du springer et over.
+
+## Lag 1: CLAUDE.md, operator-identiteten
+
+CLAUDE.md er den første fil, Claude Code læser, når en session starter. Den definerer, hvem agenten er, ikke hvad den kan.
+
+For en GTM agent indeholder CLAUDE.md:
+
+```markdown
+# Operator-identitet
+Du er en erfaren GTM operator indlejret i [kundenavn]s growth-team.
+Din opgave er at accelerere outbound pipeline gennem research, berigelse og sekvensudrulning.
+
+# Spilleregler
+- Send aldrig en e-mail uden menneskelig godkendelse
+- ICP-definitionen ligger i /memory/icp.md: tjek den altid, inden du scorer et lead
+- Sekvens-skabeloner ligger i /memory/sequences/: tilpas dem, opret aldrig fra bunden
+- Log alle gennemførte handlinger i /memory/activity-log.md
+```
+
+Det centrale designprincip: identiteten er persistent. Claude Code læser CLAUDE.md ved sessionstart, hvilket betyder, at agenten har de samme driftsrammer hver gang. Du behøver ikke genforklare konteksten session for session.
+
+## Lag 2: MCP-værktøjer, de reelle evner
+
+MCP-værktøjer (Model Context Protocol) giver agenten evnen til at handle på eksterne systemer, ikke bare generere tekst.
+
+GTM-stacken bruger:
+
+- **Brave Search MCP**: webresearch uden hallucinationsrisiko (læser rigtige sider)
+- **HubSpot MCP** (eller Clay webhook): CRM-læsning og -skrivning
+- **Gmail MCP**: oprettelse af kladder (sender aldrig, kun kladder, ifølge reglerne i CLAUDE.md)
+- **Notion MCP**: log af færdige research briefs til det delte workspace
+
+Uden MCP-værktøjer har du en sprogmodel. Med dem har du en agent, der kan slå en virksomhed op, tjekke om den er i CRM, udkaste en personaliseret e-mail og logge arbejdet: i én enkelt session.
+
+## Lag 3: Klient-hukommelsefiler, den persistente kontekst
+
+`/memory/`-mappen gemmer alt, agenten skal vide om klienten, og som ikke ændrer sig fra session til session:
+
+```
+/memory/
+  icp.md         : ICP-definition: branche, størrelse, roller, diskvalifikatorer
+  sequences/     : e-mailskabeloner per vertical, per stadie
+  accounts/      : per-konto research briefs (auto-genererede, menneskereviewede)
+  activity-log.md: log over gennemførte handlinger
+  objections.md  : typiske indvendinger og godkendte svar
+```
+
+Det er det, der gør agenten kumulativ. Research fra tirsdagens session er tilgængeligt torsdag. Indsigelseshåndteringen, der blev godkendt for en måned siden, er med i hver efterfølgende session. Agenten behøver ikke rebriefes, den læser hukommelsesfilerne.
+
+## Lag 4: Operator-skills, de genanvendelige prompt-programmer
+
+Skills er definerede prompt-programmer, der løser en specifik GTM-opgave. Starter pack indeholder fem:
+
+**research**: Givet et virksomhedsnavn producerer agenten en struktureret research brief: virksomhedsoverblik, nylige signaler, sandsynlige pain points, ICP fit-score.
+
+**enrich**: Givet et kontaktnavn og en virksomhed finder agenten LinkedIn-profil, rolle, sandsynlige prioriteter og tilføjer til konto-hukommelsesfilen.
+
+**draft**: Givet en kontakt og dennes kontobrief producerer agenten en personaliseret første-kontakt-e-mail ved hjælp af den relevante sekvens-skabelon.
+
+**update**: Givet en gennemført handling logger agenten den i aktivitetsloggen og opdaterer den relevante kontofil i CRM.
+
+**score**: Givet en batch af leads scorer agenten hvert enkelt mod ICP-definitionen og returnerer en prioriteret liste.
+
+Hvert skill er en struktureret prompt med definerede input, output og regler. Du kalder et skill ved navn: `/research Acme Corp`. Agenten læser skill-definitionen, udfører den og returnerer struktureret output.
+
+## Derfor betyder lagene noget
+
+De fleste prompt-baserede GTM-setups bryder sammen, fordi de er tilstandsløse. Hver samtale starter fra nul. Fire-lags arkitekturen løser det:
+
+- Identitet er persistent (CLAUDE.md)
+- Evner er reelle (MCP-værktøjer)
+- Kontekst akkumuleres (hukommelsefiler)
+- Udførelse er konsistent (skills)
+
+Prisen for et fuldt outbound run, altså research, berigelse, kladde, log, er 2-8 dollars i Claude API-omkostninger. En tilsvarende kommerciel stack (Clay credits, Apollo seats, Outreach) koster 200-500 dollars om måneden for det samme outputvolumen.
+
+Kløften handler ikke om evner. Den handler om driftsmodellen.
+
+---
+
+**Relateret:** [Sådan bygger du en GTM AI agent til outbound research og CRM-berigelse](/insights/how-to-build-gtm-ai-agent-outbound-crm) · [GTM-værktøjer: build vs buy beslutningsramme for operators](/insights/gtm-tools-build-vs-buy-decision-framework)

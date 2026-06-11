@@ -1,6 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
 import { insightSlug, isLocalePost, sortInsights } from '../../lib/insights';
+import type { LocalizedHomeCopy } from '../../data/locales';
+
+interface Props {
+  copy?: LocalizedHomeCopy;
+}
+
+const { copy } = Astro.props as Props;
+
+// English fallbacks
+const eyebrow = copy?.insightsEyebrow ?? 'Writing';
+const heading = copy?.insightsHeading ?? 'Operator notes.';
 
 const posts = (await getCollection('insights', isLocalePost('en')))
   .sort(sortInsights)
@@ -16,10 +27,10 @@ const posts = (await getCollection('insights', isLocalePost('en')))
       <div>
         <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
           <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
-          <span>Writing</span>
+          <span>{eyebrow}</span>
         </p>
         <h2 class="text-[length:var(--text-h2)] font-semibold leading-tight tracking-tight text-[var(--color-text)]">
-          Operator notes.
+          {heading}
         </h2>
       </div>
       <p class="text-sm text-[var(--color-text-muted)] max-w-sm leading-relaxed md:text-right">

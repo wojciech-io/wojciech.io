@@ -1,6 +1,19 @@
 ---
 import ProjectCard from '../ui/ProjectCard.astro';
 import ProjectCover from '../ui/ProjectCover.astro';
+import type { LocalizedHomeCopy } from '../../data/locales';
+
+interface Props {
+  copy?: LocalizedHomeCopy;
+}
+
+const { copy } = Astro.props as Props;
+
+// English fallbacks
+const eyebrow = copy?.projectsEyebrow ?? 'Selected work';
+const heading1 = copy?.projectsHeading1 ?? 'Projects that shipped.';
+const heading2 = copy?.projectsHeading2 ?? 'Systems that still run.';
+const linkText = copy?.projectsLink ?? 'All work';
 
 const projects = [
   {
@@ -66,15 +79,15 @@ const rest = projects.slice(1);
       <div>
         <p class="text-xs font-semibold tracking-widest uppercase text-[var(--color-accent)] mb-4 flex items-center gap-2.5">
           <span class="inline-block w-2 h-2 rounded-sm bg-[var(--color-accent)] rotate-45 opacity-80" aria-hidden="true"></span>
-          <span>Selected work</span>
+          <span>{eyebrow}</span>
         </p>
         <h2 class="text-[length:var(--text-h2)] font-semibold leading-[1.15] tracking-tight">
-          <span class="text-[var(--color-text)]">Projects that shipped.</span><br />
-          <span class="text-[var(--color-text-muted)]">Systems that still run.</span>
+          <span class="text-[var(--color-text)]">{heading1}</span><br />
+          <span class="text-[var(--color-text-muted)]">{heading2}</span>
         </h2>
       </div>
       <a href="/work/" class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors hidden sm:block shrink-0 ml-4">
-        All work →
+        {linkText} →
       </a>
     </div>
 
