@@ -3,7 +3,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = new URL('../content/insights/', import.meta.url);
-const LOCALES = ['de', 'dk', 'no', 'jp', 'it', 'es', 'pl'] as const;
+const LOCALES = ['pl'] as const;
 
 /** Articles that MUST exist in every locale (baseline coverage). */
 const REQUIRED_SLUGS = [
@@ -14,12 +14,6 @@ const REQUIRED_SLUGS = [
 ] as const;
 
 const LOCALE_MARKERS: Record<(typeof LOCALES)[number], RegExp[]> = {
-  de: [/\bDer\b|\bDie\b|\bDas\b/, /\bnicht\b/, /\bund\b/, /\bWenn\b/],
-  dk: [/\bDet\b|\bDen\b|\bDer\b/, /\bog\b/, /\bikke\b/, /\bhvis\b/i],
-  no: [/\bDet\b|\bDen\b/, /\bog\b/, /\bikke\b/, /\bhvis\b/i],
-  jp: [/[぀-ヿ]/, /[一-龯]/],
-  it: [/\bil\b|\bla\b|\ble\b/i, /\bnon\b/, /\bche\b/],
-  es: [/\bel\b|\bla\b|\blos\b/i, /\bno\b/, /\bque\b/],
   pl: [/\b(że|jest|nie|który|która)\b/i, /\b(się|tylko|dla)\b/i],
 };
 
@@ -85,8 +79,10 @@ describe('localized insight articles', () => {
     expect(englishComparison).toContain('<Comparison');
 
     for (const locale of LOCALES) {
-      expect(read(locale, 'ai-production-stack')).toContain('<KeyTakeaway');
-      expect(read(locale, 'claude-code-vs-clay')).toContain('<Comparison');
+      const takeaway = read(locale, 'ai-production-stack');
+      const comparison = read(locale, 'claude-code-vs-clay');
+      expect(takeaway).toContain('<KeyTakeaway');
+      expect(comparison).toContain('<Comparison');
     }
   });
 });

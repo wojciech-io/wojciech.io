@@ -303,7 +303,7 @@ export function getPrimaryNavLinks(pathname: string) {
   return [
     { label: t.nav.work,       href: localizeHref('/work/',       locale), minWidth: '4rem'   },
     { label: t.nav.aiSystems,  href: localizeHref('/ai-systems/', locale), minWidth: '5.5rem' },
-    { label: t.nav.insights,   href: localizeHref('/insights/',   locale), minWidth: '4rem'   },
+    { label: t.nav.insights,   href: locale === 'pl' ? '/pl/insights/' : '/insights/', minWidth: '4rem' },
     { label: t.nav.tools,      href: '/resources/',                        minWidth: '3rem'   },
     { label: t.nav.stack,      href: '/stack/',                            minWidth: '3rem'   },
     { label: t.nav.about,      href: localizeHref('/about/',      locale), minWidth: '4rem'   },

@@ -1,14 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
-import { insightSlug, isLocalePost, sortInsights } from '../../lib/insights';
+import { insightSlug, isLocalePost, sortInsights, type InsightLocale } from '../../lib/insights';
 import ArticleCover from '../ui/ArticleCover.astro';
 import type { SectionStrings } from '../../data/locales';
 
 interface Props {
   i18n?: SectionStrings['writing'];
+  locale?: InsightLocale;
 }
 
-const { i18n } = Astro.props;
+const { i18n, locale = 'en' } = Astro.props;
 const t = {
   eyebrow: i18n?.eyebrow ?? 'Writing',
   title: i18n?.title ?? 'Operator notes.',
@@ -17,7 +18,8 @@ const t = {
   ctaBody: i18n?.ctaBody ?? 'New notes on AI systems, GTM architecture, and shipped products, published as they are ready.',
 };
 
-const posts = (await getCollection('insights', isLocalePost('en')))
+const insightsBase = locale === 'pl' ? '/pl/insights' : '/insights';
+const posts = (await getCollection('insights', isLocalePost(locale)))
   .sort(sortInsights)
   .slice(0, 5);
 ---
@@ -35,7 +37,7 @@ const posts = (await getCollection('insights', isLocalePost('en')))
         </h2>
       </div>
       <a
-        href="/insights/"
+        href={`${insightsBase}/`}
         class="obs-mono text-xs font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
       >
         {t.allLink}
@@ -45,7 +47,7 @@ const posts = (await getCollection('insights', isLocalePost('en')))
     <!-- Featured first article -->
     {posts[0] && (
       <a
-        href={`/insights/${insightSlug(posts[0])}/`}
+        href={`${insightsBase}/${insightSlug(posts[0])}/`}
         class="reveal-up group block mb-6 obs-panel obs-glow overflow-hidden card-lift"
         data-reveal-index="0"
       >
@@ -96,7 +98,7 @@ const posts = (await getCollection('insights', isLocalePost('en')))
       </div>
       {posts.slice(1).map((post, index) => (
         <a
-          href={`/insights/${insightSlug(post)}/`}
+          href={`${insightsBase}/${insightSlug(post)}/`}
           class="reveal-up group grid sm:grid-cols-[100px_1fr_120px_40px] gap-2 sm:gap-4 px-5 py-3.5 border-b border-[var(--color-border)] last:border-b-0 hover:bg-[var(--color-surface-2)] transition-colors"
           data-reveal-index={index + 1}
         >
@@ -120,7 +122,7 @@ const posts = (await getCollection('insights', isLocalePost('en')))
     <div class="mt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <p class="text-sm text-[var(--color-text-muted)]">{t.ctaBody}</p>
       <a
-        href="/insights/"
+        href={`${insightsBase}/`}
         class="btn-press obs-mono inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-accent-text)] bg-[var(--color-accent-cta)] rounded-[var(--radius-btn)] px-6 py-2.5 hover:bg-[var(--color-accent-cta-hi)] transition-colors whitespace-nowrap"
       >
         {t.allLink}
