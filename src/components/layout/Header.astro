@@ -20,13 +20,20 @@ const currentPageSegment = currentLocale ? segments[1] : segments[0];
 const localizedPage = localizedPageSlugs.includes(currentPageSegment as LocalizedPageSlug)
   ? currentPageSegment
   : '';
+// Insights only exist in EN+PL; for other locales, the language switcher
+// falls back to the locale home rather than emitting a 404.
+const INSIGHT_LOCALES = new Set(['en', 'pl']);
+const isInsightsPage = localizedPage === 'insights';
 const languageOptions = [
   { code: 'EN', label: 'English', href: localizedPage ? `/${localizedPage}/` : '/' },
-  ...localizedHomeList.map((locale) => ({
-    code: locale.code,
-    label: locale.label,
-    href: localizedPage ? `/${locale.path}/${localizedPage}/` : `/${locale.path}/`,
-  })),
+  ...localizedHomeList.map((locale) => {
+    const hasLocalizedPage = localizedPage && (!isInsightsPage || INSIGHT_LOCALES.has(locale.path));
+    return {
+      code: locale.code,
+      label: locale.label,
+      href: hasLocalizedPage ? `/${locale.path}/${localizedPage}/` : `/${locale.path}/`,
+    };
+  }),
 ];
 ---
 
