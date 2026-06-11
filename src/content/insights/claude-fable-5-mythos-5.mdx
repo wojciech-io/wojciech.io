@@ -120,8 +120,6 @@ It runs on Astro and Cloudflare, serverless, nothing to babysit. The site ships 
   caption="This site as it builds today. Clone the repo and you get the same numbers."
 />
 
-So Claude here is not a writing toy. It is the thing that has to hold a multi-language, multi-app system together without dropping a thread. That is the job a frontier model has to be good at. Not trivia, not a clever one-liner.
-
 ## One real job, eight languages, one session
 
 The pricing comparison further down this page: here is how it got made, today, in one sitting. This is the kind of work I mean.
@@ -132,8 +130,6 @@ The pricing comparison further down this page: here is how it got made, today, i
 4. **Shipped.** The build passing, 560 tests, pushed to main. Eight languages consistent. One session.
 
 > The translator handled eight languages in seconds. It also got the meaning wrong four times. Neither of those is a surprise, and both are the job. A stronger model shifts that line: fewer passes, less of my judgment spent on cleanup.
-
-That line is exactly what a frontier model is supposed to move. Not "better prose." Fewer rounds between the volume and the judgment.
 
 ## The three surfaces Claude Fable 5 has to survive: chat, agents, code
 
@@ -150,7 +146,7 @@ Same model, three very different jobs. Fast judgment in a chat window. A long mu
   ]}
 />
 
-The code surface is the one I can show you today, because it runs here, not behind an embargo. To compare models honestly I had Claude build a small harness: same prompt, every model, real latency, tokens and cost. This is the core of it, and it actually runs:
+The code surface is the one with receipts, because it runs here and the numbers are public. To compare models honestly I had Claude build a small harness: same prompt, every model, real latency, tokens and cost:
 
 ```js
 // same prompt, every model, real numbers
@@ -164,8 +160,8 @@ for (const test of TESTS) {
 }
 ```
 
-<Callout type="note" title="What is real here, and what is pending">
-  The harness, the tasks and the scoring are real and runnable today. The first model-vs-model numbers landed on June 10: three sterile headless runs on an audit of this site's own repo, scored against an answer key I verified by hand first. The full tables, cost per found bug included, are in the receipts section below. No borrowed benchmarks, only my own.
+<Callout type="note" title="What is real here">
+  The harness, the tasks and the scoring are runnable: clone the repo, run the prompt. The numbers below are from three sterile headless runs on June 10 and 11, scored against an answer key I verified by hand first. No borrowed benchmarks, only my own.
 </Callout>
 
 ## The first receipt: Fable 5 found a live bug in my failover
@@ -205,8 +201,6 @@ The fix shipped the same day: the monitor now checks the primary origin directly
 +      console.log(`HOLD: serving backup, primary still unhealthy`);
 +    }
 ```
-
-That is the division of labour from the pricing-block story again, on infrastructure this time: Fable 5 read the system and named the mechanism, I checked every line before it landed.
 
 <Callout type="note" title="Three benchmark runs went in the bin first">
   My daily Claude Code setup carries about 90 plugin and MCP integrations. Inside that environment the audit sessions kept drifting into a Spotify ads workflow one plugin injected, instead of auditing anything. I binned those runs and rebuilt the test sterile: zero plugins, zero memory, fresh clones of one commit, headless runs, identical prompt. If your agent benchmark runs inside your daily setup, you are benchmarking your plugins too.
@@ -433,7 +427,7 @@ Fable 5 is free on Pro, Max, Team and seat-based Enterprise until June 22, then 
   ]}
 />
 
-The full benchmark results are above: scores, costs, off-key findings, report quality. Next up: cost per result on the localization pipeline and the enrichment loop, Fable against Opus on sustained work. If you are testing too, tell me what broke. That is the part no launch post will give you.
+If you are testing too, tell me what broke. That is the part no launch post will give you.
 
 ## FAQ: Claude Fable 5 and Mythos 5
 
@@ -454,8 +448,6 @@ On my own benchmark, an audit of this site's repo scored against a hand-verified
 Fable 5 does not refuse flagged topics, it silently answers with Opus 4.8 instead. Anthropic says this happens in under 5% of sessions. If you run agent loops or evals, log which model replied, otherwise your numbers mix two models.
 
 ## Sources and further reading
-
-I read the primary material so you can too. These are the real links, not a summary of a summary.
 
 <ToolCard
   cols={3}

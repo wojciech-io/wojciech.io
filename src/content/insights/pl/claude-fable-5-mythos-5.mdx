@@ -18,7 +18,7 @@ locale: "pl"
 translationOf: "claude-fable-5-mythos-5"
 tldr:
   - "Fable 5 i Mythos 5 to ten sam model. Jedyna różnica to zabezpieczenia: Fable przy oznaczonych tematach po cichu przełącza się na Opus 4.8, Mythos działa z częścią zabezpieczeń zdjętą dla zweryfikowanych partnerów."
-  - "Dałem Fable 5, Opusowi 4.6 i Sonnetowi 4.6 do audytu repo tej strony, punktowane względem sześciu bugów, które najpierw zweryfikowałem ręcznie. Fable znalazł zdecydowanie najwięcej, w tym żywego buga produkcyjnego w moim failoverze DNS. Opus złapał tego samego głównego buga za połowę ceny. Sonnet go przegapił. Poprawka to publiczny commit, podlinkowany niżej."
+  - "Dałem Fable 5, Opusowi 4.8 i Sonnetowi 4.6 do audytu repo tej strony, punktowane względem sześciu bugów, które najpierw zweryfikowałem ręcznie. Fable znalazł zdecydowanie najwięcej, w tym żywego buga produkcyjnego w moim failoverze DNS. Opus złapał tego samego głównego buga za połowę ceny. Sonnet go przegapił. Poprawka to publiczny commit, podlinkowany niżej."
   - "Kosztuje 2x tyle co Opus 4.8: 10 $ za tokeny wejściowe i 50 $ za wyjściowe, za milion. Opłaca się tylko wtedy, gdy kończy zadanie w mniejszej liczbie kroków. Liczy się koszt wyniku, nie koszt tokena."
   - "Haczyk, którego nikt nie pokazuje na slajdzie: cichy fallback oznacza, że w jednej sesji mogą odpowiadać dwa różne modele. Jeśli puszczasz pętle agentowe, loguj, który odpowiedział, inaczej twoje liczby kłamią."
 faq:
@@ -121,8 +121,6 @@ Działa na Astro i Cloudflare, serverless, nie ma czym się opiekować. Strona w
   caption="Ta strona, tak jak buduje się dzisiaj. Sklonuj repo i dostaniesz te same liczby."
 />
 
-Claude nie jest tu więc zabawką do pisania. Jest tym, co musi utrzymać wielojęzyczny, wieloaplikacyjny system w całości, nie gubiąc wątku. To jest robota, w której model frontier musi być dobry. Nie ciekawostki, nie błyskotliwy one-liner.
-
 ## Jedna prawdziwa robota, osiem języków, jedna sesja
 
 Porównanie cen, które znajdziesz niżej na tej stronie: oto jak powstało, dzisiaj, za jednym posiedzeniem. Taką robotę mam na myśli.
@@ -133,8 +131,6 @@ Porównanie cen, które znajdziesz niżej na tej stronie: oto jak powstało, dzi
 4. **Na produkcji.** Build zielony, 560 testów, push na maina. Osiem języków spójnych. Jedna sesja.
 
 > Tłumacz ogarnął osiem języków w kilka sekund. Cztery razy pomylił też sens. Żadna z tych rzeczy nie jest niespodzianką i obie są częścią roboty. Mocniejszy model przesuwa tę granicę: mniej podejść, mniej mojego osądu spalanego na sprzątanie.
-
-Dokładnie tę granicę ma przesuwać model frontier. Nie „ładniejszą prozę". Mniej rund między wolumenem a osądem.
 
 ## Trzy fronty, które Claude Fable 5 musi przetrwać: czat, agenci, kod
 
@@ -151,7 +147,7 @@ Ten sam model, trzy zupełnie różne roboty. Szybki osąd w oknie czatu. Długi
   ]}
 />
 
-Front kodu mogę pokazać już dziś, bo działa tutaj, a nie za embargiem. Żeby uczciwie porównać modele, kazałem Claude'owi zbudować mały harness: ten sam prompt, każdy model, realna latencja, tokeny i koszt. To jego rdzeń i naprawdę się uruchamia:
+Front kodu ma paragony, bo działa tutaj i liczby są publiczne. Żeby uczciwie porównać modele, kazałem Claude'owi zbudować mały harness: ten sam prompt, każdy model, realna latencja, tokeny i koszt:
 
 ```js
 // ten sam prompt, każdy model, prawdziwe liczby
@@ -165,8 +161,8 @@ for (const test of TESTS) {
 }
 ```
 
-<Callout type="note" title="Co tu jest prawdziwe, a co dopiero będzie">
-  Harness, zadania i punktacja są prawdziwe i odpalisz je już dziś. Pierwsze liczby model kontra model spłynęły 10 czerwca: trzy sterylne przebiegi headless na audycie repo tej strony, ocenione względem klucza odpowiedzi, który najpierw zweryfikowałem ręcznie. Pełne tabele, z kosztem znalezionego buga włącznie, są w sekcji z paragonami niżej. Żadnych pożyczonych benchmarków, tylko moje własne.
+<Callout type="note" title="Co tu jest prawdziwe">
+  Harness, zadania i punktacja są odpalalne: sklonuj repo, uruchom prompt. Liczby niżej to trzy sterylne przebiegi headless z 10 i 11 czerwca, ocenione względem klucza odpowiedzi, który najpierw zweryfikowałem ręcznie. Żadnych pożyczonych benchmarków, tylko moje.
 </Callout>
 
 ## Pierwszy paragon: Fable 5 znalazł żywego buga w moim failoverze
@@ -206,8 +202,6 @@ Poprawka weszła tego samego dnia: monitor sprawdza teraz bezpośrednio origin p
 +      console.log(`HOLD: serving backup, primary still unhealthy`);
 +    }
 ```
-
-To ten sam podział pracy co w historii z blokiem cenowym, tym razem na infrastrukturze: Fable 5 przeczytał system i nazwał mechanizm, ja sprawdziłem każdą linię, zanim weszło.
 
 <Callout type="note" title="Trzy przebiegi benchmarku najpierw poszły do kosza">
   Mój codzienny Claude Code dźwiga około 90 integracji pluginów i MCP. W tym środowisku sesje audytu zamiast audytować, raz za razem zjeżdżały w workflow reklam Spotify, który wstrzykiwał jeden z pluginów. Wyrzuciłem te przebiegi i przebudowałem test na sterylnie: zero pluginów, zero pamięci, świeże klony jednego commita, przebiegi headless, identyczny prompt. Jeśli twój benchmark agentów chodzi w twoim codziennym setupie, benchmarkujesz też swoje pluginy.
@@ -436,7 +430,7 @@ Fable 5 jest darmowy w planach Pro, Max, Team i Enterprise na stanowiska do 22 c
   ]}
 />
 
-Pełne wyniki benchmarku masz wyżej: punkty, koszty, znaleziska spoza klucza, jakość raportów. Dalej: koszt wyniku na pipelinie lokalizacji i pętli wzbogacania, Fable kontra Opus na ciągłej robocie. Jeśli też testujesz, napisz mi, co się u ciebie wyłożyło. Tego żaden wpis premierowy ci nie da.
+Jeśli też testujesz, napisz mi, co się u ciebie wyłożyło. Tego żaden wpis premierowy ci nie da.
 
 ## FAQ: Claude Fable 5 i Mythos 5
 
@@ -457,8 +451,6 @@ Na moim własnym benchmarku, audycie repo tej strony punktowanym względem ręcz
 Fable 5 nie odmawia przy oznaczonych tematach, tylko po cichu odpowiada jako Opus 4.8. Według Anthropic dotyczy to mniej niż 5% sesji. Jeśli puszczasz pętle agentowe albo evale, loguj, który model odpowiedział, inaczej twoje liczby mieszają dwa modele.
 
 ## Źródła i dalsza lektura
-
-Przeczytałem materiały źródłowe, żebyś ty też mógł. To prawdziwe linki, nie streszczenie streszczenia.
 
 <ToolCard
   cols={3}
