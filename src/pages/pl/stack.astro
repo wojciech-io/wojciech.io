@@ -1,0 +1,211 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+
+const groups = [
+  {
+    icon: '⬡',
+    title: 'Architektura',
+    body: 'Monorepo npm-workspaces. Astro 6 na Cloudflare Pages. Siedem powierzchni, siedem projektów Pages: wojciech.io, app, growthhub, academy, notch, subscribe, dev. Pakiety wspólne: @wojciech/tokens, @wojciech/ui, @wojciech/mdx-components.',
+    items: [
+      'Astro 6 + MDX',
+      'Cloudflare Pages (7 projektów)',
+      'npm workspaces (apps/* + packages/*)',
+      '@wojciech/tokens · @wojciech/ui · @wojciech/mdx-components',
+    ],
+  },
+  {
+    icon: '◈',
+    title: 'Frontend',
+    body: 'Tailwind CSS 4 napędzany tokenami CSS custom-prop. Geist do typografii. Lenis + Motion do animacji. Pagefind do wyszukiwania statycznego. Satori + resvg-js do OG.',
+    items: [
+      'Tailwind CSS 4 + CSS custom props',
+      'Geist (fontface + variable)',
+      'Pagefind (offline search)',
+      'Lenis (scroll smoothing)',
+      'Motion (animation sequencing)',
+      'Satori + resvg-js (OG generation)',
+    ],
+  },
+  {
+    icon: '▣',
+    title: 'Backend & API',
+    body: 'Pages Functions (TypeScript) obsługujące kontakt, subskrypcje i integracje. Durable Objects do utrzymywania stanu. D1 (SQLite) do analityki. DeepL API do tłumaczeń, PostHog do telemetrii.',
+    items: [
+      'Cloudflare Pages Functions',
+      'Durable Objects (state management)',
+      'D1 (SQLite)',
+      'DeepL API (tłumaczenia)',
+      'PostHog (analytics telemetry)',
+      'Resend (email delivery)',
+    ],
+  },
+  {
+    icon: '◆',
+    title: 'Dane & Przechowywanie',
+    body: 'Zbiory treści (MDX) dla artykułów i case studies. Geist dla struktury schematu JSON. KV do cache\'ingu, D1 do analytics. Supabase dla akademii (poza głównym repo).',
+    items: [
+      'Astro Content Collections',
+      'KV (cache, session state)',
+      'D1 (analytics warehouse)',
+      'Supabase (app.wojciech.io)',
+      'Schema.org microdata',
+    ],
+  },
+  {
+    icon: '◈',
+    title: 'Deploy & CI',
+    body: 'GitHub Actions uruchamiane na push do main. Wrangler wdraża na Cloudflare Pages. Terraform dla infrastruktury (DNS, KV, D1). Release Please do automatycznych bump\'ów wersji.',
+    items: [
+      'GitHub Actions (CI)',
+      'Wrangler (deployment)',
+      'Terraform (IaC)',
+      'Release Please (versioning)',
+      'Conventional Commits',
+    ],
+  },
+  {
+    icon: '◉',
+    title: 'Bezpieczeństwo & Compliance',
+    body: 'Gitleaks skanuje każdy PR. npm audit na high/critical. Semgrep SAST. CodeQL analizuje kod. Content guard blokuje NDA client names. CSP headers. Branch protection.',
+    items: [
+      'Gitleaks (secret scanning)',
+      'npm audit (dependency scan)',
+      'Semgrep SAST',
+      'CodeQL (code analysis)',
+      'Content guard (pre-commit)',
+      'CSP headers',
+      'Branch protection rules',
+    ],
+  },
+  {
+    icon: '▲',
+    title: 'Testing & Observability',
+    body: 'Vitest dla unit testów. Playwright dla e2e. Lighthouse CI. Smoke tests. Sentry dla error tracking. PostHog dla usage analytics. Better Stack dla uptime.',
+    items: [
+      'Vitest (unit tests)',
+      'Playwright (e2e)',
+      'Lighthouse CI',
+      'Sentry (error tracking)',
+      'PostHog (analytics)',
+      'Better Stack (uptime)',
+    ],
+  },
+  {
+    icon: '◉',
+    title: 'Failover & Disaster Recovery',
+    body: 'Primary origin w Warszawie (hetzner). Fallback na Azure (secundary). Ręczne DNS failover. Smoke tests. Monthly drill. Terraform state backup.',
+    items: [
+      'Primary origin (hetzner.com)',
+      'Secondary origin (Azure)',
+      'Manual DNS failover',
+      'Tested monthly',
+      'Terraform state snapshots',
+    ],
+  },
+];
+
+const stats = [
+  { value: '7', label: 'Cloudflare Pages projectów' },
+  { value: '92', label: 'strony' },
+  { value: '156k', label: 'logicznych linii kodu' },
+  { value: '524', label: 'zautomatyzowanych testów' },
+  { value: '10', label: 'warstw stacku' },
+];
+---
+
+<Layout
+  title="Produkcyjny Stack"
+  description="Rzeczywisty stack za wojciech.io i jego subdomenami. Astro, Cloudflare, Terraform, Vitest, Playwright, signed cookies, i ręczny plan failover\'u, który faktycznie był testowany."
+>
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-[var(--color-border)]">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
+    <div class="pointer-events-none absolute left-1/2 top-[-200px] h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-[var(--color-surface)] opacity-70 blur-[150px]" aria-hidden="true" />
+
+    <div class="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
+      <div class="animate-fade-up inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur px-3.5 py-2 mb-8">
+        <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-cta)] shadow-[0_0_14px_rgb(235_255_0/0.55)]" aria-hidden="true"></span>
+        <span class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-text-muted)]">Produkcyjny stack</span>
+      </div>
+
+      <h1 class="animate-fade-up [animation-delay:60ms] text-[clamp(2.5rem,6vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-[var(--color-text)] max-w-[900px] mb-7">
+        Na czym ta strona<br>
+        <span class="text-[var(--color-text-muted)]">naprawdę się opiera.</span>
+      </h1>
+      <p class="animate-fade-up [animation-delay:120ms] max-w-3xl text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed">
+        Zweryfikowane z repo, a nie z pamięci. Każda warstwa poniżej jest w produkcji dzisiaj na wojciech.io i jego subdomenach. Jeśli narzędzie znajduje się na tej stronie, to się opłaca.
+      </p>
+    </div>
+  </section>
+
+  <!-- Stats band -->
+  <section class="border-b border-[var(--color-border)] py-6">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[var(--color-border)]">
+        {stats.map((s, i) => (
+          <div class="reveal-up px-6 py-3 flex flex-col gap-0.5" data-reveal-index={i}>
+            <strong class="text-fluid-2xl font-semibold text-[var(--color-text)] tabular-nums">{s.value}</strong>
+            <span class="text-xs text-[var(--color-text-muted)]">{s.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Stack groups -->
+  <section class="border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6 py-20 md:py-28">
+      {groups.map((group, idx) => (
+        <article
+          class:list={[
+            'reveal-up',
+            idx > 0 && 'mt-20 pt-20 border-t border-[var(--color-border)]',
+          ]}
+          data-reveal-index={idx % 4}
+        >
+          <div class="grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-12 items-start">
+            <!-- Left: header -->
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <span class="flex items-center justify-center w-10 h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-glass)] text-lg text-[var(--color-text)]" aria-hidden="true">
+                  {group.icon}
+                </span>
+                <div>
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)]">
+                    {String(idx + 1).padStart(2, '0')}
+                  </p>
+                  <h2 class="text-fluid-xl font-semibold text-[var(--color-text)] leading-tight tracking-tight">
+                    {group.title}
+                  </h2>
+                </div>
+              </div>
+              <p class="text-sm md:text-base text-[var(--color-text-muted)] leading-relaxed mt-3">
+                {group.body}
+              </p>
+            </div>
+
+            <!-- Right: items -->
+            <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden divide-y divide-[var(--color-border)]">
+              {group.items.map((item) => (
+                <div class="flex items-start gap-3 px-5 py-3.5">
+                  <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--color-accent-cta)] shrink-0" aria-hidden="true"></span>
+                  <span class="text-sm text-[var(--color-text)] leading-relaxed">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <CTABand
+    heading="Chcesz zobaczyć coś z tego w akcji?"
+    subtext="Jeśli coś na stronie jest interesujące w kontekście tego, co budujesz, napisz mi a zobaczymy to razem."
+    cta="Skontaktuj się"
+    ctaHref="/pl/contact/"
+    ctaSecondary="Przeczytaj insights"
+    ctaSecondaryHref="/pl/insights/"
+  />
+</Layout>
