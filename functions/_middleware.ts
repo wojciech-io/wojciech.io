@@ -58,17 +58,18 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   'content-security-policy': [
     "default-src 'self'",
     // wasm-unsafe-eval: Pagefind search compiles a WebAssembly module at runtime.
-    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com",
+    // app.cal.com: embedded scheduler (inline on contact, popup on booking CTAs)
+    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://app.cal.com",
     "style-src 'self' 'unsafe-inline'",
     // cdn.simpleicons.org: tech-logo chips on the /stack overview page
-    "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://cdn.simpleicons.org",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://o4511411558678528.ingest.de.sentry.io",
+    "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://cdn.simpleicons.org https://app.cal.com https://cal.com",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://o4511411558678528.ingest.de.sentry.io https://app.cal.com",
     "font-src 'self'",
     // worker-src: pagefind search uses web workers served from same origin
     "worker-src 'self'",
     // manifest-src: webmanifest served from same origin
     "manifest-src 'self'",
-    "frame-src https://gh.wojciech.io",
+    "frame-src https://gh.wojciech.io https://app.cal.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

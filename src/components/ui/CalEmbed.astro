@@ -1,0 +1,60 @@
+---
+// Cal.com scheduler wiring, site-wide.
+//
+// Two surfaces:
+//  - [data-cal-link="user/event"]  → compact popup scheduler, opens in place.
+//  - [data-cal-inline="user/event"] → full inline calendar (contact pages).
+//
+// embed.js stays off the critical path: it loads on first pointer/focus intent
+// on a trigger, or immediately when an inline container is on the page. Until
+// it loads, every trigger's href fallback (cal.com or /contact/) still works,
+// so a blocked script never strands the visitor.
+const CAL_ORIGIN = 'https://app.cal.com';
+---
+
+<script is:inline define:vars={{ CAL_ORIGIN }}>
+  (() => {
+    let booted = false;
+    const theme = () => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+
+    const boot = () => {
+      if (booted) return;
+      booted = true;
+      /* Official Cal.com embed loader (queues calls until embed.js arrives). */
+      (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, CAL_ORIGIN + '/embed/embed.js', 'init');
+      window.Cal('init', { origin: CAL_ORIGIN });
+      window.Cal('ui', {
+        theme: theme(),
+        styles: { branding: { brandColor: '#ebff00' } },
+        hideEventTypeDetails: false,
+        layout: 'month_view',
+      });
+    };
+
+    const mountInline = () => {
+      const el = document.querySelector('[data-cal-inline]:not([data-cal-mounted])');
+      if (!el) return;
+      el.setAttribute('data-cal-mounted', '1');
+      boot();
+      window.Cal('inline', {
+        elementOrSelector: '[data-cal-mounted]',
+        calLink: el.getAttribute('data-cal-inline'),
+        config: { theme: theme() },
+      });
+    };
+
+    /* Popup triggers: warm embed.js on first intent; once loaded it binds the
+       clicks on [data-cal-link] itself. pointerover bubbles, focusin covers
+       keyboard users, touchstart covers mobile. */
+    const warm = (e) => {
+      if (e.target && e.target.closest && e.target.closest('[data-cal-link]')) boot();
+    };
+    document.addEventListener('pointerover', warm, { passive: true });
+    document.addEventListener('touchstart', warm, { passive: true });
+    document.addEventListener('focusin', warm);
+
+    mountInline();
+    /* ClientRouter swaps the DOM on navigation; re-mount if a contact page arrives. */
+    document.addEventListener('astro:page-load', mountInline);
+  })();
+</script>

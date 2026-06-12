@@ -4,8 +4,11 @@ import { PUBLIC_SECURITY_HEADERS } from '../../functions/_middleware';
 describe('public middleware CSP', () => {
   const csp = PUBLIC_SECURITY_HEADERS['content-security-policy'];
 
-  it('does not include Cal.com origins (embed removed)', () => {
-    expect(csp).not.toContain('cal.com');
+  it('allows the Cal.com embedded scheduler (inline on contact, popup on CTAs)', () => {
+    expect(csp).toMatch(/script-src[^;]*https:\/\/app\.cal\.com/);
+    expect(csp).toMatch(/frame-src[^;]*https:\/\/app\.cal\.com/);
+    expect(csp).toMatch(/connect-src[^;]*https:\/\/app\.cal\.com/);
+    expect(csp).toMatch(/img-src[^;]*https:\/\/app\.cal\.com/);
   });
 
   it('allows external media used by public pages', () => {

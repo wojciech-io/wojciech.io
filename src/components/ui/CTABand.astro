@@ -19,6 +19,8 @@ const {
 } = Astro.props;
 const ctaIsExternal = ctaHref.startsWith('http');
 const secondaryIsExternal = ctaSecondaryHref.startsWith('http');
+// Booking CTAs open the compact Cal.com popup in place; href stays as fallback.
+const ctaIsBooking = ctaHref.includes('#book-call') || ctaHref.includes('cal.com');
 const headingLines = heading.split('\n');
 ---
 
@@ -46,6 +48,7 @@ const headingLines = heading.split('\n');
       <a
         href={ctaHref}
         {...(ctaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        {...(ctaIsBooking ? { 'data-cal-link': 'wojciech-luszczynski/30min' } : {})}
         class="btn-press obs-mono inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
         data-mp-cta={cta}
         data-mp-location="cta_band"
