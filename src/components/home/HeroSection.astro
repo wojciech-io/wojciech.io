@@ -8,24 +8,16 @@
   <div class="pointer-events-none absolute left-[-160px] top-[-180px] h-[520px] w-[640px] rounded-full bg-[var(--color-surface)] blur-[150px] opacity-70" aria-hidden="true" />
 
   <!-- Photo: desktop only, right half, absolute.
-       The image is hidden below lg, but a plain <img src> still downloads on
-       mobile (display:none does not stop the fetch) and at high priority it
-       starved the throttled mobile link, inflating LCP. The <picture> media
-       source loads the 248KB webp only at lg+; mobile gets a 1x1 placeholder. -->
-  <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[52%] overflow-hidden" aria-hidden="true">
-    <picture>
-      <source media="(min-width:1024px)" srcset="/images/wojciech-office-hq.webp" />
-      <img
-        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-        alt=""
-        width="2048"
-        height="1366"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        class="absolute inset-0 w-full h-full object-cover object-[center_30%]"
-      />
-    </picture>
+       Decorative (aria-hidden), shown only at lg+. Delivered as a CSS
+       background, not an <img>: a background-image on a display:none element
+       is never fetched, whereas an <img src> downloads even when hidden. A
+       <picture media> source does not help because Chrome's preload scanner
+       fetches the srcset before evaluating the media query. This keeps the
+       248KB hero off the mobile critical path entirely. -->
+  <div
+    class="hidden lg:block absolute right-0 top-0 bottom-0 w-[52%] overflow-hidden bg-[url('/images/wojciech-office-hq.webp')] bg-cover bg-no-repeat bg-[position:center_30%]"
+    aria-hidden="true"
+  >
     <!-- Left fade overlay -->
     <div class="absolute inset-y-0 left-0 w-[28%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]" />
     <!-- Bottom fade overlay -->
