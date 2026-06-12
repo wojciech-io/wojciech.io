@@ -4,9 +4,11 @@ interface Props {
   alt: string;
   url?: string;
   caption?: string;
+  width?: number;
+  height?: number;
 }
 
-const { src, alt, url, caption } = Astro.props;
+const { src, alt, url, caption, width, height } = Astro.props;
 ---
 
 <figure class="shot">
@@ -17,7 +19,7 @@ const { src, alt, url, caption } = Astro.props;
       </span>
       {url && <span class="shot__url">{url}</span>}
     </div>
-    <img src={src} alt={alt} loading="lazy" decoding="async" />
+    <img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
   </div>
   {caption && <figcaption>{caption}</figcaption>}
 </figure>

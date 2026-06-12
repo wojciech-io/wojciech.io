@@ -49,6 +49,10 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
 <!doctype html>
 <html lang={htmlLang}>
   <head>
+    {/* Charset and viewport must precede the inline scripts: browsers require the
+        charset declaration within the first 1024 bytes of the document. */}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline>
       document.documentElement.classList.add('js');
       (function() {
