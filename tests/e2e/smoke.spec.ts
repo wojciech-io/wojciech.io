@@ -9,11 +9,13 @@ import { test, expect } from '@playwright/test';
  * - No external dependencies (no API calls, no third-party iframes)
  */
 
+// /apps/ and /bites/ are now 301 redirects (Apps→Work, Bites→Tools), not pages.
+// astro preview does not honor Cloudflare _redirects, so they 404 here by design.
 const GOLDEN_PATHS = [
   { path: '/', label: 'home' },
   { path: '/about/', label: 'about' },
   { path: '/work/', label: 'work' },
-  { path: '/apps/', label: 'apps' },
+  { path: '/resources/', label: 'resources' },
   { path: '/ai-systems/', label: 'ai-systems' },
   { path: '/insights/', label: 'insights index' },
 ] as const;
