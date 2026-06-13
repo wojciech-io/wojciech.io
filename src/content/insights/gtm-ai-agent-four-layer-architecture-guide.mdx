@@ -24,6 +24,16 @@ The [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) GTM A
 
 This is the internal view: how each layer works, why it's separate, and what breaks if you skip one.
 
+<Diagram direction="column" caption="Each layer sits on the one above it. Identity loads first and constrains everything. Skills run last because they assume the other three are already in place.">
+  <Box variant="accent" label="Layer 1: CLAUDE.md" sub="Operator identity, rules of engagement" />
+  <Arrow label="loads first, constrains the rest" />
+  <Box label="Layer 2: MCP tools" sub="Web search, CRM write, email draft" />
+  <Arrow label="acts on real systems" />
+  <Box label="Layer 3: /memory" sub="ICP, account history, objections" />
+  <Arrow label="persists between sessions" />
+  <Box variant="outline" label="Layer 4: Skills" sub="research · enrich · draft · score · update" />
+</Diagram>
+
 ## Layer 1: CLAUDE.md: operator identity
 
 CLAUDE.md is the first file Claude Code reads when it starts a session. It defines who the agent is, not what it can do.
@@ -48,7 +58,7 @@ The key design principle: the identity is persistent. Claude Code reads CLAUDE.m
 
 ## Layer 2: MCP tools: real capabilities
 
-MCP (Model Context Protocol) tools give the agent the ability to act on external systems, not just generate text.
+[MCP (Model Context Protocol)](https://modelcontextprotocol.io/) tools give the agent the ability to act on external systems, not just generate text.
 
 The GTM stack uses:
 
@@ -107,6 +117,10 @@ Most prompt-based GTM setups collapse because they're stateless. Each conversati
 </StatRow>
 
 The gap isn't capability. It's the operating model.
+
+<KeyTakeaway title="Skip a layer and here is what breaks">
+Drop identity and the agent re-asks for context every session. Drop tools and you have a writer, not an operator. Drop memory and Tuesday's research is gone by Thursday. Drop skills and quality depends on how you phrased the request that morning. The four layers are not features. They are the four ways a GTM agent stops being a chatbot.
+</KeyTakeaway>
 
 ---
 
