@@ -42,14 +42,14 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
 
   const { name, email, message } = payload;
 
-  if (!name || typeof name !== 'string' || name.trim().length < 1) {
+  if (!name || typeof name !== 'string' || name.trim().length < 1 || name.length > 100) {
     return json({ error: 'Name is required' }, { status: 400 });
   }
-  if (!email || typeof email !== 'string' || !emailPattern.test(email)) {
+  if (!email || typeof email !== 'string' || email.length > 254 || !emailPattern.test(email)) {
     return json({ error: 'Valid email is required' }, { status: 400 });
   }
-  if (!message || typeof message !== 'string' || message.trim().length < 10) {
-    return json({ error: 'Message must be at least 10 characters' }, { status: 400 });
+  if (!message || typeof message !== 'string' || message.trim().length < 10 || message.length > 5000) {
+    return json({ error: 'Message must be between 10 and 5000 characters' }, { status: 400 });
   }
 
   if (!env.RESEND_API_KEY) {
@@ -76,4 +76,14 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
   }
 
   return json({ ok: true });
+}
+
+export function onRequestGet() {
+  return json({ error: 'Method not allowed.' }, { status: 405 });
+}
+
+// Explicit handler so Cloudflare Pages does not answer preflight with a permissive
+// Access-Control-Allow-Origin: *. This endpoint is same-origin only; no CORS needed.
+export function onRequestOptions() {
+  return new Response(null, { status: 405, headers: { allow: 'POST', 'cache-control': 'no-store' } });
 }

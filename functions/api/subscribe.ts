@@ -45,7 +45,7 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
 
   const email = payload.email?.trim().toLowerCase();
 
-  if (!email || !emailPattern.test(email)) {
+  if (!email || email.length > 254 || !emailPattern.test(email)) {
     return json({ ok: false, error: 'Please enter a valid email address.' }, { status: 400 });
   }
 

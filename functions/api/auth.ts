@@ -5,17 +5,25 @@
 //   COOKIE_MAX_AGE_DAYS — optional, defaults to 30.
 
 import { signToken, timingSafeEqualStr } from '../_utils/crypto';
+import { rateLimit, clientIp } from '../_utils/ratelimit';
 
 interface Env {
   APP_PASSWORD: string;
   COOKIE_SECRET: string;
   COOKIE_MAX_AGE_DAYS?: string;
+  RATE_LIMIT?: KVNamespace;
 }
 
 const COOKIE_NAME = 'wapp_auth';
 
 export const onRequestPost: PagesFunction<Env> = async (ctx) => {
   const { request, env } = ctx;
+
+  // Anti-brute-force: 10 password attempts / 10 min / IP. Without this the
+  // password gate could be guessed at unlimited speed. Fails open if the KV
+  // binding is missing, so configure RATE_LIMIT for this to enforce.
+  const rl = await rateLimit(env.RATE_LIMIT, `auth:${clientIp(request)}`, 10, 600);
+  if (!rl.ok) return rl.response!;
 
   let body: { password?: string } = {};
   try { body = await request.json(); } catch { /* keep empty */ }
