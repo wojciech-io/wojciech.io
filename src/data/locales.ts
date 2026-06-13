@@ -348,6 +348,14 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
 
 export const localizedHomeList = Object.values(localizedHome);
 
+// hreflang code → Open Graph locale (e.g. 'de-DE' → 'de_DE'). English is the
+// site default (en_US); the rest derive from the locale registry. Used by
+// SEOHead to emit og:locale:alternate for the translated versions of a page.
+export const hreflangToOgLocale: Record<string, string> = {
+  en: 'en_US',
+  ...Object.fromEntries(localizedHomeList.map((locale) => [locale.hreflang, locale.ogLocale])),
+};
+
 export const homeAlternates = [
   { lang: 'x-default', href: 'https://wojciech.io/' },
   { lang: 'en', href: 'https://wojciech.io/' },
