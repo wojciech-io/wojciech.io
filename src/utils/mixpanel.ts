@@ -11,6 +11,7 @@
  */
 
 import mixpanel from 'mixpanel-browser';
+import * as posthog from './posthog';
 
 const TOKEN = 'efa47f584d961f6fdbe3857da52daf9a';
 let initialised = false;
@@ -28,16 +29,21 @@ function init() {
   initialised = true;
 }
 
-/** Call once the user has given consent. Safe to call multiple times. */
+/**
+ * Call once the user has given consent. Safe to call multiple times.
+ * Single consent chokepoint: also opts PostHog in (CookieBanner, Layout, and
+ * the article page all route through here).
+ */
 export function initAfterConsent() {
   init();
   mixpanel.opt_in_tracking();
+  posthog.initAfterConsent();
 }
 
 /** Call when user declines or revokes consent. */
 export function optOut() {
-  if (!initialised) return;
-  mixpanel.opt_out_tracking();
+  if (initialised) mixpanel.opt_out_tracking();
+  posthog.optOut();
 }
 
 /** Convenience wrapper: no-ops if not initialised. */

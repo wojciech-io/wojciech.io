@@ -17,8 +17,9 @@ describe('public middleware CSP', () => {
     expect(csp).toMatch(/img-src[^;]*https:\/\/cdn\.simpleicons\.org/);
   });
 
-  it('does not include PostHog origins (integration removed)', () => {
-    expect(csp).not.toContain('posthog.com');
+  it('allows PostHog EU product analytics (consent-gated)', () => {
+    expect(csp).toMatch(/connect-src[^;]*https:\/\/eu\.i\.posthog\.com/);
+    expect(csp).toMatch(/script-src[^;]*https:\/\/eu-assets\.i\.posthog\.com/);
   });
 
   it('allows pagefind web workers, webmanifest, and WASM compilation', () => {
