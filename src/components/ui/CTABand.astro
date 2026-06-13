@@ -7,6 +7,11 @@ interface Props {
   ctaSecondary?: string;
   ctaSecondaryHref?: string;
   kicker?: string;
+  // When set, renders a bottom/top-anchored portrait on the right (lg+ only).
+  // Use a transparent cut-out so it blends into the panel; head stays anchored
+  // to the top so it is never cropped.
+  portrait?: string;
+  portraitAlt?: string;
 }
 const {
   kicker = '// Next step',
@@ -16,55 +21,88 @@ const {
   ctaHref = '/contact/#book-call',
   ctaSecondary = 'See the work',
   ctaSecondaryHref = '/work/',
+  portrait,
+  portraitAlt = 'Wojciech Łuszczyński',
 } = Astro.props;
 const ctaIsExternal = ctaHref.startsWith('http');
 const secondaryIsExternal = ctaSecondaryHref.startsWith('http');
 // Booking CTAs open the compact Cal.com popup in place; href stays as fallback.
 const ctaIsBooking = ctaHref.includes('#book-call') || ctaHref.includes('cal.com');
 const headingLines = heading.split('\n');
+const hasPortrait = Boolean(portrait);
 ---
 
-<section class="py-14 md:py-20 relative overflow-hidden bg-[var(--color-surface)]">
-  <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border-2)] to-transparent" aria-hidden="true"></div>
-
-  <div class="relative mx-auto grid max-w-6xl gap-6 px-6 md:grid-cols-[1fr_auto] md:items-end">
-    <div class="max-w-2xl">
-      <span class="obs-label-accent mb-3 block">{kicker}</span>
-      <h2 class="text-2xl font-semibold leading-[1.12] tracking-tight text-[var(--color-text)] md:text-3xl">
-        {headingLines.map((line, index) => (
-          <>
-            <span class={index > 0 ? 'heading-accent' : ''}>{line}</span>
-            {index < headingLines.length - 1 && <br />}
-          </>
-        ))}
-      </h2>
-
-      <p class="mt-3 max-w-xl text-sm leading-relaxed text-[var(--color-text-muted)]">
-        {subtext}
-      </p>
-    </div>
-
-    <div class="flex flex-wrap gap-3 md:justify-end">
-      <a
-        href={ctaHref}
-        {...(ctaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        {...(ctaIsBooking ? { 'data-cal-link': 'wojciech-luszczynski/30min' } : {})}
-        class="btn-press obs-mono inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
-        data-mp-cta={cta}
-        data-mp-location="cta_band"
+<section class="bg-[var(--color-bg)] py-14 md:py-20">
+  <div class="mx-auto max-w-6xl px-6">
+    <div
+      class:list={[
+        'relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)]',
+        hasPortrait && 'lg:grid lg:grid-cols-[1fr_minmax(0,300px)] lg:items-stretch',
+      ]}
+    >
+      <!-- On-brand glow: faint lime in light, near-invisible in dark. Behind content.
+           radial-gradient instead of filter:blur — same look, no GPU paint cost. -->
+      <div
+        class="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full opacity-70"
+        style="background:radial-gradient(closest-side, var(--color-accent-lo), transparent 72%)"
+        aria-hidden="true"
       >
-        <span>{cta}</span>
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-          <path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
-      <a
-        href={ctaSecondaryHref}
-        {...(secondaryIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-        class="btn-press obs-mono inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-5 py-2.5 text-xs font-medium uppercase tracking-wider text-[var(--color-text-muted)] transition-colors hover:border-[var(--color-text)] hover:text-[var(--color-text)]"
-      >
-        {ctaSecondary}
-      </a>
+      </div>
+
+      <div class="relative px-6 py-10 md:px-10 md:py-12">
+        <span class="obs-label-accent mb-3 block">{kicker}</span>
+        <h2 class="text-2xl font-semibold leading-[1.12] tracking-tight text-[var(--color-text)] md:text-3xl">
+          {headingLines.map((line, index) => (
+            <>
+              <span class={index > 0 ? 'heading-accent' : ''}>{line}</span>
+              {index < headingLines.length - 1 && <br />}
+            </>
+          ))}
+        </h2>
+
+        <p class="mt-3 max-w-xl text-sm leading-relaxed text-[var(--color-text-muted)]">
+          {subtext}
+        </p>
+
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a
+            href={ctaHref}
+            {...(ctaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            {...(ctaIsBooking ? { 'data-cal-link': 'wojciech-luszczynski/30min' } : {})}
+            class="btn-press obs-mono inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
+            data-mp-cta={cta}
+            data-mp-location="cta_band"
+          >
+            <span>{cta}</span>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+              <path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a
+            href={ctaSecondaryHref}
+            {...(secondaryIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            class="btn-press obs-mono inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-5 py-2.5 text-xs font-medium uppercase tracking-wider text-[var(--color-text-muted)] transition-colors hover:border-[var(--color-text)] hover:text-[var(--color-text)]"
+          >
+            {ctaSecondary}
+          </a>
+        </div>
+      </div>
+
+      {hasPortrait && (
+        <div
+          class="relative hidden min-h-[300px] self-stretch bg-cover bg-[position:center_top] bg-no-repeat lg:block"
+          style={`background-image:url('${portrait}')`}
+          role="img"
+          aria-label={portraitAlt}
+        >
+          <!-- Soft fade where the cut-out meets the panel floor. -->
+          <div
+            class="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[var(--color-surface)] to-transparent"
+            aria-hidden="true"
+          >
+          </div>
+        </div>
+      )}
     </div>
   </div>
 </section>

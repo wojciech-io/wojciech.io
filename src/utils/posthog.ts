@@ -47,3 +47,15 @@ export function optOut() {
   if (!initialised) return;
   posthog.opt_out_capturing();
 }
+
+/**
+ * Send a named event. No-ops until init/consent. Strips undefined/null props
+ * so the payload stays lean.
+ */
+export function capture(event: string, props?: Record<string, unknown>) {
+  if (!initialised) return;
+  const clean = props
+    ? Object.fromEntries(Object.entries(props).filter(([, v]) => v != null))
+    : undefined;
+  posthog.capture(event, clean);
+}
