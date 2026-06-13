@@ -25,6 +25,16 @@ Claude Code GTM Agent Starter Pack ma architekturę czterech warstw. Każda wars
 
 To jest widok od środka: jak działa każda warstwa, dlaczego jest oddzielna i co się psuje, gdy pominiesz którąś.
 
+<Diagram direction="column" caption="Każda warstwa stoi na poprzedniej. Tożsamość ładuje się pierwsza i wiąże resztę. Skille działają na końcu, bo zakładają, że trzy pozostałe już są na miejscu.">
+  <Box variant="accent" label="Warstwa 1: CLAUDE.md" sub="Tożsamość operatora, zasady działania" />
+  <Arrow label="ładuje się pierwsza, wiąże resztę" />
+  <Box label="Warstwa 2: Narzędzia MCP" sub="Web search, zapis CRM, draft emaila" />
+  <Arrow label="działa na realnych systemach" />
+  <Box label="Warstwa 3: /memory" sub="ICP, historia kont, obiekcje" />
+  <Arrow label="trwa między sesjami" />
+  <Box variant="outline" label="Warstwa 4: Skille" sub="research · enrich · draft · score · update" />
+</Diagram>
+
 ## Warstwa 1: CLAUDE.md, czyli tożsamość operatora
 
 CLAUDE.md to pierwszy plik, który Claude Code czyta przy starcie sesji. Definiuje, kim jest agent, nie to, co potrafi zrobić.
@@ -47,7 +57,7 @@ Kluczowa zasada projektowa: tożsamość jest trwała. Claude Code czyta CLAUDE.
 
 ## Warstwa 2: Narzędzia MCP, czyli realne możliwości
 
-Narzędzia MCP (Model Context Protocol) dają agentowi zdolność działania na zewnętrznych systemach, nie tylko generowania tekstu.
+Narzędzia [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) dają agentowi zdolność działania na zewnętrznych systemach, nie tylko generowania tekstu.
 
 Stos GTM używa:
 
@@ -101,6 +111,10 @@ Większość GTM opartych na promptach rozpada się, bo są bezstanowe. Każda r
 Koszt pełnego outbound run: research, wzbogacanie, draft, log: to 2-8 dolarów w kosztach Claude API. Równoważny komercyjny stos (kredyty Clay + miejsca Apollo + Outreach) kosztuje 200-500 dolarów miesięcznie za ten sam wolumen działań.
 
 Różnica nie leży w możliwościach. Leży w modelu operacyjnym.
+
+<KeyTakeaway title="Pomiń warstwę i oto co się psuje">
+Wytnij tożsamość, a agent dopytuje o kontekst co sesję. Wytnij narzędzia, a masz pisarza, nie operatora. Wytnij pamięć, a research z wtorku znika do czwartku. Wytnij skille, a jakość zależy od tego, jak sformułowałeś prośbę tego ranka. Te cztery warstwy to nie funkcje. To cztery sposoby, w jakie agent GTM przestaje być chatbotem.
+</KeyTakeaway>
 
 ---
 
