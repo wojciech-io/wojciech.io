@@ -8,8 +8,8 @@
  *
  * Consent gate: opt_out_capturing_by_default keeps everything silent until
  * initAfterConsent() opts in (called once cookie-consent === 'accepted', via
- * the same chokepoint as Mixpanel). Cookieless: persistence stays in
- * localStorage to match the Mixpanel setup. No session recording or surveys on
+ * the shared analytics consent chokepoint). Cookieless: persistence stays in
+ * localStorage (no cookies). No session recording or surveys on
  * the public marketing site: autocapture + pageviews only.
  */
 
@@ -23,7 +23,7 @@ function init() {
   posthog.init(KEY, {
     api_host: 'https://eu.i.posthog.com',
     ui_host: 'https://eu.posthog.com',
-    persistence: 'localStorage',          // GDPR: no cookies, mirrors Mixpanel
+    persistence: 'localStorage',          // GDPR: no cookies
     person_profiles: 'identified_only',   // anonymous marketing site: no profile for anon events
     autocapture: true,
     capture_pageview: true,               // MPA: one pageview per full load

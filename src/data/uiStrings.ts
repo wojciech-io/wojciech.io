@@ -57,7 +57,7 @@ const en: UiStrings = {
     nextStep: 'Next step',
   },
   cookie: {
-    bannerText: 'I use Mixpanel and Google Analytics to see which content is useful: anonymously, EU data residency, no ads.',
+    bannerText: 'I use PostHog and Google Analytics to see which content is useful: anonymously, EU data residency, no ads.',
     privacyPolicy: 'Privacy policy',
     accept: 'Accept analytics',
     reject: 'No thanks',
@@ -85,7 +85,7 @@ const pl: UiStrings = {
     nextStep: 'Następny krok',
   },
   cookie: {
-    bannerText: 'Używam Mixpanel i Google Analytics, żeby wiedzieć, które treści są przydatne: anonimowo, dane w UE, bez reklam.',
+    bannerText: 'Używam PostHog i Google Analytics, żeby wiedzieć, które treści są przydatne: anonimowo, dane w UE, bez reklam.',
     privacyPolicy: 'Polityka prywatności',
     accept: 'Akceptuję',
     reject: 'Nie, dzięki',
@@ -113,7 +113,7 @@ const de: UiStrings = {
     nextStep: 'Nächster Schritt',
   },
   cookie: {
-    bannerText: 'Ich nutze Mixpanel und Google Analytics, um zu sehen, welche Inhalte hilfreich sind: anonym, EU-Datenresidenz, keine Werbung.',
+    bannerText: 'Ich nutze PostHog und Google Analytics, um zu sehen, welche Inhalte hilfreich sind: anonym, EU-Datenresidenz, keine Werbung.',
     privacyPolicy: 'Datenschutz',
     accept: 'Akzeptieren',
     reject: 'Nein, danke',
@@ -141,7 +141,7 @@ const dk: UiStrings = {
     nextStep: 'Næste skridt',
   },
   cookie: {
-    bannerText: 'Jeg bruger Mixpanel og Google Analytics for at se, hvilket indhold der er nyttigt: anonymt, EU-data, ingen annoncer.',
+    bannerText: 'Jeg bruger PostHog og Google Analytics for at se, hvilket indhold der er nyttigt: anonymt, EU-data, ingen annoncer.',
     privacyPolicy: 'Privatlivspolitik',
     accept: 'Accepter',
     reject: 'Nej tak',
@@ -169,7 +169,7 @@ const no: UiStrings = {
     nextStep: 'Neste steg',
   },
   cookie: {
-    bannerText: 'Jeg bruker Mixpanel og Google Analytics for å se hvilket innhold som er nyttig: anonymt, EU-data, ingen annonser.',
+    bannerText: 'Jeg bruker PostHog og Google Analytics for å se hvilket innhold som er nyttig: anonymt, EU-data, ingen annonser.',
     privacyPolicy: 'Personvern',
     accept: 'Godta',
     reject: 'Nei takk',
@@ -197,7 +197,7 @@ const jp: UiStrings = {
     nextStep: '次のステップ',
   },
   cookie: {
-    bannerText: 'Mixpanel と Google Analytics で、どのコンテンツが役立っているかを匿名で計測しています。データは EU 内に保管され、広告には使用しません。',
+    bannerText: 'PostHog と Google Analytics で、どのコンテンツが役立っているかを匿名で計測しています。データは EU 内に保管され、広告には使用しません。',
     privacyPolicy: 'プライバシーポリシー',
     accept: '許可する',
     reject: '許可しない',
@@ -225,7 +225,7 @@ const it: UiStrings = {
     nextStep: 'Prossimo passo',
   },
   cookie: {
-    bannerText: 'Uso Mixpanel e Google Analytics per capire quali contenuti sono utili: anonimo, dati in UE, niente pubblicità.',
+    bannerText: 'Uso PostHog e Google Analytics per capire quali contenuti sono utili: anonimo, dati in UE, niente pubblicità.',
     privacyPolicy: 'Privacy',
     accept: 'Accetta',
     reject: 'No, grazie',
@@ -253,7 +253,7 @@ const es: UiStrings = {
     nextStep: 'Siguiente paso',
   },
   cookie: {
-    bannerText: 'Uso Mixpanel y Google Analytics para ver qué contenido es útil: anónimo, datos en la UE, sin publicidad.',
+    bannerText: 'Uso PostHog y Google Analytics para ver qué contenido es útil: anónimo, datos en la UE, sin publicidad.',
     privacyPolicy: 'Privacidad',
     accept: 'Aceptar',
     reject: 'No, gracias',
