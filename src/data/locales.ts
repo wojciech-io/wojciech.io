@@ -1,4 +1,4 @@
-import type { LocaleKey } from './locale-codes';
+import type { LocaleKey, SiteLocale } from './locale-codes';
 
 export type { LocaleKey } from './locale-codes';
 
@@ -347,6 +347,32 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
 };
 
 export const localizedHomeList = Object.values(localizedHome);
+
+// UI chrome for the projects section (proof labels + CTAs + the "Featured"
+// eyebrow). Localized for all eight locales so the scaffolding always matches
+// the page language; the project prose itself stays English (EN+PL deep-content
+// policy), exactly like the insights preview.
+export interface ProjectChrome {
+  problem: string;
+  system: string;
+  artifact: string;
+  outcome: string;
+  featured: string;
+  viewProject: string;
+  explore: string;
+  caseStudy: string;
+}
+
+export const projectChrome: Record<SiteLocale, ProjectChrome> = {
+  en: { problem: 'Problem', system: 'System', artifact: 'Artifact', outcome: 'Outcome', featured: 'Featured', viewProject: 'View project', explore: 'Explore', caseStudy: 'See case study' },
+  de: { problem: 'Problem', system: 'System', artifact: 'Artefakt', outcome: 'Ergebnis', featured: 'Ausgewählt', viewProject: 'Projekt ansehen', explore: 'Ansehen', caseStudy: 'Fallstudie ansehen' },
+  dk: { problem: 'Problem', system: 'System', artifact: 'Artefakt', outcome: 'Resultat', featured: 'Udvalgt', viewProject: 'Se projekt', explore: 'Udforsk', caseStudy: 'Se case' },
+  no: { problem: 'Problem', system: 'System', artifact: 'Artefakt', outcome: 'Resultat', featured: 'Utvalgt', viewProject: 'Se prosjekt', explore: 'Utforsk', caseStudy: 'Se case' },
+  jp: { problem: '課題', system: 'システム', artifact: '成果物', outcome: '結果', featured: '注目', viewProject: 'プロジェクトを見る', explore: '見る', caseStudy: 'ケーススタディ' },
+  it: { problem: 'Problema', system: 'Sistema', artifact: 'Artefatto', outcome: 'Risultato', featured: 'In evidenza', viewProject: 'Vedi progetto', explore: 'Esplora', caseStudy: 'Vedi case study' },
+  es: { problem: 'Problema', system: 'Sistema', artifact: 'Artefacto', outcome: 'Resultado', featured: 'Destacado', viewProject: 'Ver proyecto', explore: 'Explorar', caseStudy: 'Ver caso' },
+  pl: { problem: 'Problem', system: 'System', artifact: 'Artefakt', outcome: 'Rezultat', featured: 'Wyróżnione', viewProject: 'Zobacz projekt', explore: 'Zobacz', caseStudy: 'Studium przypadku' },
+};
 
 // hreflang code → Open Graph locale (e.g. 'de-DE' → 'de_DE'). English is the
 // site default (en_US); the rest derive from the locale registry. Used by

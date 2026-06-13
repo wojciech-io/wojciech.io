@@ -18,6 +18,14 @@ interface Props {
   outcome?: string;
   external?: boolean;
   revealIndex?: number;
+  labels?: {
+    problem?: string;
+    system?: string;
+    artifact?: string;
+    outcome?: string;
+    viewProject?: string;
+    explore?: string;
+  };
 }
 
 const {
@@ -32,16 +40,19 @@ const {
   outcome,
   external = false,
   revealIndex,
+  labels = {},
 } = Astro.props;
 
 const tagColor = (_tag: string) => 'border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text-muted)]';
 
 const proof = [
-  { label: 'Problem', value: problem },
-  { label: 'System', value: system },
-  { label: 'Artifact', value: artifact },
-  { label: 'Outcome', value: outcome },
+  { label: labels.problem ?? 'Problem', value: problem },
+  { label: labels.system ?? 'System', value: system },
+  { label: labels.artifact ?? 'Artifact', value: artifact },
+  { label: labels.outcome ?? 'Outcome', value: outcome },
 ].filter((item) => item.value);
+
+const ctaLabel = external ? (labels.viewProject ?? 'View project') : (labels.explore ?? 'Explore');
 ---
 
 <a
@@ -85,7 +96,7 @@ const proof = [
     )}
 
     <span class="mt-auto flex items-center gap-1 text-xs font-medium text-[var(--color-text-dim)] transition-colors duration-150 group-hover:text-[var(--color-accent)]">
-      {external ? 'View project' : 'Explore'}
+      {ctaLabel}
       <svg class="h-3 w-3 transition-transform duration-150 group-hover:translate-x-1" viewBox="0 0 12 12" fill="none" aria-hidden="true">
         <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
