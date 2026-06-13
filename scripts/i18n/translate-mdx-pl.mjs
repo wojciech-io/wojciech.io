@@ -347,9 +347,14 @@ async function translateFile(slug) {
 }
 
 // ── Run ──────────────────────────────────────────────────────────────────
-const slugs = readdirSync(SRC_DIR)
-  .filter((f) => f.endsWith('.mdx'))
-  .map((f) => f.replace(/\.mdx$/, ''));
+// Pass slugs as args to retranslate only those (e.g. to repair specific files).
+// With no args, translates every EN article.
+const argSlugs = process.argv.slice(2).map((s) => s.replace(/\.mdx$/, ''));
+const slugs = argSlugs.length
+  ? argSlugs
+  : readdirSync(SRC_DIR)
+      .filter((f) => f.endsWith('.mdx'))
+      .map((f) => f.replace(/\.mdx$/, ''));
 
 console.log(`Translating ${slugs.length} articles to PL: ${slugs.join(', ')}`);
 for (const slug of slugs) {
