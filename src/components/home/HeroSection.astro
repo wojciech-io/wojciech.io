@@ -27,27 +27,29 @@
   <div class="relative mx-auto max-w-6xl px-6">
     <div class="flex flex-col justify-center py-10 md:py-20 lg:py-32 md:max-w-[560px] lg:max-w-[48%]">
 
-      <!-- Eyebrow -->
-      <div class="inline-flex self-start items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] px-3.5 py-2 mb-5 md:mb-8 shadow-[var(--shadow-card)] backdrop-blur">
+      <!-- Eyebrow: one clean role label across breakpoints -->
+      <div class="inline-flex self-start items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] px-3.5 py-2 mb-5 lg:mb-8 shadow-[var(--shadow-card)] backdrop-blur">
         <span class="obs-status-dot"></span>
-        <span class="obs-label-accent">// GTM architect &middot; AI systems builder</span>
+        <span class="obs-label-accent">Fractional GTM operator</span>
       </div>
 
-      <!-- Mobile: avatar -->
-      <div class="lg:hidden flex items-center gap-3 mb-5 md:mb-8">
+      <!-- Mobile: real portrait. The desktop hero photo is delivered as a CSS
+           background and never loads on mobile, so without this the only image
+           on small screens was a 56px avatar. A trimmed cutout (35KB) gives
+           genuine presence without bloating the critical path. -->
+      <div class="lg:hidden relative -mx-6 mb-6 h-[240px] overflow-hidden">
+        <div class="absolute inset-0 [background:radial-gradient(120%_90%_at_68%_18%,var(--color-surface)_0%,var(--color-bg)_72%)]" aria-hidden="true"></div>
         <img
-          src="/images/wojciech-avatar-384.webp"
+          src="/images/wojciech-cutout-mobile.webp"
           alt="Wojciech Łuszczyński"
-          width="56"
-          height="56"
+          width="460"
+          height="760"
           loading="eager"
           decoding="async"
-          class="w-14 h-14 rounded-full object-cover border border-[var(--color-border-2)] shrink-0"
+          fetchpriority="high"
+          class="absolute bottom-0 left-1/2 -translate-x-1/2 h-full w-auto object-contain object-bottom"
         />
-        <div>
-          <p class="obs-mono text-sm font-semibold text-[var(--color-text)]">Wojciech Łuszczyński</p>
-          <p class="text-xs text-[var(--color-text-muted)]">Fractional operator</p>
-        </div>
+        <div class="absolute inset-x-0 bottom-0 h-14 [background:linear-gradient(to_top,var(--color-bg),transparent)]" aria-hidden="true"></div>
       </div>
 
       <!-- Headline -->
