@@ -49,7 +49,7 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     eyebrow: 'GTM-Architekt · Growth Operator',
     h1Primary: 'Ich baue Revenue-Systeme.',
     h1Secondary: 'Dann betreibe ich sie.',
-    lead: 'GTM, CRM, AI-Workflows, Automatisierung: ein Operating Model. Ich stelle die fehlenden Verbindungen her, mache alles messbar und bleibe, bis es läuft.',
+    lead: 'GTM, CRM und AI-Workflows in einem Operating Model. Ich baue, was fehlt, und bleibe, bis es läuft.',
     primaryCta: 'Arbeit ansehen',
     secondaryCta: 'Termin vereinbaren',
     proof: [
@@ -89,7 +89,7 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     eyebrow: 'GTM-arkitekt · Growth Operator',
     h1Primary: 'Jeg bygger revenue-systemer.',
     h1Secondary: 'Så kører jeg dem.',
-    lead: 'GTM, CRM, AI-arbejdsgange, automatisering: én operating model. Jeg opbygger de forbindelser, der mangler, instrumenterer alt og bliver, indtil det virker.',
+    lead: 'GTM, CRM og AI-arbejdsgange i én operating model. Jeg bygger det, der mangler, og bliver, til det virker.',
     primaryCta: 'Se arbejdet',
     secondaryCta: 'Book et opkald',
     proof: [
@@ -129,7 +129,7 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     eyebrow: 'GTM-arkitekt · Growth Operator',
     h1Primary: 'Jeg bygger revenue-systemer.',
     h1Secondary: 'Så kjører jeg dem.',
-    lead: 'GTM, CRM, AI-arbeidsflyter, automatisering: én operating model. Jeg bygger forbindelsene som mangler, instrumenterer alt og blir der til det fungerer.',
+    lead: 'GTM, CRM og AI-arbeidsflyter i én operating model. Jeg bygger det som mangler, og blir til det fungerer.',
     primaryCta: 'Se arbeidet',
     secondaryCta: 'Bestill en samtale',
     proof: [
@@ -169,7 +169,7 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     eyebrow: 'GTMアーキテクト・グロースオペレーター',
     h1Primary: 'Revenue systemを構築します。',
     h1Secondary: 'そして、運用まで担います。',
-    lead: 'GTM、CRM、AIワークフロー、自動化を、ひとつのオペレーティングモデルに。欠けている接続をつくり、すべてを計測できるようにし、うまく回るまで伴走します。',
+    lead: 'GTM、CRM、AIワークフローをひとつのオペレーティングモデルに。足りない部分をつくり、回るまで伴走します。',
     primaryCta: '実績を見る',
     secondaryCta: '相談を予約',
     proof: [
@@ -209,7 +209,7 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     eyebrow: 'Architetto GTM · Growth Operator',
     h1Primary: 'Costruisco sistemi di ricavo.',
     h1Secondary: 'Poi li gestisco.',
-    lead: 'GTM, CRM, flussi di lavoro AI, automazione: un unico modello operativo. Costruisco i collegamenti mancanti, strumento tutto e rimango finché non porta risultati.',
+    lead: 'GTM, CRM e flussi di lavoro AI in un unico modello operativo. Costruisco ciò che manca e resto finché non funziona.',
     primaryCta: 'Guarda il lavoro',
     secondaryCta: 'Prenota una chiamata',
     proof: [
@@ -249,7 +249,7 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     eyebrow: 'Arquitecto GTM · Growth Operator',
     h1Primary: 'Construyo sistemas de ingresos.',
     h1Secondary: 'Luego los ejecuto.',
-    lead: 'GTM, CRM, flujos de trabajo de IA, automatización: un único modelo operativo. Establezco las conexiones que faltan, configuro todo y me quedo hasta que da resultados.',
+    lead: 'GTM, CRM y flujos de trabajo de IA en un único modelo operativo. Construyo lo que falta y me quedo hasta que funciona.',
     primaryCta: 'Ver el trabajo',
     secondaryCta: 'Reserva una llamada',
     proof: [
@@ -289,7 +289,7 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
     eyebrow: 'Architekt GTM · Growth Operator',
     h1Primary: 'Buduję systemy przychodowe.',
     h1Secondary: 'Potem nimi operuję.',
-    lead: 'GTM, CRM, workflowy AI, automatyzacja: jeden model operacyjny. Tworzę brakujące połączenia, instrumentuję całość i zostaję, aż wszystko zacznie działać.',
+    lead: 'GTM, CRM i workflowy AI w jednym modelu operacyjnym. Buduję to, czego brakuje, i zostaję, aż zacznie działać.',
     primaryCta: 'Zobacz realizacje',
     secondaryCta: 'Umów rozmowę',
     proof: [
