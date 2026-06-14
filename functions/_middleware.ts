@@ -41,7 +41,7 @@ const ALLOWED = [
 ];
 
 // Security headers applied to every wojciech.io response.
-// Mixpanel uses EU endpoints (api-eu.mixpanel.com). Sentry tunnel not used on public site.
+// PostHog uses EU endpoints (eu.i.posthog.com). Sentry tunnel not used on public site.
 export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
   'x-content-type-options': 'nosniff',
@@ -63,7 +63,7 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
     "style-src 'self' 'unsafe-inline'",
     // cdn.simpleicons.org: tech-logo chips on the /stack overview page
     "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://cdn.simpleicons.org https://app.cal.com https://cal.com",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api-eu.mixpanel.com https://eu.mixpanel.com https://cloudflareinsights.com https://o4511411558678528.ingest.de.sentry.io https://eu.i.posthog.com https://eu-assets.i.posthog.com https://app.cal.com",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://cloudflareinsights.com https://o4511411558678528.ingest.de.sentry.io https://eu.i.posthog.com https://eu-assets.i.posthog.com https://app.cal.com",
     "font-src 'self'",
     // worker-src: pagefind search uses web workers served from same origin
     "worker-src 'self'",

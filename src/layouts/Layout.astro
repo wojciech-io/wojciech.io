@@ -118,11 +118,11 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     <CalEmbed />
     <OutboundTelemetry />
 
-    <!-- Analytics: GA4 + Mixpanel, loaded only after consent -->
+    <!-- Analytics: GA4 + PostHog, loaded only after consent -->
     <script>
       const GA_ID = 'G-4ED804XJLP';
       const hasAnalyticsConsent = () => localStorage.getItem('cookie-consent') === 'accepted';
-      let analyticsModule: Promise<typeof import('../utils/mixpanel')> | null = null;
+      let analyticsModule: Promise<typeof import('../utils/analytics')> | null = null;
       let googleAnalyticsLoaded = false;
 
       const initGoogleAnalytics = () => {
@@ -147,7 +147,7 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       const loadAnalytics = async () => {
         if (!hasAnalyticsConsent()) return null;
         initGoogleAnalytics();
-        analyticsModule ??= import('../utils/mixpanel');
+        analyticsModule ??= import('../utils/analytics');
         const analytics = await analyticsModule;
         analytics.initAfterConsent();
         return analytics;

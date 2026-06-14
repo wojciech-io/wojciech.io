@@ -2,8 +2,8 @@
 // Analytics consent banner
 // - Compact single-line design, slides up from the bottom
 // - Stores choice in localStorage as 'cookie-consent' = 'accepted' | 'declined'
-// - On accept: fires initAfterConsent() which initialises GA4 + Mixpanel + PostHog
-// - On decline: fires optOut() so Mixpanel + PostHog stay in opt-out mode
+// - On accept: fires initAfterConsent() which initialises GA4 + PostHog
+// - On decline: fires optOut() so PostHog stays in opt-out mode
 // - Copy localized per current path (UI strings in src/data/uiStrings.ts)
 
 import { getUiStringsForPath } from '../../data/uiStrings';
@@ -56,7 +56,7 @@ const privacyHref = '/privacy/';
   const declineBtn = document.getElementById('cookie-decline') as HTMLButtonElement;
 
   async function initAnalytics() {
-    const { initAfterConsent } = await import('../../utils/mixpanel');
+    const { initAfterConsent } = await import('../../utils/analytics');
     initAfterConsent();
   }
 

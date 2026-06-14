@@ -408,10 +408,10 @@ const insightsSchema = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSch
   const bar = document.getElementById('progress-bar') as HTMLElement;
   const article = document.getElementById('article-content') as HTMLElement;
   const hasAnalyticsConsent = () => localStorage.getItem('cookie-consent') === 'accepted';
-  let analyticsModule: Promise<typeof import('../../utils/mixpanel')> | null = null;
+  let analyticsModule: Promise<typeof import('../../utils/analytics')> | null = null;
   const loadAnalytics = async () => {
     if (!hasAnalyticsConsent()) return null;
-    analyticsModule ??= import('../../utils/mixpanel');
+    analyticsModule ??= import('../../utils/analytics');
     const analytics = await analyticsModule;
     analytics.initAfterConsent();
     return analytics;

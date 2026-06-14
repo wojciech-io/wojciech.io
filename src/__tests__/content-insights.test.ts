@@ -95,3 +95,33 @@ describe('insights content entries', () => {
     expect(unique.size, 'duplicate article slug detected').toBe(files.length);
   });
 });
+
+// Drift guard: a built EN article must never be 301'd back to the index.
+// A stale archive block in _redirects once buried 13 live articles (sitemap
+// listed them, index cards looped). This pins that bug shut for good.
+describe('insights redirects do not bury live articles', () => {
+  const slugs = readdirSync(INSIGHTS_DIR)
+    .filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
+    .map((f) => f.replace(/\.(md|mdx)$/, ''));
+  // Parse once into [from, to, code] tuples. String ops only — no dynamic
+  // RegExp (avoids a ReDoS lint and is clearer than an interpolated pattern).
+  const rules = readFileSync(resolve('./public/_redirects'), 'utf-8')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0 && !l.startsWith('#'))
+    .map((l) => l.split(/\s+/));
+  const buries = (slug: string) =>
+    rules.some(
+      ([from, to, code]) =>
+        (from === `/insights/${slug}` || from === `/insights/${slug}/`) &&
+        to === '/insights/' &&
+        (code === '301' || code === '302'),
+    );
+
+  it.each(slugs)('%s: not self-redirected to /insights/ index', (slug) => {
+    expect(
+      buries(slug),
+      `${slug}: live article is 301'd to /insights/ in public/_redirects`,
+    ).toBe(false);
+  });
+});
