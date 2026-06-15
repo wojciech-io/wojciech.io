@@ -9,6 +9,7 @@ import AILeverage from '../../components/home/AILeverage.astro';
 import TestimonialsSection from '../../components/home/TestimonialsSection.astro';
 import InsightsPreview from '../../components/home/InsightsPreview.astro';
 import { homeAlternates, localizedHomeList, type LocalizedHomeCopy } from '../../data/locales';
+import { getUiStrings } from '../../data/uiStrings';
 
 export function getStaticPaths() {
   return localizedHomeList.map((locale) => ({
@@ -20,6 +21,7 @@ export function getStaticPaths() {
 const { copy } = Astro.props as { copy: LocalizedHomeCopy };
 const workHref = `/${copy.path}/work/`;
 const contactHref = `/${copy.path}/contact/`;
+const t = getUiStrings(copy.key);
 ---
 
 <Layout
@@ -71,6 +73,7 @@ const contactHref = `/${copy.path}/contact/`;
   <InsightsPreview i18n={copy.sections.writing} locale={copy.path === 'pl' ? 'pl' : 'en'} />
 
   <CTABand
+    kicker={t.cta.nextStep}
     heading={copy.finalHeading}
     subtext={copy.finalSubtext}
     cta={copy.secondaryCta}
