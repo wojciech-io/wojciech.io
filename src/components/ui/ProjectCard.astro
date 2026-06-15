@@ -43,8 +43,6 @@ const {
   labels = {},
 } = Astro.props;
 
-const tagColor = (_tag: string) => 'border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text-muted)]';
-
 const proof = [
   { label: labels.problem ?? 'Problem', value: problem },
   { label: labels.system ?? 'System', value: system },
@@ -72,9 +70,9 @@ const ctaLabel = external ? (labels.viewProject ?? 'View project') : (labels.exp
   </div>
 
   <div class="flex flex-1 flex-col p-5 pt-4">
-    <div class="mb-3 flex flex-wrap gap-1.5">
+    <div class="mb-3 flex flex-wrap items-center gap-x-2.5 gap-y-1">
       {tags.slice(0, 3).map((tag) => (
-        <span class={`rounded-full border px-2 py-0.5 text-xs font-medium ${tagColor(tag)}`}>{tag}</span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-text-dim)] [&:not(:first-child)]:before:content-['·'] [&:not(:first-child)]:before:mr-2.5 [&:not(:first-child)]:before:text-[var(--color-border)]">{tag}</span>
       ))}
     </div>
 

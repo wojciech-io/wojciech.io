@@ -27,14 +27,15 @@ const t = {
 };
 const rows = i18n?.rows ?? defaultRows;
 
-// Product names + dots are universal; roles are localized by index.
+// Product names are universal; roles are localized by index.
+// `core` = AI core (accent + live ping); the rest is supporting infra (quiet).
 const stack = [
-  { name: 'Claude Code',  role: 'agent core',      dot: '#EBFF00' },
-  { name: 'MCP',          role: 'tool bridge',     dot: '#EBFF00' },
-  { name: 'HubSpot',      role: 'CRM + sequences', dot: '#f97316' },
-  { name: 'Google Ads',   role: 'paid acquisition',dot: '#60a5fa' },
-  { name: 'Cloudflare',   role: 'edge + workers',  dot: '#f59e0b' },
-  { name: 'Astro',        role: 'site layer',      dot: '#a78bfa' },
+  { name: 'Claude Code',  role: 'agent core',      core: true  },
+  { name: 'MCP',          role: 'tool bridge',     core: true  },
+  { name: 'HubSpot',      role: 'CRM + sequences', core: false },
+  { name: 'Google Ads',   role: 'paid acquisition',core: false },
+  { name: 'Cloudflare',   role: 'edge + workers',  core: false },
+  { name: 'Astro',        role: 'site layer',      core: false },
 ];
 const roles = i18n?.roles ?? stack.map((s) => s.role);
 ---
@@ -79,33 +80,32 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
       <div class="reveal-right">
         <span class="obs-label mb-4 block">{t.stackLabel}</span>
         <div class="obs-panel overflow-hidden">
-          <!-- Stack header terminal bar -->
-          <div class="flex items-center gap-1.5 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
-            <span class="h-2.5 w-2.5 rounded-full bg-[#ef4444]/60"></span>
-            <span class="h-2.5 w-2.5 rounded-full bg-[#f59e0b]/60"></span>
-            <span class="h-2.5 w-2.5 rounded-full bg-[var(--color-success)]/70"></span>
-            <span class="ml-2 font-mono text-[10px] text-[var(--color-text-dim)]">{t.stackStatus}</span>
+          <!-- Stack header: single live marker + mono status (no terminal chrome) -->
+          <div class="flex items-center gap-2 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
+            <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
+            <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-dim)]">{t.stackStatus}</span>
           </div>
 
           <!-- Stack items -->
           <div class="divide-y divide-[var(--color-border)]">
-            {stack.map(({ name, dot }, i) => (
+            {stack.map(({ name, core }, i) => (
               <div
                 class="stack-item group flex items-center gap-4 px-5 py-3.5 hover:bg-[var(--color-surface-2)] transition-colors duration-150"
                 style={`--delay: ${i * 80}ms`}
               >
-                <!-- Animated dot -->
+                <!-- Status dot: accent + live ping for AI core, quiet dim for infra -->
                 <span
                   class="relative flex h-2 w-2 shrink-0"
                   aria-hidden="true"
                 >
+                  {core && (
+                    <span
+                      class="absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-50 animate-ping"
+                      style={`animation-delay: ${i * 200}ms; animation-duration: 2.4s;`}
+                    ></span>
+                  )}
                   <span
-                    class="absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping"
-                    style={`background-color: ${dot}; animation-delay: ${i * 200}ms; animation-duration: 2.4s;`}
-                  ></span>
-                  <span
-                    class="relative inline-flex h-2 w-2 rounded-full"
-                    style={`background-color: ${dot};`}
+                    class={`relative inline-flex h-2 w-2 rounded-full ${core ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-text-dim)]'}`}
                   ></span>
                 </span>
 
@@ -120,7 +120,7 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
                 </span>
 
                 <!-- Status indicator -->
-                <span class="font-mono text-[10px] text-[var(--color-success)] shrink-0">{t.activeLabel}</span>
+                <span class="font-mono text-[10px] text-[var(--color-text-dim)] shrink-0">{t.activeLabel}</span>
               </div>
             ))}
           </div>
