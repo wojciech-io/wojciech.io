@@ -1,21 +1,35 @@
 ---
-const metrics = [
-  { value: 20, suffix: '', label: 'years marketing & digital' },
-  { value: 10, suffix: '', label: 'years B2B SaaS' },
-  { value: 10, suffix: '', label: 'years GTM' },
-  { value: 3, suffix: '×', label: 'avg. pipeline lift' },
-];
+/* Editorial metrics strip. Numerals render in the display serif (Fraunces) —
+   safe in every locale because digits are shared across languages; the labels
+   stay in mono. Prop-driven so EN and localized homepages render identically.
+   Defaults carry the English copy. */
+interface Metric { value: string; label: string }
+interface Props { metrics?: Metric[]; indexLabel?: string }
+
+const {
+  metrics = [
+    { value: '20', label: 'years marketing & digital' },
+    { value: '10', label: 'years B2B SaaS' },
+    { value: '10', label: 'years GTM' },
+    { value: '3×', label: 'avg. pipeline lift' },
+  ],
+  indexLabel = '',
+} = Astro.props as Props;
 ---
 
 <section class="relative section-fade border-y border-[var(--color-border)] bg-[var(--color-surface)]">
   <div class="mx-auto max-w-6xl px-6">
+    {indexLabel && (
+      <div class="flex items-center gap-3 pt-6">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label">{indexLabel}</span>
+      </div>
+    )}
     <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[var(--color-border)]">
-      {metrics.map(({ value, suffix, label }, index) => (
-        <div class="reveal-up flex flex-col items-center py-8 px-4 text-center" data-reveal-index={index}>
-          <p class="obs-mono text-3xl font-bold text-[var(--color-text)] mb-1">
-            <span class="metric-count" data-target={value} data-suffix={suffix}>{value}{suffix}</span>
-          </p>
-          <p class="obs-label">{label}</p>
+      {metrics.map(({ value, label }, index) => (
+        <div class="reveal-up flex flex-col py-7 px-4 sm:px-6 first:pl-0" data-reveal-index={index}>
+          <p class="ed-serif text-5xl md:text-6xl text-[var(--color-text)] mb-2">{value}</p>
+          <p class="obs-label leading-snug">{label}</p>
         </div>
       ))}
     </div>

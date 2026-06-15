@@ -50,14 +50,26 @@ const hasPortrait = Boolean(portrait);
       </div>
 
       <div class="relative px-6 py-10 md:px-10 md:py-12">
-        <span class="obs-label-accent mb-3 block">{kicker}</span>
-        <h2 class="text-2xl font-semibold leading-[1.12] tracking-tight text-[var(--color-text)] md:text-3xl">
-          {headingLines.map((line, index) => (
-            <>
-              <span class={index > 0 ? 'heading-accent' : ''}>{line}</span>
-              {index < headingLines.length - 1 && <br />}
-            </>
-          ))}
+        <div class="flex items-center gap-3 mb-3">
+          <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+          <span class="obs-label-accent">{kicker}</span>
+        </div>
+        <h2 class="text-2xl font-normal leading-[1.12] tracking-[-0.015em] text-[var(--color-text)] md:text-3xl">
+          {headingLines.map((line, index) => {
+            const last = index === headingLines.length - 1;
+            // On the last line, accent the terminal punctuation (. ? !). If the
+            // line has none, append an accent period. Avoids "?." on questions.
+            const m = last ? line.match(/^(.*?)([.?!。]?)\s*$/) : null;
+            const body = m ? m[1] : line;
+            const punct = m ? (m[2] || '.') : '';
+            return (
+              <>
+                <span class="text-[var(--color-text)]">{body}</span>
+                {last && <span class="text-[var(--color-accent-cta)]" aria-hidden="true">{punct}</span>}
+                {!last && <br />}
+              </>
+            );
+          })}
         </h2>
 
         <p class="mt-3 max-w-xl text-sm leading-relaxed text-[var(--color-text-muted)]">

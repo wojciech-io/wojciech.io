@@ -53,6 +53,26 @@
   font-display: optional;
 }
 
+/* Fraunces: editorial display serif, variable (opsz + wght), Latin/numeral subset.
+   font-display: swap (not optional like the others) because the serif KPI numerals
+   are a brand signature: they must render even if the file lands after first paint. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/Fraunces-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-stretch: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/Fraunces-Italic-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-stretch: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
 @import './tokens.css';
 
 @import "tailwindcss";
@@ -247,6 +267,69 @@ body {
   border: 1px solid var(--color-border);
   color: var(--color-text-dim);
 }
+
+/* ─── Editorial: display-serif + hairline rhythm ────────────────────
+   Every value is a token, so light/dark falls out of tokens.css with no
+   per-theme duplication. The serif (Fraunces) is used ONLY here, for
+   numerals and pull-quotes — never for localized prose. */
+
+/* KPI / metric numerals: display serif, tabular lining figures. */
+.ed-serif {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 96, 'wght' 380;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+}
+
+/* Italic serif pull-quote (testimonials). */
+.ed-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-variation-settings: 'opsz' 40, 'wght' 360;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+/* Section number label: mono, accent, tracks the editorial index (01, 02…). */
+.ed-section-no {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent-label);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ghost numeral: oversized faint serif watermark (№1 / №2 / №3) sitting
+   behind a row. currentColor + low opacity reads on both themes. */
+.ed-ghost {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 144, 'wght' 300;
+  line-height: 1;
+  color: var(--color-text);
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+}
+[data-theme='dark'] .ed-ghost { opacity: 0.08; }
+
+/* Hairline rules: the editorial grid. Top border only; pair with padding. */
+.ed-rule { border-top: 1px solid var(--color-border); }
+.ed-rule-strong { border-top: 1px solid var(--color-border-2); }
+.ed-rule-accent { border-top: 1px solid var(--color-accent-cta); }
+
+/* Accent underline for inline editorial links / CTAs (BOOK INTRO ───). */
+.ed-underline {
+  background-image: linear-gradient(var(--color-accent-cta), var(--color-accent-cta));
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  padding-bottom: 0.15em;
+  transition: background-size 0.25s ease;
+}
+.ed-underline:hover { background-size: 100% 2px; }
 
 .animate-fade-up {
   animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
