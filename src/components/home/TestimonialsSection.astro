@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import TestimonialSlider from '../ui/TestimonialSlider.astro';
+import { accentHeading } from '../../lib/editorial';
 
 interface Props {
   i18n?: { eyebrow: string; title: string; titleSecondary: string };
@@ -39,7 +40,7 @@ const secondaryTestimonials = sorted.filter((t) => !t.data.hero).map(toCard);
       </div>
       <h2 class="reveal-up relative text-[length:var(--text-h2)] font-normal leading-[1.12] tracking-[-0.015em]" data-reveal-index="0">
         <span class="text-[var(--color-text)]">{t.title}</span><br />
-        <span class="text-[var(--color-text)]">{t.titleSecondary.replace(/[.。]\s*$/, '')}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">.</span>
+        <span class="text-[var(--color-text)]">{accentHeading(t.titleSecondary).lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{accentHeading(t.titleSecondary).mark}</span>
       </h2>
     </div>
     <TestimonialSlider hero={heroTestimonials} secondary={secondaryTestimonials} />

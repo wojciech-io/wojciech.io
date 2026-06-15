@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { insightSlug, isLocalePost, sortInsights, type InsightLocale } from '../../lib/insights';
 import ArticleCover from '../ui/ArticleCover.astro';
 import type { SectionStrings } from '../../data/locales';
+import { accentHeading } from '../../lib/editorial';
 
 interface Props {
   i18n?: SectionStrings['writing'];
@@ -36,7 +37,7 @@ const posts = (await getCollection('insights', isLocalePost(locale)))
           <span class="obs-label-accent">{t.eyebrow}</span>
         </div>
         <h2 class="text-[length:var(--text-h2)] font-normal leading-[1.12] tracking-[-0.015em] text-[var(--color-text)]">
-          <span>{t.title.replace(/[.。]\s*$/, '')}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">.</span>
+          <span>{accentHeading(t.title).lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{accentHeading(t.title).mark}</span>
         </h2>
       </div>
       <a

@@ -1,5 +1,6 @@
 ---
 import type { SectionStrings } from '../../data/locales';
+import { accentHeading } from '../../lib/editorial';
 
 interface Props {
   i18n?: SectionStrings['ai'];
@@ -20,9 +21,13 @@ const t = {
   stackLabel: i18n?.stackLabel ?? 'Tech stack',
   body: i18n?.body ?? 'Not for faster copy. For a different operating model. AI goes into prospecting, enrichment, sequencing, and scoring. The whole motion runs faster. Not just one task on the list.',
   allSystemsLink: i18n?.allSystemsLink ?? 'See all AI systems →',
+  stackStatus: i18n?.stackStatus ?? 'operator stack · always running',
+  bridgeStatus: i18n?.bridgeStatus ?? 'MCP bridge · live',
+  activeLabel: i18n?.activeLabel ?? 'active',
 };
 const rows = i18n?.rows ?? defaultRows;
 
+// Product names + dots are universal; roles are localized by index.
 const stack = [
   { name: 'Claude Code',  role: 'agent core',      dot: '#EBFF00' },
   { name: 'MCP',          role: 'tool bridge',     dot: '#EBFF00' },
@@ -31,6 +36,7 @@ const stack = [
   { name: 'Cloudflare',   role: 'edge + workers',  dot: '#f59e0b' },
   { name: 'Astro',        role: 'site layer',      dot: '#a78bfa' },
 ];
+const roles = i18n?.roles ?? stack.map((s) => s.role);
 ---
 
 <section class="relative py-[var(--space-section)] bg-[var(--color-bg)]">
@@ -46,7 +52,7 @@ const stack = [
         </div>
         <h2 class="reveal-blur text-[length:var(--text-h2)] font-normal leading-[1.12] tracking-[-0.015em] mb-5">
           <span class="text-[var(--color-text)]">{t.title}</span><br />
-          <span class="text-[var(--color-text)]">{t.titleSecondary.replace(/[.。]\s*$/, '')}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">.</span>
+          <span class="text-[var(--color-text)]">{accentHeading(t.titleSecondary).lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{accentHeading(t.titleSecondary).mark}</span>
         </h2>
         <p class="text-sm text-[var(--color-text-muted)] leading-snug mb-4">
           {t.body}
@@ -78,12 +84,12 @@ const stack = [
             <span class="h-2.5 w-2.5 rounded-full bg-[#ef4444]/60"></span>
             <span class="h-2.5 w-2.5 rounded-full bg-[#f59e0b]/60"></span>
             <span class="h-2.5 w-2.5 rounded-full bg-[var(--color-success)]/70"></span>
-            <span class="ml-2 font-mono text-[10px] text-[var(--color-text-dim)]">operator stack · always running</span>
+            <span class="ml-2 font-mono text-[10px] text-[var(--color-text-dim)]">{t.stackStatus}</span>
           </div>
 
           <!-- Stack items -->
           <div class="divide-y divide-[var(--color-border)]">
-            {stack.map(({ name, role, dot }, i) => (
+            {stack.map(({ name, dot }, i) => (
               <div
                 class="stack-item group flex items-center gap-4 px-5 py-3.5 hover:bg-[var(--color-surface-2)] transition-colors duration-150"
                 style={`--delay: ${i * 80}ms`}
@@ -110,11 +116,11 @@ const stack = [
 
                 <!-- Role -->
                 <span class="font-mono text-xs text-[var(--color-text-dim)] group-hover:text-[var(--color-text-muted)] transition-colors flex-1">
-                  {role}
+                  {roles[i]}
                 </span>
 
                 <!-- Status indicator -->
-                <span class="font-mono text-[10px] text-[var(--color-success)] shrink-0">active</span>
+                <span class="font-mono text-[10px] text-[var(--color-success)] shrink-0">{t.activeLabel}</span>
               </div>
             ))}
           </div>
@@ -125,7 +131,7 @@ const stack = [
               <div class="flex-1 h-px bg-[var(--color-border)] relative overflow-hidden">
                 <div class="data-flow absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-[var(--color-accent)]/60 to-transparent"></div>
               </div>
-              <span class="font-mono text-[10px] text-[var(--color-text-dim)] shrink-0">MCP bridge · live</span>
+              <span class="font-mono text-[10px] text-[var(--color-text-dim)] shrink-0">{t.bridgeStatus}</span>
               <div class="flex-1 h-px bg-[var(--color-border)] relative overflow-hidden">
                 <div class="data-flow absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-[var(--color-accent)]/60 to-transparent" style="animation-delay: 0.5s;"></div>
               </div>

@@ -2,6 +2,8 @@
 /* Editorial "how I work". Step numerals render in the display serif (digits =
    locale-safe); eyebrow, title, and body stay in Geist/mono for full PL/JP
    coverage. Prop-driven with English defaults so EN and localized pages match. */
+import { accentHeading } from '../../lib/editorial';
+
 interface Step { step: string; title: string; body: string }
 interface Props {
   eyebrow?: string;
@@ -22,8 +24,7 @@ const {
   ],
 } = Astro.props as Props;
 
-/* The accent period is its own span; strip a trailing period from the copy. */
-const titleEnd = titleSecondary.replace(/[.。]\s*$/, '');
+const title2 = accentHeading(titleSecondary);
 ---
 
 <section class="relative py-[var(--space-section)] bg-[var(--color-bg)] overflow-hidden">
@@ -36,7 +37,7 @@ const titleEnd = titleSecondary.replace(/[.。]\s*$/, '');
       </div>
       <h2 class="text-[length:var(--text-h2)] font-normal leading-[1.12] tracking-[-0.015em] max-w-xl">
         <span class="text-[var(--color-text)]">{titlePrimary}</span><br />
-        <span class="text-[var(--color-text)]">{titleEnd}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">.</span>
+        <span class="text-[var(--color-text)]">{title2.lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{title2.mark}</span>
       </h2>
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-2">

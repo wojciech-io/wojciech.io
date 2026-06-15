@@ -1,4 +1,5 @@
 ---
+import { accentHeading } from '../../lib/editorial';
 interface Props {
   heading?: string;
   subtext?: string;
@@ -57,17 +58,14 @@ const hasPortrait = Boolean(portrait);
         <h2 class="text-2xl font-normal leading-[1.12] tracking-[-0.015em] text-[var(--color-text)] md:text-3xl">
           {headingLines.map((line, index) => {
             const last = index === headingLines.length - 1;
-            // On the last line, accent the terminal punctuation (. ? !). If the
-            // line has none, append an accent period. Avoids "?." on questions.
-            const m = last ? line.match(/^(.*?)([.?!。]?)\s*$/) : null;
-            const body = m ? m[1] : line;
-            const punct = m ? (m[2] || '.') : '';
-            return (
-              <>
-                <span class="text-[var(--color-text)]">{body}</span>
-                {last && <span class="text-[var(--color-accent-cta)]" aria-hidden="true">{punct}</span>}
-                {!last && <br />}
-              </>
+            // On the last line, accent the terminal mark (locale-aware: . ? ! 。).
+            // The accent span sits flush against the lead text (no inter-span
+            // whitespace) so there is no gap before the mark, e.g. "...か。".
+            const { lead, mark } = accentHeading(line);
+            return last ? (
+              <span class="text-[var(--color-text)]">{lead}<span class="text-[var(--color-accent-cta)]" aria-hidden="true">{mark}</span></span>
+            ) : (
+              <><span class="text-[var(--color-text)]">{line}</span><br /></>
             );
           })}
         </h2>
