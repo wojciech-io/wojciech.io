@@ -1,4 +1,47 @@
 ---
+/* Editorial hero. Prop-driven so the English homepage and every localized
+   homepage render the exact same layout — only the copy differs. Defaults
+   carry the English copy, so `<HeroSection />` (the EN page) works with no props.
+
+   Type discipline: the serif (Fraunces) is Latin-basic + numerals only, so it is
+   used ONLY for the eyebrow tick rule and the accent period — never for the
+   localized headline, lead, or eyebrow text (those stay in Geist/mono, which
+   cover PL diacritics and JP). Numerals elsewhere on the page use the serif. */
+import { accentHeading } from '../../lib/editorial';
+
+interface CtaLink {
+  label: string;
+  href: string;
+  /** optional data-* attributes (e.g. Cal.com booking hooks) */
+  attrs?: Record<string, string>;
+}
+
+interface Props {
+  eyebrow?: string;
+  h1Primary?: string;
+  h1Secondary?: string;
+  lead?: string;
+  primaryCta?: CtaLink;
+  secondaryCta?: CtaLink;
+  /** mono positioning line under the hairline (NOT a fabricated metric) */
+  metaLine?: string;
+  name?: string;
+}
+
+const {
+  eyebrow = 'Fractional GTM operator',
+  h1Primary = 'I build revenue systems.',
+  h1Secondary = 'Then I run them.',
+  lead = "GTM, CRM, and AI workflows in one operating model. I build what's missing and stay until it runs.",
+  primaryCta = { label: 'See the work', href: '/work/' },
+  secondaryCta = { label: 'Get the newsletter', href: 'https://subscribe.wojciech.io' },
+  metaLine = 'GTM × CRM × AI',
+  name = 'Wojciech Łuszczyński',
+} = Astro.props as Props;
+
+/* The editorial accent mark is rendered by its own span; the helper splits the
+   copy's terminal punctuation so it gets the accent color (locale-aware: . ? 。). */
+const h2 = accentHeading(h1Secondary);
 ---
 
 <section class="relative overflow-hidden min-h-[480px] md:min-h-[580px] lg:min-h-[620px]">
@@ -7,32 +50,30 @@
   <!-- Neutral depth behind text -->
   <div class="pointer-events-none absolute left-[-160px] top-[-180px] h-[520px] w-[640px] rounded-full bg-[var(--color-surface)] blur-[150px] opacity-70" aria-hidden="true" />
 
-  <!-- Photo: desktop only, right half, absolute.
-       Decorative (aria-hidden), shown only at lg+. Delivered as a CSS
-       background, not an <img>: a background-image on a display:none element
-       is never fetched, whereas an <img src> downloads even when hidden. A
-       <picture media> source does not help because Chrome's preload scanner
-       fetches the srcset before evaluating the media query. This keeps the
-       248KB hero off the mobile critical path entirely. -->
+  <!-- Photo: desktop only, right half, absolute. Decorative (aria-hidden), lg+ only.
+       Delivered as a CSS background so a display:none element never fetches it,
+       keeping the hero image off the mobile critical path. -->
   <div
     class="hidden lg:block absolute right-0 top-0 bottom-0 w-[52%] overflow-hidden bg-[url('/images/wojciech-office-hq.webp')] bg-cover bg-no-repeat bg-[position:center_30%]"
     aria-hidden="true"
   >
-    <!-- Left fade overlay -->
+    <!-- Left + bottom fades blend the photo into the page on both themes -->
     <div class="absolute inset-y-0 left-0 w-[28%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]" />
-    <!-- Bottom fade overlay -->
     <div class="absolute inset-x-0 bottom-0 h-[14%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]" />
+    <!-- Editorial frame: hairline + corner crop marks + mono caption -->
+    <div class="absolute inset-6 border border-[var(--color-border)] pointer-events-none" />
+    <span class="absolute left-6 bottom-8 obs-label text-[10px] tracking-[0.2em] [writing-mode:vertical-rl] rotate-180">{name}</span>
   </div>
 
   <div class="relative mx-auto max-w-6xl px-6">
     <div class="flex flex-col justify-center py-10 md:py-20 lg:py-32 md:max-w-[560px] lg:max-w-[48%]">
 
-      <!-- Mobile: compact identity. Small photo WITH background, to the side,
-           a supporting detail rather than a centerpiece. -->
-      <div class="lg:hidden flex items-center gap-3 mb-6">
+      <!-- Mobile: compact identity. Small photo WITH background, a supporting
+           detail rather than a centerpiece. -->
+      <div class="lg:hidden flex items-center gap-3 mb-7">
         <img
           src="/images/wojciech-thumb.webp"
-          alt="Wojciech Łuszczyński"
+          alt={name}
           width="320"
           height="320"
           loading="eager"
@@ -40,41 +81,48 @@
           class="w-16 h-16 rounded-xl object-cover border border-[var(--color-border-2)] shrink-0"
         />
         <div>
-          <p class="text-sm font-semibold text-[var(--color-text)] leading-tight">Wojciech Łuszczyński</p>
-          <span class="obs-label-accent">Fractional GTM operator</span>
+          <p class="text-sm font-semibold text-[var(--color-text)] leading-tight">{name}</p>
+          <span class="obs-label-accent">{eyebrow}</span>
         </div>
       </div>
 
-      <!-- Desktop: eyebrow (photo lives on the right half) -->
-      <div class="hidden lg:inline-flex self-start items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] px-3.5 py-2 mb-8 shadow-[var(--shadow-card)] backdrop-blur">
-        <span class="obs-status-dot"></span>
-        <span class="obs-label-accent">Fractional GTM operator</span>
+      <!-- Desktop: eyebrow with editorial accent tick (photo lives on the right half) -->
+      <div class="hidden lg:flex items-center gap-3 mb-8">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">{eyebrow}</span>
       </div>
 
-      <!-- Headline -->
-      <h1 class="reveal-up text-[length:var(--text-hero)] font-bold leading-[1.08] tracking-tight mb-4 md:mb-6" data-reveal-index="0" transition:name="page-title-home">
-        <span class="text-[var(--color-text)]">I build revenue systems.</span><br class="hidden md:block" /> <span class="heading-accent">Then I run them.</span>
+      <!-- Headline: large, regular weight (editorial), accent period -->
+      <h1 class="reveal-up text-[length:var(--text-hero)] font-light leading-[1.06] tracking-[-0.025em] mb-4 md:mb-6" data-reveal-index="0" transition:name="page-title-home">
+        <span class="text-[var(--color-text)]">{h1Primary}</span><br class="hidden md:block" />
+        <span class="text-[var(--color-text)]">{h2.lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{h2.mark}</span>
       </h1>
 
-      <!-- Sub-copy -->
-      <p class="reveal-up text-[length:var(--text-lead)] text-[var(--color-text-muted)] leading-relaxed mb-7 md:mb-10 max-w-lg" data-reveal-index="1">
-        GTM, CRM, and AI workflows in one operating model. I build what's missing and stay until it runs.
+      <!-- Sub-copy (stays sans for full multilingual coverage) -->
+      <p class="reveal-up text-[length:var(--text-lead)] text-[var(--color-text-muted)] leading-relaxed mb-7 md:mb-9 max-w-lg" data-reveal-index="1">
+        {lead}
       </p>
 
       <!-- Buttons -->
-      <div class="reveal-up flex flex-wrap gap-3 mb-5" data-reveal-index="2">
+      <div class="reveal-up flex flex-wrap gap-3 mb-8" data-reveal-index="2">
         <a
-          href="/work/"
+          href={primaryCta.href}
           class="btn-press obs-mono inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] text-xs font-semibold uppercase tracking-wider px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
         >
-          See the work
+          {primaryCta.label}
         </a>
         <a
-          href="https://subscribe.wojciech.io"
+          href={secondaryCta.href}
           class="btn-press obs-mono inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs font-medium uppercase tracking-wider px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-text)] transition-colors"
+          {...secondaryCta.attrs}
         >
-          Get the newsletter
+          {secondaryCta.label}
         </a>
+      </div>
+
+      <!-- Editorial meta strip: hairline + mono positioning kicker -->
+      <div class="reveal-up ed-rule pt-4 max-w-lg" data-reveal-index="3">
+        <span class="obs-label text-[10px] tracking-[0.18em] leading-snug">{metaLine}</span>
       </div>
 
     </div>

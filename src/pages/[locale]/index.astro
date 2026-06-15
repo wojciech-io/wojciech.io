@@ -1,6 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import CTABand from '../../components/ui/CTABand.astro';
+import HeroSection from '../../components/home/HeroSection.astro';
+import MetricsStrip from '../../components/home/MetricsStrip.astro';
+import HowIWork from '../../components/home/HowIWork.astro';
 import ProjectsSection from '../../components/home/ProjectsSection.astro';
 import AILeverage from '../../components/home/AILeverage.astro';
 import TestimonialsSection from '../../components/home/TestimonialsSection.astro';
@@ -36,114 +39,31 @@ const contactHref = `/${copy.path}/contact/`;
     isPartOf: { '@type': 'WebSite', name: 'wojciech.io', url: 'https://wojciech.io/' },
   }}
 >
-  <section class="relative overflow-hidden min-h-[480px] md:min-h-[580px] lg:min-h-[620px]">
-    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
-    <div class="pointer-events-none absolute left-[-160px] top-[-180px] h-[520px] w-[640px] rounded-full bg-[var(--color-surface)] blur-[150px] opacity-70" aria-hidden="true" />
+  <HeroSection
+    eyebrow={copy.eyebrow}
+    h1Primary={copy.h1Primary}
+    h1Secondary={copy.h1Secondary}
+    lead={copy.lead}
+    primaryCta={{ label: copy.primaryCta, href: workHref }}
+    secondaryCta={{
+      label: copy.secondaryCta,
+      href: contactHref,
+      attrs: {
+        'data-cal-link': 'wojciech-luszczynski/30min',
+        'data-mp-cta': 'Book a call',
+        'data-mp-location': `localized_${copy.path}_hero`,
+      },
+    }}
+  />
 
-    <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[52%] overflow-hidden" aria-hidden="true">
-      <img
-        src="/images/wojciech-office-hq.webp"
-        alt=""
-        width="2048"
-        height="1366"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        class="absolute inset-0 w-full h-full object-cover object-[center_30%]"
-      />
-      <div class="absolute inset-y-0 left-0 w-[28%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]" />
-      <div class="absolute inset-x-0 bottom-0 h-[14%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]" />
-    </div>
+  <MetricsStrip metrics={copy.proof} indexLabel="" />
 
-    <div class="relative mx-auto max-w-6xl px-6">
-      <div class="flex flex-col justify-center py-10 md:py-20 lg:py-32 md:max-w-[560px] lg:max-w-[48%]">
-        <!-- Mobile: compact identity. Small photo WITH background, to the side. -->
-        <div class="lg:hidden flex items-center gap-3 mb-6">
-          <img
-            src="/images/wojciech-thumb.webp"
-            alt="Wojciech Łuszczyński"
-            width="320"
-            height="320"
-            loading="eager"
-            decoding="async"
-            class="w-16 h-16 rounded-xl object-cover border border-[var(--color-border-2)] shrink-0"
-          />
-          <div>
-            <p class="text-sm font-semibold text-[var(--color-text)] leading-tight">Wojciech Łuszczyński</p>
-            <span class="obs-label-accent">{copy.eyebrow}</span>
-          </div>
-        </div>
-
-        <!-- Desktop: eyebrow (photo lives on the right half) -->
-        <div class="hidden lg:inline-flex self-start items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-glass)] px-3.5 py-2 mb-8 shadow-[var(--shadow-card)] backdrop-blur">
-          <span class="obs-status-dot"></span>
-          <span class="obs-label-accent">{copy.eyebrow}</span>
-        </div>
-
-        <h1 class="reveal-up text-[length:var(--text-hero)] font-bold leading-[1.08] tracking-tight mb-4 md:mb-6" data-reveal-index="0" transition:name="page-title-home">
-          <span class="text-[var(--color-text)]">{copy.h1Primary}</span><br class="hidden md:block" />
-          <span class="heading-accent">{copy.h1Secondary}</span>
-        </h1>
-
-        <p class="reveal-up text-[length:var(--text-lead)] text-[var(--color-text-muted)] leading-relaxed mb-7 md:mb-10 max-w-lg" data-reveal-index="1">
-          {copy.lead}
-        </p>
-
-        <div class="reveal-up flex flex-wrap gap-3 mb-5" data-reveal-index="2">
-          <a
-            href={workHref}
-            class="btn-press obs-mono inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] text-xs font-semibold uppercase tracking-wider px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
-          >
-            {copy.primaryCta}
-          </a>
-          <a
-            href={contactHref}
-            class="btn-press obs-mono inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs font-medium uppercase tracking-wider px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-text)] transition-colors"
-            data-cal-link="wojciech-luszczynski/30min"
-            data-mp-cta="Book a call"
-            data-mp-location={`localized_${copy.path}_hero`}
-          >
-            {copy.secondaryCta}
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="relative section-fade border-y border-[var(--color-border)] bg-[var(--color-surface)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[var(--color-border)]">
-        {copy.proof.map(({ value, label }, index) => (
-          <div class="reveal-up flex flex-col items-center py-8 px-4 text-center" data-reveal-index={index}>
-            <p class="obs-mono text-3xl font-bold text-[var(--color-text)] mb-1">{value}</p>
-            <p class="obs-label">{label}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="relative py-[var(--space-section)] bg-[var(--color-bg)] overflow-hidden">
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border-2)] to-transparent" aria-hidden="true"></div>
-    <div class="relative mx-auto max-w-6xl px-6">
-      <div class="reveal-blur mb-12">
-        <span class="obs-label-accent mb-4 block">{copy.sectionEyebrow}</span>
-        <h2 class="text-[length:var(--text-h2)] font-semibold leading-[1.15] tracking-tight max-w-xl">
-          <span class="text-[var(--color-text)]">{copy.sectionTitlePrimary}</span><br />
-          <span class="heading-accent">{copy.sectionTitleSecondary}</span>
-        </h2>
-      </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {copy.steps.map(({ step, title, body }) => (
-          <div class="reveal-up obs-panel obs-glow p-6 card-lift group">
-            <span class="obs-mono text-2xl font-bold text-[var(--color-accent-label)] mb-4 block">{step}</span>
-            <h3 class="text-base font-semibold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors">{title}</h3>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <HowIWork
+    eyebrow={copy.sectionEyebrow}
+    titlePrimary={copy.sectionTitlePrimary}
+    titleSecondary={copy.sectionTitleSecondary}
+    steps={copy.steps}
+  />
 
   <ProjectsSection i18n={copy.sections.work} locale={copy.key} />
   <AILeverage i18n={copy.sections.ai} />

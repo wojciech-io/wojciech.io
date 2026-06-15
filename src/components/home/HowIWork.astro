@@ -1,27 +1,50 @@
 ---
-const steps = [
-  { step: '01', title: 'Diagnose', body: 'Revenue architecture audit: pipeline, CRM, GTM motions, attribution. I map where the signal breaks before touching anything.' },
-  { step: '02', title: 'Design', body: 'System design: what connects to what, what gets measured, what gets automated, and in what order it gets built.' },
-  { step: '03', title: 'Implement', body: 'I build it: sequences, dashboards, CRM operating model, tooling. Or I embed with your team and build alongside them.' },
-  { step: '04', title: 'Ship the gap', body: "When the right tool doesn't exist, I write it. AI agents, custom apps, MCP workflows. The system gets what it needs." },
-];
+/* Editorial "how I work". Step numerals render in the display serif (digits =
+   locale-safe); eyebrow, title, and body stay in Geist/mono for full PL/JP
+   coverage. Prop-driven with English defaults so EN and localized pages match. */
+import { accentHeading } from '../../lib/editorial';
+
+interface Step { step: string; title: string; body: string }
+interface Props {
+  eyebrow?: string;
+  titlePrimary?: string;
+  titleSecondary?: string;
+  steps?: Step[];
+}
+
+const {
+  eyebrow = 'How I work',
+  titlePrimary = 'Not a consultant. An operator.',
+  titleSecondary = 'I stay until it runs',
+  steps = [
+    { step: '01', title: 'Diagnose', body: 'Revenue architecture audit: pipeline, CRM, GTM motions, attribution. I map where the signal breaks before touching anything.' },
+    { step: '02', title: 'Design', body: 'System design: what connects to what, what gets measured, what gets automated, and in what order it gets built.' },
+    { step: '03', title: 'Implement', body: 'I build it: sequences, dashboards, CRM operating model, tooling. Or I embed with your team and build alongside them.' },
+    { step: '04', title: 'Ship the gap', body: "When the right tool doesn't exist, I write it. AI agents, custom apps, MCP workflows. The system gets what it needs." },
+  ],
+} = Astro.props as Props;
+
+const title2 = accentHeading(titleSecondary);
 ---
 
 <section class="relative py-[var(--space-section)] bg-[var(--color-bg)] overflow-hidden">
   <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border-2)] to-transparent" aria-hidden="true"></div>
   <div class="relative mx-auto max-w-6xl px-6">
     <div class="reveal-blur mb-12">
-      <span class="obs-label-accent mb-4 block">How I work</span>
-      <h2 class="text-[length:var(--text-h2)] font-semibold leading-[1.15] tracking-tight max-w-xl">
-        <span class="text-[var(--color-text)]">Not a consultant. An operator.</span><br />
-        <span class="heading-accent">I stay until it runs.</span>
+      <div class="flex items-center gap-3 mb-4">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">{eyebrow}</span>
+      </div>
+      <h2 class="text-[length:var(--text-h2)] font-normal leading-[1.12] tracking-[-0.015em] max-w-xl">
+        <span class="text-[var(--color-text)]">{titlePrimary}</span><br />
+        <span class="text-[var(--color-text)]">{title2.lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{title2.mark}</span>
       </h2>
     </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      {steps.map(({ step, title, body }) => (
-        <div class="reveal-up obs-panel obs-glow p-6 card-lift group">
-          <span class="obs-mono text-2xl font-bold text-[var(--color-accent-label)] mb-4 block">{step}</span>
-          <h3 class="text-base font-semibold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors">{title}</h3>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-2">
+      {steps.map(({ step, title, body }, index) => (
+        <div class="reveal-up group ed-rule pt-5 pb-1" data-reveal-index={index}>
+          <span class="ed-serif block text-5xl text-[var(--color-accent-label)] mb-4 group-hover:text-[var(--color-accent-hi)] transition-colors">{step}</span>
+          <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{title}</h3>
           <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
         </div>
       ))}
