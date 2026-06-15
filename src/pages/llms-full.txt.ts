@@ -32,7 +32,7 @@ export const GET: APIRoute = async ({ site }) => {
     .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
   const header = [
-    '# Wojciech Łuszczyński · wojciech.io — full insights corpus',
+    '# Wojciech Łuszczyński · wojciech.io · full insights corpus',
     '',
     '> Full text of every published English insight, newest first. This is the',
     '> content companion to the curated overview at ' + origin + '/llms.txt.',
