@@ -3,6 +3,8 @@ interface Props {
   src: string;
   position?: string;
   opacity?: number;
+  /** background-size; default 'cover'. Use e.g. '190%' to zoom into a far subject. */
+  size?: string;
   eager?: boolean;
 }
 
@@ -10,12 +12,13 @@ const {
   src,
   position = 'center',
   opacity = 0.1,
+  size = 'cover',
 } = Astro.props;
 ---
 
 <div
-  class="absolute inset-0 hidden bg-cover bg-center saturate-[0.82] md:block"
-  style={`background-image: url('${src}'); background-position: ${position}; opacity: ${opacity};`}
+  class="absolute inset-0 hidden bg-center saturate-[0.82] md:block"
+  style={`background-image: url('${src}'); background-size: ${size}; background-position: ${position}; opacity: ${opacity};`}
   aria-hidden="true"
 />
 <div
