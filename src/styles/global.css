@@ -270,8 +270,9 @@ body {
 
 /* ─── Editorial: display-serif + hairline rhythm ────────────────────
    Every value is a token, so light/dark falls out of tokens.css with no
-   per-theme duplication. The serif (Fraunces) is used ONLY here, for
-   numerals and pull-quotes — never for localized prose. */
+   per-theme duplication. The serif (Fraunces) is used ONLY here, for KPI
+   numerals and the ghost watermark — never for localized prose (the subset
+   has no PL diacritics or CJK). */
 
 /* KPI / metric numerals: display serif, tabular lining figures. */
 .ed-serif {
@@ -280,26 +281,6 @@ body {
   font-feature-settings: 'tnum' 1, 'lnum' 1;
   letter-spacing: -0.01em;
   line-height: 0.95;
-}
-
-/* Italic serif pull-quote (testimonials). */
-.ed-quote {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-variation-settings: 'opsz' 40, 'wght' 360;
-  letter-spacing: -0.005em;
-  text-wrap: balance;
-}
-
-/* Section number label: mono, accent, tracks the editorial index (01, 02…). */
-.ed-section-no {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-accent-label);
-  font-variant-numeric: tabular-nums;
 }
 
 /* Ghost numeral: oversized faint serif watermark (№1 / №2 / №3) sitting
@@ -315,21 +296,8 @@ body {
 }
 [data-theme='dark'] .ed-ghost { opacity: 0.08; }
 
-/* Hairline rules: the editorial grid. Top border only; pair with padding. */
+/* Hairline rule: the editorial grid. Top border only; pair with padding. */
 .ed-rule { border-top: 1px solid var(--color-border); }
-.ed-rule-strong { border-top: 1px solid var(--color-border-2); }
-.ed-rule-accent { border-top: 1px solid var(--color-accent-cta); }
-
-/* Accent underline for inline editorial links / CTAs (BOOK INTRO ───). */
-.ed-underline {
-  background-image: linear-gradient(var(--color-accent-cta), var(--color-accent-cta));
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 100% 1px;
-  padding-bottom: 0.15em;
-  transition: background-size 0.25s ease;
-}
-.ed-underline:hover { background-size: 100% 2px; }
 
 .animate-fade-up {
   animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
