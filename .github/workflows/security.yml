@@ -36,8 +36,12 @@ jobs:
           node-version: "24"
           cache: "npm"
       - run: npm ci
-      - name: npm audit (fail on high/critical)
-        run: npm audit --audit-level=high
+      - name: npm audit (fail on high/critical in runtime deps)
+        # Fails on any high/critical advisory in a runtime dependency, while
+        # waiving a documented allowlist of build/dev-only tooling (vite, esbuild,
+        # ws/miniflare/wrangler, the CF adapter) that never ships to the Workers
+        # runtime and in several cases has no non-breaking fix. See the script.
+        run: node scripts/security-audit.mjs
 
   sast:
     name: SAST (semgrep)
