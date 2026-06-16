@@ -315,6 +315,7 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
       import Lenis from 'lenis';
 
       let lenis: Lenis | null = null;
+      let stopRaf: (() => void) | null = null;
 
       function initLenis() {
         if (!window.matchMedia('(pointer: fine)').matches) return;
@@ -326,18 +327,28 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
           rafId = requestAnimationFrame(raf);
         }
         rafId = requestAnimationFrame(raf);
-        return () => cancelAnimationFrame(rafId);
+        stopRaf = () => cancelAnimationFrame(rafId);
+      }
+
+      // Cancel the rAF loop AND destroy the instance. Without cancelling the
+      // loop, every View Transitions navigation left an orphaned rAF still
+      // calling lenis.raf() — they stacked up and progressively janked scroll.
+      function teardownLenis() {
+        stopRaf?.();
+        stopRaf = null;
+        lenis?.destroy();
+        lenis = null;
       }
 
       initLenis();
       document.addEventListener('astro:page-load', () => {
-        lenis?.destroy(); lenis = null;
+        teardownLenis();
         // Restore smooth scroll after transition completes
         document.documentElement.style.removeProperty('scroll-behavior');
         initLenis();
       });
       document.addEventListener('astro:before-preparation', () => {
-        lenis?.destroy(); lenis = null;
+        teardownLenis();
       });
     </script>
 
