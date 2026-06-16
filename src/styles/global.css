@@ -53,25 +53,6 @@
   font-display: optional;
 }
 
-/* Fraunces: editorial display serif, variable (opsz + wght), Latin/numeral subset.
-   font-display: swap (not optional like the others) because the serif KPI numerals
-   are a brand signature: they must render even if the file lands after first paint. */
-@font-face {
-  font-family: 'Fraunces';
-  src: url('/fonts/Fraunces-Variable.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-stretch: normal;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Fraunces';
-  src: url('/fonts/Fraunces-Italic-Variable.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-stretch: normal;
-  font-style: italic;
-  font-display: swap;
-}
 
 @import './tokens.css';
 
@@ -268,26 +249,27 @@ body {
   color: var(--color-text-dim);
 }
 
-/* ─── Editorial: display-serif + hairline rhythm ────────────────────
+/* ─── Editorial: display numerals + hairline rhythm ──────────────────
    Every value is a token, so light/dark falls out of tokens.css with no
-   per-theme duplication. The serif (Fraunces) is used ONLY here, for KPI
-   numerals and the ghost watermark — never for localized prose (the subset
-   has no PL diacritics or CJK). */
+   per-theme duplication. Two-typeface system: Geist sans + Geist Mono.
+   The display numerals below render in Geist (tabular lining figures). */
 
-/* KPI / metric numerals: display serif, tabular lining figures. */
+/* KPI / metric numerals: display weight, tabular lining figures. */
 .ed-serif {
-  font-family: var(--font-serif);
-  font-variation-settings: 'opsz' 96, 'wght' 380;
+  font-family: var(--font-sans);
+  font-weight: 600;
   font-feature-settings: 'tnum' 1, 'lnum' 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   line-height: 0.95;
 }
 
-/* Ghost numeral: oversized faint serif watermark (№1 / №2 / №3) sitting
+/* Ghost numeral: oversized faint watermark (1 / 2 / 3) sitting
    behind a row. currentColor + low opacity reads on both themes. */
 .ed-ghost {
-  font-family: var(--font-serif);
-  font-variation-settings: 'opsz' 144, 'wght' 300;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  letter-spacing: -0.02em;
   line-height: 1;
   color: var(--color-text);
   opacity: 0.06;
