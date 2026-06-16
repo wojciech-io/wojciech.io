@@ -38,69 +38,8 @@ const calUrl = 'https://cal.com/wojciech-luszczynski/30min';
   </div>
 </section>
 
-<!-- Contact form -->
-<section class="relative py-12 md:py-16 border-t border-b border-[var(--color-border)] bg-[var(--color-bg)]">
-  <div class="mx-auto max-w-2xl px-6">
-    <p class="obs-label-accent mb-3 block">Or send a message</p>
-    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-6">
-      Send the context, the bottleneck, and the current stack. I reply within 24h on weekdays.
-    </p>
-    <form id="contact-form" class="space-y-5">
-      <div class="grid sm:grid-cols-2 gap-5">
-        <div>
-          <label for="contact-name" class="block text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-2">Name</label>
-          <input
-            type="text"
-            id="contact-name"
-            name="name"
-            required
-            autocomplete="name"
-            class="w-full rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
-            placeholder="Your name"
-          />
-        </div>
-        <div>
-          <label for="contact-email" class="block text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-2">Email</label>
-          <input
-            type="email"
-            id="contact-email"
-            name="email"
-            required
-            autocomplete="email"
-            class="w-full rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
-            placeholder="you@company.com"
-          />
-        </div>
-      </div>
-      <div>
-        <label for="contact-context" class="block text-xs font-semibold tracking-widest uppercase text-[var(--color-text-dim)] mb-2">What are you working on?</label>
-        <textarea
-          id="contact-context"
-          name="message"
-          required
-          rows={5}
-          class="w-full rounded-[var(--radius-input)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-dim)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] transition-colors resize-y"
-          placeholder="The goal, the current state, the stack. Whatever helps me understand the problem."
-        ></textarea>
-      </div>
-      <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-        <button
-          type="submit"
-          class="btn-press inline-flex items-center justify-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-7 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
-        >
-          Send message
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <span id="form-status" class="text-sm text-[var(--color-text-muted)] hidden"></span>
-      </div>
-    </form>
-  </div>
-</section>
-
 <!-- Context: what to expect, good fit, alternative -->
-<section class="py-12 md:py-16 border-b border-[var(--color-border)]">
+<section class="py-12 md:py-16 border-t border-b border-[var(--color-border)]">
   <div class="mx-auto max-w-5xl px-6">
     <div class="grid md:grid-cols-3 gap-8 md:gap-10">
       <div>
@@ -158,44 +97,3 @@ const calUrl = 'https://cal.com/wojciech-luszczynski/30min';
   </div>
 </section>
 
-<script>
-  const form = document.getElementById('contact-form') as HTMLFormElement;
-  const status = document.getElementById('form-status') as HTMLElement;
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const data = new FormData(form);
-    const name = data.get('name') as string;
-    const email = data.get('email') as string;
-    const message = data.get('message') as string;
-
-    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
-    status.classList.add('hidden');
-
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message }),
-      });
-
-      if (res.ok) {
-        status.textContent = 'Message sent. I will reply within 24h.';
-        status.classList.remove('hidden', 'text-red-500');
-        status.classList.add('text-[var(--color-success)]');
-        form.reset();
-      } else {
-        throw new Error('send failed');
-      }
-    } catch {
-      const subject = encodeURIComponent(`Contact from ${name}`);
-      const body = encodeURIComponent(`${message}\n\n---\nFrom: ${name} (${email})`);
-      window.location.href = `mailto:hello@wojciech.io?subject=${subject}&body=${body}`;
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Send message';
-    }
-  });
-</script>
