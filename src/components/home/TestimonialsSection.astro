@@ -26,8 +26,8 @@ const toCard = (t: typeof sorted[number]) => ({
   avatar: t.data.avatar,
 });
 
-const heroTestimonials = sorted.filter((t) => t.data.hero).map(toCard);
-const secondaryTestimonials = sorted.filter((t) => !t.data.hero).map(toCard);
+// One continuous animated marquee — every featured testimonial, in order.
+const allTestimonials = sorted.map(toCard);
 ---
 
 <section class="py-[var(--space-section)] bg-[var(--color-surface)] border-t border-[var(--color-border)] section-fade">
@@ -43,6 +43,6 @@ const secondaryTestimonials = sorted.filter((t) => !t.data.hero).map(toCard);
         <span class="text-[var(--color-text)]">{accentHeading(t.titleSecondary).lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{accentHeading(t.titleSecondary).mark}</span>
       </h2>
     </div>
-    <TestimonialSlider hero={heroTestimonials} secondary={secondaryTestimonials} />
+    <TestimonialSlider items={allTestimonials} />
   </div>
 </section>
