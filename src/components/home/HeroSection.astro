@@ -47,7 +47,7 @@ const h2 = accentHeading(h1Secondary);
 <section class="relative overflow-hidden min-h-[480px] md:min-h-[580px] lg:min-h-[620px]">
   <!-- Grid: faint, radially masked so it dissolves into the page (depth, not a flat sheet) -->
   <div class="hero-grid pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:44px_44px]" aria-hidden="true" />
-  <!-- Lime aura: colour + depth behind the headline, breathes slowly -->
+  <!-- Lime aura: colour + depth behind the headline (static — no per-frame repaint) -->
   <div class="hero-aura pointer-events-none absolute left-[-120px] top-[-150px] h-[480px] w-[580px] rounded-full" aria-hidden="true" />
   <!-- Neutral depth, kept subtle under the aura -->
   <div class="pointer-events-none absolute left-[-160px] top-[-180px] h-[520px] w-[640px] rounded-full bg-[var(--color-surface)] blur-[150px] opacity-50" aria-hidden="true" />
@@ -62,9 +62,8 @@ const h2 = accentHeading(h1Secondary);
     <!-- Left + bottom fades blend the photo into the page on both themes -->
     <div class="absolute inset-y-0 left-0 w-[28%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]" />
     <div class="absolute inset-x-0 bottom-0 h-[14%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]" />
-    <!-- Editorial frame: hairline + corner crop marks + mono caption -->
+    <!-- Editorial frame: hairline only (no rotated name caption) -->
     <div class="absolute inset-6 border border-[var(--color-border)] pointer-events-none" />
-    <span class="absolute left-6 bottom-8 obs-label text-[10px] tracking-[0.2em] [writing-mode:vertical-rl] rotate-180">{name}</span>
   </div>
 
   <div class="relative mx-auto max-w-6xl px-6">
@@ -138,14 +137,14 @@ const h2 = accentHeading(h1Secondary);
     mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
   }
 
-  /* Lime aura: subtle colour wash + depth behind the headline. Opacity is
-     theme-scoped (a hint on the light page, more presence on the dark one);
-     the breathing is scale-only so it stays the same in both modes. */
+  /* Lime aura: subtle colour wash + depth behind the headline. Static — a
+     blurred element animated per frame forces a full re-raster of the blur and
+     janks scroll, so it is painted once. Opacity is theme-scoped (a hint on the
+     light page, more presence on the dark one). */
   .hero-aura {
     background: radial-gradient(circle, var(--color-accent-cta) 0%, transparent 68%);
     opacity: 0.08;
     filter: blur(60px);
-    animation: hero-pulse 7s ease-in-out infinite;
   }
   :global(:root[data-theme='dark']) .hero-aura {
     opacity: 0.16;
@@ -163,17 +162,12 @@ const h2 = accentHeading(h1Secondary);
     animation: hero-draw 0.9s 0.15s ease both;
   }
 
-  @keyframes hero-pulse {
-    0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.06); }
-  }
   @keyframes hero-draw {
     from { width: 0; }
     to   { width: 2.25rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-aura { animation: none; }
     .hero-tick { animation: none; }
   }
 </style>
