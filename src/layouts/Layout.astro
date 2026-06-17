@@ -22,6 +22,9 @@ interface Props {
   publishedAt?: Date | string;
   updatedAt?: Date | string;
   schema?: Record<string, unknown> | Record<string, unknown>[];
+  /** Desktop-only hero image to preload, so it is decoded before first paint
+      and does not flash during the View Transition fade (home pages). */
+  preloadImage?: string;
 }
 
 const {
@@ -37,6 +40,7 @@ const {
   publishedAt,
   updatedAt,
   schema,
+  preloadImage,
 } = Astro.props;
 
 // Normalize /en/* canonical to /* (strip /en/ prefix for dedup)
@@ -53,6 +57,12 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
         charset declaration within the first 1024 bytes of the document. */}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Preload the desktop hero image so it is decoded before paint and never
+        flashes during the View Transition fade. Media-scoped to lg+, matching
+        the CSS background that only renders there (mobile critical path stays clean). */}
+    {preloadImage && (
+      <link rel="preload" as="image" href={preloadImage} media="(min-width: 1024px)" fetchpriority="high" />
+    )}
     <script is:inline>
       document.documentElement.classList.add('js');
       (function() {

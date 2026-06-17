@@ -8,11 +8,6 @@ interface Props {
   ctaSecondary?: string;
   ctaSecondaryHref?: string;
   kicker?: string;
-  // When set, renders a bottom/top-anchored portrait on the right (lg+ only).
-  // Use a transparent cut-out so it blends into the panel; head stays anchored
-  // to the top so it is never cropped.
-  portrait?: string;
-  portraitAlt?: string;
 }
 const {
   kicker = 'Next step',
@@ -22,24 +17,18 @@ const {
   ctaHref = '/contact/#book-call',
   ctaSecondary = 'See the work',
   ctaSecondaryHref = '/work/',
-  portrait,
-  portraitAlt = 'Wojciech Łuszczyński',
 } = Astro.props;
 const ctaIsExternal = ctaHref.startsWith('http');
 const secondaryIsExternal = ctaSecondaryHref.startsWith('http');
 // Booking CTAs open the compact Cal.com popup in place; href stays as fallback.
 const ctaIsBooking = ctaHref.includes('#book-call') || ctaHref.includes('cal.com');
 const headingLines = heading.split('\n');
-const hasPortrait = Boolean(portrait);
 ---
 
 <section class="bg-[var(--color-bg)] py-14 md:py-20">
   <div class="mx-auto max-w-6xl px-6">
     <div
-      class:list={[
-        'relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)]',
-        hasPortrait && 'lg:grid lg:grid-cols-[1fr_minmax(0,300px)] lg:items-stretch',
-      ]}
+      class="relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)]"
     >
       <!-- On-brand glow: faint lime in light, near-invisible in dark. Behind content.
            radial-gradient instead of filter:blur — same look, no GPU paint cost. -->
@@ -49,8 +38,17 @@ const hasPortrait = Boolean(portrait);
         aria-hidden="true"
       >
       </div>
+      <!-- Oversized accent arrow anchored right: fills the panel width with a
+           graphical mark instead of dead space (no portrait). Decorative. -->
+      <svg
+        class="pointer-events-none absolute -right-6 bottom-[-3rem] hidden h-72 w-72 text-[var(--color-accent-cta)] opacity-[0.06] lg:block"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"
+      >
+        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
 
-      <div class="relative px-6 py-10 md:px-10 md:py-12">
+      <div class="relative px-6 py-10 md:px-10 md:py-12 lg:flex lg:items-center lg:justify-between lg:gap-12">
+       <div class="lg:max-w-2xl">
         <div class="flex items-center gap-3 mb-3">
           <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
           <span class="obs-label-accent">{kicker}</span>
@@ -73,8 +71,9 @@ const hasPortrait = Boolean(portrait);
         <p class="mt-3 max-w-xl text-sm leading-relaxed text-[var(--color-text-muted)]">
           {subtext}
         </p>
+       </div>
 
-        <div class="mt-7 flex flex-wrap gap-3">
+        <div class="relative mt-7 flex flex-wrap gap-3 lg:mt-0 lg:shrink-0">
           <a
             href={ctaHref}
             {...(ctaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
@@ -97,22 +96,6 @@ const hasPortrait = Boolean(portrait);
           </a>
         </div>
       </div>
-
-      {hasPortrait && (
-        <div
-          class="relative hidden min-h-[300px] self-stretch bg-cover bg-[position:center_top] bg-no-repeat lg:block"
-          style={`background-image:url('${portrait}')`}
-          role="img"
-          aria-label={portraitAlt}
-        >
-          <!-- Soft fade where the cut-out meets the panel floor. -->
-          <div
-            class="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[var(--color-surface)] to-transparent"
-            aria-hidden="true"
-          >
-          </div>
-        </div>
-      )}
     </div>
   </div>
 </section>
