@@ -75,7 +75,7 @@ const connect = [
   <div class="relative mx-auto w-full max-w-6xl px-6">
 
     <!-- ═══ DESKTOP (lg+): brand + 3 columns ═══ -->
-    <div class="hidden lg:grid lg:grid-cols-[200px_1fr_1.4fr_1fr] lg:gap-x-10 lg:items-start py-14">
+    <div class="hidden lg:grid lg:grid-cols-[200px_1.6fr_1.1fr_0.9fr] lg:gap-x-10 lg:items-start py-14">
 
       <!-- Brand -->
       <div class="flex flex-col gap-5">
@@ -94,12 +94,13 @@ const connect = [
         </a>
       </div>
 
-      <!-- Pages -->
+      <!-- Pages: 7 links flowed into 2 sub-columns so the column height
+           matches Writing/Network instead of running far taller. -->
       <div>
         <p class="obs-label mb-5">
           Pages
         </p>
-        <ul class="m-0 list-none space-y-3 p-0">
+        <ul class="m-0 grid grid-flow-col grid-rows-4 list-none gap-x-8 gap-y-3 p-0">
           {nav.map(({ label, href }) => (
             <li>
               <a href={href} class="text-[13px] text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]">{label}</a>
@@ -214,6 +215,13 @@ const connect = [
       </div>
     </div>
 
+    <!-- ═══ OVERSIZED WORDMARK: graphic signature that bleeds off the bottom edge ═══ -->
+    <div class="relative select-none overflow-hidden" aria-hidden="true">
+      <div class="footer-wordmark obs-mono font-bold leading-[0.74] tracking-[-0.045em] whitespace-nowrap text-[clamp(3.25rem,16.5vw,14rem)] text-[var(--color-text)]">
+        wojciech<span class="text-[var(--color-accent-cta)]">.io</span>
+      </div>
+    </div>
+
     <!-- ═══ BOTTOM BAR ═══ -->
     <div class="relative flex items-center justify-between gap-4 border-t border-[var(--color-border)] py-5">
       <p class="text-[11px] text-[var(--color-text-dim)] whitespace-nowrap">
@@ -235,3 +243,18 @@ const connect = [
     </div>
   </div>
 </footer>
+
+<style>
+  /* Oversized wordmark: a faint watermark that dissolves toward the bottom so it
+     reads as a graphic bleed rather than a solid block of type. The negative
+     margin tucks it under the colophon for the off-the-edge look. */
+  .footer-wordmark {
+    opacity: 0.05;
+    margin-bottom: -0.16em;
+    -webkit-mask-image: linear-gradient(to bottom, #000 28%, transparent 94%);
+    mask-image: linear-gradient(to bottom, #000 28%, transparent 94%);
+  }
+  :global(:root[data-theme='dark']) .footer-wordmark {
+    opacity: 0.07;
+  }
+</style>
