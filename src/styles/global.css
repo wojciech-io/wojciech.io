@@ -473,7 +473,16 @@ body {
 
 /* ─── Interactive base states ─────────────────────────────────── */
 
-/* Card lift: applied as utility class */
+/* Standard card hover: accent border + surface tint, no lift. */
+.card-hover {
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.card-hover:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  background-color: var(--color-surface-2);
+}
+
+/* Card lift: reserved for featured/hero panels (obs-panel) where elevation is intentional. */
 .card-lift {
   transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
               box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1),
@@ -482,6 +491,9 @@ body {
 .card-lift:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-card-hover);
+}
+:root[data-theme="light"] .card-lift:hover {
+  box-shadow: none;
 }
 
 /* Button active feedback */
@@ -517,10 +529,6 @@ body {
 :root[data-theme="light"] .group:hover [class~="group-hover:text-[var(--color-accent-hi)]"],
 :root[data-theme="light"] .group:hover [class~="group-hover:text-[var(--color-accent)]"] {
   color: var(--color-text) !important;
-}
-
-:root[data-theme="light"] .card-lift:hover {
-  box-shadow: none;
 }
 
 /* Nav link underline sweep */
