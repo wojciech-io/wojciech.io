@@ -410,6 +410,44 @@ body {
 }
 .js .reveal-blur.is-visible { opacity: 1; filter: blur(0); transform: translateY(0); }
 
+/* ─── Living motion: hero tick glint + animated link underline ──── */
+.hero-tick {
+  position: relative;
+  overflow: hidden;
+}
+.hero-tick::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.9) 50%, transparent 100%);
+  transform: translateX(-130%);
+  animation: tick-glint 3.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  pointer-events: none;
+}
+@keyframes tick-glint {
+  0%        { transform: translateX(-130%); }
+  60%, 100% { transform: translateX(130%); }
+}
+
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-underline:hover::after { transform: scaleX(1); }
+
+[data-countup] { font-variant-numeric: tabular-nums; }
+
 .scroll-progress {
   position: fixed;
   top: 0;
@@ -463,6 +501,8 @@ body {
   }
   .marquee-track { animation: none; }
   .scroll-progress { display: none; }
+  .hero-tick::after { animation: none; display: none; }
+  .link-underline::after { transition: none; }
 }
 @media (hover: none) and (pointer: coarse) {
   .js .reveal-left, .js .reveal-right, .js .reveal-scale, .js .reveal-blur {
