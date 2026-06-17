@@ -8,6 +8,7 @@
 
 @import "tailwindcss";
 @import "@wojciech/tokens/index.css";
+@import "@wojciech/tokens/components.css";
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
@@ -108,55 +109,3 @@ body {
   transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1);
 }
 .js-ready .reveal-up.is-visible { opacity: 1; transform: translateY(0); }
-
-/* ─── Component parity with main: accent-tick eyebrow, card-hover, hero-tick glint, link-underline ─── */
-.obs-label-accent {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-accent-label);
-}
-.card-hover {
-  transition: border-color 0.15s ease, background-color 0.15s ease;
-}
-.card-hover:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
-  background-color: var(--color-surface-2);
-}
-
-.hero-tick { position: relative; overflow: hidden; }
-.hero-tick::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.9) 50%, transparent 100%);
-  transform: translateX(-130%);
-  animation: tick-glint 3.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-  pointer-events: none;
-}
-@keyframes tick-glint {
-  0%        { transform: translateX(-130%); }
-  60%, 100% { transform: translateX(130%); }
-}
-
-.link-underline { position: relative; }
-.link-underline::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  height: 1px;
-  width: 100%;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.link-underline:hover::after { transform: scaleX(1); }
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-tick::after { animation: none; display: none; }
-  .link-underline::after { transition: none; }
-}
