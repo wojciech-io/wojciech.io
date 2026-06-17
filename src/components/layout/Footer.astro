@@ -215,6 +215,13 @@ const connect = [
       </div>
     </div>
 
+    <!-- ═══ OVERSIZED WORDMARK: graphic signature that bleeds off the bottom edge ═══ -->
+    <div class="relative select-none overflow-hidden" aria-hidden="true">
+      <div class="footer-wordmark obs-mono font-bold leading-[0.74] tracking-[-0.045em] whitespace-nowrap text-[clamp(3.25rem,16.5vw,14rem)] text-[var(--color-text)]">
+        wojciech<span class="text-[var(--color-accent-cta)]">.io</span>
+      </div>
+    </div>
+
     <!-- ═══ BOTTOM BAR ═══ -->
     <div class="relative flex items-center justify-between gap-4 border-t border-[var(--color-border)] py-5">
       <p class="text-[11px] text-[var(--color-text-dim)] whitespace-nowrap">
@@ -236,3 +243,18 @@ const connect = [
     </div>
   </div>
 </footer>
+
+<style>
+  /* Oversized wordmark: a faint watermark that dissolves toward the bottom so it
+     reads as a graphic bleed rather than a solid block of type. The negative
+     margin tucks it under the colophon for the off-the-edge look. */
+  .footer-wordmark {
+    opacity: 0.05;
+    margin-bottom: -0.16em;
+    -webkit-mask-image: linear-gradient(to bottom, #000 28%, transparent 94%);
+    mask-image: linear-gradient(to bottom, #000 28%, transparent 94%);
+  }
+  :global(:root[data-theme='dark']) .footer-wordmark {
+    opacity: 0.07;
+  }
+</style>
