@@ -299,13 +299,17 @@ export function localizeHref(href: string, locale: UiLocale): string {
 export function getPrimaryNavLinks(pathname: string) {
   const locale = getLocaleFromPath(pathname);
   const t = getUiStrings(locale);
-  // /resources/ stays canonical (EN-only). Other entries are locale-aware.
+  // GTM / Marketing / Growth are universal labels (kept English in every locale,
+  // like the other industry terms) linking to the EN showcase pages, so they are
+  // not run through localizeHref. AI Systems and Tools move out of the primary nav
+  // (AI is the cross-cutting layer across the three lenses); both stay in the footer.
   return [
-    { label: t.nav.work,       href: localizeHref('/work/',       locale), minWidth: '4rem'   },
-    { label: t.nav.aiSystems,  href: localizeHref('/ai-systems/', locale), minWidth: '5.5rem' },
+    { label: t.nav.work,       href: localizeHref('/work/', locale),       minWidth: '4rem' },
+    { label: 'GTM',            href: '/gtm/',                              minWidth: '3rem' },
+    { label: 'Marketing',      href: '/marketing/',                        minWidth: '5rem' },
+    { label: 'Growth',         href: '/growth/',                           minWidth: '4rem' },
     { label: t.nav.insights,   href: locale === 'pl' ? '/pl/insights/' : '/insights/', minWidth: '4rem' },
-    { label: t.nav.tools,      href: '/resources/',                        minWidth: '3rem'   },
-    { label: t.nav.about,      href: localizeHref('/about/',      locale), minWidth: '4rem'   },
-    { label: t.nav.contact,    href: localizeHref('/contact/',    locale), minWidth: '4rem'   },
+    { label: t.nav.about,      href: localizeHref('/about/', locale),      minWidth: '4rem' },
+    { label: t.nav.contact,    href: localizeHref('/contact/', locale),    minWidth: '4rem' },
   ];
 }

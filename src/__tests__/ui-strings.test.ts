@@ -96,20 +96,26 @@ describe('getUiStringsForPath', () => {
 });
 
 describe('getPrimaryNavLinks', () => {
-  it('returns six links with localized labels and locale-prefixed hrefs', () => {
+  it('returns seven links: work, the three lenses, insights, about, contact', () => {
     const plLinks = getPrimaryNavLinks('/pl/');
-    // Stack moved to the footer in the IA consolidation; primary nav is six items.
-    expect(plLinks).toHaveLength(6);
+    // IA: GTM/Marketing/Growth lenses added; AI Systems and Tools moved to the footer.
+    expect(plLinks).toHaveLength(7);
     const labels = plLinks.map((l) => l.label);
     expect(labels).toContain('Praca');
     expect(labels).toContain('Kontakt');
-    // Locale-prefixed canonical pages:
+    expect(labels).toEqual(expect.arrayContaining(['GTM', 'Marketing', 'Growth']));
     const hrefs = plLinks.map((l) => l.href);
+    // Locale-prefixed canonical pages:
     expect(hrefs).toContain('/pl/work/');
     expect(hrefs).toContain('/pl/contact/');
     expect(hrefs).toContain('/pl/about/');
-    // /resources/ stays canonical (EN-only); /stack/ is no longer in primary nav.
-    expect(hrefs).toContain('/resources/');
+    // Lens pages are EN-only deep content, so they are not locale-prefixed:
+    expect(hrefs).toContain('/gtm/');
+    expect(hrefs).toContain('/marketing/');
+    expect(hrefs).toContain('/growth/');
+    // Moved to the footer / never in primary nav:
+    expect(hrefs).not.toContain('/resources/');
+    expect(hrefs).not.toContain('/pl/ai-systems/');
     expect(hrefs).not.toContain('/stack/');
   });
 
