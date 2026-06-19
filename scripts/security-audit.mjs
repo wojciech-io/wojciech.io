@@ -22,6 +22,12 @@ const DEV_ONLY = new Set([
   '@astrojs/cloudflare',
   '@cloudflare/vite-plugin',
   'launch-editor',
+  // undici reaches the tree only through the Cloudflare dev toolchain
+  // (miniflare → wrangler → @cloudflare/vite-plugin, all waived above). The
+  // Workers/Pages runtime provides its own fetch and never bundles undici, so
+  // its advisories do not affect production. miniflare hard-pins the version,
+  // so an npm `override` cannot lift it without forking the dev tool.
+  'undici',
 ]);
 
 let raw = '';
