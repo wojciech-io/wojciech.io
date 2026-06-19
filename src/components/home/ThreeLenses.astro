@@ -1,0 +1,113 @@
+---
+/* "Three lenses, one system" — the positioning expansion. One promise on the
+   hero; this section opens the three doors (GTM, marketing, growth) that all
+   feed the same operating model. AI is the cross-cutting layer, not a fourth
+   lens, so it lives in the band below the cards, not as a card.
+
+   Prop-driven with English defaults so localized homepages can pass copy later;
+   today only the EN homepage wires it. */
+import { accentHeading } from '../../lib/editorial';
+
+interface Lens {
+  name: string;
+  thesis: string;
+  href: string;
+  exploreLabel: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  titlePrimary?: string;
+  titleSecondary?: string;
+  lenses?: Lens[];
+  aiNote?: string;
+  aiLink?: string;
+  aiHref?: string;
+}
+
+const {
+  eyebrow = 'How I help',
+  titlePrimary = 'Three lenses.',
+  titleSecondary = 'One operating system.',
+  aiNote = 'AI runs through all three: automation, agents, and AI workflows wired into every lens.',
+  aiLink = 'How I build with AI →',
+  aiHref = '/ai-systems/',
+  lenses = [
+    {
+      name: 'GTM',
+      thesis: 'Pipeline that compounds. CRM, outbound, and paid wired into one system, not four dashboards.',
+      href: '/gtm/',
+      exploreLabel: 'Explore /gtm →',
+    },
+    {
+      name: 'Marketing',
+      thesis: 'Demand, not impressions. Positioning, content, and brand engineered to produce pipeline.',
+      href: '/marketing/',
+      exploreLabel: 'Explore /marketing →',
+    },
+    {
+      name: 'Growth',
+      thesis: 'Experiments that ship. Activation, retention, and lifecycle loops measured in revenue.',
+      href: '/growth/',
+      exploreLabel: 'Explore /growth →',
+    },
+  ],
+} = Astro.props as Props;
+
+const h2 = accentHeading(titleSecondary);
+
+// Decorative line icons, one per lens. Stroke inherits the accent colour.
+const icons: Record<string, string> = {
+  GTM: '<circle cx="5" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 6h5a2 2 0 0 1 2 2v2M7 18h5a2 2 0 0 0 2-2v-2"/>',
+  Marketing: '<path d="M4 10v4M4 12l11-5v10L4 12zM8 14v3a2 2 0 0 0 4 0"/>',
+  Growth: '<path d="M4 18l6-6 4 4 6-7"/><path d="M16 9h4v4"/>',
+};
+---
+
+<section class="relative py-[var(--space-section)] bg-[var(--color-bg)]">
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border-2)] to-transparent" aria-hidden="true"></div>
+  <div class="mx-auto max-w-6xl px-6">
+
+    <div class="flex items-center gap-3 mb-4">
+      <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+      <span class="obs-label-accent">{eyebrow}</span>
+    </div>
+    <h2 class="reveal-blur text-[length:var(--text-h2)] font-normal leading-[1.12] tracking-[-0.015em] mb-10 max-w-2xl">
+      <span class="text-[var(--color-text)]">{titlePrimary}</span>{' '}
+      <span class="text-[var(--color-text)]">{h2.lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{h2.mark}</span>
+    </h2>
+
+    <div class="grid gap-4 md:grid-cols-3 md:gap-6">
+      {lenses.map((lens, index) => (
+        <a
+          href={lens.href}
+          class="reveal-up group block obs-panel card-hover p-6"
+          data-reveal-index={index + 1}
+        >
+          <svg
+            class="h-6 w-6 text-[var(--color-accent-hi)] mb-5"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+            set:html={icons[lens.name] ?? ''}
+          />
+          <h3 class="text-lg font-medium text-[var(--color-text)] mb-2">{lens.name}</h3>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5">{lens.thesis}</p>
+          <span class="obs-mono text-[11px] font-medium tracking-wide text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
+            {lens.exploreLabel}
+          </span>
+        </a>
+      ))}
+    </div>
+
+    <div class="mt-4 md:mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-5 py-4">
+      <div class="flex items-start gap-3">
+        <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
+        <p class="text-sm text-[var(--color-text-muted)] leading-snug">{aiNote}</p>
+      </div>
+      <a href={aiHref} class="obs-mono text-[11px] font-medium tracking-wide text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors shrink-0">
+        {aiLink}
+      </a>
+    </div>
+
+  </div>
+</section>
