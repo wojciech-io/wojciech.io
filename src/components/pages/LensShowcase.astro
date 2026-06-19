@@ -1,0 +1,108 @@
+---
+/* Shared showcase template for the three lenses (/gtm, /marketing, /growth).
+   Same skeleton, different copy: hero promise → what I build → spiky POV → CTA.
+   No fabricated metrics: proof links to /work case studies. v1 scaffold, copy
+   expands as real case studies get wired per lens. */
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../ui/CTABand.astro';
+import { accentHeading } from '../../lib/editorial';
+
+interface BuildItem {
+  title: string;
+  body: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  h1Primary: string;
+  h1Secondary: string;
+  lead: string;
+  metaLine: string;
+  build: BuildItem[];
+  buildEyebrow?: string;
+  buildHeading?: string;
+  pov: string;
+  ctaHeading: string;
+  ctaSubtext: string;
+}
+
+const {
+  title,
+  description,
+  eyebrow,
+  h1Primary,
+  h1Secondary,
+  lead,
+  metaLine,
+  build,
+  buildEyebrow = 'What I build',
+  buildHeading = 'Built and run, not advised.',
+  pov,
+  ctaHeading,
+  ctaSubtext,
+} = Astro.props as Props;
+
+const h2 = accentHeading(h1Secondary);
+const bh = accentHeading(buildHeading);
+---
+
+<Layout title={title} description={description}>
+  <section class="relative overflow-hidden">
+    <div class="hero-grid pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:44px_44px]" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-6xl px-6 py-16 md:py-24">
+      <div class="max-w-2xl">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+          <span class="obs-label-accent">{eyebrow}</span>
+        </div>
+        <h1 class="text-[length:clamp(2.2rem,5vw+0.5rem,3.6rem)] font-normal leading-[1.05] tracking-[-0.03em] mb-5">
+          <span class="text-[var(--color-text)]">{h1Primary}</span>{' '}
+          <span class="text-[var(--color-text)]">{h2.lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{h2.mark}</span>
+        </h1>
+        <p class="text-[length:var(--text-lead)] text-[var(--color-text-muted)] leading-relaxed mb-7 max-w-xl">
+          {lead}
+        </p>
+        <div class="ed-rule pt-4 max-w-xl">
+          <span class="obs-label text-[10px] tracking-[0.18em] leading-snug">{metaLine}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="relative py-[var(--space-section)] bg-[var(--color-bg)]">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border-2)] to-transparent" aria-hidden="true"></div>
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">{buildEyebrow}</span>
+      </div>
+      <h2 class="text-[length:var(--text-h2)] font-normal leading-[1.12] tracking-[-0.015em] mb-10 max-w-2xl">
+        <span class="text-[var(--color-text)]">{bh.lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{bh.mark}</span>
+      </h2>
+
+      <div class="grid gap-4 md:grid-cols-3 md:gap-6">
+        {build.map((item, index) => (
+          <div class="reveal-up obs-panel p-6" data-reveal-index={index + 1}>
+            <h3 class="text-base font-medium text-[var(--color-text)] mb-2">{item.title}</h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{item.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <blockquote class="mt-12 border-l-2 border-[var(--color-accent-cta)] pl-5 max-w-2xl">
+        <p class="text-lg md:text-xl font-normal leading-snug text-[var(--color-text)]">{pov}</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <CTABand
+    heading={ctaHeading}
+    subtext={ctaSubtext}
+    cta="Book a call"
+    ctaHref="/contact/#book-call"
+    ctaSecondary="See the work"
+    ctaSecondaryHref="/work/"
+  />
+</Layout>
