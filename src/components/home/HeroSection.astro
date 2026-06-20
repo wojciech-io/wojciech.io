@@ -1,10 +1,12 @@
 ---
-/* Editorial hero. Prop-driven so the English homepage and every localized
-   homepage render the exact same layout — only the copy differs. Defaults
-   carry the English copy, so `<HeroSection />` (the EN page) works with no props.
+/* Editorial photo-cover hero (direction B). Prop-driven so the English homepage
+   and every localized homepage render the same layout — only the copy differs.
+   Defaults carry the English copy, so `<HeroSection />` (the EN page) works with
+   no props.
 
-   Two-typeface system: Geist sans + Geist Mono. All copy and numerals render
-   in Geist, which covers PL diacritics and JP. */
+   Typography: the headline is Geist Light at display scale (the site is a
+   two-typeface system — Geist sans + Geist Mono, no serif). The cover layout
+   and framed photo carry the editorial character, not the typeface. */
 import { accentHeading } from '../../lib/editorial';
 
 interface CtaLink {
@@ -37,91 +39,93 @@ const {
   name = 'Wojciech Łuszczyński',
 } = Astro.props as Props;
 
-/* The editorial accent mark is rendered by its own span; the helper splits the
-   copy's terminal punctuation so it gets the accent color (locale-aware: . ? 。). */
+/* Accent the terminal mark of the second line (locale-aware: . ? 。). */
 const h2 = accentHeading(h1Secondary);
+const photo = '/images/wojciech-office-hq.webp';
 ---
 
-<section class="relative overflow-hidden min-h-[480px] md:min-h-[580px] lg:min-h-[620px]">
-  <!-- Grid: faint, radially masked so it dissolves into the page (depth, not a flat sheet) -->
-  <div class="hero-grid pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:44px_44px]" aria-hidden="true" />
-  <!-- Lime aura: colour + depth behind the headline (static — no per-frame repaint) -->
-  <div class="hero-aura pointer-events-none absolute left-[-120px] top-[-150px] h-[480px] w-[580px] rounded-full" aria-hidden="true" />
-  <!-- Neutral depth, kept subtle under the aura -->
-  <div class="pointer-events-none absolute left-[-160px] top-[-180px] h-[520px] w-[640px] rounded-full bg-[var(--color-surface)] blur-[150px] opacity-50" aria-hidden="true" />
+<section class="relative overflow-hidden">
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="grid lg:grid-cols-[1fr_minmax(340px,42%)] gap-10 lg:gap-14 items-stretch lg:min-h-[640px]">
 
-  <!-- Photo: desktop only, right half, absolute. Decorative (aria-hidden), lg+ only.
-       Delivered as a CSS background so a display:none element never fetches it,
-       keeping the hero image off the mobile critical path. -->
-  <div
-    class="hidden lg:block absolute right-0 top-0 bottom-0 w-[52%] overflow-hidden bg-[url('/images/wojciech-office-hq.webp')] bg-cover bg-no-repeat bg-[position:center_30%]"
-    aria-hidden="true"
-  >
-    <!-- Left + bottom fades blend the photo into the page on both themes -->
-    <div class="absolute inset-y-0 left-0 w-[28%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]" />
-    <div class="absolute inset-x-0 bottom-0 h-[14%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]" />
-    <!-- Editorial frame: hairline only (no rotated name caption) -->
-    <div class="absolute inset-6 border border-[var(--color-border)] pointer-events-none" />
-  </div>
+      <!-- Left: editorial type column -->
+      <div class="flex flex-col justify-center py-12 md:py-16 lg:py-28">
 
-  <div class="relative mx-auto max-w-6xl px-6">
-    <div class="flex flex-col justify-center py-10 md:py-20 lg:py-32 md:max-w-[560px] lg:max-w-[48%]">
+        <!-- Mobile: framed photo banner (the photo is the point in this direction) -->
+        <div class="lg:hidden relative mb-8 aspect-[16/10] overflow-hidden rounded-[var(--radius-card)]">
+          <img
+            src={photo}
+            alt={name}
+            width="1200"
+            height="750"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            class="absolute inset-0 h-full w-full object-cover object-[center_28%]"
+          />
+          <div class="absolute inset-3 border border-[rgb(255_255_255_/_0.35)] mix-blend-overlay pointer-events-none"></div>
+          <div class="absolute left-4 bottom-3">
+            <span class="obs-mono text-[10px] uppercase tracking-[0.2em] text-white/90 [text-shadow:0_1px_8px_rgb(0_0_0/0.6)]">{name}</span>
+          </div>
+        </div>
 
-      <!-- Mobile: compact identity. Small photo WITH background, a supporting
-           detail rather than a centerpiece. -->
-      <div class="lg:hidden flex items-center gap-3 mb-7">
-        <img
-          src="/images/wojciech-thumb.webp"
-          alt={name}
-          width="320"
-          height="320"
-          loading="eager"
-          decoding="async"
-          class="w-16 h-16 rounded-xl object-cover border border-[var(--color-border-2)] shrink-0"
-        />
-        <div>
-          <p class="text-sm font-semibold text-[var(--color-text)] leading-tight">{name}</p>
+        <!-- Eyebrow: editorial accent tick + label -->
+        <div class="flex items-center gap-3 mb-7 md:mb-9">
+          <span class="hero-tick h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
           <span class="obs-label-accent">{eyebrow}</span>
+        </div>
+
+        <!-- Headline: Geist Light display, second line anchors the accent mark -->
+        <h1
+          class="ed-display reveal-up text-[length:clamp(2.6rem,5.4vw+0.5rem,4.9rem)] mb-5 md:mb-7"
+          data-reveal-index="0"
+          transition:name="page-title-home"
+        >
+          <span class="text-[var(--color-text)]">{h1Primary}</span><br />
+          <span class="ed-line-2 text-[var(--color-text)]">{h2.lead}</span><span class="hero-dot text-[var(--color-accent-cta)]" aria-hidden="true">{h2.mark}</span>
+        </h1>
+
+        <!-- Sub-copy (stays sans for full multilingual coverage) -->
+        <p class="reveal-up text-[length:var(--text-lead)] text-[var(--color-text-muted)] leading-relaxed mb-7 md:mb-9 max-w-md" data-reveal-index="1">
+          {lead}
+        </p>
+
+        <!-- Buttons -->
+        <div class="reveal-up flex flex-wrap gap-3 mb-8" data-reveal-index="2">
+          <a
+            href={primaryCta.href}
+            class="btn-press obs-mono inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] text-xs font-semibold uppercase tracking-wider px-6 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
+          >
+            {primaryCta.label}
+          </a>
+          <a
+            href={secondaryCta.href}
+            class="btn-press obs-mono inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs font-medium uppercase tracking-wider px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-text)] transition-colors"
+            {...secondaryCta.attrs}
+          >
+            {secondaryCta.label}
+          </a>
+        </div>
+
+        <!-- Editorial meta strip: hairline + mono positioning kicker -->
+        <div class="reveal-up ed-rule pt-4 max-w-md" data-reveal-index="3">
+          <span class="obs-label text-[10px] tracking-[0.18em] leading-snug">{metaLine}</span>
         </div>
       </div>
 
-      <!-- Desktop: eyebrow with editorial accent tick (photo lives on the right half) -->
-      <div class="hidden lg:flex items-center gap-3 mb-8">
-        <span class="hero-tick h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-        <span class="obs-label-accent">{eyebrow}</span>
-      </div>
-
-      <!-- Headline: large, regular weight (editorial), accent period -->
-      <h1 class="reveal-up text-[length:clamp(2.4rem,6vw+0.5rem,4.4rem)] font-normal leading-[1.02] tracking-[-0.03em] mb-4 md:mb-6" data-reveal-index="0" transition:name="page-title-home">
-        <span class="text-[var(--color-text)]">{h1Primary}</span><br class="hidden md:block" />
-        <span class="text-[var(--color-text)]">{h2.lead}</span><span class="hero-dot text-[var(--color-accent-cta)]" aria-hidden="true">{h2.mark}</span>
-      </h1>
-
-      <!-- Sub-copy (stays sans for full multilingual coverage) -->
-      <p class="reveal-up text-[length:var(--text-lead)] text-[var(--color-text-muted)] leading-relaxed mb-7 md:mb-9 max-w-lg" data-reveal-index="1">
-        {lead}
-      </p>
-
-      <!-- Buttons -->
-      <div class="reveal-up flex flex-wrap gap-3 mb-8" data-reveal-index="2">
-        <a
-          href={primaryCta.href}
-          class="btn-press obs-mono inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] text-xs font-semibold uppercase tracking-wider px-6 py-3.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
-        >
-          {primaryCta.label}
-        </a>
-        <a
-          href={secondaryCta.href}
-          class="btn-press obs-mono inline-flex items-center gap-2 border border-[var(--color-border-2)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs font-medium uppercase tracking-wider px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-[var(--radius-btn)] hover:border-[var(--color-text)] transition-colors"
-          {...secondaryCta.attrs}
-        >
-          {secondaryCta.label}
-        </a>
-      </div>
-
-      <!-- Editorial meta strip: hairline + mono positioning kicker -->
-      <div class="reveal-up ed-rule pt-4 max-w-lg" data-reveal-index="3">
-        <span class="obs-label text-[10px] tracking-[0.18em] leading-snug">{metaLine}</span>
+      <!-- Right: full-bleed framed colour photo (desktop only) -->
+      <div class="relative hidden lg:block" aria-hidden="true">
+        <div
+          class="absolute inset-0 bg-cover bg-no-repeat bg-[position:center_25%]"
+          style={`background-image:url('${photo}')`}
+        ></div>
+        <!-- Left fade blends the photo into the type column on both themes -->
+        <div class="absolute inset-y-0 left-0 w-[22%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]"></div>
+        <!-- Editorial hairline frame -->
+        <div class="absolute inset-6 border border-[rgb(255_255_255_/_0.4)] mix-blend-overlay pointer-events-none"></div>
+        <div class="absolute left-8 bottom-7">
+          <span class="obs-mono text-[10px] uppercase tracking-[0.2em] text-white/90 [text-shadow:0_1px_10px_rgb(0_0_0/0.65)]">{name}</span>
+        </div>
       </div>
 
     </div>
@@ -129,29 +133,10 @@ const h2 = accentHeading(h1Secondary);
 </section>
 
 <style>
-  /* Grid dissolves toward the edges so it reads as depth, not a flat sheet. */
-  .hero-grid {
-    -webkit-mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
-    mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
-  }
-
-  /* Lime aura: subtle colour wash + depth behind the headline. Static — a
-     blurred element animated per frame forces a full re-raster of the blur and
-     janks scroll, so it is painted once. Opacity is theme-scoped (a hint on the
-     light page, more presence on the dark one). */
-  .hero-aura {
-    background: radial-gradient(circle, var(--color-accent-cta) 0%, transparent 68%);
-    opacity: 0.08;
-    filter: blur(60px);
-  }
-  :global(:root[data-theme='dark']) .hero-aura {
-    opacity: 0.16;
-  }
-
   /* Accent period: a soft glow in the accent colour. */
   .hero-dot {
     font-family: var(--font-sans);
-    font-weight: 600;
+    font-weight: 500;
     text-shadow: 0 0 22px color-mix(in srgb, var(--color-accent-cta) 55%, transparent);
   }
 
