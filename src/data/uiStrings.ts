@@ -299,17 +299,26 @@ export function localizeHref(href: string, locale: UiLocale): string {
 export function getPrimaryNavLinks(pathname: string) {
   const locale = getLocaleFromPath(pathname);
   const t = getUiStrings(locale);
-  // GTM / Marketing / Growth are universal labels (kept English in every locale,
-  // like the other industry terms) linking to the EN showcase pages, so they are
-  // not run through localizeHref. AI Systems and Tools move out of the primary nav
-  // (AI is the cross-cutting layer across the three lenses); both stay in the footer.
+  const work     = { label: t.nav.work,     href: localizeHref('/work/', locale),                              minWidth: '4rem' };
+  const insights = { label: t.nav.insights, href: locale === 'pl' ? '/pl/insights/' : '/insights/',            minWidth: '4rem' };
+  const about    = { label: t.nav.about,    href: localizeHref('/about/', locale),                             minWidth: '4rem' };
+  const contact  = { label: t.nav.contact,  href: localizeHref('/contact/', locale),                           minWidth: '4rem' };
+
+  // The GTM / Marketing / Growth lens pages exist in EN only. Surfacing them on a
+  // localized page would mix English labels into a localized bar AND link out to
+  // English pages (breaking the locale). Until localized lens pages ship, only the
+  // EN nav carries the three lenses; other locales keep the clean classic nav.
+  if (locale !== 'en') {
+    return [work, insights, about, contact];
+  }
+
   return [
-    { label: t.nav.work,       href: localizeHref('/work/', locale),       minWidth: '4rem' },
-    { label: 'GTM',            href: '/gtm/',                              minWidth: '3rem' },
-    { label: 'Marketing',      href: '/marketing/',                        minWidth: '5rem' },
-    { label: 'Growth',         href: '/growth/',                           minWidth: '4rem' },
-    { label: t.nav.insights,   href: locale === 'pl' ? '/pl/insights/' : '/insights/', minWidth: '4rem' },
-    { label: t.nav.about,      href: localizeHref('/about/', locale),      minWidth: '4rem' },
-    { label: t.nav.contact,    href: localizeHref('/contact/', locale),    minWidth: '4rem' },
+    work,
+    { label: 'GTM',       href: '/gtm/',       minWidth: '3rem' },
+    { label: 'Marketing', href: '/marketing/', minWidth: '5rem' },
+    { label: 'Growth',    href: '/growth/',    minWidth: '4rem' },
+    insights,
+    about,
+    contact,
   ];
 }
