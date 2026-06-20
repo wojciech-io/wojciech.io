@@ -96,27 +96,43 @@ describe('getUiStringsForPath', () => {
 });
 
 describe('getPrimaryNavLinks', () => {
-  it('returns seven links: work, the three lenses, insights, about, contact', () => {
-    const plLinks = getPrimaryNavLinks('/pl/');
+  it('on EN returns seven links: work, the three lenses, insights, about, contact', () => {
+    const enLinks = getPrimaryNavLinks('/');
     // IA: GTM/Marketing/Growth lenses added; AI Systems and Tools moved to the footer.
-    expect(plLinks).toHaveLength(7);
-    const labels = plLinks.map((l) => l.label);
-    expect(labels).toContain('Praca');
-    expect(labels).toContain('Kontakt');
+    expect(enLinks).toHaveLength(7);
+    const labels = enLinks.map((l) => l.label);
+    expect(labels).toContain('Work');
+    expect(labels).toContain('Contact');
     expect(labels).toEqual(expect.arrayContaining(['GTM', 'Marketing', 'Growth']));
-    const hrefs = plLinks.map((l) => l.href);
-    // Locale-prefixed canonical pages:
-    expect(hrefs).toContain('/pl/work/');
-    expect(hrefs).toContain('/pl/contact/');
-    expect(hrefs).toContain('/pl/about/');
-    // Lens pages are EN-only deep content, so they are not locale-prefixed:
+    const hrefs = enLinks.map((l) => l.href);
     expect(hrefs).toContain('/gtm/');
     expect(hrefs).toContain('/marketing/');
     expect(hrefs).toContain('/growth/');
     // Moved to the footer / never in primary nav:
     expect(hrefs).not.toContain('/resources/');
-    expect(hrefs).not.toContain('/pl/ai-systems/');
+    expect(hrefs).not.toContain('/ai-systems/');
     expect(hrefs).not.toContain('/stack/');
+  });
+
+  it('on a localized locale omits the EN-only lenses to avoid mixed-language leakage', () => {
+    // The GTM/Marketing/Growth lens pages exist in EN only. Surfacing them on a
+    // localized page mixed English labels into a localized bar and linked out to
+    // English pages. Localized locales get the clean classic nav until localized
+    // lens pages ship.
+    const plLinks = getPrimaryNavLinks('/pl/');
+    expect(plLinks).toHaveLength(4);
+    const labels = plLinks.map((l) => l.label);
+    expect(labels).toContain('Praca');
+    expect(labels).toContain('Kontakt');
+    expect(labels).not.toEqual(expect.arrayContaining(['GTM', 'Marketing', 'Growth']));
+    const hrefs = plLinks.map((l) => l.href);
+    // Locale-prefixed canonical pages only, no cross-locale lens links:
+    expect(hrefs).toContain('/pl/work/');
+    expect(hrefs).toContain('/pl/contact/');
+    expect(hrefs).toContain('/pl/about/');
+    expect(hrefs).not.toContain('/gtm/');
+    expect(hrefs).not.toContain('/marketing/');
+    expect(hrefs).not.toContain('/growth/');
   });
 
   it('keeps EN paths canonical on the root path', () => {

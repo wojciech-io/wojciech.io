@@ -142,8 +142,8 @@ const languageOptions = [
   </div>
 
   <!-- Nav links: large, full-height -->
-  <nav class="flex-1 flex flex-col justify-center px-8" aria-label="Mobile navigation">
-    <ul class="list-none m-0 p-0 space-y-1">
+  <nav class="flex-1 flex flex-col px-8 overflow-y-auto overscroll-contain" aria-label="Mobile navigation">
+    <ul class="list-none m-auto w-full p-0 space-y-1">
       {links.map(({ label, href }) => (
         <li>
           <a
@@ -228,6 +228,7 @@ const languageOptions = [
     const lines = openBtn.querySelectorAll<HTMLElement>('.hamburger-line');
 
     function openMobileNav() {
+      overlay.style.transitionDuration = '';
       overlay.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
       overlay.classList.add('translate-x-0', 'opacity-100');
       overlay.setAttribute('aria-hidden', 'false');
@@ -263,9 +264,17 @@ const languageOptions = [
       setTimeout(() => (window as any).openSearch?.(), 320);
     });
 
-    // Close when a nav link is followed
+    // Close when a nav link is followed. Close INSTANTLY (no 300ms slide) so the
+    // full-screen overlay doesn't cover the incoming page mid view-transition —
+    // that slide is what read as "delayed" and "doesn't jump to the top". Also
+    // pin scroll to the top for in-page (hash-free) destinations.
     overlay.querySelectorAll<HTMLElement>('.mobile-nav-link').forEach((link) => {
-      link.addEventListener('click', closeMobileNav);
+      link.addEventListener('click', () => {
+        overlay.style.transitionDuration = '0ms';
+        closeMobileNav();
+        const href = link.getAttribute('href') || '';
+        if (!href.includes('#')) window.scrollTo(0, 0);
+      });
     });
   }
 
