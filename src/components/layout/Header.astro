@@ -15,7 +15,9 @@ const bookCallHref = localizeHref('/contact/', uiLocale) + '#book-call';
 const segments = pathname.split('/').filter(Boolean);
 const localeSegment = segments[0];
 const currentLocale = localizedHomeList.find((locale) => locale.path === localeSegment);
-const currentLanguageCode = currentLocale?.code ?? 'EN';
+// Arabic (ar) lives outside localizedHomeList (RTL, homepage only) but still
+// needs to surface in the switcher and show as the active language.
+const currentLanguageCode = localeSegment === 'ar' ? 'AR' : (currentLocale?.code ?? 'EN');
 const currentPageSegment = currentLocale ? segments[1] : segments[0];
 const localizedPage = localizedPageSlugs.includes(currentPageSegment as LocalizedPageSlug)
   ? currentPageSegment
@@ -34,6 +36,8 @@ const languageOptions = [
       href: hasLocalizedPage ? `/${locale.path}/${localizedPage}/` : `/${locale.path}/`,
     };
   }),
+  // Arabic (RTL): homepage only for now, so always links to /ar/.
+  { code: 'AR', label: 'العربية', href: '/ar/' },
 ];
 ---
 
@@ -304,7 +308,7 @@ const languageOptions = [
 <script>
   // Persist locale choice in a cookie so the middleware redirects on next visit.
   const LOCALE_CODE_TO_PATH: Record<string, string> = {
-    EN: 'en', DE: 'de', DK: 'dk', NO: 'no', JP: 'jp', IT: 'it', ES: 'es', PL: 'pl',
+    EN: 'en', DE: 'de', DK: 'dk', NO: 'no', JP: 'jp', IT: 'it', ES: 'es', PL: 'pl', AR: 'ar',
   };
   document.addEventListener('click', (e) => {
     const a = (e.target as Element).closest<HTMLAnchorElement>('[data-lang-switch]');
