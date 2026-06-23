@@ -11,11 +11,27 @@ const locale = getLocaleFromPath(pathname);
 const contactHref = localizeHref('/contact/', locale);
 const insightsHref = locale === 'pl' ? '/pl/insights/' : '/insights/';
 
+const isAr = locale === 'ar';
+
+// Column headings (not part of UiStrings; localized inline).
+const col = {
+  pages:   isAr ? 'الصفحات' : 'Pages',
+  writing: isAr ? 'المقالات' : 'Writing',
+  network: isAr ? 'الشبكة'  : 'Network',
+};
+
+// GTM/Marketing/Growth lens pages are EN-only. Keep them out of the Arabic
+// footer so the column reads fully native (mirrors the header nav, which
+// already drops the lenses for non-EN locales).
+const lensLinks = isAr ? [] : [
+  { label: 'GTM',       href: '/gtm/' },
+  { label: 'Marketing', href: '/marketing/' },
+  { label: 'Growth',    href: '/growth/' },
+];
+
 const nav = [
   { label: t.nav.work,       href: localizeHref('/work/',       locale) },
-  { label: 'GTM',            href: '/gtm/' },
-  { label: 'Marketing',      href: '/marketing/' },
-  { label: 'Growth',         href: '/growth/' },
+  ...lensLinks,
   { label: t.nav.aiSystems,  href: localizeHref('/ai-systems/', locale) },
   { label: t.nav.insights,   href: insightsHref },
   { label: t.nav.tools,      href: '/resources/' },
@@ -25,18 +41,18 @@ const nav = [
 ];
 
 const writing = [
-  { label: 'CRM-first AI adoption',      href: '/insights/crm-first-ai-adoption/' },
-  { label: 'Claude Code GTM Starter',    href: '/insights/claude-code-vs-clay/' },
-  { label: 'Claude Code in client GTM',  href: '/insights/claude-code-client-gtm/' },
-  { label: 'AI stack in production',     href: '/insights/ai-production-stack/' },
+  { label: isAr ? 'تبنّي الذكاء الاصطناعي بنهج CRM أولًا' : 'CRM-first AI adoption',     href: '/insights/crm-first-ai-adoption/' },
+  { label: isAr ? 'الانطلاق في GTM مع Claude Code'         : 'Claude Code GTM Starter',   href: '/insights/claude-code-vs-clay/' },
+  { label: isAr ? 'Claude Code في GTM لدى العملاء'         : 'Claude Code in client GTM', href: '/insights/claude-code-client-gtm/' },
+  { label: isAr ? 'حزمة الذكاء الاصطناعي في الإنتاج'        : 'AI stack in production',    href: '/insights/ai-production-stack/' },
   { label: t.footer.allWriting,          href: insightsHref },
 ];
 
 const network = [
-  { label: 'App workspace',     href: SITE.appUrl, external: true },
+  { label: isAr ? 'مساحة عمل التطبيق' : 'App workspace',     href: SITE.appUrl, external: true },
   { label: 'AI Espresso',       href: 'https://subscribe.wojciech.io', external: true },
-  { label: 'Stack walkthrough', href: '/decks/stack/' },
-  { label: 'All decks',         href: '/decks/' },
+  { label: isAr ? 'جولة في الحزمة التقنية' : 'Stack walkthrough', href: '/decks/stack/' },
+  { label: isAr ? 'كل العروض' : 'All decks',         href: '/decks/' },
 ];
 
 const connect = [
@@ -101,7 +117,7 @@ const connect = [
            matches Writing/Network instead of running far taller. -->
       <div>
         <p class="obs-label mb-5">
-          Pages
+          {col.pages}
         </p>
         <ul class="m-0 grid grid-flow-col grid-rows-4 list-none gap-x-8 gap-y-3 p-0">
           {nav.map(({ label, href }) => (
@@ -115,7 +131,7 @@ const connect = [
       <!-- Writing -->
       <div>
         <p class="obs-label mb-5">
-          Writing
+          {col.writing}
         </p>
         <ul class="m-0 list-none space-y-3 p-0">
           {writing.map(({ label, href }) => (
@@ -129,7 +145,7 @@ const connect = [
       <!-- Network -->
       <div>
         <p class="obs-label mb-5">
-          Network
+          {col.network}
         </p>
         <ul class="m-0 list-none space-y-3 p-0">
           {network.map(({ label, href, external }) => (
@@ -173,7 +189,7 @@ const connect = [
       <div class="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3">
         <div>
           <p class="obs-label mb-3">
-            Pages
+            {col.pages}
           </p>
           <ul class="m-0 list-none space-y-2 p-0">
             {nav.map(({ label, href }) => (
@@ -186,7 +202,7 @@ const connect = [
 
         <div>
           <p class="obs-label mb-3">
-            Writing
+            {col.writing}
           </p>
           <ul class="m-0 list-none space-y-2 p-0">
             {writing.map(({ label, href }) => (
@@ -199,7 +215,7 @@ const connect = [
 
         <div>
           <p class="obs-label mb-3">
-            Network
+            {col.network}
           </p>
           <ul class="m-0 list-none space-y-2 p-0">
             {network.map(({ label, href, external }) => (

@@ -5,7 +5,10 @@ interface Props {
   cover: ProjectCoverType;
 }
 
+import { getLocaleFromPath } from '../../data/uiStrings';
+
 const { cover } = Astro.props;
+const isAr = getLocaleFromPath(Astro.url.pathname) === 'ar';
 
 const tagLabel: Record<ProjectCoverType, string> = {
   relora:          'CRM-lite',
@@ -28,6 +31,22 @@ const caption: Record<ProjectCoverType, string> = {
   'growth-system': 'GTM architecture · revenue system',
   'mini-apps':     'product lab · shipped and running',
 };
+
+/* Arabic caption set for the covers shown on /ar/ (others fall back to EN). */
+const arTagLabel: Partial<Record<ProjectCoverType, string>> = {
+  relora:      'CRM مبسّط',
+  'ads-ai':    'ذكاء الإعلانات',
+  notch:       'تطبيق macOS',
+  kamperownia: 'تدفّق الحجز',
+};
+const arCaption: Partial<Record<ProjectCoverType, string>> = {
+  relora:      'جهات الاتصال · العلاقات · الملخّصات · الخطوات التالية',
+  'ads-ai':    'إعلانات Google · ROAS · توافق ICP · قرارات المُشغِّل',
+  notch:       'macOS · ملقّن قرب الكاميرا · Swift',
+  kamperownia: 'تصفّح · اختر · احجز · خدمة ذاتية',
+};
+const tagText = (isAr && arTagLabel[cover]) || tagLabel[cover];
+const captionText = (isAr && arCaption[cover]) || caption[cover];
 ---
 
 <div class="relative w-full h-full min-h-[140px] bg-[#0c0c0c] overflow-hidden" aria-hidden="true">
@@ -38,14 +57,14 @@ const caption: Record<ProjectCoverType, string> = {
 
   <!-- Top-left brand mark -->
   <div class="absolute top-3.5 left-4 flex items-center gap-1.5 z-10">
-    <span class="w-[5px] h-[5px] rounded-full bg-[#ebff00] shrink-0" />
-    <span class="font-mono text-[9px] text-[#ebff00] tracking-[0.04em]">wojciech.io</span>
+    <span class="w-[5px] h-[5px] rounded-full bg-[var(--color-accent-cta)] shrink-0" />
+    <span class="font-mono text-[9px] text-[var(--color-accent-cta)] tracking-[0.04em]">wojciech.io</span>
   </div>
 
   <!-- Product type tag -->
   <div class="absolute top-3.5 right-4 z-10">
     <span class="font-mono text-[9px] text-[#4b5563] border border-[rgba(75,85,99,0.25)] rounded-[3px] px-[5px] py-[2px] tracking-[0.03em]">
-      {tagLabel[cover]}
+      {tagText}
     </span>
   </div>
 
@@ -379,6 +398,6 @@ const caption: Record<ProjectCoverType, string> = {
 
   <!-- Bottom caption -->
   <div class="absolute bottom-3 left-4 z-10">
-    <span class="font-mono text-[9px] text-[#374151] tracking-[0.04em]">{caption[cover]}</span>
+    <span class="font-mono text-[9px] text-[#374151] tracking-[0.04em]">{captionText}</span>
   </div>
 </div>
