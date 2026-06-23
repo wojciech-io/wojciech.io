@@ -9,6 +9,7 @@ import HowIWork from '../../components/home/HowIWork.astro';
 import ProjectsSection from '../../components/home/ProjectsSection.astro';
 import AILeverage from '../../components/home/AILeverage.astro';
 import TestimonialsSection from '../../components/home/TestimonialsSection.astro';
+import { arProjects, arChrome, arWorkI18n } from '../../data/arProjects';
 
 const proof = [
   { value: '20', label: 'عامًا في التسويق والديجيتال' },
@@ -22,10 +23,6 @@ const steps = [
   { step: '03', title: 'التنفيذ', body: 'أبنيه بنفسي: تسلسلات، لوحات، نموذج تشغيل CRM، وأدوات. أو أندمج مع فريقك وأبني بجانبه.' },
   { step: '04', title: 'سدّ الفجوة', body: 'حين لا تتوفّر الأداة المناسبة، أكتبها. وكلاء ذكاء اصطناعي، تطبيقات داخلية، وسير عمل MCP.' },
 ];
-const workI18n = {
-  eyebrow: 'أعمال مختارة', title: 'مشاريع أُطلقت.', titleSecondary: 'أنظمة ما زالت تعمل.', allLink: 'كل الأعمال ←',
-  ctaEyebrow: 'لنعمل معًا', ctaHeading: 'مشكلة إيراد تستحق الحل؟', ctaBody: 'ثلاثون دقيقة. نحدّد نقطة الاختناق وهل تستحق الشراكة.', ctaLink: 'احجز مكالمة ←',
-};
 const aiI18n = {
   eyebrow: 'أنظمة الذكاء الاصطناعي', title: 'الذكاء الاصطناعي في صميم المعمارية.', titleSecondary: 'لا مُضافًا في النهاية.',
   link: 'كيف أبني بالذكاء الاصطناعي ←', stackLabel: 'حزمة التقنية',
@@ -41,54 +38,6 @@ const aiI18n = {
   stackStatus: 'حزمة المُشغِّل · نشطة دائمًا', bridgeStatus: 'جسر MCP · مباشر', activeLabel: 'نشط',
 };
 const testimonialsI18n = { eyebrow: 'آراء', title: 'كيف هو', titleSecondary: 'العمل معي.' };
-
-const arChrome = {
-  problem: 'التحدّي', system: 'النظام', artifact: 'المُخرَج', outcome: 'النتيجة',
-  featured: 'مميّز', viewProject: 'عرض المشروع', explore: 'استكشف', caseStudy: 'دراسة الحالة',
-};
-
-const arProjects = [
-  {
-    cover: 'relora' as const, external: true, href: 'https://relora-jet.vercel.app/',
-    title: 'Relora',
-    description: 'نظام تشغيل للعلاقات لفرق العقارات في الجهات الحكومية المحلية. مكان واحد لجهات الاتصال، وسياق المالك، وحالة التواصل، والخطوات التالية.',
-    tags: ['سير عمل بالذكاء الاصطناعي', 'CRM مبسّط', 'لوحة عمليات'],
-    problem: 'محادثات الملّاك المهمة كانت مبعثرة بين البريد والملاحظات والذاكرة.',
-    system: 'جهات الاتصال والعلاقات والملخّصات والحالة والمتابعة في عرض تشغيلي واحد.',
-    artifact: 'تطبيق تجريبي مباشر بلوحة معلومات وخريطة علاقات وتدفّق مهام.',
-    outcome: 'تتبّع العلاقات اليدوي يتحوّل إلى طابور تشغيلي منظّم.',
-  },
-  {
-    cover: 'ads-ai' as const, external: true, href: 'https://ads-assistant-three.vercel.app/',
-    title: 'AdsAI · مساعد الإعلانات',
-    description: 'غرفة تحكّم لإعلانات Google قائمة على الذكاء الاصطناعي: الإنفاق، ROAS، توافق ICP، أولويات الحملات، والإجراء التالي الأفضل في مساحة واحدة.',
-    tags: ['ذكاء اصطناعي', 'إعلانات', 'GTM', 'أدوات المُشغِّل'],
-    problem: 'تحسين الإعلانات كان موزّعًا بين التقارير والحدس والفحوصات المتكررة.',
-    system: 'الميزانية وICP وROAS والتنبيهات والإجراءات في حلقة قرار واحدة.',
-    artifact: 'لوحة مباشرة بأولويات الحملات وطابور التحسين.',
-    outcome: 'يرى المُشغِّل ما يوقفه أو يحلّله أو يحسّنه دون البحث في التقارير.',
-  },
-  {
-    cover: 'kamperownia' as const, external: true, href: 'https://camper-rental-weld.vercel.app/',
-    title: 'محرّك حجز تأجير الكرفانات',
-    description: 'موقع تأجير كرفانات ذاتي الخدمة لتصفّح المركبات والتحقق من التواريخ والانتقال من الاهتمام إلى الحجز بسرعة.',
-    tags: ['منتج', 'حجوزات', 'تطبيق ويب'],
-    problem: 'الطلب على التأجير كان يحتاج مسارًا أوضح من التصفّح إلى الحجز.',
-    system: 'المخزون والتواريخ وصياغة العرض وزر الحجز في تدفّق واجهي واحد.',
-    artifact: 'موقع حجز متجاوب ببطاقات مركبات ونقطة بحث.',
-    outcome: 'حركة استفسار يدوية تتحوّل إلى تجربة حجز مُنتَجة.',
-  },
-  {
-    cover: 'notch' as const, external: false, href: '/apps/notch/',
-    title: 'NotchCue',
-    description: 'مفهوم تيليبرومبتر لنظام macOS للمكالمات والعروض والتسجيلات. يبقي الملاحظات قرب الكاميرا ليبقى الإلقاء طبيعيًا.',
-    tags: ['macOS', 'Swift', 'مبني بالذكاء الاصطناعي'],
-    problem: 'الملاحظات بعيدة عن الكاميرا، ما يكسر التواصل البصري أثناء المكالمات والعروض.',
-    system: 'النصوص تظهر حول نوتش الماك بوك بسطح قراءة مركّز.',
-    artifact: 'موقع منتج ومفهوم تطبيق مبني حول منطقة الكاميرا.',
-    outcome: 'المتحدّث يحافظ على البنية دون أن يبدو وكأنه يقرأ.',
-  },
-];
 
 const arTestimonials = [
   { quote: 'فويتشيك مدير تسويق ماهر ومُلهِم بعقلية استراتيجية قوية. أظهر دائمًا استعدادًا لمشاركة معرفته وخبرته. كان تواصله احترافيًا وواضحًا وبنّاءً، ما سهّل التوافق على الأهداف والتنفيذ بكفاءة. خلق بيئة عمل إيجابية وداعمة تُرحّب بالأفكار الجديدة وتواجه التحديات معًا.', name: 'Johanna Elise Adolfsen', role: 'محلّلة تسويق ومستشارة استراتيجية', linkedin: 'https://no.linkedin.com/in/johanna-elise-adolfsen/' },
@@ -156,7 +105,7 @@ const arTestimonials = [
     steps={steps}
   />
 
-  <ProjectsSection i18n={workI18n} chrome={arChrome} projects={arProjects} />
+  <ProjectsSection i18n={arWorkI18n} chrome={arChrome} projects={arProjects} />
   <AILeverage i18n={aiI18n} />
   <TestimonialsSection i18n={testimonialsI18n} items={arTestimonials} />
 
@@ -165,7 +114,7 @@ const arTestimonials = [
     heading="تعرف ما الذي لا يعمل. لكنك لست متأكدًا مما يجب بناؤه."
     subtext="أرسل السياق، ونقطة الاختناق، وما يعمل لديك الآن. سأخبرك من أين أبدأ، وهل أنا الشخص المناسب لبنائه."
     cta="احجز مكالمة"
-    ctaHref="/contact/#book-call"
+    ctaHref="/ar/contact/#book-call"
     ctaSecondary="شاهد الأعمال"
     ctaSecondaryHref="#work"
   />

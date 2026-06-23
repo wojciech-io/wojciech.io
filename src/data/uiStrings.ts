@@ -313,6 +313,11 @@ export function getUiStringsForPath(pathname: string): UiStrings {
   return getUiStrings(getLocaleFromPath(pathname));
 }
 
+/** Pages that have a real Arabic version. Nav links to anything else stay on
+ *  the English route so the Arabic chrome never points at a 404. Extend as
+ *  more /ar/ pages ship. */
+const AR_LOCALIZED_PATHS = new Set(['/work/', '/contact/']);
+
 /** Prefix an internal path with the current locale segment when not EN. */
 export function localizeHref(href: string, locale: UiLocale): string {
   if (locale === 'en') return href;
@@ -320,6 +325,8 @@ export function localizeHref(href: string, locale: UiLocale): string {
   if (!href.startsWith('/') || href.startsWith('//')) return href;
   // Avoid double-prefixing if the href already starts with /<locale>/.
   if (href.startsWith(`/${locale}/`) || href === `/${locale}` || href === `/${locale}/`) return href;
+  // Arabic only has a subset of pages translated; link the rest to English.
+  if (locale === 'ar' && !AR_LOCALIZED_PATHS.has(href)) return href;
   return `/${locale}${href}`;
 }
 

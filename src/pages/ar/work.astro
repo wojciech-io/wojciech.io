@@ -1,0 +1,72 @@
+---
+/* Arabic (RTL) work page. Editorial hero + the shared projects section with
+   Arabic content, then the booking CTA. Mirrors the EN /work/ intent. */
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import ProjectsSection from '../../components/home/ProjectsSection.astro';
+import { SITE } from '../../data/site';
+import { arProjects, arChrome, arWorkI18n } from '../../data/arProjects';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: SITE.url + '/ar/' },
+    { '@type': 'ListItem', position: 2, name: 'الأعمال', item: SITE.url + '/ar/work/' },
+  ],
+};
+const portfolioSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'أنظمة GTM ودراسات الحالة · فويتشيك لوشتشينسكي',
+  url: SITE.url + '/ar/work/',
+  inLanguage: 'ar',
+  description: 'أنظمة GTM قائمة على الذكاء الاصطناعي، ومعمارية نمو، ومنتجات أُطلقت فعليًا.',
+  author: { '@type': 'Person', name: 'فويتشيك لوشتشينسكي', url: SITE.url + '/' },
+};
+---
+
+<Layout
+  htmlLang="ar"
+  dir="rtl"
+  ogLocale="ar_SA"
+  title="الأعمال"
+  description="أنظمة GTM قائمة على الذكاء الاصطناعي، ومعمارية نمو، ومنتجات أُطلقت فعليًا. نتائج حقيقية لمن يحتاج نظام تشغيل للإيراد، لا اشتراك SaaS آخر."
+  canonical="/ar/work/"
+  ogImage="/og/pages/work.png"
+  alternates={[
+    { lang: 'en', href: 'https://wojciech.io/work/' },
+    { lang: 'ar', href: 'https://wojciech.io/ar/work/' },
+    { lang: 'x-default', href: 'https://wojciech.io/work/' },
+  ]}
+  schema={[breadcrumbSchema, portfolioSchema]}
+>
+  <!-- Hero: clean editorial header -->
+  <section class="relative pt-12 pb-10 md:pt-24 md:pb-20 border-b border-[var(--color-border)] overflow-hidden">
+    <div class="relative mx-auto max-w-6xl px-6">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">الأعمال</span>
+      </div>
+      <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-6 max-w-3xl" transition:name="page-title-work">
+        <span>بُنيت، أُطلقت،</span><br class="hidden md:block" />
+        <span class="text-[var(--color-text-muted)]">وما زالت تعمل.</span>
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+        أعمال مختارة عبر أنظمة GTM، وأدوات الذكاء الاصطناعي، وتسليم المنتجات. مجموعة حسب ما تُثبته، لا حسب وقت حدوثها.
+      </p>
+    </div>
+  </section>
+
+  <ProjectsSection i18n={arWorkI18n} chrome={arChrome} projects={arProjects} />
+
+  <CTABand
+    kicker="الخطوة التالية"
+    heading="تريد المثل على مسار صفقاتك؟"
+    subtext="كل مشروع هنا بدأ كحزمة تقنية مكسورة لدى شخص آخر. أخبرني بما يفعله نظامك وأين يتعثّر."
+    cta="احجز مكالمة"
+    ctaHref="/ar/contact/#book-call"
+    ctaSecondary="اقرأ الرؤى"
+    ctaSecondaryHref="/insights/"
+  />
+</Layout>
