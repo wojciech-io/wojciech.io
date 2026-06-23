@@ -1,0 +1,562 @@
+---
+/* Arabic (RTL) About page in the production layout. Mirrors AboutContent
+   section-for-section with native Arabic copy, dir=rtl, gold accent (scoped
+   to lang=ar via tokens.css). Brand and company names stay in Latin; the
+   stack brand list stays live from STACK, only category name + enables are
+   localized via a lookup keyed by the English category name. */
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import SectionHeader from '../../components/ui/SectionHeader.astro';
+import PageBackdrop from '../../components/ui/PageBackdrop.astro';
+import FAQ from '../../components/ui/FAQ.astro';
+import { SITE } from '../../data/site';
+import { STACK } from '../../data/stack';
+
+const timeline = [
+  {
+    period: 'الآن',
+    role: 'مشغّل مستقل',
+    company: 'wojciech.io',
+    description: 'بناء المعرض العام، ومساحة عمل التطبيقات، ودراسات الحالة، وأدوات GTM الأصيلة في الذكاء الاصطناعي كنظام تشغيل واحد عبر wojciech.io و app.wojciech.io.',
+    contract: false,
+    sector: 'ذكاء اصطناعي · GTM · منتجات',
+  },
+  {
+    period: 'أكتوبر 2025 – مارس 2026',
+    role: 'قائد GTM والنمو بدوام جزئي',
+    company: 'CodiLime',
+    href: 'https://codilime.com',
+    description: 'تنفيذ GTM من البداية إلى النهاية: حلقات نمو مدفوعة بالذكاء الاصطناعي عبر المحتوى، وSEO، والإعلانات المدفوعة، ودورة الحياة؛ مغناطيسات جذب، وأصول تحويل، وقياس مرتبط بالإيراد.',
+    contract: true,
+    sector: 'سحابة · DevOps · مؤسسات',
+  },
+  {
+    period: 'مايو – أكتوبر 2025',
+    role: 'رئيس تسويق بدوام جزئي',
+    company: 'WebWave',
+    href: 'https://webwave.me',
+    description: 'قيادة تسويق بدوام جزئي لمنشئ مواقع مدعوم بالذكاء الاصطناعي: GTM، وتموضع، ورسائل تجارية، وإعلانات مدفوعة، وSEO، وإيقاع نمو.',
+    contract: true,
+    sector: 'SaaS · منشئ مواقع · ذكاء اصطناعي',
+  },
+  {
+    period: '2024 – أكتوبر 2025',
+    role: 'رئيس النمو وتطوير الويب',
+    company: 'Symfonia',
+    href: 'https://symfonia.pl',
+    description: 'نمو، وتطوير ويب، وUX/CRO، وترحيل، وSEO، وتوليد عملاء محتملين، وحملات متكاملة لعلامة برمجيات أعمال واسعة النطاق.',
+    contract: false,
+    sector: 'ERP · برمجيات أعمال',
+  },
+  {
+    period: 'أكتوبر 2023 – ديسمبر 2024',
+    role: 'رئيس التسويق (CMO)',
+    company: 'Tekhuset AS',
+    href: 'https://tekhuset.no',
+    description: 'استراتيجية تسويق عبر النرويج والدنمارك والسويد. قُدت SEO وCRO لعلامات تجارة إلكترونية، وحقّقت مراكز ضمن أعلى 3 في الأسواق الإسكندنافية، وزيادة 25% في معدلات التحويل.',
+    contract: false,
+    sector: 'تجارة إلكترونية · الدول الإسكندنافية',
+  },
+  {
+    period: 'أكتوبر 2020 – يونيو 2024',
+    role: 'رئيس النمو والاحتفاظ عالميًا',
+    company: 'SentiOne',
+    href: 'https://sentione.com',
+    description: 'بنيت وقُدت نمو واحتفاظ B2B SaaS عبر أوروبا وبريطانيا وأمريكا وأمريكا اللاتينية: توليد الطلب، وGTM للمؤسسات، ودورة الحياة، وتسريع دورة الصفقات.',
+    contract: false,
+    sector: 'B2B SaaS · ذكاء اصطناعي · إنصات اجتماعي',
+  },
+  {
+    period: '2022',
+    role: 'مدير الذكاء الاصطناعي والابتكار عالميًا',
+    company: 'Gi Group Holding',
+    href: 'https://gigroupholding.com',
+    description: 'عمل مشاريع على مبادرات الذكاء الاصطناعي، ورسم العمليات الرقمية، ومواءمة خارطة طريق الابتكار عبر وحدات أعمال متعددة.',
+    contract: true,
+    sector: 'تقنية موارد بشرية · مؤسسات',
+  },
+  {
+    period: 'أكتوبر 2019 – أكتوبر 2020',
+    role: 'رئيس تسويق دورة حياة العميل',
+    company: 'GetResponse',
+    href: 'https://getresponse.com',
+    description: 'تسويق دورة حياة العميل، وCRM، والتقسيم، واختبارات A/B، وتحسين التحويل، وبرامج تفاعل العملاء لمنتج SaaS عالمي.',
+    contract: false,
+    sector: 'بريد · أتمتة تسويق',
+  },
+  {
+    period: '2018 – 2019',
+    role: 'رئيس القطاع الرقمي',
+    company: 'Marquard Group',
+    href: 'https://www.marquardgroup.com',
+    description: 'استراتيجية رقمية، وSEO، وUX، وPPC، ونمو نشر متعدد العلامات عبر محفظة إعلامية من 9 بوابات.',
+    contract: false,
+    sector: 'إعلام · نشر',
+  },
+  {
+    period: '2018',
+    role: 'رئيس التسويق',
+    company: 'Lilla House Digital',
+    href: 'https://lhdigital.pl',
+    description: 'تسويق رقمي متكامل: SEO، وPPC، وبريد، وسوشيال، وتحسين التحويل. بنيت وأدرت حملات عبر قنوات متعددة باستقلالية.',
+    contract: true,
+    sector: 'وكالة رقمية',
+  },
+  {
+    period: '2010 – 2018',
+    role: 'رئيس الاتصال التسويقي / مدير علاقات عامة أول / مدير علاقات عامة',
+    company: 'بلدية مدينة وودج',
+    href: 'https://lodz.pl',
+    description: 'مسار اتصال دام ثماني سنوات عبر العلاقات العامة، والعلاقات العامة الأولى، وقيادة الاتصال التسويقي: علاقات إعلامية، وحملات عامة، واتصال أزمات، ورسائل على مستوى المدينة.',
+    contract: false,
+    sector: 'حكومة · قطاع عام',
+  },
+];
+
+const traits = [
+  {
+    label: 'مشغّل، لا مستشار',
+    body: 'أبني الأنظمة وأشغّلها بنفسي. أحدّد النطاق، ثم أُطلق، ثم أبقى حتى تعمل. وإن لم تكن الأداة الصحيحة موجودة، أكتبها.',
+  },
+  {
+    label: 'أصيل في الذكاء الاصطناعي ممارسةً',
+    body: 'لست مهندس أوامر. أعيد تصميم معمارية أنظمة النمو باستخدام الذكاء الاصطناعي: كيف تُبنى، وتُكرّر، وتُشغّل على نطاق واسع.',
+  },
+  {
+    label: 'بانٍ بفهم تجاري',
+    body: 'أنتقل من استراتيجية الإيراد إلى منتج يعمل في التعاون نفسه. هذا المدى نادر، وأحافظ عليه عمدًا.',
+  },
+  {
+    label: 'أنظمة لا حملات',
+    body: 'عوائد تراكمية، لا حملات ربع سنوية. المُخرَج نظام يعمل دوني في الحلقة.',
+  },
+];
+
+const proofPoints = [
+  {
+    label: 'الدور',
+    value: 'مهندس GTM',
+    detail: 'مشغّل نمو وبانٍ أصيل في الذكاء الاصطناعي',
+  },
+  {
+    label: 'التركيز',
+    value: 'أنظمة الإيرادات',
+    detail: 'لشركات B2B SaaS والتقنية',
+  },
+  {
+    label: 'الخبرة',
+    value: '20 عامًا',
+    detail: '10 في B2B SaaS · 10 في GTM · أوروبا، بريطانيا، أمريكا، أمريكا اللاتينية',
+  },
+  {
+    label: 'الإثبات',
+    value: 'بُني وأُطلق',
+    detail: 'منتجات، وسير عمل، ودراسات حالة، ومقالات',
+  },
+];
+
+const faq = [
+  {
+    question: 'مع أي نوع من الشركات تعمل؟',
+    answer: 'شركات B2B SaaS، عادةً في مراحل Series A حتى C، بفريق من 15 إلى 200 شخصًا. القاسم المشترك: لديها منتج يعمل ومشكلة في خط الصفقات. شيء ما في معمارية الإيراد مكسور أو مفقود. ليست مناسبة لمرحلة ما قبل المنتج أو للسوق الاستهلاكي.',
+  },
+  {
+    question: 'هل تعمل كقائد بدوام جزئي أم على أساس المشاريع؟',
+    answer: 'كلاهما، حسب النطاق. لبناء الأنظمة العميقة (إعادة هيكلة CRM، حركة outbound، تصميم سير عمل الذكاء الاصطناعي) أفضّل مشروعًا محدّدًا بمُخرَج واضح. وللإيقاع التشغيلي المستمر أو العمل المدمج في GTM يمكنني العمل بدوام جزئي. يسعدني مناقشة ما يناسب وضعك.',
+  },
+  {
+    question: 'كيف يبدو التعاون فعليًا؟',
+    answer: 'يبدأ بتدقيق معمارية الإيراد: أرسم ما هو موصول، وما هو مكسور، وأين تُفقد الإشارة. ثم نتفق على النظام الذي سنبنيه أو نصلحه، فأبنيه (أحيانًا إلى جانب فريقك)، وأجهّزه بأدوات القياس لتشغّله دوني.',
+  },
+  {
+    question: 'هل يمكنك المساعدة في أدوات الذكاء الاصطناعي فقط دون طبقة GTM؟',
+    answer: 'نعم، يمكنني تحديد نطاق تعاون مستقل لتصميم وتنفيذ سير عمل الذكاء الاصطناعي. معظم عملي في الذكاء الاصطناعي عملي: حِزم وكلاء، وأدوات MCP، وأتمتة CRM، وتسلسلات مدعومة بالذكاء الاصطناعي. لا عروض استراتيجية.',
+  },
+  {
+    question: 'كم يستغرق المشروع المعتاد؟',
+    answer: 'بناء نظام مركّز (مثل حركة outbound + نموذج تشغيل CRM) يستغرق من 6 إلى 10 أسابيع. وإعادة بناء معمارية الإيراد بالكامل من 3 إلى 4 أشهر. النطاقات الأصغر (تصميم سير عمل الذكاء الاصطناعي، أو التدقيق فقط) من 2 إلى 3 أسابيع.',
+  },
+];
+
+const workItems = [
+  'تدقيق معمارية الإيراد وإعادة تصميمها',
+  'بناء نظام GTM أو إعادة بنائه',
+  'تصميم سير عمل الذكاء الاصطناعي وتنفيذه',
+  'نماذج تشغيل CRM، وSEO، وCRO، وoutbound',
+  'طبقة المنتج المفقودة، مبنية ومُطلقة',
+  'إيقاع تشغيل فريق النمو ولوحاته',
+];
+
+// Arabic localization for the live STACK, keyed by English category name.
+const stackAr: Record<string, { name: string; enables: string }> = {
+  'Frontend': {
+    name: 'الواجهة الأمامية',
+    enables: 'من صفحات الهبوط إلى لوحات تحكم SaaS كاملة، مع أمان الأنواع، والعرض من الخادم، ونظام مكوّنات كامل جاهز للتوسعة.',
+  },
+  'Backend & Data': {
+    name: 'الخادم والبيانات',
+    enables: 'مصادقة وواجهات برمجية وبيانات على الحافة: بوابات كوكيز موقّعة، وتحديد معدّل، وSQLite على الحافة دون إدارة خوادم.',
+  },
+  'AI': {
+    name: 'الذكاء الاصطناعي',
+    enables: 'توليد نصوص، وتحليل مستندات، وصوت في أي تطبيق. وكلاء يفكّرون ويبحثون وينجزون المهام دون تدخل بشري.',
+  },
+  'Automation': {
+    name: 'الأتمتة',
+    enables: 'اربط أدوات لا تتحدث مع بعضها. CRM، وبريد، وويب هوكس، وجداول، موصولة خلال ساعات دون كتابة سطر برمجي.',
+  },
+  'Payments & Email': {
+    name: 'المدفوعات والبريد',
+    enables: 'اشتراكات ومدفوعات لمرة واحدة بفوترة مُدارة، وبريد معاملات يصل إلى صندوق الوارد لا إلى السبام.',
+  },
+  'Native / Desktop': {
+    name: 'تطبيقات أصلية / سطح المكتب',
+    enables: 'تطبيقات macOS حقيقية، لا أغلفة Electron. شريط القوائم، وصينية النظام، ومحلية أولًا، ووصول كامل لواجهات النظام، وتوزيع DMG مخصّص.',
+  },
+  'Infrastructure': {
+    name: 'البنية التحتية',
+    enables: 'ادفع إلى Git، واحصل على رابط حيّ. استضافة على الحافة، ومعاينات للفروع، وDNS، وCDN، مُهيّأة كشيفرة عبر Terraform.',
+  },
+  'Static & Content': {
+    name: 'الثابت والمحتوى',
+    enables: 'مواقع ثابتة فائقة السرعة بأقل JavaScript على العميل. مثالية لصفحات الهبوط، والتوثيق، والمشاريع الغنية بالمحتوى حيث تهمّ مؤشرات Core Web Vitals.',
+  },
+};
+
+const profileSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  name: 'فويتشيك لوشتشينسكي · نبذة',
+  url: SITE.url + '/ar/about/',
+  inLanguage: 'ar',
+  mainEntity: {
+    '@type': 'Person',
+    name: 'فويتشيك لوشتشينسكي',
+    alternateName: 'Wojciech Łuszczyński',
+    url: SITE.url + '/',
+    image: SITE.url + '/images/wojciech-avatar-384.webp',
+    jobTitle: 'مهندس GTM ومشغّل نمو',
+    description: 'مشغّل نمو يبني أنظمة إيراد أصيلة في الذكاء الاصطناعي لشركات B2B SaaS. يربط استراتيجية GTM، وCRM، وoutbound، والاستحواذ المدفوع، وSEO، والأتمتة، وسير عمل الذكاء الاصطناعي في نموذج تشغيلي واحد.',
+    sameAs: [SITE.linkedin, SITE.github, SITE.twitter.replace('twitter.com', 'x.com'), SITE.substack],
+    worksFor: {
+      '@type': 'Organization',
+      name: 'مشغّل مستقل · wojciech.io',
+      url: SITE.url,
+    },
+  },
+};
+---
+
+<Layout
+  htmlLang="ar"
+  dir="rtl"
+  ogLocale="ar_SA"
+  title="نبذة"
+  description="مشغّل نمو يبني أنظمة إيراد أصيلة في الذكاء الاصطناعي لشركات B2B SaaS والتقنية. أربط CRM، وoutbound، والاستحواذ المدفوع، وSEO، وأتمتة الذكاء الاصطناعي في نموذج تشغيلي واحد."
+  canonical="/ar/about/"
+  ogImage="/og/pages/about.png"
+  alternates={[
+    { lang: 'en', href: 'https://wojciech.io/about/' },
+    { lang: 'ar', href: 'https://wojciech.io/ar/about/' },
+    { lang: 'x-default', href: 'https://wojciech.io/about/' },
+  ]}
+  schema={profileSchema}
+>
+  <!-- Hero -->
+  <section class="relative pt-12 pb-8 md:pt-24 md:pb-16 border-b border-[var(--color-border)] overflow-hidden">
+    <PageBackdrop src="/images/wojciech-office.webp" position="center 28%" opacity={0.14} eager />
+
+    <div class="relative mx-auto max-w-6xl px-6">
+      <div class="flex flex-col sm:flex-row gap-10 md:gap-14 items-start sm:items-center animate-fade-up mb-12">
+
+        <!-- Portrait photo (gold-tinted glow for the AR theme) -->
+        <div class="shrink-0 w-56 h-72 sm:w-64 sm:h-80 rounded-[var(--radius-card)] overflow-hidden shadow-[0_0_28px_rgba(212,175,55,0.12)] ring-1 ring-[var(--color-border)]">
+          <img
+            src="/images/wojciech-avatar-768.webp"
+            alt="فويتشيك لوشتشينسكي"
+            class="w-full h-full object-cover object-center"
+            width="768"
+            height="768"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </div>
+
+        <div class="max-w-xl">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+            <span class="obs-label-accent">نبذة</span>
+          </div>
+          <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4" transition:name="page-title-about">
+            فويتشيك لوشتشينسكي
+          </h1>
+          <p class="text-[length:var(--text-lead)] text-[var(--color-text)] leading-relaxed mb-3">
+            أبني أنظمة الإيرادات وأشغّلها. مشغّل لشركات B2B SaaS والتقنية.
+          </p>
+          <p class="text-[var(--color-text-muted)] leading-relaxed">
+            أربط استراتيجية GTM، والتموضع، وSEO، والمحتوى، والاستحواذ المدفوع، وCRM،
+            والتحليلات، والأتمتة، وسير عمل الذكاء الاصطناعي في نموذج تشغيلي واحد. كل ما
+            تحت wojciech.io عمل أصلي: مكتوب، ومبني، ومُطلق، ومُشغّل بيدي.
+          </p>
+        </div>
+      </div>
+
+      <!-- Proof rail -->
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {proofPoints.map(({ label, value, detail }) => (
+          <div class="obs-panel px-5 py-4 backdrop-blur-sm bg-[rgb(var(--color-surface-rgb)/0.72)]">
+            <span class="obs-label-accent mb-2 block">{label}</span>
+            <p class="text-base font-semibold text-[var(--color-text)]">{value}</p>
+            <p class="mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">{detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- What makes me atypical -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader
+        eyebrow="ما الذي يميّزني"
+        heading="أربط استراتيجية الإيراد، وسير عمل الذكاء الاصطناعي، والبرمجيات المُطلقة في نموذج تشغيلي واحد."
+        maxWidth="max-w-3xl"
+        class="mb-12"
+      />
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {traits.map(({ label, body }) => (
+          <div class="obs-panel obs-glow p-7 card-lift">
+            <div class="w-8 h-8 rounded-lg bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center mb-5">
+              <span class="w-2 h-2 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
+            </div>
+            <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{label}</h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Press + video -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader
+        eyebrow="ظهر في"
+        heading="صحافة وفيديو."
+        class="mb-10"
+      />
+      <!-- Conference talk video (self-hosted, trimmed to 10:00) -->
+      <div class="mb-8 obs-panel overflow-hidden reveal-up">
+        <video
+          controls
+          preload="none"
+          poster="/media/conference-talk-poster.jpg"
+          class="w-full aspect-video bg-black"
+          crossorigin="anonymous"
+        >
+          <source src="/media/conference-talk.webm" type="video/webm" />
+          متصفحك لا يدعم فيديو WebM.
+        </video>
+        <div class="px-5 py-4">
+          <span class="obs-label-accent mb-1.5 block">كلمة في مؤتمر</span>
+          <p class="text-sm font-semibold text-[var(--color-text)] leading-snug mb-1">InfoShare 2023: أنظمة الذكاء الاصطناعي، وGTM، ومنتجات مُطلقة</p>
+          <p class="text-xs text-[var(--color-text-muted)]">بارتوش بازينسكي + فويتشيك لوشتشينسكي على المسرح. أول 10 دقائق.</p>
+        </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5">
+
+        <!-- YouTube talk -->
+        <a
+          href="https://www.youtube.com/watch?v=UWJN-DwqDbE"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-hover reveal-up"
+          aria-label="شاهد الكلمة على يوتيوب"
+        >
+          <!-- Thumbnail -->
+          <div class="relative h-44 overflow-hidden bg-[var(--color-surface-2)]">
+            <img
+              src="https://i.ytimg.com/vi/UWJN-DwqDbE/maxresdefault.jpg"
+              alt=""
+              class="w-full h-full object-cover object-[center_30%] group-hover:scale-[1.03] transition-transform duration-500"
+              loading="lazy"
+              decoding="async"
+              onerror="this.src='/images/wojciech-speaking-color.webp';this.style.objectPosition='center 15%'"
+            />
+            <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <!-- Play button -->
+              <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-200 shadow-lg">
+                <svg class="w-5 h-5 text-black ml-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.84Z"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="px-5 py-4">
+            <span class="obs-label-accent mb-1.5 block">يوتيوب · كلمة</span>
+            <p class="text-sm font-semibold text-[var(--color-text)] leading-snug mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors">شاهد الكلمة</p>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">Infoshare 2023 · أنظمة الذكاء الاصطناعي، وGTM، وكيفية بناء منتجات تحل مشكلات حقيقية</p>
+          </div>
+        </a>
+
+        <!-- MamStartup article -->
+        <a
+          href="https://mamstartup.pl/czy-mozna-budowac-globalny-startup-w-czasie-deglobalizacji/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group relative rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-hover reveal-up flex flex-col"
+          aria-label="اقرأ مقال MamStartup"
+        >
+          <!-- Visual strip -->
+          <div class="relative h-44 overflow-hidden bg-[var(--color-surface-2)]">
+            <img
+              src="/images/wojciech-speaking-color.webp"
+              alt=""
+              class="w-full h-full object-cover object-[center_15%] group-hover:scale-[1.03] transition-transform duration-500"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="absolute inset-0 [background:linear-gradient(to_top,var(--color-surface)_0%,transparent_60%)]" />
+          </div>
+          <div class="px-5 py-4 flex-1 flex flex-col">
+            <span class="obs-label-accent mb-1.5 block">MamStartup · مقال + بودكاست</span>
+            <p class="text-sm font-semibold text-[var(--color-text)] leading-snug mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors flex-1" dir="ltr">Czy można budować globalny startup w czasie deglobalizacji?</p>
+            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">مقابلة وحلقة بودكاست حول التفكير في المنتجات عالميًا، وتبنّي الذكاء الاصطناعي، وبناء أنظمة النمو</p>
+            <span class="mt-3 inline-flex items-center gap-1 text-xs font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent-hi)] transition-colors">
+              اقرأ المقال
+              <svg class="w-3 h-3 -scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader eyebrow="الخبرة" heading="أين عملت." class="mb-10" />
+      <div class="divide-y divide-[var(--color-border)] max-w-3xl">
+        {timeline.map(({ period, role, company, href, description, contract, sector }, i) => (
+          <div class:list={['flex flex-col sm:flex-row gap-4 py-7', i === 0 ? 'pt-0' : '']}>
+            <div class="sm:w-32 shrink-0 pt-0.5">
+              <p class:list={['text-xs font-mono text-[var(--color-text-dim)]', contract ? 'italic' : '']}>{period}</p>
+              {contract && <span class="text-[9px] font-semibold uppercase tracking-wider text-[var(--color-text-dim)] opacity-60">تعاقد</span>}
+            </div>
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <p class="text-base font-semibold text-[var(--color-text)]">{role}</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                {href
+                  ? <a href={href} target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors inline-flex items-center gap-1 group">
+                      {company}
+                      <svg class="w-3 h-3 opacity-40 group-hover:opacity-80 transition-opacity -scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+                  : <p class="text-sm font-medium text-[var(--color-text-muted)]">{company}</p>
+                }
+                {sector && (
+                  <span class="text-[10px] font-medium text-[var(--color-accent)] bg-[var(--color-accent)]/8 border border-[var(--color-accent)]/15 rounded-full px-2.5 py-0.5">
+                    {sector}
+                  </span>
+                )}
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-lg">{description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-start">
+        <div>
+          <SectionHeader eyebrow="الأسئلة الشائعة" heading="أسئلة متكررة." class="mb-2" />
+          <p class="text-[var(--color-text-muted)] mt-4 text-sm leading-relaxed max-w-sm">
+            إن كنت تفكّر في العمل معي: هذه تغطّي كيف أتعاون، وما الذي تتوقعه، وهل المناسبة صحيحة.
+          </p>
+          <a
+            href="/ar/contact/#book-call"
+            data-cal-link="wojciech-luszczynski/30min"
+            class="btn-press inline-flex items-center gap-2 mt-8 border border-[var(--color-border-2)] text-[var(--color-text)] text-sm font-medium px-5 py-2.5 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors"
+          >
+            احجز مكالمة بدلًا من ذلك ←
+          </a>
+        </div>
+        <div>
+          <FAQ items={faq} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Working with me -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
+        <SectionHeader
+          eyebrow="العمل معي"
+          heading="ما الذي تتوقعه."
+          lead="أعمل بأفضل صورة في التعاونات حيث توجد مشكلة عمل حقيقية، لا تكليف غامض. المُخرَج دائمًا نظام، لا عرض شرائح."
+        />
+        <div class="space-y-4">
+          {workItems.map((item) => (
+            <div class="flex items-start gap-3 group">
+              <span class="text-[var(--color-accent)] mt-0.5 shrink-0 group-hover:-translate-x-0.5 transition-transform duration-150">←</span>
+              <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors duration-150">{item}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stack -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+        <SectionHeader
+          eyebrow="التقنيات"
+          heading="كيف أبني."
+          lead="فئات التقنيات التي أعمل بها وما يتيحه كل منها."
+          class="mb-0"
+        />
+        <a
+          href="https://app.wojciech.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="shrink-0 text-xs font-medium text-[var(--color-text-dim)] hover:text-[var(--color-accent-hi)] transition-colors"
+        >
+          مساحة العمل الكاملة ←
+        </a>
+      </div>
+
+      <div class="divide-y divide-[var(--color-border)] border-t border-[var(--color-border)]">
+        {STACK.map((cat) => {
+          const ar = stackAr[cat.name] ?? { name: cat.name, enables: cat.enables };
+          return (
+            <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] lg:grid-cols-[180px_1fr_2fr] gap-x-10 gap-y-1 py-4 items-baseline">
+              <span class="obs-label-accent">{ar.name}</span>
+              <p class="text-sm font-medium text-[var(--color-text)]" dir="ltr">{cat.items.map((i) => i.name).join(' · ')}</p>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{ar.enables}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <CTABand
+    kicker="الخطوة التالية"
+    heading="هذا أنا. ما الذي تبنيه؟"
+    subtext="إن تضخّمت حزمة GTM لديك حتى صارت شيئًا لا يملكه أحد بالكامل، فهذا هو عملي. أرسل الفوضى."
+    cta="احجز مكالمة"
+    ctaHref="/ar/contact/#book-call"
+    ctaSecondary="شاهد الأعمال"
+    ctaSecondaryHref="/ar/work/"
+  />
+</Layout>

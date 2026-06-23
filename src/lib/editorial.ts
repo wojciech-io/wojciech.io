@@ -9,7 +9,7 @@
  * Returns the lead text and the mark to render in the accent color.
  */
 export function accentHeading(text: string): { lead: string; mark: string } {
-  const m = text.match(/^([\s\S]*?)([.!?。！？]?)\s*$/);
+  const m = text.match(/^([\s\S]*?)([.!?。！？؟]?)\s*$/);
   if (!m) return { lead: text, mark: '.' };
   return { lead: m[1], mark: m[2] || '.' };
 }
