@@ -1,11 +1,12 @@
 ---
-import { getPrimaryNavLinks } from '../../data/uiStrings';
+import { getPrimaryNavLinks, getLocaleFromPath } from '../../data/uiStrings';
 
 const current = Astro.url.pathname;
 const links = getPrimaryNavLinks(current);
+const isAr = getLocaleFromPath(current) === 'ar';
 ---
 
-<nav aria-label="Primary navigation">
+<nav aria-label={isAr ? 'التنقّل الرئيسي' : 'Primary navigation'}>
   <ul class="flex items-center gap-6 list-none m-0 p-0">
     {links.map(({ label, href, minWidth }) => {
       const isActive = href === '/' ? current === href : current.startsWith(href);

@@ -1,9 +1,12 @@
 ---
+import { getLocaleFromPath } from '../../data/uiStrings';
+
 interface Props {
   class?: string;
 }
 
 const className = Astro.props.class ?? '';
+const isAr = getLocaleFromPath(Astro.url.pathname) === 'ar';
 ---
 
 <button
@@ -13,7 +16,7 @@ const className = Astro.props.class ?? '';
     className,
   ]}
   data-theme-toggle
-  aria-label="Toggle light and dark theme"
+  aria-label={isAr ? 'تبديل المظهر الفاتح والداكن' : 'Toggle light and dark theme'}
   aria-pressed="false"
 >
   <span class="theme-toggle__thumb" aria-hidden="true"></span>
