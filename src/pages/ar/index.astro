@@ -41,16 +41,101 @@ const aiI18n = {
   stackStatus: 'حزمة المُشغِّل · نشطة دائمًا', bridgeStatus: 'جسر MCP · مباشر', activeLabel: 'نشط',
 };
 const testimonialsI18n = { eyebrow: 'آراء', title: 'كيف هو', titleSecondary: 'العمل معي.' };
+
+const arChrome = {
+  problem: 'التحدّي', system: 'النظام', artifact: 'المُخرَج', outcome: 'النتيجة',
+  featured: 'مميّز', viewProject: 'عرض المشروع', explore: 'استكشف', caseStudy: 'دراسة الحالة',
+};
+
+const arProjects = [
+  {
+    cover: 'relora' as const, external: true, href: 'https://relora-jet.vercel.app/',
+    title: 'Relora',
+    description: 'نظام تشغيل للعلاقات لفرق العقارات في الجهات الحكومية المحلية. مكان واحد لجهات الاتصال، وسياق المالك، وحالة التواصل، والخطوات التالية.',
+    tags: ['سير عمل بالذكاء الاصطناعي', 'CRM مبسّط', 'لوحة عمليات'],
+    problem: 'محادثات الملّاك المهمة كانت مبعثرة بين البريد والملاحظات والذاكرة.',
+    system: 'جهات الاتصال والعلاقات والملخّصات والحالة والمتابعة في عرض تشغيلي واحد.',
+    artifact: 'تطبيق تجريبي مباشر بلوحة معلومات وخريطة علاقات وتدفّق مهام.',
+    outcome: 'تتبّع العلاقات اليدوي يتحوّل إلى طابور تشغيلي منظّم.',
+  },
+  {
+    cover: 'ads-ai' as const, external: true, href: 'https://ads-assistant-three.vercel.app/',
+    title: 'AdsAI · مساعد الإعلانات',
+    description: 'غرفة تحكّم لإعلانات Google قائمة على الذكاء الاصطناعي: الإنفاق، ROAS، توافق ICP، أولويات الحملات، والإجراء التالي الأفضل في مساحة واحدة.',
+    tags: ['ذكاء اصطناعي', 'إعلانات', 'GTM', 'أدوات المُشغِّل'],
+    problem: 'تحسين الإعلانات كان موزّعًا بين التقارير والحدس والفحوصات المتكررة.',
+    system: 'الميزانية وICP وROAS والتنبيهات والإجراءات في حلقة قرار واحدة.',
+    artifact: 'لوحة مباشرة بأولويات الحملات وطابور التحسين.',
+    outcome: 'يرى المُشغِّل ما يوقفه أو يحلّله أو يحسّنه دون البحث في التقارير.',
+  },
+  {
+    cover: 'kamperownia' as const, external: true, href: 'https://camper-rental-weld.vercel.app/',
+    title: 'محرّك حجز تأجير الكرفانات',
+    description: 'موقع تأجير كرفانات ذاتي الخدمة لتصفّح المركبات والتحقق من التواريخ والانتقال من الاهتمام إلى الحجز بسرعة.',
+    tags: ['منتج', 'حجوزات', 'تطبيق ويب'],
+    problem: 'الطلب على التأجير كان يحتاج مسارًا أوضح من التصفّح إلى الحجز.',
+    system: 'المخزون والتواريخ وصياغة العرض وزر الحجز في تدفّق واجهي واحد.',
+    artifact: 'موقع حجز متجاوب ببطاقات مركبات ونقطة بحث.',
+    outcome: 'حركة استفسار يدوية تتحوّل إلى تجربة حجز مُنتَجة.',
+  },
+  {
+    cover: 'notch' as const, external: false, href: '/apps/notch/',
+    title: 'NotchCue',
+    description: 'مفهوم تيليبرومبتر لنظام macOS للمكالمات والعروض والتسجيلات. يبقي الملاحظات قرب الكاميرا ليبقى الإلقاء طبيعيًا.',
+    tags: ['macOS', 'Swift', 'مبني بالذكاء الاصطناعي'],
+    problem: 'الملاحظات بعيدة عن الكاميرا، ما يكسر التواصل البصري أثناء المكالمات والعروض.',
+    system: 'النصوص تظهر حول نوتش الماك بوك بسطح قراءة مركّز.',
+    artifact: 'موقع منتج ومفهوم تطبيق مبني حول منطقة الكاميرا.',
+    outcome: 'المتحدّث يحافظ على البنية دون أن يبدو وكأنه يقرأ.',
+  },
+];
+
+const arTestimonials = [
+  { quote: 'فويتشيك مدير تسويق ماهر ومُلهِم بعقلية استراتيجية قوية. أظهر دائمًا استعدادًا لمشاركة معرفته وخبرته. كان تواصله احترافيًا وواضحًا وبنّاءً، ما سهّل التوافق على الأهداف والتنفيذ بكفاءة. خلق بيئة عمل إيجابية وداعمة تُرحّب بالأفكار الجديدة وتواجه التحديات معًا.', name: 'Johanna Elise Adolfsen', role: 'محلّلة تسويق ومستشارة استراتيجية', linkedin: 'https://no.linkedin.com/in/johanna-elise-adolfsen/' },
+  { quote: 'عملتُ مع فويتشيك في Tekhuset AS ولم تكن لديّ سوى تجارب إيجابية في تعاوننا. إنه فعّال ويأتي بحلول جيدة.', name: 'Ida Sofie Fritzø Visnes', role: 'منسّقة الأنشطة', company: 'Tekhuset AS', linkedin: 'https://no.linkedin.com/in/ida-sofie-fritz%C3%B8-visnes/' },
+  { quote: 'كان العمل مع فويتشيك في SentiOne تجربة استثنائية. بصفته Global Head of Growth، مهاراته القيادية متميّزة وتعزّز التعاون عبر جميع الأقسام. انفتاحه وإصراره يدفعان المشاريع للأمام بحلول مبتكرة باستمرار. قدرته على مواءمة جهود التسويق مع أهداف العمل الأوسع تجعله قيمة لا تُقدّر.', name: 'Thomas Zduleczny', role: 'الاستراتيجية والنمو', company: 'SentiOne', linkedin: 'https://pl.linkedin.com/in/thomas-zduleczny/' },
+  { quote: 'فويتشيك شغوف وواسع المعرفة بالتسويق الرقمي وكل ما يتعلق به، ومنسجم تمامًا مع تحديات التسويق والمبيعات الأوسع. ساهم في تحديد وتنفيذ عدة مبادرات تسويق رقمي ساعدت في الاحتفاظ بالعملاء وبناء خط أنابيب المبيعات.', name: 'Robert Sikorski', role: 'رئيس التسويق', company: 'GetResponse', linkedin: 'https://uk.linkedin.com/in/rob-sikorski-0348141' },
+  { quote: 'فويتشيك رجل مهمّات محدّدة، العقبة بالنسبة له تحدٍّ جديد. تعلّم بسرعة وكثيرًا ما تجاوز التوقعات، وكان قادرًا على تنفيذ عدة مهام في آنٍ واحد. كفؤ ومتعاون، وفي الوقت نفسه دقيق ومثابر.', name: 'Dariusz Gołębiewski', role: 'مدير', company: 'mBank SA', linkedin: 'https://pl.linkedin.com/in/dariusz-go%C5%82%C4%99biewski-he-him-412371120' },
+  { quote: 'أعمل مع فويتشيك منذ عدة أشهر. التعاون يسير بسلاسة، ونعرف دائمًا مسؤولية كلٍّ منا. أوصي بفويتشيك كزميل وشريك عمل جيد.', name: 'Mike Zoladkowski', role: 'مؤسّس', company: 'Type2Sell', linkedin: 'https://ca.linkedin.com/in/mikezoladkowski' },
+  { quote: 'كشريك، مستعد للمساعدة ويُبدي اهتمامًا كبيرًا، ليس فقط بزملائه بل أيضًا بعملائه ومزوّدي خدماته. الاستعداد للإصغاء وفهم كل طرف ميزة جيدة لمديري المشاريع ورؤساء الأقسام.', name: 'Martyna Badera', role: 'SAFe Scrum Master', company: 'Rockwell Automation', linkedin: 'https://pl.linkedin.com/in/martyna-badera/' },
+];
 ---
 
 <Layout
   htmlLang="ar"
   dir="rtl"
   ogLocale="ar_SA"
-  title="فويتشيك لوشتشينسكي · مُشغِّل نمو قائم على الذكاء الاصطناعي"
-  description="أبني أنظمة إيراد قائمة على الذكاء الاصطناعي لشركات B2B SaaS والتقنية: استراتيجية الدخول إلى السوق، التسويق، والنمو في نموذج تشغيلي واحد."
-  noindex={true}
+  title="فويتشيك لوشتشينسكي · مُشغِّل نمو وأنظمة إيراد بالذكاء الاصطناعي"
+  description="أبني وأُشغّل أنظمة إيراد قائمة على الذكاء الاصطناعي لشركات B2B SaaS والتقنية: استراتيجية الدخول إلى السوق، التسويق، والنمو في نموذج تشغيلي واحد — جاهزة للتوسّع في السعودية ومنطقة الخليج."
+  canonical="/ar/"
+  ogImage="/og/pages/home.png"
+  alternates={[
+    { lang: 'en', href: 'https://wojciech.io/' },
+    { lang: 'ar', href: 'https://wojciech.io/ar/' },
+    { lang: 'x-default', href: 'https://wojciech.io/' },
+  ]}
   preloadImage="/images/wojciech-office-hq.webp"
+  schema={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: 'فويتشيك لوشتشينسكي',
+      alternateName: 'Wojciech Łuszczyński',
+      jobTitle: 'مُشغِّل نمو · مهندس استراتيجية الدخول إلى السوق (GTM)',
+      description: 'عشرون عامًا في بناء أنظمة نمو وإيراد قائمة على الذكاء الاصطناعي لشركات B2B SaaS والتقنية.',
+      url: 'https://wojciech.io/ar/',
+      knowsLanguage: ['ar', 'en', 'pl'],
+      knowsAbout: ['الذكاء الاصطناعي', 'استراتيجية الدخول إلى السوق', 'النمو', 'B2B SaaS', 'أتمتة المؤسسات', 'عمليات الإيراد', 'وكلاء الذكاء الاصطناعي', 'التوسّع الدولي'],
+      areaServed: ['السعودية', 'الرياض', 'دول مجلس التعاون الخليجي', 'أوروبا'],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'فويتشيك لوشتشينسكي · مُشغِّل نمو بالذكاء الاصطناعي',
+      inLanguage: 'ar',
+      isPartOf: { '@type': 'WebSite', name: 'wojciech.io', url: 'https://wojciech.io/' },
+    },
+  ]}
 >
   <HeroSection
     eyebrow="مُشغِّل نمو قائم على الذكاء الاصطناعي"
@@ -71,9 +156,9 @@ const testimonialsI18n = { eyebrow: 'آراء', title: 'كيف هو', titleSecon
     steps={steps}
   />
 
-  <ProjectsSection i18n={workI18n} locale="en" />
+  <ProjectsSection i18n={workI18n} chrome={arChrome} projects={arProjects} />
   <AILeverage i18n={aiI18n} />
-  <TestimonialsSection i18n={testimonialsI18n} />
+  <TestimonialsSection i18n={testimonialsI18n} items={arTestimonials} />
 
   <CTABand
     kicker="الخطوة التالية"
