@@ -3,11 +3,22 @@ import { getCollection } from 'astro:content';
 import TestimonialSlider from '../ui/TestimonialSlider.astro';
 import { accentHeading } from '../../lib/editorial';
 
+type TestimonialCard = {
+  quote: string;
+  name: string;
+  role?: string;
+  company?: string;
+  linkedin?: string;
+  avatar?: string;
+};
+
 interface Props {
   i18n?: { eyebrow: string; title: string; titleSecondary: string };
+  /** Override the testimonial cards, e.g. translated quotes for the Arabic page. */
+  items?: TestimonialCard[];
 }
 
-const { i18n } = Astro.props;
+const { i18n, items: itemsProp } = Astro.props;
 const t = {
   eyebrow: i18n?.eyebrow ?? 'Testimonials',
   title: i18n?.title ?? 'What it\'s like',
@@ -27,7 +38,7 @@ const toCard = (t: typeof sorted[number]) => ({
 });
 
 // One continuous animated marquee — every featured testimonial, in order.
-const allTestimonials = sorted.map(toCard);
+const allTestimonials = itemsProp ?? sorted.map(toCard);
 ---
 
 <section class="py-[var(--space-section)] bg-[var(--color-surface)] border-t border-[var(--color-border)] section-fade">
