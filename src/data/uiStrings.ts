@@ -12,7 +12,7 @@
 
 import type { LocaleKey } from './locales';
 
-export type UiLocale = LocaleKey | 'en';
+export type UiLocale = LocaleKey | 'en' | 'ar';
 
 export interface UiStrings {
   nav: {
@@ -266,7 +266,35 @@ const es: UiStrings = {
   },
 };
 
-const STRINGS: Record<UiLocale, UiStrings> = { en, pl, de, dk, no, jp, it, es };
+const ar: UiStrings = {
+  nav: {
+    work: 'الأعمال',
+    aiSystems: 'أنظمة الذكاء الاصطناعي',
+    insights: 'رؤى',
+    tools: 'أدوات',
+    stack: 'التقنية',
+    about: 'عنّي',
+    contact: 'تواصل',
+  },
+  cta: {
+    bookCall: 'احجز مكالمة',
+    nextStep: 'الخطوة التالية',
+  },
+  cookie: {
+    bannerText: 'أستخدم PostHog و Google Analytics لمعرفة المحتوى المفيد: بشكل مجهول، وبيانات داخل الاتحاد الأوروبي، وبدون إعلانات.',
+    privacyPolicy: 'سياسة الخصوصية',
+    accept: 'أوافق',
+    reject: 'لا، شكرًا',
+  },
+  footer: {
+    getInTouch: 'تواصل معي ←',
+    allWriting: 'كل المقالات ←',
+    brandTagline: 'مهندس GTM · باني أنظمة قائمة على الذكاء الاصطناعي. أنظمة إيراد لشركات B2B SaaS.',
+    bottomTagline: 'مهندس GTM · باني قائم على الذكاء الاصطناعي',
+  },
+};
+
+const STRINGS: Record<UiLocale, UiStrings> = { en, pl, de, dk, no, jp, it, es, ar };
 
 /** Extract locale from a pathname like "/de/about/" → "de". Returns "en" for "/" or unknown locales. */
 export function getLocaleFromPath(pathname: string): UiLocale {

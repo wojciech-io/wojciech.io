@@ -17,6 +17,8 @@ interface Props {
   noindex?: boolean;
   type?: 'website' | 'article';
   htmlLang?: string;
+  /** Text direction. 'rtl' for Arabic and other RTL locales. */
+  dir?: 'ltr' | 'rtl';
   ogLocale?: string;
   alternates?: Array<{ lang: string; href: string }>;
   publishedAt?: Date | string;
@@ -35,6 +37,7 @@ const {
   noindex,
   type,
   htmlLang = 'en',
+  dir = 'ltr',
   ogLocale,
   alternates,
   publishedAt,
@@ -51,7 +54,7 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
 ---
 
 <!doctype html>
-<html lang={htmlLang}>
+<html lang={htmlLang} dir={dir}>
   <head>
     {/* Charset and viewport must precede the inline scripts: browsers require the
         charset declaration within the first 1024 bytes of the document. */}
