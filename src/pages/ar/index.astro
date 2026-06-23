@@ -1,0 +1,87 @@
+---
+/* Arabic (RTL) homepage in the CURRENT production layout — same components and
+   editorial hero as wojciech.io, only the copy is Arabic and dir=rtl. noindex. */
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import HeroSection from '../../components/home/HeroSection.astro';
+import MetricsStrip from '../../components/home/MetricsStrip.astro';
+import HowIWork from '../../components/home/HowIWork.astro';
+import ProjectsSection from '../../components/home/ProjectsSection.astro';
+import AILeverage from '../../components/home/AILeverage.astro';
+import TestimonialsSection from '../../components/home/TestimonialsSection.astro';
+
+const proof = [
+  { value: '20', label: 'عامًا في التسويق والديجيتال' },
+  { value: '10', label: 'أعوام في B2B SaaS' },
+  { value: '10', label: 'أعوام في GTM' },
+  { value: '3×', label: 'متوسط نمو خط الأنابيب' },
+];
+const steps = [
+  { step: '01', title: 'التشخيص', body: 'تدقيق لمعمارية الإيراد: خط الأنابيب، CRM، حركة GTM، والإسناد. نحدّد أين تنكسر الإشارة قبل لمس أي شيء.' },
+  { step: '02', title: 'التصميم', body: 'تصميم النظام: ما الذي يتصل بماذا، وما يُقاس، وما يُؤتمت، وبأي ترتيب يُبنى.' },
+  { step: '03', title: 'التنفيذ', body: 'أبنيه بنفسي: تسلسلات، لوحات، نموذج تشغيل CRM، وأدوات. أو أندمج مع فريقك وأبني بجانبه.' },
+  { step: '04', title: 'سدّ الفجوة', body: 'حين لا تتوفّر الأداة المناسبة، أكتبها. وكلاء ذكاء اصطناعي، تطبيقات داخلية، وسير عمل MCP.' },
+];
+const workI18n = {
+  eyebrow: 'أعمال مختارة', title: 'مشاريع أُطلقت.', titleSecondary: 'أنظمة ما زالت تعمل.', allLink: 'كل الأعمال ←',
+  ctaEyebrow: 'لنعمل معًا', ctaHeading: 'مشكلة إيراد تستحق الحل؟', ctaBody: 'ثلاثون دقيقة. نحدّد نقطة الاختناق وهل تستحق الشراكة.', ctaLink: 'احجز مكالمة ←',
+};
+const aiI18n = {
+  eyebrow: 'أنظمة الذكاء الاصطناعي', title: 'الذكاء الاصطناعي في صميم المعمارية.', titleSecondary: 'لا مُضافًا في النهاية.',
+  link: 'كيف أبني بالذكاء الاصطناعي ←', stackLabel: 'حزمة التقنية',
+  body: 'ليس لكتابة أسرع، بل لنموذج تشغيل مختلف. الذكاء الاصطناعي مدمج في التنقيب والإثراء والتسلسلات والتقييم. الآلة كلها تعمل أسرع، لا مجرد مهمة واحدة على القائمة.',
+  allSystemsLink: 'كل الأنظمة ←',
+  rows: [
+    { label: 'إنشاء الإعلانات', before: 'أيام', after: 'دقائق' },
+    { label: 'إثراء الـ CRM', before: 'يدوي / وقت BDR', after: 'مؤتمت' },
+    { label: 'موجز SEO ← مسودة', before: 'أسبوع', after: 'ساعات' },
+    { label: 'تسلسلات التواصل', before: 'قوالب', after: 'مخصّصة بالذكاء الاصطناعي' },
+  ],
+  roles: ['نواة الوكيل', 'جسر الأدوات', 'CRM + التسلسلات', 'الإعلانات المدفوعة', 'Edge + Workers', 'طبقة الموقع'],
+  stackStatus: 'حزمة المُشغِّل · نشطة دائمًا', bridgeStatus: 'جسر MCP · مباشر', activeLabel: 'نشط',
+};
+const testimonialsI18n = { eyebrow: 'آراء', title: 'كيف هو', titleSecondary: 'العمل معي.' };
+---
+
+<Layout
+  htmlLang="ar"
+  dir="rtl"
+  ogLocale="ar_SA"
+  title="فويتشيك لوشتشينسكي · مُشغِّل نمو قائم على الذكاء الاصطناعي"
+  description="أبني أنظمة إيراد قائمة على الذكاء الاصطناعي لشركات B2B SaaS والتقنية: استراتيجية الدخول إلى السوق، التسويق، والنمو في نموذج تشغيلي واحد."
+  noindex={true}
+  preloadImage="/images/wojciech-office-hq.webp"
+>
+  <HeroSection
+    eyebrow="مُشغِّل نمو قائم على الذكاء الاصطناعي"
+    h1Primary="أبني أنظمة الإيرادات."
+    h1Secondary="ثم أُشغّلها."
+    lead="عشرون عامًا في استراتيجية الدخول إلى السوق والتسويق والنمو. أدمجها في نموذج تشغيلي واحد قائم على الذكاء الاصطناعي، أبني ما هو ناقص، وأبقى إلى أن يعمل النظام فعليًا."
+    primaryCta={{ label: 'شاهد الأعمال', href: '/ar/' }}
+    secondaryCta={{ label: 'اشترك في النشرة', href: 'https://subscribe.wojciech.io' }}
+    metaLine="GTM · التسويق · النمو × الذكاء الاصطناعي"
+  />
+
+  <MetricsStrip metrics={proof} indexLabel="" />
+
+  <HowIWork
+    eyebrow="كيف أعمل"
+    titlePrimary="لستُ استشاريًا."
+    titleSecondary="أنا مُشغِّل."
+    steps={steps}
+  />
+
+  <ProjectsSection i18n={workI18n} locale="en" />
+  <AILeverage i18n={aiI18n} />
+  <TestimonialsSection i18n={testimonialsI18n} />
+
+  <CTABand
+    kicker="الخطوة التالية"
+    heading="تعرف ما المُعطَّل. لكنك لست متأكدًا مما يجب بناؤه."
+    subtext="أرسل السياق، ونقطة الاختناق، وما يعمل لديك الآن. سأخبرك من أين أبدأ، وهل أنا الشخص المناسب لبنائه."
+    cta="احجز مكالمة"
+    ctaHref="/ar/"
+    ctaSecondary="شاهد الأعمال"
+    ctaSecondaryHref="/ar/"
+  />
+</Layout>

@@ -54,9 +54,30 @@
 }
 
 
+/* IBM Plex Sans Arabic — used only on RTL (ar) pages. */
+@font-face { font-family: 'Plex Arabic'; src: url('/fonts/IBMPlexSansArabic-400.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Plex Arabic'; src: url('/fonts/IBMPlexSansArabic-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Plex Arabic'; src: url('/fonts/IBMPlexSansArabic-700.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+
 @import './tokens.css';
 
 @import "tailwindcss";
+
+/* On Arabic pages route the shared font tokens through Plex Arabic so every
+   component picks it up (Latin glyphs fall back to Geist). */
+html[lang='ar'] {
+  --font-sans: 'Plex Arabic', 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Plex Arabic', 'Geist Mono', ui-monospace, monospace;
+}
+/* The wordmark is the brand: keep it exactly as production — Latin, LTR, original
+   Geist fonts — even on Arabic pages. */
+html[lang='ar'] .wordmark-brand {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+}
+/* RTL: mirror the hero so the photo sits opposite the (now right-aligned) text. */
+html[dir='rtl'] .hero-photo-side { right: auto; left: 0; }
+html[dir='rtl'] .hero-photo-fade { left: auto; right: 0; }
 
 /* Make dark: prefix respond to [data-theme="dark"] on <html>, not prefers-color-scheme */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
