@@ -1,11 +1,13 @@
 ---
+import { getLocaleFromPath } from '../../data/uiStrings';
+const isAr = getLocaleFromPath(Astro.url.pathname) === 'ar';
 ---
 
 <div
   id="search-modal"
   role="dialog"
   aria-modal="true"
-  aria-label="Search"
+  aria-label={isAr ? 'بحث' : 'Search'}
   class="fixed inset-0 z-[200] hidden items-start justify-center px-4 pt-[12vh]"
 >
   <div id="search-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
@@ -13,14 +15,14 @@
   <div class="relative w-full max-w-2xl overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] shadow-2xl">
     <!-- Header bar -->
     <div class="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
-      <span class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">Search</span>
+      <span class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{isAr ? 'بحث' : 'Search'}</span>
       <div class="flex items-center gap-3">
         <kbd class="hidden sm:inline-flex items-center gap-1 rounded border border-[var(--color-border)] bg-[var(--color-surface)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--color-text-dim)]">
           <span>esc</span>
         </kbd>
         <button
           id="search-close"
-          aria-label="Close search"
+          aria-label={isAr ? 'إغلاق البحث' : 'Close search'}
           class="flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -33,7 +35,7 @@
     <!-- Loading state -->
     <div id="search-loading" class="hidden flex-col items-center justify-center gap-3 px-5 py-10">
       <div class="h-5 w-5 animate-spin rounded-full border-2 border-[var(--color-border-2)] border-t-[var(--color-accent)]"></div>
-      <p class="text-xs text-[var(--color-text-dim)]">Loading search&hellip;</p>
+      <p class="text-xs text-[var(--color-text-dim)]">{isAr ? 'جارٍ تحميل البحث…' : 'Loading search…'}</p>
     </div>
 
     <!-- Dev notice (build first) -->
@@ -49,7 +51,7 @@
       id="search-error"
       class="hidden px-5 py-6 text-sm text-[var(--color-text-muted)]"
     >
-      Search index unavailable. Try refreshing the page.
+      {isAr ? 'فهرس البحث غير متاح. حدّث الصفحة وحاول مجددًا.' : 'Search index unavailable. Try refreshing the page.'}
     </p>
 
     <div id="pagefind-ui-root"></div>
@@ -106,11 +108,27 @@
       });
       const PagefindUI = (window as Window & { PagefindUI?: new (opts: Record<string, unknown>) => unknown }).PagefindUI;
       if (!PagefindUI) throw new Error('PagefindUI unavailable');
+      // Native Arabic UI strings for the Pagefind widget on /ar/ pages.
+      const isArabic = document.documentElement.lang === 'ar';
+      const arTranslations = {
+        placeholder: 'ابحث في الموقع',
+        clear_search: 'مسح',
+        load_more: 'تحميل المزيد من النتائج',
+        search_label: 'ابحث في هذا الموقع',
+        filters_label: 'المرشّحات',
+        zero_results: 'لا نتائج لـ [SEARCH_TERM]',
+        many_results: '[COUNT] نتيجة لـ [SEARCH_TERM]',
+        one_result: 'نتيجة واحدة لـ [SEARCH_TERM]',
+        alt_search: 'لا نتائج لـ [SEARCH_TERM]. تُعرض النتائج لـ [DIFFERENT_TERM] بدلًا من ذلك',
+        search_suggestion: 'لا نتائج لـ [SEARCH_TERM]. جرّب أحد البحوث التالية:',
+        searching: 'جارٍ البحث في [SEARCH_TERM]…',
+      };
       new PagefindUI({
         element: '#pagefind-ui-root',
         bundlePath: '/search/',
         showSubResults: true,
         resetStyles: false,
+        ...(isArabic ? { translations: arTranslations } : {}),
       });
     } catch {
       pagefindLoaded = false;
