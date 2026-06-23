@@ -5,13 +5,31 @@ import { projectChrome, type SectionStrings } from '../../data/locales';
 import type { SiteLocale } from '../../data/locale-codes';
 import { accentHeading } from '../../lib/editorial';
 
+type ProjectItem = {
+  cover: 'relora' | 'ads-ai' | 'kamperownia' | 'notch';
+  title: string;
+  description: string;
+  tags: string[];
+  href: string;
+  problem: string;
+  system: string;
+  artifact: string;
+  outcome: string;
+  external: boolean;
+  screenshot?: string;
+};
+
 interface Props {
   i18n?: SectionStrings['work'];
   locale?: SiteLocale;
+  /** Override the default (English) project list, e.g. for the Arabic page. */
+  projects?: ProjectItem[];
+  /** Override chrome labels (Problem/System/…), e.g. for locales not in projectChrome. */
+  chrome?: (typeof projectChrome)['en'];
 }
 
-const { i18n, locale = 'en' } = Astro.props;
-const chrome = projectChrome[locale];
+const { i18n, locale = 'en', projects: projectsProp, chrome: chromeProp } = Astro.props;
+const chrome = chromeProp ?? projectChrome[locale];
 const cardLabels = {
   problem: chrome.problem,
   system: chrome.system,
@@ -31,7 +49,7 @@ const t = {
   ctaLink: i18n?.ctaLink ?? 'Book a call →',
 };
 
-const projects = [
+const defaultProjects: ProjectItem[] = [
   {
     cover: 'relora' as const,
     title: 'Relora',
@@ -82,6 +100,7 @@ const projects = [
   },
 ];
 
+const projects = projectsProp ?? defaultProjects;
 const featured = projects[0];
 const rest = projects.slice(1);
 ---
