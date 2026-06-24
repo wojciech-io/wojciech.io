@@ -26,6 +26,18 @@ interface Props {
   pov: string;
   ctaHeading: string;
   ctaSubtext: string;
+  /** Locale / SEO — default to the canonical English page. */
+  htmlLang?: string;
+  dir?: 'ltr' | 'rtl';
+  ogLocale?: string;
+  canonical?: string;
+  alternates?: { lang: string; href: string }[];
+  /** CTA band labels + targets, localized per page. */
+  ctaKicker?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  ctaSecondary?: string;
+  ctaSecondaryHref?: string;
 }
 
 const {
@@ -42,13 +54,31 @@ const {
   pov,
   ctaHeading,
   ctaSubtext,
+  ctaKicker,
+  htmlLang = 'en',
+  dir = 'ltr',
+  ogLocale,
+  canonical,
+  alternates,
+  ctaLabel = 'Book a call',
+  ctaHref = '/contact/#book-call',
+  ctaSecondary = 'See the work',
+  ctaSecondaryHref = '/work/',
 } = Astro.props as Props;
 
 const h2 = accentHeading(h1Secondary);
 const bh = accentHeading(buildHeading);
 ---
 
-<Layout title={title} description={description}>
+<Layout
+  title={title}
+  description={description}
+  htmlLang={htmlLang}
+  dir={dir}
+  ogLocale={ogLocale}
+  canonical={canonical}
+  alternates={alternates}
+>
   <section class="relative overflow-hidden">
     <div class="hero-grid pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:44px_44px]" aria-hidden="true"></div>
     <div class="relative mx-auto max-w-6xl px-6 py-16 md:py-24">
@@ -91,18 +121,19 @@ const bh = accentHeading(buildHeading);
         ))}
       </div>
 
-      <blockquote class="mt-12 border-l-2 border-[var(--color-accent-cta)] pl-5 max-w-2xl">
+      <blockquote class="mt-12 border-s-2 border-[var(--color-accent-cta)] ps-5 max-w-2xl">
         <p class="text-lg md:text-xl font-normal leading-snug text-[var(--color-text)]">{pov}</p>
       </blockquote>
     </div>
   </section>
 
   <CTABand
+    kicker={ctaKicker}
     heading={ctaHeading}
     subtext={ctaSubtext}
-    cta="Book a call"
-    ctaHref="/contact/#book-call"
-    ctaSecondary="See the work"
-    ctaSecondaryHref="/work/"
+    cta={ctaLabel}
+    ctaHref={ctaHref}
+    ctaSecondary={ctaSecondary}
+    ctaSecondaryHref={ctaSecondaryHref}
   />
 </Layout>
