@@ -22,18 +22,18 @@ const links = [
           <span class="obs-label-accent">404</span>
         </div>
 
-        <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
+        <h1 id="nf-title" class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
           Wrong turn.<br class="hidden md:block" />
           <span class="text-[var(--color-text-muted)]">Right operator.</span>
         </h1>
 
-        <p class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-10">
+        <p id="nf-lead" class="text-lg text-[var(--color-text-muted)] leading-relaxed mb-10">
           This page doesn't exist. Maybe it moved without updating the map.
           The system is working fine. You just need a better route.
         </p>
 
         <!-- Nav links -->
-        <nav class="space-y-3" aria-label="Recovery navigation">
+        <nav id="nf-nav" class="space-y-3" aria-label="Recovery navigation">
           {links.map(({ href, label, desc }) => (
             <a
               href={href}
@@ -51,4 +51,38 @@ const links = [
       </div>
     </div>
   </section>
+
+  {/* The 404 is a single static document served for any unknown path, so it
+      can't be localized at build time. Progressive enhancement: if the visitor
+      404'd under /ar/, switch to Arabic + RTL client-side. Setting lang="ar"
+      alone flips on the gold accent + Arabic font (both scoped to [lang='ar']
+      in tokens.css). English visitors are untouched (no JS branch runs). */}
+  <script is:inline>
+    if (location.pathname.startsWith('/ar/')) {
+      document.documentElement.lang = 'ar';
+      document.documentElement.dir = 'rtl';
+      document.title = '404 · الصفحة غير موجودة';
+      var t = document.getElementById('nf-title');
+      if (t) t.innerHTML = 'منعطف خاطئ.<br class="hidden md:block" /><span class="text-[var(--color-text-muted)]">المشغّل الصحيح.</span>';
+      var l = document.getElementById('nf-lead');
+      if (l) l.textContent = 'هذه الصفحة غير موجودة. ربما انتقلت دون تحديث الخريطة. النظام يعمل جيدًا، أنت فقط بحاجة إلى مسار أفضل.';
+      var nav = document.getElementById('nf-nav');
+      if (nav) {
+        var ar = [
+          ['/ar/',             'الرئيسية',                 'ابدأ من هنا'],
+          ['/ar/work/',        'الأعمال',                  'دراسات حالة وأدلّة'],
+          ['/ar/ai-systems/',  'أنظمة الذكاء الاصطناعي',    'تدفّقات ووكلاء'],
+          ['/ar/insights/',    'المقالات',                 'GTM والذكاء الاصطناعي'],
+        ];
+        nav.innerHTML = ar.map(function (r) {
+          return '<a href="' + r[0] + '" class="group flex items-center gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-4 card-hover">' +
+            '<span class="text-[var(--color-accent)] font-mono text-sm shrink-0 transition-transform duration-150 group-hover:-translate-x-0.5">←</span>' +
+            '<div class="flex-1 min-w-0">' +
+            '<span class="text-sm font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">' + r[1] + '</span>' +
+            '<span class="text-xs text-[var(--color-text-dim)] mr-2">' + r[2] + '</span></div>' +
+            '<span class="text-xs text-[var(--color-text-dim)] font-mono shrink-0" dir="ltr">' + r[0] + '</span></a>';
+        }).join('');
+      }
+    }
+  </script>
 </Layout>
