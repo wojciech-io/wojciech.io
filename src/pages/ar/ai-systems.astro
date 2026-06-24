@@ -1,0 +1,295 @@
+---
+/* Arabic (RTL) AI Systems page in the production layout. Standalone Arabic copy,
+   same structure as /ai-systems/ (AiSystemsContent). Prose, headings, principles,
+   stack labels, tool cards and CTA are native Arabic; the terminal mock-up and the
+   operating-loop diagram stay English — they are technical/code artefacts read LTR,
+   consistent with the agreed "keep code-style mockups in English" approach. */
+import Layout from '../../layouts/Layout.astro';
+import SectionHeader from '../../components/ui/SectionHeader.astro';
+import ProofCard from '../../components/ui/ProofCard.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import PageBackdrop from '../../components/ui/PageBackdrop.astro';
+import VideoLoop from '../../components/ui/VideoLoop.astro';
+import { SITE } from '../../data/site';
+
+const principles = [
+  { n: '01', title: 'أصلِح النظام أولًا', body: 'الذكاء الاصطناعي لا يُصلح GTM معطوبًا. إذا تسرّب المسار عند التأهيل، فالتسلسلات المخصّصة بالذكاء الاصطناعي تذهب إلى لا مكان. أصمّم النظام أولًا، ثم أجد أين يخلق الذكاء الاصطناعي رافعة حقيقية.' },
+  { n: '02', title: 'بمستوى مُشغِّل، لا بمستوى عرض', body: 'أغلفة الذكاء الاصطناعي العامة لا تصمد أمام العمل الحقيقي. أبني أدوات مُجهّزة بالقياس، خاصة بسير العمل، ومستخدمة في الإنتاج، لا معروضة في شريحة.' },
+  { n: '03', title: 'تراكمي، لا لقطة واحدة', body: 'الهدف سير عمل يصبح أسرع وأذكى مع الوقت. لا موجِّه يُبهر مرة، ثم ينكسر في التشغيل الثاني، ويُهجر بعد أسبوعين.' },
+  { n: '04', title: 'كل حلقة تُقاس', body: 'سير عمل الذكاء الاصطناعي بلا حلقات تغذية راجعة لا يتحسّن، بل ينحرف. كل نظام أبنيه يحمل القياس في صميمه، لتعرف ما يعمل، وما لا يعمل، وما الذي يجب تغييره.' },
+];
+
+const tools = [
+  { title: 'AdsAI · مساعد الإعلانات', description: 'دورة حياة إعلان كاملة في الذكاء الاصطناعي: موجز ← توليد ← تقييم ← تكرار ← تجهيز نسخ للنشر. مبني لمُشغِّلي GTM، لا لسير عمل الوكالات.', tags: ['إعلانات', 'LLMs', 'GTM'] },
+  { title: 'Claude Code · حزمة بداية وكيل GTM', description: 'أساس مفتوح المصدر لبناء وكلاء GTM باستخدام Claude Code. مصمّم ليُطلق المُشغِّلون دون البدء من الصفر.', tags: ['Claude Code', 'وكلاء', 'مفتوح المصدر'], href: 'https://github.com/wojciechluszczynski/gtm-agent-repo' },
+  { title: 'Notch · تطبيق macOS أصلي', description: 'مبني بـ Codex وXcode. دليل على أن التطوير بمساعدة الذكاء الاصطناعي يغطّي التطبيقات الأصلية، لا الويب فقط، ويمدّ يد المُشغِّل أبعد من المتصفح.', tags: ['macOS', 'Swift', 'Codex'], href: '/apps/notch/' },
+  { title: 'دليل تبنّي الذكاء الاصطناعي لـ B2B SaaS', description: 'إطار داخلي لتبنٍّ متراكم للذكاء الاصطناعي عبر شركة B2B SaaS: من النمو والتسويق إلى المنتج والعمليات.', tags: ['تبنّي الذكاء الاصطناعي', 'إطار', 'B2B SaaS'] },
+  { title: 'تدفقات CRM والتواصل الصادر بالذكاء الاصطناعي', description: 'التنقيب والتسلسل والتقييم وإثراء الـ CRM، أُعيد تصميمها مع الذكاء الاصطناعي في الحلقة لتقليل العمل اليدوي وتحسين جودة الإشارة.', tags: ['CRM', 'تواصل صادر', 'ذكاء اصطناعي'] },
+  { title: 'تدفقات SEO والمحتوى بالذكاء الاصطناعي', description: 'من بحث الكلمات المفتاحية وتوليد الموجزات إلى تقييم المحتوى البرمجي. مبني لتوسيع إنتاج المحتوى دون توسيع عدد الموظفين.', tags: ['SEO', 'محتوى', 'ذكاء اصطناعي'] },
+];
+
+const stackItems = [
+  { label: 'الاستدلال', tools: ['Claude Opus', 'GPT-4o', 'Gemini'] },
+  { label: 'البرمجة والوكلاء', tools: ['Claude Code', 'Cursor', 'Codex'] },
+  { label: 'الأتمتة', tools: ['Make', 'n8n', 'Zapier'] },
+  { label: 'التحليلات', tools: ['Amplitude', 'Mixpanel', 'Looker'] },
+  { label: 'CRM', tools: ['HubSpot', 'Salesforce', 'Pipedrive'] },
+  { label: 'الإثراء', tools: ['Ahrefs', 'Brandwatch', 'SimilarWeb'] },
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: SITE.url + '/ar/' },
+    { '@type': 'ListItem', position: 2, name: 'أنظمة الذكاء الاصطناعي', item: SITE.url + '/ar/ai-systems/' },
+  ],
+};
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'أنظمة GTM قائمة على الذكاء الاصطناعي وأتمتة سير العمل',
+  url: SITE.url + '/ar/ai-systems/',
+  inLanguage: 'ar',
+  description: 'سير عمل قائم على الذكاء الاصطناعي، ووكلاء GTM، ورافعة تشغيلية لشركات B2B SaaS. معمارية وأتمتة مبنية بـ Claude Code وMCP وأدوات بمستوى الإنتاج.',
+  provider: { '@type': 'Person', name: 'فويتشيك لوشتشينسكي', url: SITE.url + '/ar/' },
+  serviceType: 'أنظمة الذكاء الاصطناعي وأتمتة GTM',
+  areaServed: ['السعودية', 'الرياض', 'دول مجلس التعاون الخليجي', 'Worldwide'],
+};
+---
+
+<Layout
+  htmlLang="ar"
+  dir="rtl"
+  ogLocale="ar_SA"
+  title="أنظمة الذكاء الاصطناعي"
+  description="سير عمل قائم على الذكاء الاصطناعي، ووكلاء GTM، ورافعة تشغيلية. كيف أبني بـ Claude Code وMCP والأتمتة: المعمارية، والقرارات، وما الذي يعمل في الإنتاج."
+  ogImage="/og/pages/ai-systems.png"
+  canonical="/ar/ai-systems/"
+  alternates={[
+    { lang: 'en', href: 'https://wojciech.io/ai-systems/' },
+    { lang: 'ar', href: 'https://wojciech.io/ar/ai-systems/' },
+    { lang: 'x-default', href: 'https://wojciech.io/ai-systems/' },
+  ]}
+  schema={[breadcrumbSchema, serviceSchema]}
+>
+  <!-- Hero with terminal mockup -->
+  <section class="relative pt-12 pb-10 md:pt-24 md:pb-20 border-b border-[var(--color-border)] overflow-hidden">
+    <PageBackdrop src="/images/wojciech-speaking-color.webp" position="center 35%" opacity={0.14} eager />
+
+    <div class="relative mx-auto max-w-6xl px-6">
+      <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+
+        <!-- Right (RTL start): text -->
+        <div class="flex-1 max-w-xl">
+          <div class="reveal-up flex items-center gap-3 mb-4" data-reveal-index="0">
+            <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+            <span class="obs-label-accent">أنظمة الذكاء الاصطناعي</span>
+          </div>
+          <h1 class="reveal-up text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5" data-reveal-index="1" transition:name="page-title-ai-systems">
+            <span>الذكاء الاصطناعي في صميم المعمارية.</span><br class="hidden md:block" />
+            <span class="text-[var(--color-text-muted)]">لا مُضافًا في النهاية.</span>
+          </h1>
+          <p class="reveal-up text-lg text-[var(--color-text-muted)] leading-relaxed mb-8" data-reveal-index="2">
+            معظم الفرق تضيف الذكاء الاصطناعي إلى المهام. أنا أضيفه إلى الأنظمة. الفرق هو ما إذا كنت ستحصل على كاتب أسرع، أم نموذج تشغيل مختلف: نموذج يتراكم، ويصحّح نفسه، ويعمل دون بشر في كل حلقة.
+          </p>
+          <div class="reveal-up flex flex-wrap gap-3" data-reveal-index="3">
+            <a href="#principles" class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors text-sm">
+              كيف أفكّر في الذكاء الاصطناعي
+            </a>
+            <a href="#tools" class="btn-press inline-flex items-center gap-2 border border-[var(--color-border-2)] text-[var(--color-text)] font-medium px-6 py-3 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 transition-colors text-sm">
+              ما الذي بنيته
+            </a>
+          </div>
+        </div>
+
+        <!-- Left (RTL end): terminal mockup — code artefact, kept English + LTR -->
+        <div class="reveal-up w-full lg:w-[460px] shrink-0" data-reveal-index="2" dir="ltr">
+          <div class="rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] overflow-hidden shadow-2xl">
+            <div class="flex items-center gap-2 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
+              <span class="w-3 h-3 rounded-full bg-red-500/60"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500/60"></span>
+              <span class="w-3 h-3 rounded-full bg-green-500/60"></span>
+              <span class="ml-3 text-xs text-[var(--color-text-dim)] font-mono">gtm-agent · claude-code</span>
+            </div>
+            <div class="p-5 font-mono text-xs space-y-2 leading-relaxed text-left">
+              <p><span class="text-[var(--color-accent)]">$ </span><span class="text-[var(--color-text)]">claude run gtm-agent --client acme-saas</span></p>
+              <p class="text-[var(--color-text-dim)]">▸ Loading CLAUDE.md operator identity...</p>
+              <p class="text-[var(--color-text-dim)]">▸ Connecting MCP tools (Ahrefs, HubSpot, LinkedIn)...</p>
+              <p class="text-[var(--color-text-dim)]">▸ Reading client memory: <span class="text-[var(--color-text-muted)]">acme-saas.md</span></p>
+              <p class="text-[var(--color-text-dim)]">▸ Fetching ICP signal for 247 prospects...</p>
+              <p class="text-[var(--color-text-dim)]">▸ Scoring leads against ICP matrix...</p>
+              <p><span class="text-green-400/80">✓ </span><span class="text-[var(--color-text)]">12 high-fit leads enriched</span></p>
+              <p><span class="text-green-400/80">✓ </span><span class="text-[var(--color-text)]">Sequences drafted and staged in HubSpot</span></p>
+              <p><span class="text-green-400/80">✓ </span><span class="text-[var(--color-text)]">Memory file updated with new signals</span></p>
+              <p class="pt-1 border-t border-[var(--color-border)] text-[var(--color-text-dim)] mt-2">
+                Cost: <span class="text-[var(--color-accent)]">$3.40</span> · Time: <span class="text-[var(--color-accent)]">4m 12s</span>
+              </p>
+              <p><span class="text-[var(--color-accent)]">$ </span><span class="animate-pulse text-[var(--color-text)]">_</span></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section id="principles" class="scroll-mt-20 py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader eyebrow="كيف أفكّر في الذكاء الاصطناعي" heading="أربعة مبادئ." class="mb-12" />
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {principles.map(({ n, title, body }, i) => (
+          <div class="reveal-up relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 card-hover group" data-reveal-index={i}>
+            <p class="relative text-xs font-semibold text-[var(--color-accent)] uppercase tracking-widest mb-5">{n}</p>
+            <h3 class="relative text-base font-semibold text-[var(--color-text)] mb-2">{title}</h3>
+            <p class="relative text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Operating loop diagram — technical schematic, kept English + LTR -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader
+        eyebrow="حلقة التشغيل"
+        heading="أين يقع الذكاء الاصطناعي في النظام."
+        lead="ليس مساعد مهام مُضافًا في النهاية. الذكاء الاصطناعي يدير الإثراء والتقييم والتنفيذ؛ والمُشغِّل يملك القرار؛ وكل حلقة تُقاس وتُغذّي التالية."
+        class="mb-10"
+      />
+
+      <div
+        class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-8 overflow-x-auto focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/45"
+        tabindex="0"
+        dir="ltr"
+        aria-label="مخطّط حلقة تشغيل GTM (قابل للتمرير)"
+      >
+        <svg viewBox="0 0 1000 300" role="img" class="w-full min-w-[760px] h-auto"
+          aria-label="GTM operating loop: signals, enrichment, ICP scoring, operator decision, execution, measurement, feeding back to signals">
+          <defs>
+            <marker id="ai-arrow" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+              <path d="M0,0 L7,3.2 L0,6.4 Z" fill="var(--color-text-dim)" />
+            </marker>
+          </defs>
+
+          {[
+            { x: 20,  label: 'Signals',    sub: 'GA4 · intent · CRM',     kind: 'data' },
+            { x: 180, label: 'Enrich',     sub: 'firmo · tech · people',  kind: 'ai' },
+            { x: 340, label: 'Score · ICP', sub: '0–100 fit',             kind: 'ai' },
+            { x: 500, label: 'Decide',     sub: 'operator owns this',     kind: 'human' },
+            { x: 660, label: 'Act',        sub: 'outbound · content · ads', kind: 'ai' },
+            { x: 820, label: 'Measure',    sub: 'dashboards · D1',        kind: 'data' },
+          ].map((node, i) => (
+            <>
+              {i < 5 && (
+                <line x1={node.x + 160} y1="120" x2={node.x + 160 + 20} y2="120"
+                  stroke="var(--color-text-dim)" stroke-width="1.5" marker-end="url(#ai-arrow)" />
+              )}
+              <g>
+                <rect x={node.x} y="80" width="160" height="80" rx="14"
+                  fill="var(--color-surface-2)"
+                  stroke={node.kind === 'human' ? 'var(--color-accent)' : 'var(--color-border-2)'}
+                  stroke-width={node.kind === 'human' ? '2' : '1'} />
+                {node.kind === 'ai' && (
+                  <text x={node.x + 146} y="100" text-anchor="end"
+                    font-family="ui-monospace, monospace" font-size="10" font-weight="700"
+                    fill="var(--color-accent)">AI</text>
+                )}
+                {node.kind === 'human' && (
+                  <text x={node.x + 150} y="100" text-anchor="end"
+                    font-size="10" font-weight="700" fill="var(--color-accent)">HUMAN</text>
+                )}
+                <text x={node.x + 14} y="128" font-family="var(--font-sans, system-ui)" font-size="16"
+                  font-weight="700" fill="var(--color-text)">{node.label}</text>
+                <text x={node.x + 14} y="146" font-size="10.5" fill="var(--color-text-dim)">{node.sub}</text>
+              </g>
+            </>
+          ))}
+
+          <path d="M 900 160 L 900 250 L 100 250 L 100 160"
+            fill="none" stroke="var(--color-accent)" stroke-width="1.5"
+            stroke-dasharray="5 5" marker-end="url(#ai-arrow)" opacity="0.7" />
+          <text x="500" y="244" text-anchor="middle" font-size="11.5" font-weight="600"
+            fill="var(--color-accent)">Compounding loop: every cycle is measured and feeds the next</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stack -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader eyebrow="حزمة التقنية" heading="أدوات أستخدمها فعلًا." class="mb-10" />
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {stackItems.map(({ label, tools: t }) => (
+          <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+            <p class="obs-label-accent block mb-3">{label}</p>
+            <div class="flex flex-wrap gap-2">
+              {t.map((tool) => (
+                <span class="text-xs px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)]" dir="ltr">{tool}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Tools built -->
+  <section id="tools" class="scroll-mt-20 py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader eyebrow="ما الذي بنيته" heading="سير عمل وأدوات ذكاء اصطناعي في الإنتاج." class="mb-12" />
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {tools.map(({ title, description, tags, href }, i) => (
+          <div class="reveal-up" data-reveal-index={i}>
+            <ProofCard title={title} description={description} tags={tags} href={href} viewLabel="عرض" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Live demo -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader
+        eyebrow="عرض حيّ"
+        heading="أداة ذكاء اصطناعي مُطلقة."
+        lead="GrowthHub: لوحة نمو لـ B2B SaaS بمقاييس قمع حيّة، ولقطات للمسار، وتتبّع شرائح ICP. تُزامن ليليًا من Pipedrive."
+        class="mb-10"
+      />
+
+      <VideoLoop
+        src="/media/growthhub-demo"
+        poster="/media/growthhub-demo-poster.webp"
+        width={1200}
+        height={730}
+        alt="تسجيل شاشة للوحة GrowthHub"
+        class="rounded-[var(--radius-card)] shadow-[var(--shadow-card)] mb-6 reveal-up"
+      />
+
+      <div class="flex items-center gap-4 mt-2">
+        <a
+          href="https://gh.wojciech.io/demo"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-press inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors text-sm"
+        >
+          افتح العرض الحيّ
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <span class="text-xs text-[var(--color-text-dim)]">عرض حيّ، بلا تسجيل دخول</span>
+      </div>
+    </div>
+  </section>
+
+  <CTABand
+    kicker="الخطوة التالية"
+    heading="تريد الذكاء الاصطناعي في حزمة GTM لديك، بشكل صحيح؟"
+    subtext="ليست ورشة. وليس عرض حالات استخدام. نظام فعلي: مبني، ومُجهّز بالقياس، ويعمل. احجز مكالمة."
+    cta="احجز مكالمة"
+    ctaHref="/ar/contact/#book-call"
+  />
+</Layout>

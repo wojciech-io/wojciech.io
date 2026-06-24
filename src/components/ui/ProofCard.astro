@@ -14,9 +14,11 @@ interface Props {
   icon?: string;
   cluster?: string;
   featured?: boolean;
+  /** "View" affordance label — localize on non-EN pages. */
+  viewLabel?: string;
 }
 
-const { title, description, tags = [], metrics = [], href, image, icon, featured = false } = Astro.props;
+const { title, description, tags = [], metrics = [], href, image, icon, featured = false, viewLabel = 'View' } = Astro.props;
 ---
 
 <div class:list={[
@@ -89,8 +91,8 @@ const { title, description, tags = [], metrics = [], href, image, icon, featured
     {/* Arrow if has link */}
     {href && (
       <div class="flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors duration-150">
-        <span>View</span>
-        <svg class="w-3 h-3 translate-x-0 group-hover:translate-x-1 transition-transform duration-150" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <span>{viewLabel}</span>
+        <svg class="rtl-flip-x w-3 h-3 translate-x-0 group-hover:translate-x-1 transition-transform duration-150" viewBox="0 0 12 12" fill="none" aria-hidden="true">
           <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
