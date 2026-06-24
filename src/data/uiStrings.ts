@@ -316,7 +316,7 @@ export function getUiStringsForPath(pathname: string): UiStrings {
 /** Pages that have a real Arabic version. Nav links to anything else stay on
  *  the English route so the Arabic chrome never points at a 404. Extend as
  *  more /ar/ pages ship. */
-const AR_LOCALIZED_PATHS = new Set(['/work/', '/contact/', '/about/', '/ai-systems/', '/insights/']);
+const AR_LOCALIZED_PATHS = new Set(['/work/', '/contact/', '/about/', '/ai-systems/', '/insights/', '/gtm/', '/marketing/', '/growth/']);
 
 /** Prefix an internal path with the current locale segment when not EN. */
 export function localizeHref(href: string, locale: UiLocale): string {
@@ -339,10 +339,23 @@ export function getPrimaryNavLinks(pathname: string) {
   const about    = { label: t.nav.about,    href: localizeHref('/about/', locale),                             minWidth: '4rem' };
   const contact  = { label: t.nav.contact,  href: localizeHref('/contact/', locale),                           minWidth: '4rem' };
 
-  // The GTM / Marketing / Growth lens pages exist in EN only. Surfacing them on a
-  // localized page would mix English labels into a localized bar AND link out to
-  // English pages (breaking the locale). Until localized lens pages ship, only the
-  // EN nav carries the three lenses; other locales keep the clean classic nav.
+  // Arabic carries the three lenses too — native /ar/ pages exist. Labels are
+  // Arabic (GTM stays an acronym); hrefs point at the localized pages.
+  if (locale === 'ar') {
+    return [
+      work,
+      { label: 'GTM',     href: '/ar/gtm/',       minWidth: '3rem' },
+      { label: 'التسويق', href: '/ar/marketing/', minWidth: '5rem' },
+      { label: 'النمو',   href: '/ar/growth/',    minWidth: '4rem' },
+      insights,
+      about,
+      contact,
+    ];
+  }
+
+  // The lens pages exist in EN (and AR) only. On other localized pages, surfacing
+  // them would mix English labels into a localized bar AND link out to English
+  // pages (breaking the locale), so those locales keep the clean classic nav.
   if (locale !== 'en') {
     return [work, insights, about, contact];
   }
