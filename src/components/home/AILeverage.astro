@@ -1,12 +1,16 @@
 ---
 import type { SectionStrings } from '../../data/locales';
 import { accentHeading } from '../../lib/editorial';
+import { getLocaleFromPath } from '../../data/uiStrings';
 
 interface Props {
   i18n?: SectionStrings['ai'];
 }
 
 const { i18n } = Astro.props;
+// Only the Arabic homepage has a localized AI Systems page; every other locale
+// keeps linking to the canonical English page (no regression).
+const systemsHref = getLocaleFromPath(Astro.url.pathname) === 'ar' ? '/ar/ai-systems/' : '/ai-systems/';
 const defaultRows = [
   { label: 'Ad creation loop',    before: 'Days',              after: 'Minutes'         },
   { label: 'CRM enrichment',      before: 'Manual / BDR time', after: 'Automated'       },
@@ -58,7 +62,7 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
         <p class="text-sm text-[var(--color-text-muted)] leading-snug mb-4">
           {t.body}
         </p>
-        <a href="/ai-systems/" class="text-sm text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors font-medium mb-8 inline-block">
+        <a href={systemsHref} class="text-sm text-[var(--color-accent-hi)] hover:text-[var(--color-text)] transition-colors font-medium mb-8 inline-block">
           {t.link}
         </a>
 
@@ -139,7 +143,7 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
           </div>
         </div>
 
-        <a href="/ai-systems/" class="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors">
+        <a href={systemsHref} class="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors">
           {t.allSystemsLink}
         </a>
       </div>
