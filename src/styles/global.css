@@ -75,9 +75,23 @@ html[lang='ar'] .wordmark-brand {
   --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, monospace;
 }
-/* RTL: mirror the hero so the photo sits opposite the (now right-aligned) text. */
+/* RTL: mirror the hero so the photo sits opposite the (now right-aligned) text.
+   The photo moves to the left; its inner (text-facing) edge is now the RIGHT
+   edge, so the blend gradient must darken that edge — flip both position AND
+   direction, or the photo shows a hard rectangular edge against the copy. */
 html[dir='rtl'] .hero-photo-side { right: auto; left: 0; }
-html[dir='rtl'] .hero-photo-fade { left: auto; right: 0; }
+html[dir='rtl'] .hero-photo-fade {
+  left: auto;
+  right: 0;
+  background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
+}
+/* Mirror the colour aura + grid focus so they sit behind the right-aligned
+   Arabic headline instead of the (now left-side) photo. */
+html[dir='rtl'] .hero-aura { left: auto; right: -120px; }
+html[dir='rtl'] .hero-grid {
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 72% 32%, #000 38%, transparent 100%);
+  mask-image: radial-gradient(ellipse 85% 75% at 72% 32%, #000 38%, transparent 100%);
+}
 /* RTL: horizontal "forward" arrow icons must point left, not right. */
 html[dir='rtl'] .rtl-flip-x { transform: scaleX(-1); }
 
