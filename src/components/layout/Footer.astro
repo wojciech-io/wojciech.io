@@ -9,7 +9,7 @@ const t = getUiStringsForPath(pathname);
 const locale = getLocaleFromPath(pathname);
 
 const contactHref = localizeHref('/contact/', locale);
-const insightsHref = locale === 'pl' ? '/pl/insights/' : '/insights/';
+const insightsHref = locale === 'pl' ? '/pl/insights/' : locale === 'ar' ? '/ar/insights/' : '/insights/';
 
 const isAr = locale === 'ar';
 
@@ -34,8 +34,8 @@ const nav = [
   ...lensLinks,
   { label: t.nav.aiSystems,  href: localizeHref('/ai-systems/', locale) },
   { label: t.nav.insights,   href: insightsHref },
-  { label: t.nav.tools,      href: '/resources/' },
-  { label: t.nav.stack,      href: '/stack/' },
+  { label: t.nav.tools,      href: isAr ? '/ar/resources/' : '/resources/' },
+  { label: t.nav.stack,      href: isAr ? '/ar/stack/'     : '/stack/' },
   { label: t.nav.about,      href: localizeHref('/about/',      locale) },
   { label: t.nav.contact,    href: contactHref },
 ];
