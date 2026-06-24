@@ -5,20 +5,33 @@ import { resolve } from 'node:path';
 
 const fontRegular = readFileSync(resolve(process.cwd(), 'public/fonts/Geist-Regular.ttf'));
 const fontBold = readFileSync(resolve(process.cwd(), 'public/fonts/Geist-Bold.ttf'));
+// IBM Plex Sans Arabic (OFL) for Arabic OG cards. Converted from the shipped
+// woff2 to ttf because Satori cannot decode woff2.
+const fontArRegular = readFileSync(resolve(process.cwd(), 'public/fonts/IBMPlexSansArabic-400.ttf'));
+const fontArBold = readFileSync(resolve(process.cwd(), 'public/fonts/IBMPlexSansArabic-700.ttf'));
 
 export interface OgImageInput {
   title: string;
   eyebrow: string;
   description?: string;
   meta?: string;
+  /** When 'ar', render RTL with the Arabic font + the /ar/ gold accent. */
+  lang?: 'en' | 'ar';
 }
 
 export const OG_IMAGE_WIDTH = 1200;
 export const OG_IMAGE_HEIGHT = 630;
 
-export async function renderOgImage({ title, eyebrow, description, meta }: OgImageInput) {
+export async function renderOgImage({ title, eyebrow, description, meta, lang }: OgImageInput) {
   const titleSize = title.length > 70 ? '48px' : title.length > 55 ? '54px' : '64px';
-  const secondary = description || meta || 'AI-native revenue systems for B2B SaaS.';
+  const isAr = lang === 'ar';
+  // /ar/ brand is metallic gold; everything else keeps the lime accent.
+  const accent = isAr ? '#d4af37' : '#ebff00';
+  const accentGlow = isAr ? 'rgba(212,175,55,0.20)' : 'rgba(235,255,0,0.20)';
+  const fontFamily = isAr ? 'PlexAr' : 'Geist';
+  const dir = isAr ? 'rtl' : 'ltr';
+  const tagline = isAr ? 'مهندس GTM · باني أنظمة قائمة على الذكاء الاصطناعي' : 'GTM ARCHITECT · AI-NATIVE BUILDER';
+  const secondary = description || meta || (isAr ? 'أنظمة إيراد قائمة على الذكاء الاصطناعي لشركات B2B SaaS.' : 'AI-native revenue systems for B2B SaaS.');
 
   const svg = await satori(
     {
@@ -32,7 +45,8 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
           flexDirection: 'column',
           justifyContent: 'space-between',
           padding: '68px',
-          fontFamily: 'Geist',
+          fontFamily,
+          direction: dir,
           position: 'relative',
         },
         children: [
@@ -98,6 +112,8 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
               style: {
                 position: 'relative',
                 display: 'flex',
+                flexDirection: isAr ? 'row-reverse' : 'row',
+                justifyContent: isAr ? 'flex-end' : 'flex-start',
                 alignItems: 'center',
                 gap: '16px',
               },
@@ -106,7 +122,7 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
                   type: 'div',
                   props: {
                     style: {
-                      background: '#ebff00',
+                      background: accent,
                       color: '#0a0a0a',
                       fontSize: '14px',
                       fontWeight: 700,
@@ -130,14 +146,14 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
                             width: '6px',
                             height: '6px',
                             borderRadius: '999px',
-                            background: '#ebff00',
+                            background: accent,
                           },
                         },
                       },
                       {
                         type: 'div',
                         props: {
-                          style: { color: '#7a7a7a', fontSize: '14px', letterSpacing: '0.04em' },
+                          style: { color: '#7a7a7a', fontSize: '14px', letterSpacing: '0.04em', direction: 'ltr' },
                           children: meta || 'wojciech.io',
                         },
                       },
@@ -155,13 +171,14 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
+                alignItems: isAr ? 'flex-end' : 'flex-start',
                 gap: '22px',
               },
               children: [
                 {
                   type: 'div',
                   props: {
-                    style: { width: '54px', height: '4px', borderRadius: '2px', background: '#ebff00' },
+                    style: { width: '54px', height: '4px', borderRadius: '2px', background: accent },
                   },
                 },
                 {
@@ -209,7 +226,7 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
                 {
                   type: 'div',
                   props: {
-                    style: { display: 'flex', alignItems: 'center', gap: '12px' },
+                    style: { display: 'flex', alignItems: 'center', gap: '12px', direction: 'ltr' },
                     children: [
                       {
                         type: 'div',
@@ -221,7 +238,7 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
                             width: '34px',
                             height: '34px',
                             borderRadius: '8px',
-                            background: '#ebff00',
+                            background: accent,
                             color: '#0a0a0a',
                             fontSize: '20px',
                             fontWeight: 700,
@@ -244,7 +261,7 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
                             {
                               type: 'span',
                               props: {
-                                style: { color: '#ebff00', fontSize: '19px', fontWeight: 700 },
+                                style: { color: accent, fontSize: '19px', fontWeight: 700 },
                                 children: '.io',
                               },
                             },
@@ -258,7 +275,7 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
                   type: 'div',
                   props: {
                     style: { color: '#6b6b6b', fontSize: '15px', letterSpacing: '0.06em' },
-                    children: 'GTM ARCHITECT · AI-NATIVE BUILDER',
+                    children: tagline,
                   },
                 },
               ],
@@ -273,6 +290,8 @@ export async function renderOgImage({ title, eyebrow, description, meta }: OgIma
       fonts: [
         { name: 'Geist', data: fontRegular, weight: 400, style: 'normal' },
         { name: 'Geist', data: fontBold, weight: 700, style: 'normal' },
+        { name: 'PlexAr', data: fontArRegular, weight: 400, style: 'normal' },
+        { name: 'PlexAr', data: fontArBold, weight: 700, style: 'normal' },
       ],
     },
   );
