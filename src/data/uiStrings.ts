@@ -335,7 +335,10 @@ export function getPrimaryNavLinks(pathname: string) {
   const locale = getLocaleFromPath(pathname);
   const t = getUiStrings(locale);
   const work     = { label: t.nav.work,     href: localizeHref('/work/', locale),                              minWidth: '4rem' };
-  const insights = { label: t.nav.insights, href: localizeHref('/insights/', locale),                          minWidth: '4rem' };
+  // Only EN, PL and AR have an insights index; every other locale falls back to
+  // the English page (a localized /<locale>/insights/ would 404).
+  const insightsHref = locale === 'pl' ? '/pl/insights/' : locale === 'ar' ? '/ar/insights/' : '/insights/';
+  const insights = { label: t.nav.insights, href: insightsHref,                                                minWidth: '4rem' };
   const about    = { label: t.nav.about,    href: localizeHref('/about/', locale),                             minWidth: '4rem' };
   const contact  = { label: t.nav.contact,  href: localizeHref('/contact/', locale),                           minWidth: '4rem' };
 
