@@ -1,0 +1,463 @@
+---
+/* Arabic (RTL) insights index in the production layout. Same structure and
+   components as /insights/, Arabic chrome, dir=rtl. The article catalogue is
+   English (articles ship EN+PL only), so the cards keep their English titles
+   and link to the English articles — only the page chrome is Arabic. */
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import { SITE } from '../../../data/site';
+import {
+  insightSlug,
+  isLocalePost,
+  sortInsights,
+} from '../../../lib/insights';
+
+const allPosts = (await getCollection('insights', isLocalePost('en'))).sort(sortInsights);
+
+const featuredPost = allPosts.find(p => p.data.featured);
+const restPosts = allPosts.filter(p => p !== featuredPost);
+
+const usedCategories = [...new Set(allPosts.map(p => p.data.category).filter(Boolean))] as string[];
+const categories = ['All', ...usedCategories.sort()];
+
+const categoryCounts: Record<string, number> = { All: allPosts.length };
+for (const p of allPosts) {
+  if (p.data.category) {
+    categoryCounts[p.data.category] = (categoryCounts[p.data.category] ?? 0) + 1;
+  }
+}
+
+const byDate = [...allPosts].sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const showLatestBand = allPosts.length >= 7;
+const latestPosts = showLatestBand ? byDate.slice(0, 3) : [];
+
+const author = {
+  name: 'Wojciech Łuszczyński',
+  avatar: 'https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=56&r=g',
+};
+
+/* Category display labels in Arabic. The data-* values stay English so they
+   match the (English) article category metadata and the filter logic. */
+const catLabelsAr: Record<string, string> = {
+  All: 'الكل',
+  'AI Systems': 'أنظمة الذكاء الاصطناعي',
+  'GTM Architecture': 'معمارية GTM',
+  'Operator Playbooks': 'أدلة المُشغِّل',
+  Products: 'منتجات',
+};
+const catLabel = (c?: string) => (c ? catLabelsAr[c] ?? c : 'مقال');
+
+/* Read time, Arabic suffix (article bodies are English; word count is the same). */
+const readTimeAr = (body = '') =>
+  `${Math.max(4, Math.ceil(body.split(/\s+/).filter(Boolean).length / 220))} دقيقة قراءة`;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: SITE.url + '/ar/' },
+    { '@type': 'ListItem', position: 2, name: 'رؤى', item: SITE.url + '/ar/insights/' },
+  ],
+};
+const articleListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'رؤى في الذكاء الاصطناعي والـ GTM · ملاحظات مُشغِّل',
+  url: SITE.url + '/ar/insights/',
+  inLanguage: 'ar',
+  author: { '@type': 'Person', name: 'فويتشيك لوشتشينسكي', url: SITE.url + '/ar/' },
+  blogPost: allPosts.slice(0, 10).map((p) => {
+    const slug = insightSlug(p);
+    return {
+      '@type': 'BlogPosting',
+      headline: p.data.title,
+      description: p.data.description,
+      url: `${SITE.url}/insights/${slug}/`,
+      datePublished: p.data.publishedAt.toISOString(),
+      keywords: p.data.tags.join(', '),
+    };
+  }),
+};
+
+/* Western numerals are kept site-wide on /ar/, so dates stay in en-GB form. */
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+const coverCfg: Record<string, { bg: string; fg: string; accent: string }> = {
+  'AI Systems':         { bg: '#0d1117', fg: '#e2e8f0', accent: '#a78bfa' },
+  'GTM Architecture':   { bg: '#0f0a00', fg: '#fef3c7', accent: '#f59e0b' },
+  'Operator Playbooks': { bg: '#001a10', fg: '#d1fae5', accent: '#34d399' },
+  'Products':           { bg: '#00111f', fg: '#dbeafe', accent: '#60a5fa' },
+  'default':            { bg: '#08080a', fg: '#e4e4e7', accent: '#c9a227' },
+};
+const getCover = (cat?: string) => coverCfg[cat ?? ''] ?? coverCfg['default'];
+
+const tagCls = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)] border-[var(--color-border)]';
+---
+
+<Layout
+  htmlLang="ar"
+  dir="rtl"
+  ogLocale="ar_SA"
+  title="رؤى · ملاحظات مُشغِّل في الذكاء الاصطناعي والـ GTM"
+  description="ملاحظات ميدانية عن أنظمة الذكاء الاصطناعي، معمارية GTM، وتصميم أنظمة الإيراد. أنماط عملية من مُشغِّل يبني هذه الأنظمة ويُشغّلها في الإنتاج."
+  ogImage="/og/pages/insights.png"
+  canonical="/ar/insights/"
+  alternates={[
+    { lang: 'en', href: 'https://wojciech.io/insights/' },
+    { lang: 'ar', href: 'https://wojciech.io/ar/insights/' },
+    { lang: 'x-default', href: 'https://wojciech.io/insights/' },
+  ]}
+  schema={[breadcrumbSchema, articleListSchema]}
+>
+  <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
+
+    <!-- Header -->
+    <div class="mb-10 max-w-3xl">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">رؤى</span>
+      </div>
+      <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4" transition:name="page-title-insights">
+        ملاحظات ميدانية حول أنظمة الذكاء الاصطناعي،<br class="hidden md:block" /> الـ GTM، ومعمارية الإيراد.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)]">
+        تحليلات عملية من أنظمة أبنيها وأُشغّلها. لا نظريات: معمارية، وخيارات حزمة التقنية، ودروس تشغيلية من عمليات نشر حيّة.
+      </p>
+    </div>
+
+    <!-- Featured hero -->
+    {featuredPost && (() => {
+      const slug = insightSlug(featuredPost);
+      const cover = getCover(featuredPost.data.category);
+      return (
+        <a
+          href={`/insights/${slug}/`}
+          class="group mb-10 grid overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover lg:grid-cols-[0.9fr_1.1fr]"
+          data-category={featuredPost.data.category ?? ''}
+          data-featured-article
+        >
+          <div
+            class="relative flex min-h-[320px] flex-col justify-between overflow-hidden p-8"
+            style={!featuredPost.data.coverImage ? `background: ${cover.bg};` : 'background: #0c0c0c;'}
+          >
+            <div class="absolute inset-x-0 top-0 h-0.5" style={`background: ${cover.accent};`} aria-hidden="true"></div>
+            {featuredPost.data.coverImage && (
+              <img
+                src={featuredPost.data.coverImage}
+                alt=""
+                width="600"
+                height="400"
+                loading="eager"
+                decoding="async"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+            )}
+            <div class="relative flex items-center justify-between">
+              <span class="rounded-full bg-black/50 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white/90 ring-1 ring-white/15">مميّز</span>
+              <span class="font-mono text-[10px] font-semibold uppercase tracking-widest text-white/70">{catLabel(featuredPost.data.category)}</span>
+            </div>
+            {!featuredPost.data.coverImage && (
+              <p class="relative text-2xl font-semibold leading-tight md:text-3xl" style={`color: ${cover.fg};`}>
+                {featuredPost.data.title}
+              </p>
+            )}
+          </div>
+
+          <div class="flex flex-col justify-center p-8 md:p-10">
+            <div class="mb-4 flex flex-wrap gap-1.5">
+              {featuredPost.data.tags.slice(0, 4).map(tag => (
+                <span class={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${tagCls}`}>{tag}</span>
+              ))}
+            </div>
+            <h2 class="mb-3 text-[length:var(--text-h2)] font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors duration-150">
+              {featuredPost.data.title}
+            </h2>
+            <p class="mb-6 text-[var(--color-text-muted)] leading-relaxed">
+              {featuredPost.data.description}
+            </p>
+            {featuredPost.data.tldr && (
+              <ul class="mb-6 grid gap-2">
+                {featuredPost.data.tldr.slice(0, 3).map(item => (
+                  <li class="flex gap-2.5 text-sm text-[var(--color-text-muted)]">
+                    <span class="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent)]"></span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div class="mt-auto flex items-center justify-between border-t border-[var(--color-border)] pt-5">
+              <div class="flex items-center gap-2.5">
+                <img src={author.avatar} alt="" width="28" height="28" loading="lazy" decoding="async"
+                  class="h-7 w-7 rounded-full border border-[var(--color-border)] object-cover" />
+                <div class="text-xs text-[var(--color-text-dim)]">
+                  <time datetime={featuredPost.data.publishedAt.toISOString()}>{formatDate(featuredPost.data.publishedAt)}</time>
+                  <span class="mx-1.5">·</span>
+                  <span>{readTimeAr(featuredPost.body)}</span>
+                </div>
+              </div>
+              <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-text)]">
+                اقرأ المقال
+                <svg class="rtl-flip-x h-3.5 w-3.5" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+        </a>
+      );
+    })()}
+
+    <!-- Category filter -->
+    <div class="mb-2 flex flex-wrap gap-2" id="cat-nav" role="tablist" aria-label="التصفية حسب التصنيف">
+      {categories.map((cat, i) => {
+        const count = categoryCounts[cat] ?? 0;
+        return (
+          <button
+            role="tab"
+            data-cat={cat}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            class:list={[
+              'cat-btn rounded-[var(--radius-btn)] px-4 py-2 text-sm font-medium transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]',
+              i === 0
+                ? 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm'
+                : 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]',
+            ]}
+          >
+            {catLabel(cat)}
+            <span class="cat-btn-count mr-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums" aria-label={`${count} مقالة`}>{count}</span>
+          </button>
+        );
+      })}
+    </div>
+
+    <p class="mb-6 mt-3 text-sm text-[var(--color-text-dim)]" id="article-count">{allPosts.length} <span>مقالة</span></p>
+
+    <!-- Latest -->
+    {showLatestBand && (
+    <section id="latest-section" class="mb-10" aria-label="أحدث المقالات">
+      <p class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)] mb-4">الأحدث</p>
+      <div class="flex flex-col gap-3" id="latest-list">
+        {latestPosts.map(post => {
+          const slug = post.id.replace(/\.mdx?$/, '');
+          return (
+            <a
+              href={`/insights/${slug}/`}
+              class="latest-card group flex items-start gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden card-hover"
+              data-category={post.data.category ?? ''}
+            >
+              {post.data.coverImage && (
+                <div class="w-36 shrink-0 overflow-hidden bg-[#0c0c0c] self-stretch">
+                  <img
+                    src={post.data.coverImage}
+                    alt=""
+                    width="144"
+                    height="76"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div class="min-w-0 flex-1 py-4 pl-5">
+                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                  {post.data.category && (
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
+                      {catLabel(post.data.category)}
+                    </span>
+                  )}
+                  <time class="text-[10px] text-[var(--color-text-dim)]" datetime={post.data.publishedAt.toISOString()}>
+                    {formatDate(post.data.publishedAt)}
+                  </time>
+                </div>
+                <p class="text-sm font-semibold text-[var(--color-text)] leading-snug group-hover:text-[var(--color-accent-hi)] transition-colors line-clamp-2 mb-1">
+                  {post.data.title}
+                </p>
+                <p class="text-xs text-[var(--color-text-muted)] leading-relaxed line-clamp-2">
+                  {post.data.description}
+                </p>
+              </div>
+              <div class="shrink-0 self-center pl-4 text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors" aria-hidden="true">
+                <svg class="rtl-flip-x" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+    )}
+
+    <!-- Article grid -->
+    <div class="grid gap-6 sm:grid-cols-2 mb-16" id="article-grid">
+      {restPosts.map(post => {
+        const slug = insightSlug(post);
+        const cover = getCover(post.data.category);
+        return (
+          <a
+            href={`/insights/${slug}/`}
+            class="article-card group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover"
+            data-category={post.data.category ?? ''}
+          >
+            <div
+              class="relative flex aspect-[1.91/1] shrink-0 flex-col justify-between overflow-hidden p-5"
+              style={!post.data.coverImage ? `background: ${cover.bg};` : ''}
+            >
+              <div class="absolute inset-x-0 top-0 h-0.5" style={`background: ${cover.accent};`} aria-hidden="true"></div>
+              {post.data.coverImage && (
+                <img
+                  src={post.data.coverImage}
+                  alt=""
+                  width="600"
+                  height="340"
+                  loading="lazy"
+                  decoding="async"
+                  class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              )}
+              <span
+                class="relative font-mono rounded-sm bg-white/8 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-white/70 ring-1 ring-white/10 self-start cursor-pointer hover:bg-white/15 transition-colors"
+                data-filter-cat={post.data.category ?? ''}
+                role="button"
+                tabindex="0"
+              >
+                {catLabel(post.data.category)}
+              </span>
+              {!post.data.coverImage && (
+                <p class="relative text-[0.9rem] font-semibold leading-snug line-clamp-3" style={`color: ${cover.fg};`}>
+                  {post.data.title}
+                </p>
+              )}
+            </div>
+
+            <div class="flex flex-1 flex-col p-5">
+              <div class="mb-3 flex flex-wrap gap-1.5">
+                {post.data.tags.slice(0, 3).map(tag => (
+                  <span class={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${tagCls}`}>{tag}</span>
+                ))}
+              </div>
+              <h2 class="mb-2 text-[0.95rem] font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors duration-150 line-clamp-3">
+                {post.data.title}
+              </h2>
+              <p class="mb-4 text-sm text-[var(--color-text-muted)] leading-relaxed line-clamp-2">
+                {post.data.description}
+              </p>
+              <div class="mt-auto flex items-center justify-between border-t border-[var(--color-border)] pt-3">
+                <time class="text-[11px] text-[var(--color-text-dim)]" datetime={post.data.publishedAt.toISOString()}>
+                  {formatDate(post.data.publishedAt)}
+                </time>
+                <span class="text-[11px] text-[var(--color-text-dim)]">{readTimeAr(post.body)}</span>
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+
+    <!-- Empty state -->
+    <div id="no-results" class="hidden mb-16 py-20 text-center">
+      <p class="text-lg font-semibold text-[var(--color-text)] mb-1">لا مقالات في هذا التصنيف بعد.</p>
+      <p class="text-sm text-[var(--color-text-muted)]">جرّب تصنيفًا آخر.</p>
+    </div>
+
+    <!-- Newsletter CTA -->
+    <div class="border-t border-[var(--color-border)] pt-10 flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
+      <div class="max-w-xl">
+        <p class="obs-label-accent block mb-3">النشرة</p>
+        <h2 class="text-[length:var(--text-h2)] font-semibold text-[var(--color-text)] mb-2 text-balance">تريد أن تعرف أولًا؟</h2>
+        <p class="text-[var(--color-text-muted)]">
+          مقالات جديدة عن أنظمة الذكاء الاصطناعي ومعمارية GTM ونماذج تشغيل النمو، تصل فور نشرها.
+        </p>
+      </div>
+      <a
+        href="https://subscribe.wojciech.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-press group inline-flex shrink-0 items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
+      >
+        اشترك
+        <svg class="rtl-flip-x" width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</Layout>
+
+<script>
+  const catBtns = document.querySelectorAll<HTMLButtonElement>('.cat-btn');
+  const cards   = document.querySelectorAll<HTMLElement>('.article-card');
+  const latestCards = document.querySelectorAll<HTMLElement>('.latest-card');
+  const featured = document.querySelector<HTMLElement>('[data-featured-article]');
+  const noResults = document.getElementById('no-results')!;
+  const countEl   = document.getElementById('article-count')!;
+  const latestSection = document.getElementById('latest-section');
+
+  const ACTIVE   = 'bg-[var(--color-text)] text-[var(--color-bg)] shadow-sm';
+  const INACTIVE = 'border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-border-2)] hover:text-[var(--color-text)]';
+  const COUNT_ACTIVE   = 'bg-[var(--color-bg)]/20 text-[var(--color-bg)]';
+  const COUNT_INACTIVE = 'bg-[var(--color-surface-2)] text-[var(--color-text-dim)]';
+
+  function applyFilter(cat: string, pushState = false) {
+    catBtns.forEach(b => {
+      const active = (b.dataset.cat ?? 'All') === cat;
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+      b.classList.remove(...ACTIVE.split(' '), ...INACTIVE.split(' '));
+      b.classList.add(...(active ? ACTIVE : INACTIVE).split(' '));
+      const badge = b.querySelector<HTMLElement>('.cat-btn-count');
+      if (badge) {
+        badge.classList.remove(...COUNT_ACTIVE.split(' '), ...COUNT_INACTIVE.split(' '));
+        badge.classList.add(...(active ? COUNT_ACTIVE : COUNT_INACTIVE).split(' '));
+      }
+    });
+
+    let visible = 0;
+    if (featured) {
+      const match = cat === 'All' || (featured.dataset.category ?? '') === cat;
+      featured.style.display = match ? '' : 'none';
+      if (match) visible++;
+    }
+    cards.forEach(card => {
+      const match = cat === 'All' || (card.dataset.category ?? '') === cat;
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+
+    let latestVisible = 0;
+    latestCards.forEach(card => {
+      const match = cat === 'All' || (card.dataset.category ?? '') === cat;
+      card.style.display = match ? '' : 'none';
+      if (match) latestVisible++;
+    });
+    if (latestSection) {
+      latestSection.style.display = latestVisible > 0 ? '' : 'none';
+    }
+
+    noResults.classList.toggle('hidden', visible > 0);
+    countEl.textContent = `${visible} مقالة`;
+
+    if (pushState) {
+      const url = new URL(window.location.href);
+      if (cat === 'All') url.searchParams.delete('cat');
+      else url.searchParams.set('cat', cat);
+      window.history.replaceState(null, '', url.toString());
+    }
+  }
+
+  catBtns.forEach(btn => {
+    btn.addEventListener('click', () => applyFilter(btn.dataset.cat ?? 'All', true));
+  });
+
+  const initialCat = new URL(window.location.href).searchParams.get('cat') ?? 'All';
+  applyFilter(initialCat);
+
+  document.addEventListener('click', (e) => {
+    const chip = (e.target as Element).closest<HTMLElement>('[data-filter-cat]');
+    if (!chip) return;
+    e.preventDefault();
+    applyFilter(chip.dataset.filterCat ?? 'All', true);
+    document.getElementById('cat-nav')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+</script>
