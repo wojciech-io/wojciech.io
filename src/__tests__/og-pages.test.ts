@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { OG_PAGES, OG_PAGE_SLUGS } from '../data/og-pages';
 
-const EXPECTED_SLUGS = ['about', 'work', 'ai-systems', 'bites', 'contact', 'insights', 'now', 'resources', 'home', 'roadmap', 'status', 'pl', 'it', 'de', 'dk', 'no', 'jp', 'es'];
+const EXPECTED_SLUGS = ['about', 'work', 'ai-systems', 'bites', 'contact', 'insights', 'now', 'resources', 'home', 'roadmap', 'status', 'pl', 'it', 'de', 'dk', 'no', 'jp', 'es',
+  'ar-home', 'ar-work', 'ar-about', 'ar-contact', 'ar-ai-systems', 'ar-insights', 'ar-now', 'ar-stack', 'ar-resources', 'ar-gtm', 'ar-marketing', 'ar-growth'];
 
 describe('OG_PAGES metadata', () => {
   it('covers exactly the expected set of page slugs', () => {

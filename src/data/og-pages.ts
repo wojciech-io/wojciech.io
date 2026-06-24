@@ -2,6 +2,8 @@ export interface OGPageMeta {
   title: string;
   eyebrow: string;
   description: string;
+  /** 'ar' renders the card RTL with the Arabic font + gold accent. */
+  lang?: 'en' | 'ar';
 }
 
 /**
@@ -100,6 +102,79 @@ export const OG_PAGES: Record<string, OGPageMeta> = {
     title: 'Wojciech Łuszczyński · AI-native GTM Operator (ES)',
     eyebrow: 'wojciech.io · ES',
     description: 'Sistemas de ingresos AI-native para SaaS B2B: GTM, CRM, automatización y flujos AI como un único modelo operativo.',
+  },
+  // ── Arabic (RTL, gold) OG cards. lang:'ar' switches font + accent + dir. ──
+  'ar-home': {
+    lang: 'ar',
+    title: 'مهندس GTM · أنظمة إيراد قائمة على الذكاء الاصطناعي',
+    eyebrow: 'wojciech.io',
+    description: 'بناء أنظمة إيراد قائمة على الذكاء الاصطناعي لشركات B2B SaaS.',
+  },
+  'ar-work': {
+    lang: 'ar',
+    title: 'أنظمة GTM ودراسات الحالة',
+    eyebrow: 'الأعمال',
+    description: 'GTM قائم على الذكاء الاصطناعي، وCRM، وأتمتة، ومنتجات أُطلقت فعليًا.',
+  },
+  'ar-about': {
+    lang: 'ar',
+    title: 'مهندس GTM وباني أنظمة الذكاء الاصطناعي',
+    eyebrow: 'عنّي',
+    description: 'مشغّل نمو يبني أنظمة إيراد قائمة على الذكاء الاصطناعي لشركات B2B SaaS.',
+  },
+  'ar-contact': {
+    lang: 'ar',
+    title: 'ابنِ النظام أو أصلحه أو راجعه',
+    eyebrow: 'تواصل',
+    description: 'مكالمة 30 دقيقة لتدقيق GTM، وتصميم تدفّقات الذكاء الاصطناعي، ومعمارية الـ CRM.',
+  },
+  'ar-ai-systems': {
+    lang: 'ar',
+    title: 'أنظمة الذكاء الاصطناعي · تدفّقات ووكلاء ورافعة تشغيل',
+    eyebrow: 'أنظمة الذكاء الاصطناعي',
+    description: 'Claude Code وMCP والأتمتة، مبنيّة لـ GTM إنتاجي حقيقي.',
+  },
+  'ar-insights': {
+    lang: 'ar',
+    title: 'رؤى الذكاء الاصطناعي وGTM · ملاحظات مشغّل',
+    eyebrow: 'رؤى',
+    description: 'ملاحظات ميدانية عن أنظمة الذكاء الاصطناعي ومعمارية GTM وتصميم الإيراد.',
+  },
+  'ar-now': {
+    lang: 'ar',
+    title: 'ما الذي أعمل عليه الآن',
+    eyebrow: 'الآن',
+    description: 'التركيز الحالي: الأنظمة، والعملاء، والقراءة، والتفكير.',
+  },
+  'ar-stack': {
+    lang: 'ar',
+    title: 'تقنيات الإنتاج · على ماذا بُني هذا فعلًا',
+    eyebrow: 'التقنية',
+    description: 'Astro وCloudflare وTerraform وVitest وPlaywright وخطة تبديل مُختبَرة فعلًا.',
+  },
+  'ar-resources': {
+    lang: 'ar',
+    title: 'الموارد · أدوات وقوالب للمشغّلين',
+    eyebrow: 'أدوات',
+    description: 'حِزم بدء، وإعدادات MCP، وأُطر للمشغّلين لأنظمة GTM القائمة على الذكاء الاصطناعي.',
+  },
+  'ar-gtm': {
+    lang: 'ar',
+    title: 'GTM كنظام، لا كحملة',
+    eyebrow: 'GTM',
+    description: 'تموضع، وICP، ومنطق تحويل، ومعمارية إيراد مبنيّة لتتراكم.',
+  },
+  'ar-marketing': {
+    lang: 'ar',
+    title: 'التسويق كبنية تحتية للتوزيع',
+    eyebrow: 'التسويق',
+    description: 'محتوى وتوزيع وثقة كأصل يتراكم، لا كتقويم نشر.',
+  },
+  'ar-growth': {
+    lang: 'ar',
+    title: 'النمو كنظام تشغيل',
+    eyebrow: 'النمو',
+    description: 'حلقات، وأتمتة، ومعمارية إيراد تتراكم بمرور الوقت.',
   },
 };
 
