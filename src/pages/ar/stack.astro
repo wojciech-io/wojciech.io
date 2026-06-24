@@ -1,0 +1,253 @@
+---
+/* Arabic (RTL) production-stack page. Mirrors /stack/. Tool and technology
+   identifiers (Astro, Cloudflare, Terraform, Vitest …) stay Latin as code
+   artefacts (opcja B); the descriptive prose, titles and stat labels are
+   native Arabic. dir=rtl, gold accent. */
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import { SITE } from '../../data/site';
+
+const groups = [
+  {
+    icon: '⬡',
+    title: 'المعمارية',
+    body: 'مستودع أحادي بـ npm workspaces. Astro 6 على Cloudflare Pages. سبعة أسطح، سبعة مشاريع Pages: wojciech.io وapp وgrowthhub وacademy وnotch وsubscribe وdev. حِزم مشتركة: ‎@wojciech/tokens و@wojciech/ui و@wojciech/mdx-components.',
+    items: [
+      'Astro 6 + MDX',
+      'Cloudflare Pages (7 projects)',
+      'npm workspaces (apps/* + packages/*)',
+      '@wojciech/tokens · @wojciech/ui · @wojciech/mdx-components',
+    ],
+  },
+  {
+    icon: '◈',
+    title: 'الواجهة الأمامية',
+    body: 'Tailwind CSS 4 مدفوعة برموز CSS custom-prop. خط Geist للحروف. Lenis + Motion للحركة. Pagefind للبحث الثابت. Satori + resvg-js لبطاقات OG.',
+    items: [
+      'Tailwind CSS 4 (@tailwindcss/vite)',
+      'CSS custom-property tokens',
+      'Geist Sans · Geist Mono',
+      'Lenis · Motion',
+      'Pagefind static search',
+      'Satori + resvg-js (dynamic OG)',
+    ],
+  },
+  {
+    icon: '▦',
+    title: 'الخلفية والبنية التحتية',
+    body: 'Cloudflare Pages Functions للأسطح المحمية. Wrangler لخدمات Workers (مهمة growthhub المجدولة). Terraform يدير مشاريع Pages والنطاقات. Node 24 في الـ CI.',
+    items: [
+      'Cloudflare Pages Functions',
+      'Cloudflare Workers (growthhub-cron)',
+      'Terraform (cloudflare_pages_project + _domain)',
+      'WAF rules tracked in repo',
+      'Node 24',
+    ],
+  },
+  {
+    icon: '◉',
+    title: 'المحتوى وتعدّد اللغات',
+    body: 'مجموعات محتوى Astro للرؤى والأعمال والشهادات. ثماني لغات لأسطح السيرة الذاتية والـ SEO. سبع صفحات رئيسية مترجمة بالكامل (de وdk وno وjp وit وes وpl) فوق الإنجليزية.',
+    items: [
+      'Astro content collections (insights, work, testimonials)',
+      'MDX articles + custom components',
+      '8 langs: en, pl, de, dk, no, jp, it, es',
+      'Locale-prefixed routing via src/pages/[locale]',
+    ],
+  },
+  {
+    icon: '◌',
+    title: 'التحليلات (مشروطة بالموافقة)',
+    body: 'Cloudflare Web Analytics يعمل بلا هوية افتراضيًا. كل ما عداه لا يُحمَّل إلا بعد موافقة صريحة.',
+    items: [
+      'Cloudflare Web Analytics (anonymous)',
+      'GA4 (lazy after consent)',
+      'Mixpanel EU',
+      'Sentry EU',
+      'PostHog EU',
+    ],
+  },
+  {
+    icon: '⊘',
+    title: 'الاختبارات',
+    body: 'Vitest للوحدات والتغطية. Playwright (Chromium + WebKit) لاختبارات الدخان والـ SEO وhreflang وإتاحة axe وفحص الروابط المكسورة والمسارات الحرجة وفحوص الميتا والأصول. اختبار دخان يومي على الإنتاج.',
+    items: [
+      'Vitest (unit + coverage)',
+      'Playwright (Chromium + WebKit)',
+      'a11y/axe automation',
+      'Daily production smoke',
+      'Lighthouse CI weekly',
+    ],
+  },
+  {
+    icon: '⟐',
+    title: 'CI/CD',
+    body: 'الـ CI يعمل عند كل دفع وكل PR. النشر يعمل فقط عند نجاح الـ CI عبر workflow_run، فينشر الموقع والنطاقات الفرعية بالتوازي عبر Wrangler. Commitlint مُلزَم. Release Please يُشغَّل يدويًا، لا عند الدفع.',
+    items: [
+      'GitHub Actions (ci.yml + deploy.yml)',
+      'workflow_run gate (no green CI, no deploy)',
+      'Wrangler parallel deploy across surfaces',
+      'Commitlint required',
+      'Release Please (manual)',
+    ],
+  },
+  {
+    icon: '⊞',
+    title: 'الأمان',
+    body: 'حماية الفرع على main بفحوص إلزامية. الأسرار في بيئة Cloudflare فقط. CSP صارمة، وHSTS preload، وX-Frame-Options DENY، وPermissions-Policy معزولة. بوابات المصادقة تستخدم كوكيز موقّعة بـ HMAC-SHA256 بمقارنات آمنة زمنيًا وحدّ معدّل.',
+    items: [
+      'gitleaks · npm audit (high) · Semgrep · CodeQL',
+      'content-guard (pre-commit + CI + weekly cron)',
+      'sensitive-path-guard on PRs',
+      'CSP, HSTS preload, XFO DENY, Permissions-Policy',
+      'HMAC-SHA256 signed cookies, timing-safe',
+      'Per-IP rate limit on auth endpoints',
+    ],
+  },
+  {
+    icon: '◎',
+    title: 'المرونة',
+    body: 'Azure Static Web Apps يحتفظ بنسخة احتياطية باردة أسبوعيًا. التبديل عند الفشل يُشغّله المشغّل يدويًا عبر workflow_dispatch (يكتشف الصحة آليًا ثم يبدّل الـ DNS عبر واجهة Cloudflare). التراجع هو git revert غير مدمّر. BetterStack يدير فحوص الدخان.',
+    items: [
+      'Azure Static Web Apps (cold standby)',
+      'Manual failover (workflow_dispatch)',
+      'Non-destructive git-revert rollback',
+      'BetterStack uptime + incident webhook',
+    ],
+  },
+  {
+    icon: '⚙',
+    title: 'منهجية العمل',
+    body: 'Claude Code ينفّذ. Codex يراجع. GPT-5.5 Thinking يتولّى الاستراتيجية وقرارات المضيّ من عدمه. Claude Design يملك الجانب البصري. التسليم: استراتيجية، توثيق، كود، مراجعة، قبول، ثم دمج حين يتّفق التوثيق والكود.',
+    items: [
+      'Claude Code (implementation)',
+      'Codex (review)',
+      'GPT-5.5 Thinking (strategy)',
+      'Claude Design (visual)',
+    ],
+  },
+];
+
+const stats = [
+  { value: '7', label: 'أسطح منشورة' },
+  { value: '8', label: 'لغات مُطلقة' },
+  { value: '524', label: 'اختبارًا آليًا' },
+  { value: '10', label: 'طبقات تقنية' },
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: SITE.url + '/ar/' },
+    { '@type': 'ListItem', position: 2, name: 'التقنيات', item: SITE.url + '/ar/stack/' },
+  ],
+};
+---
+
+<Layout
+  htmlLang="ar"
+  dir="rtl"
+  ogLocale="ar_SA"
+  title="تقنيات الإنتاج"
+  description="التقنيات الحقيقية خلف wojciech.io ونطاقاته الفرعية. Astro وCloudflare وTerraform وVitest وPlaywright وكوكيز موقّعة وخطة تبديل عند الفشل مُختبَرة فعلًا."
+  canonical="/ar/stack/"
+  alternates={[
+    { lang: 'en', href: 'https://wojciech.io/stack/' },
+    { lang: 'ar', href: 'https://wojciech.io/ar/stack/' },
+    { lang: 'x-default', href: 'https://wojciech.io/stack/' },
+  ]}
+  schema={[breadcrumbSchema]}
+>
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-[var(--color-border)]">
+    <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
+    <div class="pointer-events-none absolute left-1/2 top-[-200px] h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-[var(--color-surface)] opacity-70 blur-[150px]" aria-hidden="true" />
+
+    <div class="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
+      <div class="animate-fade-up flex items-center gap-3 mb-8">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">تقنيات الإنتاج</span>
+      </div>
+
+      <h1 class="animate-fade-up [animation-delay:60ms] text-[length:var(--text-hero)] font-semibold leading-[0.95] tracking-tight text-[var(--color-text)] max-w-[900px] mb-7">
+        على ماذا بُني<br>
+        <span class="text-[var(--color-text-muted)]">هذا الموقع فعلًا.</span>
+      </h1>
+      <p class="animate-fade-up [animation-delay:120ms] max-w-3xl text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed">
+        مُتحقَّق منه من المستودع، لا من الذاكرة. كل طبقة أدناه في الإنتاج اليوم عبر wojciech.io ونطاقاته الفرعية. إن كانت أداة على هذه الصفحة، فهي تدفع إيجارها.
+      </p>
+    </div>
+  </section>
+
+  <!-- Stats band -->
+  <section class="border-b border-[var(--color-border)] py-6">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[var(--color-border)]">
+        {stats.map((s, i) => (
+          <div class="reveal-up px-6 py-3 flex flex-col gap-0.5" data-reveal-index={i}>
+            <strong class="text-fluid-2xl font-semibold text-[var(--color-text)] tabular-nums">{s.value}</strong>
+            <span class="text-xs text-[var(--color-text-muted)]">{s.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Stack groups -->
+  <section class="border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6 py-20 md:py-28">
+      {groups.map((group, idx) => (
+        <article
+          class:list={[
+            'reveal-up',
+            idx > 0 && 'mt-20 pt-20 border-t border-[var(--color-border)]',
+          ]}
+          data-reveal-index={idx % 4}
+        >
+          <div class="grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-12 items-start">
+            <!-- Header -->
+            <div>
+              <div class="flex items-center gap-3 mb-4">
+                <span class="flex items-center justify-center w-10 h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-glass)] text-lg text-[var(--color-text)]" aria-hidden="true">
+                  {group.icon}
+                </span>
+                <div>
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)]">
+                    {String(idx + 1).padStart(2, '0')}
+                  </p>
+                  <h2 class="text-fluid-xl font-semibold text-[var(--color-text)] leading-tight tracking-tight">
+                    {group.title}
+                  </h2>
+                </div>
+              </div>
+              <p class="text-sm md:text-base text-[var(--color-text-muted)] leading-relaxed mt-3">
+                {group.body}
+              </p>
+            </div>
+
+            <!-- Items (technical identifiers kept LTR) -->
+            <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden divide-y divide-[var(--color-border)]">
+              {group.items.map((item) => (
+                <div class="flex items-start gap-3 px-5 py-3.5">
+                  <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--color-accent-cta)] shrink-0" aria-hidden="true"></span>
+                  <span class="text-sm text-[var(--color-text)] leading-relaxed" dir="ltr">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <CTABand
+    kicker="الخطوة التالية"
+    heading="تريد أن ترى جزءًا من هذا قيد العمل؟"
+    subtext="إن كان شيء على الصفحة مثيرًا للاهتمام في سياق ما تبنيه، فاكتب لي ولننظر فيه معًا."
+    cta="تواصل معي"
+    ctaHref="/ar/contact/"
+    ctaSecondary="اقرأ الرؤى"
+    ctaSecondaryHref="/ar/insights/"
+  />
+</Layout>

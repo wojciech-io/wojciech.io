@@ -1,0 +1,199 @@
+---
+/* Arabic (RTL) /now page. Native Arabic prose mirroring /now/. Product and tool
+   names (wojciech.io, Claude Code, MCP, Relora …) stay Latin as code artefacts
+   (opcja B); the prose around them is native Arabic. dir=rtl, gold accent. */
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import { SITE } from '../../data/site';
+
+const lastUpdated = '2026-05-26';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: SITE.url + '/ar/' },
+    { '@type': 'ListItem', position: 2, name: 'الآن', item: SITE.url + '/ar/now/' },
+  ],
+};
+const nowPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'الآن · ما الذي أعمل عليه',
+  url: SITE.url + '/ar/now/',
+  inLanguage: 'ar',
+  description: 'لمحة عمّا أبنيه وأستكشفه وأفكّر فيه الآن. يُحدَّث عندما يتغيّر شيء.',
+  dateModified: lastUpdated,
+  author: { '@type': 'Person', name: 'فويتشيك لوشتشينسكي', url: SITE.url + '/' },
+};
+
+const building = [
+  {
+    accent: true,
+    title: 'wojciech.io كنظام تشغيل حيّ',
+    body: 'تحويل الموقع إلى دليل عمل حيّ: دراسات حالة لتطبيقات أُطلقت فعليًا، وأدوات GTM قائمة على الذكاء الاصطناعي موثّقة علنًا، ورؤى تُظهر كيف تعمل الأنظمة فعلًا، لا أنها موجودة فحسب.',
+  },
+  {
+    accent: false,
+    title: 'GTM Agent Starter Pack',
+    body: 'تطوير نظام وكلاء Claude Code للتواصل الخارجي في B2B. تحسين تقييم الـ ICP، وتوسيع طبقة المهارات، وتوثيق المعمارية لمن يريد النظام دون غلاف SaaS.',
+  },
+  {
+    accent: false,
+    title: 'دراسات حالة لـ Relora وAds Assistant وAkademia AI',
+    body: 'كتابة قصة البناء والإطلاق الكاملة لكل منتج: المشكلة، وتصميم النظام، وقرارات التقنية، وما الذي أثبته.',
+  },
+];
+
+const thinking = [
+  {
+    lead: 'الذكاء الاصطناعي لن يصلح GTM ضعيفًا.',
+    rest: 'سيجعل الفوضى أسرع فقط. معظم شركات B2B التي تضيف الذكاء الاصطناعي إلى تسويقها لا تعاني مشكلة قدرة، بل مشكلة وضوح: ICP غير واضح، وتموضع ضعيف، ومنطق تحويل غير مُعرَّف. الذكاء الاصطناعي يضخّم ما هو موجود، جيّدًا كان أم سيّئًا.',
+  },
+  {
+    lead: 'المحتوى ليس تقويم نشر.',
+    rest: 'بل أصل توزيع وثقة يتراكم بمرور الوقت. الشركات التي تربح بالمحتوى اليوم هي التي تتعامل معه كبنية تحتية، لا كالتزام على وسائل التواصل.',
+  },
+  {
+    lead: 'أفضل عمل GTM مملٌّ في الوصف وبديهيٌّ في النتائج.',
+    rest: 'لا أحد يريد سماع نموذج تشغيل الـ CRM الذي بنيته، لكنه الشيء الذي يتراكم فعلًا.',
+  },
+];
+
+const exploring = [
+  { label: 'أدوات MCP لتدفّقات عمل GTM', note: 'توسيع وكلاء Claude Code بخوادم MCP مخصّصة للـ CRM والبحث وعمليات المحتوى.' },
+  { label: 'صيغ تعلّم صوتية أولًا', note: 'اختبار أنماط الإكمال والاحتفاظ على Akademia AI: أيّ بنية تنجح حين تُزال الطبقة البصرية.' },
+  { label: 'العلامة الشخصية كنظام توزيع', note: 'البناء علنًا كقناة اكتساب متراكمة، لا من أجل مقاييس الغرور، بل كحقل اختبار لفرضيات GTM.' },
+];
+
+const notDoing = [
+  'مهام علامة أو علاقات عامة بحتة دون معمارية تجارية',
+  'شركات ما قبل المنتج دون ICP مُعرَّف',
+  'ارتباطات استراتيجية فقط لا تُطلق شيئًا',
+];
+---
+
+<Layout
+  htmlLang="ar"
+  dir="rtl"
+  ogLocale="ar_SA"
+  title="الآن"
+  description="لمحة عمّا أبنيه وأستكشفه وأفكّر فيه الآن. يُحدَّث عندما يتغيّر شيء."
+  canonical="/ar/now/"
+  ogImage="/og/pages/now.png"
+  alternates={[
+    { lang: 'en', href: 'https://wojciech.io/now/' },
+    { lang: 'ar', href: 'https://wojciech.io/ar/now/' },
+    { lang: 'x-default', href: 'https://wojciech.io/now/' },
+  ]}
+  schema={[breadcrumbSchema, nowPageSchema]}
+>
+  <!-- Header -->
+  <section class="pt-10 pb-8 md:pt-20 md:pb-12 border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">الآن</span>
+      </div>
+      <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5">
+        ما الذي أعمل عليه الآن.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-xl">
+        لمحة عمّا أبنيه وأستكشفه وأفكّر فيه. يُحدَّث عندما يتغيّر شيء.
+      </p>
+      <p class="mt-4 text-xs text-[var(--color-text-dim)]"><span>آخر تحديث:</span> {lastUpdated}</p>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-3xl px-6 space-y-14">
+
+      <!-- Building -->
+      <div>
+        <p class="obs-label-accent block mb-5">أبني</p>
+        <div class="space-y-6">
+          {building.map((b) => (
+            <div class:list={['ps-5 border-s-2', b.accent ? 'border-[var(--color-accent)]/30' : 'border-[var(--color-border-2)]']}>
+              <h2 class="text-base font-semibold text-[var(--color-text)] mb-1">{b.title}</h2>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{b.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Thinking about -->
+      <div>
+        <p class="obs-label-accent block mb-5">أفكّر في</p>
+        <div class="space-y-5 text-sm text-[var(--color-text-muted)] leading-relaxed">
+          {thinking.map((t) => (
+            <p><span class="font-semibold text-[var(--color-text)]">{t.lead}</span><span> {t.rest}</span></p>
+          ))}
+        </div>
+      </div>
+
+      <!-- Exploring -->
+      <div>
+        <p class="obs-label-accent block mb-5">أستكشف</p>
+        <div class="space-y-4">
+          {exploring.map(({ label, note }) => (
+            <div class="flex gap-4">
+              <span class="mt-1 shrink-0 w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
+              <div>
+                <p class="text-sm font-medium text-[var(--color-text)]">{label}</p>
+                <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Not doing -->
+      <div>
+        <p class="obs-label-accent block mb-5">ما لا أفعله الآن</p>
+        <ul class="space-y-2 text-sm text-[var(--color-text-muted)]">
+          {notDoing.map((item) => (
+            <li class="flex gap-3"><span class="text-[var(--color-text-dim)] shrink-0">-</span> <span>{item}</span></li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Follow -->
+      <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+        <div>
+          <p class="text-sm font-semibold text-[var(--color-text)] mb-1">تابع ما أُطلقه</p>
+          <p class="text-sm text-[var(--color-text-muted)]">مقالات وأنظمة جديدة عندما تجهز، لا وفق جدول.</p>
+        </div>
+        <a
+          href="https://subscribe.wojciech.io"
+          class="shrink-0 inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors text-sm"
+        >
+          اشترك
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="rtl-flip-x">
+            <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Inspired by nownownow.com -->
+  <section class="py-8 border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-3xl px-6">
+      <p class="text-xs text-[var(--color-text-dim)]">
+        هذه <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-text)] transition-colors">صفحة /now</a>: لمحة عمّا أفعله في هذه اللحظة.
+      </p>
+    </div>
+  </section>
+
+  <CTABand
+    kicker="الخطوة التالية"
+    heading="تعمل على شيء قريب من هذا؟"
+    subtext="هذه الصفحة تتغيّر كل بضعة أسابيع. إن تقاطع ما أُطلقه الآن مع مشكلتك، فاكتب لي."
+    cta="احجز مكالمة"
+    ctaHref="/ar/contact/#book-call"
+    ctaSecondary="شاهد الأعمال"
+    ctaSecondaryHref="/ar/work/"
+  />
+</Layout>

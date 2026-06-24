@@ -6,11 +6,12 @@
 // - On decline: fires optOut() so PostHog stays in opt-out mode
 // - Copy localized per current path (UI strings in src/data/uiStrings.ts)
 
-import { getUiStringsForPath } from '../../data/uiStrings';
+import { getUiStringsForPath, getLocaleFromPath } from '../../data/uiStrings';
 
 const pathname = Astro.url.pathname;
 const t = getUiStringsForPath(pathname);
-const privacyHref = '/privacy/';
+// /privacy/ exists in EN and AR only; other locales fall back to the EN page.
+const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/privacy/';
 ---
 
 <div

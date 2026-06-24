@@ -1,0 +1,215 @@
+---
+/* Arabic (RTL) /resources page. Mirrors /resources/. Product, tool and tag
+   identifiers stay Latin as code artefacts (opcja B); titles, descriptions and
+   labels are native Arabic. Article links stay on the English routes (articles
+   ship EN+PL only). dir=rtl, gold accent. */
+import Layout from '../../layouts/Layout.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import { SITE } from '../../data/site';
+
+type IconName = 'github' | 'download' | 'guide' | 'stack' | 'apps' | 'newsletter';
+
+interface Resource {
+  title: string;
+  description: string;
+  tags: string[];
+  href: string;
+  label: string;
+  external: boolean;
+  icon: IconName;
+  download?: boolean;
+}
+
+const icons: Record<IconName, string> = {
+  github:
+    '<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>',
+  download:
+    '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+  guide:
+    '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+  stack:
+    '<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>',
+  apps:
+    '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  newsletter:
+    '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+};
+
+const resources: Resource[] = [
+  {
+    title: 'Claude Code GTM Agent Starter Pack',
+    description: 'قالب CLAUDE.md، وتعريفات Skills، وبنية المجلدات، ومصدر MCP للتقييم لبناء وكيل GTM للتواصل الخارجي قائم على الذكاء الاصطناعي. مبنيّ لمن يريد النظام، لا غلاف الـ SaaS.',
+    tags: ['Claude Code', 'MCP', 'GTM', 'AI'],
+    href: 'https://github.com/wojciechluszczynski/gtm-agent-repo',
+    label: 'اعرض على GitHub',
+    external: true,
+    icon: 'github',
+  },
+  {
+    title: 'Page Optimizer: إضافة Claude Code',
+    description: 'ست مهارات تدقّق صفحة هبوط وتُطلق نسختها المُصلَحة: النص، والإتاحة، وتباين WCAG، وفحوص الاستجابة، وتحسين محرّكات الإجابة بالذكاء الاصطناعي. مجانية، دون غلاف SaaS، دون تسجيل دخول.',
+    tags: ['Claude Code', 'Landing page', 'a11y', 'SEO'],
+    href: '/bites/page-optimizer.zip',
+    label: 'نزّل الإضافة',
+    external: false,
+    download: true,
+    icon: 'download',
+  },
+  {
+    title: 'CLAUDE.md GTM Agent Starter',
+    description: 'ملف CLAUDE.md جاهز للاستخدام لوكلاء GTM بالذكاء الاصطناعي: هوية ثابتة، وتقييم ICP، وقواعد نبرة، وخمس مهارات مُسمّاة. املأ الأقواس ببيانات عميلك ووجّه Claude Code إليه.',
+    tags: ['Claude Code', 'GTM', 'Agent', 'Template'],
+    href: '/bites/claude-md-starter.zip',
+    label: 'نزّل القالب',
+    external: false,
+    download: true,
+    icon: 'download',
+  },
+  {
+    title: 'كيف تبني وكيل GTM بـ Claude Code',
+    description: 'تفكيك معماري لنظام التواصل الخارجي رباعي الطبقات: موجز المشغّل CLAUDE.md، وطبقة بيانات MCP، وملفات ذاكرة العميل، وخمس مهارات مُسمّاة. مع نموذج تكلفة كامل.',
+    tags: ['Claude Code', 'GTM', 'AI', 'Guide'],
+    href: '/insights/claude-code-vs-clay/',
+    label: 'اقرأ التفكيك',
+    external: false,
+    icon: 'guide',
+  },
+  {
+    title: 'تقنيات الذكاء الاصطناعي في الإنتاج: ما يعمل وما حُذِف',
+    description: 'كل أداة ذكاء اصطناعي قيد الاستخدام النشط عبر عمل العملاء والمنتجات. أربع طبقات: الاستدلال، والتنفيذ، والبحث، والـ CRM. تشمل قائمة المحذوف، وهي غالبًا أنفع من قائمة المُبقى.',
+    tags: ['AI', 'Stack', 'Tools', 'Reference'],
+    href: '/insights/ai-production-stack/',
+    label: 'اقرأ التقنيات',
+    external: false,
+    icon: 'stack',
+  },
+  {
+    title: 'تطبيقات أُطلقت: مرجع حيّ',
+    description: 'محفظة تطبيقات أُطلقت بشكل مستقل: AdsAI، وRelora، ومحرّك حجز لتأجير الكرافانات، وتطبيق Notch لـ macOS، وأدوات صغيرة. دليل عملي على المدى عبر أدوات المشغّل والمنتج والتطوير الأصلي.',
+    tags: ['Apps', 'Portfolio', 'Reference'],
+    href: 'https://app.wojciech.io/apps',
+    label: 'تصفّح التطبيقات',
+    external: true,
+    icon: 'apps',
+  },
+  {
+    title: 'ملاحظات المشغّل: النشرة البريدية',
+    description: 'رسائل عن أنظمة GTM بالذكاء الاصطناعي، ومعمارية النمو، والأدوات المُطلقة. عندما يجهز مقال أو مورد جديد، يحصل عليه المشتركون أولًا. دون التزام بجدول. فقط حين يكون هناك ما يستحق الإرسال.',
+    tags: ['Newsletter', 'AI', 'GTM'],
+    href: 'https://subscribe.wojciech.io',
+    label: 'اشترك',
+    external: true,
+    icon: 'newsletter',
+  },
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: SITE.url + '/ar/' },
+    { '@type': 'ListItem', position: 2, name: 'الموارد', item: SITE.url + '/ar/resources/' },
+  ],
+};
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'الموارد · أدوات وقوالب للمشغّلين',
+  url: SITE.url + '/ar/resources/',
+  inLanguage: 'ar',
+  itemListElement: resources.map((r, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: r.title,
+    description: r.description,
+    url: r.external ? r.href : SITE.url + r.href,
+  })),
+};
+---
+
+<Layout
+  htmlLang="ar"
+  dir="rtl"
+  ogLocale="ar_SA"
+  title="الموارد"
+  description="حِزم بدء، وإعدادات MCP، وأُطر للمشغّلين لأنظمة GTM والنمو القائمة على الذكاء الاصطناعي. مبنيّة لمن يُطلق فعلًا."
+  canonical="/ar/resources/"
+  ogImage="/og/pages/resources.png"
+  alternates={[
+    { lang: 'en', href: 'https://wojciech.io/resources/' },
+    { lang: 'ar', href: 'https://wojciech.io/ar/resources/' },
+    { lang: 'x-default', href: 'https://wojciech.io/resources/' },
+  ]}
+  schema={[breadcrumbSchema, itemListSchema]}
+>
+
+  <!-- Header -->
+  <section class="relative overflow-hidden pt-20 pb-16 border-b border-[var(--color-border)]">
+    <div class="relative mx-auto max-w-6xl px-6">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">الموارد</span>
+      </div>
+      <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5 max-w-2xl">
+        أدوات وقوالب، لا محتوى.
+      </h1>
+      <p class="text-lg text-[var(--color-text-muted)] max-w-xl leading-relaxed">
+        حِزم بدء، وإعدادات MCP، وأُطر للمشغّلين. مبنيّة لمن يُطلق، لا لمن يقيّم.
+      </p>
+    </div>
+  </section>
+
+  <!-- Resources grid -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {resources.map(({ title, description, tags, href, label, external, download, icon }) => (
+          <a
+            href={href}
+            {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            {...(download ? { download: true } : {})}
+            class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col gap-5 card-hover"
+          >
+            <div class="flex items-start justify-between">
+              <span class="inline-flex h-12 w-12 items-center justify-center rounded-[var(--radius-badge)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent-hi)] group-hover:bg-[var(--color-accent)]/20 group-hover:border-[var(--color-accent)]/50 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[icon]}></svg>
+              </span>
+              <span class="text-[var(--color-text-muted)] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all rtl-flip-x" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  {external
+                    ? <><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></>
+                    : <><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></>}
+                </svg>
+              </span>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-base font-semibold text-[var(--color-text)] mb-2 group-hover:text-[var(--color-accent-hi)] transition-colors">{title}</h2>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{description}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span class="text-xs font-medium px-2.5 py-0.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] text-[var(--color-text-muted)] bg-[var(--color-surface-2)]" dir="ltr">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <span class="text-xs font-semibold text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
+              {label} ←
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTABand
+    kicker="الخطوة التالية"
+    heading="أخذت قالبًا. تريد توصيله بنظامك؟"
+    subtext="التنزيلات هي نقطة البداية. تكييفها مع الـ CRM لديك وبياناتك وفريقك هو العمل الفعلي."
+    cta="تواصل معي"
+    ctaHref="/ar/contact/"
+    ctaSecondary="اقرأ الرؤى"
+    ctaSecondaryHref="/ar/insights/"
+  />
+
+</Layout>

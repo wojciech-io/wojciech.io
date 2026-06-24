@@ -316,7 +316,7 @@ export function getUiStringsForPath(pathname: string): UiStrings {
 /** Pages that have a real Arabic version. Nav links to anything else stay on
  *  the English route so the Arabic chrome never points at a 404. Extend as
  *  more /ar/ pages ship. */
-const AR_LOCALIZED_PATHS = new Set(['/work/', '/contact/', '/about/', '/ai-systems/', '/insights/', '/gtm/', '/marketing/', '/growth/']);
+const AR_LOCALIZED_PATHS = new Set(['/work/', '/contact/', '/about/', '/ai-systems/', '/insights/', '/gtm/', '/marketing/', '/growth/', '/now/', '/stack/', '/resources/', '/privacy/']);
 
 /** Prefix an internal path with the current locale segment when not EN. */
 export function localizeHref(href: string, locale: UiLocale): string {
