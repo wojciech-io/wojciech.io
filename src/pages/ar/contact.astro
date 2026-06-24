@@ -76,23 +76,42 @@ const contactSchema = {
       </div>
     </div>
 
-    <!-- Embedded scheduler: the calendar IS the CTA on this page. -->
-    <div class="relative mx-auto max-w-5xl px-6">
-      <div
-        data-cal-inline="wojciech-luszczynski/30min"
-        class="min-h-[620px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden"
-      ></div>
-      <p class="mt-4 text-center text-sm text-[var(--color-text-muted)]">
-        التقويم لا يظهر؟
+    <!-- Booking CTA. The free Cal embed renders in the visitor's browser
+         language, so inlining it on an Arabic page shows a Polish/English
+         calendar to many visitors. Instead the booking opens on click (Cal
+         popup), keeping this page fully Arabic; the booker itself adapts to
+         the visitor (Arabic for a Gulf visitor). -->
+    <div class="relative mx-auto max-w-2xl px-6">
+      <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 md:p-10 text-center shadow-[var(--shadow-card)]">
+        <div class="flex items-center justify-center gap-3 mb-5">
+          <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+          <span class="obs-label-accent">احجز موعدًا</span>
+          <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        </div>
+        <p class="text-lg md:text-xl font-semibold text-[var(--color-text)] mb-2">مكالمة 30 دقيقة، مباشرة إلى صلب الموضوع.</p>
+        <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-7 max-w-md mx-auto">
+          اختر وقتًا يناسبك. يفتح التقويم هنا، ويتكيّف مع منطقتك الزمنية ولغتك.
+        </p>
         <a
           href={calUrl}
+          data-cal-link="wojciech-luszczynski/30min"
+          data-cal-config={`{"layout":"month_view"}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-hi)] transition-colors"
+          class="inline-flex items-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-7 py-3.5 hover:bg-[var(--color-accent-cta-hi)] transition-colors"
           data-mp-cta="Book 30 minutes"
-          data-mp-location="contact_hero_fallback"
-        >افتح صفحة الحجز ←</a>
-      </p>
+          data-mp-location="contact_hero"
+        >
+          احجز مكالمة
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="rtl-flip-x">
+            <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <p class="mt-4 text-xs text-[var(--color-text-dim)]">
+          أو
+          <a href={calUrl} target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-text)] transition-colors">افتح صفحة الحجز في نافذة جديدة ←</a>
+        </p>
+      </div>
     </div>
   </section>
 
