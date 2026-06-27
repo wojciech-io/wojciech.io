@@ -4,6 +4,8 @@ import { editions, totalIssues } from '../data/editions';
 
 const latest = editions[0];
 const inbox = editions.slice(0, 8);
+// Hero "Inbox" panel reads from the same single source as the section below.
+const heroInbox = editions.slice(0, 12);
 
 const EN_MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -18,47 +20,26 @@ function shortDate(iso: string): string {
   return `${EN_MONTHS[m - 1].slice(0, 3)} ${d}`;
 }
 
+// Three article cards shown in the email mockup, from the latest sent issue.
 const previewItems = [
   {
-    tag: 'GTM',
-    title: 'Apple opens Core AI for on-device models and agents in Xcode.',
-    body: 'Mobile teams can build private AI features without a server, without per-token fees, and without cloud latency.',
-    link: 'developer.apple.com',
+    tag: 'Review',
+    title: 'GitHub Code Quality goes paid with an org-wide switch.',
+    body: 'From July 20 it is $10 per active committer, and one admin toggle turns it on across every repo at once.',
+    link: 'github.blog',
   },
   {
-    tag: 'OPS',
-    title: 'Vercel shows model routing is now a financial decision.',
-    body: 'In May, DeepSeek jumped to 17% of tokens but stayed near 1% of cost. Anthropic grew to 32% of tokens and 65% of spend.',
-    link: 'vercel.com/blog',
+    tag: 'Runtime',
+    title: 'Vercel sandboxes now run for up to 24 hours.',
+    body: 'Long end-to-end tests, crawls, and agent workflows stop getting cut at the old 5-hour limit. Workflow SDK adds AbortController.',
+    link: 'vercel.com/changelog',
   },
   {
-    tag: 'SEC',
-    title: 'Okta scopes MCP tools by real user permissions.',
-    body: 'MCP without tool pruning quickly becomes an overly broad admin panel. Okta shows the pattern: least privilege, fewer tokens in context.',
-    link: 'developer.okta.com',
+    tag: 'Issues',
+    title: 'Linear wires Claude Code and Codex into issues.',
+    body: 'Start a coding session from an issue, comment, or Slack thread. Linear says the flow closes about 30% of incoming bugs.',
+    link: 'linear.app/changelog',
   },
-];
-
-// Real AI Espresso editions (title + lead from sent issues). Newest first.
-// Hero-preview inbox uses human-formatted dates ("Jun 9"). The dedicated
-// inbox section below uses ISO-dated `inbox` from ../data/editions.ts.
-const heroInboxEditions = [
-  { date: 'Jun 9',  title: 'Local models, scopes, and a hard token bill.',       lead: 'Agents stop being a separate chat window. They enter Xcode, IAM, model routing, business metrics, and voice ops.' },
-  { date: 'Jun 8',  title: 'Agents within boundaries.',                          lead: 'The winning bet is not the agent itself, but its environment: org context, secure execution, and cost audit.' },
-  { date: 'Jun 6',  title: 'The interesting moves are below the model.',         lead: 'Models keep changing, but the edge increasingly comes from runtime: where the agent stores files, who installs plugins, and whether actions can be audited.' },
-  { date: 'Jun 5',  title: 'Agents get an operational backbone.',                lead: 'Less about models today, more about putting them into CRM, edge, code, and visibility measurement without gluing everything from scratch.' },
-  { date: 'Jun 4',  title: 'Agents come under control.',                         lead: 'The strongest signal: the edge shifts from the model itself to sandbox, cost, telemetry, and ready-made runtimes for specific workflows.' },
-  { date: 'Jun 3',  title: 'Agents descend into daily workflow.',                lead: 'The agent is no longer just a dev add-on. It enters analytics, operations, review, browser work, and daily GTM.' },
-  { date: 'Jun 2',  title: 'Agent stack gets a counter.',                        lead: 'Vendors stop selling the model alone. Increasingly they sell cost control, change monitoring, and ready-made agent workflows.' },
-  { date: 'Jun 1',  title: 'Agent cost enters the budget.',                      lead: 'Token billing, team budgets, no free fallbacks, and hard tool limits become the standard, not the exception.' },
-  { date: 'May 29', title: 'MCP goes to production.',                            lead: 'Zapier sunsets AI Actions for MCP, GitHub and Vercel add cost policies, and execution isolation becomes the norm.' },
-  { date: 'May 28', title: 'Agent stack without slip-ups.',                      lead: 'Two practical signals: safer integration defaults in CLI and a real CVE in a popular workflow tool.' },
-  { date: 'May 27', title: 'Durable runtime for agents.',                        lead: 'In 2026 the edge is not just the model, but the execution infrastructure: persistent state, repeatable procedures, and hard integration gates.' },
-  { date: 'May 25', title: 'Governance for agents.',                             lead: 'Agents in the enterprise start being treated like a normal app in the stack. Permissions, audit, compliance, and fast patches after review.' },
-  { date: 'May 24', title: 'Agents behind the firewall.',                        lead: 'Two signals today: MCP enters more products, and pressure grows for secure authentication of remote servers.' },
-  { date: 'May 22', title: 'Agent ops in the terminal.',                         lead: 'Clear trend: models become interchangeable, and the edge moves toward observability, cost control, and stable tool interfaces.' },
-  { date: 'May 21', title: 'MCP over beta.',                                     lead: 'A week where you see the pivot: fewer one-off AI actions, more MCP standard, permission control, and agents on remote infra.' },
-  { date: 'May 20', title: 'Trust and cost in the stack.',                       lead: 'Two trends: media provenance and a harder stance on integration quality, model quality, and production costs.' },
 ];
 ---
 
@@ -285,15 +266,15 @@ const heroInboxEditions = [
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-border);">
             <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-dim);"
               data-en="Inbox" data-pl="Skrzynka" data-it="Inbox">Inbox</span>
-            <span style="font-size: 0.6875rem; color: var(--color-text-dim);">{heroInboxEditions.length} {''}
+            <span style="font-size: 0.6875rem; color: var(--color-text-dim);">{heroInbox.length} {''}
               <span data-en="recent issues" data-pl="ostatnich wydań" data-it="numeri recenti">recent issues</span>
             </span>
           </div>
           <div style="max-height: 420px; overflow-y: auto;">
-            {heroInboxEditions.map((e, i) => (
+            {heroInbox.map((e, i) => (
               <details open={i === 0} class="edition-item" style={`border-top: ${i === 0 ? 'none' : '1px solid var(--color-border)'};`}>
                 <summary style="display: flex; align-items: baseline; gap: 0.75rem; padding: 0.625rem 1rem; cursor: pointer; list-style: none;">
-                  <span style="flex-shrink: 0; width: 3.75rem; font-size: 0.6875rem; font-weight: 600; color: var(--color-text-dim); white-space: nowrap;">{e.date}</span>
+                  <span style="flex-shrink: 0; width: 3.25rem; font-size: 0.6875rem; font-weight: 600; color: var(--color-text-dim); white-space: nowrap;">{shortDate(e.date)}</span>
                   <span style="font-size: 0.8125rem; line-height: 1.35; color: var(--color-text); font-weight: 500;">{e.title}</span>
                   {i === 0 && (
                     <span style="flex-shrink: 0; margin-left: auto; align-self: center; font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-text); background: var(--color-accent-cta); border-radius: 999px; padding: 2px 7px;"
@@ -301,7 +282,7 @@ const heroInboxEditions = [
                   )}
                   <span class="edition-chevron" aria-hidden="true" style="flex-shrink: 0; color: var(--color-text-dim); font-size: 0.75rem; transition: transform 0.18s ease; margin-left: 0.5rem;">▾</span>
                 </summary>
-                <div style="padding: 0 1rem 0.875rem calc(1rem + 3.75rem + 0.75rem); font-size: 0.75rem; line-height: 1.55; color: var(--color-text-muted);">
+                <div style="padding: 0 1rem 0.875rem calc(1rem + 3.25rem + 0.75rem); font-size: 0.75rem; line-height: 1.55; color: var(--color-text-muted);">
                   {e.lead}
                 </div>
               </details>

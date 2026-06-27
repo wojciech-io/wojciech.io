@@ -1,9 +1,17 @@
 /**
- * AI Espresso — recent issues.
+ * AI Espresso — recent issues. SINGLE SOURCE OF TRUTH for the landing page.
  *
- * Curated from the sent editions (HTML lives outside the repo, in the Codex
- * automation workdir, so it cannot be read at build time). Keep newest first.
- * `tag` is a short topic label; `lead` is the issue's one-line standfirst.
+ * Both inbox views on index.astro (the hero panel and the "What's been landing"
+ * list) read from this array, so there is only one place to update.
+ *
+ * Curated from the sent editions. The newsletter ships in Polish; the HTML lives
+ * outside the repo in the Codex automation workdir
+ * (~/Documents/Codex/2026-05-07/goal-ai-listener-newsletter-przygotowuj-mi,
+ * files ai_espresso_public_YYYY-MM-DD.html). `title`/`lead` are short English
+ * standfirsts written from each issue. Keep newest first.
+ *
+ * WEEKLY UPDATE: add the new issues to the top, drop the oldest so this stays
+ * ~16 long, and bump `totalIssues` to the count of sent issues.
  */
 export interface Edition {
   /** ISO date the issue went out. */
@@ -17,6 +25,36 @@ export interface Edition {
 }
 
 export const editions: Edition[] = [
+  {
+    date: '2026-06-17',
+    tag: 'Ops',
+    title: 'The agent really costs now.',
+    lead: 'GitHub prices code quality with an org-wide switch, Vercel runs sandboxes 24h, Linear ships fixes via Claude Code and Codex.',
+  },
+  {
+    date: '2026-06-16',
+    tag: 'Runtime',
+    title: 'Cost, control, runtime.',
+    lead: 'GitHub counts new billable users, Copilot review gets central runner control, Anthropic retires old Sonnet 4 and Opus 4.',
+  },
+  {
+    date: '2026-06-12',
+    tag: 'Workflow',
+    title: 'Agent workflow grows up.',
+    lead: 'GitHub ships agent workflows to public beta, Copilot CLI consolidates settings, Linear wires Claude Code and Codex into issues.',
+  },
+  {
+    date: '2026-06-11',
+    tag: 'Security',
+    title: 'Agents get memory and limits.',
+    lead: 'Copilot CLI gains a security review, Copilot Chat surfaces agent session traces, Claude Fable 5 arrives with retention controls.',
+  },
+  {
+    date: '2026-06-10',
+    tag: 'Scope',
+    title: 'Workflow gets a budget and a scope.',
+    lead: 'Okta trims MCP to user permissions, Vercel frames model routing as a financial call, the skills market needs a scanner not a marketplace.',
+  },
   {
     date: '2026-06-09',
     tag: 'Runtime',
@@ -77,7 +115,13 @@ export const editions: Edition[] = [
     title: 'Agent stack without slip-ups.',
     lead: 'Safer integration gates, predictable MCP defaults, and a real CVE in a popular workflow tool.',
   },
+  {
+    date: '2026-05-27',
+    tag: 'Runtime',
+    title: 'Durable runtime for agents.',
+    lead: 'Persistent state, repeatable procedures, and hard integration gates over model choice.',
+  },
 ];
 
 /** Total issues sent to date (inbox shows a recent slice of this). */
-export const totalIssues = 25;
+export const totalIssues = 34;
