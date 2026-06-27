@@ -1,0 +1,92 @@
+---
+/* Website portfolio band, shown on the Marketing lens (/marketing, /ar/marketing).
+   Real screenshots in a browser-chrome frame: proof of sites built and shipped,
+   across different industries. Copy is prop-driven so each locale passes its own.
+   Logical properties + rtl-flip-x keep it correct under both LTR and RTL. */
+import { accentHeading } from '../../lib/editorial';
+
+interface PortfolioItem {
+  name: string;
+  /** Full URL for the link target. */
+  url: string;
+  /** Short host shown in the browser-chrome address pill. */
+  displayUrl: string;
+  /** Industry / sector label rendered as the mono tag. */
+  industry: string;
+  blurb: string;
+  /** Path under /public, e.g. /images/portfolio/ciryam.webp */
+  image: string;
+  alt: string;
+}
+
+interface Props {
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  items: PortfolioItem[];
+  visitLabel: string;
+}
+
+const { eyebrow, heading, lead, items, visitLabel } = Astro.props as Props;
+const h = accentHeading(heading);
+---
+
+<section class="relative py-[var(--space-section)] bg-[var(--color-bg)]">
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border-2)] to-transparent" aria-hidden="true"></div>
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+      <span class="obs-label-accent">{eyebrow}</span>
+    </div>
+    <h2 class="text-[length:var(--text-h2)] font-normal leading-[1.12] tracking-[-0.015em] mb-4 max-w-2xl">
+      <span class="text-[var(--color-text)]">{h.lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{h.mark}</span>
+    </h2>
+    <p class="text-[length:var(--text-lead)] text-[var(--color-text-muted)] leading-relaxed mb-10 max-w-xl">{lead}</p>
+
+    <div class="grid gap-4 md:grid-cols-3 md:gap-6">
+      {items.map((site, index) => (
+        <a
+          href={site.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-reveal-index={index + 1}
+          class="reveal-scale group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover"
+        >
+          {/* Browser-chrome frame */}
+          <div class="flex items-center gap-2 border-b border-[var(--color-border)] bg-[var(--color-surface-2)] px-3 py-2">
+            <span class="flex gap-1.5" aria-hidden="true">
+              <span class="h-2 w-2 rounded-full bg-[var(--color-border-2)]"></span>
+              <span class="h-2 w-2 rounded-full bg-[var(--color-border-2)]"></span>
+              <span class="h-2 w-2 rounded-full bg-[var(--color-border-2)]"></span>
+            </span>
+            <span class="ms-1 flex-1 truncate rounded-[5px] border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 text-center font-mono text-[10px] text-[var(--color-text-dim)]" dir="ltr">{site.displayUrl}</span>
+          </div>
+
+          <div class="relative aspect-[16/10] overflow-hidden bg-[var(--color-surface-2)]">
+            <img
+              src={site.image}
+              alt={site.alt}
+              width="1280"
+              height="800"
+              loading="lazy"
+              decoding="async"
+              class="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+            />
+          </div>
+
+          <div class="flex flex-1 flex-col p-5 pt-4">
+            <span class="mb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-text-dim)]">{site.industry}</span>
+            <h3 class="mb-2 text-base font-semibold leading-snug text-[var(--color-text)] transition-colors duration-150 group-hover:text-[var(--color-accent-hi)]">{site.name}</h3>
+            <p class="mb-5 text-xs leading-relaxed text-[var(--color-text-muted)]">{site.blurb}</p>
+            <span class="mt-auto flex items-center gap-1 text-xs font-medium text-[var(--color-text-dim)] transition-colors duration-150 group-hover:text-[var(--color-accent)]">
+              {visitLabel}
+              <svg class="h-3 w-3 transition-transform duration-150 group-hover:translate-x-1 rtl-flip-x" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
