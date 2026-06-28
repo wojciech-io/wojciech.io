@@ -10,7 +10,7 @@ import {
 } from '../data/localizedPages';
 
 const EXPECTED_LOCALES = ['de', 'dk', 'no', 'jp', 'it', 'es', 'pl'] as const;
-const EXPECTED_SLUGS = ['about', 'work', 'ai-systems', 'contact', 'insights'] as const;
+const EXPECTED_SLUGS = ['about', 'work', 'gtm', 'marketing', 'growth', 'ai-systems', 'contact', 'insights'] as const;
 const LOCALE_COPY_MARKERS: Record<(typeof EXPECTED_LOCALES)[number], RegExp[]> = {
   de: [/\bIch\b/, /\bfür\b/, /\bArbeit\b/, /\bSysteme\b/],
   dk: [/\bJeg\b/, /\bikke\b/, /\bhvad\b/i, /\bværktøj/i],
