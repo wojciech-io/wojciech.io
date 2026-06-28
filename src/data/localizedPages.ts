@@ -1,6 +1,8 @@
 import { localizedHome, localizedHomeList, type LocaleKey } from './locales';
 
-export type LocalizedPageSlug = 'about' | 'work' | 'ai-systems' | 'contact' | 'insights';
+export type CorePageSlug = 'about' | 'work' | 'ai-systems' | 'contact' | 'insights';
+export type LensPageSlug = 'gtm' | 'marketing' | 'growth';
+export type LocalizedPageSlug = CorePageSlug | LensPageSlug;
 
 export interface LocalizedPageCopy {
   locale: LocaleKey;
@@ -21,12 +23,15 @@ export interface LocalizedPageCopy {
 export const localizedPageSlugs: LocalizedPageSlug[] = [
   'about',
   'work',
+  'gtm',
+  'marketing',
+  'growth',
   'ai-systems',
   'contact',
   'insights',
 ];
 
-const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCopy, 'locale' | 'slug'>>> = {
+const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, 'locale' | 'slug'>>> = {
   de: {
     "about": {
       title: 'Über Wojciech · AI-native GTM Operator',
@@ -868,11 +873,92 @@ const pageCopy: Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCo
   },
 };
 
+/* ── Lens pillars (GTM / Marketing / Growth), localized 1-1 with EN/AR. ──
+   Only the translatable prose lives here; stat values and CTA hrefs are
+   assembled below so the table stays small. B2B terms (GTM, CRM, RevOps, ICP,
+   SEO, outbound, paid, pipeline, lifecycle, A/B, LTV, ARR) stay in English. */
+type LensProse = {
+  title: string; description: string; eyebrow: string; h1: string; lead: string;
+  primaryCta: string; secondaryCta: string;
+  statLabels: [string, string, string];
+  s: [string, string, string];
+  b: [string, string, string];
+};
+const lensStatValues: Record<LensPageSlug, [string, string, string]> = {
+  gtm: ['CRM', 'AI', '1'],
+  marketing: ['ICP', 'SEO', 'POV'],
+  growth: ['A/B', 'LTV', 'ARR'],
+};
+const lensProse: Record<LocaleKey, Record<LensPageSlug, LensProse>> = {
+  de: {
+    gtm: { title: 'GTM-Systeme · Pipeline, die hält', description: 'AI-native GTM: CRM, Outbound, Paid und RevOps in einer Pipeline, der du vertrauen kannst.', eyebrow: 'GTM', h1: 'Pipeline, die sich aufbaut. Nicht vier Dashboards.', lead: 'CRM, Outbound und Paid in einem System. Eine Quelle der Wahrheit, gebaut und betrieben, bis die Pipeline trägt.', primaryCta: 'Arbeit ansehen', secondaryCta: 'Termin vereinbaren', statLabels: ['Pipeline & RevOps', 'Outbound, angereichert', 'Quelle der Wahrheit'], s: ['Pipeline-Architektur', 'RevOps & Attribution', 'Outbound, das ankommt'], b: ['CRM, Outbound und Paid als ein Operating Model. Eine Quelle der Wahrheit statt vier getrennter Dashboards.', 'Lifecycle-Stufen, Routing und Reporting, die genau zeigen, wo das Signal bricht.', 'Sequenzen und Targeting auf echtem ICP-Signal, mit AI angereichert und personalisiert. Kein Spray.'] },
+    marketing: { title: 'Marketing · Nachfrage, keine Impressionen', description: 'B2B-Marketing, das Pipeline erzeugt: Positionierung, Nachfrage und Marke, bis zum Umsatz nachverfolgbar.', eyebrow: 'Marketing', h1: 'Nachfrage, keine Impressionen.', lead: 'Positionierung, Content und Marke, die nachverfolgbare Pipeline erzeugen. Gebaut zum Laufen, nicht für die Slide.', primaryCta: 'Arbeit ansehen', secondaryCta: 'Termin vereinbaren', statLabels: ['Positionierung', 'Content & Nachfrage', 'Marke'], s: ['Positionierung mit Biss', 'Nachfrage, keine Impressionen', 'Marke, die sich summiert'], b: ['Ein Satz, den ein Käufer dir wiederholt. Der Rest der Seite führt dorthin.', 'Content und Kanäle, die Pipeline erzeugen, die du wirklich nachverfolgen kannst.', 'Eine Haltung, konsequent veröffentlicht, damit der Markt dich zwischen den Kaufzyklen erinnert.'] },
+    growth: { title: 'Growth · Experimente, die liefern', description: 'Growth als System: Experimente, Aktivierung, Retention und Lifecycle-Loops, gemessen in Umsatz, nicht in Vanity-Metriken.', eyebrow: 'Growth', h1: 'Experimente, die liefern.', lead: 'Aktivierung, Retention und Lifecycle-Loops, wöchentlich betrieben und in Umsatz gemessen. Die Loops, die entscheiden, ob Akquise sich je rechnet.', primaryCta: 'Arbeit ansehen', secondaryCta: 'Termin vereinbaren', statLabels: ['Experimente', 'Aktivierung & Retention', 'In Umsatz gemessen'], s: ['Experimente, die liefern', 'Aktivierung & Retention', 'Lifecycle, der von selbst läuft'], b: ['Ein Backlog nach Impact bewertet, im Wochenrhythmus betrieben, in Umsatz gemessen.', 'Die Loops, die entscheiden, ob Akquise sich je auszahlt. Gefunden, instrumentiert, behoben.', 'Getriggerte, verhaltensbasierte Kommunikation, die das System besitzt, nicht eine Person und ein Spreadsheet.'] },
+  },
+  dk: {
+    gtm: { title: 'GTM-systemer · Pipeline der holder', description: 'AI-native GTM: CRM, outbound, paid og RevOps i én pipeline, du kan stole på.', eyebrow: 'GTM', h1: 'Pipeline der vokser. Ikke fire dashboards.', lead: 'CRM, outbound og paid i ét system. Én kilde til sandhed, bygget og drevet indtil pipelinen holder.', primaryCta: 'Se arbejdet', secondaryCta: 'Book et opkald', statLabels: ['Pipeline & RevOps', 'Outbound, beriget', 'Kilde til sandhed'], s: ['Pipeline-arkitektur', 'RevOps & attribution', 'Outbound der lander'], b: ['CRM, outbound og paid som én operating model. Én kilde til sandhed i stedet for fire adskilte dashboards.', 'Lifecycle-trin, routing og rapportering der viser præcis hvor signalet brister.', 'Sekvenser og targeting bygget på ægte ICP-signal, beriget og personaliseret med AI. Ikke spray.'] },
+    marketing: { title: 'Marketing · Efterspørgsel, ikke visninger', description: 'B2B-marketing bygget til at skabe pipeline: positionering, efterspørgsel og brand du kan spore til omsætning.', eyebrow: 'Marketing', h1: 'Efterspørgsel, ikke visninger.', lead: 'Positionering, content og brand designet til at skabe sporbar pipeline. Bygget til at køre, ikke til en slide.', primaryCta: 'Se arbejdet', secondaryCta: 'Book et opkald', statLabels: ['Positionering', 'Content & efterspørgsel', 'Brand'], s: ['Positionering der bider', 'Efterspørgsel, ikke visninger', 'Brand der lægger sig sammen'], b: ['Én sætning en køber gentager til dig. Resten af sitet fører derhen.', 'Content og kanaler designet til at skabe pipeline du faktisk kan spore.', 'Et synspunkt udgivet konsekvent, så markedet husker dig mellem købscyklusser.'] },
+    growth: { title: 'Growth · Eksperimenter der leverer', description: 'Growth som system: eksperimenter, aktivering, retention og lifecycle-loops målt i omsætning, ikke vanity-metrikker.', eyebrow: 'Growth', h1: 'Eksperimenter der leverer.', lead: 'Aktivering, retention og lifecycle-loops, kørt ugentligt og målt i omsætning. De loops der afgør om acquisition nogensinde betaler sig.', primaryCta: 'Se arbejdet', secondaryCta: 'Book et opkald', statLabels: ['Eksperimenter', 'Aktivering & retention', 'Målt i omsætning'], s: ['Eksperimenter der leverer', 'Aktivering & retention', 'Lifecycle der kører selv'], b: ['Et backlog scoret efter impact, kørt i en ugentlig kadence, målt i omsætning.', 'De loops der afgør om acquisition nogensinde betaler sig. Fundet, instrumenteret, fikset.', 'Triggede, adfærdsbaserede beskeder ejet af systemet, ikke af én person og et regneark.'] },
+  },
+  no: {
+    gtm: { title: 'GTM-systemer · Pipeline som holder', description: 'AI-native GTM: CRM, outbound, paid og RevOps i én pipeline du kan stole på.', eyebrow: 'GTM', h1: 'Pipeline som vokser. Ikke fire dashboards.', lead: 'CRM, outbound og paid i ett system. Én kilde til sannhet, bygget og driftet til pipelinen holder.', primaryCta: 'Se arbeidet', secondaryCta: 'Book en samtale', statLabels: ['Pipeline & RevOps', 'Outbound, beriket', 'Kilde til sannhet'], s: ['Pipeline-arkitektur', 'RevOps & attribusjon', 'Outbound som lander'], b: ['CRM, outbound og paid som én operating model. Én kilde til sannhet i stedet for fire adskilte dashboards.', 'Lifecycle-trinn, routing og rapportering som viser nøyaktig hvor signalet brister.', 'Sekvenser og targeting bygget på ekte ICP-signal, beriket og personalisert med AI. Ikke spray.'] },
+    marketing: { title: 'Marketing · Etterspørsel, ikke visninger', description: 'B2B-markedsføring bygget for å skape pipeline: posisjonering, etterspørsel og merkevare du kan spore til inntekt.', eyebrow: 'Marketing', h1: 'Etterspørsel, ikke visninger.', lead: 'Posisjonering, innhold og merkevare designet for å skape sporbar pipeline. Bygget for å kjøre, ikke for en slide.', primaryCta: 'Se arbeidet', secondaryCta: 'Book en samtale', statLabels: ['Posisjonering', 'Innhold & etterspørsel', 'Merkevare'], s: ['Posisjonering som biter', 'Etterspørsel, ikke visninger', 'Merkevare som bygger seg opp'], b: ['Én setning en kjøper gjentar til deg. Resten av siden leder dit.', 'Innhold og kanaler designet for å skape pipeline du faktisk kan spore.', 'Et ståsted publisert konsekvent, så markedet husker deg mellom kjøpssykluser.'] },
+    growth: { title: 'Growth · Eksperimenter som leverer', description: 'Growth som system: eksperimenter, aktivering, retention og lifecycle-loops målt i inntekt, ikke vanity-metrikker.', eyebrow: 'Growth', h1: 'Eksperimenter som leverer.', lead: 'Aktivering, retention og lifecycle-loops, kjørt ukentlig og målt i inntekt. Loopene som avgjør om acquisition noen gang lønner seg.', primaryCta: 'Se arbeidet', secondaryCta: 'Book en samtale', statLabels: ['Eksperimenter', 'Aktivering & retention', 'Målt i inntekt'], s: ['Eksperimenter som leverer', 'Aktivering & retention', 'Lifecycle som går av seg selv'], b: ['En backlog scoret etter impact, kjørt i ukentlig kadens, målt i inntekt.', 'Loopene som avgjør om acquisition noen gang lønner seg. Funnet, instrumentert, fikset.', 'Trigget, atferdsbasert kommunikasjon eid av systemet, ikke av én person og et regneark.'] },
+  },
+  jp: {
+    gtm: { title: 'GTMシステム · 機能するパイプライン', description: 'AIネイティブなGTM:CRM、アウトバウンド、ペイド、RevOpsを信頼できる一つのパイプラインに。', eyebrow: 'GTM', h1: '積み上がるパイプライン。4つのダッシュボードではなく。', lead: 'CRM、アウトバウンド、ペイドを一つのシステムに。唯一の信頼できる情報源を、パイプラインが機能するまで構築し運用する。', primaryCta: '実績を見る', secondaryCta: '相談を予約', statLabels: ['パイプライン & RevOps', 'エンリッチ済みアウトバウンド', '唯一の情報源'], s: ['パイプライン設計', 'RevOpsとアトリビューション', '届くアウトバウンド'], b: ['CRM、アウトバウンド、ペイドを一つのオペレーティングモデルに。分断された4つのダッシュボードではなく、唯一の情報源を。', 'どこでシグナルが途切れるかを正確に示すライフサイクル段階、ルーティング、レポーティング。', '本物のICPシグナルに基づき、AIでエンリッチ・パーソナライズしたシーケンスとターゲティング。やみくもな配信ではない。'] },
+    marketing: { title: 'マーケティング · 印象ではなく需要', description: 'パイプラインを生むB2Bマーケティング:収益まで追跡できるポジショニング、需要、ブランド。', eyebrow: 'マーケティング', h1: '印象ではなく、需要。', lead: '追跡可能なパイプラインを生むよう設計したポジショニング、コンテンツ、ブランド。スライドではなく、動くために作る。', primaryCta: '実績を見る', secondaryCta: '相談を予約', statLabels: ['ポジショニング', 'コンテンツと需要', 'ブランド'], s: ['刺さるポジショニング', '印象ではなく需要', '積み上がるブランド'], b: ['買い手があなたに繰り返す一文。サイトの残りはそこへ向かって積み上がる。', '実際に追跡できるパイプラインを生むよう設計したコンテンツとチャネル。', '一貫して発信する視点。購買サイクルの間も市場があなたを覚えている。'] },
+    growth: { title: 'グロース · 実装される実験', description: 'システムとしてのグロース:実験、アクティベーション、リテンション、ライフサイクルループを虚栄の指標ではなく収益で測る。', eyebrow: 'グロース', h1: '実装される実験。', lead: 'アクティベーション、リテンション、ライフサイクルループを毎週回し、収益で測る。獲得が報われるかを決めるループ。', primaryCta: '実績を見る', secondaryCta: '相談を予約', statLabels: ['実験', 'アクティベーションとリテンション', '収益で測定'], s: ['実装される実験', 'アクティベーションとリテンション', '自走するライフサイクル'], b: ['インパクトでスコア付けしたバックログを、週次のリズムで回し、収益で測る。', '獲得が報われるかを決めるループ。発見し、計測し、修正する。', 'トリガー型の行動ベース配信を、一人と表計算ではなくシステムが担う。'] },
+  },
+  it: {
+    gtm: { title: 'Sistemi GTM · Pipeline che regge', description: 'GTM AI-native: CRM, outbound, paid e RevOps in un\'unica pipeline di cui fidarti.', eyebrow: 'GTM', h1: 'Pipeline che si accumula. Non quattro dashboard.', lead: 'CRM, outbound e paid in un solo sistema. Un\'unica fonte di verità, costruita e gestita finché la pipeline regge.', primaryCta: 'Vedi i lavori', secondaryCta: 'Prenota una call', statLabels: ['Pipeline e RevOps', 'Outbound, arricchito', 'Fonte di verità'], s: ['Architettura della pipeline', 'RevOps e attribuzione', 'Outbound che arriva'], b: ['CRM, outbound e paid come un solo operating model. Un\'unica fonte di verità invece di quattro dashboard scollegate.', 'Fasi del lifecycle, routing e reporting che mostrano esattamente dove si rompe il segnale.', 'Sequenze e targeting costruiti su segnale ICP reale, arricchiti e personalizzati con l\'AI. Non spray.'] },
+    marketing: { title: 'Marketing · Domanda, non impression', description: 'Marketing B2B costruito per generare pipeline: posizionamento, domanda e brand tracciabili fino al fatturato.', eyebrow: 'Marketing', h1: 'Domanda, non impression.', lead: 'Posizionamento, contenuti e brand progettati per generare pipeline tracciabile. Costruiti per funzionare, non per una slide.', primaryCta: 'Vedi i lavori', secondaryCta: 'Prenota una call', statLabels: ['Posizionamento', 'Contenuti e domanda', 'Brand'], s: ['Posizionamento che morde', 'Domanda, non impression', 'Brand che si accumula'], b: ['Una frase che un buyer ti ripete. Il resto del sito porta lì.', 'Contenuti e canali progettati per generare pipeline che puoi davvero tracciare.', 'Un punto di vista pubblicato con costanza, così il mercato ti ricorda tra un ciclo d\'acquisto e l\'altro.'] },
+    growth: { title: 'Growth · Esperimenti che vanno in produzione', description: 'Growth come sistema: esperimenti, attivazione, retention e loop di lifecycle misurati in fatturato, non in vanity metric.', eyebrow: 'Growth', h1: 'Esperimenti che vanno in produzione.', lead: 'Attivazione, retention e loop di lifecycle, eseguiti ogni settimana e misurati in fatturato. I loop che decidono se l\'acquisizione ripaga.', primaryCta: 'Vedi i lavori', secondaryCta: 'Prenota una call', statLabels: ['Esperimenti', 'Attivazione e retention', 'Misurato in fatturato'], s: ['Esperimenti che vanno in produzione', 'Attivazione e retention', 'Lifecycle che gira da solo'], b: ['Un backlog valutato per impatto, eseguito a cadenza settimanale, misurato in fatturato.', 'I loop che decidono se l\'acquisizione ripaga. Trovati, strumentati, sistemati.', 'Messaggi comportamentali attivati da trigger, gestiti dal sistema, non da una persona e un foglio di calcolo.'] },
+  },
+  es: {
+    gtm: { title: 'Sistemas GTM · Pipeline que aguanta', description: 'GTM AI-native: CRM, outbound, paid y RevOps en un único pipeline en el que confiar.', eyebrow: 'GTM', h1: 'Pipeline que se acumula. No cuatro dashboards.', lead: 'CRM, outbound y paid en un solo sistema. Una única fuente de verdad, construida y operada hasta que el pipeline aguanta.', primaryCta: 'Ver el trabajo', secondaryCta: 'Reservar una llamada', statLabels: ['Pipeline y RevOps', 'Outbound, enriquecido', 'Fuente de verdad'], s: ['Arquitectura del pipeline', 'RevOps y atribución', 'Outbound que llega'], b: ['CRM, outbound y paid como un solo operating model. Una fuente de verdad en lugar de cuatro dashboards desconectados.', 'Etapas del lifecycle, routing y reporting que muestran exactamente dónde se rompe la señal.', 'Secuencias y targeting sobre señal ICP real, enriquecidos y personalizados con IA. No spray.'] },
+    marketing: { title: 'Marketing · Demanda, no impresiones', description: 'Marketing B2B construido para generar pipeline: posicionamiento, demanda y marca que puedes rastrear hasta los ingresos.', eyebrow: 'Marketing', h1: 'Demanda, no impresiones.', lead: 'Posicionamiento, contenido y marca diseñados para generar pipeline rastreable. Hechos para funcionar, no para una slide.', primaryCta: 'Ver el trabajo', secondaryCta: 'Reservar una llamada', statLabels: ['Posicionamiento', 'Contenido y demanda', 'Marca'], s: ['Posicionamiento que muerde', 'Demanda, no impresiones', 'Marca que se acumula'], b: ['Una frase que un comprador te repite. El resto del sitio conduce hasta ahí.', 'Contenido y canales diseñados para generar pipeline que de verdad puedes rastrear.', 'Un punto de vista publicado con constancia, para que el mercado te recuerde entre ciclos de compra.'] },
+    growth: { title: 'Growth · Experimentos que se lanzan', description: 'Growth como sistema: experimentos, activación, retención y loops de lifecycle medidos en ingresos, no en métricas de vanidad.', eyebrow: 'Growth', h1: 'Experimentos que se lanzan.', lead: 'Activación, retención y loops de lifecycle, ejecutados cada semana y medidos en ingresos. Los loops que deciden si la adquisición llega a pagarse.', primaryCta: 'Ver el trabajo', secondaryCta: 'Reservar una llamada', statLabels: ['Experimentos', 'Activación y retención', 'Medido en ingresos'], s: ['Experimentos que se lanzan', 'Activación y retención', 'Lifecycle que se ejecuta solo'], b: ['Un backlog puntuado por impacto, ejecutado en cadencia semanal, medido en ingresos.', 'Los loops que deciden si la adquisición llega a pagarse. Encontrados, instrumentados, corregidos.', 'Mensajería conductual activada por triggers, gestionada por el sistema, no por una persona y una hoja de cálculo.'] },
+  },
+  pl: {
+    gtm: { title: 'Systemy GTM · Pipeline, który się trzyma', description: 'GTM AI-native: CRM, outbound, paid i RevOps w jednym pipelinie, któremu możesz ufać.', eyebrow: 'GTM', h1: 'Pipeline, który się kumuluje. Nie cztery dashboardy.', lead: 'CRM, outbound i paid w jednym systemie. Jedno źródło prawdy, zbudowane i prowadzone aż pipeline się utrzyma.', primaryCta: 'Zobacz prace', secondaryCta: 'Umów rozmowę', statLabels: ['Pipeline i RevOps', 'Outbound, wzbogacony', 'Źródło prawdy'], s: ['Architektura pipeline\'u', 'RevOps i atrybucja', 'Outbound, który dociera'], b: ['CRM, outbound i paid jako jeden operating model. Jedno źródło prawdy zamiast czterech rozłącznych dashboardów.', 'Etapy lifecycle, routing i raportowanie, które pokazują dokładnie, gdzie urywa się sygnał.', 'Sekwencje i targetowanie na realnym sygnale ICP, wzbogacone i spersonalizowane AI. Nie spray.'] },
+    marketing: { title: 'Marketing · Popyt, nie wyświetlenia', description: 'Marketing B2B budowany pod pipeline: pozycjonowanie, popyt i marka, które dociągniesz do przychodu.', eyebrow: 'Marketing', h1: 'Popyt, nie wyświetlenia.', lead: 'Pozycjonowanie, treści i marka zaprojektowane tak, by tworzyć śledzony pipeline. Zbudowane, żeby działać, nie żeby leżeć w decku.', primaryCta: 'Zobacz prace', secondaryCta: 'Umów rozmowę', statLabels: ['Pozycjonowanie', 'Treści i popyt', 'Marka'], s: ['Pozycjonowanie, które gryzie', 'Popyt, nie wyświetlenia', 'Marka, która się kumuluje'], b: ['Jedno zdanie, które kupujący powtarza tobie. Reszta strony do niego prowadzi.', 'Treści i kanały zaprojektowane tak, by tworzyć pipeline, który naprawdę da się śledzić.', 'Punkt widzenia publikowany konsekwentnie, żeby rynek pamiętał cię między cyklami zakupowymi.'] },
+    growth: { title: 'Growth · Eksperymenty, które shipują', description: 'Growth jako system: eksperymenty, aktywacja, retencja i pętle lifecycle mierzone w przychodzie, nie w metrykach próżności.', eyebrow: 'Growth', h1: 'Eksperymenty, które shipują.', lead: 'Aktywacja, retencja i pętle lifecycle prowadzone co tydzień i mierzone w przychodzie. Pętle, które decydują, czy akwizycja kiedykolwiek się zwróci.', primaryCta: 'Zobacz prace', secondaryCta: 'Umów rozmowę', statLabels: ['Eksperymenty', 'Aktywacja i retencja', 'Mierzone w przychodzie'], s: ['Eksperymenty, które shipują', 'Aktywacja i retencja', 'Lifecycle, który działa sam'], b: ['Backlog oceniony po wpływie, prowadzony w tygodniowym rytmie, mierzony w przychodzie.', 'Pętle, które decydują, czy akwizycja się zwróci. Znalezione, oprzyrządowane, naprawione.', 'Wyzwalana, behawioralna komunikacja, którą posiada system, nie jedna osoba i arkusz.'] },
+  },
+};
+
+const lensCopy = Object.fromEntries(
+  localizedHomeList.map((locale) => {
+    const built = (Object.keys(lensProse[locale.key]) as LensPageSlug[]).reduce((acc, slug) => {
+      const p = lensProse[locale.key][slug];
+      acc[slug] = {
+        title: p.title,
+        description: p.description,
+        eyebrow: p.eyebrow,
+        h1: p.h1,
+        lead: p.lead,
+        primaryCta: p.primaryCta,
+        primaryHref: `/${locale.path}/work/`,
+        secondaryCta: p.secondaryCta,
+        secondaryHref: `/${locale.path}/contact/`,
+        stats: lensStatValues[slug].map((value, i) => ({ value, label: p.statLabels[i] })),
+        sections: p.s.map((title, i) => ({ title, body: p.b[i] })),
+      };
+      return acc;
+    }, {} as Record<LensPageSlug, Omit<LocalizedPageCopy, 'locale' | 'slug'>>);
+    return [locale.key, built];
+  }),
+) as Record<LocaleKey, Record<LensPageSlug, Omit<LocalizedPageCopy, 'locale' | 'slug'>>>;
+
+const allCopy = Object.fromEntries(
+  localizedHomeList.map((locale) => [locale.key, { ...pageCopy[locale.key], ...lensCopy[locale.key] }]),
+) as Record<LocaleKey, Record<LocalizedPageSlug, Omit<LocalizedPageCopy, 'locale' | 'slug'>>>;
+
 export const localizedPages: LocalizedPageCopy[] = localizedHomeList.flatMap((locale) =>
   localizedPageSlugs.map((slug) => ({
     locale: locale.key,
     slug,
-    ...pageCopy[locale.key][slug],
+    ...allCopy[locale.key][slug],
   })),
 );
 
@@ -880,7 +966,7 @@ export function getLocalizedPage(locale: LocaleKey, slug: LocalizedPageSlug): Lo
   return {
     locale,
     slug,
-    ...pageCopy[locale][slug],
+    ...allCopy[locale][slug],
   };
 }
 

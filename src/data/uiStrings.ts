@@ -356,11 +356,14 @@ export function getPrimaryNavLinks(pathname: string) {
     ];
   }
 
-  // The lens pages exist in EN (and AR) only. On other localized pages, surfacing
-  // them would mix English labels into a localized bar AND link out to English
-  // pages (breaking the locale), so those locales keep the clean classic nav.
+  // The three lenses now exist for every locale (localized /<locale>/gtm|marketing|growth/),
+  // so each localized bar carries them, pointing at its own pages. GTM stays an
+  // acronym; JP gets native labels, the rest use the standard B2B loanwords.
   if (locale !== 'en') {
-    return [work, insights, about, contact];
+    const gtm       = { label: 'GTM',                                            href: localizeHref('/gtm/', locale),       minWidth: '3rem' };
+    const marketing = { label: locale === 'jp' ? 'マーケティング' : 'Marketing', href: localizeHref('/marketing/', locale), minWidth: '5rem' };
+    const growth    = { label: locale === 'jp' ? 'グロース' : 'Growth',          href: localizeHref('/growth/', locale),    minWidth: '4rem' };
+    return [work, gtm, marketing, growth, insights, about, contact];
   }
 
   return [
