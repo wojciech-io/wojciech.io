@@ -420,9 +420,29 @@ const faq = [
 
       <div class="divide-y divide-[var(--color-border)] border-t border-[var(--color-border)]">
         {STACK.map((cat) => (
-          <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] lg:grid-cols-[180px_1fr_2fr] gap-x-10 gap-y-1 py-4 items-baseline">
+          <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] lg:grid-cols-[180px_1fr_2fr] gap-x-10 gap-y-2 py-4 items-baseline">
             <span class="obs-label-accent">{cat.name}</span>
-            <p class="text-sm font-medium text-[var(--color-text)]">{cat.items.map((i) => i.name).join(' · ')}</p>
+            <div class="flex flex-wrap gap-2">
+              {cat.items.map((i) => (
+                <span class="inline-flex items-center gap-1.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-2.5 py-1 text-xs font-medium text-[var(--color-text)]">
+                  {i.icon ? (
+                    <img
+                      src={`https://cdn.simpleicons.org/${i.icon}/${i.iconColor ?? '888888'}`}
+                      width="14"
+                      height="14"
+                      loading="lazy"
+                      decoding="async"
+                      alt=""
+                      class="opacity-90"
+                      onerror="this.style.display='none'"
+                    />
+                  ) : (
+                    <span class="inline-flex h-3.5 w-3.5 items-center justify-center rounded-[3px] bg-[var(--color-border-2)] text-[8px] font-bold text-[var(--color-bg)]" aria-hidden="true">{i.letterMark ?? i.name.slice(0, 1)}</span>
+                  )}
+                  {i.name}
+                </span>
+              ))}
+            </div>
             <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{cat.enables}</p>
           </div>
         ))}
