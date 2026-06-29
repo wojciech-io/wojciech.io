@@ -29,6 +29,15 @@ const pressLinks = [
   },
 ];
 
+// Selected company logos for the "where I've operated" strip. Real brand marks,
+// rendered as a uniform monochrome silhouette via CSS so they match in both themes.
+const companyLogos = [
+  { name: 'CodiLime', src: '/images/logos/codilime.svg' },
+  { name: 'SentiOne', src: '/images/logos/sentione.png' },
+  { name: 'WebWave', src: '/images/logos/webwave.svg' },
+  { name: 'Gi Group', src: '/images/logos/gigroup.png' },
+];
+
 const timeline = [
   {
     period: 'Now',
@@ -312,7 +321,12 @@ const faq = [
   <!-- Timeline -->
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-10" />
+      <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-8" />
+      <div class="logo-wall mb-12 flex flex-wrap items-center gap-x-10 gap-y-6">
+        {companyLogos.map((l) => (
+          <img src={l.src} alt={l.name} width="120" height="28" loading="lazy" decoding="async" class="logo-mark h-6 w-auto sm:h-7" />
+        ))}
+      </div>
       <div class="divide-y divide-[var(--color-border)] max-w-3xl">
         {timeline.map(({ period, role, company, href, description, contract, sector }, i) => (
           <div class:list={['flex flex-col sm:flex-row gap-4 py-7', i === 0 ? 'pt-0' : '']}>
@@ -436,3 +450,19 @@ const faq = [
   ctaSecondary="See the work"
   ctaSecondaryHref="/work/"
 />
+
+<style>
+  /* Company logos rendered as a uniform monochrome silhouette so mixed brand
+     colours read as one set, and stay visible in both themes. */
+  .logo-mark {
+    max-width: 132px;
+    filter: brightness(0);
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+  }
+  :root[data-theme='dark'] .logo-mark {
+    filter: brightness(0) invert(1);
+    opacity: 0.55;
+  }
+  .logo-mark:hover { opacity: 0.85; }
+</style>
