@@ -15,15 +15,7 @@ export interface AppEntry {
   urlLabel?: { en: string; pl: string; it: string };
   status: AppStatus;
   // Color palette — drives card-screen gradients, icon box, app-icon chip
-  palette: {
-    screenFrom: string;  // dark bg gradient start
-    screenTo: string;    // dark bg gradient end
-    glowRgba: string;    // radial overlay rgba (accent glow)
-    iconFrom: string;    // icon-box gradient start
-    iconTo: string;      // icon-box gradient end
-    shadowRgba: string;  // icon-box shadow rgba
-    chipBg: string;      // small app-icon chip color (solid or gradient)
-  };
+  palette: BRAND_PALETTE;
   icon: string; // inner SVG markup (no outer <svg>)
 }
 
@@ -39,6 +31,14 @@ const ICON = {
   truck: '<rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 4v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
   list: '<path d="M3 6h18M3 12h18M3 18h18"/><circle cx="7" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="7" cy="18" r="1" fill="currentColor" stroke="none"/>',
   lightning: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>',
+};
+
+const BRAND_PALETTE = {
+  screenFrom: '#15151a', screenTo: '#0b0b0f',
+  glowRgba: 'rgba(235,255,0,0.06)',
+  iconFrom: '#1c1c22', iconTo: '#121217',
+  shadowRgba: 'rgba(0,0,0,0.45)',
+  chipBg: 'rgba(235,255,0,0.14)',
 };
 
 export const apps: AppEntry[] = [
@@ -59,13 +59,7 @@ export const apps: AppEntry[] = [
     url: 'https://sabiszop.netlify.app/',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
-    palette: {
-      screenFrom: '#030919', screenTo: '#05122e',
-      glowRgba: 'rgba(28,105,212,0.45)',
-      iconFrom: '#2e7de8', iconTo: '#1C69D4',
-      shadowRgba: 'rgba(28,105,212,0.4)',
-      chipBg: '#1C69D4',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.cart,
   },
   {
@@ -85,13 +79,7 @@ export const apps: AppEntry[] = [
     url: 'https://gh.wojciech.io/demo/',
     urlLabel: { en: 'Demo', pl: 'Demo', it: 'Demo' },
     status: 'in-progress',
-    palette: {
-      screenFrom: '#031011', screenTo: '#05211f',
-      glowRgba: 'rgba(16,185,129,0.45)',
-      iconFrom: '#14d498', iconTo: '#10b981',
-      shadowRgba: 'rgba(16,185,129,0.4)',
-      chipBg: '#10b981',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.trendUp,
   },
   {
@@ -111,13 +99,7 @@ export const apps: AppEntry[] = [
     url: 'https://hireme-amber.vercel.app/login',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
-    palette: {
-      screenFrom: '#030d12', screenTo: '#051a20',
-      glowRgba: 'rgba(13,148,136,0.45)',
-      iconFrom: '#11aba0', iconTo: '#0d9488',
-      shadowRgba: 'rgba(13,148,136,0.4)',
-      chipBg: '#0d9488',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.users,
   },
   {
@@ -137,13 +119,7 @@ export const apps: AppEntry[] = [
     url: 'https://an-projekt.com.pl/',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
-    palette: {
-      screenFrom: '#150613', screenTo: '#2a0c23',
-      glowRgba: 'rgba(236,72,153,0.45)',
-      iconFrom: '#f660a8', iconTo: '#ec4899',
-      shadowRgba: 'rgba(236,72,153,0.4)',
-      chipBg: '#ec4899',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.home,
   },
   {
@@ -163,13 +139,7 @@ export const apps: AppEntry[] = [
     url: 'https://ciryam.eu',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
-    palette: {
-      screenFrom: '#14030c', screenTo: '#280514',
-      glowRgba: 'rgba(225,29,72,0.45)',
-      iconFrom: '#f52e57', iconTo: '#e11d48',
-      shadowRgba: 'rgba(225,29,72,0.4)',
-      chipBg: '#e11d48',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.music,
   },
   {
@@ -189,13 +159,7 @@ export const apps: AppEntry[] = [
     url: 'https://dzialkometr.netlify.app/auth/login?next=%2Fapp',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
-    palette: {
-      screenFrom: '#0b0e08', screenTo: '#161c0c',
-      glowRgba: 'rgba(124,158,0,0.45)',
-      iconFrom: '#92bb00', iconTo: '#7c9e00',
-      shadowRgba: 'rgba(124,158,0,0.4)',
-      chipBg: '#7c9e00',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.pin,
   },
   {
@@ -215,13 +179,7 @@ export const apps: AppEntry[] = [
     url: 'https://ads-assistant-three.vercel.app',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
-    palette: {
-      screenFrom: '#160e08', screenTo: '#2c1c0c',
-      glowRgba: 'rgba(245,158,11,0.45)',
-      iconFrom: '#ffb420', iconTo: '#f59e0b',
-      shadowRgba: 'rgba(245,158,11,0.4)',
-      chipBg: '#f59e0b',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.target,
   },
   {
@@ -241,13 +199,7 @@ export const apps: AppEntry[] = [
     url: 'https://notch.wojciech.io',
     urlLabel: { en: 'Landing', pl: 'Strona', it: 'Landing' },
     status: 'live',
-    palette: {
-      screenFrom: '#08081a', screenTo: '#101031',
-      glowRgba: 'rgba(94,92,230,0.45)',
-      iconFrom: '#4a4a4c', iconTo: '#1C1C1E',
-      shadowRgba: 'rgba(94,92,230,0.35)',
-      chipBg: '#1C1C1E',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.monitor,
   },
   {
@@ -267,13 +219,7 @@ export const apps: AppEntry[] = [
     url: 'https://camper-rental-weld.vercel.app/',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
-    palette: {
-      screenFrom: '#051215', screenTo: '#0a2329',
-      glowRgba: 'rgba(6,182,212,0.45)',
-      iconFrom: '#22d3ee', iconTo: '#06b6d4',
-      shadowRgba: 'rgba(6,182,212,0.4)',
-      chipBg: '#06b6d4',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.truck,
   },
   {
@@ -291,13 +237,7 @@ export const apps: AppEntry[] = [
     searchName: 'klaro mac cleaner cleanup storage utility swift swiftui macos native',
     tech: [{ label: 'SwiftUI', accent: true }, { label: 'macOS', accent: true }, { label: 'CLI' }, { label: 'Codex' }],
     status: 'private-mvp',
-    palette: {
-      screenFrom: '#04101a', screenTo: '#082030',
-      glowRgba: 'rgba(8,145,178,0.45)',
-      iconFrom: '#0ea5e9', iconTo: '#0891b2',
-      shadowRgba: 'rgba(8,145,178,0.4)',
-      chipBg: 'linear-gradient(135deg,#0ea5e9,#0891b2)',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.list,
   },
   {
@@ -315,13 +255,7 @@ export const apps: AppEntry[] = [
     searchName: 'wojciech coach running health apple watch iphone fitness tracker coaching',
     tech: [{ label: 'SwiftUI', accent: true }, { label: 'HealthKit', accent: true }, { label: 'watchOS', accent: true }, { label: 'Xcode' }, { label: 'Codex' }],
     status: 'private-beta',
-    palette: {
-      screenFrom: '#060b18', screenTo: '#0d1a35',
-      glowRgba: 'rgba(59,130,246,0.45)',
-      iconFrom: '#3b82f6', iconTo: '#1d4ed8',
-      shadowRgba: 'rgba(59,130,246,0.4)',
-      chipBg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)',
-    },
+    palette: BRAND_PALETTE,
     icon: ICON.lightning,
   },
 ];
