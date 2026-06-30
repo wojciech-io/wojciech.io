@@ -1,5 +1,7 @@
 ---
 import ThemeToggle from '@wojciech/ui/components/ThemeToggle.astro';
+import NetworkTopBar from '@wojciech/ui/components/NetworkTopBar.astro';
+import NetworkFooter from '@wojciech/ui/components/NetworkFooter.astro';
 import '../styles/global.css';
 import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
 
@@ -131,6 +133,8 @@ const image = `${SITE}/og-default.png`;
   </head>
   <body class="min-h-dvh flex flex-col">
 
+    <NetworkTopBar current="subscribe" />
+
     <!-- Header -->
     <header class="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgb(var(--color-bg-rgb)/0.86)] backdrop-blur-md">
       <div class="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between gap-3 sm:gap-4">
@@ -140,13 +144,6 @@ const image = `${SITE}/og-default.png`;
         </div>
         <div class="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
-          <a
-            href="https://wojciech.io"
-            class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
-          >
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            wojciech.io
-          </a>
         </div>
       </div>
     </header>
@@ -155,53 +152,16 @@ const image = `${SITE}/og-default.png`;
       <slot />
     </main>
 
-    <!-- Footer -->
-    <footer class="mt-auto w-full border-t border-[var(--color-border)] bg-[var(--color-bg)]">
-      <div class="mx-auto w-full max-w-6xl px-[clamp(14px,4vw,48px)]">
-        <div class="sft-grid">
-          <div>
-            <a href="https://wojciech.io" target="_blank" rel="noopener" class="sft-logo">wojciech<span class="sft-badge">.io</span></a>
-            <p class="sft-tagline">GTM architect and AI-native builder. Revenue systems for B2B SaaS and technology companies.</p>
-          </div>
-          <div>
-            <p class="sft-head">Network</p>
-            <ul class="sft-list">
-              <li><a href="https://wojciech.io" target="_blank" rel="noopener">wojciech.io</a></li>
-              <li><a href="https://app.wojciech.io" target="_blank" rel="noopener">app.wojciech.io</a></li>
-              <li><a href="https://academy.wojciech.io" target="_blank" rel="noopener">academy.wojciech.io</a></li>
-              <li><a href="https://notch.wojciech.io" target="_blank" rel="noopener">notch.wojciech.io</a></li>
-            </ul>
-          </div>
-          <div>
-            <p class="sft-head">Connect</p>
-            <ul class="sft-list">
-              <li><a href="https://www.linkedin.com/in/wojciech-luszczynski/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-              <li><a href="https://github.com/wojciechluszczynski" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-              <li><a href="https://twitter.com/w_luszczynski" target="_blank" rel="noopener noreferrer">X / Twitter</a></li>
-              <li><a href="https://substack.com/@wojciechluszczynski" target="_blank" rel="noopener noreferrer">Substack</a></li>
-              <li><a href="https://wojciech.io/rss.xml" target="_blank" rel="noopener">RSS feed</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="sft-bottom">
-          <p>© {new Date().getFullYear()} Wojciech Łuszczyński · <a href="https://wojciech.io/now" target="_blank" rel="noopener">What I'm doing now</a></p>
-          <p>GTM architect · AI-native builder</p>
-        </div>
+    <NetworkFooter variant="full">
+      <div slot="brand" class="sub-nf-brand">
+        <a href="https://wojciech.io" target="_blank" rel="noopener" class="sub-nf-wordmark">wojciech<span class="sub-nf-badge">.io</span></a>
+        <p class="sub-nf-tagline">GTM architect and AI-native builder.<br />Revenue systems for B2B SaaS and technology companies.</p>
       </div>
-    </footer>
+    </NetworkFooter>
     <style>
-      .sft-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 2rem; padding: 1.75rem 0 1.25rem; }
-      .sft-logo { display: inline-flex; align-items: baseline; text-decoration: none; margin-bottom: 0.625rem; font-size: 14px; font-weight: 700; color: var(--color-text); }
-      .sft-badge { background: var(--color-accent-cta); color: var(--color-accent-text); border-radius: 5px; padding: 1px 5px; font-size: 10px; font-weight: 700; margin-left: 2px; }
-      .sft-tagline { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; max-width: 220px; margin-top: 6px; }
-      .sft-head { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-dim); margin-bottom: 0.625rem; }
-      .sft-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-      .sft-list a { font-size: 12px; color: var(--color-text-muted); text-decoration: none; transition: color .15s; }
-      .sft-list a:hover { color: var(--color-text); }
-      .sft-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--color-border); padding: 14px 0; font-size: 11px; color: var(--color-text-dim); }
-      .sft-bottom a { color: var(--color-text-muted); text-decoration: none; }
-      @media (max-width: 700px) { .sft-grid { grid-template-columns: 1fr 1fr; } .sft-grid > div:first-child { grid-column: 1 / -1; } }
-      @media (max-width: 440px) { .sft-grid { grid-template-columns: 1fr; } .sft-bottom { flex-direction: column; align-items: center; text-align: center; gap: 4px; } }
+      .sub-nf-wordmark { display: inline-flex; align-items: baseline; text-decoration: none; margin-bottom: 0.625rem; font-size: 14px; font-weight: 700; color: var(--color-text); }
+      .sub-nf-badge { background: var(--color-accent-cta); color: var(--color-accent-text); border-radius: 5px; padding: 1px 5px; font-size: 10px; font-weight: 700; margin-left: 2px; }
+      .sub-nf-tagline { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; max-width: 240px; margin-top: 6px; }
     </style>
 
     <!-- Analytics consent — minimal bottom bar -->
