@@ -5,6 +5,7 @@ export type ArProjectCover = 'relora' | 'ads-ai' | 'kamperownia' | 'notch';
 
 export interface ArProject {
   cover: ArProjectCover;
+  screenshot?: string;
   external: boolean;
   href: string;
   title: string;
@@ -28,7 +29,7 @@ export const arWorkI18n = {
 
 export const arProjects: ArProject[] = [
   {
-    cover: 'relora', external: true, href: 'https://relora-jet.vercel.app/',
+    cover: 'relora', screenshot: '/images/work/relora.webp', external: true, href: 'https://relora-jet.vercel.app/',
     title: 'Relora',
     description: 'نظام تشغيل للعلاقات لفرق العقارات في الجهات الحكومية المحلية. مكان واحد لجهات الاتصال، وسياق المالك، وحالة التواصل، والخطوات التالية.',
     tags: ['سير عمل بالذكاء الاصطناعي', 'CRM مبسّط', 'لوحة عمليات'],
@@ -38,7 +39,7 @@ export const arProjects: ArProject[] = [
     outcome: 'تتبّع العلاقات اليدوي يتحوّل إلى طابور تشغيلي منظّم.',
   },
   {
-    cover: 'ads-ai', external: true, href: 'https://ads-assistant-three.vercel.app/',
+    cover: 'ads-ai', screenshot: '/images/work/ad-assistant.webp', external: true, href: 'https://ads-assistant-three.vercel.app/',
     title: 'AdsAI · مساعد الإعلانات',
     description: 'غرفة تحكّم لإعلانات Google قائمة على الذكاء الاصطناعي: الإنفاق، ROAS، توافق ICP، أولويات الحملات، والإجراء التالي الأفضل في مساحة واحدة.',
     tags: ['ذكاء اصطناعي', 'إعلانات', 'GTM', 'أدوات المُشغِّل'],
@@ -48,7 +49,7 @@ export const arProjects: ArProject[] = [
     outcome: 'يرى المُشغِّل ما يوقفه أو يحلّله أو يحسّنه دون البحث في التقارير.',
   },
   {
-    cover: 'kamperownia', external: true, href: 'https://camper-rental-weld.vercel.app/',
+    cover: 'kamperownia', screenshot: '/images/work/kamperownia.webp', external: true, href: 'https://camper-rental-weld.vercel.app/',
     title: 'محرّك حجز تأجير الكرفانات',
     description: 'موقع تأجير كرفانات ذاتي الخدمة لتصفّح المركبات والتحقق من التواريخ والانتقال من الاهتمام إلى الحجز بسرعة.',
     tags: ['منتج', 'حجوزات', 'تطبيق ويب'],
@@ -58,7 +59,7 @@ export const arProjects: ArProject[] = [
     outcome: 'حركة استفسار يدوية تتحوّل إلى تجربة حجز مُنتَجة.',
   },
   {
-    cover: 'notch', external: false, href: '/apps/notch/',
+    cover: 'notch', screenshot: '/images/work/notch.webp', external: false, href: '/apps/notch/',
     title: 'NotchCue',
     description: 'مفهوم تيليبرومبتر لنظام macOS للمكالمات والعروض والتسجيلات. يبقي الملاحظات قرب الكاميرا ليبقى الإلقاء طبيعيًا.',
     tags: ['macOS', 'Swift', 'مبني بالذكاء الاصطناعي'],
