@@ -40,9 +40,12 @@ export interface UiStrings {
     brandTagline: string;
     bottomTagline: string;
   };
+  /** Eyebrow above the homepage brand-logo strip. */
+  operatedAt: string;
 }
 
 const en: UiStrings = {
+  operatedAt: 'Operated at',
   nav: {
     work: 'Work',
     aiSystems: 'AI Systems',
@@ -71,6 +74,7 @@ const en: UiStrings = {
 };
 
 const pl: UiStrings = {
+  operatedAt: 'Działałem w',
   nav: {
     work: 'Praca',
     aiSystems: 'Systemy AI',
@@ -99,6 +103,7 @@ const pl: UiStrings = {
 };
 
 const de: UiStrings = {
+  operatedAt: 'Tätig bei',
   nav: {
     work: 'Arbeit',
     aiSystems: 'AI-Systeme',
@@ -127,6 +132,7 @@ const de: UiStrings = {
 };
 
 const dk: UiStrings = {
+  operatedAt: 'Arbejdet hos',
   nav: {
     work: 'Arbejde',
     aiSystems: 'AI-systemer',
@@ -155,6 +161,7 @@ const dk: UiStrings = {
 };
 
 const no: UiStrings = {
+  operatedAt: 'Jobbet hos',
   nav: {
     work: 'Arbeid',
     aiSystems: 'AI-systemer',
@@ -183,6 +190,7 @@ const no: UiStrings = {
 };
 
 const jp: UiStrings = {
+  operatedAt: '携わったブランド',
   nav: {
     work: '実績',
     aiSystems: 'AIシステム',
@@ -211,6 +219,7 @@ const jp: UiStrings = {
 };
 
 const it: UiStrings = {
+  operatedAt: 'Esperienza con',
   nav: {
     work: 'Lavoro',
     aiSystems: 'Sistemi AI',
@@ -239,6 +248,7 @@ const it: UiStrings = {
 };
 
 const es: UiStrings = {
+  operatedAt: 'Experiencia en',
   nav: {
     work: 'Trabajo',
     aiSystems: 'Sistemas IA',
@@ -267,6 +277,7 @@ const es: UiStrings = {
 };
 
 const ar: UiStrings = {
+  operatedAt: 'خبرة مع',
   nav: {
     work: 'الأعمال',
     aiSystems: 'أنظمة الذكاء الاصطناعي',
