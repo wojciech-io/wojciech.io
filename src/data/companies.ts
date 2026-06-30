@@ -19,4 +19,5 @@ export const companyLogos: CompanyLogo[] = [
   { name: "Harper's Bazaar", src: '/images/logos/harpersbazaar.svg' },
   { name: 'Esquire', src: '/images/logos/esquire.svg' },
   { name: 'Playboy', src: '/images/logos/playboy.svg' },
+  { name: 'Joy', src: '/images/logos/joy.png' },
 ];
