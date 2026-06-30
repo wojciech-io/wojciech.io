@@ -1,0 +1,104 @@
+---
+import { companyLogos } from '../../data/companies';
+
+interface Props {
+  // 'marquee' = continuous scrolling strip (homepage), 'wrap' = static wall (about).
+  variant?: 'marquee' | 'wrap';
+  class?: string;
+}
+
+const { variant = 'wrap', class: className = '' } = Astro.props;
+
+// The marquee duplicates the set so the translateX loop is seamless.
+const marqueeItems = variant === 'marquee' ? [...companyLogos, ...companyLogos] : companyLogos;
+---
+
+{variant === 'marquee' ? (
+  <div class:list={['brand-marquee', className]} role="list" aria-label="Companies and brands I have operated with">
+    <div class="brand-track">
+      {marqueeItems.map((l, i) => (
+        <img
+          src={l.src}
+          alt={l.name}
+          role="listitem"
+          aria-hidden={i >= companyLogos.length ? 'true' : undefined}
+          width="120"
+          height="28"
+          loading="lazy"
+          decoding="async"
+          class="logo-mark"
+        />
+      ))}
+    </div>
+  </div>
+) : (
+  <div class:list={['logo-wall flex flex-wrap items-center gap-x-10 gap-y-6', className]}>
+    {companyLogos.map((l) => (
+      <img src={l.src} alt={l.name} width="120" height="28" loading="lazy" decoding="async" class="logo-mark h-6 w-auto sm:h-7" />
+    ))}
+  </div>
+)}
+
+<style>
+  /* Uniform monochrome silhouette so mixed brand colours read as one set and
+     stay visible in both themes. object-fit keeps wide wordmarks undistorted. */
+  .logo-mark {
+    max-width: 150px;
+    object-fit: contain;
+    object-position: left center;
+    filter: brightness(0);
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+  }
+  :root[data-theme='dark'] .logo-mark {
+    filter: brightness(0) invert(1);
+    opacity: 0.55;
+  }
+  .logo-mark:hover {
+    opacity: 0.85;
+  }
+
+  /* Marquee: a seamless, slow horizontal loop with faded edges. */
+  .brand-marquee {
+    position: relative;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+  .brand-track {
+    display: flex;
+    width: max-content;
+    align-items: center;
+    gap: 4rem;
+    animation: brand-scroll 48s linear infinite;
+  }
+  .brand-marquee .logo-mark {
+    height: 1.75rem;
+    width: auto;
+    flex: 0 0 auto;
+  }
+  .brand-marquee:hover .brand-track {
+    animation-play-state: paused;
+  }
+  @keyframes brand-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brand-track {
+      animation: none;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: center;
+      gap: 2.5rem 4rem;
+    }
+    .brand-marquee {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    /* With the loop disabled, hide the duplicated second half. */
+    .brand-track > .logo-mark[aria-hidden='true'] {
+      display: none;
+    }
+  }
+</style>
