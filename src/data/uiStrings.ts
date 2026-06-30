@@ -190,7 +190,7 @@ const no: UiStrings = {
 };
 
 const jp: UiStrings = {
-  operatedAt: '携わったブランド',
+  operatedAt: '携わった企業・ブランド',
   nav: {
     work: '実績',
     aiSystems: 'AIシステム',
@@ -277,7 +277,7 @@ const es: UiStrings = {
 };
 
 const ar: UiStrings = {
-  operatedAt: 'خبرة مع',
+  operatedAt: 'عملتُ مع',
   nav: {
     work: 'الأعمال',
     aiSystems: 'أنظمة الذكاء الاصطناعي',
