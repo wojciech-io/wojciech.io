@@ -3,6 +3,7 @@ import CTABand from '../ui/CTABand.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import PageBackdrop from '../ui/PageBackdrop.astro';
 import FAQ from '../ui/FAQ.astro';
+import BrandLogos from '../ui/BrandLogos.astro';
 
 // Press + video: styled icon links, no thumbnails. Inline Lucide-style icon paths.
 const pressIcons: Record<string, string> = {
@@ -26,20 +27,6 @@ const pressLinks = [
     label: 'Read the article',
     icon: 'article',
   },
-];
-
-// Selected company logos for the "where I've operated" strip. Real brand marks,
-// rendered as a uniform monochrome silhouette via CSS so they match in both themes.
-const companyLogos = [
-  { name: 'CodiLime', src: '/images/logos/codilime.svg' },
-  { name: 'WebWave', src: '/images/logos/webwave.svg' },
-  { name: 'Symfonia', src: '/images/logos/symfonia.webp' },
-  { name: 'SentiOne', src: '/images/logos/sentione.png' },
-  { name: 'GetResponse', src: '/images/logos/getresponse.svg' },
-  { name: 'Gi Group', src: '/images/logos/gigroup.png' },
-  { name: 'Tekhuset', src: '/images/logos/tekhuset.png' },
-  { name: 'Marquard', src: '/images/logos/marquard.svg' },
-  { name: 'Lilla House', src: '/images/logos/lillahouse.svg' },
 ];
 
 const timeline = [
@@ -298,11 +285,7 @@ const faq = [
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-8" />
-      <div class="logo-wall mb-12 md:mb-16 flex flex-wrap items-center gap-x-10 gap-y-6">
-        {companyLogos.map((l) => (
-          <img src={l.src} alt={l.name} width="120" height="28" loading="lazy" decoding="async" class="logo-mark h-6 w-auto sm:h-7" />
-        ))}
-      </div>
+      <BrandLogos variant="wrap" class="mb-12 md:mb-16" />
 
       <div class="relative max-w-5xl">
         <span class="absolute left-[3px] top-2 bottom-2 w-px bg-gradient-to-b from-[var(--color-accent)]/50 via-[var(--color-border)] to-[var(--color-border)] opacity-70" aria-hidden="true"></span>
@@ -421,21 +404,3 @@ const faq = [
   ctaSecondary="See the work"
   ctaSecondaryHref="/work/"
 />
-
-<style>
-  /* Company logos rendered as a uniform monochrome silhouette so mixed brand
-     colours read as one set, and stay visible in both themes. */
-  .logo-mark {
-    max-width: 150px;
-    object-fit: contain;
-    object-position: left center;
-    filter: brightness(0);
-    opacity: 0.5;
-    transition: opacity 0.15s ease;
-  }
-  :root[data-theme='dark'] .logo-mark {
-    filter: brightness(0) invert(1);
-    opacity: 0.55;
-  }
-  .logo-mark:hover { opacity: 0.85; }
-</style>
