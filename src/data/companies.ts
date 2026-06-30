@@ -1,6 +1,6 @@
 // Real brand marks for the "where I've operated" strip. Rendered as a uniform
 // monochrome silhouette in BrandLogos.astro, so mixed source colours read as one
-// set in both themes. Order roughly follows recency / recognisability.
+// set in both themes. Grouped SaaS, then e-commerce, then media portfolio.
 export interface CompanyLogo {
   name: string;
   src: string;
@@ -13,7 +13,10 @@ export const companyLogos: CompanyLogo[] = [
   { name: 'SentiOne', src: '/images/logos/sentione.png' },
   { name: 'GetResponse', src: '/images/logos/getresponse.svg' },
   { name: 'Gi Group', src: '/images/logos/gigroup.png' },
-  { name: 'Tekhuset', src: '/images/logos/tekhuset.png' },
-  { name: 'Marquard', src: '/images/logos/marquard.svg' },
-  { name: 'Lilla House', src: '/images/logos/lillahouse.svg' },
+  { name: 'iviSkin', src: '/images/logos/iviskin.png' },
+  { name: 'Neatsvor', src: '/images/logos/neatsvor.png' },
+  { name: 'Cosmopolitan', src: '/images/logos/cosmopolitan.svg' },
+  { name: "Harper's Bazaar", src: '/images/logos/harpersbazaar.svg' },
+  { name: 'Esquire', src: '/images/logos/esquire.svg' },
+  { name: 'Playboy', src: '/images/logos/playboy.svg' },
 ];
