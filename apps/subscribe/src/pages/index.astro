@@ -168,6 +168,10 @@ const previewItems = [
     <section style="border-bottom: 1px solid var(--color-border); padding: clamp(3rem, 5vw, 5rem) 0;">
       <div style="max-width: 60rem; margin: 0 auto; padding: 0 1.5rem;">
 
+        <div class="archive-grid">
+
+        <div style="min-width: 0;">
+
         <div style="margin-bottom: 2.5rem; max-width: 40rem;">
           <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;">What lands in your inbox</p>
           <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);">This is the whole thing.</h2>
@@ -175,7 +179,7 @@ const previewItems = [
         </div>
 
         <!-- Email client mockup wrapping a faithful AI Espresso render -->
-        <div style="border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; box-shadow: 0 24px 80px rgb(0 0 0 / 0.12), 0 4px 16px rgb(0 0 0 / 0.06); max-width: 760px; margin: 0 auto;">
+        <div style="border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; box-shadow: 0 24px 80px rgb(0 0 0 / 0.12), 0 4px 16px rgb(0 0 0 / 0.06);">
 
           <!-- Window chrome -->
           <div style="background: #e8e4dc; padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #d8d4cb;">
@@ -236,72 +240,68 @@ const previewItems = [
           </div>
         </div>
 
+        </div>
+
+        <!-- Topics + close -->
+        <aside style="min-width: 0;">
+          <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 1.25rem;">Inside the notes</p>
+          <div style="display: flex; flex-direction: column;">
+            {[
+              { h: 'AI systems', p: 'Agents, automations, and product workflows. What survives real usage.' },
+              { h: 'GTM architecture', p: 'Revenue systems, messaging, growth loops, and operating cadence.' },
+              { h: 'Build log', p: 'What shipped across wojciech.io and the tools around it.' },
+            ].map(({ h, p }, i) => (
+              <div style={`padding: 1rem 0;${i > 0 ? ' border-top: 1px solid var(--color-border);' : ''}`}>
+                <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem;">
+                  <span style="width: 1.25rem; height: 2px; background: var(--color-accent-cta); border-radius: 9px; flex-shrink: 0; display: inline-block; margin-bottom: 2px;"></span>
+                  <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text);">{h}</h3>
+                </div>
+                <p style="margin: 0; padding-left: 2rem; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);">{p}</p>
+              </div>
+            ))}
+          </div>
+
+          <div class="card-hover" style="margin-top: 1.75rem; padding: 1.25rem; border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
+            <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.375rem;">Start tomorrow morning.</p>
+            <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">One issue a day. Leave whenever you want.</p>
+            <a href="#top" style="display: inline-flex; align-items: center; height: 2.5rem; width: 100%; justify-content: center; border-radius: var(--radius-btn); background: var(--color-accent-cta); font-size: 0.875rem; font-weight: 700; color: var(--color-accent-text); text-decoration: none; letter-spacing: -0.01em;">
+              Subscribe free →
+            </a>
+          </div>
+        </aside>
+
+        </div>
       </div>
     </section>
 
-    <!-- ─── RECENT ISSUES (single inbox) + TOPICS + CLOSE ──────────── -->
+    <!-- ─── RECENT ISSUES ──────────────────────────────────────────── -->
     <section style="padding: clamp(3rem, 5vw, 5rem) 0;">
       <div style="max-width: 60rem; margin: 0 auto; padding: 0 1.5rem;">
 
-        <div class="archive-grid">
-
-          <!-- Recent issues -->
-          <div style="min-width: 0;">
-            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
-              <div>
-                <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;">Recent issues</p>
-                <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);">What's been landing.</h2>
-              </div>
-              <p style="font-size: 0.8125rem; color: var(--color-text-muted);">
-                <span style="color: var(--color-text); font-weight: 600;">{totalIssues}</span>
-                <span> sent to date</span>
-              </p>
-            </div>
-
-            <ul style="list-style: none; margin: 0; padding: 0;">
-              {inbox.map((item) => (
-                <li class="issue-row">
-                  <span style="width: 6px; height: 6px; border-radius: 9999px; background: var(--color-accent-cta); align-self: center; flex-shrink: 0;" aria-hidden="true"></span>
-                  <span style="min-width: 0;">
-                    <span style="display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-dim); border: 1px solid var(--color-border-2); border-radius: 999px; padding: 2px 7px; margin-right: 0.5rem; vertical-align: middle;">{item.tag}</span>
-                    <span style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text); vertical-align: middle;">{item.title}</span>
-                    <span style="display: block; font-size: 0.8125rem; line-height: 1.5; color: var(--color-text-muted); margin-top: 0.25rem;">{item.lead}</span>
-                  </span>
-                  <time datetime={item.date} style="font-size: 0.75rem; font-weight: 500; color: var(--color-text-dim); white-space: nowrap;">{shortDate(item.date)}</time>
-                </li>
-              ))}
-            </ul>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+          <div>
+            <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;">Recent issues</p>
+            <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);">What's been landing.</h2>
           </div>
-
-          <!-- Topics + close -->
-          <aside style="min-width: 0;">
-            <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 1.25rem;">Inside the notes</p>
-            <div style="display: flex; flex-direction: column;">
-              {[
-                { h: 'AI systems', p: 'Agents, automations, and product workflows. What survives real usage.' },
-                { h: 'GTM architecture', p: 'Revenue systems, messaging, growth loops, and operating cadence.' },
-                { h: 'Build log', p: 'What shipped across wojciech.io and the tools around it.' },
-              ].map(({ h, p }, i) => (
-                <div style={`padding: 1rem 0;${i > 0 ? ' border-top: 1px solid var(--color-border);' : ''}`}>
-                  <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem;">
-                    <span style="width: 1.25rem; height: 2px; background: var(--color-accent-cta); border-radius: 9px; flex-shrink: 0; display: inline-block; margin-bottom: 2px;"></span>
-                    <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text);">{h}</h3>
-                  </div>
-                  <p style="margin: 0; padding-left: 2rem; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);">{p}</p>
-                </div>
-              ))}
-            </div>
-
-            <div class="card-hover" style="margin-top: 1.75rem; padding: 1.25rem; border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
-              <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.375rem;">Start tomorrow morning.</p>
-              <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">One issue a day. Leave whenever you want.</p>
-              <a href="#top" style="display: inline-flex; align-items: center; height: 2.5rem; width: 100%; justify-content: center; border-radius: var(--radius-btn); background: var(--color-accent-cta); font-size: 0.875rem; font-weight: 700; color: var(--color-accent-text); text-decoration: none; letter-spacing: -0.01em;">
-                Subscribe free →
-              </a>
-            </div>
-          </aside>
-
+          <p style="font-size: 0.8125rem; color: var(--color-text-muted);">
+            <span style="color: var(--color-text); font-weight: 600;">{totalIssues}</span>
+            <span> sent to date</span>
+          </p>
         </div>
+
+        <ul style="list-style: none; margin: 0; padding: 0;">
+          {inbox.map((item) => (
+            <li class="issue-row">
+              <span style="width: 6px; height: 6px; border-radius: 9999px; background: var(--color-accent-cta); align-self: center; flex-shrink: 0;" aria-hidden="true"></span>
+              <span style="min-width: 0;">
+                <span style="display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-dim); border: 1px solid var(--color-border-2); border-radius: 999px; padding: 2px 7px; margin-right: 0.5rem; vertical-align: middle;">{item.tag}</span>
+                <span style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text); vertical-align: middle;">{item.title}</span>
+                <span style="display: block; font-size: 0.8125rem; line-height: 1.5; color: var(--color-text-muted); margin-top: 0.25rem;">{item.lead}</span>
+              </span>
+              <time datetime={item.date} style="font-size: 0.75rem; font-weight: 500; color: var(--color-text-dim); white-space: nowrap;">{shortDate(item.date)}</time>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
 
