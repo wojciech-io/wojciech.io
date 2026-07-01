@@ -9,7 +9,10 @@ interface PagesFunctionContext {
   env: Env;
 }
 
-const SITE_URL = 'https://subscribe.wojciech.io';
+// Where to send the browser after confirming — the real marketing page now
+// lives on the main site; this function (and the token/KV it reads) still
+// lives on subscribe.wojciech.io, only the post-confirm landing spot moved.
+const SITE_URL = 'https://wojciech.io/subscribe';
 
 export async function onRequestGet({ request, env }: PagesFunctionContext) {
   const url = new URL(request.url);
