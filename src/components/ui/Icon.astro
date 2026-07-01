@@ -1,0 +1,40 @@
+---
+/* Single source of truth for the custom line-icon set (src/icons/*.svg).
+   Each source SVG is a 24x24 grid, stroke 1.5, currentColor, so colour comes
+   from the surrounding `text-*` / `color` and size from the `class` box.
+
+   Usage: <Icon name="arrow-right" class="h-5 w-5 text-[var(--color-accent-hi)]" />
+   Decorative by default (aria-hidden). Pass `label` for a meaningful icon. */
+const icons = import.meta.glob('/src/icons/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+interface Props {
+  name: string;
+  class?: string;
+  label?: string;
+}
+
+const { name, class: className = 'h-5 w-5', label } = Astro.props;
+
+const raw = icons[`/src/icons/${name}.svg`];
+if (!raw) {
+  throw new Error(
+    `Icon "${name}" not found in src/icons. Available: ${Object.keys(icons)
+      .map((k) => k.split('/').pop()?.replace('.svg', ''))
+      .join(', ')}`,
+  );
+}
+
+const a11y = label
+  ? `role="img" aria-label="${label}"`
+  : 'aria-hidden="true" focusable="false"';
+
+// Source SVGs carry no class attribute, so we can safely inject ours on the
+// opening tag without clobbering anything.
+const out = raw.replace(/^\s*<svg\b/, `<svg class="${className}" ${a11y}`);
+---
+
+<Fragment set:html={out} />
