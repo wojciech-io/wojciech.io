@@ -24,6 +24,13 @@ interface Props {
   /** mono positioning line under the hairline (NOT a fabricated metric) */
   metaLine?: string;
   name?: string;
+  /** desktop hero photo — override per-locale (e.g. /ar keeps the prior shot) */
+  photoSrc?: string;
+  photoWidth?: number;
+  photoHeight?: number;
+  /** 'framed' = retouched studio headshot in a card; 'environmental' = full-bleed
+      in-context photo (prior /ar treatment, kept as-is for now) */
+  photoVariant?: 'framed' | 'environmental';
 }
 
 const {
@@ -35,6 +42,10 @@ const {
   secondaryCta = { label: 'Get the newsletter', href: 'https://subscribe.wojciech.io' },
   metaLine = 'GTM · marketing · growth × AI',
   name = 'Wojciech Łuszczyński',
+  photoSrc = '/images/wojciech-headshot-espresso.webp',
+  photoWidth = 640,
+  photoHeight = 594,
+  photoVariant = 'framed',
 } = Astro.props as Props;
 
 /* The editorial accent mark is rendered by its own span; the helper splits the
@@ -50,25 +61,38 @@ const h2 = accentHeading(h1Secondary);
   <!-- Neutral depth, kept subtle under the aura -->
   <div class="pointer-events-none absolute left-[-160px] top-[-180px] h-[520px] w-[640px] rounded-full bg-[var(--color-surface)] blur-[150px] opacity-50" aria-hidden="true" />
 
-  <!-- Photo: desktop only, right half, absolute. Decorative (aria-hidden), lg+ only.
-       Delivered as a CSS background so a display:none element never fetches it,
-       keeping the hero image off the mobile critical path. -->
-  <div
-    class="hero-photo-side hidden lg:block absolute right-0 top-0 bottom-0 w-[56%] overflow-hidden bg-[url('/images/wojciech-office-hq.webp')] bg-cover bg-no-repeat bg-[position:center_30%]"
-    aria-hidden="true"
-  >
-    <!-- Grade: the photo was shot dark; lifted for legibility against the
-         cream (light) surface. Dark roast already reads fine, so it keeps
-         the source grade. -->
-
-    <!-- The photo itself is masked (see <style>) so it dissolves toward the
-         text and softens at the top/bottom — no hard rectangular edge. The
-         overlays below reinforce the blend to the page background on both
-         themes (mask only cuts alpha; these paint the bg colour into the fade). -->
-    <div class="hero-photo-fade absolute inset-y-0 left-0 w-[55%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]" />
-    <div class="absolute inset-x-0 bottom-0 h-[18%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]" />
-    <div class="absolute inset-x-0 top-0 h-[16%] pointer-events-none [background:linear-gradient(to_bottom,var(--color-bg)_0%,transparent_100%)]" />
-  </div>
+  {photoVariant === 'framed' ? (
+    <!-- Photo: desktop only, right side, absolute. Decorative (aria-hidden), lg+ only.
+         Retouched studio portrait (same shot used on the CV) — framed as a card
+         rather than a full-bleed environmental panel, since the source is a
+         headshot on its own soft gradient, not an in-context office scene. -->
+    <div
+      class="hero-photo-frame hidden lg:block absolute right-[6%] top-1/2 -translate-y-1/2 w-[320px] xl:w-[380px] rounded-3xl overflow-hidden border border-[var(--color-border)] shadow-[var(--shadow-card)]"
+      aria-hidden="true"
+    >
+      <img
+        src={photoSrc}
+        alt=""
+        width={photoWidth}
+        height={photoHeight}
+        loading="eager"
+        decoding="async"
+        class="block w-full h-auto"
+      />
+    </div>
+  ) : (
+    <!-- Environmental variant (prior /ar treatment): full-bleed in-context
+         photo, masked to dissolve into the page on all sides. -->
+    <div
+      class="hero-photo-side hidden lg:block absolute right-0 top-0 bottom-0 w-[56%] overflow-hidden bg-cover bg-no-repeat bg-[position:center_30%]"
+      style={`background-image: url('${photoSrc}')`}
+      aria-hidden="true"
+    >
+      <div class="hero-photo-fade absolute inset-y-0 left-0 w-[55%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]" />
+      <div class="absolute inset-x-0 bottom-0 h-[18%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]" />
+      <div class="absolute inset-x-0 top-0 h-[16%] pointer-events-none [background:linear-gradient(to_bottom,var(--color-bg)_0%,transparent_100%)]" />
+    </div>
+  )}
 
   <div class="relative mx-auto max-w-6xl px-6">
     <div class="flex flex-col justify-center py-10 md:py-20 lg:py-32 md:max-w-[560px] lg:max-w-[48%]">
@@ -175,9 +199,9 @@ const h2 = accentHeading(h1Secondary);
     .hero-tick { animation: none; }
   }
 
-  /* Photo was shot dark for a dark UI; lift it against the cream (light)
-     surface so the office doesn't read as a flat black slab. Dark roast
-     keeps the source grade — it already sits fine on that background. */
+  /* Environmental variant only (/ar): photo was shot dark; lifted for
+     legibility against the cream (light) surface. Dark roast already reads
+     fine, so it keeps the source grade. */
   .hero-photo-side {
     filter: brightness(1.16) contrast(0.96) saturate(1.05);
   }
