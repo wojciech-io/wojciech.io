@@ -1,15 +1,17 @@
-# HTML pages: browser revalidates each time, CF edge caches for 1 day
+# HTML pages: always revalidate, never serve stale — so deploys show immediately.
+# (No s-maxage / stale-while-revalidate: those were edge-caching HTML up to 24h and
+# hiding fresh deploys behind a stale copy.)
 /*.html
-  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=3600
+  Cache-Control: public, max-age=0, must-revalidate
 
 /
-  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=3600
+  Cache-Control: public, max-age=0, must-revalidate
 
 /insights/
-  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=3600
+  Cache-Control: public, max-age=0, must-revalidate
 
 /insights/*
-  Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=3600
+  Cache-Control: public, max-age=0, must-revalidate
 
 # Hashed static assets: immutable
 /_astro/*
