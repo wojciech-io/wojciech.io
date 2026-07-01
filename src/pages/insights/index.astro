@@ -61,18 +61,6 @@ const articleListSchema = {
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-
-// Editorial covers: solid category colour, no gradient mesh, no abstract icon.
-// Used for the lead's modest cover fallback and the row category accent.
-const coverCfg: Record<string, { bg: string; fg: string; accent: string }> = {
-  'AI Systems':         { bg: '#0d1117', fg: '#e2e8f0', accent: '#a78bfa' },
-  'GTM Architecture':   { bg: '#0f0a00', fg: '#fef3c7', accent: '#f59e0b' },
-  'Operator Playbooks': { bg: '#001a10', fg: '#d1fae5', accent: '#34d399' },
-  'Products':           { bg: '#00111f', fg: '#dbeafe', accent: '#60a5fa' },
-  'default':            { bg: '#08080a', fg: '#e4e4e7', accent: '#ebff00' },
-};
-
-const getCover = (cat?: string) => coverCfg[cat ?? ''] ?? coverCfg['default'];
 ---
 
 <Layout
@@ -102,7 +90,6 @@ const getCover = (cat?: string) => coverCfg[cat ?? ''] ?? coverCfg['default'];
          dominating the page like a full-bleed hero card. -->
     {featuredPost && (() => {
       const slug = insightSlug(featuredPost);
-      const cover = getCover(featuredPost.data.category);
       return (
         <a
           href={`/insights/${slug}/`}
@@ -144,10 +131,8 @@ const getCover = (cat?: string) => coverCfg[cat ?? ''] ?? coverCfg['default'];
 
             <!-- Modest cover: image when available, category-color fallback. Hidden on small screens (text leads). -->
             <div
-              class="relative hidden aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] lg:block"
-              style={!featuredPost.data.coverImage ? `background: ${cover.bg};` : 'background: #0c0c0c;'}
+              class="relative hidden aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] lg:block"
             >
-              <div class="absolute inset-x-0 top-0 z-10 h-0.5" style={`background: ${cover.accent};`} aria-hidden="true"></div>
               {featuredPost.data.coverImage
                 ? (
                   <img
@@ -161,7 +146,7 @@ const getCover = (cat?: string) => coverCfg[cat ?? ''] ?? coverCfg['default'];
                   />
                 )
                 : (
-                  <p class="absolute inset-0 flex items-end p-5 text-lg font-semibold leading-snug" style={`color: ${cover.fg};`}>
+                  <p class="absolute inset-0 flex items-end p-5 text-lg font-semibold leading-snug text-[var(--color-text)]">
                     {featuredPost.data.title}
                   </p>
                 )}
@@ -230,7 +215,7 @@ const getCover = (cat?: string) => coverCfg[cat ?? ''] ?? coverCfg['default'];
             </div>
 
             {post.data.coverImage && (
-              <div class="hidden aspect-[16/10] w-28 shrink-0 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[#0c0c0c] sm:block md:w-36">
+              <div class="hidden aspect-[16/10] w-28 shrink-0 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] sm:block md:w-36">
                 <img
                   src={post.data.coverImage}
                   alt=""
