@@ -1,4 +1,24 @@
 ---
-// 301 redirect: subscribe now lives at subscribe.wojciech.io
-return Astro.redirect('https://subscribe.wojciech.io', 301);
+import Layout from '../layouts/Layout.astro';
+import SubscribeContent from '../components/pages/SubscribeContent.astro';
+import { SITE } from '../data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsletterPublication',
+  name: 'AI Espresso',
+  url: SITE.url + '/subscribe/',
+  description: 'Short operator notes on AI systems, GTM architecture, and what ships. Under 3 minutes per issue. Free.',
+  inLanguage: 'en',
+  publisher: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: SITE.url + '/' },
+};
 ---
+
+<Layout
+  title="AI Espresso — the morning AI brief"
+  description="Short operator notes on AI systems, GTM architecture, and what ships. Free. Under 3 minutes, every weekday morning."
+  ogImage="/og/pages/subscribe.png"
+  schema={schema}
+>
+  <SubscribeContent />
+</Layout>
