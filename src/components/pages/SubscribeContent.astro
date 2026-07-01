@@ -53,19 +53,17 @@ const previewItems = [
     <div class="subscribe-hero-aura pointer-events-none absolute" style="left: -140px; top: -170px; height: 520px; width: 620px; border-radius: 9999px;" aria-hidden="true"></div>
     <div class="pointer-events-none absolute" style="left: -160px; top: -180px; height: 520px; width: 620px; border-radius: 9999px; background: var(--color-surface); filter: blur(140px); opacity: 0.5;" aria-hidden="true"></div>
 
-    <div class="subscribe-hero-photo hidden lg:block absolute right-0 top-0 bottom-0" style="width: 46%; overflow: hidden;" aria-hidden="true">
-      <img
-        src="/images/wojciech-office-hq.webp"
-        alt=""
-        width="1200"
-        height="1500"
-        loading="eager"
-        decoding="async"
-        style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 22%;"
-      />
-      <div class="absolute inset-y-0 left-0 pointer-events-none" style="width: 38%; background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);"></div>
-      <div class="absolute inset-x-0 top-0 pointer-events-none" style="height: 14%; background: linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%);"></div>
-      <div class="absolute inset-x-0 bottom-0 pointer-events-none" style="height: 22%; background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%);"></div>
+    <!-- Photo delivered as a CSS background (like the homepage hero), not an
+         <img> — avoids the async-decode flash-of-blank an eager <img> can
+         show on first paint, and matches the site's established technique. -->
+    <div
+      class="subscribe-hero-photo hidden lg:block absolute right-0 top-0 bottom-0 w-[54%] overflow-hidden bg-[url('/images/wojciech-office-hq.webp')] bg-cover bg-no-repeat"
+      style="background-position: center 22%;"
+      aria-hidden="true"
+    >
+      <div class="absolute inset-y-0 left-0 pointer-events-none" style="width: 55%; background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);"></div>
+      <div class="absolute inset-x-0 top-0 pointer-events-none" style="height: 16%; background: linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%);"></div>
+      <div class="absolute inset-x-0 bottom-0 pointer-events-none" style="height: 18%; background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%);"></div>
     </div>
 
     <div class="relative mx-auto px-6" style="max-width: 72rem;">
@@ -362,10 +360,10 @@ const previewItems = [
     opacity: 0.16;
   }
 
-  .subscribe-hero-photo img {
+  .subscribe-hero-photo {
     filter: brightness(1.16) contrast(0.96) saturate(1.05);
   }
-  :global(:root[data-theme='dark']) .subscribe-hero-photo img {
+  :global(:root[data-theme='dark']) .subscribe-hero-photo {
     filter: none;
   }
 
