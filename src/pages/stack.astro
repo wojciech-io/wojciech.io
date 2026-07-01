@@ -1,124 +1,128 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import Layout from '../layouts/Layout.astro';
 import CTABand from '../components/ui/CTABand.astro';
 
-const groups = [
+/* Brand icons are dropped into public/images/stack/icons/{slug}.svg (see
+   docs/stack-icons-brief.md). They're inlined so they tint with the theme.
+   Anything without a file falls back to a clean text-only chip. */
+const iconDir = path.join(process.cwd(), 'public/images/stack/icons');
+function iconSvg(slug?: string): string | null {
+  if (!slug) return null;
+  try {
+    const raw = fs.readFileSync(path.join(iconDir, `${slug}.svg`), 'utf8');
+    return raw.replace(/^\s*<svg\b/, '<svg class="h-full w-full" aria-hidden="true"');
+  } catch {
+    return null;
+  }
+}
+
+type Tool = { name: string; slug?: string };
+
+// ── Deploy flow (workflow diagram, top) ──────────────────────────────────
+const flow: { stage: string; lead: Tool; note: string }[] = [
+  { stage: 'Source',   lead: { name: 'GitHub', slug: 'github' },              note: 'Monorepo, branch-protected main' },
+  { stage: 'CI gate',  lead: { name: 'GitHub Actions', slug: 'githubactions' }, note: 'Vitest · Playwright · Semgrep · CodeQL' },
+  { stage: 'Build',    lead: { name: 'Astro', slug: 'astro' },                note: 'Static + Pages Functions' },
+  { stage: 'Deploy',   lead: { name: 'Cloudflare Pages', slug: 'cloudflarepages' }, note: 'Wrangler → 7 surfaces, only on green CI' },
+  { stage: 'Edge',     lead: { name: 'Cloudflare', slug: 'cloudflare' },       note: 'CDN · WAF · rate limiting' },
+];
+
+// ── Layers (architecture, below) ─────────────────────────────────────────
+const layers: { title: string; body: string; tools: Tool[] }[] = [
   {
-    icon: '⬡',
     title: 'Architecture',
-    body: 'npm-workspaces monorepo. Astro 6 on Cloudflare Pages. Seven surfaces, seven Pages projects: wojciech.io, app, growthhub, academy, notch, subscribe, dev. Shared packages: @wojciech/tokens, @wojciech/ui, @wojciech/mdx-components.',
-    items: [
-      'Astro 6 + MDX',
-      'Cloudflare Pages (7 projects)',
-      'npm workspaces (apps/* + packages/*)',
-      '@wojciech/tokens · @wojciech/ui · @wojciech/mdx-components',
+    body: 'npm-workspaces monorepo. Astro on Cloudflare Pages — seven surfaces, seven Pages projects. Shared token, UI, and MDX packages.',
+    tools: [
+      { name: 'Astro', slug: 'astro' },
+      { name: 'MDX', slug: 'mdx' },
+      { name: 'npm workspaces', slug: 'npm' },
+      { name: 'TypeScript', slug: 'typescript' },
     ],
   },
   {
-    icon: '◈',
     title: 'Frontend',
-    body: 'Tailwind CSS 4 driven by CSS custom-prop tokens. Geist for type. Lenis + Motion for motion. Pagefind for static search. Satori + resvg-js for OG.',
-    items: [
-      'Tailwind CSS 4 (@tailwindcss/vite)',
-      'CSS custom-property tokens',
-      'Geist Sans · Geist Mono',
-      'Lenis · Motion',
-      'Pagefind static search',
-      'Satori + resvg-js (dynamic OG)',
+    body: 'Tailwind CSS 4 driven by CSS custom-property tokens. Geist for type. Lenis + Motion for motion. Pagefind for static search.',
+    tools: [
+      { name: 'Tailwind CSS', slug: 'tailwindcss' },
+      { name: 'Vite', slug: 'vite' },
+      { name: 'Geist' },
+      { name: 'Motion' },
+      { name: 'Pagefind' },
     ],
   },
   {
-    icon: '▦',
-    title: 'Backend & infra',
-    body: 'Cloudflare Pages Functions for gated surfaces. Wrangler for Workers (growthhub cron). Terraform manages Pages projects and domains. Node 24 in CI.',
-    items: [
-      'Cloudflare Pages Functions',
-      'Cloudflare Workers (growthhub-cron)',
-      'Terraform (cloudflare_pages_project + _domain)',
-      'WAF rules tracked in repo',
-      'Node 24',
+    title: 'Infra',
+    body: 'Cloudflare Pages Functions for gated surfaces. Workers for the growthhub cron. Terraform manages Pages projects and domains. Node 24 in CI.',
+    tools: [
+      { name: 'Cloudflare Workers', slug: 'cloudflareworkers' },
+      { name: 'Terraform', slug: 'terraform' },
+      { name: 'Node.js 24', slug: 'nodedotjs' },
     ],
   },
   {
-    icon: '◉',
     title: 'Content & i18n',
-    body: 'Astro content collections for insights, work, testimonials. Eight languages for CV and SEO surfaces. Seven fully translated locale homepages (de, dk, no, jp, it, es, pl) on top of EN.',
-    items: [
-      'Astro content collections (insights, work, testimonials)',
-      'MDX articles + custom components',
-      '8 langs: en, pl, de, dk, no, jp, it, es',
-      'Locale-prefixed routing via src/pages/[locale]',
+    body: 'Astro content collections for insights, work, and testimonials. Eight languages across CV and SEO surfaces, seven fully translated locale homepages on top of EN.',
+    tools: [
+      { name: 'Astro collections', slug: 'astro' },
+      { name: 'MDX', slug: 'mdx' },
+      { name: '8 locales' },
     ],
   },
   {
-    icon: '◌',
-    title: 'Analytics (consent-gated)',
-    body: 'Cloudflare Web Analytics runs anonymously by default. Everything else loads only after explicit consent.',
-    items: [
-      'Cloudflare Web Analytics (anonymous)',
-      'GA4 (lazy after consent)',
-      'Mixpanel EU',
-      'Sentry EU',
-      'PostHog EU',
+    title: 'Analytics',
+    body: 'Cloudflare Web Analytics runs anonymously by default. Everything else loads only after explicit consent, all EU-resident.',
+    tools: [
+      { name: 'GA4', slug: 'googleanalytics' },
+      { name: 'Mixpanel', slug: 'mixpanel' },
+      { name: 'PostHog', slug: 'posthog' },
+      { name: 'Sentry', slug: 'sentry' },
     ],
   },
   {
-    icon: '⊘',
     title: 'Testing',
-    body: 'Vitest for units and coverage. Playwright (Chromium + WebKit) for smoke, SEO, hreflang, axe a11y, broken-link checks, critical paths, meta and asset probes. Daily smoke against production.',
-    items: [
-      'Vitest (unit + coverage)',
-      'Playwright (Chromium + WebKit)',
-      'a11y/axe automation',
-      'Daily production smoke',
-      'Lighthouse CI weekly',
+    body: 'Vitest for units and coverage. Playwright across Chromium + WebKit for smoke, SEO, a11y, and broken-link checks. Daily smoke against production.',
+    tools: [
+      { name: 'Vitest', slug: 'vitest' },
+      { name: 'Playwright', slug: 'playwright' },
+      { name: 'Lighthouse CI', slug: 'lighthouse' },
     ],
   },
   {
-    icon: '⟐',
     title: 'CI/CD',
-    body: 'CI runs on every push and PR. Deploy runs only on CI success via workflow_run, deploying site and subdomains in parallel through Wrangler. Commitlint enforced. Release Please is run manually, not on push.',
-    items: [
-      'GitHub Actions (ci.yml + deploy.yml)',
-      'workflow_run gate (no green CI, no deploy)',
-      'Wrangler parallel deploy across surfaces',
-      'Commitlint required',
-      'Release Please (manual)',
+    body: 'CI on every push and PR. Deploy runs only on CI success via workflow_run, shipping site and subdomains in parallel through Wrangler. Commitlint enforced.',
+    tools: [
+      { name: 'GitHub Actions', slug: 'githubactions' },
+      { name: 'Wrangler', slug: 'cloudflare' },
+      { name: 'Commitlint' },
     ],
   },
   {
-    icon: '⊞',
     title: 'Security',
-    body: 'Branch protection on main with required checks. Secrets only in Cloudflare environment. Strict CSP, HSTS preload, X-Frame-Options DENY, sandboxed Permissions-Policy. Auth gates use HMAC-SHA256 signed cookies with timing-safe compares and rate limiting.',
-    items: [
-      'gitleaks · npm audit (high) · Semgrep · CodeQL',
-      'content-guard (pre-commit + CI + weekly cron)',
-      'sensitive-path-guard on PRs',
-      'CSP, HSTS preload, XFO DENY, Permissions-Policy',
-      'HMAC-SHA256 signed cookies, timing-safe',
-      'Per-IP rate limit on auth endpoints',
+    body: 'Branch protection with required checks. Strict CSP, HSTS preload, XFO DENY. Auth gates use HMAC-SHA256 signed cookies with timing-safe compares and per-IP rate limiting.',
+    tools: [
+      { name: 'Semgrep', slug: 'semgrep' },
+      { name: 'CodeQL', slug: 'codeql' },
+      { name: 'gitleaks' },
+      { name: 'CSP · HSTS' },
     ],
   },
   {
-    icon: '◎',
     title: 'Resilience',
-    body: 'Azure Static Web Apps holds a weekly cold-standby copy. Failover is operator-triggered via workflow_dispatch (auto-detects health, then flips DNS via the Cloudflare API). Rollback is a non-destructive git revert. BetterStack drives the smoke probes.',
-    items: [
-      'Azure Static Web Apps (cold standby)',
-      'Manual failover (workflow_dispatch)',
-      'Non-destructive git-revert rollback',
-      'BetterStack uptime + incident webhook',
+    body: 'Azure Static Web Apps holds a weekly cold standby. Failover is operator-triggered, auto-detects health, then flips DNS via the Cloudflare API. Rollback is a non-destructive git revert.',
+    tools: [
+      { name: 'Azure SWA', slug: 'microsoftazure' },
+      { name: 'Cloudflare DNS', slug: 'cloudflare' },
+      { name: 'BetterStack' },
     ],
   },
   {
-    icon: '⚙',
     title: 'Working method',
-    body: 'Claude Code implements. Codex reviews. GPT-5.5 Thinking handles strategy and go/no-go calls. Claude Design owns visuals. Handoff is strategy, docs, code, review, accept, merge once docs and code agree.',
-    items: [
-      'Claude Code (implementation)',
-      'Codex (review)',
-      'GPT-5.5 Thinking (strategy)',
-      'Claude Design (visual)',
+    body: 'Claude Code implements. Codex reviews. Strategy and go/no-go stay human. Merge once docs and code agree.',
+    tools: [
+      { name: 'Claude Code', slug: 'anthropic' },
+      { name: 'Codex', slug: 'openai' },
     ],
   },
 ];
@@ -138,21 +142,54 @@ const stats = [
   <!-- Hero -->
   <section class="relative overflow-hidden border-b border-[var(--color-border)]">
     <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true" />
-    <div class="pointer-events-none absolute left-1/2 top-[-200px] h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-[var(--color-surface)] opacity-70 blur-[150px]" aria-hidden="true" />
-
-    <div class="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
-      <div class="animate-fade-up flex items-center gap-3 mb-8">
+    <div class="relative mx-auto max-w-6xl px-6 py-20 md:py-28">
+      <div class="animate-fade-up flex items-center gap-3 mb-6">
         <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
         <span class="obs-label-accent">Production stack</span>
       </div>
-
-      <h1 class="animate-fade-up [animation-delay:60ms] text-[length:var(--text-hero)] font-semibold leading-[0.95] tracking-tight text-[var(--color-text)] max-w-[900px] mb-7">
-        What this site is<br>
-        <span class="text-[var(--color-text-muted)]">actually built on.</span>
+      <h1 class="animate-fade-up [animation-delay:60ms] text-[length:var(--text-hero)] font-semibold leading-[1.02] tracking-tight text-[var(--color-text)] max-w-[900px] mb-6">
+        What this site is actually built on.
       </h1>
       <p class="animate-fade-up [animation-delay:120ms] max-w-3xl text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed">
         Verified from the repo, not from memory. Every layer below is in production today across wojciech.io and its subdomains. If a tool is on this page, it pays rent.
       </p>
+    </div>
+  </section>
+
+  <!-- Deploy flow: the workflow, end to end -->
+  <section class="border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+      <div class="flex items-center gap-3 mb-8">
+        <span class="obs-label-accent">Push to production</span>
+      </div>
+
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:gap-0">
+        {flow.map((step, i) => {
+          const svg = iconSvg(step.lead.slug);
+          return (
+            <>
+              <div class="flex-1 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+                <p class="obs-label text-[10px] tracking-[0.16em] mb-3">{String(i + 1).padStart(2, '0')} · {step.stage}</p>
+                <div class="flex items-center gap-2.5 mb-2">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-1.5 text-[var(--color-text)] shrink-0">
+                    {svg ? <Fragment set:html={svg} /> : <span class="text-[10px] font-semibold">{step.lead.name.slice(0, 2)}</span>}
+                  </span>
+                  <span class="text-sm font-semibold text-[var(--color-text)] leading-tight">{step.lead.name}</span>
+                </div>
+                <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">{step.note}</p>
+              </div>
+              {i < flow.length - 1 && (
+                <div class="flex items-center justify-center py-1 lg:px-2" aria-hidden="true">
+                  <svg class="h-4 w-4 rotate-90 text-[var(--color-text-dim)] lg:rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+              )}
+            </>
+          );
+        })}
+      </div>
+      <p class="mt-4 text-xs text-[var(--color-text-dim)]">Deploy only fires on green CI (workflow_run gate). No green, no ship.</p>
     </div>
   </section>
 
@@ -170,50 +207,42 @@ const stats = [
     </div>
   </section>
 
-  <!-- Stack groups -->
+  <!-- Layers: the stack, top to bottom, with tool icons -->
   <section class="border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6 py-20 md:py-28">
-      {groups.map((group, idx) => (
-        <article
-          class:list={[
-            'reveal-up',
-            idx > 0 && 'mt-20 pt-20 border-t border-[var(--color-border)]',
-          ]}
-          data-reveal-index={idx % 4}
-        >
-          <div class="grid gap-8 md:grid-cols-[1fr_1.4fr] md:gap-12 items-start">
-            <!-- Left: header -->
+    <div class="mx-auto max-w-6xl px-6 py-16 md:py-24">
+      <div class="flex items-center gap-3 mb-10">
+        <span class="obs-label-accent">The layers</span>
+      </div>
+
+      <div class="grid gap-4 md:gap-5">
+        {layers.map((layer, idx) => (
+          <article class="reveal-up rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 md:p-7 grid gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] md:items-center md:gap-10" data-reveal-index={idx % 4}>
             <div>
-              <div class="flex items-center gap-3 mb-4">
-                <span class="flex items-center justify-center w-10 h-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-glass)] text-lg text-[var(--color-text)]" aria-hidden="true">
-                  {group.icon}
-                </span>
-                <div>
-                  <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--color-text-dim)]">
-                    {String(idx + 1).padStart(2, '0')}
-                  </p>
-                  <h2 class="text-fluid-xl font-semibold text-[var(--color-text)] leading-tight tracking-tight">
-                    {group.title}
-                  </h2>
-                </div>
+              <div class="flex items-baseline gap-3 mb-2">
+                <span class="obs-label text-[10px] tracking-[0.16em] text-[var(--color-text-dim)]">{String(idx + 1).padStart(2, '0')}</span>
+                <h2 class="text-fluid-lg font-semibold text-[var(--color-text)] leading-tight tracking-tight">{layer.title}</h2>
               </div>
-              <p class="text-sm md:text-base text-[var(--color-text-muted)] leading-relaxed mt-3">
-                {group.body}
-              </p>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{layer.body}</p>
             </div>
 
-            <!-- Right: items -->
-            <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden divide-y divide-[var(--color-border)]">
-              {group.items.map((item) => (
-                <div class="flex items-start gap-3 px-5 py-3.5">
-                  <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--color-accent-cta)] shrink-0" aria-hidden="true"></span>
-                  <span class="text-sm text-[var(--color-text)] leading-relaxed">{item}</span>
-                </div>
-              ))}
+            <div class="flex flex-wrap gap-2">
+              {layer.tools.map((tool) => {
+                const svg = iconSvg(tool.slug);
+                return (
+                  <span class="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-bg)] py-1.5 pl-2 pr-3.5">
+                    <span class="flex h-5 w-5 items-center justify-center text-[var(--color-text)] shrink-0">
+                      {svg
+                        ? <Fragment set:html={svg} />
+                        : <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-cta)]" aria-hidden="true" />}
+                    </span>
+                    <span class="text-[13px] font-medium text-[var(--color-text)] whitespace-nowrap">{tool.name}</span>
+                  </span>
+                );
+              })}
             </div>
-          </div>
-        </article>
-      ))}
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 
