@@ -15,7 +15,7 @@ export interface CompanyLogo {
 export const companyLogos: CompanyLogo[] = [
   // B2B SaaS & tech
   { name: 'CodiLime', category: 'SaaS & tech', src: '/images/logos/codilime.svg' },
-  { name: 'GetResponse', category: 'SaaS & tech', src: '/images/logos/getresponse.svg' },
+  { name: 'GetResponse', category: 'SaaS & tech', src: '/images/logos/getresponse.svg?v=2' },
   { name: 'SentiOne', category: 'SaaS & tech', src: '/images/logos/sentione.png' },
   { name: 'Symfonia', category: 'SaaS & tech', src: '/images/logos/symfonia.webp' },
   { name: 'WebWave', category: 'SaaS & tech', src: '/images/logos/webwave.svg' },
