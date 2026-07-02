@@ -53,6 +53,25 @@ const previewItems = [
     <div class="subscribe-hero-aura pointer-events-none absolute" style="left: -140px; top: -170px; height: 520px; width: 620px; border-radius: 9999px;" aria-hidden="true"></div>
     <div class="pointer-events-none absolute" style="left: -160px; top: -180px; height: 520px; width: 620px; border-radius: 9999px; background: var(--color-surface); filter: blur(140px); opacity: 0.5;" aria-hidden="true"></div>
 
+    <!-- Photo: desktop right half, absolute, dissolving into the page background
+         on every edge — a tonal transition, not a framed cut-out. The gradients
+         paint var(--color-bg), so the blend tracks light and dark themes. -->
+    <div class="subscribe-hero-photo hidden lg:block absolute right-0 top-0 bottom-0" style="width: 46%; overflow: hidden;" aria-hidden="true">
+      <img
+        src="/images/wojciech-hero-warm.webp"
+        alt=""
+        width="800"
+        height="1000"
+        loading="eager"
+        decoding="async"
+        style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%;"
+      />
+      <div style="position: absolute; inset: 0 auto 0 0; width: 48%; background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%); pointer-events: none;"></div>
+      <div style="position: absolute; inset: auto 0 0 0; height: 24%; background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%); pointer-events: none;"></div>
+      <div style="position: absolute; inset: 0 0 auto 0; height: 18%; background: linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%); pointer-events: none;"></div>
+      <div style="position: absolute; inset: 0 0 0 auto; width: 10%; background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%); pointer-events: none;"></div>
+    </div>
+
     <div class="relative mx-auto px-6" style="max-width: 72rem;">
       <div class="hero-layout animate-fade-up" id="form-col">
         <div style="min-width: 0;">
@@ -144,22 +163,6 @@ const previewItems = [
 
         </div>
 
-        <!-- Portrait: framed editorial card (site pattern), not a washed-out
-             full-bleed fade that crops the subject away on wide screens. -->
-        <aside class="hero-portrait hidden lg:block">
-          <div class="hero-portrait-frame">
-            <img
-              src="/images/wojciech-hero-warm.webp"
-              alt=""
-              width="800"
-              height="1000"
-              loading="eager"
-              decoding="async"
-              aria-hidden="true"
-            />
-          </div>
-        </aside>
-
       </div>
     </div>
   </section>
@@ -178,56 +181,58 @@ const previewItems = [
 
       <div style="min-width: 0;">
 
-      <!-- Email client mockup wrapping a faithful AI Espresso render -->
-      <div style="border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; box-shadow: 0 24px 80px rgb(0 0 0 / 0.12), 0 4px 16px rgb(0 0 0 / 0.06);">
+      <!-- Email client mockup wrapping a faithful AI Espresso render. Colours
+           come from the .mail-mock theme variables, so the whole rendition
+           (chrome + press content) flips to a dark-client look in dark mode. -->
+      <div class="mail-mock" style="border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; box-shadow: 0 24px 80px rgb(0 0 0 / 0.12), 0 4px 16px rgb(0 0 0 / 0.06);">
 
-        <div style="background: #e8e4dc; padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #d8d4cb;">
+        <div style="background: var(--mail-chrome); padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--mail-chrome-border);">
           <div style="display: flex; gap: 6px; flex-shrink: 0;">
             <div style="width: 11px; height: 11px; border-radius: 50%; background: #ff5f57;"></div>
             <div style="width: 11px; height: 11px; border-radius: 50%; background: #ffbd2e;"></div>
             <div style="width: 11px; height: 11px; border-radius: 50%; background: #28ca41;"></div>
           </div>
-          <div style="flex: 1; background: #d8d4cb; border-radius: 5px; height: 22px; display: flex; align-items: center; padding: 0 10px; min-width: 0;">
-            <span style="font-size: 11px; color: #555; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">AI Espresso · {fmtDate(latest.date)} · hello@wojciech.io</span>
+          <div style="flex: 1; background: var(--mail-chrome-border); border-radius: 5px; height: 22px; display: flex; align-items: center; padding: 0 10px; min-width: 0;">
+            <span style="font-size: 11px; color: var(--mail-chrome-text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">AI Espresso · {fmtDate(latest.date)} · hello@wojciech.io</span>
           </div>
         </div>
 
         <!-- Capped so the mockup doesn't run forever, but tall enough to show
              the full briefing plus all three stories before the fade. The
              sidebar sticks alongside via .archive-sidebar. -->
-        <div style="background: #f4f3ef; padding: 22px 16px 0; position: relative; overflow: hidden; max-height: 1120px;">
+        <div style="background: var(--mail-bg); padding: 22px 16px 0; position: relative; overflow: hidden; max-height: 1120px;">
 
           <div style="max-width: 660px; margin: 0 auto 12px;">
-            <div style="background: #fffefb; border: 1px solid #dcdbd3; border-radius: 999px; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; gap: 8px;">
+            <div style="background: var(--mail-card); border: 1px solid var(--mail-border); border-radius: 999px; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; gap: 8px;">
               <div style="display: flex; align-items: center; gap: 9px; min-width: 0;">
                 <img src="/images/ai-espresso-cup.png" width="24" height="24" alt="" style="border-radius: 8px; display: block; flex-shrink: 0;" />
-                <span style="font-size: 14px; font-weight: 600; color: #080808; white-space: nowrap;">AI Espresso</span>
+                <span style="font-size: 14px; font-weight: 600; color: var(--mail-ink); white-space: nowrap;">AI Espresso</span>
               </div>
               <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
-                <span style="font-size: 12px; font-weight: 500; color: #74746e;">{fmtDate(latest.date)}</span>
+                <span style="font-size: 12px; font-weight: 500; color: var(--mail-dim);">{fmtDate(latest.date)}</span>
                 <img src="/images/wojciech-avatar-warm.webp" width="30" height="30" alt="Wojciech" style="border-radius: 50%; display: block; object-fit: cover; object-position: top; flex-shrink: 0;" />
               </div>
             </div>
-            <p style="margin: 11px auto 0; max-width: 560px; font-size: 13px; line-height: 1.5; color: #64645e; text-align: center;">A daily operator briefing on AI models, agents, automation, and GTM workflows.</p>
+            <p style="margin: 11px auto 0; max-width: 560px; font-size: 13px; line-height: 1.5; color: var(--mail-dim); text-align: center;">A daily operator briefing on AI models, agents, automation, and GTM workflows.</p>
           </div>
 
-          <div style="max-width: 660px; margin: 0 auto 10px; background: #fffefb; border-radius: 12px; padding: 24px 28px;">
-            <p style="margin: 0 0 11px; color: #080808; font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; font-weight: 600;"><span style="display: inline-block; width: 26px; height: 3px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin-right: 10px;"></span>Operator briefing</p>
-            <h3 style="margin: 0 0 11px; font-size: 25px; line-height: 1.14; font-weight: 600; letter-spacing: -0.01em; color: #080808;">{latest.title}</h3>
-            <p style="margin: 0; font-size: 14.5px; line-height: 1.62; color: #343430;">{latest.lead}</p>
+          <div style="max-width: 660px; margin: 0 auto 10px; background: var(--mail-card); border-radius: 12px; padding: 24px 28px;">
+            <p style="margin: 0 0 11px; color: var(--mail-ink); font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; font-weight: 600;"><span style="display: inline-block; width: 26px; height: 3px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin-right: 10px;"></span>Operator briefing</p>
+            <h3 style="margin: 0 0 11px; font-size: 25px; line-height: 1.14; font-weight: 600; letter-spacing: -0.01em; color: var(--mail-ink);">{latest.title}</h3>
+            <p style="margin: 0; font-size: 14.5px; line-height: 1.62; color: var(--mail-body);">{latest.lead}</p>
           </div>
 
           {previewItems.map((item) => (
-            <div style="max-width: 660px; margin: 0 auto 10px; background: #ffffff; border-radius: 12px; padding: 22px 26px;">
-              <p style="margin: 0 0 9px; font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; color: #74746e; font-weight: 600;"><span style="display: inline-block; width: 20px; height: 3px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin-right: 9px;"></span>{item.label}</p>
-              <p style="margin: 0 0 9px; font-size: 19px; line-height: 1.24; font-weight: 600; letter-spacing: -0.01em; color: #080808;">{item.title}</p>
-              <p style="margin: 0 0 9px; font-size: 14px; line-height: 1.6; color: #343430;">{item.body}</p>
-              <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #343430;"><strong style="font-weight: 600; color: #080808;">Why it matters:</strong> {item.why}</p>
-              <p style="margin: 12px 0 0; font-size: 12.5px;"><span style="display: inline-block; width: 16px; height: 2px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin: 0 8px 2px 0;"></span><span style="color: #74746e;">Source: {item.source}</span></p>
+            <div style="max-width: 660px; margin: 0 auto 10px; background: var(--mail-card-alt); border-radius: 12px; padding: 22px 26px;">
+              <p style="margin: 0 0 9px; font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; color: var(--mail-dim); font-weight: 600;"><span style="display: inline-block; width: 20px; height: 3px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin-right: 9px;"></span>{item.label}</p>
+              <p style="margin: 0 0 9px; font-size: 19px; line-height: 1.24; font-weight: 600; letter-spacing: -0.01em; color: var(--mail-ink);">{item.title}</p>
+              <p style="margin: 0 0 9px; font-size: 14px; line-height: 1.6; color: var(--mail-body);">{item.body}</p>
+              <p style="margin: 0; font-size: 14px; line-height: 1.55; color: var(--mail-body);"><strong style="font-weight: 600; color: var(--mail-ink);">Why it matters:</strong> {item.why}</p>
+              <p style="margin: 12px 0 0; font-size: 12.5px;"><span style="display: inline-block; width: 16px; height: 2px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin: 0 8px 2px 0;"></span><span style="color: var(--mail-dim);">Source: {item.source}</span></p>
             </div>
           ))}
 
-          <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 96px; background: linear-gradient(to bottom, transparent, #f4f3ef);"></div>
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 96px; background: linear-gradient(to bottom, transparent, var(--mail-bg));"></div>
         </div>
 
         <div style="background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
@@ -403,7 +408,8 @@ const previewItems = [
     background-color: var(--color-accent-cta-hi) !important;
   }
 
-  /* Hero: real two-column grid (copy | framed portrait), no absolute photo. */
+  /* Hero: copy column on the left; the photo lives absolutely on the right
+     half of the section and dissolves into the page bg (tonal transition). */
   .hero-layout {
     display: grid;
     grid-template-columns: 1fr;
@@ -414,28 +420,9 @@ const previewItems = [
   }
   @media (min-width: 1024px) {
     .hero-layout {
-      grid-template-columns: minmax(0, 1fr) 400px;
-      gap: 4.5rem;
+      grid-template-columns: minmax(0, 55%);
+      min-height: 560px;
     }
-  }
-
-  .hero-portrait-frame {
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-card);
-  }
-  .hero-portrait-frame img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    object-position: center 15%;
-    filter: contrast(1.02) saturate(1.05);
-  }
-  :global(:root[data-theme='dark']) .hero-portrait-frame img {
-    filter: none;
   }
 
   /* Form: input + button on one line as soon as they fit. */
@@ -474,6 +461,33 @@ const previewItems = [
     margin-top: 1.5rem;
     font-size: 0.8125rem;
     color: var(--color-text-muted);
+  }
+
+  /* Mail mockup theme: light = the sent email verbatim; dark = the same issue
+     as a dark-mode email client renders it. One variable set, flipped once. */
+  .mail-mock {
+    --mail-chrome: #e8e4dc;
+    --mail-chrome-border: #d8d4cb;
+    --mail-chrome-text: #555;
+    --mail-bg: #f4f3ef;
+    --mail-card: #fffefb;
+    --mail-card-alt: #ffffff;
+    --mail-border: #dcdbd3;
+    --mail-ink: #080808;
+    --mail-body: #343430;
+    --mail-dim: #74746e;
+  }
+  :global(:root[data-theme='dark']) .mail-mock {
+    --mail-chrome: #221c12;
+    --mail-chrome-border: #2c2418;
+    --mail-chrome-text: #b0a897;
+    --mail-bg: #141009;
+    --mail-card: #1c1710;
+    --mail-card-alt: #201a10;
+    --mail-border: #2c2418;
+    --mail-ink: #f4f0e7;
+    --mail-body: #cfc8ba;
+    --mail-dim: #999180;
   }
 
   .subscribe-hero-grid {
