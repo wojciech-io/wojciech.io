@@ -35,7 +35,10 @@ function json(data: unknown, init: ResponseInit = {}) {
 export async function onRequestPost({ request, env }: PagesFunctionContext) {
   // Anti-abuse: 5 signups / 10 min / IP, mirroring the downstream app's limit
   // so abusive traffic stops here instead of consuming the proxy hop.
-  const rl = await rateLimit(env.RATE_LIMIT, `subscribe:${clientIp(request)}`, 5, 600);
+  // Scope is deliberately distinct from the downstream app's `subscribe:` key:
+  // both projects bind the same KV namespace, so a shared scope would count
+  // every attempt twice (once per hop) against one 5-request bucket.
+  const rl = await rateLimit(env.RATE_LIMIT, `subscribe-edge:${clientIp(request)}`, 5, 600);
   if (!rl.ok) return rl.response!;
 
   let payload: SubscribePayload;

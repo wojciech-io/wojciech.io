@@ -426,7 +426,15 @@ const previewItems = [
 </div>
 
 <script>
-  const form = document.getElementById('subscribe-form') as HTMLFormElement;
+  // Wired via astro:page-load, NOT at module top level: with the ClientRouter
+  // (view transitions) this module runs once per session, so a top-level
+  // getElementById would bind the handler to a DOM that gets swapped away —
+  // navigate away and back and the form would submit natively as a GET.
+  // astro:page-load fires on first load AND after every client-side swap.
+  document.addEventListener('astro:page-load', () => {
+  const form = document.getElementById('subscribe-form') as HTMLFormElement | null;
+  if (!form || form.dataset.wired === '1') return;
+  form.dataset.wired = '1';
   const status = document.getElementById('sub-status') as HTMLElement;
   const btn = document.getElementById('sub-btn') as HTMLButtonElement;
   const emailInput = document.getElementById('sub-email') as HTMLInputElement;
@@ -444,7 +452,7 @@ const previewItems = [
   // Bot timing signal: real people do not submit within two seconds of load.
   const loadedAt = Date.now();
 
-  form?.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = emailInput.value.trim().toLowerCase();
     if (!email || !emailInput.validity.valid) {
@@ -491,6 +499,7 @@ const previewItems = [
       status.textContent = err?.message === 'Failed' ? 'Something went wrong. Try again.' : (err?.message || 'Something went wrong.');
       status.style.color = '#f87171';
     }
+  });
   });
 </script>
 

@@ -87,8 +87,15 @@ jobs:
 
       - run: npm run build:subscribe
 
+      # working-directory matters: wrangler bundles the functions/ dir found in
+      # the CWD. From the repo root it silently shipped the MAIN site's
+      # functions to this project — whose /api/subscribe proxies to
+      # subscribe.wojciech.io, i.e. itself, an infinite loop that rate-limited
+      # every real signup. Deploying from apps/subscribe ships its own
+      # double-opt-in functions (subscribe.ts + confirm.ts).
       - name: Wrangler deploy
-        run: npx wrangler pages deploy apps/subscribe/dist --project-name=subscribe-wojciech-io --branch=main --commit-message=deploy-subscribe-wojciech-io
+        working-directory: apps/subscribe
+        run: npx wrangler pages deploy dist --project-name=subscribe-wojciech-io --branch=main --commit-message=deploy-subscribe-wojciech-io
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: 39783e1749680bed4039662ab696c3b1
@@ -112,8 +119,12 @@ jobs:
 
       - run: npm run build:academy
 
+      # Same CWD-functions fix as subscribe: academy has its own functions
+      # (_middleware.ts + api/) that the root-CWD deploy was silently replacing
+      # with the main site's set.
       - name: Wrangler deploy
-        run: npx wrangler pages deploy apps/academy/dist --project-name=akademia-wojciech-io --branch=main --commit-message=deploy-academy-wojciech-io
+        working-directory: apps/academy
+        run: npx wrangler pages deploy dist --project-name=akademia-wojciech-io --branch=main --commit-message=deploy-academy-wojciech-io
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: 39783e1749680bed4039662ab696c3b1
