@@ -66,14 +66,21 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
           {t.link}
         </a>
 
-        <!-- Before / After: flat editorial ledger (hairline rows, no panel) -->
-        <div class="border-t border-[var(--color-border)]">
+        <!-- Before / After as a transformation: the old way struck out, a dashed
+             accent arrow (same motif as the newsletter delivery thread), and the
+             new state as an accent chip. Reads as change, not a table. -->
+        <div class="xform-ledger">
           {rows.map(({ label, before, after }, index) => (
-            <div class="reveal-up flex items-center justify-between py-3.5 border-b border-[var(--color-border)] group" data-reveal-index={index + 1}>
-              <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors duration-150">{label}</p>
-              <div class="flex items-center gap-3 text-xs shrink-0 ml-4">
-                <span class="text-[var(--color-text-dim)] line-through">{before}</span>
-                <span class="text-[var(--color-accent)] font-semibold">{after}</span>
+            <div class="xform-row reveal-up group" data-reveal-index={index + 1}>
+              <p class="xform-label">{label}</p>
+              <div class="xform-track">
+                <span class="xform-before">{before}</span>
+                <span class="xform-arrow" aria-hidden="true">
+                  <svg width="26" height="10" viewBox="0 0 26 10" fill="none">
+                    <path d="M0 5h20M17 1.5 21.5 5 17 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.5 2.5"/>
+                  </svg>
+                </span>
+                <span class="xform-after">{after}</span>
               </div>
             </div>
           ))}
@@ -153,6 +160,55 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
 </section>
 
 <style>
+  /* Before → after transformation ledger. */
+  .xform-ledger { border-top: 1px solid var(--color-border); }
+  .xform-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .xform-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    transition: color 0.15s ease;
+  }
+  .xform-row:hover .xform-label { color: var(--color-text); }
+  .xform-track {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-shrink: 0;
+  }
+  .xform-before {
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in srgb, var(--color-text-dim) 60%, transparent);
+    white-space: nowrap;
+  }
+  .xform-arrow { color: color-mix(in srgb, var(--color-accent-cta) 70%, var(--color-border)); display: inline-flex; }
+  .xform-after {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-accent-hi);
+    background: color-mix(in srgb, var(--color-accent-cta) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent-cta) 34%, transparent);
+    border-radius: 999px;
+    padding: 0.25rem 0.625rem;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+  }
+  .xform-row:hover .xform-after {
+    background: color-mix(in srgb, var(--color-accent-cta) 22%, transparent);
+  }
+
   @keyframes data-flow {
     0%   { transform: translateX(-100%); }
     100% { transform: translateX(600%); }
