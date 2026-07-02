@@ -133,37 +133,51 @@ const previewItems = [
   <section class="why-band" style="border-bottom: 1px solid var(--color-border);">
     <div style="max-width: 72rem; margin: 0 auto; padding: 0 1.5rem;">
 
-        <!-- The story, told as pain then promise. -->
-        <div style="min-width: 0; max-width: 44rem;">
-          <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.75rem;">Why this exists</p>
-          <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text); margin-bottom: 1rem;">Keeping up became a second job.</h2>
-          <p style="font-size: 1rem; line-height: 1.65; color: var(--color-text-muted); margin-bottom: 1.5rem; max-width: 34rem;">
+        <!-- The story, told as pain then promise. The header row fills the
+             container (title left, narrative right), the three pains sit
+             side by side under it — no dead column. -->
+        <div class="why-head">
+          <div style="min-width: 0;">
+            <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.75rem;">Why this exists</p>
+            <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text); margin: 0;">Keeping up became a second job.</h2>
+          </div>
+          <p class="why-lead">
             You know the feeling. Something important shipped, everyone is already talking about it, and you are finding out late. The models, agents, and tools under your stack change every week, and the one shift that matters is buried under launch threads and hot takes.
-          </p>
-
-          <ul class="pain-bullets" aria-label="The problem">
-            {[
-              'A dozen tools ship updates every week. Half of them change how you would build.',
-              'The shift that matters is buried under noise, reaction, and self-promotion.',
-              'By the time it reaches your feed, it is a week old and stripped of context.',
-            ].map((line) => (
-              <li>
-                <span class="pain-tick" aria-hidden="true"></span>
-                <span>{line}</span>
-              </li>
-            ))}
-          </ul>
-
-          <p style="font-size: 1rem; line-height: 1.65; color: var(--color-text); font-weight: 500; margin-top: 1.5rem; max-width: 34rem;">
-            AI Espresso is the fix. One operator reads the firehose every day and sends only what changes the work, in the time it takes to make an espresso.
           </p>
         </div>
 
-        <!-- The sign-up: one full-width band, not a side column. The email
-             field is the widest element in it on purpose. -->
+        <ul class="pain-bullets" aria-label="The problem">
+          {[
+            'A dozen tools ship updates every week. Half of them change how you would build.',
+            'The shift that matters is buried under noise, reaction, and self-promotion.',
+            'By the time it reaches your feed, it is a week old and stripped of context.',
+          ].map((line) => (
+            <li>
+              <span class="pain-check" aria-hidden="true">
+                <svg width="11" height="11" viewBox="0 0 20 20" fill="none"><path d="M4 10l4.5 4.5L16 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+
+        <p style="font-size: 1rem; line-height: 1.65; color: var(--color-text); font-weight: 500; margin: 2rem 0 0; max-width: 50rem;">
+          AI Espresso is the fix. One operator reads the firehose every day and sends only what changes the work, in the time it takes to make an espresso.
+        </p>
+
+        <!-- The sign-up: one full-width band, balanced left/right — a short
+             pitch column on the left, the form (input at a sane width, consent
+             under it) on the right. -->
         <div id="subscribe" class="signup-band">
           <div class="signup-aura" aria-hidden="true"></div>
 
+          <div class="signup-grid">
+          <div class="signup-intro">
+            <p class="signup-title">Start tomorrow morning.</p>
+            <p class="signup-sub">Free. One click to confirm, one to unsubscribe. No spam, ever.</p>
+          </div>
+
+          <div style="min-width: 0;">
           <form id="subscribe-form" class="signup-form" novalidate>
             <div class="signup-row">
               <label class="sr-only" for="sub-email">Email address</label>
@@ -221,6 +235,8 @@ const previewItems = [
               <p style="margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--color-text);">You're in. Thanks for confirming.</p>
               <p style="margin: 0.2rem 0 0; font-size: 0.875rem; color: var(--color-text-muted);">The next issue lands in your inbox. A short welcome note is already on its way.</p>
             </div>
+          </div>
+          </div>
           </div>
         </div>
 
@@ -334,7 +350,7 @@ const previewItems = [
 
           <div class="inbox-arrow" aria-hidden="true">
             <svg width="18" height="30" viewBox="0 0 18 30" fill="none">
-              <path d="M9 0v22M3 16l6 6 6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3 3.5"/>
+              <path d="M9 0v22M3 16l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4"/>
             </svg>
           </div>
 
@@ -537,6 +553,33 @@ const previewItems = [
   }
   :global(:root[data-theme='dark']) .signup-aura { opacity: 0.18; }
 
+  /* Inside the band: pitch on the left, form on the right. The form column
+     caps the input at a sane width instead of stretching wall to wall. */
+  .signup-grid {
+    position: relative;
+    display: grid;
+    gap: 1.25rem 3.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .signup-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 33rem);
+    }
+  }
+  .signup-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+  }
+  .signup-sub {
+    margin: 0.3rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+
   .signup-form { position: relative; }
   .signup-row {
     display: flex;
@@ -644,14 +687,39 @@ const previewItems = [
     background: color-mix(in srgb, var(--color-success) 18%, var(--color-surface));
   }
 
-  /* Pain bullets: the problem, in the accent tick language used site-wide. */
+  /* Why header: title and narrative side by side so the row uses the whole
+     container instead of leaving a dead right half. */
+  .why-head {
+    display: grid;
+    gap: 1rem 4rem;
+    margin-bottom: 2rem;
+  }
+  @media (min-width: 900px) {
+    .why-head {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      align-items: end;
+    }
+  }
+  .why-lead {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+  }
+
+  /* Pain bullets: three checks side by side across the full width. */
   .pain-bullets {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.875rem;
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 760px) {
+    .pain-bullets {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
   }
   .pain-bullets li {
     display: flex;
@@ -661,13 +729,18 @@ const previewItems = [
     line-height: 1.55;
     color: var(--color-text-muted);
   }
-  .pain-tick {
-    width: 14px;
-    height: 3px;
-    border-radius: 9999px;
-    background: var(--color-accent-cta);
+  .pain-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 7px;
     flex-shrink: 0;
-    margin-top: 0.55rem;
+    margin-top: 0.1rem;
+    background: color-mix(in srgb, var(--color-accent-cta) 18%, var(--color-surface));
+    border: 1px solid color-mix(in srgb, var(--color-accent-cta) 30%, var(--color-border));
+    color: var(--color-text);
   }
 
   /* Proof strip: author + track record, one quiet line. */
@@ -857,10 +930,14 @@ const previewItems = [
     color: var(--color-text);
   }
 
+  /* The arrival arrow continues the spine: same colour, same dash rhythm,
+     centred on the spine's axis (spine: left 5px + 2px border → centre 6px;
+     the 18px-wide svg centres at 9px, so pull it 3px left). */
   .inbox-arrow {
-    color: color-mix(in srgb, var(--color-accent-cta) 30%, var(--color-border-2));
-    padding-left: 1px; margin: -0.15rem 0 0.35rem;
+    color: color-mix(in srgb, var(--color-accent-cta) 22%, var(--color-border-2));
+    margin: -0.55rem 0 0.3rem;
   }
+  .inbox-arrow svg { display: block; margin-left: -3px; }
 
   /* Destination node: tomorrow's inbox, with the CTA folded in. The accent
      lives in the CTA and icon only; the card itself stays quiet. */
