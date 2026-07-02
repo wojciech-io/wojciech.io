@@ -2,47 +2,104 @@
 /* Editorial metrics strip. Numerals render in Geist at display weight (tabular
    lining figures) — safe in every locale because digits are shared across
    languages; the labels stay in mono. Prop-driven so EN and localized homepages
-   render identically. Defaults carry the English copy. */
-interface Metric { value: string; label: string }
+   render identically. Defaults carry the English copy.
+
+   No card chrome: the figures sit on the page, separated by hairline dividers,
+   with a short marketing caption under each so the row reads as a claim, not a
+   dashboard. `note` is optional — localized homepages that omit it degrade to
+   value + label cleanly. */
+interface Metric { value: string; label: string; note?: string }
 interface Props { metrics?: Metric[]; indexLabel?: string }
 
 const {
   metrics = [
-    { value: '20', label: 'years marketing & digital' },
-    { value: '10', label: 'years B2B SaaS' },
-    { value: '10', label: 'years GTM' },
-    { value: '3×', label: 'avg. pipeline lift' },
+    { value: '20', label: 'years marketing & digital', note: 'From PR desks to AI-native GTM systems.' },
+    { value: '10', label: 'years in B2B SaaS', note: 'Series A through enterprise motions.' },
+    { value: '10', label: 'years running GTM', note: 'Demand, lifecycle, and revenue ops.' },
+    { value: '3×', label: 'avg. pipeline lift', note: 'What happens when the system clicks.' },
   ],
   indexLabel = '',
 } = Astro.props as Props;
 ---
 
-<section class="relative section-fade py-10 md:py-14">
+<section class="relative section-fade py-10 md:py-16">
   <div class="mx-auto max-w-6xl px-6">
     {indexLabel && (
-      <div class="flex items-center gap-3 mb-6">
+      <div class="flex items-center gap-3 mb-8">
         <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
         <span class="obs-label">{indexLabel}</span>
       </div>
     )}
-    <!-- One card per metric: same radius/border/surface language as the rest of
-         the site, an accent tick on top of each so the row reads as four
-         deliberate proof points instead of one flat rectangle. -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
-      {metrics.map(({ value, label }, index) => {
+    <!-- Borderless figures, hairline-divided. Each is an accent tick, a display
+         numeral, a label, and a marketing caption — four claims, not four boxes. -->
+    <div class="metrics-strip">
+      {metrics.map(({ value, label, note }, index) => {
         const match = value.match(/^(\d+)(.*)$/);
         const isNumeric = match !== null;
         return (
-          <div class="reveal-up flex flex-col rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover py-7 px-6" data-reveal-index={index}>
-            <span class="mb-5 h-1 w-8 rounded-full bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+          <div class="metric-cell reveal-up" data-reveal-index={index}>
+            <span class="metric-tick" aria-hidden="true"></span>
             <p
-              class:list={['ed-serif text-5xl md:text-6xl text-[var(--color-text)] mb-2', isNumeric && 'metric-count']}
+              class:list={['metric-value', isNumeric && 'metric-count']}
               {...(isNumeric ? { 'data-target': match[1], 'data-suffix': match[2] } : {})}
             >{value}</p>
-            <p class="obs-label leading-snug">{label}</p>
+            <p class="obs-label metric-label">{label}</p>
+            {note && <p class="metric-note">{note}</p>}
           </div>
         );
       })}
     </div>
   </div>
 </section>
+
+<style>
+  .metrics-strip {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--color-border);
+  }
+  @media (min-width: 640px) {
+    .metrics-strip { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .metric-cell {
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem 1.5rem 1.5rem 0;
+    border-top: 1px solid var(--color-border);
+    margin-top: -1px; /* collapse onto the strip's top rule */
+  }
+  /* Vertical hairline dividers between columns. */
+  @media (min-width: 640px) {
+    .metric-cell { padding-left: 1.75rem; border-left: 1px solid var(--color-border); }
+    .metric-cell:nth-child(4n + 1) { padding-left: 0; border-left: 0; }
+  }
+  @media (max-width: 639.98px) {
+    .metric-cell:nth-child(2n) { padding-left: 1.5rem; border-left: 1px solid var(--color-border); }
+  }
+
+  .metric-tick {
+    width: 2rem; height: 0.25rem; border-radius: 9999px;
+    background: var(--color-accent-cta);
+    margin-bottom: 1.25rem;
+  }
+  .metric-value {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(2.75rem, 5vw, 3.75rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums lining-nums;
+    margin-bottom: 0.625rem;
+  }
+  .metric-label { line-height: 1.35; }
+  .metric-note {
+    margin-top: 0.625rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    max-width: 15rem;
+  }
+</style>
