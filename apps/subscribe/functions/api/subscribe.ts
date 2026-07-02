@@ -30,10 +30,12 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
   if (!rl.ok) return rl.response!;
 
   let email: string | undefined;
+  let consent = false;
 
   try {
-    const body = (await request.json()) as { email?: string };
+    const body = (await request.json()) as { email?: string; consent?: boolean };
     email = body.email?.trim().toLowerCase();
+    consent = body.consent === true;
   } catch {
     return json({ ok: false, error: 'Invalid request body.' }, { status: 400 });
   }
@@ -42,13 +44,23 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
     return json({ ok: false, error: 'Please enter a valid email address.' }, { status: 400 });
   }
 
+  if (!consent) {
+    return json({ ok: false, error: 'Consent is required to subscribe.' }, { status: 400 });
+  }
+
   if (!env.RESEND_API_KEY) {
     return json({ ok: false, error: 'Email service not configured.' }, { status: 503 });
   }
 
-  // Generate confirmation token, store in KV with 24h TTL
+  // Confirmation token in KV, 24h TTL. The value records when consent was
+  // given so the double opt-in trail is complete: consent at signup,
+  // confirmation timestamped by the confirm request itself.
   const token = crypto.randomUUID();
-  await env.SUBSCRIBE_KV.put(`pending:${token}`, email, { expirationTtl: 86400 });
+  await env.SUBSCRIBE_KV.put(
+    `pending:${token}`,
+    JSON.stringify({ email, consentAt: new Date().toISOString() }),
+    { expirationTtl: 86400 }
+  );
 
   const confirmUrl = `${SITE_URL}/api/confirm?token=${token}`;
   const html = confirmationEmail({ email, confirmUrl });

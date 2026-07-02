@@ -14,6 +14,9 @@ interface PagesFunctionContext {
 
 interface SubscribePayload {
   email?: string;
+  consent?: boolean;
+  website?: string;
+  elapsed?: number;
 }
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -49,11 +52,24 @@ export async function onRequestPost({ request, env }: PagesFunctionContext) {
     return json({ ok: false, error: 'Please enter a valid email address.' }, { status: 400 });
   }
 
+  // Bot filters. Honeypot filled or the form submitted faster than a person
+  // can type an email: answer with a fake success so scripts learn nothing,
+  // and never touch Resend quota.
+  if (payload.website || (typeof payload.elapsed === 'number' && payload.elapsed < 2000)) {
+    return json({ ok: true });
+  }
+
+  // GDPR: the newsletter consent checkbox is mandatory. Enforced server-side
+  // so a crafted request cannot subscribe anyone without it.
+  if (payload.consent !== true) {
+    return json({ ok: false, error: 'Consent is required to subscribe.' }, { status: 400 });
+  }
+
   const subscribeApiUrl = env.SUBSCRIBE_API_URL || DEFAULT_SUBSCRIBE_API_URL;
   return proxySubscribe(subscribeApiUrl, { email });
 }
 
-async function proxySubscribe(subscribeApiUrl: string, payload: Required<SubscribePayload>) {
+async function proxySubscribe(subscribeApiUrl: string, payload: { email: string }) {
   const response = await fetch(subscribeApiUrl, {
     method: 'POST',
     headers: {
@@ -65,6 +81,7 @@ async function proxySubscribe(subscribeApiUrl: string, payload: Required<Subscri
     body: JSON.stringify({
       email: payload.email,
       newsletter: true,
+      consent: true,
       source: 'wojciech.io/subscribe',
     }),
   });
