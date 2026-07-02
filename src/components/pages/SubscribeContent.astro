@@ -61,7 +61,8 @@ const previewItems = [
       style="background-position: center 22%;"
       aria-hidden="true"
     >
-      <div class="absolute inset-y-0 left-0 pointer-events-none" style="width: 55%; background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);"></div>
+      <div class="subscribe-photo-scrim absolute inset-0 pointer-events-none"></div>
+      <div class="subscribe-photo-fade absolute inset-y-0 left-0 pointer-events-none" style="width: 60%;"></div>
       <div class="absolute inset-x-0 top-0 pointer-events-none" style="height: 16%; background: linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%);"></div>
       <div class="absolute inset-x-0 bottom-0 pointer-events-none" style="height: 18%; background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%);"></div>
     </div>
@@ -433,11 +434,24 @@ const previewItems = [
     opacity: 0.16;
   }
 
-  .subscribe-hero-photo {
-    filter: contrast(1.02) saturate(1.05);
+  /* Photo blend mirrors the homepage hero exactly: unfiltered image, eased
+     multi-stop left fade, page-colour scrim on the dark theme only. */
+  .subscribe-photo-fade {
+    background: linear-gradient(
+      to right,
+      var(--color-bg) 0%,
+      color-mix(in srgb, var(--color-bg) 88%, transparent) 26%,
+      color-mix(in srgb, var(--color-bg) 48%, transparent) 56%,
+      color-mix(in srgb, var(--color-bg) 14%, transparent) 80%,
+      transparent 100%
+    );
   }
-  :global(:root[data-theme='dark']) .subscribe-hero-photo {
-    filter: none;
+  .subscribe-photo-scrim {
+    background: color-mix(in srgb, var(--color-bg) 24%, transparent);
+    opacity: 0;
+  }
+  :global(:root[data-theme='dark']) .subscribe-photo-scrim {
+    opacity: 1;
   }
 
   .issue-row {
