@@ -9,7 +9,11 @@ import HowIWork from '../../components/home/HowIWork.astro';
 import ProjectsSection from '../../components/home/ProjectsSection.astro';
 import AILeverage from '../../components/home/AILeverage.astro';
 import TestimonialsSection from '../../components/home/TestimonialsSection.astro';
+import BrandLogos from '../../components/ui/BrandLogos.astro';
 import { arProjects, arChrome, arWorkI18n } from '../../data/arProjects';
+import { getUiStrings } from '../../data/uiStrings';
+
+const t = getUiStrings('ar');
 
 const proof = [
   { value: '20', label: 'عامًا في التسويق والديجيتال' },
@@ -92,11 +96,18 @@ const arTestimonials = [
     h1Secondary="ثم أُشغّلها."
     lead="عشرون عامًا في استراتيجية الدخول إلى السوق والتسويق والنمو. أدمجها في نموذج تشغيلي واحد قائم على الذكاء الاصطناعي، أبني ما ينقص، وأبقى إلى أن يعمل النظام فعليًا."
     primaryCta={{ label: 'شاهد الأعمال', href: '#work' }}
-    secondaryCta={{ label: 'اشترك في النشرة', href: 'https://subscribe.wojciech.io' }}
+    secondaryCta={{ label: 'اشترك في النشرة', href: '/subscribe/' }}
     metaLine="GTM · التسويق · النمو × الذكاء الاصطناعي"
   />
 
   <MetricsStrip metrics={proof} indexLabel="" />
+
+  <section class="border-b border-[var(--color-border)] py-10 md:py-12">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="obs-label-accent mb-7 text-center sm:text-right">{t.operatedAt}</p>
+      <div dir="ltr"><BrandLogos variant="marquee" /></div>
+    </div>
+  </section>
 
   <HowIWork
     eyebrow="كيف أعمل"

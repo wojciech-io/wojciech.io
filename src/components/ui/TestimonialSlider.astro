@@ -8,23 +8,26 @@ interface Testimonial {
   avatar?: string;
 }
 interface Props {
-  /** All testimonials, rendered as one continuous animated marquee. */
+  /** All testimonials, rendered as one continuous full-bleed marquee. Cards
+      scroll off the viewport edge (not clipped inside a box) and the edge fade
+      dissolves to the page background, so nothing reads as a hard cut. */
   items: Testimonial[];
 }
 const { items } = Astro.props;
-// Duplicate the set so the track can loop seamlessly (translateX -50%).
+// Duplicate the set so the track loops seamlessly (translateX -50%).
 const loop = [...items, ...items];
 ---
 
 {items.length > 0 && (
   <div class="relative overflow-hidden" id="testimonial-ticker" dir="ltr" aria-label="Testimonials">
-    {/* Edge fades so cards dissolve in/out rather than hard-cutting at the rails */}
-    <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 md:w-24 [background:linear-gradient(to_right,var(--color-surface),transparent)]"></div>
-    <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 md:w-24 [background:linear-gradient(to_left,var(--color-surface),transparent)]"></div>
+    {/* Edge fades dissolve to the page background (cream/roast), not a lighter
+        surface — so the marquee melts into the page instead of graying out. */}
+    <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 sm:w-40 md:w-56 [background:linear-gradient(to_right,var(--color-bg)_35%,transparent)]"></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 sm:w-40 md:w-56 [background:linear-gradient(to_left,var(--color-bg)_35%,transparent)]"></div>
 
-    <div class="testimonial-ticker-track flex gap-5" dir="ltr" style="will-change: transform;">
+    <div class="testimonial-ticker-track flex gap-5 px-6" dir="ltr" style="will-change: transform;">
       {loop.map((t) => (
-        <figure dir="auto" class="shrink-0 w-[300px] sm:w-[340px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] p-6 flex flex-col">
+        <figure dir="auto" class="shrink-0 w-[320px] sm:w-[360px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 flex flex-col">
           <blockquote class="text-[15px] sm:text-base text-[var(--color-text)] leading-relaxed mb-5 line-clamp-5">
             &ldquo;{t.quote}&rdquo;
           </blockquote>
@@ -59,7 +62,7 @@ const loop = [...items, ...items];
   }
   .testimonial-ticker-track {
     width: max-content;
-    animation: ticker-scroll 60s linear infinite;
+    animation: ticker-scroll 70s linear infinite;
   }
   #testimonial-ticker:hover .testimonial-ticker-track,
   #testimonial-ticker:focus-within .testimonial-ticker-track {

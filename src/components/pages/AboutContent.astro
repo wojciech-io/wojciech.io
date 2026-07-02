@@ -3,13 +3,11 @@ import CTABand from '../ui/CTABand.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import PageBackdrop from '../ui/PageBackdrop.astro';
 import FAQ from '../ui/FAQ.astro';
-import { STACK } from '../../data/stack';
+import BrandLogos from '../ui/BrandLogos.astro';
+import Icon from '../ui/Icon.astro';
 
-// Press + video: styled icon links, no thumbnails. Inline Lucide-style icon paths.
-const pressIcons: Record<string, string> = {
-  play: '<polygon points="6 3 20 12 6 21 6 3"/>',
-  article: '<path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9l5 5v9a2 2 0 0 1-2 2Z"/><path d="M14 4v5h5"/><path d="M8 13h7"/><path d="M8 17h7"/>',
-};
+// Press + video: styled icon links, no thumbnails. Each maps to a custom icon.
+const pressIconName: Record<string, string> = { play: 'play', article: 'file-text' };
 const pressLinks = [
   {
     href: 'https://www.youtube.com/watch?v=UWJN-DwqDbE',
@@ -132,18 +130,22 @@ const timeline = [
 
 const traits = [
   {
+    icon: 'target',
     label: 'Operator, not advisor',
     body: 'I build and run the systems myself. Scope, then ship, then stay in until it works. If the right tool doesn\'t exist, I write it.',
   },
   {
+    icon: 'agent',
     label: 'AI-native by practice',
     body: 'Not a prompt engineer. I redesign the architecture of growth systems using AI: how they\'re built, iterated, and operated at scale.',
   },
   {
+    icon: 'package',
     label: 'Builder with business context',
     body: 'I can move from revenue strategy to a working product in the same engagement. That range is rare, and I maintain it deliberately.',
   },
   {
+    icon: 'pipeline',
     label: 'Systems over sprints',
     body: 'Compounding returns, not quarterly campaigns. The output is a system that runs without me in the loop.',
   },
@@ -172,6 +174,15 @@ const proofPoints = [
   },
 ];
 
+const engagements = [
+  { en: 'Revenue architecture audit and redesign' },
+  { en: 'GTM system build or rebuild' },
+  { en: 'AI workflow design and implementation' },
+  { en: 'CRM, SEO, CRO and outbound operating models' },
+  { en: 'Missing product layer, built and shipped' },
+  { en: 'Growth team operating cadence and dashboards' },
+];
+
 const faq = [
   {
     question: 'What kind of companies do you work with?',
@@ -197,27 +208,27 @@ const faq = [
 ---
 
 <!-- Hero -->
-<section class="relative pt-12 pb-8 md:pt-24 md:pb-16 border-b border-[var(--color-border)] overflow-hidden">
-    <PageBackdrop src="/images/wojciech-office.webp" position="center 28%" opacity={0.14} eager />
+<section class="relative pt-12 pb-12 md:pt-24 md:pb-20 border-b border-[var(--color-border)] overflow-hidden">
+    <PageBackdrop src="/images/wojciech-office.webp" position="center 28%" opacity={0.12} eager />
 
     <div class="relative mx-auto max-w-6xl px-6">
-      <div class="flex flex-col sm:flex-row gap-10 md:gap-14 items-start sm:items-center animate-fade-up mb-12">
+      <div class="grid lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] gap-10 md:gap-16 items-center animate-fade-up mb-12 md:mb-14">
 
-        <!-- Portrait photo -->
-        <div class="shrink-0 w-56 h-72 sm:w-64 sm:h-80 rounded-[var(--radius-card)] overflow-hidden shadow-[0_0_28px_rgba(235,255,0,0.08)] ring-1 ring-[var(--color-border)]">
+        <!-- Portrait photo: fills its column, no dead space beside it -->
+        <div class="relative w-full max-w-[20rem] lg:max-w-none aspect-[4/5] rounded-[var(--radius-card)] overflow-hidden shadow-[0_0_36px_rgba(235,255,0,0.08)] ring-1 ring-[var(--color-border)]">
           <img
             src="/images/wojciech-hero-tight.webp"
             alt="Wojciech Łuszczyński"
-            class="w-full h-full object-cover object-[center_22%]"
+            class="w-full h-full object-cover object-[center_20%]"
             width="1400"
-            height="1120"
+            height="1750"
             loading="eager"
             decoding="async"
             fetchpriority="high"
           />
         </div>
 
-        <div class="max-w-xl">
+        <div>
           <div class="flex items-center gap-3 mb-4">
             <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
             <span class="obs-label-accent">About</span>
@@ -228,7 +239,7 @@ const faq = [
           <p class="text-[length:var(--text-lead)] text-[var(--color-text)] leading-relaxed mb-3">
             I build revenue systems and run them. Operator for B2B SaaS and technology companies.
           </p>
-          <p class="text-[var(--color-text-muted)] leading-relaxed">
+          <p class="text-[var(--color-text-muted)] leading-relaxed max-w-2xl">
             I connect GTM strategy, positioning, SEO, content, paid acquisition, CRM,
             analytics, automation, and AI workflows into one operating model. Everything
             under wojciech.io is original work: written, built, shipped, and operated by me.
@@ -259,13 +270,58 @@ const faq = [
         class="mb-12"
       />
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {traits.map(({ label, body }) => (
+        {traits.map(({ icon, label, body }) => (
           <div class="obs-panel obs-glow p-7 card-lift">
-            <div class="w-8 h-8 rounded-lg bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center mb-5">
-              <span class="w-2 h-2 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
+            <div class="w-9 h-9 rounded-lg bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center mb-5">
+              <Icon name={icon} class="w-[18px] h-[18px] text-[var(--color-accent-hi)]" />
             </div>
             <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{label}</h3>
             <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience: logo wall + rail timeline, full width -->
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-8" />
+      <BrandLogos variant="wrap" class="mb-12 md:mb-16" />
+
+      <div class="relative max-w-5xl">
+        <span class="absolute left-[3px] top-2 bottom-2 w-px bg-gradient-to-b from-[var(--color-accent)]/50 via-[var(--color-border)] to-[var(--color-border)] opacity-70" aria-hidden="true"></span>
+        {timeline.map(({ period, role, company, href, description, contract, sector }, i) => (
+          <div class:list={['relative grid sm:grid-cols-[150px_1fr] gap-x-8 gap-y-2 pl-9 sm:pl-11 py-6 border-b border-[var(--color-border)]', i === 0 ? 'pt-0' : '']}>
+            <span
+              class:list={[
+                'absolute left-0 h-[7px] w-[7px] rounded-full ring-[3px] ring-[var(--color-surface)]',
+                i === 0 ? 'top-[0.55rem] bg-[var(--color-accent)] shadow-[0_0_10px_1px_rgb(235_255_0/0.4)]' : 'top-[1.95rem] bg-[var(--color-text-dim)]',
+              ]}
+              aria-hidden="true"
+            ></span>
+            <div class="pt-0.5">
+              <p class:list={['text-xs font-mono text-[var(--color-text-dim)]', contract ? 'italic' : '']}>{period}</p>
+              {contract && <span class="mt-1 inline-block text-[9px] font-semibold uppercase tracking-wider text-[var(--color-text-dim)] opacity-60">Contract</span>}
+            </div>
+            <div>
+              <p class="text-base font-semibold text-[var(--color-text)] mb-1.5">{role}</p>
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                {href
+                  ? <a href={href} target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors inline-flex items-center gap-1 group">
+                      {company}
+                      <Icon name="external-link" class="w-3 h-3 opacity-40 group-hover:opacity-80 transition-opacity" />
+                    </a>
+                  : <p class="text-sm font-medium text-[var(--color-text-muted)]">{company}</p>
+                }
+                {sector && (
+                  <span class="text-[10px] font-medium text-[var(--color-accent)] bg-[var(--color-accent)]/8 border border-[var(--color-accent)]/15 rounded-full px-2.5 py-0.5">
+                    {sector}
+                  </span>
+                )}
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-xl">{description}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -290,7 +346,7 @@ const faq = [
             class="reveal-up group flex items-start gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 card-hover"
           >
             <span class="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-badge)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent-hi)] transition-colors group-hover:border-[var(--color-accent)]/50 group-hover:bg-[var(--color-accent)]/20">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={pressIcons[icon]}></svg>
+              <Icon name={pressIconName[icon] ?? 'play'} class="h-5 w-5" />
             </span>
             <div class="min-w-0 flex-1">
               <span class="obs-label-accent mb-1.5 block">{source}</span>
@@ -298,9 +354,7 @@ const faq = [
               <p class="mt-1.5 text-xs leading-relaxed text-[var(--color-text-muted)]">{detail}</p>
               <span class="mt-3 inline-flex items-center gap-1 text-xs font-medium text-[var(--color-text-dim)] transition-colors group-hover:text-[var(--color-accent-hi)]">
                 {label}
-                <svg class="h-3 w-3 transition-transform duration-150 group-hover:translate-x-0.5 rtl-flip-x" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <Icon name="arrow-right" class="h-3 w-3 transition-transform duration-150 group-hover:translate-x-0.5 rtl-flip-x" />
               </span>
             </div>
           </a>
@@ -309,143 +363,37 @@ const faq = [
     </div>
   </section>
 
-  <!-- Timeline -->
+  <!-- Working with me + FAQ: the conversion act, on one band -->
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-10" />
-      <div class="divide-y divide-[var(--color-border)] max-w-3xl">
-        {timeline.map(({ period, role, company, href, description, contract, sector }, i) => (
-          <div class:list={['flex flex-col sm:flex-row gap-4 py-7', i === 0 ? 'pt-0' : '']}>
-            <div class="sm:w-32 shrink-0 pt-0.5">
-              <p class:list={['text-xs font-mono text-[var(--color-text-dim)]', contract ? 'italic' : '']}>{period}</p>
-              {contract && <span class="text-[9px] font-semibold uppercase tracking-wider text-[var(--color-text-dim)] opacity-60">Contract</span>}
-            </div>
-            <div class="flex-1">
-              <div class="flex flex-wrap items-center gap-2 mb-1">
-                <p class="text-base font-semibold text-[var(--color-text)]">{role}</p>
-              </div>
-              <div class="flex flex-wrap items-center gap-2 mb-2">
-                {href
-                  ? <a href={href} target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors inline-flex items-center gap-1 group">
-                      {company}
-                      <svg class="w-3 h-3 opacity-40 group-hover:opacity-80 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    </a>
-                  : <p class="text-sm font-medium text-[var(--color-text-muted)]">{company}</p>
-                }
-                {sector && (
-                  <span class="text-[10px] font-medium text-[var(--color-accent)] bg-[var(--color-accent)]/8 border border-[var(--color-accent)]/15 rounded-full px-2.5 py-0.5">
-                    {sector}
-                  </span>
-                )}
-              </div>
-              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-lg">{description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ: moved up, visible before "working with me" -->
-  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-start">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
         <div>
-          <SectionHeader eyebrow="FAQ" heading="Common questions." class="mb-2" />
-          <p class="text-[var(--color-text-muted)] mt-4 text-sm leading-relaxed max-w-sm">
-            If you're considering working with me: these cover how I engage, what to expect, and whether it's the right fit.
-          </p>
+          <SectionHeader
+            eyebrow="Working with me"
+            heading="What you can expect."
+            lead="I work best where there's a real business problem, not a vague mandate. The output is always a system, not a deck."
+            class="mb-8"
+          />
+          <div class="space-y-3">
+            {engagements.map(({ en }) => (
+              <div class="flex items-start gap-3 group">
+                <span class="text-[var(--color-accent)] mt-0.5 shrink-0 group-hover:translate-x-0.5 transition-transform duration-150">→</span>
+                <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors duration-150">{en}</p>
+              </div>
+            ))}
+          </div>
           <a
             href="/contact/#book-call"
             data-cal-link="wojciech-luszczynski/30min"
             class="btn-press inline-flex items-center gap-2 mt-8 border border-[var(--color-border-2)] text-[var(--color-text)] text-sm font-medium px-5 py-2.5 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors"
           >
-            Book a call instead →
+            Book a call →
           </a>
         </div>
         <div>
+          <span class="obs-label-accent mb-5 block">Common questions</span>
           <FAQ items={faq} />
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Working with me -->
-  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
-        <SectionHeader
-          eyebrow="Working with me"
-          heading="What you can expect."
-          lead="I work best in engagements where there's a real business problem, not a vague mandate. The output is always a system, not a deck."
-        />
-        <div class="space-y-4">
-          {[
-            { en: 'Revenue architecture audit and redesign', pl: 'Audyt i przeprojektowanie architektury przychodów', it: 'Audit e riprogettazione dell\'architettura di revenue' },
-            { en: 'GTM system build or rebuild', pl: 'Budowa lub przebudowa systemu GTM', it: 'Costruzione o ricostruzione del sistema GTM' },
-            { en: 'AI workflow design and implementation', pl: 'Projekt i implementacja workflow AI', it: 'Progettazione e implementazione workflow AI' },
-            { en: 'CRM, SEO, CRO and outbound operating models', pl: 'Modele operacyjne CRM, SEO, CRO i outbound', it: 'Modelli operativi CRM, SEO, CRO e outbound' },
-            { en: 'Missing product layer, built and shipped', pl: 'Brakująca warstwa produktowa, zbudowana i wdrożona', it: 'Strato prodotto mancante, costruito e lanciato' },
-            { en: 'Growth team operating cadence and dashboards', pl: 'Rytm operacyjny i dashboardy dla teamu wzrostu', it: 'Ritmo operativo e dashboard per il team di crescita' },
-          ].map((item) => (
-            <div class="flex items-start gap-3 group">
-              <span class="text-[var(--color-accent)] mt-0.5 shrink-0 group-hover:translate-x-0.5 transition-transform duration-150">→</span>
-              <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors duration-150">{item.en}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Stack -->
-  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
-        <SectionHeader
-          eyebrow="Stack"
-          heading="How I build."
-          lead="Technology categories I work with and what each one makes possible."
-          class="mb-0"
-        />
-        <a
-          href="https://app.wojciech.io"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="shrink-0 text-xs font-medium text-[var(--color-text-dim)] hover:text-[var(--color-accent-hi)] transition-colors"
-        >
-          Full workspace →
-        </a>
-      </div>
-
-      <div class="divide-y divide-[var(--color-border)] border-t border-[var(--color-border)]">
-        {STACK.map((cat) => (
-          <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] lg:grid-cols-[180px_1fr_2fr] gap-x-10 gap-y-2 py-4 items-baseline">
-            <span class="obs-label-accent">{cat.name}</span>
-            <div class="flex flex-wrap gap-2">
-              {cat.items.map((i) => (
-                <span class="inline-flex items-center gap-1.5 rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-2.5 py-1 text-xs font-medium text-[var(--color-text)]">
-                  {i.icon ? (
-                    <img
-                      src={`https://cdn.simpleicons.org/${i.icon}/${i.iconColor ?? '888888'}`}
-                      width="14"
-                      height="14"
-                      loading="lazy"
-                      decoding="async"
-                      alt=""
-                      class="opacity-90"
-                      onerror="this.style.display='none'"
-                    />
-                  ) : (
-                    <span class="inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-[3px] border border-[var(--color-border-2)] px-0.5 text-[8px] font-bold leading-none text-[var(--color-text)]" aria-hidden="true">{i.letterMark ?? i.name.slice(0, 1)}</span>
-                  )}
-                  {i.name}
-                </span>
-              ))}
-            </div>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{cat.enables}</p>
-          </div>
-        ))}
       </div>
     </div>
   </section>

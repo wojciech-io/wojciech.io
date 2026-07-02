@@ -6,12 +6,12 @@
  *
  * Curated from the sent editions. The newsletter ships in Polish; the HTML lives
  * outside the repo in the Codex automation workdir
- * (~/Documents/Codex/2026-05-07/goal-ai-listener-newsletter-przygotowuj-mi,
+ * (~/.codex/automations/ai-listener-newsletter-2/workdir,
  * files ai_espresso_public_YYYY-MM-DD.html). `title`/`lead` are short English
  * standfirsts written from each issue. Keep newest first.
  *
- * WEEKLY UPDATE: add the new issues to the top, drop the oldest so this stays
- * ~16 long, and bump `totalIssues` to the count of sent issues.
+ * UPDATE: add the new issues to the top, drop the oldest so this stays ~16 long,
+ * and bump `totalIssues` to the count of sent issues.
  */
 export interface Edition {
   /** ISO date the issue went out. */
@@ -25,6 +25,72 @@ export interface Edition {
 }
 
 export const editions: Edition[] = [
+  {
+    date: '2026-06-30',
+    tag: 'Routing',
+    title: 'Fast mode becomes architecture.',
+    lead: 'GitHub adds Opus 4.8 fast mode to Copilot as Anthropic retires it for 4.6, OpenAI folds Codex into ChatGPT Business seats, GitHub locks CI cache for untrusted triggers.',
+  },
+  {
+    date: '2026-06-29',
+    tag: 'Lifecycle',
+    title: 'Agents become an operational resource.',
+    lead: 'AWS AgentCore moves agents into normal cloud workflows, Copilot Studio organizes them around knowledge and memory, Boomi ships an Agent Garden lifecycle API.',
+  },
+  {
+    date: '2026-06-28',
+    tag: 'Runtime',
+    title: 'Production needs runtime, memory, a gate.',
+    lead: 'Google frames the agent stack as services not one library, Tencent EdgeOne deploys agents like web apps, HubSpot wires G2 signals into Breeze Agents over MCP.',
+  },
+  {
+    date: '2026-06-27',
+    tag: 'Access',
+    title: 'Top models arrive through gates.',
+    lead: 'GPT-5.6 Sol signals frontier models dosed like critical infrastructure, GitHub Desktop 3.6 pulls in worktrees and Copilot, Vercel Agent Runs makes runs debuggable.',
+  },
+  {
+    date: '2026-06-26',
+    tag: 'Control',
+    title: 'The workspace is set. Now the rules.',
+    lead: 'Codex and Claude make the local agent a service you supervise from your phone, Vercel AI SDK 7 turns agents into a portable execution layer, Copilot for Jira closes ticket to PR.',
+  },
+  {
+    date: '2026-06-25',
+    tag: 'Telemetry',
+    title: 'Agents get hands, now meters.',
+    lead: 'Gemini 3.5 Flash gains native computer control, Heron shows what an agent actually does on the web, AI PR-spam turns into an operational problem.',
+  },
+  {
+    date: '2026-06-24',
+    tag: 'Infra',
+    title: 'Agents become company infrastructure.',
+    lead: 'Claude Tag turns Slack into shared delegation, Copilot App runs agent sessions on your own models, Mistral OCR 4 gives agents documents with layout not just text.',
+  },
+  {
+    date: '2026-06-23',
+    tag: 'Trust',
+    title: 'An agent is not enough without a checker.',
+    lead: 'OpenAI and Trail of Bits push fixes over more reports, GitHub brings enterprise agents to JetBrains with per-turn cost, Skybridge wants to be React for in-Claude apps.',
+  },
+  {
+    date: '2026-06-21',
+    tag: 'Ops',
+    title: 'Control becomes the product.',
+    lead: 'OpenAI gives admins one view of ChatGPT and Codex cost, GitHub closes the common pwn-request in Actions, Slackbot starts calling MCP tools from a channel.',
+  },
+  {
+    date: '2026-06-20',
+    tag: 'Auth',
+    title: 'The agent stack turns enterprise.',
+    lead: 'MCP gains stable Enterprise Managed Authorization, Gemini API cuts unlimited standard keys, Claude Code Artifacts turn agent runs into a live page.',
+  },
+  {
+    date: '2026-06-18',
+    tag: 'Runtime',
+    title: 'Discovery, auth, and runtime replace glue.',
+    lead: 'Codex CLI 0.141 hardens remote execution and per-thread MCP, GitHub Agent Finder tackles which tool the agent should know, Vercel Eve treats the agent like a file directory.',
+  },
   {
     date: '2026-06-17',
     tag: 'Ops',
@@ -55,73 +121,7 @@ export const editions: Edition[] = [
     title: 'Workflow gets a budget and a scope.',
     lead: 'Okta trims MCP to user permissions, Vercel frames model routing as a financial call, the skills market needs a scanner not a marketplace.',
   },
-  {
-    date: '2026-06-09',
-    tag: 'Runtime',
-    title: 'Local models, scopes, and a hard token bill.',
-    lead: 'Agents enter Xcode, IAM, model routing, business metrics, and voice ops.',
-  },
-  {
-    date: '2026-06-08',
-    tag: 'Ops',
-    title: 'Agents within boundaries.',
-    lead: 'Org context, secure execution, and cost audit matter more than the agent itself.',
-  },
-  {
-    date: '2026-06-06',
-    tag: 'Platform',
-    title: 'The interesting moves are below the model.',
-    lead: 'Persistent storage, managed plugins, tool payments, and auditable agent actions.',
-  },
-  {
-    date: '2026-06-05',
-    tag: 'Skills',
-    title: 'Agents get an operational backbone.',
-    lead: 'Cloudflare agent skills, OpenAI on AWS, CRM automations, and AI visibility metrics.',
-  },
-  {
-    date: '2026-06-04',
-    tag: 'FinOps',
-    title: 'Agents come under control.',
-    lead: 'Usage billing, browser harness, cost telemetry, and repeatable runtimes.',
-  },
-  {
-    date: '2026-06-03',
-    tag: 'Workflow',
-    title: 'Agents descend into daily workflow.',
-    lead: 'Codex beyond devs, Auto model mixing, governance, and reusable browser skills.',
-  },
-  {
-    date: '2026-06-02',
-    tag: 'Cost',
-    title: 'Agent stack gets a counter.',
-    lead: 'Copilot budgets, new gateway models, web change monitoring, and AI visibility.',
-  },
-  {
-    date: '2026-06-01',
-    tag: 'FinOps',
-    title: 'Agent cost enters the budget.',
-    lead: 'Token billing, team budgets, no free fallbacks, and hard tool limits become standard.',
-  },
-  {
-    date: '2026-05-29',
-    tag: 'MCP',
-    title: 'MCP goes to production.',
-    lead: 'Zapier migrates to MCP, GitHub and Vercel add cost policies and execution isolation.',
-  },
-  {
-    date: '2026-05-28',
-    tag: 'Security',
-    title: 'Agent stack without slip-ups.',
-    lead: 'Safer integration gates, predictable MCP defaults, and a real CVE in a popular workflow tool.',
-  },
-  {
-    date: '2026-05-27',
-    tag: 'Runtime',
-    title: 'Durable runtime for agents.',
-    lead: 'Persistent state, repeatable procedures, and hard integration gates over model choice.',
-  },
 ];
 
 /** Total issues sent to date (inbox shows a recent slice of this). */
-export const totalIssues = 34;
+export const totalIssues = 45;

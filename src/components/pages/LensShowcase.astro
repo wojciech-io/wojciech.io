@@ -3,6 +3,8 @@
    Same skeleton, different copy: hero promise → what I build → spiky POV → CTA.
    No fabricated metrics: proof links to /work case studies. v1 scaffold, copy
    expands as real case studies get wired per lens. */
+import fs from 'node:fs';
+import path from 'node:path';
 import Layout from '../../layouts/Layout.astro';
 import CTABand from '../ui/CTABand.astro';
 import { accentHeading } from '../../lib/editorial';
@@ -23,6 +25,9 @@ interface Props {
   build: BuildItem[];
   buildEyebrow?: string;
   buildHeading?: string;
+  /** Desktop-only hero image, greyed into the right side behind the copy.
+      Per-lens; falls back to no image (text-only hero) when omitted. */
+  heroImage?: string;
   pov: string;
   ctaHeading: string;
   ctaSubtext: string;
@@ -52,6 +57,7 @@ const {
   build,
   buildEyebrow = 'What I build',
   buildHeading = 'Built and run, not advised.',
+  heroImage,
   pov,
   ctaHeading,
   ctaSubtext,
@@ -70,6 +76,12 @@ const {
 
 const h2 = accentHeading(h1Secondary);
 const bh = accentHeading(buildHeading);
+
+// Only render the greyed hero backdrop once the file actually exists in public/.
+// Keeps the hero clean (text-only) until the generated image is dropped in —
+// no empty placeholder rectangle in the meantime.
+const heroImageReady =
+  !!heroImage && fs.existsSync(path.join(process.cwd(), 'public', heroImage));
 ---
 
 <Layout
@@ -84,6 +96,21 @@ const bh = accentHeading(buildHeading);
 >
   <section class="relative overflow-hidden">
     <div class="hero-grid pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:44px_44px]" aria-hidden="true"></div>
+
+    {heroImageReady && (
+      <!-- Greyed hero image: desktop only, right side, desaturated + faded into
+           the page so the headline copy stays readable over it. Decorative. -->
+      <div
+        class="lens-hero-photo hidden lg:block absolute right-0 top-0 bottom-0 w-[52%] overflow-hidden bg-cover bg-no-repeat bg-center"
+        style={`background-image: url('${heroImage}')`}
+        aria-hidden="true"
+      >
+        <div class="absolute inset-y-0 left-0 w-[62%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]"></div>
+        <div class="absolute inset-x-0 bottom-0 h-[20%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]"></div>
+        <div class="absolute inset-x-0 top-0 h-[16%] pointer-events-none [background:linear-gradient(to_bottom,var(--color-bg)_0%,transparent_100%)]"></div>
+      </div>
+    )}
+
     <div class="relative mx-auto max-w-6xl px-6 py-16 md:py-24">
       <div class="max-w-2xl">
         <div class="flex items-center gap-3 mb-6">
@@ -142,3 +169,17 @@ const bh = accentHeading(buildHeading);
     ctaSecondaryHref={ctaSecondaryHref}
   />
 </Layout>
+
+<style>
+  /* Greyed hero image: desaturated and dimmed so it reads as a quiet backdrop
+     behind the headline, never competing with the copy. Light theme only needs
+     the wash; dark theme keeps the source so it doesn't muddy. */
+  .lens-hero-photo {
+    filter: grayscale(0.9) contrast(0.98) brightness(1.05);
+    opacity: 0.5;
+  }
+  :global(:root[data-theme='dark']) .lens-hero-photo {
+    filter: grayscale(0.85);
+    opacity: 0.28;
+  }
+</style>

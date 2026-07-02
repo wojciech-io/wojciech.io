@@ -114,22 +114,23 @@ describe('getPrimaryNavLinks', () => {
     expect(hrefs).not.toContain('/stack/');
   });
 
-  it('on a localized locale omits the EN-only lenses to avoid mixed-language leakage', () => {
-    // The GTM/Marketing/Growth lens pages exist in EN only. Surfacing them on a
-    // localized page mixed English labels into a localized bar and linked out to
-    // English pages. Localized locales get the clean classic nav until localized
-    // lens pages ship.
+  it('on a localized locale carries the three lenses with locale-prefixed hrefs', () => {
+    // The GTM/Marketing/Growth lens pages now exist for every locale, so the
+    // localized bar surfaces them pointing at its own /<locale>/ pages.
     const plLinks = getPrimaryNavLinks('/pl/');
-    expect(plLinks).toHaveLength(4);
+    expect(plLinks).toHaveLength(7);
     const labels = plLinks.map((l) => l.label);
     expect(labels).toContain('Praca');
     expect(labels).toContain('Kontakt');
-    expect(labels).not.toEqual(expect.arrayContaining(['GTM', 'Marketing', 'Growth']));
+    expect(labels).toEqual(expect.arrayContaining(['GTM', 'Marketing', 'Growth']));
     const hrefs = plLinks.map((l) => l.href);
-    // Locale-prefixed canonical pages only, no cross-locale lens links:
     expect(hrefs).toContain('/pl/work/');
     expect(hrefs).toContain('/pl/contact/');
     expect(hrefs).toContain('/pl/about/');
+    expect(hrefs).toContain('/pl/gtm/');
+    expect(hrefs).toContain('/pl/marketing/');
+    expect(hrefs).toContain('/pl/growth/');
+    // No cross-locale leakage to the EN lens pages:
     expect(hrefs).not.toContain('/gtm/');
     expect(hrefs).not.toContain('/marketing/');
     expect(hrefs).not.toContain('/growth/');

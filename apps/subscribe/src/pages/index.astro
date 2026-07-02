@@ -3,9 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import { editions, totalIssues } from '../data/editions';
 
 const latest = editions[0];
-const inbox = editions.slice(0, 8);
-// Hero "Inbox" panel reads from the same single source as the section below.
-const heroInbox = editions.slice(0, 12);
+// Skip the latest issue here — it's already rendered in full above.
+const inbox = editions.slice(1, 9);
 
 const EN_MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -20,25 +19,29 @@ function shortDate(iso: string): string {
   return `${EN_MONTHS[m - 1].slice(0, 3)} ${d}`;
 }
 
-// Three article cards shown in the email mockup, from the latest sent issue.
+// Preview cards mirror the latest sent issue (editions[0]) so the page shows the
+// real thing, not a divergent mockup. Update alongside editions.ts.
 const previewItems = [
   {
-    tag: 'Review',
-    title: 'GitHub Code Quality goes paid with an org-wide switch.',
-    body: 'From July 20 it is $10 per active committer, and one admin toggle turns it on across every repo at once.',
-    link: 'github.blog',
+    label: 'Routing',
+    title: 'GitHub ships Opus 4.8 fast mode to Copilot.',
+    body: 'It lands the same week Anthropic retires fast mode for 4.6. Model choice is turning into a routing decision you design, not a switch you flip.',
+    why: 'Teams will pick models per task and per budget. The routing layer is the new architecture.',
+    source: 'github.blog',
   },
   {
-    tag: 'Runtime',
-    title: 'Vercel sandboxes now run for up to 24 hours.',
-    body: 'Long end-to-end tests, crawls, and agent workflows stop getting cut at the old 5-hour limit. Workflow SDK adds AbortController.',
-    link: 'vercel.com/changelog',
+    label: 'Seats',
+    title: 'OpenAI folds Codex into ChatGPT Business seats.',
+    body: 'Business workspaces can no longer add usage-billed Codex seats. One per-user price now covers ChatGPT and Codex, moving agent coding from metered experiment to standard seat.',
+    why: 'Flat pricing makes agent coding a default, not a line item someone has to justify.',
+    source: 'help.openai.com',
   },
   {
-    tag: 'Issues',
-    title: 'Linear wires Claude Code and Codex into issues.',
-    body: 'Start a coding session from an issue, comment, or Slack thread. Linear says the flow closes about 30% of incoming bugs.',
-    link: 'linear.app/changelog',
+    label: 'Supply chain',
+    title: 'GitHub locks the Actions cache for untrusted triggers.',
+    body: 'Forked pull requests get read-only cache, closing the path where an outside contribution poisons a cache that trusted CI later reuses.',
+    why: 'Agentic CI runs more outside code. Cache isolation is now part of the threat model.',
+    source: 'github.blog',
   },
 ];
 ---
@@ -49,53 +52,38 @@ const previewItems = [
     <!-- ─── HERO ───────────────────────────────────────────────────── -->
     <section class="relative overflow-hidden subscribe-hero" style="border-bottom: 1px solid var(--color-border);">
 
-      <!-- Subtle grid -->
-      <div class="pointer-events-none absolute inset-0" style="background-image: linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px); background-size: 48px 48px;" aria-hidden="true"></div>
-      <!-- Depth blob -->
-      <div class="pointer-events-none absolute" style="left: -120px; top: -200px; height: 520px; width: 620px; border-radius: 9999px; background: var(--color-surface); filter: blur(140px); opacity: 0.65;" aria-hidden="true"></div>
+      <!-- Grid: dissolves toward the edges (depth, not a flat sheet) -->
+      <div class="subscribe-hero-grid pointer-events-none absolute inset-0" style="background-image: linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px); background-size: 48px 48px;" aria-hidden="true"></div>
+      <!-- Lime aura: colour + depth behind the headline, matched to the homepage hero -->
+      <div class="subscribe-hero-aura pointer-events-none absolute" style="left: -140px; top: -170px; height: 520px; width: 620px; border-radius: 9999px;" aria-hidden="true"></div>
+      <!-- Neutral depth, kept subtle under the aura -->
+      <div class="pointer-events-none absolute" style="left: -160px; top: -180px; height: 520px; width: 620px; border-radius: 9999px; background: var(--color-surface); filter: blur(140px); opacity: 0.5;" aria-hidden="true"></div>
 
-      <!-- Photo: desktop right half, absolute -->
-      <div class="hidden lg:block absolute right-0 top-0 bottom-0" style="width: 46%; overflow: hidden;" aria-hidden="true">
+      <!-- Photo: desktop right half, absolute. Same retouched shot + warm grade as the homepage hero, so the funnel and the site read as one person, one world. -->
+      <div class="subscribe-hero-photo hidden lg:block absolute right-0 top-0 bottom-0" style="width: 46%; overflow: hidden;" aria-hidden="true">
         <img
-          src="/wojciech.jpg"
+          src="/wojciech-office-hq.webp"
           alt=""
-          width="860"
-          height="1100"
+          width="1200"
+          height="1500"
           loading="eager"
           decoding="async"
-          style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center;"
+          style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 22%;"
         />
-        <!-- Left fade: blends photo into warm bg -->
-        <div class="absolute inset-y-0 left-0 pointer-events-none" style="width: 32%; background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);"></div>
+        <!-- Left fade: blends photo into bg -->
+        <div class="absolute inset-y-0 left-0 pointer-events-none" style="width: 38%; background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);"></div>
+        <!-- Top fade -->
+        <div class="absolute inset-x-0 top-0 pointer-events-none" style="height: 14%; background: linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%);"></div>
         <!-- Bottom fade -->
         <div class="absolute inset-x-0 bottom-0 pointer-events-none" style="height: 22%; background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%);"></div>
-
-        <!-- Proof rail -->
-        <div class="absolute" style="bottom: 2.5rem; left: 2rem; right: 1rem; z-index: 10;">
-          <div style="width: min(380px, 100%); overflow: hidden; border-radius: 1rem; border: 1px solid var(--color-border); background: var(--color-glass); box-shadow: var(--shadow-card); backdrop-filter: blur(12px);">
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); divide-x: 1px solid var(--color-border);">
-              {[
-                { label: 'Cadence', value: 'Daily', note: 'weekdays' },
-                { label: 'Read time', value: '3 min', note: 'or less' },
-                { label: 'Cost', value: 'Free', note: 'always' },
-              ].map(({ label, value, note }) => (
-                <div style="padding: 0.875rem 1rem; border-right: 1px solid var(--color-border);">
-                  <p style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim);">{label}</p>
-                  <p style="margin-top: 0.25rem; font-size: 0.875rem; font-weight: 600; color: var(--color-text);">{value}</p>
-                  <p style="font-size: 11px; color: var(--color-text-muted);">{note}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
 
-      <!-- Left column: copy + form (mobile padding floor lowered so headline and form sit above the fold) -->
+      <!-- Left column: copy + form -->
       <div class="relative mx-auto px-6" style="max-width: 72rem;">
-        <div class="animate-fade-up flex flex-col justify-center" style="padding-top: clamp(2rem, 7vw, 7rem); padding-bottom: clamp(2.5rem, 9vw, 9rem); max-width: 100%;" id="form-col">
+        <div class="animate-fade-up flex flex-col justify-center" style="padding-top: clamp(2rem, 7vw, 6.5rem); padding-bottom: clamp(2.5rem, 9vw, 8rem); max-width: 100%;" id="form-col">
 
-          <!-- Mobile: avatar + name -->
-          <div class="flex items-center gap-3 mb-7" style="display: flex;">
+          <!-- avatar + name -->
+          <div class="flex items-center gap-3 mb-7">
             <img
               src="/wojciech-avatar.webp"
               alt="Wojciech Łuszczyński"
@@ -106,29 +94,25 @@ const previewItems = [
             />
             <div>
               <p style="font-size: 13px; font-weight: 600; color: var(--color-text); line-height: 1.2;">Wojciech Łuszczyński</p>
-              <p style="font-size: 11px; color: var(--color-text-dim);"
-                data-en="Growth / GTM operator &amp; builder"
-                data-pl="Operator i builder growth / GTM"
-                data-it="Operatore e builder growth / GTM"
-              >Growth / GTM operator &amp; builder</p>
+              <p style="font-size: 11px; color: var(--color-text-dim);">GTM architect and AI-native builder</p>
             </div>
           </div>
 
           <!-- Badge -->
           <div style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; border-radius: 9999px; border: 1px solid var(--color-border); background: var(--color-glass); padding: 0.5rem 0.875rem; margin-bottom: 1.75rem; box-shadow: var(--shadow-card); backdrop-filter: blur(8px);">
             <span style="width: 6px; height: 6px; border-radius: 9999px; background: var(--color-accent-cta); box-shadow: 0 0 14px rgb(235 255 0 / 0.6); flex-shrink: 0;"></span>
-            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text);" data-en="AI Espresso" data-pl="AI Espresso" data-it="AI Espresso">AI Espresso</span>
+            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text);">AI Espresso</span>
           </div>
 
-          <!-- Headline (mobile floor lowered so 375px viewports don't get a 42px headline) -->
-          <h1 style="font-size: clamp(1.875rem, 6.5vw, 4.5rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 1.5rem;">
-            <span style="color: var(--color-text);" data-en="Notes for people" data-pl="Notatki dla ludzi," data-it="Note per chi">Notes for people</span><br />
-            <span style="color: var(--color-text-muted);" data-en="who ship." data-pl="którzy shipują." data-it="che costruiscono.">who ship.</span>
+          <!-- Headline -->
+          <h1 style="font-size: clamp(1.875rem, 6vw, 4.25rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 1.5rem;">
+            <span style="color: var(--color-text);">The morning AI brief</span><br />
+            <span style="color: var(--color-text-muted);">for operators.</span>
           </h1>
 
           <!-- Copy -->
-          <p style="max-width: 34rem; font-size: 1.0625rem; line-height: 1.65; color: var(--color-text-muted); margin-bottom: 2rem;">
-            <span data-en="Short operator notes on AI systems, GTM architecture, automation, and software workflows. Practical, written from the builds, sent from" data-pl="Krótkie notatki operatora o systemach AI, architekturze GTM, automatyzacji i workflow'ach. Praktyczne, pisane z buildów, wysyłane z" data-it="Brevi note operative su sistemi AI, architettura GTM, automazione e workflow del software. Pratiche, scritte dai build, inviate da">Short operator notes on AI systems, GTM architecture, automation, and software workflows. Practical, written from the builds, sent from</span> <a href="mailto:hello@wojciech.io" style="color: var(--color-text); font-weight: 500;">hello@wojciech.io</a>.
+          <p style="max-width: 34rem; font-size: 1.0625rem; line-height: 1.65; color: var(--color-text-muted); margin-bottom: 1.75rem;">
+            Models, agents, automation, and GTM workflows. What actually shipped, why it matters, and where it changes the work. Read in under three minutes, written from the builds.
           </p>
 
           <!-- Subscribe form -->
@@ -147,54 +131,55 @@ const previewItems = [
                 type="submit"
                 id="sub-btn"
                 style="width: 100%; height: 3rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); font-size: 0.9375rem; font-weight: 700; color: var(--color-accent-text); border: none; cursor: pointer; transition: opacity 0.15s; letter-spacing: -0.01em;"
-                data-en="Subscribe free →"
-                data-pl="Zapisz się za darmo →"
-                data-it="Iscriviti gratis →"
               >
-                Subscribe free →
+                Get tomorrow's issue →
               </button>
             <p id="sub-status" style="min-height: 1.25rem; font-size: 0.75rem; color: var(--color-text-dim);" role="status" aria-live="polite"></p>
           </form>
 
           <div id="confirmed-state" style="display: none; max-width: 22rem;">
             <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
-              <div style="width: 2rem; height: 2rem; border-radius: 9999px; background: #dcfce7; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M4 10l4.5 4.5L16 6" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div style="width: 2rem; height: 2rem; border-radius: 9999px; background: color-mix(in srgb, var(--color-success) 18%, var(--color-surface)); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M4 10l4.5 4.5L16 6" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <div>
-                <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text);" data-en="You're confirmed." data-pl="Potwierdzono." data-it="Confermato.">You're confirmed.</p>
-                <p style="font-size: 0.8125rem; color: var(--color-text-muted);" data-en="First issue on the way." data-pl="Pierwsze wydanie już w drodze." data-it="Il primo numero è in arrivo.">First issue on the way.</p>
+                <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text);">You're confirmed.</p>
+                <p style="font-size: 0.8125rem; color: var(--color-text-muted);">First issue lands tomorrow morning.</p>
               </div>
             </div>
           </div>
 
-          <!-- Pills -->
-          <div class="flex flex-wrap gap-2 mt-5" aria-label="Newsletter details">
-            <span style="border-radius: 9999px; border: 1px solid var(--color-border-2); background: rgb(var(--color-surface-rgb) / 0.7); padding: 0.3125rem 0.75rem; font-size: 0.75rem; font-weight: 500; color: var(--color-text-muted);" data-en="Free" data-pl="Bezpłatny" data-it="Gratuito">Free</span>
-            <span style="border-radius: 9999px; border: 1px solid var(--color-border-2); background: rgb(var(--color-surface-rgb) / 0.7); padding: 0.3125rem 0.75rem; font-size: 0.75rem; font-weight: 500; color: var(--color-text-muted);" data-en="Under 3 minutes" data-pl="Poniżej 3 minut" data-it="Meno di 3 minuti">Under 3 minutes</span>
-            <span style="border-radius: 9999px; border: 1px solid var(--color-border-2); background: rgb(var(--color-surface-rgb) / 0.7); padding: 0.3125rem 0.75rem; font-size: 0.75rem; font-weight: 500; color: var(--color-text-muted);" data-en="No surprise sequences" data-pl="Bez niespodziewanych sekwencji" data-it="Nessuna sequenza a sorpresa">No surprise sequences</span>
-            <span style="border-radius: 9999px; border: 1px solid var(--color-border-2); background: rgb(var(--color-surface-rgb) / 0.7); padding: 0.3125rem 0.75rem; font-size: 0.75rem; font-weight: 500; color: var(--color-text-muted);" data-en="Unsubscribe anytime" data-pl="Wypisz się kiedy chcesz" data-it="Cancellati in qualsiasi momento">Unsubscribe anytime</span>
+          <!-- Proof row: one place, no repetition -->
+          <div class="proof-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.875rem; margin-top: 1.5rem; font-size: 0.8125rem; color: var(--color-text-muted);" aria-label="Newsletter details">
+            <span style="font-weight: 600; color: var(--color-text);">Daily</span>
+            <span style="width: 4px; height: 4px; border-radius: 9999px; background: var(--color-accent-cta);" aria-hidden="true"></span>
+            <span>Under 3 minutes</span>
+            <span style="width: 4px; height: 4px; border-radius: 9999px; background: var(--color-accent-cta);" aria-hidden="true"></span>
+            <span>Free, no sequences</span>
+            <span style="width: 4px; height: 4px; border-radius: 9999px; background: var(--color-accent-cta);" aria-hidden="true"></span>
+            <span><span style="font-weight: 600; color: var(--color-text);">{totalIssues}</span> issues sent</span>
           </div>
 
         </div>
       </div>
     </section>
 
-    <!-- ─── LATEST ISSUE + INSIDE THE NOTES ───────────────────────── -->
+    <!-- ─── WHAT YOU GET: AUTHENTIC NEWSLETTER PREVIEW ─────────────── -->
     <section style="border-bottom: 1px solid var(--color-border); padding: clamp(3rem, 5vw, 5rem) 0;">
-      <div style="max-width: 72rem; margin: 0 auto; padding: 0 1.5rem;">
+      <div style="max-width: 60rem; margin: 0 auto; padding: 0 1.5rem;">
 
-        <div class="preview-notes-grid">
-
-        <!-- Left: mockup + header -->
-        <div class="preview-col">
-        <div style="margin-bottom: 2.5rem;">
-          <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;" data-en="Latest issue" data-pl="Ostatnie wydanie" data-it="Ultimo numero">Latest issue</p>
-          <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);" data-en="What the note looks like." data-pl="Jak wygląda notatka." data-it="Come appare la nota.">What the note looks like.</h2>
+        <div style="margin-bottom: 2.5rem; max-width: 40rem;">
+          <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;">What lands in your inbox</p>
+          <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);">A real issue, not a mockup.</h2>
+          <p style="margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.6; color: var(--color-text-muted);">No editing, no cherry-picking. The real {fmtDate(latest.date)} issue, exactly as it sent — continues in your inbox.</p>
         </div>
 
-        <!-- Email client mockup -->
-        <div style="border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; box-shadow: 0 24px 80px rgb(0 0 0 / 0.10), 0 4px 16px rgb(0 0 0 / 0.06); max-width: 760px;">
+        <div class="archive-grid">
+
+        <div style="min-width: 0;">
+
+        <!-- Email client mockup wrapping a faithful AI Espresso render -->
+        <div style="border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; box-shadow: 0 24px 80px rgb(0 0 0 / 0.12), 0 4px 16px rgb(0 0 0 / 0.06);">
 
           <!-- Window chrome -->
           <div style="background: #e8e4dc; padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #d8d4cb;">
@@ -208,155 +193,104 @@ const previewItems = [
             </div>
           </div>
 
-          <!-- Email body -->
-          <div style="background: #f3f2ef; padding: 24px 16px; position: relative; overflow: hidden;">
+          <!-- Email body: warm AI Espresso palette, matched to the sent template.
+               Height capped to line up with the "Inside the notes" sidebar next to it —
+               this is a preview window, not the full render, so a hard crop + fade is fine. -->
+          <div style="background: #f4f3ef; padding: 22px 16px 0; position: relative; overflow: hidden; max-height: 380px;">
 
-            <!-- Email header pill -->
-            <div style="max-width: 680px; margin: 0 auto 14px;">
-              <div style="background: #fff; border: 1px solid #e2e2df; border-radius: 999px; display: flex; align-items: center; justify-content: space-between; padding: 9px 16px; gap: 8px;">
+            <!-- Pill masthead -->
+            <div style="max-width: 660px; margin: 0 auto 12px;">
+              <div style="background: #fffefb; border: 1px solid #dcdbd3; border-radius: 999px; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; gap: 8px;">
                 <div style="display: flex; align-items: center; gap: 9px; min-width: 0;">
-                  <img src="/ai-espresso-avatar.png" width="24" height="24" alt="" style="border-radius: 12px; display: block; flex-shrink: 0;" />
-                  <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #111; white-space: nowrap;">AI Espresso</span>
+                  <span style="width: 8px; height: 8px; border-radius: 9999px; background: #eaff00; flex-shrink: 0;"></span>
+                  <span style="font-size: 14px; font-weight: 600; color: #080808; white-space: nowrap;">AI Espresso</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
-                  <span style="font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8a86;">{fmtDate(latest.date)}</span>
+                  <span style="font-size: 12px; font-weight: 500; color: #74746e;">{fmtDate(latest.date)}</span>
                   <img src="/wojciech-avatar.webp" width="30" height="30" alt="Wojciech" style="border-radius: 50%; display: block; object-fit: cover; object-position: top; flex-shrink: 0;" />
                 </div>
               </div>
+              <p style="margin: 11px auto 0; max-width: 560px; font-size: 13px; line-height: 1.5; color: #64645e; text-align: center;">A daily operator briefing on AI models, agents, automation, and GTM workflows.</p>
             </div>
 
-            <!-- Headline card -->
-            <div style="max-width: 680px; margin: 0 auto 10px; background: #fff; border-radius: 20px; padding: 24px 28px; text-align: center;">
-              <span style="display: inline-block; background: #ebff00; color: #080808; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;">Morning brief</span>
-              <h3 style="margin: 0 0 10px; font-size: 22px; line-height: 1.15; font-weight: 700; color: #080808; letter-spacing: -0.01em;">{latest.title}</h3>
-              <p style="margin: 0 auto; max-width: 480px; font-size: 14px; line-height: 1.5; color: #3d3d3d;">{latest.lead}</p>
+            <!-- Operator briefing -->
+            <div style="max-width: 660px; margin: 0 auto 10px; background: #fffefb; border-radius: 12px; padding: 24px 28px;">
+              <p style="margin: 0 0 11px; color: #080808; font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; font-weight: 600;"><span style="display: inline-block; width: 26px; height: 3px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin-right: 10px;"></span>Operator briefing</p>
+              <h3 style="margin: 0 0 11px; font-size: 25px; line-height: 1.14; font-weight: 600; letter-spacing: -0.01em; color: #080808;">{latest.title}</h3>
+              <p style="margin: 0; font-size: 14.5px; line-height: 1.62; color: #343430;">{latest.lead}</p>
             </div>
 
-            <!-- Article cards -->
+            <!-- Item cards -->
             {previewItems.map((item) => (
-              <div style="max-width: 680px; margin: 0 auto 8px; background: #fff; border-radius: 20px; padding: 18px 24px;">
-                <div style="margin-bottom: 7px;">
-                  <span style="display: inline-block; background: #ebff00; color: #080808; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px;">{item.tag}</span>
-                </div>
-                <p style="margin: 0 0 6px; font-size: 15px; line-height: 1.25; font-weight: 700; color: #080808;">{item.title}</p>
-                <p style="margin: 0 0 6px; font-size: 13px; line-height: 1.5; color: #555;">{item.body}</p>
-                <span style="font-size: 11px; color: #aaa; font-weight: 500;">↗ {item.link}</span>
+              <div style="max-width: 660px; margin: 0 auto 10px; background: #ffffff; border-radius: 12px; padding: 22px 26px;">
+                <p style="margin: 0 0 9px; font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; color: #74746e; font-weight: 600;"><span style="display: inline-block; width: 20px; height: 3px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin-right: 9px;"></span>{item.label}</p>
+                <p style="margin: 0 0 9px; font-size: 19px; line-height: 1.24; font-weight: 600; letter-spacing: -0.01em; color: #080808;">{item.title}</p>
+                <p style="margin: 0 0 9px; font-size: 14px; line-height: 1.6; color: #343430;">{item.body}</p>
+                <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #343430;"><strong style="font-weight: 600; color: #080808;">Why it matters:</strong> {item.why}</p>
+                <p style="margin: 12px 0 0; font-size: 12.5px;"><span style="display: inline-block; width: 16px; height: 2px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin: 0 8px 2px 0;"></span><span style="color: #74746e;">Source: {item.source}</span></p>
               </div>
             ))}
 
             <!-- Fade out -->
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to bottom, transparent, #f3f2ef);"></div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 96px; background: linear-gradient(to bottom, transparent, #f4f3ef);"></div>
           </div>
 
           <!-- Bottom bar -->
           <div style="background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-            <p style="margin: 0; font-size: 12px; color: var(--color-text-muted);"
-              data-en="New issue every morning. In English, straight to the point."
-              data-pl="Nowe wydanie co rano. Po polsku, do rzeczy."
-              data-it="Una nuova edizione ogni mattina. In italiano, dritti al punto."
-            >New issue every morning. In English, straight to the point.</p>
-            <a href="#top" style="display: inline-flex; align-items: center; height: 2rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); padding: 0 0.875rem; font-size: 0.75rem; font-weight: 600; color: var(--color-accent-text); text-decoration: none; white-space: nowrap;"
-              data-en="Subscribe →" data-pl="Zapisz się →" data-it="Iscriviti →"
-            >Subscribe →</a>
+            <p style="margin: 0; font-size: 12px; color: var(--color-text-muted);">Every weekday morning. In English, to the point.</p>
+            <a href="#top" style="display: inline-flex; align-items: center; height: 2rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); padding: 0 0.875rem; font-size: 0.75rem; font-weight: 700; color: var(--color-accent-text); text-decoration: none; white-space: nowrap;">Get it free →</a>
           </div>
         </div>
 
-        <!-- Inbox: realne ostatnie wydania -->
-        <div class="editions-inbox" style="margin-top: 1.25rem; border-radius: 14px; border: 1px solid var(--color-border); background: var(--color-surface); overflow: hidden;">
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--color-border);">
-            <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-dim);"
-              data-en="Inbox" data-pl="Skrzynka" data-it="Inbox">Inbox</span>
-            <span style="font-size: 0.6875rem; color: var(--color-text-dim);">{heroInbox.length} {''}
-              <span data-en="recent issues" data-pl="ostatnich wydań" data-it="numeri recenti">recent issues</span>
-            </span>
-          </div>
-          <div style="max-height: 420px; overflow-y: auto;">
-            {heroInbox.map((e, i) => (
-              <details open={i === 0} class="edition-item" style={`border-top: ${i === 0 ? 'none' : '1px solid var(--color-border)'};`}>
-                <summary style="display: flex; align-items: baseline; gap: 0.75rem; padding: 0.625rem 1rem; cursor: pointer; list-style: none;">
-                  <span style="flex-shrink: 0; width: 3.25rem; font-size: 0.6875rem; font-weight: 600; color: var(--color-text-dim); white-space: nowrap;">{shortDate(e.date)}</span>
-                  <span style="font-size: 0.8125rem; line-height: 1.35; color: var(--color-text); font-weight: 500;">{e.title}</span>
-                  {i === 0 && (
-                    <span style="flex-shrink: 0; margin-left: auto; align-self: center; font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-text); background: var(--color-accent-cta); border-radius: 999px; padding: 2px 7px;"
-                      data-en="New" data-pl="Nowe" data-it="Nuovo">New</span>
-                  )}
-                  <span class="edition-chevron" aria-hidden="true" style="flex-shrink: 0; color: var(--color-text-dim); font-size: 0.75rem; transition: transform 0.18s ease; margin-left: 0.5rem;">▾</span>
-                </summary>
-                <div style="padding: 0 1rem 0.875rem calc(1rem + 3.25rem + 0.75rem); font-size: 0.75rem; line-height: 1.55; color: var(--color-text-muted);">
-                  {e.lead}
-                </div>
-              </details>
+        </div>
+
+        <!-- Topics + close -->
+        <aside style="min-width: 0;">
+          <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 1.25rem;">Inside the notes</p>
+          <div style="display: flex; flex-direction: column;">
+            {[
+              { h: 'AI systems', p: 'Agents, automations, and product workflows. What survives real usage.' },
+              { h: 'GTM architecture', p: 'Revenue systems, messaging, growth loops, and operating cadence.' },
+              { h: 'Build log', p: 'What shipped across wojciech.io and the tools around it.' },
+            ].map(({ h, p }, i) => (
+              <div style={`padding: 1rem 0;${i > 0 ? ' border-top: 1px solid var(--color-border);' : ''}`}>
+                <h3 style="margin: 0 0 0.375rem; font-size: 0.9375rem; font-weight: 600; color: var(--color-text);">{h}</h3>
+                <p style="margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);">{p}</p>
+              </div>
             ))}
           </div>
-          <style>
-            details.edition-item > summary::-webkit-details-marker { display: none; }
-            details.edition-item[open] .edition-chevron { transform: rotate(180deg); }
-            details.edition-item > summary:hover { background: var(--color-surface-2); }
-          </style>
-        </div>
-        </div><!-- end preview-col -->
 
-        <!-- Right: inside the notes -->
-        <aside class="notes-col">
-          <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 1.5rem;" data-en="Inside the notes" data-pl="Co jest w środku" data-it="Dentro le note">Inside the notes</p>
-          <div style="display: flex; flex-direction: column; gap: 0;">
-            <div style="padding: 1.125rem 0; border-bottom: 1px solid var(--color-border);">
-              <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem;">
-                <span style="width: 1.5rem; height: 1px; background: var(--color-accent-cta); flex-shrink: 0; display: inline-block; margin-bottom: 2px;"></span>
-                <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text);" data-en="AI systems" data-pl="Systemy AI" data-it="Sistemi AI">AI systems</h3>
-              </div>
-              <p style="margin: 0; padding-left: 2.25rem; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);" data-en="Agents, automations, product workflows, and what survives real usage." data-pl="Agenty, automatyzacje, workflow produktowe i co przeżywa realne użycie." data-it="Agenti, automazioni, workflow di prodotto e cosa sopravvive all'uso reale.">Agents, automations, product workflows, and what survives real usage.</p>
-            </div>
-            <div style="padding: 1.125rem 0; border-bottom: 1px solid var(--color-border);">
-              <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem;">
-                <span style="width: 1.5rem; height: 1px; background: var(--color-accent-cta); flex-shrink: 0; display: inline-block; margin-bottom: 2px;"></span>
-                <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text);" data-en="GTM architecture" data-pl="Architektura GTM" data-it="Architettura GTM">GTM architecture</h3>
-              </div>
-              <p style="margin: 0; padding-left: 2.25rem; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);" data-en="Revenue systems, messaging, growth loops, outbound, and operating cadence." data-pl="Systemy revenue, messaging, pętle wzrostu, outbound i rytm operacyjny." data-it="Sistemi revenue, messaging, loop di crescita, outbound e cadenza operativa.">Revenue systems, messaging, growth loops, outbound, and operating cadence.</p>
-            </div>
-            <div style="padding: 1.125rem 0; border-bottom: 1px solid var(--color-border);">
-              <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem;">
-                <span style="width: 1.5rem; height: 1px; background: var(--color-accent-cta); flex-shrink: 0; display: inline-block; margin-bottom: 2px;"></span>
-                <h3 style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text);" data-en="Build log" data-pl="Dziennik budowania" data-it="Diario di build">Build log</h3>
-              </div>
-              <p style="margin: 0; padding-left: 2.25rem; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);" data-en="What shipped across wojciech.io, app.wojciech.io, and the tools around them." data-pl="Co zostało dostarczone na wojciech.io, app.wojciech.io i w narzędziach wokół nich." data-it="Cosa è stato rilasciato su wojciech.io, app.wojciech.io e gli strumenti attorno a loro.">What shipped across wojciech.io, app.wojciech.io, and the tools around them.</p>
-            </div>
-          </div>
-
-          <!-- CTA -->
-          <div style="margin-top: 2rem; padding: 1.25rem; border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
-            <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.375rem;" data-en="New issue every morning." data-pl="Nowe wydanie co rano." data-it="Nuovo numero ogni mattina.">New issue every morning.</p>
-            <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;" data-en="In English, to the point. Free." data-pl="Po polsku, do rzeczy. Darmowy." data-it="In italiano, al punto. Gratuito.">In English, to the point. Free.</p>
-            <a href="#top" style="display: inline-flex; align-items: center; height: 2.5rem; width: 100%; justify-content: center; border-radius: var(--radius-btn); background: var(--color-accent-cta); font-size: 0.875rem; font-weight: 700; color: var(--color-accent-text); text-decoration: none; letter-spacing: -0.01em;" data-en="Subscribe →" data-pl="Zapisz się →" data-it="Iscriviti →">
-              Subscribe →
+          <div class="card-hover" style="margin-top: 1.75rem; padding: 1.25rem; border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
+            <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.375rem;">Start tomorrow morning.</p>
+            <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">One issue a day. Leave whenever you want.</p>
+            <a href="#top" style="display: inline-flex; align-items: center; height: 2.5rem; width: 100%; justify-content: center; border-radius: var(--radius-btn); background: var(--color-accent-cta); font-size: 0.875rem; font-weight: 700; color: var(--color-accent-text); text-decoration: none; letter-spacing: -0.01em;">
+              Subscribe free →
             </a>
           </div>
         </aside>
 
-        </div><!-- end grid -->
-
+        </div>
       </div>
     </section>
 
-    <!-- ─── INBOX: RECENT ISSUES ──────────────────────────────────── -->
-    <section style="border-bottom: 1px solid var(--color-border); padding: clamp(3rem, 5vw, 5rem) 0;">
-      <div style="max-width: 56rem; margin: 0 auto; padding: 0 1.5rem;">
+    <!-- ─── RECENT ISSUES ──────────────────────────────────────────── -->
+    <section style="padding: clamp(3rem, 5vw, 5rem) 0;">
+      <div style="max-width: 60rem; margin: 0 auto; padding: 0 1.5rem;">
 
-        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
           <div>
-            <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;" data-en="The inbox" data-pl="Skrzynka" data-it="La casella">The inbox</p>
-            <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);" data-en="What's been landing." data-pl="Co przychodziło." data-it="Cosa è arrivato.">What's been landing.</h2>
+            <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;">Recent issues</p>
+            <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);">What's been landing.</h2>
           </div>
           <p style="font-size: 0.8125rem; color: var(--color-text-muted);">
             <span style="color: var(--color-text); font-weight: 600;">{totalIssues}</span>
-            <span data-en="issues sent" data-pl="wydań wysłanych" data-it="numeri inviati"> issues sent</span>
+            <span> sent to date</span>
           </p>
         </div>
 
-        <!-- Inbox list -->
-        <ul style="list-style: none; margin: 0; padding: 0; border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; background: var(--color-surface);">
-          {inbox.map((item, i) => (
-            <li style={`display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 0.875rem; padding: 0.875rem 1.125rem;${i > 0 ? ' border-top: 1px solid var(--color-border);' : ''}`}>
+        <ul style="list-style: none; margin: 0; padding: 0;">
+          {inbox.map((item) => (
+            <li class="issue-row">
               <span style="width: 6px; height: 6px; border-radius: 9999px; background: var(--color-accent-cta); align-self: center; flex-shrink: 0;" aria-hidden="true"></span>
               <span style="min-width: 0;">
                 <span style="display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-dim); border: 1px solid var(--color-border-2); border-radius: 999px; padding: 2px 7px; margin-right: 0.5rem; vertical-align: middle;">{item.tag}</span>
@@ -367,40 +301,8 @@ const previewItems = [
             </li>
           ))}
         </ul>
-
-        <p style="margin-top: 1.25rem; font-size: 0.8125rem; color: var(--color-text-muted);"
-          data-en="A new one most mornings. Subscribe above to get the next one."
-          data-pl="Nowe prawie co rano. Zapisz się wyżej, żeby dostać kolejne."
-          data-it="Uno nuovo quasi ogni mattina. Iscriviti sopra per ricevere il prossimo."
-        >A new one most mornings. Subscribe above to get the next one.</p>
-
       </div>
     </section>
-
-    <!-- ─── PLUGIN TEASER ──────────────────────────────────────────── -->
-    <section style="padding: clamp(3rem, 5vw, 5rem) 0;">
-      <div style="max-width: 56rem; margin: 0 auto; padding: 0 1.5rem;">
-        <div style="border: 1px solid var(--color-border); border-radius: var(--radius-card); padding: clamp(1.5rem, 3vw, 2.5rem); background: var(--color-surface);">
-          <p style="font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-accent-cta); margin-bottom: 0.75rem;"
-            data-en="Free tool" data-pl="Darmowe narzędzie" data-it="Strumento gratuito">Free tool</p>
-          <h2 style="font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; color: var(--color-text); margin-bottom: 0.75rem;"
-            data-en="Page Optimizer" data-pl="Page Optimizer" data-it="Page Optimizer">Page Optimizer</h2>
-          <p style="font-size: 0.9375rem; line-height: 1.6; color: var(--color-text-muted); margin-bottom: 1.5rem; max-width: 38rem;"
-            data-en="Claude Code plugin. Point it at a landing page HTML file. It audits contrast, hierarchy, spacing, SEO, and ships a fixed version. Six skills, one job."
-            data-pl="Plugin do Claude Code. Wskaż mu plik HTML landing page'a. Robi audyt kontrastu, hierarchii, spacingu, SEO i oddaje poprawioną wersję. Sześć umiejętności, jedno zadanie."
-            data-it="Plugin per Claude Code. Puntalo su un file HTML di landing page. Controlla contrasto, gerarchia, spaziatura, SEO e restituisce la versione corretta. Sei skill, un obiettivo."
-          >Claude Code plugin. Point it at a landing page HTML file. It audits contrast, hierarchy, spacing, SEO, and ships a fixed version. Six skills, one job.</p>
-          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
-            <a href="https://wojciech.io/bites/" style="display: inline-flex; align-items: center; height: 2.25rem; padding: 0 1.25rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); color: var(--color-accent-text); font-size: 0.8125rem; font-weight: 700; text-decoration: none; letter-spacing: -0.01em;"
-              data-en="See on /bites" data-pl="Zobacz na /bites" data-it="Vedi su /bites">See on /bites</a>
-            <a href="https://github.com/wojciech-io/wojciech.io/tree/main/bites/page-optimizer" style="display: inline-flex; align-items: center; height: 2.25rem; padding: 0 1.25rem; border-radius: var(--radius-btn); border: 1px solid var(--color-border-2); color: var(--color-text); font-size: 0.8125rem; font-weight: 600; text-decoration: none;"
-              data-en="Source on GitHub" data-pl="Kod na GitHub" data-it="Codice su GitHub">Source on GitHub</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
 
   </main>
 </Layout>
@@ -458,7 +360,7 @@ const previewItems = [
       btn.disabled = false;
       btn.style.opacity = '1';
       btn.style.cursor = 'pointer';
-      btn.textContent = 'Subscribe free →';
+      btn.textContent = "Get tomorrow's issue →";
       status.textContent = err?.message === 'Failed' ? 'Something went wrong. Try again.' : (err?.message || 'Something went wrong.');
       status.style.color = '#f87171';
     }
@@ -469,30 +371,63 @@ const previewItems = [
   /* Hero min-height: tall on desktop where the photo is shown, natural on mobile. */
   .subscribe-hero { min-height: auto; }
   @media (min-width: 1024px) {
-    .subscribe-hero { min-height: 640px; }
-  }
-  /* Left column width constraint on lg+ — mirrors wojciech.io hero pattern */
-  @media (min-width: 1024px) {
-    #form-col {
-      max-width: 54%;
-    }
+    .subscribe-hero { min-height: 620px; }
+    #form-col { max-width: 54%; }
   }
 
-  /* Latest issue + inside the notes: 2-col layout */
-  .preview-notes-grid {
+  /* Grid dissolves toward the edges so it reads as depth, not a flat sheet. */
+  .subscribe-hero-grid {
+    -webkit-mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
+  }
+
+  /* Lime aura: subtle colour wash + depth behind the headline. */
+  .subscribe-hero-aura {
+    background: radial-gradient(circle, var(--color-accent-cta) 0%, transparent 68%);
+    opacity: 0.08;
+    filter: blur(60px);
+  }
+  :global(:root[data-theme='dark']) .subscribe-hero-aura {
+    opacity: 0.16;
+  }
+
+  /* Photo was shot dark for a dark UI; lift it against the cream (light)
+     surface, same grade as the homepage hero. Dark roast keeps the source
+     grade — it already sits fine on that background. */
+  .subscribe-hero-photo img {
+    filter: brightness(1.16) contrast(0.96) saturate(1.05);
+  }
+  :global(:root[data-theme='dark']) .subscribe-hero-photo img {
+    filter: none;
+  }
+
+  /* Recent issues: hairline + hover fill (no boxed border, no divider grid —
+     matches the /insights index row treatment). */
+  .issue-row {
     display: grid;
-    gap: 3rem;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 0.875rem;
+    margin: 0 -1.125rem;
+    padding: 0.875rem 1.125rem;
+    border-bottom: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    transition: background-color 0.15s ease;
+  }
+  .issue-row:last-child { border-bottom: none; }
+  .issue-row:hover { background-color: var(--color-surface-2); }
+
+  /* Recent issues + topics: 2-col on wide, stacked on narrow. */
+  .archive-grid {
+    display: grid;
+    gap: 2.5rem;
     align-items: start;
     grid-template-columns: 1fr;
   }
-  .preview-col,
-  .notes-col {
-    min-width: 0;
-  }
   @media (min-width: 860px) {
-    .preview-notes-grid {
+    .archive-grid {
       grid-template-columns: minmax(0, 1fr) 260px;
-      gap: 2.5rem;
+      gap: 3rem;
     }
   }
 </style>

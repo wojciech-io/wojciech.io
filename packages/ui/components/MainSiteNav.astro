@@ -1,0 +1,169 @@
+---
+/**
+ * MainSiteNav — the real wojciech.io navigation, for subdomains (subscribe,
+ * academy, app, growthhub, notch) that don't share the main site's routing.
+ * Every link is external, so this carries no i18n/search/locale logic —
+ * that stays on the main site's own Header.astro. English labels only.
+ */
+const LINKS = [
+  { label: 'Work', href: 'https://wojciech.io/work/' },
+  { label: 'GTM', href: 'https://wojciech.io/gtm/' },
+  { label: 'Marketing', href: 'https://wojciech.io/marketing/' },
+  { label: 'Growth', href: 'https://wojciech.io/growth/' },
+  { label: 'Insights', href: 'https://wojciech.io/insights/' },
+  { label: 'About', href: 'https://wojciech.io/about/' },
+  { label: 'Contact', href: 'https://wojciech.io/contact/' },
+];
+const BOOK_CALL_HREF = 'https://wojciech.io/contact/#book-call';
+---
+
+<div class="msn">
+  <a href="https://wojciech.io/" class="msn-wordmark" aria-label="wojciech.io, home">
+    <span>wojciech</span><span class="msn-badge">.io</span>
+  </a>
+
+  <nav class="msn-links" aria-label="Primary navigation">
+    <ul>
+      {LINKS.map(({ label, href }) => (
+        <li><a href={href}>{label}</a></li>
+      ))}
+    </ul>
+  </nav>
+
+  <a href={BOOK_CALL_HREF} class="msn-cta" data-cal-link="wojciech-luszczynski/30min">Book a call</a>
+
+  <details class="msn-mobile">
+    <summary aria-label="Open navigation">
+      <span></span><span></span><span></span>
+    </summary>
+    <div class="msn-mobile-panel">
+      <ul>
+        {LINKS.map(({ label, href }) => (
+          <li><a href={href}>{label}</a></li>
+        ))}
+      </ul>
+      <a href={BOOK_CALL_HREF} class="msn-mobile-cta" data-cal-link="wojciech-luszczynski/30min">Book a call</a>
+    </div>
+  </details>
+</div>
+
+<style>
+  .msn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+  .msn-wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+    flex-shrink: 0;
+  }
+  .msn-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 6px;
+    background: var(--color-accent-cta);
+    color: var(--color-accent-text);
+    font-size: 8px;
+    font-weight: 700;
+    margin-left: 2px;
+  }
+  .msn-links { display: none; }
+  .msn-links ul { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: 1.5rem; }
+  .msn-links a {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .msn-links a:hover { color: var(--color-text); }
+
+  .msn-cta {
+    display: none;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    height: 2.25rem;
+    padding: 0 1rem;
+    border-radius: var(--radius-btn, 8px);
+    background: var(--color-accent-cta);
+    color: var(--color-accent-text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s;
+  }
+  .msn-cta:hover { background: var(--color-accent-cta-hi, var(--color-accent-cta)); }
+
+  .msn-mobile { position: relative; margin-left: auto; }
+  .msn-mobile summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-btn, 8px);
+  }
+  .msn-mobile summary::-webkit-details-marker { display: none; }
+  .msn-mobile summary span { display: block; width: 18px; height: 1.5px; background: var(--color-text); border-radius: 2px; }
+  .msn-mobile-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 200px;
+    border-radius: var(--radius-card, 12px);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card, 0 8px 24px rgb(0 0 0 / 0.12));
+    padding: 0.5rem;
+    z-index: 60;
+  }
+  .msn-mobile-panel ul { list-style: none; margin: 0; padding: 0; }
+  .msn-mobile-panel a {
+    display: block;
+    padding: 0.625rem 0.75rem;
+    border-radius: var(--radius-btn, 8px);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .msn-mobile-panel a:hover { background: var(--color-surface-2); }
+  .msn-mobile-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.375rem;
+    height: 2.25rem;
+    border-radius: var(--radius-btn, 8px);
+    background: var(--color-accent-cta);
+    color: var(--color-accent-text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  @media (min-width: 860px) {
+    .msn-links { display: block; }
+    .msn-cta { display: inline-flex; }
+    .msn-mobile { display: none; }
+  }
+</style>

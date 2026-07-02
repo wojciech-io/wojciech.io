@@ -32,7 +32,7 @@ const ALLOWED = [
   '/favicon-32x32.png',
   '/favicon-512x512.png',
   '/apple-touch-icon.png',
-  '/wojciech-photo.png',
+  '/wojciech-avatar.webp',
   '/robots.txt',
   '/llms.txt',
   '/bimi.svg',

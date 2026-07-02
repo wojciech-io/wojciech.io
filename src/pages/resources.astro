@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CTABand from '../components/ui/CTABand.astro';
+import Icon from '../components/ui/Icon.astro';
 import { SITE } from '../data/site';
 
 type IconName = 'github' | 'download' | 'guide' | 'stack' | 'apps' | 'newsletter';
@@ -13,29 +14,26 @@ interface Resource {
   label: string;
   external: boolean;
   icon: IconName;
+  cover?: string;
   download?: boolean;
 }
 
-// Inline icon paths (Lucide-style, 24x24, stroke=currentColor). One per resource
-// type so every card has an elegant, consistent visual anchor.
-const icons: Record<IconName, string> = {
-  github:
-    '<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>',
-  download:
-    '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
-  guide:
-    '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
-  stack:
-    '<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>',
-  apps:
-    '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
-  newsletter:
-    '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+// Each resource type maps to a custom line icon (src/icons). GitHub keeps its
+// official brand mark since the card points at a GitHub repo.
+const ICON_MAP: Record<Exclude<IconName, 'github'>, string> = {
+  download: 'download',
+  guide: 'book-open',
+  stack: 'layers',
+  apps: 'grid',
+  newsletter: 'mail',
 };
+const githubMark =
+  '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>';
 
 const resources: Resource[] = [
   {
     title: 'Claude Code GTM Agent Starter Pack',
+    cover: '/images/insights/gtm-ai-agent-four-layer-architecture-guide.webp',
     description: 'CLAUDE.md template, Skills definitions, folder structure, and scoring MCP source for building an AI-powered outbound GTM agent. Built for operators who want the system, not the SaaS wrapper.',
     tags: ['Claude Code', 'MCP', 'GTM', 'AI'],
     href: 'https://github.com/wojciechluszczynski/gtm-agent-repo',
@@ -45,6 +43,7 @@ const resources: Resource[] = [
   },
   {
     title: 'Page Optimizer: a Claude Code plugin',
+    cover: '/images/bites/page-optimizer.webp',
     description: 'Six skills that audit a landing page and ship the fixed version: copy, accessibility, WCAG contrast, responsive checks, and AI answer-engine optimisation. Free, no SaaS wrapper, no login.',
     tags: ['Claude Code', 'Landing page', 'a11y', 'SEO'],
     href: '/bites/page-optimizer.zip',
@@ -55,6 +54,7 @@ const resources: Resource[] = [
   },
   {
     title: 'CLAUDE.md GTM Agent Starter',
+    cover: '/images/bites/claude-md-starter.webp',
     description: 'A ready-to-use CLAUDE.md for GTM AI agents: persistent identity, ICP scoring, tone rules, and five named skills. Fill the brackets with your client data and point Claude Code at it.',
     tags: ['Claude Code', 'GTM', 'Agent', 'Template'],
     href: '/bites/claude-md-starter.zip',
@@ -65,6 +65,7 @@ const resources: Resource[] = [
   },
   {
     title: 'How to build a Claude Code GTM agent',
+    cover: '/images/insights/crm-first-ai-adoption.webp',
     description: 'Architecture breakdown of the four-layer AI outbound system: CLAUDE.md operator brief, MCP data layer, client memory files, and five named Skills. Full cost model included.',
     tags: ['Claude Code', 'GTM', 'AI', 'Guide'],
     href: '/insights/claude-code-vs-clay/',
@@ -74,6 +75,7 @@ const resources: Resource[] = [
   },
   {
     title: 'AI stack in production: what runs, what got cut',
+    cover: '/images/insights/ai-production-stack.webp',
     description: 'Every AI tool currently in active use across client work and products. Four layers: reasoning, execution, research, CRM. Includes the cut list, usually more useful than the keep list.',
     tags: ['AI', 'Stack', 'Tools', 'Reference'],
     href: '/insights/ai-production-stack/',
@@ -83,6 +85,7 @@ const resources: Resource[] = [
   },
   {
     title: 'Shipped apps: live reference',
+    cover: '/images/insights/b2b-saas-growth-system-icp-acquisition-retention.webp',
     description: 'A portfolio of independently shipped apps: AdsAI, Relora, a camper rental booking engine, Notch macOS app, and mini-utilities. Practical proof of range across operator tooling, product, and native dev.',
     tags: ['Apps', 'Portfolio', 'Reference'],
     href: 'https://app.wojciech.io/apps',
@@ -92,11 +95,12 @@ const resources: Resource[] = [
   },
   {
     title: 'Operator notes: newsletter',
+    cover: '/images/insights/b2b-revenue-system-design-operator-framework.webp',
     description: 'Dispatches on AI GTM systems, growth architecture, and shipped tools. When a new article or resource is ready, subscribers get it first. No cadence commitments. Only when there is something worth sending.',
     tags: ['Newsletter', 'AI', 'GTM'],
-    href: 'https://subscribe.wojciech.io',
+    href: '/subscribe/',
     label: 'Subscribe',
-    external: true,
+    external: false,
     icon: 'newsletter',
   },
 ];
@@ -151,23 +155,37 @@ const itemListSchema = {
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {resources.map(({ title, description, tags, href, label, external, download, icon }) => (
+        {resources.map(({ title, description, tags, href, label, external, download, icon, cover }) => (
           <a
             href={href}
             {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             {...(download ? { download: true } : {})}
-            class="group rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 flex flex-col gap-5 card-hover"
+            class="group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover"
           >
+            {cover && (
+              <div class="relative aspect-[16/10] overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
+                <img
+                  src={cover}
+                  alt=""
+                  width="1456"
+                  height="1088"
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </div>
+            )}
+          <div class="flex flex-1 flex-col gap-5 p-7">
             <div class="flex items-start justify-between">
               <span class="inline-flex h-12 w-12 items-center justify-center rounded-[var(--radius-badge)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent-hi)] group-hover:bg-[var(--color-accent)]/20 group-hover:border-[var(--color-accent)]/50 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[icon]}></svg>
+                {icon === 'github'
+                  ? <Fragment set:html={githubMark} />
+                  : <Icon name={ICON_MAP[icon]} class="h-[22px] w-[22px]" />}
               </span>
               <span class="text-[var(--color-text-muted)] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  {external
-                    ? <><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></>
-                    : <><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></>}
-                </svg>
+                {external
+                  ? <Icon name="external-link" class="h-[18px] w-[18px]" />
+                  : <Icon name="arrow-right" class="h-[18px] w-[18px] rtl-flip-x" />}
               </span>
             </div>
             <div class="flex-1">
@@ -184,6 +202,7 @@ const itemListSchema = {
             <span class="text-xs font-semibold text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
               {label} →
             </span>
+          </div>
           </a>
         ))}
       </div>

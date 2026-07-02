@@ -1,6 +1,7 @@
 ---
 import ProjectCard from '../ui/ProjectCard.astro';
 import ProjectCover from '../ui/ProjectCover.astro';
+import Icon from '../ui/Icon.astro';
 import { projectChrome, type SectionStrings } from '../../data/locales';
 import type { SiteLocale } from '../../data/locale-codes';
 import { accentHeading } from '../../lib/editorial';
@@ -52,6 +53,7 @@ const t = {
 const defaultProjects: ProjectItem[] = [
   {
     cover: 'relora' as const,
+    screenshot: '/images/work/relora.webp',
     title: 'Relora',
     description: 'A relationship operating system for local-government property teams. One place for contacts, owner context, communication status, and next actions.',
     tags: ['AI workflow', 'CRM-lite', 'Ops dashboard'],
@@ -64,6 +66,7 @@ const defaultProjects: ProjectItem[] = [
   },
   {
     cover: 'ads-ai' as const,
+    screenshot: '/images/work/ad-assistant.webp',
     title: 'AdsAI / Ad Assistant',
     description: 'An AI-native Google Ads cockpit: spend, ROAS, ICP fit, campaign priorities, and next-best actions in one workspace.',
     tags: ['AI', 'Ads', 'GTM', 'Operator tooling'],
@@ -76,6 +79,7 @@ const defaultProjects: ProjectItem[] = [
   },
   {
     cover: 'kamperownia' as const,
+    screenshot: '/images/work/kamperownia.webp',
     title: 'Camper Rental Booking Engine',
     description: 'A self-serve camper rental site for browsing vehicles, checking dates, and moving from interest to reservation quickly.',
     tags: ['Product', 'Booking', 'Web app'],
@@ -88,6 +92,7 @@ const defaultProjects: ProjectItem[] = [
   },
   {
     cover: 'notch' as const,
+    screenshot: '/images/work/notch.webp',
     title: 'NotchCue',
     description: 'A macOS teleprompter concept for calls, demos, and recordings. Keeps notes close to the camera so delivery stays natural.',
     tags: ['macOS', 'Swift', 'AI-built'],
@@ -137,9 +142,11 @@ const rest = projects.slice(1);
         <!-- Left: generated cover -->
         <div class="artifact-stage relative min-h-[260px] overflow-hidden p-5 md:p-8">
           <div class="h-full min-h-[220px] overflow-hidden rounded-[14px] transition-transform duration-500 group-hover:scale-[1.012]">
-            <ProjectCover cover={featured.cover} />
+            {featured.screenshot
+              ? <img src={featured.screenshot} alt="" width="1456" height="1088" loading="lazy" decoding="async" class="h-full w-full object-cover object-center" />
+              : <ProjectCover cover={featured.cover} />}
           </div>
-          <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>
+          {!featured.screenshot && <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>}
         </div>
 
         <!-- Right: content -->
@@ -222,8 +229,9 @@ const rest = projects.slice(1);
             {t.ctaBody}
           </p>
         </div>
-        <div class="mt-8 flex shrink-0 items-center gap-2 text-sm font-semibold text-[var(--color-accent)] group-hover:text-[var(--color-accent-hi)] transition-colors lg:mt-0">
-          {t.ctaLink}
+        <div class="btn-press obs-mono mt-8 inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-[var(--color-accent-text)] transition-colors group-hover:bg-[var(--color-accent-cta-hi)] lg:mt-0 lg:self-auto">
+          <span>{t.ctaLink.replace(' →', '').replace(' ←', '')}</span>
+          <Icon name="arrow-right" class="rtl-flip-x h-[13px] w-[13px]" />
         </div>
       </a>
     </div>

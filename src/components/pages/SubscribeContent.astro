@@ -1,0 +1,559 @@
+---
+import { editions, totalIssues } from '../../data/newsletterEditions';
+
+const latest = editions[0];
+const inbox = editions.slice(1, 9);
+
+const EN_MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+function fmtDate(iso: string): string {
+  const [y, m, d] = iso.split('-').map(Number);
+  return `${EN_MONTHS[m - 1]} ${d}, ${y}`;
+}
+function shortDate(iso: string): string {
+  const [, m, d] = iso.split('-').map(Number);
+  return `${EN_MONTHS[m - 1].slice(0, 3)} ${d}`;
+}
+
+// Preview cards mirror the latest sent issue (editions[0]) so the page shows the
+// real thing, not a divergent mockup. Update alongside newsletterEditions.ts.
+const previewItems = [
+  {
+    label: 'Routing',
+    title: 'GitHub ships Opus 4.8 fast mode to Copilot.',
+    body: 'It lands the same week Anthropic retires fast mode for 4.6. Model choice is turning into a routing decision you design, not a switch you flip.',
+    why: 'Teams will pick models per task and per budget. The routing layer is the new architecture.',
+    source: 'github.blog',
+  },
+  {
+    label: 'Seats',
+    title: 'OpenAI folds Codex into ChatGPT Business seats.',
+    body: 'Business workspaces can no longer add usage-billed Codex seats. One per-user price now covers ChatGPT and Codex, moving agent coding from metered experiment to standard seat.',
+    why: 'Flat pricing makes agent coding a default, not a line item someone has to justify.',
+    source: 'help.openai.com',
+  },
+  {
+    label: 'Supply chain',
+    title: 'GitHub locks the Actions cache for untrusted triggers.',
+    body: 'Forked pull requests get read-only cache, closing the path where an outside contribution poisons a cache that trusted CI later reuses.',
+    why: 'Agentic CI runs more outside code. Cache isolation is now part of the threat model.',
+    source: 'github.blog',
+  },
+];
+---
+
+<div id="top">
+
+  <!-- ─── HERO ───────────────────────────────────────────────────── -->
+  <section class="relative overflow-hidden subscribe-hero" style="border-bottom: 1px solid var(--color-border);">
+
+    <div class="subscribe-hero-grid pointer-events-none absolute inset-0" style="background-image: linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px); background-size: 48px 48px;" aria-hidden="true"></div>
+    <div class="subscribe-hero-aura pointer-events-none absolute" style="left: -140px; top: -170px; height: 520px; width: 620px; border-radius: 9999px;" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute" style="left: -160px; top: -180px; height: 520px; width: 620px; border-radius: 9999px; background: var(--color-surface); filter: blur(140px); opacity: 0.5;" aria-hidden="true"></div>
+
+    <!-- Photo: desktop right half, absolute, dissolving into the page background
+         on every edge — a tonal transition, not a framed cut-out. The gradients
+         paint var(--color-bg), so the blend tracks light and dark themes. -->
+    <div class="subscribe-hero-photo hidden lg:block absolute right-0 top-0 bottom-0" style="width: 46%; overflow: hidden;" aria-hidden="true">
+      <img
+        src="/images/wojciech-hero-warm.webp"
+        alt=""
+        width="800"
+        height="1000"
+        loading="eager"
+        decoding="async"
+        style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 20%;"
+      />
+      <div style="position: absolute; inset: 0 auto 0 0; width: 48%; background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%); pointer-events: none;"></div>
+      <div style="position: absolute; inset: auto 0 0 0; height: 24%; background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%); pointer-events: none;"></div>
+      <div style="position: absolute; inset: 0 0 auto 0; height: 18%; background: linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%); pointer-events: none;"></div>
+      <div style="position: absolute; inset: 0 0 0 auto; width: 10%; background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%); pointer-events: none;"></div>
+    </div>
+
+    <div class="relative mx-auto px-6" style="max-width: 72rem;">
+      <div class="hero-layout animate-fade-up" id="form-col">
+        <div style="min-width: 0;">
+
+        <!-- Eyebrow: the site-wide editorial tick + mono label, not a one-off pill -->
+        <div class="flex items-center gap-3 mb-6">
+          <span class="h-px w-9" style="background: var(--color-accent-cta);" aria-hidden="true"></span>
+          <span style="font-family: var(--font-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text);">AI Espresso · daily newsletter</span>
+        </div>
+
+        <h1 style="font-size: clamp(1.875rem, 5.5vw, 4rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 1.5rem;">
+          <span style="color: var(--color-text);">The morning AI brief</span><br />
+          <span style="color: var(--color-text);">for operators<span style="color: var(--color-accent-cta);" aria-hidden="true">.</span></span>
+        </h1>
+
+        <p style="max-width: 34rem; font-size: 1.0625rem; line-height: 1.65; color: var(--color-text-muted); margin-bottom: 1.75rem;">
+          Models, agents, automation, and GTM workflows. What actually shipped, why it matters, and where it changes the work. Read in under three minutes, written from the builds.
+        </p>
+
+        <form id="subscribe-form" class="hero-form" novalidate>
+          <div class="hero-form-row">
+            <input
+              type="email"
+              id="sub-email"
+              name="email"
+              required
+              autocomplete="email"
+              inputmode="email"
+              placeholder="you@company.com"
+              style="height: 3rem; border-radius: var(--radius-btn); border: 1px solid var(--color-border-2); background: var(--color-surface); padding: 0 1rem; font-size: 0.9375rem; font-weight: 500; color: var(--color-text); outline: none; transition: border-color 0.15s, box-shadow 0.15s;"
+            />
+            <button
+              type="submit"
+              id="sub-btn"
+              class="btn-press obs-mono"
+              style="height: 3rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-accent-text); border: none; cursor: pointer; padding: 0 1.375rem; white-space: nowrap; transition: opacity 0.15s, background-color 0.15s;"
+            >
+              Get tomorrow's issue →
+            </button>
+          </div>
+          <p id="sub-status" style="min-height: 1.25rem; font-size: 0.75rem; color: var(--color-text-dim); margin-top: 0.5rem;" role="status" aria-live="polite"></p>
+        </form>
+
+        <div id="confirmed-state" style="display: none; max-width: 22rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1rem; border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
+            <div style="width: 2rem; height: 2rem; border-radius: 9999px; background: color-mix(in srgb, var(--color-success) 18%, var(--color-surface)); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M4 10l4.5 4.5L16 6" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text);">You're confirmed.</p>
+              <p style="font-size: 0.8125rem; color: var(--color-text-muted);">First issue lands tomorrow morning.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Three benefits in one typographic row; the "free / unsubscribe"
+             promise moves into the proof strip so nothing hangs orphaned. -->
+        <ul class="hero-benefits" aria-label="What you get">
+          {[
+            'Three stories, each with a why it matters',
+            'Under 3 minutes, weekday mornings',
+            'Written from real builds, not press releases',
+          ].map((benefit) => (
+            <li style="display: flex; align-items: flex-start; gap: 0.625rem; font-size: 0.875rem; line-height: 1.5; color: var(--color-text-muted);">
+              <span style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 9999px; background: color-mix(in srgb, var(--color-accent-cta) 18%, transparent); flex-shrink: 0; margin-top: 1px;" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 20 20" fill="none"><path d="M4 10l4.5 4.5L16 6" stroke="var(--color-accent-hi)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span>{benefit}</span>
+            </li>
+          ))}
+        </ul>
+
+        <!-- Proof strip: author + track record + terms, one quiet line. -->
+        <div class="hero-proof">
+          <img
+            src="/images/wojciech-avatar-warm.webp"
+            alt="Wojciech Łuszczyński"
+            width="28"
+            height="28"
+            loading="eager"
+            style="width: 28px; height: 28px; border-radius: 9999px; object-fit: cover; object-position: top; border: 1px solid var(--color-border); flex-shrink: 0;"
+          />
+          <span>Written by <span style="font-weight: 600; color: var(--color-text);">Wojciech Łuszczyński</span></span>
+          <span aria-hidden="true" style="color: var(--color-text-dim);">·</span>
+          <span><span style="font-weight: 600; color: var(--color-text);">{totalIssues}</span> issues sent</span>
+          <span aria-hidden="true" style="color: var(--color-text-dim);">·</span>
+          <span>Free, unsubscribe in one click</span>
+        </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── WHAT YOU GET: AUTHENTIC NEWSLETTER PREVIEW ─────────────── -->
+  <section style="border-bottom: 1px solid var(--color-border); padding: clamp(3rem, 5vw, 5rem) 0;">
+    <div style="max-width: 72rem; margin: 0 auto; padding: 0 1.5rem;">
+
+      <div style="margin-bottom: 2.5rem; max-width: 40rem;">
+        <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;">What lands in your inbox</p>
+        <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);">A real issue, not a mockup.</h2>
+        <p style="margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.6; color: var(--color-text-muted);">No editing, no cherry-picking. The real {fmtDate(latest.date)} issue, exactly as it sent. It continues in your inbox.</p>
+      </div>
+
+      <div class="archive-grid">
+
+      <div style="min-width: 0;">
+
+      <!-- Email client mockup wrapping a faithful AI Espresso render. Colours
+           come from the .mail-mock theme variables, so the whole rendition
+           (chrome + press content) flips to a dark-client look in dark mode. -->
+      <div class="mail-mock" style="border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; box-shadow: 0 24px 80px rgb(0 0 0 / 0.12), 0 4px 16px rgb(0 0 0 / 0.06);">
+
+        <div style="background: var(--mail-chrome); padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--mail-chrome-border);">
+          <div style="display: flex; gap: 6px; flex-shrink: 0;">
+            <div style="width: 11px; height: 11px; border-radius: 50%; background: #ff5f57;"></div>
+            <div style="width: 11px; height: 11px; border-radius: 50%; background: #ffbd2e;"></div>
+            <div style="width: 11px; height: 11px; border-radius: 50%; background: #28ca41;"></div>
+          </div>
+          <div style="flex: 1; background: var(--mail-chrome-border); border-radius: 5px; height: 22px; display: flex; align-items: center; padding: 0 10px; min-width: 0;">
+            <span style="font-size: 11px; color: var(--mail-chrome-text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">AI Espresso · {fmtDate(latest.date)} · hello@wojciech.io</span>
+          </div>
+        </div>
+
+        <!-- Capped so the mockup doesn't run forever, but tall enough to show
+             the full briefing plus all three stories before the fade. The
+             sidebar sticks alongside via .archive-sidebar. -->
+        <div style="background: var(--mail-bg); padding: 22px 16px 0; position: relative; overflow: hidden; max-height: 1120px;">
+
+          <div style="max-width: 660px; margin: 0 auto 12px;">
+            <div style="background: var(--mail-card); border: 1px solid var(--mail-border); border-radius: 999px; display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 9px; min-width: 0;">
+                <img src="/images/ai-espresso-cup.png" width="24" height="24" alt="" style="border-radius: 8px; display: block; flex-shrink: 0;" />
+                <span style="font-size: 14px; font-weight: 600; color: var(--mail-ink); white-space: nowrap;">AI Espresso</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+                <span style="font-size: 12px; font-weight: 500; color: var(--mail-dim);">{fmtDate(latest.date)}</span>
+                <img src="/images/wojciech-avatar-warm.webp" width="30" height="30" alt="Wojciech" style="border-radius: 50%; display: block; object-fit: cover; object-position: top; flex-shrink: 0;" />
+              </div>
+            </div>
+            <p style="margin: 11px auto 0; max-width: 560px; font-size: 13px; line-height: 1.5; color: var(--mail-dim); text-align: center;">A daily operator briefing on AI models, agents, automation, and GTM workflows.</p>
+          </div>
+
+          <div style="max-width: 660px; margin: 0 auto 10px; background: var(--mail-card); border-radius: 12px; padding: 24px 28px;">
+            <p style="margin: 0 0 11px; color: var(--mail-ink); font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; font-weight: 600;"><span style="display: inline-block; width: 26px; height: 3px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin-right: 10px;"></span>Operator briefing</p>
+            <h3 style="margin: 0 0 11px; font-size: 25px; line-height: 1.14; font-weight: 600; letter-spacing: -0.01em; color: var(--mail-ink);">{latest.title}</h3>
+            <p style="margin: 0; font-size: 14.5px; line-height: 1.62; color: var(--mail-body);">{latest.lead}</p>
+          </div>
+
+          {previewItems.map((item) => (
+            <div style="max-width: 660px; margin: 0 auto 10px; background: var(--mail-card-alt); border-radius: 12px; padding: 22px 26px;">
+              <p style="margin: 0 0 9px; font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; color: var(--mail-dim); font-weight: 600;"><span style="display: inline-block; width: 20px; height: 3px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin-right: 9px;"></span>{item.label}</p>
+              <p style="margin: 0 0 9px; font-size: 19px; line-height: 1.24; font-weight: 600; letter-spacing: -0.01em; color: var(--mail-ink);">{item.title}</p>
+              <p style="margin: 0 0 9px; font-size: 14px; line-height: 1.6; color: var(--mail-body);">{item.body}</p>
+              <p style="margin: 0; font-size: 14px; line-height: 1.55; color: var(--mail-body);"><strong style="font-weight: 600; color: var(--mail-ink);">Why it matters:</strong> {item.why}</p>
+              <p style="margin: 12px 0 0; font-size: 12.5px;"><span style="display: inline-block; width: 16px; height: 2px; background: #eaff00; border-radius: 9px; vertical-align: middle; margin: 0 8px 2px 0;"></span><span style="color: var(--mail-dim);">Source: {item.source}</span></p>
+            </div>
+          ))}
+
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 96px; background: linear-gradient(to bottom, transparent, var(--mail-bg));"></div>
+        </div>
+
+        <div style="background: var(--color-surface); border-top: 1px solid var(--color-border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <p style="margin: 0; font-size: 0.8125rem; color: var(--color-text-muted);">The issue continues in your inbox. Every weekday morning, in English, to the point.</p>
+          <a href="#top" class="sub-cta btn-press obs-mono" style="display: inline-flex; align-items: center; height: 2.25rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); padding: 0 1rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-accent-text); text-decoration: none; white-space: nowrap; transition: background-color 0.15s;">Get it free →</a>
+        </div>
+      </div>
+
+      </div>
+
+      <!-- Topics + format + close. Sticks while the tall preview scrolls, so
+           the CTA card stays in view the whole way down. -->
+      <aside style="min-width: 0;">
+        <div class="archive-sidebar">
+
+          <div>
+            <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.75rem;">Inside the notes</p>
+            <div style="display: flex; flex-direction: column;">
+              {[
+                { h: 'AI systems', p: 'Agents, automations, and product workflows. What survives real usage.' },
+                { h: 'GTM architecture', p: 'Revenue systems, messaging, growth loops, and operating cadence.' },
+                { h: 'Build log', p: 'What shipped across wojciech.io and the tools around it.' },
+              ].map(({ h, p }, i) => (
+                <div style={`padding: 0.875rem 0;${i > 0 ? ' border-top: 1px solid var(--color-border);' : ''}`}>
+                  <h3 style="margin: 0 0 0.375rem; font-size: 0.9375rem; font-weight: 600; color: var(--color-text);">{h}</h3>
+                  <p style="margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);">{p}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.75rem;">The format</p>
+            <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+              {[
+                'One operator briefing on top',
+                'Three stories, sources linked',
+                'Why it matters on every story',
+                'Done before your espresso is',
+              ].map((line) => (
+                <li style="display: flex; align-items: baseline; gap: 0.625rem; font-size: 0.8125rem; line-height: 1.5; color: var(--color-text-muted);">
+                  <span style="width: 14px; height: 3px; border-radius: 9999px; background: var(--color-accent-cta); flex-shrink: 0; transform: translateY(-3px);" aria-hidden="true"></span>
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="card-hover" style="padding: 1.25rem; border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
+            <p style="font-size: 0.875rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.375rem;">Start tomorrow morning.</p>
+            <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 1rem;">One issue a day. Leave whenever you want.</p>
+            <a href="#top" class="sub-cta btn-press obs-mono" style="display: inline-flex; align-items: center; height: 2.75rem; width: 100%; justify-content: center; border-radius: var(--radius-btn); background: var(--color-accent-cta); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-accent-text); text-decoration: none; transition: background-color 0.15s;">
+              Subscribe free →
+            </a>
+          </div>
+
+        </div>
+      </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── RECENT ISSUES ──────────────────────────────────────────── -->
+  <section style="padding: clamp(3rem, 5vw, 5rem) 0;">
+    <div style="max-width: 72rem; margin: 0 auto; padding: 0 1.5rem;">
+
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+        <div>
+          <p style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim); margin-bottom: 0.5rem;">Recent issues</p>
+          <h2 style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--color-text);">Every issue, still here.</h2>
+          <p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--color-text-muted);">Nothing deleted, nothing quietly skipped. Judge the last {inbox.length} before you commit to the next one.</p>
+        </div>
+        <p style="font-size: 0.8125rem; color: var(--color-text-muted);">
+          <span style="color: var(--color-text); font-weight: 600;">{totalIssues}</span>
+          <span> sent to date</span>
+        </p>
+      </div>
+
+      <ul style="list-style: none; margin: 0; padding: 0;">
+        {inbox.map((item) => (
+          <li class="issue-row">
+            <span style="width: 3px; align-self: stretch; border-radius: 9999px; background: var(--color-accent-cta); flex-shrink: 0;" aria-hidden="true"></span>
+            <span style="min-width: 0;">
+              <span style="display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent-hi); background: color-mix(in srgb, var(--color-accent-cta) 16%, transparent); border-radius: 999px; padding: 3px 8px; margin-right: 0.5rem; vertical-align: middle;">{item.tag}</span>
+              <span style="font-size: 0.9375rem; font-weight: 600; color: var(--color-text); vertical-align: middle;">{item.title}</span>
+              <span style="display: block; font-size: 0.8125rem; line-height: 1.5; color: var(--color-text-muted); margin-top: 0.25rem;">{item.lead}</span>
+            </span>
+            <time datetime={item.date} style="font-size: 0.75rem; font-weight: 500; color: var(--color-text-dim); white-space: nowrap;">{shortDate(item.date)}</time>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Closing CTA banner: the last stop after scanning the archive. -->
+      <div class="closing-banner" style="margin-top: 2.5rem; padding: clamp(1.5rem, 3vw, 2rem); border-radius: var(--radius-card); border: 1px solid var(--color-border); background: var(--color-surface);">
+        <div style="min-width: 0;">
+          <p style="margin: 0 0 0.375rem; font-size: 1.125rem; font-weight: 600; letter-spacing: -0.01em; color: var(--color-text);">Read tomorrow's issue before your first meeting.</p>
+          <p style="margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-muted);">One email a day, under three minutes, free. If it stops earning its place, unsubscribe in one click.</p>
+        </div>
+        <a href="#top" class="sub-cta btn-press obs-mono" style="display: inline-flex; align-items: center; height: 2.75rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); padding: 0 1.5rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-accent-text); text-decoration: none; white-space: nowrap; transition: background-color 0.15s; flex-shrink: 0;">
+          Subscribe free →
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  if (new URLSearchParams(location.search).get('confirmed') === '1') {
+    (document.getElementById('subscribe-form') as HTMLElement).style.display = 'none';
+    (document.getElementById('confirmed-state') as HTMLElement).style.display = 'block';
+    history.replaceState({}, '', location.pathname);
+  }
+
+  const form = document.getElementById('subscribe-form') as HTMLFormElement;
+  const status = document.getElementById('sub-status') as HTMLElement;
+  const btn = document.getElementById('sub-btn') as HTMLButtonElement;
+  const emailInput = document.getElementById('sub-email') as HTMLInputElement;
+
+  emailInput?.addEventListener('focus', () => {
+    emailInput.style.borderColor = 'var(--color-accent-cta)';
+    emailInput.style.boxShadow = '0 0 0 2px rgb(235 255 0 / 0.15)';
+  });
+  emailInput?.addEventListener('blur', () => {
+    emailInput.style.borderColor = 'var(--color-border-2)';
+    emailInput.style.boxShadow = 'none';
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim().toLowerCase();
+    if (!email || !emailInput.validity.valid) {
+      status.textContent = 'Please enter a valid email address.';
+      status.style.color = '#f87171';
+      emailInput.focus();
+      return;
+    }
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'not-allowed';
+    btn.textContent = 'Sending...';
+    status.textContent = '';
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        form.style.display = 'none';
+        const confirmed = document.getElementById('confirmed-state') as HTMLElement;
+        confirmed.style.display = 'block';
+      } else {
+        throw new Error((data as any)?.error || 'Failed');
+      }
+    } catch (err: any) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+      btn.textContent = "Get tomorrow's issue →";
+      status.textContent = err?.message === 'Failed' ? 'Something went wrong. Try again.' : (err?.message || 'Something went wrong.');
+      status.style.color = '#f87171';
+    }
+  });
+</script>
+
+<style>
+  /* CTA hover states — matches the accent-cta-hi treatment used site-wide. */
+  #sub-btn:hover,
+  .sub-cta:hover {
+    background-color: var(--color-accent-cta-hi) !important;
+  }
+
+  /* Hero: copy column on the left; the photo lives absolutely on the right
+     half of the section and dissolves into the page bg (tonal transition). */
+  .hero-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: 3rem;
+    padding-top: clamp(2rem, 6vw, 5rem);
+    padding-bottom: clamp(2.5rem, 7vw, 6rem);
+  }
+  @media (min-width: 1024px) {
+    .hero-layout {
+      grid-template-columns: minmax(0, 55%);
+      min-height: 560px;
+    }
+  }
+
+  /* Form: input + button on one line as soon as they fit. */
+  .hero-form { max-width: 34rem; }
+  .hero-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .hero-form-row input { width: 100%; }
+  @media (min-width: 640px) {
+    .hero-form-row { flex-direction: row; }
+    .hero-form-row input { flex: 1; min-width: 0; }
+  }
+
+  /* Benefit bullets under the form: one typographic row of three. */
+  .hero-benefits {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 1.5rem 0 0;
+    border-top: 1px solid var(--color-border);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem 1.75rem;
+  }
+  @media (min-width: 640px) {
+    .hero-benefits { grid-template-columns: 1fr 1fr 1fr; }
+  }
+
+  /* Proof strip: author + track record, one quiet line. */
+  .hero-proof {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.625rem;
+    margin-top: 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Mail mockup theme: light = the sent email verbatim; dark = the same issue
+     as a dark-mode email client renders it. One variable set, flipped once. */
+  .mail-mock {
+    --mail-chrome: #e8e4dc;
+    --mail-chrome-border: #d8d4cb;
+    --mail-chrome-text: #555;
+    --mail-bg: #f4f3ef;
+    --mail-card: #fffefb;
+    --mail-card-alt: #ffffff;
+    --mail-border: #dcdbd3;
+    --mail-ink: #080808;
+    --mail-body: #343430;
+    --mail-dim: #74746e;
+  }
+  :global(:root[data-theme='dark']) .mail-mock {
+    --mail-chrome: #221c12;
+    --mail-chrome-border: #2c2418;
+    --mail-chrome-text: #b0a897;
+    --mail-bg: #141009;
+    --mail-card: #1c1710;
+    --mail-card-alt: #201a10;
+    --mail-border: #2c2418;
+    --mail-ink: #f4f0e7;
+    --mail-body: #cfc8ba;
+    --mail-dim: #999180;
+  }
+
+  .subscribe-hero-grid {
+    -webkit-mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
+  }
+
+  .subscribe-hero-aura {
+    background: radial-gradient(circle, var(--color-accent-cta) 0%, transparent 68%);
+    opacity: 0.08;
+    filter: blur(60px);
+  }
+  :global(:root[data-theme='dark']) .subscribe-hero-aura {
+    opacity: 0.16;
+  }
+
+  .issue-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 0.875rem;
+    margin: 0 -1.125rem;
+    padding: 0.875rem 1.125rem;
+    border-bottom: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    transition: background-color 0.15s ease;
+  }
+  .issue-row:last-child { border-bottom: none; }
+  .issue-row:hover { background-color: var(--color-surface-2); }
+
+  .archive-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 860px) {
+    .archive-grid {
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 3.5rem;
+    }
+  }
+
+  .archive-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  @media (min-width: 860px) {
+    .archive-sidebar {
+      position: sticky;
+      top: 5.5rem;
+    }
+  }
+
+  .closing-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  @media (min-width: 720px) {
+    .closing-banner {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+  }
+</style>

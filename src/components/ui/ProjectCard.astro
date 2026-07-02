@@ -1,5 +1,6 @@
 ---
 import ProjectCover, { type ProjectCoverType } from './ProjectCover.astro';
+import Icon from './Icon.astro';
 type CoverType = ProjectCoverType;
 type Cluster = 'ai-gtm' | 'growth-architecture' | 'products-shipped';
 
@@ -34,6 +35,7 @@ const {
   tags,
   href,
   cover = 'growth-system',
+  screenshot,
   problem,
   system,
   artifact,
@@ -64,9 +66,11 @@ const ctaLabel = external ? (labels.viewProject ?? 'View project') : (labels.exp
 >
   <div class="artifact-stage relative aspect-[16/9] overflow-hidden p-3.5">
     <div class="absolute inset-3.5 overflow-hidden rounded-[14px] transition-transform duration-500 group-hover:scale-[1.012]">
-      <ProjectCover cover={cover} />
+      {screenshot
+        ? <img src={screenshot} alt="" width="1456" height="1088" loading="lazy" decoding="async" class="h-full w-full object-cover object-center" />
+        : <ProjectCover cover={cover} />}
     </div>
-    <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>
+    {!screenshot && <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>}
   </div>
 
   <div class="flex flex-1 flex-col p-5 pt-4">
@@ -95,9 +99,7 @@ const ctaLabel = external ? (labels.viewProject ?? 'View project') : (labels.exp
 
     <span class="mt-auto flex items-center gap-1 text-xs font-medium text-[var(--color-text-dim)] transition-colors duration-150 group-hover:text-[var(--color-accent)]">
       {ctaLabel}
-      <svg class="h-3 w-3 transition-transform duration-150 group-hover:translate-x-1 rtl-flip-x" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-        <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <Icon name="arrow-right" class="h-3 w-3 transition-transform duration-150 group-hover:translate-x-1 rtl-flip-x" />
     </span>
   </div>
 </a>

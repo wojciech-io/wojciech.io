@@ -17,20 +17,24 @@ const {
 } = Astro.props as Props;
 ---
 
-<section class="relative section-fade border-y border-[var(--color-border)] bg-[var(--color-surface)]">
+<section class="relative section-fade py-10 md:py-14">
   <div class="mx-auto max-w-6xl px-6">
     {indexLabel && (
-      <div class="flex items-center gap-3 pt-6">
+      <div class="flex items-center gap-3 mb-6">
         <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
         <span class="obs-label">{indexLabel}</span>
       </div>
     )}
-    <div class="grid grid-cols-2 sm:grid-cols-4 divide-x divide-[var(--color-border)]">
+    <!-- One card per metric: same radius/border/surface language as the rest of
+         the site, an accent tick on top of each so the row reads as four
+         deliberate proof points instead of one flat rectangle. -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
       {metrics.map(({ value, label }, index) => {
         const match = value.match(/^(\d+)(.*)$/);
         const isNumeric = match !== null;
         return (
-          <div class="reveal-up flex flex-col py-7 px-4 sm:px-6 first:pl-0" data-reveal-index={index}>
+          <div class="reveal-up flex flex-col rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover py-7 px-6" data-reveal-index={index}>
+            <span class="mb-5 h-1 w-8 rounded-full bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
             <p
               class:list={['ed-serif text-5xl md:text-6xl text-[var(--color-text)] mb-2', isNumeric && 'metric-count']}
               {...(isNumeric ? { 'data-target': match[1], 'data-suffix': match[2] } : {})}

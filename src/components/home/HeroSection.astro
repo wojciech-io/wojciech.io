@@ -32,7 +32,7 @@ const {
   h1Secondary = 'Then I run them.',
   lead = 'Twenty years across GTM, marketing, and growth. I wire them into one AI-native operating model, build what is missing, and stay until it runs.',
   primaryCta = { label: 'See the work', href: '/work/' },
-  secondaryCta = { label: 'Get the newsletter', href: 'https://subscribe.wojciech.io' },
+  secondaryCta = { label: 'Get the newsletter', href: '/subscribe/' },
   metaLine = 'GTM · marketing · growth × AI',
   name = 'Wojciech Łuszczyński',
 } = Astro.props as Props;
@@ -54,9 +54,13 @@ const h2 = accentHeading(h1Secondary);
        Delivered as a CSS background so a display:none element never fetches it,
        keeping the hero image off the mobile critical path. -->
   <div
-    class="hero-photo-side hidden lg:block absolute right-0 top-0 bottom-0 w-[56%] overflow-hidden bg-[url('/images/wojciech-office-hq.webp')] bg-cover bg-no-repeat bg-[position:center_30%]"
+    class="hero-photo-side hidden lg:block absolute right-0 top-0 bottom-0 w-[56%] overflow-hidden bg-[url('/images/wojciech-hero-warm.webp')] bg-cover bg-no-repeat bg-[position:center_22%]"
     aria-hidden="true"
   >
+    <!-- Grade: shot warm/bright already (cream travertine interior), so no
+         brightness lift — just a light contrast/saturation nudge to sit on
+         the page's own cream surface without looking flat. -->
+
     <!-- The photo itself is masked (see <style>) so it dissolves toward the
          text and softens at the top/bottom — no hard rectangular edge. The
          overlays below reinforce the blend to the page background on both
@@ -169,5 +173,14 @@ const h2 = accentHeading(h1Secondary);
 
   @media (prefers-reduced-motion: reduce) {
     .hero-tick { animation: none; }
+  }
+
+  /* Photo is already warm/bright (cream travertine interior) — just a light
+     contrast/saturation nudge, no brightness lift needed. */
+  .hero-photo-side {
+    filter: contrast(1.02) saturate(1.05);
+  }
+  :global(:root[data-theme='dark']) .hero-photo-side {
+    filter: none;
   }
 </style>
