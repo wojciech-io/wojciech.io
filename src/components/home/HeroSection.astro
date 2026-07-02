@@ -57,15 +57,12 @@ const h2 = accentHeading(h1Secondary);
     class="hero-photo-side hidden lg:block absolute right-0 top-0 bottom-0 w-[56%] overflow-hidden bg-[url('/images/wojciech-hero-warm.webp')] bg-cover bg-no-repeat bg-[position:center_22%]"
     aria-hidden="true"
   >
-    <!-- Grade: shot warm/bright already (cream travertine interior), so no
-         brightness lift — just a light contrast/saturation nudge to sit on
-         the page's own cream surface without looking flat. -->
-
-    <!-- The photo itself is masked (see <style>) so it dissolves toward the
-         text and softens at the top/bottom — no hard rectangular edge. The
-         overlays below reinforce the blend to the page background on both
-         themes (mask only cuts alpha; these paint the bg colour into the fade). -->
-    <div class="hero-photo-fade absolute inset-y-0 left-0 w-[55%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]" />
+    <!-- The photo renders 1:1 (no filters, no baked-in fades): every blend into
+         the page is painted here in CSS so the source file never needs another
+         generator pass. Scrim first (settles the warm shot on the dark theme),
+         then eased edge fades in the page background colour. -->
+    <div class="hero-photo-scrim absolute inset-0 pointer-events-none" />
+    <div class="hero-photo-fade absolute inset-y-0 left-0 w-[60%] pointer-events-none" />
     <div class="absolute inset-x-0 bottom-0 h-[18%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]" />
     <div class="absolute inset-x-0 top-0 h-[16%] pointer-events-none [background:linear-gradient(to_bottom,var(--color-bg)_0%,transparent_100%)]" />
   </div>
@@ -175,12 +172,29 @@ const h2 = accentHeading(h1Secondary);
     .hero-tick { animation: none; }
   }
 
-  /* Photo is already warm/bright (cream travertine interior) — just a light
-     contrast/saturation nudge, no brightness lift needed. */
-  .hero-photo-side {
-    filter: contrast(1.02) saturate(1.05);
+  /* Photo renders unfiltered: the shot is already graded, and any filter or
+     re-generation pass costs face fidelity. Blending is overlay-only. */
+
+  /* Left fade: eased multi-stop ramp (solid page colour near the text, long
+     soft tail over the photo) — a plain linear ramp reads as a milky wash. */
+  .hero-photo-fade {
+    background: linear-gradient(
+      to right,
+      var(--color-bg) 0%,
+      color-mix(in srgb, var(--color-bg) 88%, transparent) 26%,
+      color-mix(in srgb, var(--color-bg) 48%, transparent) 56%,
+      color-mix(in srgb, var(--color-bg) 14%, transparent) 80%,
+      transparent 100%
+    );
   }
-  :global(:root[data-theme='dark']) .hero-photo-side {
-    filter: none;
+
+  /* Dark theme: a light page-colour scrim settles the warm interior into the
+     near-black page without touching contrast on the face. */
+  .hero-photo-scrim {
+    background: color-mix(in srgb, var(--color-bg) 24%, transparent);
+    opacity: 0;
+  }
+  :global(:root[data-theme='dark']) .hero-photo-scrim {
+    opacity: 1;
   }
 </style>
