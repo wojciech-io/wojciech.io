@@ -59,7 +59,7 @@ export const arProjects: ArProject[] = [
     outcome: 'حركة استفسار يدوية تتحوّل إلى تجربة حجز مُنتَجة.',
   },
   {
-    cover: 'notch', screenshot: '/images/work/notch.webp', external: false, href: '/apps/notch/',
+    cover: 'notch', screenshot: '/images/work/notch.webp', external: false, href: '/ar/apps/notch/',
     title: 'NotchCue',
     description: 'مفهوم تيليبرومبتر لنظام macOS للمكالمات والعروض والتسجيلات. يبقي الملاحظات قرب الكاميرا ليبقى الإلقاء طبيعيًا.',
     tags: ['macOS', 'Swift', 'مبني بالذكاء الاصطناعي'],
