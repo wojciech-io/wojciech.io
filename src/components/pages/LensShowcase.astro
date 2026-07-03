@@ -101,11 +101,23 @@ const heroImageReady =
       <!-- Greyed hero image: desktop only, right side, desaturated + faded into
            the page so the headline copy stays readable over it. Decorative. -->
       <div
-        class="lens-hero-photo hidden lg:block absolute right-0 top-0 bottom-0 w-[52%] overflow-hidden bg-cover bg-no-repeat bg-center"
-        style={`background-image: url('${heroImage}')`}
+        class="lens-hero-photo hidden lg:block absolute right-0 top-0 bottom-0 w-[52%] overflow-hidden"
         aria-hidden="true"
       >
-        <div class="absolute inset-y-0 left-0 w-[62%] pointer-events-none [background:linear-gradient(to_right,var(--color-bg)_0%,transparent_100%)]"></div>
+        <!-- The grayscale filter lives on THIS inner layer only. Filtering the
+             container would recolour the overlay gradients too, so their
+             "solid page colour" stops render a slightly different tint than
+             the real page background — a thin visible seam at the edge. -->
+        <div
+          class="lens-photo-img absolute inset-0 bg-cover bg-no-repeat bg-center"
+          style={`background-image: url('${heroImage}')`}
+        ></div>
+        <!-- Scrim first (dims the photo at FULL overlay opacity — dimming via
+             container opacity would make the edge fades translucent too and
+             leave the photo's left edge visible as a contour), then the same
+             eased multi-stop left fade as the homepage hero. -->
+        <div class="lens-photo-scrim absolute inset-0 pointer-events-none"></div>
+        <div class="lens-photo-fade absolute inset-y-0 left-0 w-[70%] pointer-events-none"></div>
         <div class="absolute inset-x-0 bottom-0 h-[20%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]"></div>
         <div class="absolute inset-x-0 top-0 h-[16%] pointer-events-none [background:linear-gradient(to_bottom,var(--color-bg)_0%,transparent_100%)]"></div>
       </div>
@@ -171,15 +183,46 @@ const heroImageReady =
 </Layout>
 
 <style>
-  /* Greyed hero image: desaturated and dimmed so it reads as a quiet backdrop
-     behind the headline, never competing with the copy. Light theme only needs
-     the wash; dark theme keeps the source so it doesn't muddy. */
-  .lens-hero-photo {
-    filter: grayscale(0.9) contrast(0.98) brightness(1.05);
-    opacity: 0.5;
+  /* Grid dissolves toward the edges (same mask as the homepage hero). Without
+     it the grid renders full-strength and gets cut hard at the photo's left
+     edge — the visible contour. HeroSection's scoped styles don't reach here,
+     so the rule must live in this component too. */
+  .hero-grid {
+    -webkit-mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
   }
-  :global(:root[data-theme='dark']) .lens-hero-photo {
+
+  /* Greyed hero image: desaturated backdrop behind the headline. The filter
+     sits on the image layer ONLY — on the container it would recolour the
+     overlay gradients and their solid page-colour stops would no longer match
+     the page background (thin seam at the edge). Dimming lives in the scrim,
+     not in opacity, for the same reason. */
+  .lens-photo-img {
+    filter: grayscale(0.9) contrast(0.98) brightness(1.05);
+  }
+  :global(:root[data-theme='dark']) .lens-photo-img {
     filter: grayscale(0.85);
-    opacity: 0.28;
+  }
+
+  /* Page-colour scrim at full overlay opacity: same visual weight as the old
+     0.5 / 0.28 container opacity, without weakening the fades. */
+  .lens-photo-scrim {
+    background: color-mix(in srgb, var(--color-bg) 50%, transparent);
+  }
+  :global(:root[data-theme='dark']) .lens-photo-scrim {
+    background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  }
+
+  /* Left fade: the homepage hero's eased multi-stop ramp — solid page colour
+     at the photo's left edge, long soft tail over the image. */
+  .lens-photo-fade {
+    background: linear-gradient(
+      to right,
+      var(--color-bg) 0%,
+      color-mix(in srgb, var(--color-bg) 88%, transparent) 26%,
+      color-mix(in srgb, var(--color-bg) 48%, transparent) 56%,
+      color-mix(in srgb, var(--color-bg) 14%, transparent) 80%,
+      transparent 100%
+    );
   }
 </style>
