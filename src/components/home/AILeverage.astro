@@ -193,6 +193,29 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
     gap: 0.625rem;
     flex-shrink: 0;
   }
+  /* Mobile: the chain spans the full row — before at the left edge, chip at
+     the right, a dashed connector stretching between. Every row lines up. */
+  @media (max-width: 639.9px) {
+    .xform-track { display: flex; width: 100%; }
+    .xform-arrow { flex: 1; min-width: 1.5rem; align-items: center; }
+    .xform-arrow svg { display: none; }
+    .xform-arrow::before {
+      content: '';
+      flex: 1;
+      border-top: 2px dashed currentColor;
+      opacity: 0.75;
+    }
+    .xform-arrow::after {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-top: 2px solid currentColor;
+      border-right: 2px solid currentColor;
+      transform: rotate(45deg) translateY(-1px);
+      flex-shrink: 0;
+      margin-left: -7px;
+    }
+  }
   .xform-before {
     font-size: 0.75rem;
     color: var(--color-text-dim);

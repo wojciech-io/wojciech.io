@@ -205,9 +205,8 @@ const previewItems = [
             <label class="consent-row" for="sub-consent">
               <input type="checkbox" id="sub-consent" name="consent" required />
               <span>
-                I agree to receive the AI Espresso newsletter by email from Wojciech Łuszczyński.
-                Consent is required to subscribe and I can withdraw it anytime with the unsubscribe
-                link in every issue. Details in the <a href="/privacy/" style="color: var(--band-text); text-decoration: underline; text-underline-offset: 2px;">privacy policy</a>.
+                I agree to receive the AI Espresso newsletter by email. Unsubscribe anytime.
+                <a href="/privacy/" style="color: var(--band-text); text-decoration: underline; text-underline-offset: 2px;">Privacy policy</a>.
               </span>
             </label>
 
@@ -239,8 +238,6 @@ const previewItems = [
             <p class="state-sub">The next issue lands straight in your inbox. A short welcome note from me is already on its way.</p>
             <a href="#preview" class="state-link">Read the latest issue while you wait ↓</a>
           </div>
-
-          <p class="signup-proof">{totalIssues} issues sent · 3 min read · free</p>
           </div>
         </div>
 
@@ -626,12 +623,14 @@ const previewItems = [
   }
   @media (min-width: 560px) {
     .signup-row { flex-direction: row; }
+    .signup-input, .signup-btn { height: 2.875rem; }
   }
+  /* Taller tap targets on mobile, where the field and button stack. */
   .signup-input {
     flex: 1;
     min-width: 0;
     width: 100%;
-    height: 2.875rem;
+    height: 3.5rem;
     border: none;
     background: transparent;
     padding: 0 1.125rem;
@@ -642,7 +641,7 @@ const previewItems = [
   }
   .signup-input::placeholder { color: rgb(245 243 236 / 0.42); }
   .signup-btn {
-    height: 2.875rem;
+    height: 3.5rem;
     border-radius: var(--radius-btn);
     background: var(--color-accent-cta);
     font-size: 0.8125rem;
@@ -657,16 +656,6 @@ const previewItems = [
     flex-shrink: 0;
     transition: opacity 0.15s, background-color 0.15s;
   }
-  .signup-proof {
-    margin: 1.375rem 0 0;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: rgb(245 243 236 / 0.5);
-  }
-
   /* Honeypot: removed from flow and from assistive tech, still in the DOM
      for bots that fill every field. Not display:none, the crude ones skip
      hidden inputs. */
@@ -679,25 +668,52 @@ const previewItems = [
     overflow: hidden;
   }
 
+  /* Consent: one short line, a checkbox drawn for the dark panel instead of
+     the raw native white square. */
   .consent-row {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     gap: 0.625rem;
     margin: 1rem auto 0;
-    font-size: 0.8125rem;
-    line-height: 1.55;
+    font-size: 0.75rem;
+    line-height: 1.5;
     color: var(--band-muted);
     cursor: pointer;
     max-width: 34rem;
     text-align: left;
   }
   .consent-row input[type='checkbox'] {
-    width: 1rem;
-    height: 1rem;
-    margin-top: 0.2rem;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.125rem;
+    height: 1.125rem;
     flex-shrink: 0;
-    accent-color: var(--color-accent-cta);
+    border-radius: 5px;
+    border: 1.5px solid rgb(245 243 236 / 0.35);
+    background: rgb(255 255 255 / 0.06);
+    display: inline-grid;
+    place-content: center;
     cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+  }
+  .consent-row input[type='checkbox']:hover {
+    border-color: rgb(245 243 236 / 0.6);
+  }
+  .consent-row input[type='checkbox']:checked {
+    background: var(--color-accent-cta);
+    border-color: var(--color-accent-cta);
+  }
+  .consent-row input[type='checkbox']:checked::before {
+    content: '';
+    width: 0.625rem;
+    height: 0.625rem;
+    background: #0c0c0c;
+    clip-path: polygon(14% 46%, 0 62%, 40% 100%, 100% 20%, 84% 6%, 38% 68%);
+  }
+  .consent-row input[type='checkbox']:focus-visible {
+    outline: 2px solid var(--color-accent-cta);
+    outline-offset: 2px;
   }
 
   .sr-only {
@@ -714,8 +730,7 @@ const previewItems = [
      the form and the proof line step aside (.is-done) and the state owns
      the whole panel: badge, big headline, one line of direction. */
   .signup-band.is-done .signup-title,
-  .signup-band.is-done .signup-sub,
-  .signup-band.is-done .signup-proof {
+  .signup-band.is-done .signup-sub {
     display: none;
   }
   .signup-state {
