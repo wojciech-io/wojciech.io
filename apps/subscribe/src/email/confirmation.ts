@@ -119,25 +119,21 @@ export function confirmationEmail({ email, confirmUrl }: ConfirmationEmailProps)
 
                 <!-- Divider -->
                 <tr>
-                  <td class="email-divider" style="border-top: 1px solid #dcdbd3; padding-bottom: 24px;"></td>
+                  <td class="email-divider" style="border-top: 1px solid #dcdbd3; padding-bottom: 20px;"></td>
                 </tr>
 
-                <!-- What to expect pills -->
+                <!-- Signature: the person behind the espresso -->
                 <tr>
                   <td style="padding-bottom: 8px;">
-                    <p style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: #74746e; margin-bottom: 12px;">What you're getting</p>
                     <table cellpadding="0" cellspacing="0" role="presentation">
                       <tr>
-                        <td class="pill" style="border: 1px solid #dcdbd3; border-radius: 999px; padding: 4px 10px; margin-right: 8px;">
-                          <span style="font-size: 12px; font-weight: 500; color: #343430;">Free</span>
+                        <td style="vertical-align: middle;">
+                          <img src="https://wojciech.io/images/wojciech-avatar-warm.webp" width="40" height="40" alt="Wojciech Łuszczyński" style="display: block; border-radius: 50%; border: 1px solid #dcdbd3;" />
                         </td>
-                        <td style="width: 6px;"></td>
-                        <td class="pill" style="border: 1px solid #dcdbd3; border-radius: 999px; padding: 4px 10px;">
-                          <span style="font-size: 12px; font-weight: 500; color: #343430;">Under 3 minutes</span>
-                        </td>
-                        <td style="width: 6px;"></td>
-                        <td class="pill" style="border: 1px solid #dcdbd3; border-radius: 999px; padding: 4px 10px;">
-                          <span style="font-size: 12px; font-weight: 500; color: #343430;">Unsubscribe anytime</span>
+                        <td style="width: 12px;"></td>
+                        <td style="vertical-align: middle;">
+                          <p class="email-text" style="font-size: 14px; font-weight: 600; color: #080808; line-height: 1.3;">Wojciech Łuszczyński</p>
+                          <p class="email-muted" style="font-size: 12px; color: #74746e; line-height: 1.4;">AI Espresso · a day of AI, in one sip</p>
                         </td>
                       </tr>
                     </table>

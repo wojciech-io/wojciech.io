@@ -84,18 +84,18 @@ const marqueeItems = variant === 'marquee' ? [...companyLogos, ...companyLogos] 
     from { transform: translate3d(0, 0, 0); }
     to { transform: translate3d(-50%, 0, 0); }
   }
+  /* Reduced motion: stop the loop but keep the single-row carousel shape —
+     a swipeable strip, not a wall of stacked marks. */
   @media (prefers-reduced-motion: reduce) {
     .brand-track {
       animation: none;
-      flex-wrap: wrap;
       width: 100%;
-      justify-content: center;
-      gap: 2.5rem 4rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
     }
-    .brand-marquee {
-      -webkit-mask-image: none;
-      mask-image: none;
-    }
+    .brand-track::-webkit-scrollbar { display: none; }
     /* With the loop disabled, hide the duplicated second half. */
     .brand-track > .logo-mark[aria-hidden='true'] {
       display: none;

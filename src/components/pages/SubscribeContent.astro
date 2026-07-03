@@ -205,38 +205,39 @@ const previewItems = [
             <label class="consent-row" for="sub-consent">
               <input type="checkbox" id="sub-consent" name="consent" required />
               <span>
-                I agree to receive the AI Espresso newsletter by email from Wojciech Łuszczyński.
-                Consent is required to subscribe and I can withdraw it anytime with the unsubscribe
-                link in every issue. Details in the <a href="/privacy/" style="color: var(--band-text); text-decoration: underline; text-underline-offset: 2px;">privacy policy</a>.
+                I agree to receive the AI Espresso newsletter by email. Unsubscribe anytime.
+                <a href="/privacy/" style="color: var(--band-text); text-decoration: underline; text-underline-offset: 2px;">Privacy policy</a>.
               </span>
             </label>
 
             <p id="sub-status" style="min-height: 1.25rem; font-size: 0.8125rem; color: var(--band-muted); margin: 0.375rem 0 0;" role="status" aria-live="polite"></p>
           </form>
 
-          <!-- After submit: double opt-in, so the next step is their inbox. -->
+          <!-- After submit: double opt-in, so the next step is their inbox.
+               The whole band becomes this moment: the pitch, form and proof
+               line hide (JS adds .is-done) and the state takes the stage. -->
           <div id="pending-state" class="signup-state" style="display: none;">
-            <div class="state-icon" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-hi)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <div class="state-badge" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-cta)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <span class="state-ping" aria-hidden="true"></span>
             </div>
-            <div>
-              <p style="margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--band-text);">One click left. Check your inbox.</p>
-              <p style="margin: 0.2rem 0 0; font-size: 0.875rem; color: var(--band-muted);">We sent a confirmation link to <span id="pending-email" style="color: var(--band-text); font-weight: 500;"></span>. Click it and you are on the list.</p>
-            </div>
+            <p class="state-title">One click left.<br />Check your inbox.</p>
+            <p class="state-sub">We sent a confirmation link to <span id="pending-email" style="color: var(--band-text); font-weight: 600;"></span>. Click it and the next issue is yours.</p>
+            <p class="state-hint">Nothing after a minute or two? Look in spam or the promotions tab.</p>
           </div>
 
           <!-- After the confirmation link: subscription is live. -->
           <div id="confirmed-state" class="signup-state" style="display: none;">
-            <div class="state-icon state-icon-ok" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M4 10l4.5 4.5L16 6" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="state-badge" aria-hidden="true">
+              <img src="/images/ai-espresso-cup.png" width="34" height="34" alt="" style="border-radius: 10px; display: block;" />
+              <span class="state-check">
+                <svg width="11" height="11" viewBox="0 0 20 20" fill="none"><path d="M4 10l4.5 4.5L16 6" stroke="#0c0c0c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
             </div>
-            <div>
-              <p style="margin: 0; font-size: 0.9375rem; font-weight: 600; color: var(--band-text);">You're in. Thanks for confirming.</p>
-              <p style="margin: 0.2rem 0 0; font-size: 0.875rem; color: var(--band-muted);">The next issue lands in your inbox. A short welcome note is already on its way.</p>
-            </div>
+            <p class="state-title">You're in.<br />Thanks for confirming.</p>
+            <p class="state-sub">The next issue lands straight in your inbox. A short welcome note from me is already on its way.</p>
+            <a href="#preview" class="state-link">Read the latest issue while you wait ↓</a>
           </div>
-
-          <p class="signup-proof">{totalIssues} issues sent · 3 min read · free</p>
           </div>
         </div>
 
@@ -311,8 +312,8 @@ const previewItems = [
           <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 96px; background: linear-gradient(to bottom, transparent, var(--mail-bg));"></div>
         </div>
 
-        <div style="background: color-mix(in srgb, var(--color-accent-cta) 7%, var(--color-surface)); border-top: 1px solid color-mix(in srgb, var(--color-accent-cta) 30%, var(--color-border)); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-          <p style="margin: 0; font-size: 0.8125rem; color: var(--color-text-muted);"><span style="color: var(--color-text); font-weight: 600;">This is one issue.</span> The thread continues every weekday morning.</p>
+        <div style="background: radial-gradient(90% 150% at 50% -30%, color-mix(in srgb, var(--color-accent-cta) 11%, transparent) 0%, transparent 60%), #17130e; border-top: 1px solid color-mix(in srgb, var(--color-accent-cta) 30%, #2b261d); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <p style="margin: 0; font-size: 0.8125rem; color: rgb(245 243 236 / 0.68);"><span style="color: #f5f3ec; font-weight: 600;">This is one issue.</span> The thread continues every weekday morning.</p>
           <a href="#subscribe" class="sub-cta btn-press obs-mono" style="display: inline-flex; align-items: center; height: 2.25rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); padding: 0 1rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-accent-text); text-decoration: none; white-space: nowrap; transition: background-color 0.15s;">Get it free →</a>
         </div>
       </div>
@@ -404,17 +405,18 @@ const previewItems = [
         ))}
       </ul>
 
-      <!-- Closing CTA banner: the last stop after scanning the archive. An
-           accent-washed finale with a live tick, tying the page together. -->
+      <!-- Closing CTA banner: the last stop after scanning the archive. The
+           same inverted espresso panel as the sign-up band, so every
+           subscribe moment on the page speaks one visual language. -->
       <div class="closing-banner">
         <div class="closing-aura" aria-hidden="true"></div>
         <div style="position: relative; min-width: 0;">
           <div style="display: flex; align-items: center; gap: 0.625rem; margin-bottom: 0.75rem;">
             <span class="closing-tick" aria-hidden="true"></span>
-            <span style="font-family: var(--font-mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-text-dim);">Tomorrow's issue</span>
+            <span style="font-family: var(--font-mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-accent-cta);">Tomorrow's issue</span>
           </div>
-          <p style="margin: 0 0 0.375rem; font-size: clamp(1.25rem, 2.4vw, 1.625rem); font-weight: 700; letter-spacing: -0.02em; color: var(--color-text);">Read tomorrow's issue before your first meeting.</p>
-          <p style="margin: 0; font-size: 0.9375rem; line-height: 1.6; color: var(--color-text-muted);">One email a day, under three minutes, free. Currently <span style="color: var(--color-text); font-weight: 600;">{totalIssues} issues</span> in. A full day of signal, one sip.</p>
+          <p style="margin: 0 0 0.375rem; font-size: clamp(1.25rem, 2.4vw, 1.625rem); font-weight: 700; letter-spacing: -0.02em; color: var(--band-text);">Read tomorrow's issue before your first meeting.</p>
+          <p style="margin: 0; font-size: 0.9375rem; line-height: 1.6; color: var(--band-muted);">One email a day, under three minutes, free. Currently <span style="color: var(--band-text); font-weight: 600;">{totalIssues} issues</span> in. A full day of signal, one sip.</p>
         </div>
         <a href="#subscribe" class="sub-cta btn-press obs-mono" style="position: relative; display: inline-flex; align-items: center; height: 3rem; border-radius: var(--radius-btn); background: var(--color-accent-cta); padding: 0 1.75rem; font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-accent-text); text-decoration: none; white-space: nowrap; transition: background-color 0.15s; flex-shrink: 0;">
           Subscribe free →
@@ -441,9 +443,10 @@ const previewItems = [
   const consentInput = document.getElementById('sub-consent') as HTMLInputElement;
   const honeypot = document.getElementById('sub-website') as HTMLInputElement;
 
-  // Confirmation link landed: show the "you're in" state instead of the form.
+  // Confirmation link landed: the band becomes the "you're in" moment.
   if (new URLSearchParams(location.search).get('confirmed') === '1') {
     form.style.display = 'none';
+    document.getElementById('subscribe')?.classList.add('is-done');
     (document.getElementById('confirmed-state') as HTMLElement).style.display = 'flex';
     history.replaceState({}, '', location.pathname + '#subscribe');
     document.getElementById('subscribe')?.scrollIntoView({ block: 'center' });
@@ -486,6 +489,7 @@ const previewItems = [
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         form.style.display = 'none';
+        document.getElementById('subscribe')?.classList.add('is-done');
         (document.getElementById('pending-email') as HTMLElement).textContent = email;
         (document.getElementById('pending-state') as HTMLElement).style.display = 'flex';
       } else {
@@ -619,12 +623,14 @@ const previewItems = [
   }
   @media (min-width: 560px) {
     .signup-row { flex-direction: row; }
+    .signup-input, .signup-btn { height: 2.875rem; }
   }
+  /* Taller tap targets on mobile, where the field and button stack. */
   .signup-input {
     flex: 1;
     min-width: 0;
     width: 100%;
-    height: 2.875rem;
+    height: 3.5rem;
     border: none;
     background: transparent;
     padding: 0 1.125rem;
@@ -635,7 +641,7 @@ const previewItems = [
   }
   .signup-input::placeholder { color: rgb(245 243 236 / 0.42); }
   .signup-btn {
-    height: 2.875rem;
+    height: 3.5rem;
     border-radius: var(--radius-btn);
     background: var(--color-accent-cta);
     font-size: 0.8125rem;
@@ -650,16 +656,6 @@ const previewItems = [
     flex-shrink: 0;
     transition: opacity 0.15s, background-color 0.15s;
   }
-  .signup-proof {
-    margin: 1.375rem 0 0;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: rgb(245 243 236 / 0.5);
-  }
-
   /* Honeypot: removed from flow and from assistive tech, still in the DOM
      for bots that fill every field. Not display:none, the crude ones skip
      hidden inputs. */
@@ -672,25 +668,52 @@ const previewItems = [
     overflow: hidden;
   }
 
+  /* Consent: one short line, a checkbox drawn for the dark panel instead of
+     the raw native white square. */
   .consent-row {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     gap: 0.625rem;
     margin: 1rem auto 0;
-    font-size: 0.8125rem;
-    line-height: 1.55;
+    font-size: 0.75rem;
+    line-height: 1.5;
     color: var(--band-muted);
     cursor: pointer;
     max-width: 34rem;
     text-align: left;
   }
   .consent-row input[type='checkbox'] {
-    width: 1rem;
-    height: 1rem;
-    margin-top: 0.2rem;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.125rem;
+    height: 1.125rem;
     flex-shrink: 0;
-    accent-color: var(--color-accent-cta);
+    border-radius: 5px;
+    border: 1.5px solid rgb(245 243 236 / 0.35);
+    background: rgb(255 255 255 / 0.06);
+    display: inline-grid;
+    place-content: center;
     cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+  }
+  .consent-row input[type='checkbox']:hover {
+    border-color: rgb(245 243 236 / 0.6);
+  }
+  .consent-row input[type='checkbox']:checked {
+    background: var(--color-accent-cta);
+    border-color: var(--color-accent-cta);
+  }
+  .consent-row input[type='checkbox']:checked::before {
+    content: '';
+    width: 0.625rem;
+    height: 0.625rem;
+    background: #0c0c0c;
+    clip-path: polygon(14% 46%, 0 62%, 40% 100%, 100% 20%, 84% 6%, 38% 68%);
+  }
+  .consent-row input[type='checkbox']:focus-visible {
+    outline: 2px solid var(--color-accent-cta);
+    outline-offset: 2px;
   }
 
   .sr-only {
@@ -703,30 +726,88 @@ const previewItems = [
     border: 0;
   }
 
-  /* Post-submit / post-confirm states inside the band: centered block,
-     left-aligned copy next to the icon. */
+  /* Post-submit / post-confirm states: the band's second act. The pitch,
+     the form and the proof line step aside (.is-done) and the state owns
+     the whole panel: badge, big headline, one line of direction. */
+  .signup-band.is-done .signup-title,
+  .signup-band.is-done .signup-sub {
+    display: none;
+  }
   .signup-state {
     position: relative;
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 0.875rem;
-    max-width: 30rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    max-width: 34rem;
     margin: 0 auto;
-    text-align: left;
+    text-align: center;
+    padding: 0.5rem 0 0.25rem;
   }
-  .state-icon {
+  .state-badge {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.25rem; height: 2.25rem;
+    width: 4rem; height: 4rem;
     border-radius: 9999px;
-    background: color-mix(in srgb, var(--color-accent-cta) 22%, transparent);
-    flex-shrink: 0;
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid color-mix(in srgb, var(--color-accent-cta) 45%, var(--band-border));
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-accent-cta) 10%, transparent);
+    margin-bottom: 1.375rem;
   }
-  .state-icon-ok {
-    background: color-mix(in srgb, var(--color-success) 26%, transparent);
+  .state-ping {
+    position: absolute;
+    top: 2px; right: 2px;
+    width: 10px; height: 10px;
+    border-radius: 9999px;
+    background: var(--color-accent-cta);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-cta) 25%, transparent);
   }
+  .state-check {
+    position: absolute;
+    right: -3px; bottom: -3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 20px;
+    border-radius: 9999px;
+    background: var(--color-accent-cta);
+    border: 2px solid var(--band-bg);
+  }
+  .state-title {
+    margin: 0;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: var(--band-text);
+  }
+  .state-sub {
+    margin: 0.75rem auto 0;
+    max-width: 28rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--band-muted);
+  }
+  .state-hint {
+    margin: 1.125rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(245 243 236 / 0.45);
+  }
+  .state-link {
+    display: inline-block;
+    margin-top: 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-accent-cta);
+    text-decoration: none;
+  }
+  .state-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
   /* Why header: title and narrative side by side so the row uses the whole
      container instead of leaving a dead right half. */
@@ -982,10 +1063,13 @@ const previewItems = [
 
   /* Destination node: tomorrow's inbox, with the CTA folded in. The accent
      lives in the CTA and icon only; the card itself stays quiet. */
+  /* Espresso mini-panel: the same inverted palette as the sign-up band. */
   .inbox-dest {
-    border: 1px solid var(--color-border-2);
+    border: 1px solid color-mix(in srgb, var(--color-accent-cta) 30%, #2b261d);
     border-radius: var(--radius-card);
-    background: var(--color-surface);
+    background:
+      radial-gradient(120% 150% at 50% -30%, color-mix(in srgb, var(--color-accent-cta) 11%, transparent) 0%, transparent 60%),
+      #17130e;
     padding: 1.125rem;
   }
   .inbox-dest-row { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
@@ -994,8 +1078,8 @@ const previewItems = [
     width: 2.25rem; height: 2.25rem; border-radius: 10px; flex-shrink: 0;
     background: var(--color-accent-cta); color: var(--color-accent-text);
   }
-  .dest-title { margin: 0; font-size: 0.9375rem; font-weight: 700; color: var(--color-text); letter-spacing: -0.01em; }
-  .dest-sub { margin: 0.15rem 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--color-text-muted); }
+  .dest-title { margin: 0; font-size: 0.9375rem; font-weight: 700; color: #f5f3ec; letter-spacing: -0.01em; }
+  .dest-sub { margin: 0.15rem 0 0; font-size: 0.8125rem; line-height: 1.5; color: rgb(245 243 236 / 0.68); }
   .dest-cta {
     display: inline-flex; align-items: center; justify-content: center; width: 100%;
     height: 2.75rem; border-radius: var(--radius-btn);
@@ -1006,15 +1090,18 @@ const previewItems = [
   }
 
   .closing-banner {
+    --band-bg: #17130e;
+    --band-text: #f5f3ec;
+    --band-muted: rgb(245 243 236 / 0.68);
     position: relative;
     overflow: hidden;
     margin-top: 2.5rem;
     padding: clamp(1.75rem, 3.5vw, 2.5rem);
     border-radius: var(--radius-card);
-    border: 1px solid color-mix(in srgb, var(--color-accent-cta) 32%, var(--color-border));
+    border: 1px solid color-mix(in srgb, var(--color-accent-cta) 30%, #2b261d);
     background:
-      radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--color-accent-cta) 12%, transparent) 0%, transparent 55%),
-      var(--color-surface);
+      radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--color-accent-cta) 13%, transparent) 0%, transparent 55%),
+      var(--band-bg);
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -1024,9 +1111,8 @@ const previewItems = [
     right: -80px; top: -120px;
     width: 320px; height: 320px; border-radius: 9999px;
     background: radial-gradient(circle, var(--color-accent-cta) 0%, transparent 68%);
-    opacity: 0.1; filter: blur(50px); pointer-events: none;
+    opacity: 0.14; filter: blur(50px); pointer-events: none;
   }
-  :global(:root[data-theme='dark']) .closing-aura { opacity: 0.2; }
   .closing-tick {
     width: 22px; height: 3px; border-radius: 9999px;
     background: var(--color-accent-cta); flex-shrink: 0;
