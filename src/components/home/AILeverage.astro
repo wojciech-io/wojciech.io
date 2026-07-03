@@ -73,15 +73,11 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
           {rows.map(({ label, before, after }, index) => (
             <div class="xform-row reveal-up group" data-reveal-index={index + 1}>
               <p class="xform-label">{label}</p>
-              <div class="xform-track">
+              <span class="xform-pre">
                 <span class="xform-before">{before}</span>
-                <span class="xform-arrow" aria-hidden="true">
-                  <svg width="26" height="10" viewBox="0 0 26 10" fill="none">
-                    <path d="M0 5h20M17 1.5 21.5 5 17 8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2.5 2.5"/>
-                  </svg>
-                </span>
-                <span class="xform-after">{after}</span>
-              </div>
+                <span class="xform-arrow" aria-hidden="true"></span>
+              </span>
+              <span class="xform-after">{after}</span>
             </div>
           ))}
         </div>
@@ -89,7 +85,10 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
 
       <!-- Right: animated tech stack -->
       <div class="reveal-scale">
-        <span class="obs-label mb-4 block">{t.stackLabel}</span>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+          <span class="obs-label">{t.stackLabel}</span>
+        </div>
         <div class="obs-panel overflow-hidden">
           <!-- Stack header: single live marker + mono status (no terminal chrome) -->
           <div class="flex items-center gap-2 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
@@ -160,70 +159,85 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
 </section>
 
 <style>
-  /* Before → after transformation ledger. */
+  /* Before → after transformation ledger. Every row shares columns so the
+     struck-out "before", the dashed connector and the accent chip line up
+     down the whole ledger instead of floating at ragged x positions. */
   .xform-ledger { border-top: 1px solid var(--color-border); }
-  /* Mobile: every row stacks the same way (label, then the before-after
-     chain) so the ledger reads as one aligned table, never a ragged mix of
-     wrapped and unwrapped rows. Desktop keeps the two-column line. */
+  /* Mobile: label on its own line, then the before → chip chain full width. */
   .xform-row {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.375rem;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 1rem;
+    row-gap: 0.375rem;
     padding: 0.875rem 0;
     border-bottom: 1px solid var(--color-border);
   }
-  @media (min-width: 640px) {
-    .xform-row {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-  }
   .xform-label {
+    flex: 0 0 100%;
     font-size: 0.875rem;
     color: var(--color-text-muted);
     transition: color 0.15s ease;
   }
   .xform-row:hover .xform-label { color: var(--color-text); }
-  .xform-track {
-    display: inline-flex;
+
+  .xform-pre {
+    flex: 1;
+    min-width: 0;
+    display: flex;
     align-items: center;
-    gap: 0.625rem;
-    flex-shrink: 0;
+    gap: 0.75rem;
   }
-  /* Mobile: the chain spans the full row — before at the left edge, chip at
-     the right, a dashed connector stretching between. Every row lines up. */
-  @media (max-width: 639.9px) {
-    .xform-track { display: flex; width: 100%; }
-    .xform-arrow { flex: 1; min-width: 1.5rem; align-items: center; }
-    .xform-arrow svg { display: none; }
-    .xform-arrow::before {
-      content: '';
-      flex: 1;
-      border-top: 2px dashed currentColor;
-      opacity: 0.75;
+  .xform-after { flex: 0 0 auto; }
+
+  /* Desktop: a shared 3-column subgrid (label · before+connector · chip) so
+     every chip starts at the same x and the connectors align. */
+  @media (min-width: 640px) {
+    .xform-ledger { display: grid; grid-template-columns: auto 1fr auto; }
+    .xform-row {
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+      column-gap: 1.25rem;
+      row-gap: 0;
     }
-    .xform-arrow::after {
-      content: '';
-      width: 7px;
-      height: 7px;
-      border-top: 2px solid currentColor;
-      border-right: 2px solid currentColor;
-      transform: rotate(45deg) translateY(-1px);
-      flex-shrink: 0;
-      margin-left: -7px;
-    }
+    .xform-label { flex: none; }
+    .xform-pre { flex: none; }
+    .xform-after { justify-self: start; }
   }
+
   .xform-before {
     font-size: 0.75rem;
     color: var(--color-text-dim);
     text-decoration: line-through;
     text-decoration-color: color-mix(in srgb, var(--color-text-dim) 60%, transparent);
     white-space: nowrap;
+    flex: 0 0 auto;
   }
-  .xform-arrow { color: color-mix(in srgb, var(--color-accent-cta) 70%, var(--color-border)); display: inline-flex; }
+  /* CSS-drawn dashed connector with a chevron head; stretches to fill the gap
+     between "before" and the chip so the arrow length is identical per row. */
+  .xform-arrow {
+    flex: 1;
+    min-width: 1.75rem;
+    display: flex;
+    align-items: center;
+    color: color-mix(in srgb, var(--color-accent-cta) 72%, var(--color-border));
+  }
+  .xform-arrow::before {
+    content: '';
+    flex: 1;
+    border-top: 2px dashed currentColor;
+    opacity: 0.8;
+  }
+  .xform-arrow::after {
+    content: '';
+    width: 7px; height: 7px;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    margin-left: -6px;
+  }
   .xform-after {
     font-family: var(--font-mono);
     font-size: 0.6875rem;
