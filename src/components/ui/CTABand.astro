@@ -16,8 +16,12 @@ const {
   subtext = 'Send the context, the current bottleneck, and what already exists. I will tell you where I would start.',
   cta = 'Book a call',
   ctaHref = '/contact/#book-call',
-  ctaSecondary = 'See the work',
-  ctaSecondaryHref = '/work/',
+  // Secondary (outline) is the soft ask: the newsletter, routed to the
+  // dedicated /subscribe page. Booking stays the primary money CTA. This is
+  // why the footer's inline signup band drops out under a CTA band — the
+  // newsletter invite already lives here, in context, ranked below the call.
+  ctaSecondary = 'Read AI Espresso',
+  ctaSecondaryHref = '/subscribe/',
 } = Astro.props;
 const ctaIsExternal = ctaHref.startsWith('http');
 const secondaryIsExternal = ctaSecondaryHref.startsWith('http');
@@ -26,7 +30,7 @@ const ctaIsBooking = ctaHref.includes('#book-call') || ctaHref.includes('cal.com
 const headingLines = heading.split('\n');
 ---
 
-<section class="bg-[var(--color-bg)] py-14 md:py-20">
+<section class="cta-band bg-[var(--color-bg)] py-14 md:py-20">
   <div class="mx-auto max-w-6xl px-6">
     <div
       class="relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-card)]"
