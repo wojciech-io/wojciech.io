@@ -11,6 +11,9 @@ interface Props {
   href: string;
   cover?: CoverType;
   screenshot?: string;
+  /** object-position for the screenshot crop; some covers frame a face near
+      the top and get decapitated by the default centre crop. */
+  screenshotPosition?: string;
   icon?: string;
   cluster?: Cluster;
   problem?: string;
@@ -36,6 +39,7 @@ const {
   href,
   cover = 'growth-system',
   screenshot,
+  screenshotPosition = 'object-center',
   problem,
   system,
   artifact,
@@ -67,7 +71,7 @@ const ctaLabel = external ? (labels.viewProject ?? 'View project') : (labels.exp
   <div class="artifact-stage relative aspect-[16/9] overflow-hidden p-3.5">
     <div class="absolute inset-3.5 overflow-hidden rounded-[14px] transition-transform duration-500 group-hover:scale-[1.012]">
       {screenshot
-        ? <img src={screenshot} alt="" width="1456" height="1088" loading="lazy" decoding="async" class="h-full w-full object-cover object-center" />
+        ? <img src={screenshot} alt="" width="1456" height="1088" loading="lazy" decoding="async" class:list={['h-full w-full object-cover', screenshotPosition]} />
         : <ProjectCover cover={cover} />}
     </div>
     {!screenshot && <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>}

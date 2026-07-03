@@ -18,6 +18,7 @@ type ProjectItem = {
   outcome: string;
   external: boolean;
   screenshot?: string;
+  screenshotPosition?: string;
 };
 
 interface Props {
@@ -80,6 +81,8 @@ const defaultProjects: ProjectItem[] = [
   {
     cover: 'kamperownia' as const,
     screenshot: '/images/work/kamperownia.webp',
+    // Face sits high in this shot; centre-crop at 16/9 cuts the head off.
+    screenshotPosition: 'object-top',
     title: 'Camper Rental Booking Engine',
     description: 'A self-serve camper rental site for browsing vehicles, checking dates, and moving from interest to reservation quickly.',
     tags: ['Product', 'Booking', 'Web app'],
@@ -203,6 +206,7 @@ const rest = projects.slice(1);
             tags={p.tags}
             href={p.href}
             screenshot={p.screenshot}
+            screenshotPosition={p.screenshotPosition}
             problem={p.problem}
             system={p.system}
             artifact={p.artifact}
