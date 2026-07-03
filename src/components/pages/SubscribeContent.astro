@@ -118,8 +118,6 @@ const previewItems = [
           />
           <span>Written by <span style="font-weight: 600; color: var(--color-text);">Wojciech Łuszczyński</span></span>
           <span aria-hidden="true" style="color: var(--color-text-dim);">·</span>
-          <span><span style="font-weight: 600; color: var(--color-text);">{totalIssues}</span> issues sent</span>
-          <span aria-hidden="true" style="color: var(--color-text-dim);">·</span>
           <span>A day of AI in one sip, free</span>
         </div>
 
@@ -621,13 +619,9 @@ const previewItems = [
     border-color: color-mix(in srgb, var(--color-accent-cta) 65%, var(--band-border));
     box-shadow: 0 0 0 3px rgb(235 255 0 / 0.12);
   }
-  @media (min-width: 560px) {
-    .signup-row { flex-direction: row; }
-    .signup-input, .signup-btn { height: 2.875rem; }
-  }
-  /* Taller tap targets on mobile, where the field and button stack. */
+  /* Full-height tap target in both layouts. */
   .signup-input {
-    flex: 1;
+    flex: none;
     min-width: 0;
     width: 100%;
     height: 3.5rem;
@@ -639,7 +633,25 @@ const previewItems = [
     color: var(--band-text);
     outline: none;
   }
+  /* Horizontal pill from 560px up. flex: 1 belongs ONLY here: in the stacked
+     column layout the main axis is vertical, so flex-basis: 0% would zero the
+     field's height and collapse it to its text line. Must come after the base
+     rule, or the base flex: none wins the cascade. */
+  @media (min-width: 560px) {
+    .signup-row { flex-direction: row; }
+    .signup-input { flex: 1 1 0%; width: auto; }
+  }
   .signup-input::placeholder { color: rgb(245 243 236 / 0.42); }
+  /* Autofill paints a light box by default, which blots out the field on the
+     dark panel. Keep the fill dark and the text readable. */
+  .signup-input:-webkit-autofill,
+  .signup-input:-webkit-autofill:hover,
+  .signup-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #221c14 inset;
+    -webkit-text-fill-color: var(--band-text);
+    caret-color: var(--band-text);
+    border-radius: var(--radius-btn);
+  }
   .signup-btn {
     height: 3.5rem;
     border-radius: var(--radius-btn);
