@@ -114,6 +114,23 @@ const heroImageReady =
 
     <div class="relative w-full mx-auto max-w-6xl px-6 py-14 md:py-16">
       <div class="max-w-2xl">
+        {heroImageReady && (
+          <!-- Mobile: a real, well-fitted hero image (desktop keeps the right-half
+               backdrop above). Framed to the column, blended at the base. -->
+          <div class="lg:hidden relative mb-7">
+            <img
+              src={heroImage}
+              alt=""
+              width="1200"
+              height="750"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              class="w-full aspect-[16/10] object-cover object-center rounded-2xl border border-[var(--color-border-2)]"
+            />
+            <div class="absolute inset-x-0 bottom-0 h-1/4 rounded-b-2xl pointer-events-none [background:linear-gradient(to_top,color-mix(in_srgb,var(--color-bg)_70%,transparent),transparent)]" aria-hidden="true"></div>
+          </div>
+        )}
         <div class="flex items-center gap-3 mb-6">
           <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
           <span class="obs-label-accent">{eyebrow}</span>

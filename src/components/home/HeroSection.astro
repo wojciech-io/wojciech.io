@@ -70,21 +70,27 @@ const h2 = accentHeading(h1Secondary);
   <div class="relative mx-auto max-w-6xl px-6">
     <div class="flex flex-col justify-center py-10 md:py-20 lg:py-32 md:max-w-[560px] lg:max-w-[48%]">
 
-      <!-- Mobile: compact identity. Small photo WITH background, a supporting
-           detail rather than a centerpiece. -->
-      <div class="lg:hidden flex items-center gap-3 mb-7">
+      <!-- Mobile: a real, well-fitted hero image (not a thumbnail). The desktop
+           right-half cover photo stays hidden here; this is the mobile centrepiece.
+           Same loft shot, framed to the column width and blended at the base. -->
+      <div class="lg:hidden relative mb-7">
         <img
-          src="/images/wojciech-thumb.webp"
+          src="/images/wojciech-hero-loft.webp"
           alt={name}
-          width="320"
-          height="320"
+          width="1200"
+          height="900"
           loading="eager"
+          fetchpriority="high"
           decoding="async"
-          class="w-16 h-16 rounded-xl object-cover border border-[var(--color-border-2)] shrink-0"
+          class="w-full aspect-[4/3] object-cover object-[center_20%] rounded-2xl border border-[var(--color-border-2)]"
         />
-        <div>
-          <p class="text-sm font-semibold text-[var(--color-text)] leading-tight">{name}</p>
-          <span class="obs-label-accent">{eyebrow}</span>
+        <div class="absolute inset-x-0 bottom-0 h-1/3 rounded-b-2xl pointer-events-none [background:linear-gradient(to_top,color-mix(in_srgb,var(--color-bg)_78%,transparent),transparent)]" aria-hidden="true"></div>
+        <div class="absolute left-4 bottom-4 flex items-center gap-3">
+          <span class="hero-tick h-px w-8 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+          <div>
+            <p class="text-sm font-semibold text-[var(--color-text)] leading-tight">{name}</p>
+            <span class="obs-label-accent">{eyebrow}</span>
+          </div>
         </div>
       </div>
 
