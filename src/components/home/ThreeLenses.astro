@@ -6,6 +6,8 @@
 
    Prop-driven with English defaults so localized homepages can pass copy later;
    today only the EN homepage wires it. */
+import fs from 'node:fs';
+import path from 'node:path';
 import { accentHeading } from '../../lib/editorial';
 import Icon from '../ui/Icon.astro';
 
@@ -15,6 +17,9 @@ interface Lens {
   href: string;
   exploreLabel: string;
   icon: string;
+  /** Per-lens cover, blended into the card corner. Same image as that lens'
+      subpage hero, so the homepage and the destination share one visual. */
+  cover?: string;
 }
 
 interface Props {
@@ -41,6 +46,7 @@ const {
       href: '/gtm/',
       exploreLabel: 'Explore /gtm →',
       icon: 'nodes',
+      cover: '/images/lens/gtm-hero.webp',
     },
     {
       name: 'Marketing',
@@ -48,6 +54,7 @@ const {
       href: '/marketing/',
       exploreLabel: 'Explore /marketing →',
       icon: 'megaphone',
+      cover: '/images/lens/marketing-hero.webp',
     },
     {
       name: 'Growth',
@@ -55,11 +62,20 @@ const {
       href: '/growth/',
       exploreLabel: 'Explore /growth →',
       icon: 'trending-up',
+      cover: '/images/lens/growth-hero.webp',
     },
   ],
 } = Astro.props as Props;
 
 const h2 = accentHeading(titleSecondary);
+
+// Only paint a cover once the file is really in public/ — keeps the cards
+// clean (icon-only) if an image is missing, mirroring the lens subpage guard.
+const publicDir = path.join(process.cwd(), 'public');
+const lensesWithCover = lenses.map((lens) => ({
+  ...lens,
+  coverReady: !!lens.cover && fs.existsSync(path.join(publicDir, lens.cover)),
+}));
 ---
 
 <section class="relative py-[var(--space-section)] bg-[var(--color-bg)]">
@@ -76,17 +92,25 @@ const h2 = accentHeading(titleSecondary);
     </h2>
 
     <div class="grid gap-4 md:grid-cols-3 md:gap-6">
-      {lenses.map((lens, index) => (
+      {lensesWithCover.map((lens, index) => (
         <a
           href={lens.href}
-          class="reveal-up group block obs-panel card-hover p-6"
+          class="lens-card reveal-up group block obs-panel p-6"
           data-reveal-index={index + 1}
         >
-          <Icon name={lens.icon} class="h-6 w-6 text-[var(--color-accent-hi)] mb-5" />
-          <h3 class="text-lg font-medium text-[var(--color-text)] mb-2">{lens.name}</h3>
-          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5">{lens.thesis}</p>
-          <span class="obs-mono text-[11px] font-medium tracking-wide text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
-            {lens.exploreLabel}
+          {lens.coverReady && (
+            <span class="lens-cover" aria-hidden="true">
+              <span class="lens-cover-img" style={`background-image: url('${lens.cover}')`}></span>
+              <span class="lens-cover-scrim"></span>
+            </span>
+          )}
+          <span class="lens-content relative block">
+            <Icon name={lens.icon} class="h-6 w-6 text-[var(--color-accent-hi)] mb-5" />
+            <h3 class="text-lg font-medium text-[var(--color-text)] mb-2">{lens.name}</h3>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5">{lens.thesis}</p>
+            <span class="obs-mono text-[11px] font-medium tracking-wide text-[var(--color-accent-hi)] group-hover:text-[var(--color-text)] transition-colors">
+              {lens.exploreLabel}
+            </span>
           </span>
         </a>
       ))}
@@ -104,3 +128,74 @@ const h2 = accentHeading(titleSecondary);
 
   </div>
 </section>
+
+<style>
+  /* Cover card: the lens' own hero photo blended into the corner, dissolving
+     into the card surface exactly like the subpage hero dissolves into the
+     page. overflow-hidden clips the image to the rounded corners; isolate keeps
+     the stacking context local. card-hover is intentionally NOT used here — its
+     surface-2 background swap would leave a seam against the scrim's fixed
+     surface colour, so the hover feedback is border + image only. */
+  .lens-card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition: border-color 0.15s ease;
+  }
+  .lens-card:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+
+  .lens-cover {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    pointer-events: none;
+  }
+  /* Image layer carries ALL the desaturation/dim, so the scrim below can paint
+     the card surface at full strength and the photo never reads as a rectangle. */
+  .lens-cover-img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(0.88) contrast(0.98) brightness(1.02);
+    opacity: 0.26;
+    transition: opacity 0.25s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .lens-card:hover .lens-cover-img {
+    opacity: 0.4;
+    transform: scale(1.03);
+  }
+  /* Diagonal ramp to the card surface: opaque at the top-left where the icon,
+     title and thesis sit, clearing toward the bottom-right so the photo shows
+     in the far corner and melts back into the card. */
+  .lens-cover-scrim {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: linear-gradient(
+      158deg,
+      var(--color-surface) 0%,
+      color-mix(in srgb, var(--color-surface) 80%, transparent) 42%,
+      color-mix(in srgb, var(--color-surface) 28%, transparent) 74%,
+      transparent 100%
+    );
+  }
+  /* Dark theme: dimmer image + a light surface scrim settles it into the near-
+     black card, same treatment as the lens subpage hero in dark. */
+  :global(:root[data-theme='dark']) .lens-cover-img {
+    filter: grayscale(0.85) brightness(0.9);
+    opacity: 0.14;
+  }
+  :global(:root[data-theme='dark']) .lens-card:hover .lens-cover-img {
+    opacity: 0.26;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lens-cover-img { transition: opacity 0.25s ease; }
+    .lens-card:hover .lens-cover-img { transform: none; }
+  }
+</style>
