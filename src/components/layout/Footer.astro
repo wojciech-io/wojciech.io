@@ -1,12 +1,30 @@
 ---
 import { SITE } from '../../data/site';
 import { getUiStringsForPath, getLocaleFromPath, localizeHref } from '../../data/uiStrings';
+import FooterNewsletter from './FooterNewsletter.astro';
 
 const year = new Date().getFullYear();
 
 const pathname = Astro.url.pathname;
 const t = getUiStringsForPath(pathname);
 const locale = getLocaleFromPath(pathname);
+
+// /subscribe has the full sign-up band above the fold; a second form in the
+// footer there would compete with it.
+const showNewsletter = !pathname.startsWith('/subscribe');
+
+// Machine-readable identity for the newsletter, on every page. Search
+// engines and LLMs get the what/who/where without parsing the band markup.
+const espressoSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Periodical',
+  name: 'AI Espresso',
+  description:
+    'A free daily newsletter by Wojciech Łuszczyński. Three stories on AI models, agents, and GTM systems every weekday morning, each with a why it matters, readable in three minutes.',
+  url: SITE.url + '/subscribe/',
+  inLanguage: 'en',
+  publisher: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: SITE.url + '/' },
+};
 
 const contactHref = localizeHref('/contact/', locale);
 const insightsHref = locale === 'pl' ? '/pl/insights/' : locale === 'ar' ? '/ar/insights/' : '/insights/';
@@ -92,6 +110,9 @@ const connect = [
 
   <div class="relative mx-auto w-full max-w-6xl px-6">
 
+    <!-- ═══ AI ESPRESSO BAND ═══ -->
+    {showNewsletter && <FooterNewsletter />}
+
     <!-- ═══ DESKTOP (lg+): brand + 3 columns ═══ -->
     <div class="hidden lg:grid lg:grid-cols-[200px_1.6fr_1.1fr_0.9fr] lg:gap-x-10 lg:items-start py-14">
 
@@ -114,7 +135,7 @@ const connect = [
 
       <!-- Pages: 7 links flowed into 2 sub-columns so the column height
            matches Writing/Network instead of running far taller. -->
-      <div>
+      <nav aria-label={col.pages}>
         <p class="obs-label mb-5">
           {col.pages}
         </p>
@@ -125,10 +146,10 @@ const connect = [
             </li>
           ))}
         </ul>
-      </div>
+      </nav>
 
       <!-- Writing -->
-      <div>
+      <nav aria-label={col.writing}>
         <p class="obs-label mb-5">
           {col.writing}
         </p>
@@ -139,10 +160,10 @@ const connect = [
             </li>
           ))}
         </ul>
-      </div>
+      </nav>
 
       <!-- Network -->
-      <div>
+      <nav aria-label={col.network}>
         <p class="obs-label mb-5">
           {col.network}
         </p>
@@ -158,7 +179,7 @@ const connect = [
             </li>
           ))}
         </ul>
-      </div>
+      </nav>
 
     </div>
 
@@ -186,7 +207,7 @@ const connect = [
 
       <!-- Nav columns -->
       <div class="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3">
-        <div>
+        <nav aria-label={col.pages}>
           <p class="obs-label mb-3">
             {col.pages}
           </p>
@@ -197,9 +218,9 @@ const connect = [
               </li>
             ))}
           </ul>
-        </div>
+        </nav>
 
-        <div>
+        <nav aria-label={col.writing}>
           <p class="obs-label mb-3">
             {col.writing}
           </p>
@@ -210,9 +231,9 @@ const connect = [
               </li>
             ))}
           </ul>
-        </div>
+        </nav>
 
-        <div>
+        <nav aria-label={col.network}>
           <p class="obs-label mb-3">
             {col.network}
           </p>
@@ -228,7 +249,7 @@ const connect = [
               </li>
             ))}
           </ul>
-        </div>
+        </nav>
 
       </div>
     </div>
@@ -253,5 +274,7 @@ const connect = [
       </div>
     </div>
   </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(espressoSchema)} />
 </footer>
 
