@@ -3,138 +3,185 @@ import CTABand from '../ui/CTABand.astro';
 import { SITE } from '../../data/site';
 
 const lastUpdated = '2026-07-03';
+
+// Building: the freshest item leads and is flagged live; the rest are ongoing.
+const building = [
+  {
+    title: 'AI Espresso, a daily AI newsletter',
+    body: 'Just shipped and now live. A free weekday email: three stories on AI models, agents, and GTM systems every morning, each with a why it matters, readable before the espresso cools. Built on the site itself, double opt-in, no third-party wrapper.',
+    live: true,
+  },
+  {
+    title: 'wojciech.io as a working operating system',
+    body: 'The portfolio runs as live proof-of-work: the newsletter, case studies for shipped apps, AI GTM tools documented in public, and insights that show how the systems actually work, not just that they exist.',
+  },
+  {
+    title: 'GTM Agent Starter Pack',
+    body: 'Iterating on the Claude Code agent system for B2B outbound. Refining ICP scoring, extending the skills layer, and documenting the architecture for operators who want the system without the SaaS wrapper.',
+  },
+  {
+    title: 'Case studies for Relora, Ads Assistant, Akademia AI',
+    body: 'Writing the full build-and-deploy stories for each product: the problem, the system design, the stack decisions, and what it proved.',
+  },
+];
+
+const thinking = [
+  {
+    lead: "AI won't fix weak GTM.",
+    rest: " It will only make the chaos faster. Most B2B companies adding AI to their marketing don't have a capability problem. They have a clarity problem. Unclear ICP, weak positioning, undefined conversion logic. AI amplifies whatever's there, good or bad.",
+  },
+  {
+    lead: 'Content is not a publishing calendar.',
+    rest: " It's a compounding distribution and trust asset. The companies winning with content right now are the ones who treat it as infrastructure, not as a social media obligation.",
+  },
+  {
+    lead: 'The best GTM work is boring to describe and obvious in results.',
+    rest: " Nobody wants to hear about the CRM operating model you built. But it's the thing that's actually compounding.",
+  },
+];
+
+const exploring = [
+  { label: 'MCP tooling for GTM workflows', note: 'Extending Claude Code agents with custom MCP servers for CRM, research, and content operations.' },
+  { label: 'Audio-first learning formats', note: 'Testing completion and retention patterns on Akademia AI: what structure works when you remove the visual layer.' },
+  { label: 'Personal brand as a distribution system', note: 'Building in public as a compounding acquisition channel, not for vanity metrics, but as a testbed for GTM hypotheses.' },
+];
+
+const notDoing = [
+  'Pure branding or PR mandates without commercial architecture',
+  'Pre-product companies without a defined ICP',
+  "Strategy-only engagements that don't ship anything",
+];
 ---
 
-<!-- Header -->
-<section class="pt-10 pb-8 md:pt-20 md:pb-12 border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-3xl px-6">
-      <div class="flex items-center gap-3 mb-4">
+<!-- Hero: editorial header matching the homepage / lens heroes — grid backdrop,
+     accent eyebrow, large headline, and a live "last updated" badge. -->
+<section class="relative overflow-hidden border-b border-[var(--color-border)]">
+  <div class="hero-grid pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:44px_44px]" aria-hidden="true"></div>
+  <div class="relative mx-auto max-w-5xl px-6 pt-12 pb-10 md:pt-20 md:pb-14">
+    <div class="flex items-center gap-3 mb-5">
+      <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+      <span class="obs-label-accent">Now</span>
+    </div>
+    <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5 max-w-2xl" transition:name="page-title-now">
+      What I'm doing right now.
+    </h1>
+    <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-xl">
+      A snapshot of what I'm building, exploring, and thinking about. Updated when something changes.
+    </p>
+    <div class="mt-7 inline-flex items-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5">
+      <span class="now-live-dot" aria-hidden="true"></span>
+      <span class="obs-mono text-[11px] font-medium tracking-wide text-[var(--color-text-muted)]">Last updated {lastUpdated}</span>
+    </div>
+  </div>
+</section>
+
+<!-- Content -->
+<section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+  <div class="mx-auto max-w-5xl px-6 space-y-16">
+
+    <!-- Building: obs-panel cards, the same card language as the homepage. -->
+    <div>
+      <div class="flex items-center gap-3 mb-6">
         <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-        <span class="obs-label-accent">Now</span>
+        <span class="obs-label-accent">Building</span>
       </div>
-      <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-5" transition:name="page-title-now">
-        What I'm doing right now.
-      </h1>
-      <p class="text-lg text-[var(--color-text-muted)] leading-relaxed max-w-xl">
-        A snapshot of what I'm building, exploring, and thinking about. Updated when something changes.
-      </p>
-      <p class="mt-4 text-xs text-[var(--color-text-dim)]"><span>Last updated:</span> {lastUpdated}</p>
+      <div class="grid gap-4 md:grid-cols-2 md:gap-6">
+        {building.map((item) => (
+          <div class={`obs-panel card-hover p-6 ${item.live ? 'now-card-live' : ''}`}>
+            {item.live && (
+              <span class="now-live-tag obs-mono">
+                <span class="now-live-dot" aria-hidden="true"></span>
+                Now live
+              </span>
+            )}
+            <h2 class="text-base font-semibold text-[var(--color-text)] mb-2">{item.title}</h2>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{item.body}</p>
+          </div>
+        ))}
+      </div>
     </div>
-  </section>
 
-  <!-- Content -->
-  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-3xl px-6 space-y-14">
-
-      <!-- Building -->
-      <div>
-        <p class="obs-label-accent block mb-5">Building</p>
-        <div class="space-y-6">
-          <div class="border-l-2 border-[var(--color-accent)]/30 pl-5">
-            <h2 class="text-base font-semibold text-[var(--color-text)] mb-1">AI Espresso, a daily AI newsletter</h2>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-              Just shipped and now live. A free weekday email: three stories on AI models, agents, and GTM systems every morning, each with a why it matters, readable before the espresso cools. Built on the site itself, double opt-in, no third-party wrapper.
-            </p>
-          </div>
-          <div class="border-l-2 border-[var(--color-border-2)] pl-5">
-            <h2 class="text-base font-semibold text-[var(--color-text)] mb-1">wojciech.io as a working operating system</h2>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-              The portfolio runs as live proof-of-work: the newsletter, case studies for shipped apps, AI GTM tools documented in public, and insights that show how the systems actually work, not just that they exist.
-            </p>
-          </div>
-          <div class="border-l-2 border-[var(--color-border-2)] pl-5">
-            <h2 class="text-base font-semibold text-[var(--color-text)] mb-1">GTM Agent Starter Pack</h2>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-              Iterating on the Claude Code agent system for B2B outbound. Refining ICP scoring, extending the skills layer, and documenting the architecture for operators who want the system without the SaaS wrapper.
-            </p>
-          </div>
-          <div class="border-l-2 border-[var(--color-border-2)] pl-5">
-            <h2 class="text-base font-semibold text-[var(--color-text)] mb-1">Case studies for Relora, Ads Assistant, Akademia AI</h2>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
-              Writing the full build-and-deploy stories for each product: the problem, the system design, the stack decisions, and what it proved.
-            </p>
-          </div>
-        </div>
+    <!-- Thinking about: prose, kept as prose for texture, each with an accent
+         lead-in and a quiet accent rule down the side. -->
+    <div>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">Thinking about</span>
       </div>
-
-      <!-- Thinking about -->
-      <div>
-        <p class="obs-label-accent block mb-5">Thinking about</p>
-        <div class="space-y-5 text-sm text-[var(--color-text-muted)] leading-relaxed">
-          <p>
-            <span class="font-semibold text-[var(--color-text)]">AI won't fix weak GTM.</span><span> It will only make the chaos faster. Most B2B companies adding AI to their marketing don't have a capability problem. They have a clarity problem. Unclear ICP, weak positioning, undefined conversion logic. AI amplifies whatever's there, good or bad.</span>
+      <div class="space-y-5 max-w-2xl">
+        {thinking.map(({ lead, rest }) => (
+          <p class="border-l-2 border-[var(--color-accent)]/25 pl-5 text-sm text-[var(--color-text-muted)] leading-relaxed">
+            <span class="font-semibold text-[var(--color-text)]">{lead}</span><span>{rest}</span>
           </p>
-          <p>
-            <span class="font-semibold text-[var(--color-text)]">Content is not a publishing calendar.</span><span> It's a compounding distribution and trust asset. The companies winning with content right now are the ones who treat it as infrastructure, not as a social media obligation.</span>
-          </p>
-          <p>
-            <span class="font-semibold text-[var(--color-text)]">The best GTM work is boring to describe and obvious in results.</span><span> Nobody wants to hear about the CRM operating model you built. But it's the thing that's actually compounding.</span>
-          </p>
-        </div>
+        ))}
       </div>
+    </div>
 
-      <!-- Exploring -->
-      <div>
-        <p class="obs-label-accent block mb-5">Exploring</p>
-        <div class="space-y-4">
-          {[
-            { label: 'MCP tooling for GTM workflows', note: 'Extending Claude Code agents with custom MCP servers for CRM, research, and content operations.' },
-            { label: 'Audio-first learning formats', note: 'Testing completion and retention patterns on Akademia AI: what structure works when you remove the visual layer.' },
-            { label: 'Personal brand as a distribution system', note: 'Building in public as a compounding acquisition channel, not for vanity metrics, but as a testbed for GTM hypotheses.' },
-          ].map(({ label, note }) => (
-            <div class="flex gap-4">
-              <span class="mt-1 shrink-0 w-1.5 h-1.5 rounded-full bg-[var(--color-accent)]" aria-hidden="true" />
-              <div>
-                <p class="text-sm font-medium text-[var(--color-text)]">{label}</p>
-                <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{note}</p>
-              </div>
+    <!-- Exploring: three cards, the same rhythm as the homepage Three Lenses. -->
+    <div>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">Exploring</span>
+      </div>
+      <div class="grid gap-4 md:grid-cols-3 md:gap-6">
+        {exploring.map(({ label, note }) => (
+          <div class="obs-panel card-hover p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
+              <p class="text-sm font-medium text-[var(--color-text)]">{label}</p>
             </div>
-          ))}
-        </div>
-      </div>
-
-      <!-- Not doing -->
-      <div>
-        <p class="obs-label-accent block mb-5">Not doing right now</p>
-        <ul class="space-y-2 text-sm text-[var(--color-text-muted)]">
-          <li class="flex gap-3"><span class="text-[var(--color-text-dim)] shrink-0">-</span> <span>Pure branding or PR mandates without commercial architecture</span></li>
-          <li class="flex gap-3"><span class="text-[var(--color-text-dim)] shrink-0">-</span> <span>Pre-product companies without a defined ICP</span></li>
-          <li class="flex gap-3"><span class="text-[var(--color-text-dim)] shrink-0">-</span> <span>Strategy-only engagements that don't ship anything</span></li>
-        </ul>
-      </div>
-
-      <!-- Follow: the espresso panel, same inverted language as the
-           subscribe page's sign-up band. -->
-      <div class="espresso-follow p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-        <div class="flex items-center gap-4 min-w-0">
-          <img src="/images/ai-espresso-cup.png" width="36" height="36" alt="" class="shrink-0 rounded-[10px]" loading="lazy" decoding="async" />
-          <div>
-            <p class="text-sm font-semibold mb-1" style="color: #f5f3ec;">AI Espresso, a day of AI in one sip</p>
-            <p class="text-sm" style="color: rgb(245 243 236 / 0.68);">Three stories that change the work, under three minutes, weekday mornings.</p>
+            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{note}</p>
           </div>
-        </div>
-        <a
-          href="/subscribe/"
-          class="shrink-0 inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors text-sm"
-        >
-          Subscribe free
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
+        ))}
       </div>
-
     </div>
-  </section>
 
-  <!-- Inspired by nownownow.com -->
-  <section class="py-8 border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-3xl px-6">
-      <p class="text-xs text-[var(--color-text-dim)]">
-        This is a <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-text)] transition-colors">/now page</a>: a snapshot of what I'm doing at this point in time.
-      </p>
+    <!-- Not doing: a quiet inset list, deliberately lower-contrast. -->
+    <div>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">Not doing right now</span>
+      </div>
+      <ul class="grid gap-3 sm:grid-cols-3">
+        {notDoing.map((item) => (
+          <li class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--color-text-muted)] leading-snug">
+            <span class="text-[var(--color-text-dim)]">&times;</span> {item}
+          </li>
+        ))}
+      </ul>
     </div>
-  </section>
+
+    <!-- Follow: the inverted espresso panel, same language as the subscribe band. -->
+    <div class="espresso-follow p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+      <div class="flex items-center gap-4 min-w-0">
+        <img src="/images/ai-espresso-cup.png" width="36" height="36" alt="" class="shrink-0 rounded-[10px]" loading="lazy" decoding="async" />
+        <div>
+          <p class="text-sm font-semibold mb-1" style="color: #f5f3ec;">AI Espresso, a day of AI in one sip</p>
+          <p class="text-sm" style="color: rgb(245 243 236 / 0.68);">Three stories that change the work, under three minutes, weekday mornings.</p>
+        </div>
+      </div>
+      <a
+        href="/subscribe/"
+        class="shrink-0 inline-flex items-center gap-2 bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold px-6 py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors text-sm"
+      >
+        Subscribe free
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- Inspired by nownownow.com -->
+<section class="py-8 border-b border-[var(--color-border)]">
+  <div class="mx-auto max-w-5xl px-6">
+    <p class="text-xs text-[var(--color-text-dim)]">
+      This is a <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--color-text)] transition-colors">/now page</a>: a snapshot of what I'm doing at this point in time.
+    </p>
+  </div>
+</section>
 
 <CTABand
   heading="Working on something adjacent?"
@@ -152,5 +199,42 @@ const lastUpdated = '2026-07-03';
     background:
       radial-gradient(120% 150% at 50% -30%, color-mix(in srgb, var(--color-accent-cta) 11%, transparent) 0%, transparent 60%),
       #17130e;
+  }
+
+  /* Featured (live) building card: accent border + a hairline top rule, so the
+     freshest item reads as the freshest without shouting. */
+  .now-card-live {
+    border-color: color-mix(in srgb, var(--color-accent-cta) 45%, var(--color-border));
+    position: relative;
+  }
+
+  .now-live-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-accent-hi);
+  }
+
+  /* Pulsing live dot, shared by the header badge and the live tag. */
+  .now-live-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--color-accent-cta);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent-cta) 70%, transparent);
+    animation: now-pulse 2.4s ease-out infinite;
+  }
+  @keyframes now-pulse {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent-cta) 55%, transparent); }
+    70%  { box-shadow: 0 0 0 6px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .now-live-dot { animation: none; }
   }
 </style>
