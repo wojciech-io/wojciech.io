@@ -134,5 +134,70 @@ const posts = (await getCollection('insights', isLocalePost(locale)))
       </a>
     </div>
 
+    <!-- AI Espresso invite: a slim espresso strip after the notes. The full
+         sign-up form lives in the footer band; this one just points there. -->
+    <a href="/subscribe/" dir="ltr" class="espresso-invite">
+      <img src="/images/ai-espresso-cup.png" width="26" height="26" alt="" loading="lazy" style="border-radius: 8px; flex-shrink: 0;" />
+      <span class="espresso-invite-copy">
+        <span class="obs-mono espresso-invite-name">AI Espresso</span>
+        <span class="espresso-invite-pitch">A day of AI, in one sip. Free, every weekday morning.</span>
+      </span>
+      <span class="obs-mono espresso-invite-cta">Subscribe →</span>
+    </a>
+
   </div>
 </section>
+
+<style>
+  /* The same fixed espresso palette as the footer band, one line tall. */
+  .espresso-invite {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-top: 2rem;
+    padding: 0.875rem 1.125rem;
+    border-radius: var(--radius-card);
+    border: 1px solid color-mix(in srgb, var(--color-accent-cta) 30%, #2b261d);
+    background:
+      radial-gradient(120% 200% at 8% -60%, color-mix(in srgb, var(--color-accent-cta) 12%, transparent) 0%, transparent 55%),
+      #17130e;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .espresso-invite:hover {
+    border-color: color-mix(in srgb, var(--color-accent-cta) 55%, #2b261d);
+  }
+  .espresso-invite-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+    flex: 1;
+  }
+  @media (min-width: 640px) {
+    .espresso-invite-copy { flex-direction: row; align-items: baseline; gap: 0.75rem; }
+  }
+  .espresso-invite-name {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-accent-cta);
+    white-space: nowrap;
+  }
+  .espresso-invite-pitch {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgb(245 243 236 / 0.68);
+  }
+  .espresso-invite-cta {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #f5f3ec;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+  .espresso-invite:hover .espresso-invite-cta { color: var(--color-accent-cta); }
+</style>
