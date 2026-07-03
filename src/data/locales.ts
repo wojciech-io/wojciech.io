@@ -389,4 +389,7 @@ export const homeAlternates = [
     lang: locale.hreflang,
     href: `https://wojciech.io/${locale.path}/`,
   })),
+  // Arabic is a standalone RTL homepage (not part of localizedHomeList), but it
+  // is a full home equivalent, so it belongs in the reciprocal hreflang cluster.
+  { lang: 'ar', href: 'https://wojciech.io/ar/' },
 ];
