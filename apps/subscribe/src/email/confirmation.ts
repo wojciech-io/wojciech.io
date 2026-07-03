@@ -128,7 +128,7 @@ export function confirmationEmail({ email, confirmUrl }: ConfirmationEmailProps)
                     <table cellpadding="0" cellspacing="0" role="presentation">
                       <tr>
                         <td style="vertical-align: middle;">
-                          <img src="https://wojciech.io/images/wojciech-avatar-warm.webp" width="40" height="40" alt="Wojciech Łuszczyński" style="display: block; border-radius: 50%; border: 1px solid #dcdbd3;" />
+                          <img src="https://wojciech.io/images/wojciech-avatar-email.png" width="40" height="40" alt="Wojciech Łuszczyński" style="display: block; border-radius: 50%; border: 1px solid #dcdbd3;" />
                         </td>
                         <td style="width: 12px;"></td>
                         <td style="vertical-align: middle;">
