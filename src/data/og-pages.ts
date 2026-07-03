@@ -176,6 +176,12 @@ export const OG_PAGES: Record<string, OGPageMeta> = {
     eyebrow: 'النمو',
     description: 'حلقات، وأتمتة، ومعمارية إيراد تتراكم بمرور الوقت.',
   },
+  'ar-cv': {
+    lang: 'ar',
+    title: 'فويتشيك لوشتشينسكي · السيرة الذاتية',
+    eyebrow: 'السيرة الذاتية',
+    description: 'مهندس GTM ومشغّل نمو. أنظمة إيراد قائمة على الذكاء الاصطناعي لشركات B2B SaaS.',
+  },
 };
 
 /** The set of page slugs that will be pre-rendered by getStaticPaths. */
