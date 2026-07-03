@@ -10,6 +10,7 @@ const EXPECTED_HOME_ALTERNATES = [
   ['it-IT', 'https://wojciech.io/it/'],
   ['es-ES', 'https://wojciech.io/es/'],
   ['pl', 'https://wojciech.io/pl/'],
+  ['ar', 'https://wojciech.io/ar/'],
 ] as const;
 
 const EXPECTED_ABOUT_ALTERNATES = [

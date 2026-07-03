@@ -36,7 +36,7 @@ const id = `tabs-${Math.random().toString(36).slice(2, 8)}`;
       <button
         role="tab"
         aria-selected={i === defaultTab ? 'true' : 'false'}
-        aria-controls={`${id}-panel-${i}`}
+        aria-controls={hasSlots ? undefined : `${id}-panel-${i}`}
         data-tab-index={i}
         class:list={['tabs-trigger', { active: i === defaultTab }]}
       >
@@ -135,6 +135,19 @@ const id = `tabs-${Math.random().toString(36).slice(2, 8)}`;
     const panels = block.querySelectorAll<HTMLElement>('[data-panel-index]');
     const slotPanels = block.querySelectorAll<HTMLElement>('[data-tab]');
     const indicator = block.querySelector<HTMLElement>('.tabs-indicator');
+
+    // Slot panels are author-supplied <div data-tab="i"> with no id/role, so the
+    // buttons' aria-controls would dangle. Wire the tab<->panel relationship here:
+    // give each panel a matching id + role=tabpanel and point its trigger at it.
+    const blockId = block.dataset.tabs;
+    slotPanels.forEach((panel) => {
+      const i = Number(panel.dataset.tab);
+      const panelId = `${blockId}-panel-${i}`;
+      panel.id = panelId;
+      panel.setAttribute('role', 'tabpanel');
+      const trigger = triggers[i];
+      if (trigger) trigger.setAttribute('aria-controls', panelId);
+    });
 
     function activate(index: number) {
       triggers.forEach((t, i) => {

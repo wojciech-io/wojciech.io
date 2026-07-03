@@ -15,7 +15,10 @@ const marqueeItems = variant === 'marquee' ? [...companyLogos, ...companyLogos] 
 
 {variant === 'marquee' ? (
   <div class:list={['brand-marquee', className]} role="group" aria-label="Companies and brands I have operated with">
-    <div class="brand-track">
+    <!-- tabindex makes the strip keyboard-scrollable: under reduced-motion the
+         track becomes overflow-x:auto, and axe (scrollable-region-focusable, WCAG
+         2.1.1) requires a scrollable region to be reachable by keyboard. -->
+    <div class="brand-track" tabindex="0">
       {marqueeItems.map((l, i) => (
         <img
           src={l.src}
