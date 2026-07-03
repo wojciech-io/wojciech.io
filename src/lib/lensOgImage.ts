@@ -147,7 +147,9 @@ export async function renderLensOgImage(lens: LensKey) {
                     },
                   },
                 },
-                // Left fade: the tonal dissolve into the background.
+                // Left seam only: a narrow blend so the photo meets the dark content
+                // column without a hard vertical line. The photo stays full colour —
+                // the lens subject sits on the right of each frame, past the seam.
                 {
                   type: 'div',
                   props: {
@@ -155,35 +157,7 @@ export async function renderLensOgImage(lens: LensKey) {
                       position: 'absolute',
                       inset: 0,
                       backgroundImage:
-                        `linear-gradient(to right, ${BG} 0%, rgba(11,10,7,0.74) 24%, rgba(11,10,7,0.32) 54%, rgba(11,10,7,0) 82%)`,
-                    },
-                  },
-                },
-                // Bottom fade to seat the frame.
-                {
-                  type: 'div',
-                  props: {
-                    style: {
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      height: '150px',
-                      backgroundImage: `linear-gradient(to top, ${BG} 0%, rgba(11,10,7,0) 100%)`,
-                    },
-                  },
-                },
-                // Top fade.
-                {
-                  type: 'div',
-                  props: {
-                    style: {
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      top: 0,
-                      height: '110px',
-                      backgroundImage: `linear-gradient(to bottom, ${BG} 0%, rgba(11,10,7,0) 100%)`,
+                        `linear-gradient(to right, ${BG} 0%, rgba(11,10,7,0.72) 9%, rgba(11,10,7,0) 30%)`,
                     },
                   },
                 },
