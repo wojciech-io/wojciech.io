@@ -28,6 +28,10 @@ const GLOSSARY = [
   'Pipedrive', 'Clay', 'Notion AI', 'Zapier',
   'Astro', 'MDX', 'wojciech.io', 'app.wojciech.io', 'subscribe.wojciech.io',
   'Operating Model', 'pipeline',
+  // Kept English by corpus convention (outbound declines as a PL loanword);
+  // proper nouns from the batch below so DeepL can't mangle them.
+  'outbound', 'Claude', 'Anthropic', 'Apollo', 'n8n', 'Resend', 'micro-SaaS',
+  'macOS', 'MacBook', 'SwiftUI', 'Swift', 'SEO',
 ];
 
 // JSX attribute names whose values should be translated.

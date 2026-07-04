@@ -1,0 +1,196 @@
+---
+title: "Agent GTM, który prowadzi outbound, wzbogaca CRM i kosztuje 2 dolary za przebieg"
+description: "Bez Claya, bez creditów Apollo, bez n8n. Czterowarstwowy agent Claude Code, który natywnie ogarnia research do outboundu, szkice sekwencji i wzbogacanie CRM."
+publishedAt: "2025-04-18"
+tags:
+  - "AI"
+  - "GTM"
+  - "Claude Code"
+  - "MCP"
+featured: true
+draft: false
+coverType: "terminal"
+locale: "pl"
+translationOf: "how-to-build-gtm-ai-agent-outbound-crm"
+tldr:
+  - "Stos 4-warstwowy: tożsamość operatora w CLAUDE.md → narzędzia MCP → pliki pamięci klienta → 5 skilli operatora"
+  - "Bez Claya, bez creditów Apollo: Claude Code natywnie ogarnia research, wzbogacanie i szkice sekwencji"
+  - "Koszt pełnego przebiegu outboundu: ~2–8 USD wobec 200–500 USD miesięcznie za równoważny stos narzędzi"
+  - "System działa jak operator, nie chatbot: uporządkowane wyniki, trwała pamięć, prawdziwe integracje"
+  - "Wielokrotnego użytku u różnych klientów: podmieniasz plik pamięci, resztę stosu zostawiasz"
+---
+
+Większość treści o AI w GTM dzieli się na dwie kategorie: poradniki do promptów pod ChatGPT albo porównania narzędzi za 500 dolarów miesięcznie, z których i tak nikt realnie nie korzysta. To nie jest ani jedno, ani drugie.
+
+Oto opis działającego systemu, który zbudowałem i który utrzymuję: czterowarstwowy stos agenta [Claude Code](https://docs.anthropic.com/en/docs/claude-code), który ogarnia research do outboundu, szkice sekwencji, wzbogacanie CRM i ocenę ICP. Bez [Claya](https://clay.com). Bez creditów [Apollo](https://apollo.io) za wzbogacanie. Bez przepływów [n8n](https://n8n.io), które psują się co trzy tygodnie.
+
+Wystarczy Claude Code, kilka narzędzi z [MCP](https://modelcontextprotocol.io), dobrze zorganizowany plik CLAUDE.md (pobierz [szablon startowy](/pl/bites/)) oraz pięć połączonych ze sobą umiejętności operatorów.
+
+---
+
+## Dlaczego Claude Code zamiast Clay
+
+[Clay](https://www.clay.com/) doskonale spełnia swoje zadanie: oferuje ustrukturyzowane procesy wzbogacania danych z wizualnym interfejsem i modelem kredytowym dla każdego wiersza. Korzystałem z tego narzędzia. Jest ono naprawdę przydatne dla zespołów, które potrzebują wzbogacania danych na dużą skalę, ale nie dysponują zasobami inżynieryjnymi.
+
+Ma jednak pewne ograniczenia, które mają znaczenie dla mojego sposobu pracy:
+
+- Kupujesz punkty wzbogacające dane, a nie inteligencję. Clay przekazuje dane przez zewnętrznych dostawców: [Clearbit](https://clearbit.com/), [Apollo](https://www.apollo.io/) oraz narzędzi do zbierania danych z LinkedIn; rozliczenie odbywa się za każdy wiersz. Warstwa logiki LLM jest uboga.
+- Wizualny interfejs pipeline jest potężny, ale kruchy. Złożona logika staje się trudna do sprawdzenia, wersjonowania lub przekazania.
+- Nie generuje tekstu. Można pobrać dane do zmiennej i wstawić je do szablonu, ale brakuje rzeczywistego uzasadnienia, *dlaczego ten potencjalny klient jest ważny dla tego konta w tym momencie*.
+
+Claude Code: a konkretnie pętla agenta przez SDK, z wbudowanymi narzędziami MCP: pozwala mi stworzyć coś innego: system, który **analizuje kontekst, ocenia dopasowanie, generuje treść i aktualizuje rekordy**: wszystko w jednym przebiegu. To inteligencja jest produktem, a nie infrastruktura.
+
+---
+
+## Czterowarstwowa konstrukcja
+
+System składa się z czterech elementów, które współdziałają ze sobą:
+
+### Warstwa 1: CLAUDE.md: instrukcja dla operatora
+
+Każda sesja agenta Claude Code rozpoczyna się od odczytania pliku `CLAUDE.md`. Nie jest to dokumentacja. Jest to plik z instrukcjami: odpowiednik tego, co przekazałbyś młodszemu specjaliście ds. pozyskiwania klientów (SDR) w jego pierwszym dniu pracy, z tą różnicą, że model odczytuje go przy każdym uruchomieniu.
+
+Moja lista obejmuje:
+
+- Definicja ICP (sygnały firmograficzne, technograficzne i behawioralne)
+- Ton i styl komunikacji w działaniach outreachowych (bezpośredni, bez modnych haseł, na zasadzie „operator do operatora”)
+- Czym różni się kwalifikowany lead od osoby marnującej czas
+- Jak radzić sobie z przypadkami granicznymi (brak profilu na LinkedIn, rynki zagraniczne, podejście „inbound” kontra outbound)
+- Sztywne zasady (nigdy nie wymieniaj konkurentów z nazwy, nigdy nie używaj zwrotu „Mam nadzieję, że wszystko u Ciebie w porządku”)
+
+Plik CLAUDE.md jest najważniejszym plikiem w systemie. To właśnie w nim zapisywane są decyzje operatora, dzięki czemu model nie musi zgadywać.
+
+### Warstwa 2: Narzędzia MCP: warstwa dostępu do danych
+
+W moim środowisku uruchamiam cztery serwery MCP:
+
+**Wyszukiwanie w sieci** (przez Brave MCP lub Exa MCP): żeby zdobyć informacje o firmach w czasie rzeczywistym, newsy o finansowaniu, ogłoszenia o pracy i najnowsze treści. Zastępuje to etap „wzbogacania danych metodą kaskadową” znany z Clay.
+
+**Automatyzacja przeglądarki** (przez Puppeteer MCP): dla stron, które blokują boty. Profile firm na LinkedIn, część stron z cennikami, dane z Glassdoora o wielkości zespołów i tempie wydatków.
+
+**Pamięć / system plików** (przez system plików Claude MCP): do odczytu i zapisu plików klienta: eksport CSV z CRM, szablony sekwencji oraz log aktywności na kontaktowanych kontach.
+
+**Niestandardowy system punktacji MCP** (stworzony w ciągu weekendu przy użyciu zestawu SDK MCP): przyjmuje ustrukturyzowany obiekt JSON (dane firmy + kryteria ICP) i zwraca wynik dopasowania wraz z uzasadnieniem. Było to najtrudniejsze do zrealizowania, ale też najbardziej wartościowe rozwiązanie: daje agentowi spójną skalę punktacji w kolejnych przebiegach.
+
+### Warstwa 3: Pliki w pamięci klienta
+
+Każdy klient otrzymuje folder:
+
+<CodeBlock
+  title="/klienci/acme-corp/"
+  lang="text"
+  code={`icp.md           # who we're targeting and why
+contacted.csv    # running log of touched accounts
+sequences/       # approved sequence variants
+research/        # per-account research notes`}
+  caption="Agent odczytuje je na początku sesji. Każda sekwencja opiera się na rzeczywistych badaniach."
+/>
+### Poziom 4: Pięć umiejętności
+
+Umiejętności to nazwane podzadania, które agent może uruchomić. Mam pięć:
+
+<Accordion
+  items={[
+    { title: '/badania [firma]', content: 'Wyświetla pełny profil firmy: dane firmograficzne, najnowsze wiadomości, informacje o stosowanych technologiach, liczebność zespołu, stan finansowania, kluczowi interesariusze. Zapisuje dane w pliku research/[nazwa_firmy].md.' },
+    { title: '/wynik [firma]', content: 'Odczytuje plik badawczy oraz definicję ICP i zwraca wynik dopasowania w skali od 1 do 10 wraz z trzema zdaniami uzasadnienia. Wynik poniżej 6 = pominąć. Wynik 8 lub wyższy = priorytet.' },
+    { title: '/projekt [firma] [wariant sekwencji]', content: 'Odczytuje plik z wynikami badań, ocenę oraz szablon sekwencji, a następnie tworzy spersonalizowaną pierwszą wiadomość e-mail oraz dwie kolejne wiadomości uzupełniające. Nigdy nie korzysta z pól scalania. Zawsze tworzy treść od podstaw w oparciu o rzeczywiste wyniki badań.' },
+    { title: '/enrich [ścieżka-do-pliku-csv]', content: 'Przetwarza zbiorczo plik CSV zawierający nazwy firm, uruchamia dla każdej z nich polecenia /research i /score, a następnie generuje wzbogacony plik CSV zawierający wyniki i oznaczenia priorytetów. Jest to zamiennik polecenia `Clay`.' },
+    { title: '/log [firma] [status]', content: 'Aktualizuje plik „contacted.csv” o status konta i sygnaturę czasową. Pozwala utrzymać porządek w dzienniku operacji bez konieczności ręcznego wprowadzania danych.' },
+  ]}
+  openFirst
+/>
+
+---
+
+## Prawdziwy bieg: krok po kroku
+
+Oto jak wygląda typowa sesja, kiedy pracuję nad nową listą klientów:
+
+1. Umieść plik CSV zawierający 50 nazw firm w katalogu `/clients/acme-corp/`
+2. Uruchom: `claude /enrich clients/acme-corp/new-accounts.csv`
+3. Agent przechodzi cyklicznie przez każde konto: wyszukiwanie w sieci → w razie potrzeby zebranie danych z przeglądarki → ocena → utworzenie pliku z wynikami analizy → dołączenie do wzbogaconego pliku CSV
+4. 20 minut później: wzbogacony plik CSV zawierający oceny dopasowania, oznaczenia priorytetów oraz plik z wynikami analizy dla każdego konta z oceną powyżej 6
+5. Dla 10 najlepszych: `claude /draft [nazwa firmy] v2`: po jednym na raz, sprawdzając każdy szkic przed zatwierdzeniem
+6. Zaloguj wysłane sekwencje za pomocą `/log`
+
+Całkowity czas potrzebny na listę zawierającą 50 kont: około 45 minut pracy agenta bez nadzoru oraz 30 minut na moją weryfikację. Porównywalny proces obejmujący Clay i tworzenie treści: co najmniej 3–4 godziny, a jakość tekstów nie jest porównywalna.
+
+---
+
+## Ile to kosztuje
+
+Model kosztowy ma znaczenie. Oto przybliżony podział kosztów na jeden cykl wzbogacania danych obejmujący 50 kont:
+
+- Interfejs API Claude (claude-sonnet-4 przy obecnych cenach): ~2–4 USD za pełne uruchomienie, w zależności od głębokości analizy
+- Wywołania narzędzi MCP: interfejs API Brave Search kosztuje ~0,003 USD za zapytanie; Puppeteer jest hostowany we własnym zakresie, więc ponoszone są jedynie koszty obliczeniowe
+- Niestandardowy system punktacji MCP: minimalne koszty, polega jedynie na przesyłaniu danych wejściowych i wyjściowych w postaci ustrukturyzowanego JSON
+
+Porównajmy to z usługą Clay: 800–2 400 USD miesięcznie za plan dający znaczące kredyty na wzbogacanie treści oraz LLM wierszy. Biorąc pod uwagę moją skalę działalności i sposób wykorzystania, stos agentów kosztuje około 5–10% tej kwoty, dając jednocześnie lepszą jakość wyników zarówno na poziomie wnioskowania, jak i tworzenia treści.
+
+Wadą jest to, że stworzenie tego rozwiązania zajęło sporo czasu. Prawdopodobnie około 20 godzin, uwzględniając plik CLAUDE.md, konfigurację MCP, umiejętności oraz narzędzie do oceny wyników. Dla zespołu, który nie dysponuje takimi możliwościami, właściwym rozwiązaniem jest Clay. Dla operatora, który może poświęcić czas na stworzenie rozwiązania, inwestycja ta szybko się zwraca.
+
+---
+
+## Struktura CLAUDE.md, z której korzystam
+
+Ponieważ jest to element, który najczęściej się powtarza, oto struktura szablonu, na którą się zdecydowałem:
+
+<CodeBlock
+  title="Szablon CLAUDE.md"
+  lang="markdown"
+  code={`# GTM Agent: CLAUDE.md
+
+## Who you are
+You are a B2B GTM research and outreach agent. You operate on behalf of [Client].
+Your job is to research accounts, score fit, and draft outbound sequences.
+
+## ICP definition
+**Firmographic:** Company size: [range] | Industry: [list] | Geography: [regions]
+**Technographic:** Stack signals that indicate fit vs disqualification
+**Behavioral:** Buying intent signals, timing signals
+
+## Tone and rules
+- Never use: "I hope this finds you well", "synergies"
+- Always: lead with a specific observation, not a generic compliment
+- Length: first email max 100 words. Follow-ups max 60 words.
+
+## Hard stops
+If an account scores below 6, do not draft. Log as "Low fit: skip".
+If you cannot find LinkedIn or website, log as "Research blocked" and skip.`}
+  caption="Wpisz w nawiasach dane specyficzne dla klienta. Model odczytuje je na początku każdej sesji."
+/>
+
+---
+
+## Pakiet startowy
+
+Udostępniam główne elementy tego projektu jako **Claude Code GTM Agent Starter Pack**: szablon CLAUDE.md, definicje umiejętności, strukturę folderów oraz kod źródłowy algorytmu punktacji MCP.
+
+Jest na GitHubie. Jest darmowy. Zrobiłem go z myślą o operatorach GTM, którzy chcą zbudować to sami, zamiast czekać, aż firma SaaS wypuści gotowca za 400 dolarów miesięcznie.
+
+Pakiet zakłada, że:
+- Posiadasz klucz API serwisu Claude
+- Potrafisz bez problemu uruchomić polecenie `Claude Code` w terminalu
+- Znasz na tyle dobrze swój własny plik ICP, aby wypełnić plik CLAUDE.md
+
+Jeśli te trzy warunki są spełnione, już w ciągu jednego popołudnia możesz uruchomić działającego agenta ds. wzbogacania treści i działań zewnętrznych.
+
+---
+
+## Co dalej?
+
+Dodaję do stosu dwie rzeczy:
+
+**Synchronizacja CRM**: dwukierunkowe połączenie MCP z platformą HubSpot, które zapisuje wzbogacone dane dotyczące kont bezpośrednio w rekordach kontaktów/firm bez konieczności ręcznego importowania plików CSV.
+
+**Monitorowanie sygnałów**: lekki skrypt cron, który co tydzień uruchamia polecenie `/score` wobec listy obserwowanych kont i sygnalizuje czynniki sprzyjające ponownemu zaangażowaniu (nowe finansowanie, zmiana kierownictwa, ogłoszenia o pracy na odpowiednie stanowiska).
+
+Oba projekty są w trakcie realizacji. Opiszę je tutaj, gdy osiągną stabilną wersję.
+
+---
+
+Jeśli tworzysz coś podobnego lub chcesz zobaczyć, jak działa ten pakiet startowy, [umów się na rozmowę](/pl/contact/#book-call). Chętnie omówię z Tobą jego architekturę.
+
+---
+
+**Zobacz też:** [GTM AI Architektura agenta: przewodnik po czterowarstwowej strukturze](/pl/insights/gtm-ai-agent-four-layer-architecture-guide) · [CRM B2B jako system operacji przychodowych: jak go prawidłowo przebudować](/pl/insights/b2b-crm-revenue-operations-system-guide)

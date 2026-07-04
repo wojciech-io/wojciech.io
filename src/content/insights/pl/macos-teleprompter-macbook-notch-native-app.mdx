@@ -1,0 +1,83 @@
+---
+title: "Teleprompter na macOS pod notch MacBooka: budowa natywnej aplikacji w Swift"
+description: "Jak zbudowałem natywny teleprompter na macOS, który wykorzystuje notch MacBooka, żeby trzymać notatki blisko kamery i nie tracić kontaktu wzrokowego na rozmowach."
+publishedAt: "2026-04-10"
+tags:
+  - "macOS"
+  - "Swift"
+  - "Codex"
+  - "AI-built"
+  - "Products"
+featured: false
+draft: false
+coverType: "product"
+category: "Products"
+locale: "pl"
+translationOf: "macos-teleprompter-macbook-notch-native-app"
+tldr:
+  - "Natywna aplikacja na macOS zbudowana w Codex + Xcode: bez wcześniejszego doświadczenia w Swift"
+  - "Główny pomysł: notatki krążą wokół notcha kamery, więc kontakt wzrokowy na rozmowach zostaje naturalny"
+  - "Codex ogarniał składnię Swift; ja ogarniałem decyzje produktowe, UX i pętle iteracji"
+  - "Wydanie natywnej aplikacji ze wsparciem AI to teraz realny, samodzielny projekt na weekend"
+---
+Kontakt wzrokowy podczas rozmów wideo to problem rozwiązany w teorii, ale w praktyce nie do zrealizowania. Twoje notatki są na drugim ekranie, w aplikacji Notion lub: co gorsza: w twojej głowie. W chwili, gdy spoglądasz w lewo, rozmówca to zauważa.
+
+Chciałem mieć aplikację, która wyświetla się dokładnie w miejscu, gdzie znajduje się aparat. W przypadku modelu „MacBook Pro” oznacza to obszar wycięcia u góry wyświetlacza. Tekst wyświetlany w tym miejscu jest wizualnie powiązany z aparatem, co po raz pierwszy pozwala czytanie przy zachowaniu naturalnego kontaktu wzrokowego.
+
+## Dlaczego warto budować, a nie kupować
+
+Przejrzałem dostępne aplikacje do wyświetlania tekstu. Większość z nich jest przeznaczona do nagrywania filmów: przewijają długi tekst ze stałą prędkością. Nie tego jednak potrzebowałem. Potrzebowałem:
+
+- Małe, trwałe okienko w pobliżu wycięcia
+- Punkty, które mogę przeglądać ręcznie
+- Brak przejęcia całego ekranu
+- Coś, co uruchamia się i znika bez zbędnych ceregieli
+
+W App Store nie znalazłem niczego, co by temu dorównywało. Postanowiłem więc stworzyć to sam.
+
+## Przebieg pracy w systemie Codex
+
+Zacząłem tę pracę, mając jedynie podstawową wiedzę na temat [Swift](https://developer.apple.com/swift/) i nie mając żadnego niedawnego doświadczenia z [AppKit](https://developer.apple.com/documentation/appkit). [Codex](https://openai.com/index/codex/) zmienił to, co było możliwe do zrealizowania.
+
+Przebieg pracy wyglądał następująco:
+
+<Steps
+  items={[
+    { title: "Opisz interfejs użytkownika", meta: "1", body: "Opis w przystępnym języku tego, czego chciałem: położenie okna, sposób działania, skróty klawiszowe." },
+    { title: "Codex generuje", meta: "2", body: "Swift /Struktura AppKit, kod szablonowy, elementy interfejsu okna, konfiguracja NSPanel." },
+    { title: "Przegląd i test", meta: "3", body: "Uruchom symulator, sprawdź zachowanie w odniesieniu do modelu mentalnego, dostosuj opis." },
+    { title: "Powtórz", meta: "4", body: "Powtarzaj tę czynność, aż zachowanie będzie zgodne z oczekiwaniami. Zazwyczaj wystarczy 3–5 rund na każdą funkcję." }
+  ]}
+/>
+Codex dobrze radzi sobie z elementami standardowymi: elementami interfejsu okna, skrótami klawiaturowymi, ikonami na pasku menu oraz konfiguracją NSPanel. Radzi sobie również z lukami koncepcyjnymi: wystarczy opisać zachowanie („Chcę, żeby to okno pozostawało na wierzchu, nie pojawiało się w Mission Control i nie przejmowało fokusu”), a w zamian otrzymuję odpowiednie flagi konfiguracyjne NSPanel.
+
+Codex nie zajmuje się kwestią estetyki. Początkowy rozmiar okna był nieodpowiedni, odstępy wydawały się zbyt małe, a wybór czcionek nie był trafiony. Każda decyzja dotycząca doświadczenia użytkownika należała do mnie. Codex realizuje zadania; ja podejmuję decyzje.
+
+## Kształt techniczny
+
+NotchCue to standardowe narzędzie macOS z kilkoma celowymi ograniczeniami:
+
+<Benchmark
+  rows={[
+    { label: 'NSPanel + .nonactivatingPanel', value: 'Nigdy nie odwraca uwagi od okna spotkania' },
+    { label: 'NSWindow.Level.floating', value: 'Zawsze na wierzchu, poniżej powiadomień systemowych' },
+    { label: 'Tryb ręczny krok po kroku', value: 'Klawisze strzałek służą do przechodzenia między punktami' },
+    { label: 'Pozycjonowanie z uwzględnieniem nacięć', value: 'Prawidłowe przesunięcie w osi Y zgodnie z modelem MacBook' },
+  ]}
+/>
+
+Najciekawszym wyzwaniem było wykrywanie wycięcia w wyświetlaczu. Codex pomógł mi osiągnąć 80% tego celu; pozostałe 20% (obsługa wielu wyświetlaczy, wykrywanie dokładnej wysokości wycięcia dla każdego modelu z serii MacBook) wymagało ode mnie samodzielnego przeglądania dokumentacji Apple.
+
+## Co to dowodzi
+
+Możliwości samodzielnego tworzenia aplikacji natywnych przy pomocy AI są większe, niż większość ludzi sądzi. Projekt NotchCue przeszedł od pomysłu do działającej wersji w ciągu jednego weekendu. Jeszcze rok temu wymagałoby to albo wcześniejszej znajomości Swift, albo zatrudnienia zewnętrznego wykonawcy.
+
+Schemat: opisanie zamierzonego celu, sprawdzenie wyniku, dostosowanie do własnych preferencji, wydanie — jest powtarzalny. Od tamtej pory wykorzystałem go przy tworzeniu trzech innych niewielkich narzędzi macOS.
+
+<Callout type="tip" title="Wzór ten można odtworzyć">
+Describe intent, review output, adjust taste, ship. Works for Swift, works for Astro, works for anything where the syntax is learnable but the product decisions are yours. Start small, own the decisions, let the model handle syntax.
+</Callout>
+
+---
+
+**Zobacz też:** [Jak stworzyć mikro-SaaSa przy użyciu narzędzi opartych na sztucznej inteligencji: wnioski dotyczące produktu z ponad 10 uruchomionych aplikacji](/pl/insights/how-to-build-micro-saas-with-ai-tools) · [Jak stworzyć system rezerwacji: decyzje dotyczące architektury produktu dla rynków wertykalnych](/pl/insights/how-to-build-booking-engine-product-architecture)
