@@ -299,6 +299,8 @@ const languageOptions = [
 </script>
 
 <script>
+  import { prefetch } from 'astro:prefetch';
+
   // Persist locale choice in a cookie so the middleware redirects on next visit.
   const LOCALE_CODE_TO_PATH: Record<string, string> = {
     EN: 'en', DE: 'de', DK: 'dk', NO: 'no', JP: 'jp', IT: 'it', ES: 'es', PL: 'pl', AR: 'ar',
@@ -311,6 +313,26 @@ const languageOptions = [
       document.cookie = `locale_pref=${locale}; path=/; domain=wojciech.io; max-age=31536000; samesite=lax; secure`;
     }
   });
+
+  // Switching language was a cold document fetch on click (seconds on a slow
+  // link) because the menu items live in a closed <details>, so viewport
+  // prefetch never sees them. Warm every locale target the moment the menu
+  // opens: by the time a language is clicked, its page is already in cache.
+  function warmLanguageTargets(root: ParentNode) {
+    root.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((a) => {
+      const href = a.getAttribute('href');
+      if (href) { try { prefetch(href); } catch { /* prefetch unsupported */ } }
+    });
+  }
+  function wireLanguagePrefetch() {
+    document.querySelectorAll<HTMLDetailsElement>('details').forEach((d) => {
+      if (d.dataset.langWarmWired || !d.querySelector('[data-lang-switch]')) return;
+      d.dataset.langWarmWired = '1';
+      d.addEventListener('toggle', () => { if (d.open) warmLanguageTargets(d); });
+    });
+  }
+  wireLanguagePrefetch();
+  document.addEventListener('astro:page-load', wireLanguagePrefetch);
 
   // Fix language switcher for localized insight article pages.
   // The server-side fallback only knows top-level slugs (e.g. /insights/), but each
