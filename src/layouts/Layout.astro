@@ -315,10 +315,18 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
         document.addEventListener('astro:after-swap', () => {
           // 1. Re-apply theme before paint (prevents dark→light→dark flash)
           applyStoredTheme();
-          // 2. Kill smooth scroll so scrollTo is truly instant
+          // 2. Kill smooth scroll so the jump is truly instant. Set it on the
+          //    element AND keep it until the next frame — iOS Safari otherwise
+          //    animates the reset when global CSS declares scroll-behavior:smooth.
           document.documentElement.style.scrollBehavior = 'auto';
-          // 3. Scroll to top
-          window.scrollTo({ top: 0, behavior: 'instant' });
+          // 3. Scroll to top. The two-argument form is the only one honoured on
+          //    every engine: iOS Safari silently ignores { behavior:'instant' }
+          //    and leaves the page parked at the old offset (mid/bottom of the
+          //    previous page) — the exact "jumps to the middle" bug. Reset the
+          //    scrolling element directly too, for engines that read that first.
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          if (document.body) document.body.scrollTop = 0;
         });
       }
     </script>

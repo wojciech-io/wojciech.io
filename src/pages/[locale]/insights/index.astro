@@ -63,7 +63,6 @@ const breadcrumbSchema = {
           </svg>
           Subskrybuj przez RSS
         </a>
-        <a href="/feed.json" class="text-sm text-[var(--color-text-dim)] transition-colors hover:text-[var(--color-text)]">Kanał JSON</a>
       </div>
     </div>
 
@@ -94,8 +93,22 @@ const breadcrumbSchema = {
       {restPosts.map((post) => (
         <a
           href={`/${locale}/insights/${insightSlug(post)}/`}
-          class="group flex min-h-[260px] flex-col rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 card-hover"
+          class="group flex min-h-[260px] flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover"
         >
+          {post.data.coverImage && (
+            <div class="aspect-[16/9] overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
+              <img
+                src={post.data.coverImage}
+                alt=""
+                width="640"
+                height="360"
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover object-[center_25%] transition-transform duration-500 group-hover:scale-[1.03]"
+              />
+            </div>
+          )}
+          <div class="flex flex-1 flex-col p-5">
           <div class="mb-4 flex flex-wrap gap-1.5">
             {post.data.tags.slice(0, 3).map((tag) => (
               <span class="rounded-full border border-[var(--color-border)] bg-[var(--color-surface-2)] px-2 py-0.5 text-[11px] font-medium text-[var(--color-text-dim)]">{tag}</span>
@@ -108,6 +121,7 @@ const breadcrumbSchema = {
           <div class="mt-auto flex items-center justify-between border-t border-[var(--color-border)] pt-3 text-[11px] text-[var(--color-text-dim)]">
             <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
             <span>{readTime(post.body, locale)}</span>
+          </div>
           </div>
         </a>
       ))}

@@ -77,6 +77,15 @@ export default defineConfig({
   build: {
     inlineStylesheets: 'always',
   },
+  // Prewarm every in-viewport link on idle. Without this, ClientRouter does a
+  // cold fetch of the full (CSS-inlined) document on every tap — on mobile,
+  // where there is no hover to warm the default 'hover' strategy, that cold
+  // fetch is the multi-second stall before any new page appears. 'viewport'
+  // fetches links as they scroll into view so a tap hits a warm cache.
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'viewport',
+  },
   integrations: [
     mdx(),
     sitemap({
