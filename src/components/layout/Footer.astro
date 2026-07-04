@@ -42,10 +42,11 @@ const isAr = locale === 'ar';
 // Column headings (not part of UiStrings; localized inline). Three balanced
 // columns replace the old Pages/Writing/Network split, where one column carried
 // every nav link and the others ran short.
+const isPl = locale === 'pl';
 const col = {
-  explore: isAr ? 'استكشف'  : 'Explore',
-  site:    isAr ? 'الموقع'   : 'Site',
-  writing: isAr ? 'المقالات' : 'Writing',
+  explore: isAr ? 'استكشف'  : isPl ? 'Oferta'   : 'Explore',
+  site:    isAr ? 'الموقع'   : isPl ? 'Serwis'   : 'Site',
+  writing: isAr ? 'المقالات' : isPl ? 'Artykuły' : 'Writing',
 };
 
 // GTM/Marketing/Growth lens pages are EN-only. Keep them out of the Arabic
@@ -80,15 +81,18 @@ const site = [
 // owns the band above, and the /decks/stack walkthrough is retired now that
 // /stack is a full page — so neither is duplicated here.
 const appWorkspace = {
-  label: isAr ? 'مساحة عمل التطبيق' : 'App workspace',
+  label: isAr ? 'مساحة عمل التطبيق' : isPl ? 'Aplikacja' : 'App workspace',
   href: SITE.appUrl,
 };
 
+// PL articles live under /pl/insights/; AR article cards stay EN (per the AR
+// content rule), so AR keeps the /insights/ URLs.
+const writingBase = isPl ? '/pl/insights' : '/insights';
 const writing = [
-  { label: isAr ? 'تبنّي الذكاء الاصطناعي بنهج CRM أولًا' : 'CRM-first AI adoption',     href: '/insights/crm-first-ai-adoption/' },
-  { label: isAr ? 'الانطلاق في GTM مع Claude Code'         : 'Claude Code GTM Starter',   href: '/insights/claude-code-vs-clay/' },
-  { label: isAr ? 'Claude Code في GTM لدى العملاء'         : 'Claude Code in client GTM', href: '/insights/claude-code-client-gtm/' },
-  { label: isAr ? 'حزمة الذكاء الاصطناعي في الإنتاج'        : 'AI stack in production',    href: '/insights/ai-production-stack/' },
+  { label: isAr ? 'تبنّي الذكاء الاصطناعي بنهج CRM أولًا' : isPl ? 'Wdrażanie AI: CRM-first'      : 'CRM-first AI adoption',     href: `${writingBase}/crm-first-ai-adoption/` },
+  { label: isAr ? 'الانطلاق في GTM مع Claude Code'         : isPl ? 'GTM z Claude Code'             : 'Claude Code GTM Starter',   href: `${writingBase}/claude-code-vs-clay/` },
+  { label: isAr ? 'Claude Code في GTM لدى العملاء'         : isPl ? 'Claude Code w GTM u klientów'  : 'Claude Code in client GTM', href: `${writingBase}/claude-code-client-gtm/` },
+  { label: isAr ? 'حزمة الذكاء الاصطناعي في الإنتاج'        : isPl ? 'Stos AI w produkcji'           : 'AI stack in production',    href: `${writingBase}/ai-production-stack/` },
   { label: t.footer.allWriting,          href: insightsHref },
 ];
 
