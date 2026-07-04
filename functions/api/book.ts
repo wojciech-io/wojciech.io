@@ -168,13 +168,14 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
       attendeeEmail: email,
     });
     const when = formatOwnerTime(start);
+    const manageUrl = `${new URL(request.url).origin}/meet/cancel?id=${id}&token=${cancelToken}`;
     const html =
       `<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;color:#111;line-height:1.6">` +
       `<p>Hi ${name.replace(/</g, '&lt;')},</p>` +
       `<p>You are booked for a <strong>${mt.name}</strong> (${mt.minutes} min) with Wojciech Łuszczyński.</p>` +
       `<p><strong>${when}</strong> (Europe/Warsaw). The calendar invite is attached; your calendar will show it in your own timezone.</p>` +
       (notes ? `<p style="color:#555">Your note: ${notes.replace(/</g, '&lt;')}</p>` : '') +
-      `<p>Need to change it? Just reply to this email.</p>` +
+      `<p>Need to change or cancel? <a href="${manageUrl}">Manage your booking</a>, or just reply to this email.</p>` +
       `<p style="color:#888">wojciech.io</p></div>`;
 
     await fetch('https://api.resend.com/emails', {

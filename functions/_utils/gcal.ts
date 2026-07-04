@@ -116,3 +116,23 @@ export async function insertEvent(
   if (!data.id) throw new Error('gcal event insert returned no id');
   return data.id;
 }
+
+/**
+ * Delete an event by id and notify attendees (sendUpdates=all). Idempotent:
+ * a 404/410 (already gone) is treated as success so a retried cancel is safe.
+ */
+export async function deleteEvent(
+  env: GcalEnv,
+  calendarId: string,
+  eventId: string
+): Promise<void> {
+  const token = await getAccessToken(env);
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}?sendUpdates=all`,
+    { method: 'DELETE', headers: { authorization: `Bearer ${token}` } }
+  );
+  if (!res.ok && res.status !== 404 && res.status !== 410) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`gcal event delete failed (${res.status}): ${detail.slice(0, 200)}`);
+  }
+}
