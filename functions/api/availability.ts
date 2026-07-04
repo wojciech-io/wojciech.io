@@ -52,7 +52,7 @@ export async function onRequestGet({ request, env }: { request: Request; env: En
   // degrade to D1-only availability, not a broken page).
   if (isConfigured(env)) {
     try {
-      const gbusy = await queryFreeBusy(env, [BOOKING_CONTACTS.ownerCalendarId], now.toISOString(), horizonEndIso);
+      const gbusy = await queryFreeBusy(env, BOOKING_CONTACTS.freeBusyCalendarIds, now.toISOString(), horizonEndIso);
       busy.push(...gbusy);
     } catch {
       /* fall through with D1-only busy */

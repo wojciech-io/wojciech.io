@@ -58,7 +58,7 @@ async function getAccessToken(env: GcalEnv): Promise<string> {
 /** Busy intervals across the given calendars in [timeMin, timeMax). */
 export async function queryFreeBusy(
   env: GcalEnv,
-  calendarIds: string[],
+  calendarIds: readonly string[],
   timeMinIso: string,
   timeMaxIso: string
 ): Promise<BusyInterval[]> {

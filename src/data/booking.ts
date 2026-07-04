@@ -66,6 +66,14 @@ export const BOOKING_RULES = {
 export const BOOKING_CONTACTS = {
   /** Real Google Calendar the event is written to. */
   ownerCalendarId: 'w.luszczynski@gmail.com',
+  /**
+   * Every calendar whose busy-time blocks a booking, queried together in one
+   * free/busy call. Add any extra Google calendar IDs here (a second account,
+   * or calendars you subscribe into this one). Reclaim.ai does NOT need an API
+   * integration: it already writes focus/habit/sync blocks into the primary
+   * calendar, so those ride in automatically via free/busy.
+   */
+  freeBusyCalendarIds: ['w.luszczynski@gmail.com'],
   /** Second address that should also get the invite (attendee + email copy). */
   aliasEmail: 'hello@wojciech.io',
   /** From: address for the confirmation email (must be a verified Resend sender). */

@@ -109,7 +109,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
   }
   if (isConfigured(env)) {
     try {
-      busy.push(...(await queryFreeBusy(env, [BOOKING_CONTACTS.ownerCalendarId], now.toISOString(), horizonEndIso)));
+      busy.push(...(await queryFreeBusy(env, BOOKING_CONTACTS.freeBusyCalendarIds, now.toISOString(), horizonEndIso)));
     } catch {
       /* degrade to D1-only */
     }
