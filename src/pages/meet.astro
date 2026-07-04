@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BookingScheduler from '../components/BookingScheduler.astro';
+import { getMeetCopy, meetAlternates } from '../data/meet';
+
+// English scheduler at /meet. The 7 localized versions live at /[locale]/meet
+// and share the BookingScheduler component. Availability + booking are served
+// by /api/availability and /api/book.
+const S = getMeetCopy('en');
+---
+
+<Layout
+  title={S.title}
+  description={S.description}
+  canonical="/meet/"
+  alternates={meetAlternates}
+>
+  <BookingScheduler lang="en" />
+</Layout>
