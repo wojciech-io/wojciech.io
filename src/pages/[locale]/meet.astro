@@ -1,0 +1,30 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BookingScheduler from '../../components/BookingScheduler.astro';
+import { getMeetCopy, meetAlternates } from '../../data/meet';
+import { localizedHome } from '../../data/locales';
+import { NON_EN_LOCALES, type LocaleKey } from '../../data/locale-codes';
+
+export function getStaticPaths() {
+  return NON_EN_LOCALES.map((locale) => ({
+    params: { locale },
+    props: { locale },
+  }));
+}
+
+const { locale } = Astro.props as { locale: LocaleKey };
+const S = getMeetCopy(locale);
+const home = localizedHome[locale];
+const canonical = `/${locale}/meet/`;
+---
+
+<Layout
+  htmlLang={home.htmlLang}
+  ogLocale={home.ogLocale}
+  title={S.title}
+  description={S.description}
+  canonical={canonical}
+  alternates={meetAlternates}
+>
+  <BookingScheduler lang={locale} />
+</Layout>

@@ -3,8 +3,11 @@
 // (functions/api/*). Keep it dependency-free so it bundles cleanly on both
 // the Astro and the Workers side.
 
+/** Stable meeting-type ids. Shared by the localized copy table (data/meet.ts). */
+export type MeetingId = 'intro' | 'followup' | 'systems';
+
 export interface MeetingType {
-  id: string;
+  id: MeetingId;
   name: string;
   minutes: number;
   /** One-line description shown on the selection card. */
