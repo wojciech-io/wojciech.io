@@ -7,6 +7,8 @@ import { BOOKING_RULES, BOOKING_CONTACTS, MEETING_BY_ID } from '../../src/data/b
 import { generateAvailability, type AvailabilityRules, type BusyInterval } from '../_utils/slots';
 import { isConfigured, queryFreeBusy, insertEvent } from '../_utils/gcal';
 import { buildIcs } from '../_utils/ics';
+import { confirmationEmail, hostEmail, type BookingEmailData } from '../_utils/emails';
+import { googleCalendarUrl, outlookCalendarUrl } from '../_utils/calendar-links';
 import { rateLimit, clientIp } from '../_utils/ratelimit';
 
 interface Env {
@@ -44,15 +46,27 @@ function toBase64(text: string): string {
   return btoa(String.fromCharCode(...new TextEncoder().encode(text)));
 }
 
-function formatOwnerTime(start: Date): string {
+const TZ = rules.ownerTimezone;
+/** "Monday, 7 July 2026" in the owner timezone. */
+function fmtDate(d: Date): string {
   return new Intl.DateTimeFormat('en-GB', {
-    timeZone: rules.ownerTimezone,
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(start);
+    timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+  }).format(d);
+}
+/** "09:00" in the owner timezone, 24h. */
+function fmtHM(d: Date): string {
+  return new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
+}
+/** Short zone name for the instant, e.g. "CEST" (falls back to the IANA id). */
+function fmtZone(d: Date): string {
+  const part = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, timeZoneName: 'short' })
+    .formatToParts(d)
+    .find((p) => p.type === 'timeZoneName');
+  return part?.value ?? TZ;
+}
+/** "4 July 2026" for the email masthead. */
+function fmtSendDate(d: Date): string {
+  return new Intl.DateTimeFormat('en-GB', { timeZone: TZ, day: 'numeric', month: 'long', year: 'numeric' }).format(d);
 }
 
 export async function onRequestPost({ request, env }: { request: Request; env: Env }) {
@@ -154,45 +168,66 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
     }
   }
 
-  // Confirmation email + .ics invite.
+  // Guest confirmation + host notification, with the .ics invite. Both emails
+  // share one rendered data object; a send failure must not 500 a saved booking.
   if (env.RESEND_API_KEY) {
+    const origin = new URL(request.url).origin;
+    const manageUrl = `${origin}/meet/cancel?id=${id}&token=${cancelToken}`;
+    const title = `${mt.name} with Wojciech Łuszczyński`;
     const ics = buildIcs({
       uid: `${id}@wojciech.io`,
       start,
       end,
-      summary: `${mt.name} with Wojciech Łuszczyński`,
+      summary: title,
       description: notes || undefined,
       organizerName: 'Wojciech Łuszczyński',
       organizerEmail: 'hello@wojciech.io',
       attendeeName: name,
       attendeeEmail: email,
     });
-    const when = formatOwnerTime(start);
-    const manageUrl = `${new URL(request.url).origin}/meet/cancel?id=${id}&token=${cancelToken}`;
-    const html =
-      `<div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;color:#111;line-height:1.6">` +
-      `<p>Hi ${name.replace(/</g, '&lt;')},</p>` +
-      `<p>You are booked for a <strong>${mt.name}</strong> (${mt.minutes} min) with Wojciech Łuszczyński.</p>` +
-      `<p><strong>${when}</strong> (Europe/Warsaw). The calendar invite is attached; your calendar will show it in your own timezone.</p>` +
-      (notes ? `<p style="color:#555">Your note: ${notes.replace(/</g, '&lt;')}</p>` : '') +
-      `<p>Need to change or cancel? <a href="${manageUrl}">Manage your booking</a>, or just reply to this email.</p>` +
-      `<p style="color:#888">wojciech.io</p></div>`;
-
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const data: BookingEmailData = {
+      base: origin,
+      name,
+      guestEmail: email,
+      company: company || undefined,
+      meetingName: mt.name,
+      minutes: mt.minutes,
+      dateLine: fmtDate(start),
+      timeLine: `${fmtHM(start)} – ${fmtHM(end)}`,
+      tzLine: `${fmtZone(start)} · ${TZ}`,
+      note: notes || undefined,
+      manageUrl,
+      gcalUrl: googleCalendarUrl({ title, start, end, details: notes || undefined }),
+      outlookUrl: outlookCalendarUrl({ title, start, end, details: notes || undefined }),
+      sendDate: fmtSendDate(now),
+    };
+    const guest = confirmationEmail(data);
+    const host = hostEmail(data);
+    const send = (payload: Record<string, unknown>) =>
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).catch(() => {
+        /* email failure must not 500 a recorded booking */
+      });
+    await Promise.all([
+      send({
         from: BOOKING_CONTACTS.fromEmail,
         to: email,
-        bcc: BOOKING_CONTACTS.aliasEmail,
         reply_to: 'hello@wojciech.io',
-        subject: `Confirmed: ${mt.name} · ${when}`,
-        html,
+        subject: guest.subject,
+        html: guest.html,
         attachments: [{ filename: 'invite.ics', content: toBase64(ics), content_type: 'text/calendar' }],
       }),
-    }).catch(() => {
-      /* email failure must not 500 a recorded booking */
-    });
+      send({
+        from: BOOKING_CONTACTS.fromEmail,
+        to: BOOKING_CONTACTS.aliasEmail,
+        reply_to: email,
+        subject: host.subject,
+        html: host.html,
+      }),
+    ]);
   }
 
   return json({ ok: true, id, start: start.toISOString(), end: end.toISOString() });

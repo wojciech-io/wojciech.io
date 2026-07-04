@@ -66,6 +66,18 @@ export function buildIcs(ev: IcsEvent, now: Date = new Date()): string {
     `ATTENDEE;CN=${esc(ev.attendeeName)};ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${ev.attendeeEmail}`,
     'STATUS:CONFIRMED',
     `SEQUENCE:${ev.sequence ?? 0}`,
+    // Client-side reminders: the attendee's own calendar alerts them a day
+    // before and ten minutes out. Zero server infrastructure, works offline.
+    'BEGIN:VALARM',
+    'TRIGGER:-P1D',
+    'ACTION:DISPLAY',
+    `DESCRIPTION:${esc(ev.summary)}`,
+    'END:VALARM',
+    'BEGIN:VALARM',
+    'TRIGGER:-PT10M',
+    'ACTION:DISPLAY',
+    `DESCRIPTION:${esc(ev.summary)}`,
+    'END:VALARM',
     'END:VEVENT',
     'END:VCALENDAR',
   ].filter(Boolean);
