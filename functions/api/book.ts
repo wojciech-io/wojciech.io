@@ -9,6 +9,7 @@ import { isConfigured, queryFreeBusy, insertEvent } from '../_utils/gcal';
 import { buildIcs } from '../_utils/ics';
 import { confirmationEmail, hostEmail, type BookingEmailData } from '../_utils/emails';
 import { googleCalendarUrl, outlookCalendarUrl } from '../_utils/calendar-links';
+import { fmtDate, fmtHM, fmtZone, fmtSendDate } from '../_utils/format';
 import { rateLimit, clientIp } from '../_utils/ratelimit';
 
 interface Env {
@@ -47,27 +48,6 @@ function toBase64(text: string): string {
 }
 
 const TZ = rules.ownerTimezone;
-/** "Monday, 7 July 2026" in the owner timezone. */
-function fmtDate(d: Date): string {
-  return new Intl.DateTimeFormat('en-GB', {
-    timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-  }).format(d);
-}
-/** "09:00" in the owner timezone, 24h. */
-function fmtHM(d: Date): string {
-  return new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false }).format(d);
-}
-/** Short zone name for the instant, e.g. "CEST" (falls back to the IANA id). */
-function fmtZone(d: Date): string {
-  const part = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, timeZoneName: 'short' })
-    .formatToParts(d)
-    .find((p) => p.type === 'timeZoneName');
-  return part?.value ?? TZ;
-}
-/** "4 July 2026" for the email masthead. */
-function fmtSendDate(d: Date): string {
-  return new Intl.DateTimeFormat('en-GB', { timeZone: TZ, day: 'numeric', month: 'long', year: 'numeric' }).format(d);
-}
 
 export async function onRequestPost({ request, env }: { request: Request; env: Env }) {
   const rl = await rateLimit(env.RATE_LIMIT, `book:${clientIp(request)}`, 5, 600);
@@ -192,14 +172,14 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
       company: company || undefined,
       meetingName: mt.name,
       minutes: mt.minutes,
-      dateLine: fmtDate(start),
-      timeLine: `${fmtHM(start)} – ${fmtHM(end)}`,
-      tzLine: `${fmtZone(start)} · ${TZ}`,
+      dateLine: fmtDate(start, TZ),
+      timeLine: `${fmtHM(start, TZ)} – ${fmtHM(end, TZ)}`,
+      tzLine: `${fmtZone(start, TZ)} · ${TZ}`,
       note: notes || undefined,
       manageUrl,
       gcalUrl: googleCalendarUrl({ title, start, end, details: notes || undefined }),
       outlookUrl: outlookCalendarUrl({ title, start, end, details: notes || undefined }),
-      sendDate: fmtSendDate(now),
+      sendDate: fmtSendDate(now, TZ),
     };
     const guest = confirmationEmail(data);
     const host = hostEmail(data);
