@@ -28,6 +28,8 @@ export interface GcalEventInput {
   endUtcIso: string;
   timeZone: string;
   attendees: { email: string; displayName?: string }[];
+  /** Attach a Google Meet conference and return its join link. */
+  withMeet?: boolean;
 }
 
 export function isConfigured(env: GcalEnv): boolean {
@@ -86,35 +88,58 @@ export async function queryFreeBusy(
   return out;
 }
 
-/** Create the event and invite attendees. Returns the event id. */
+/**
+ * Create the event and invite attendees. Returns the event id and, when
+ * `withMeet` is set, the Google Meet join link. `sendUpdates=all` makes Google
+ * email the attendees a native invite (the rich RSVP card in Gmail).
+ */
 export async function insertEvent(
   env: GcalEnv,
   calendarId: string,
   ev: GcalEventInput
-): Promise<string> {
+): Promise<{ id: string; meetUrl?: string }> {
   const token = await getAccessToken(env);
+  const body: Record<string, unknown> = {
+    summary: ev.summary,
+    description: ev.description,
+    start: { dateTime: ev.startUtcIso, timeZone: ev.timeZone },
+    end: { dateTime: ev.endUtcIso, timeZone: ev.timeZone },
+    attendees: ev.attendees.map((a) => ({ email: a.email, displayName: a.displayName })),
+    reminders: { useDefault: true },
+  };
+  if (ev.withMeet) {
+    // A createRequest with a unique id asks Google to provision a Meet link.
+    body.conferenceData = {
+      createRequest: {
+        requestId: `meet-${ev.startUtcIso}-${ev.attendees[0]?.email ?? 'guest'}`,
+        conferenceSolutionKey: { type: 'hangoutsMeet' },
+      },
+    };
+  }
   const res = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?sendUpdates=all`,
+    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?sendUpdates=all${
+      ev.withMeet ? '&conferenceDataVersion=1' : ''
+    }`,
     {
       method: 'POST',
       headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
-      body: JSON.stringify({
-        summary: ev.summary,
-        description: ev.description,
-        start: { dateTime: ev.startUtcIso, timeZone: ev.timeZone },
-        end: { dateTime: ev.endUtcIso, timeZone: ev.timeZone },
-        attendees: ev.attendees.map((a) => ({ email: a.email, displayName: a.displayName })),
-        reminders: { useDefault: true },
-      }),
+      body: JSON.stringify(body),
     }
   );
   if (!res.ok) {
     const detail = await res.text().catch(() => '');
     throw new Error(`gcal event insert failed (${res.status}): ${detail.slice(0, 200)}`);
   }
-  const data = (await res.json()) as { id?: string };
+  const data = (await res.json()) as {
+    id?: string;
+    hangoutLink?: string;
+    conferenceData?: { entryPoints?: { entryPointType?: string; uri?: string }[] };
+  };
   if (!data.id) throw new Error('gcal event insert returned no id');
-  return data.id;
+  const meetUrl =
+    data.hangoutLink ??
+    data.conferenceData?.entryPoints?.find((e) => e.entryPointType === 'video')?.uri;
+  return { id: data.id, meetUrl };
 }
 
 /**

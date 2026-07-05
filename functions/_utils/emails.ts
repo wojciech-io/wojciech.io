@@ -18,6 +18,8 @@ export interface BookingEmailData {
   tzLine: string; // "CEST · Europe/Warsaw"
   note?: string;
   manageUrl: string;
+  /** Google Meet join link, present once the calendar is connected. */
+  meetUrl?: string;
   gcalUrl: string;
   outlookUrl: string;
   /** Masthead date, e.g. "4 July 2026". */
@@ -125,10 +127,13 @@ function shell(p: ShellParts): string {
 }
 
 function bookingRows(d: BookingEmailData): string {
+  const meetSub = d.meetUrl
+    ? `${link(d.meetUrl, 'Join Google Meet')} <span style="color:${C.faint};">— link is in your invite too</span>`
+    : 'The join link is in your calendar invite';
   return (
     detailRow(d.base, 'cal', esc(d.dateLine), esc(d.timeLine) + ' · ' + esc(d.tzLine)) +
     detailRow(d.base, 'clock', esc(d.meetingName), `${d.minutes} minutes with Wojciech Łuszczyński`) +
-    detailRow(d.base, 'globe', 'Online · Google Meet', 'The join link is in your calendar invite', true)
+    detailRow(d.base, 'globe', 'Online · Google Meet', meetSub, true)
   );
 }
 
