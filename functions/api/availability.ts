@@ -23,7 +23,7 @@ function json(data: unknown, init: ResponseInit = {}) {
   });
 }
 
-const rules: AvailabilityRules = { ...BOOKING_RULES, workingDays: [...BOOKING_RULES.workingDays] };
+const rules: AvailabilityRules = { ...BOOKING_RULES };
 
 export async function onRequestGet({ request, env }: { request: Request; env: Env }) {
   // Light throttle: availability is read-only but should not be scrapeable at will.
