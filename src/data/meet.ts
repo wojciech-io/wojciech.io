@@ -99,7 +99,7 @@ const en: MeetStrings = {
   types: {
     intro: {
       name: 'Intro / Fit Call',
-      desc: 'Quick fit check. Recruiting, partnership, or fast context before anything bigger.',
+      desc: 'A short intro. Whether there is a fit, or fast context before a bigger conversation.',
     },
     followup: {
       name: 'Follow-up',
@@ -147,7 +147,7 @@ const de: MeetStrings = {
   types: {
     intro: {
       name: 'Intro / Fit Call',
-      desc: 'Kurzer Fit-Check. Recruiting, Partnerschaft oder schneller Kontext, bevor es größer wird.',
+      desc: 'Ein kurzes Kennenlernen. Passt es, oder schneller Kontext vor einem größeren Gespräch.',
     },
     followup: {
       name: 'Follow-up',
@@ -195,7 +195,7 @@ const dk: MeetStrings = {
   types: {
     intro: {
       name: 'Intro / Fit Call',
-      desc: 'Hurtigt fit-tjek. Rekruttering, partnerskab eller hurtig kontekst før noget større.',
+      desc: 'En kort intro. Om der er et match, eller hurtig kontekst før en større samtale.',
     },
     followup: {
       name: 'Follow-up',
@@ -243,7 +243,7 @@ const no: MeetStrings = {
   types: {
     intro: {
       name: 'Intro / Fit Call',
-      desc: 'Rask fit-sjekk. Rekruttering, partnerskap eller rask kontekst før noe større.',
+      desc: 'En kort intro. Om det er et match, eller rask kontekst før en større samtale.',
     },
     followup: {
       name: 'Follow-up',
@@ -291,7 +291,7 @@ const jp: MeetStrings = {
   types: {
     intro: {
       name: 'Intro / Fit Call',
-      desc: '短いフィット確認。採用、提携、または本題の前の素早いすり合わせに。',
+      desc: '短いイントロ。相性の確認、または本格的な相談の前の素早いすり合わせ。',
     },
     followup: {
       name: 'Follow-up',
@@ -339,7 +339,7 @@ const it: MeetStrings = {
   types: {
     intro: {
       name: 'Intro / Fit Call',
-      desc: 'Rapido check di compatibilità. Recruiting, partnership o contesto veloce prima di qualcosa di più grande.',
+      desc: 'Una breve introduzione. Se ha senso lavorare insieme, o contesto veloce prima di un confronto più ampio.',
     },
     followup: {
       name: 'Follow-up',
@@ -387,7 +387,7 @@ const es: MeetStrings = {
   types: {
     intro: {
       name: 'Intro / Fit Call',
-      desc: 'Comprobación rápida de encaje. Recruiting, partnership o contexto rápido antes de algo mayor.',
+      desc: 'Una breve introducción. Ver si encaja, o contexto rápido antes de una conversación mayor.',
     },
     followup: {
       name: 'Follow-up',
@@ -435,7 +435,7 @@ const pl: MeetStrings = {
   types: {
     intro: {
       name: 'Intro / Fit Call',
-      desc: 'Szybkie sprawdzenie dopasowania. Rekrutacja, partnerstwo albo szybki kontekst przed czymś większym.',
+      desc: 'Krótkie intro. Sprawdzenie dopasowania albo szybki kontekst przed większą rozmową.',
     },
     followup: {
       name: 'Follow-up',

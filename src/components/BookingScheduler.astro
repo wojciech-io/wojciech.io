@@ -56,20 +56,41 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
 ---
 
 <section class="relative pt-10 pb-14 md:pt-14 md:pb-20 overflow-hidden">
+  <!-- Architectural grid backdrop, dissolving below the hero so it reads as
+       depth, not clutter behind the cards. -->
+  <div class="pointer-events-none absolute inset-x-0 top-0 h-[620px] bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:56px_56px] opacity-90 [mask-image:linear-gradient(to_bottom,#000_0,transparent_92%)]" aria-hidden="true"></div>
+  <!-- Soft warm glow anchored under the illustration for depth. -->
+  <div class="pointer-events-none absolute -top-10 right-0 h-[420px] w-[55%] [background:radial-gradient(60%_60%_at_75%_20%,color-mix(in_oklch,var(--color-accent-cta)_10%,transparent),transparent_70%)]" aria-hidden="true"></div>
   <div class="relative mx-auto max-w-6xl px-6">
     <!-- Hero (omitted when the host page supplies its own) -->
     {!hideHero && (
-      <div class="max-w-2xl mb-10 md:mb-12">
-        <div class="flex items-center gap-3 mb-4">
-          <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-          <span class="obs-label-accent">{S.eyebrow}</span>
+      <div class="grid gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center mb-12 md:mb-16">
+        <div class="max-w-xl">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+            <span class="obs-label-accent">{S.eyebrow}</span>
+          </div>
+          <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
+            {S.h1}
+          </h1>
+          <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed mb-7">
+            {S.lead}
+          </p>
+          <!-- Host card: real photo of the person you're booking. -->
+          <div class="inline-flex items-center gap-3 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] py-2 pl-2 pr-5">
+            <img src="/images/wojciech-avatar-2026-768.webp" alt="Wojciech Łuszczyński" width="44" height="44" loading="eager" decoding="async" class="h-11 w-11 rounded-full object-cover" />
+            <span class="text-sm font-semibold text-[var(--color-text)]">Wojciech Łuszczyński</span>
+            <span class="h-2 w-2 rounded-full bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+          </div>
         </div>
-        <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
-          {S.h1}
-        </h1>
-        <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed">
-          {S.lead}
-        </p>
+        <!-- Hero illustration. Its left half is empty warm-cream by design, so a
+             left-to-right mask dissolves that edge into the page (no hard cut).
+             Shown on every breakpoint; on mobile it sits above the format cards. -->
+        <div class="-mx-6 mt-2 sm:mx-0 lg:mt-0">
+          <img src="/images/hero/meet-hero.webp" alt="" width="1536" height="1024" loading="eager" decoding="async"
+            class="w-full h-auto"
+            style="-webkit-mask-image:linear-gradient(to right,transparent 0,#000 40%,#000 100%);mask-image:linear-gradient(to right,transparent 0,#000 40%,#000 100%);" />
+        </div>
       </div>
     )}
     <div id="reschedule-note" hidden
@@ -136,7 +157,7 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
           <!-- Slots -->
           <div>
             <p id="slots-label" class="text-sm font-semibold text-[var(--color-text)] mb-3">{S.selectDay}</p>
-            <div id="slots" class="flex flex-col gap-2 max-h-[280px] overflow-y-auto pr-1"></div>
+            <div id="slots" class="grid grid-cols-2 gap-2 content-start"></div>
           </div>
         </div>
       </div>
@@ -179,11 +200,13 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
           </p>
         </form>
 
-        <!-- Success state (hidden until confirmed) -->
-        <div id="success" hidden class="text-center py-6">
-          <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-accent-cta)]">
-            <svg class="w-6 h-6 text-[var(--color-accent-text)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
+        <!-- Success state (hidden until confirmed): the meet-success illustration
+             replaces the plain tick so the confirmation reads as finished, not a
+             bare alert. Detail line + emailed .ics carry the actual specifics. -->
+        <div id="success" hidden class="text-center py-2">
+          <img src="/images/hero/meet-success.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"
+            class="mx-auto mb-5 w-full max-w-[300px] h-auto rounded-[var(--radius-card)]"
+            style="-webkit-mask-image:radial-gradient(120%_120%_at_50%_35%,#000_60%,transparent_100%);mask-image:radial-gradient(120%_120%_at_50%_35%,#000_60%,transparent_100%);" />
           <p class="text-lg font-semibold text-[var(--color-text)] mb-1">{S.successTitle}</p>
           <p id="success-detail" class="text-sm text-[var(--color-text-muted)]"></p>
         </div>
@@ -308,7 +331,7 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
     async function loadAvailability() {
       byDay.clear(); state.dateKey = null; state.slotIso = null;
       $('slots-label').textContent = S.loading;
-      $('slots').innerHTML = '<p class="text-sm text-[var(--color-text-dim)]">' + S.loadingAvail + '</p>';
+      $('slots').innerHTML = '<p class="col-span-2 text-sm text-[var(--color-text-dim)]">' + S.loadingAvail + '</p>';
       try {
         const res = await fetch('/api/availability?type=' + encodeURIComponent(state.type), {
           headers: { accept: 'application/json' },
@@ -330,7 +353,7 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
         renderCalendar();
       } catch (_) {
         $('slots-label').textContent = S.selectDay;
-        $('slots').innerHTML = '<p class="text-sm text-[var(--color-text-dim)]">' + S.loadError + '</p>';
+        $('slots').innerHTML = '<p class="col-span-2 text-sm text-[var(--color-text-dim)]">' + S.loadError + '</p>';
       }
       updateSummary();
     }
