@@ -78,7 +78,7 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
           </p>
           <!-- Host card: real photo of the person you're booking. -->
           <div class="inline-flex items-center gap-3 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] py-2 pl-2 pr-5">
-            <img src="/images/wojciech-avatar-768.webp" alt="Wojciech Łuszczyński" width="44" height="44" loading="eager" decoding="async" class="h-11 w-11 rounded-full object-cover" />
+            <img src="/images/wojciech-avatar-2026-768.webp" alt="Wojciech Łuszczyński" width="44" height="44" loading="eager" decoding="async" class="h-11 w-11 rounded-full object-cover" />
             <span class="text-sm font-semibold text-[var(--color-text)]">Wojciech Łuszczyński</span>
             <span class="h-2 w-2 rounded-full bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
           </div>
@@ -157,7 +157,7 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
           <!-- Slots -->
           <div>
             <p id="slots-label" class="text-sm font-semibold text-[var(--color-text)] mb-3">{S.selectDay}</p>
-            <div id="slots" class="flex flex-col gap-2 max-h-[280px] overflow-y-auto pr-1"></div>
+            <div id="slots" class="grid grid-cols-2 gap-2 content-start"></div>
           </div>
         </div>
       </div>
@@ -200,11 +200,13 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
           </p>
         </form>
 
-        <!-- Success state (hidden until confirmed) -->
-        <div id="success" hidden class="text-center py-6">
-          <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-accent-cta)]">
-            <svg class="w-6 h-6 text-[var(--color-accent-text)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
+        <!-- Success state (hidden until confirmed): the meet-success illustration
+             replaces the plain tick so the confirmation reads as finished, not a
+             bare alert. Detail line + emailed .ics carry the actual specifics. -->
+        <div id="success" hidden class="text-center py-2">
+          <img src="/images/hero/meet-success.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"
+            class="mx-auto mb-5 w-full max-w-[300px] h-auto rounded-[var(--radius-card)]"
+            style="-webkit-mask-image:radial-gradient(120%_120%_at_50%_35%,#000_60%,transparent_100%);mask-image:radial-gradient(120%_120%_at_50%_35%,#000_60%,transparent_100%);" />
           <p class="text-lg font-semibold text-[var(--color-text)] mb-1">{S.successTitle}</p>
           <p id="success-detail" class="text-sm text-[var(--color-text-muted)]"></p>
         </div>
@@ -329,7 +331,7 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
     async function loadAvailability() {
       byDay.clear(); state.dateKey = null; state.slotIso = null;
       $('slots-label').textContent = S.loading;
-      $('slots').innerHTML = '<p class="text-sm text-[var(--color-text-dim)]">' + S.loadingAvail + '</p>';
+      $('slots').innerHTML = '<p class="col-span-2 text-sm text-[var(--color-text-dim)]">' + S.loadingAvail + '</p>';
       try {
         const res = await fetch('/api/availability?type=' + encodeURIComponent(state.type), {
           headers: { accept: 'application/json' },
@@ -351,7 +353,7 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
         renderCalendar();
       } catch (_) {
         $('slots-label').textContent = S.selectDay;
-        $('slots').innerHTML = '<p class="text-sm text-[var(--color-text-dim)]">' + S.loadError + '</p>';
+        $('slots').innerHTML = '<p class="col-span-2 text-sm text-[var(--color-text-dim)]">' + S.loadError + '</p>';
       }
       updateSummary();
     }
