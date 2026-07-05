@@ -161,3 +161,84 @@ export async function deleteEvent(
     throw new Error(`gcal event delete failed (${res.status}): ${detail.slice(0, 200)}`);
   }
 }
+
+export type EventStatus = 'active' | 'cancelled' | 'gone';
+
+/**
+ * Live status of many events in one token exchange. 404/410 → 'gone',
+ * body.status === 'cancelled' → 'cancelled', otherwise 'active'. A transient
+ * error maps to 'active' so a hiccup never cancels a real booking (fail-safe).
+ */
+export async function getEventStatuses(
+  env: GcalEnv,
+  calendarId: string,
+  eventIds: string[]
+): Promise<Record<string, EventStatus>> {
+  const token = await getAccessToken(env);
+  const out: Record<string, EventStatus> = {};
+  for (const id of eventIds) {
+    try {
+      const res = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(id)}`,
+        { headers: { authorization: `Bearer ${token}` } }
+      );
+      if (res.status === 404 || res.status === 410) out[id] = 'gone';
+      else if (!res.ok) out[id] = 'active'; // unknown → don't cancel
+      else {
+        const data = (await res.json()) as { status?: string };
+        out[id] = data.status === 'cancelled' ? 'cancelled' : 'active';
+      }
+    } catch {
+      out[id] = 'active';
+    }
+  }
+  return out;
+}
+
+/**
+ * Register a push channel on the calendar's events feed. Google POSTs to
+ * `address` on every change and echoes `token` back in X-Goog-Channel-Token.
+ * Returns Google's resourceId (needed to stop the channel) and the expiration.
+ */
+export async function watchEvents(
+  env: GcalEnv,
+  calendarId: string,
+  opts: { address: string; channelId: string; token: string; ttlSeconds: number }
+): Promise<{ resourceId: string; expiration: number }> {
+  const accessToken = await getAccessToken(env);
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/watch`,
+    {
+      method: 'POST',
+      headers: { authorization: `Bearer ${accessToken}`, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        id: opts.channelId,
+        type: 'web_hook',
+        address: opts.address,
+        token: opts.token,
+        params: { ttl: String(opts.ttlSeconds) },
+      }),
+    }
+  );
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`gcal watch failed (${res.status}): ${detail.slice(0, 200)}`);
+  }
+  const data = (await res.json()) as { resourceId?: string; expiration?: string };
+  if (!data.resourceId) throw new Error('gcal watch returned no resourceId');
+  return { resourceId: data.resourceId, expiration: Number(data.expiration ?? 0) };
+}
+
+/** Stop a push channel. A 404 (already gone) is treated as success. */
+export async function stopChannel(env: GcalEnv, channelId: string, resourceId: string): Promise<void> {
+  const accessToken = await getAccessToken(env);
+  const res = await fetch('https://www.googleapis.com/calendar/v3/channels/stop', {
+    method: 'POST',
+    headers: { authorization: `Bearer ${accessToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ id: channelId, resourceId }),
+  });
+  if (!res.ok && res.status !== 404) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`gcal channel stop failed (${res.status}): ${detail.slice(0, 200)}`);
+  }
+}

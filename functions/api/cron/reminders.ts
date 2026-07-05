@@ -16,11 +16,15 @@
 import { BOOKING_RULES, BOOKING_CONTACTS, MEETING_BY_ID } from '../../../src/data/booking';
 import { reminderEmail, type BookingEmailData } from '../../_utils/emails';
 import { fmtDate, fmtHM, fmtZone, fmtSendDate } from '../../_utils/format';
+import { ensureChannel } from '../../_utils/gcal-channel';
 
 interface Env {
   DB?: D1Database;
   RESEND_API_KEY?: string;
   CRON_SECRET?: string;
+  GCAL_CLIENT_ID?: string;
+  GCAL_CLIENT_SECRET?: string;
+  GCAL_REFRESH_TOKEN?: string;
 }
 
 interface BookingRow {
@@ -134,7 +138,11 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
     }
   }
 
-  return json({ ok: true, scanned: jobs.length, sent, failures });
+  // Piggyback the 15-min tick to keep the Google Calendar push channel alive
+  // (registers on first run after deploy, renews before the 7-day expiry).
+  const channel = (await ensureChannel(env, `${ORIGIN}/api/gcal/webhook`, Date.now())).status;
+
+  return json({ ok: true, scanned: jobs.length, sent, failures, channel });
 }
 
 export function onRequestGet() {
