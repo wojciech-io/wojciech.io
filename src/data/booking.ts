@@ -21,7 +21,7 @@ export const MEETING_TYPES: MeetingType[] = [
     id: 'intro',
     name: 'Intro / Fit Call',
     minutes: 15,
-    desc: 'Quick fit check. Recruiting, partnership, or fast context before anything bigger.',
+    desc: 'A short intro. Whether there is a fit, or fast context before a bigger conversation.',
   },
   {
     id: 'followup',
