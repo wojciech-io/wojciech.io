@@ -5,7 +5,7 @@
 
 import { BOOKING_RULES, BOOKING_CONTACTS, MEETING_BY_ID } from '../../src/data/booking';
 import { generateAvailability, type AvailabilityRules, type BusyInterval } from '../_utils/slots';
-import { isConfigured, queryFreeBusy, insertEvent } from '../_utils/gcal';
+import { isConfigured, queryFreeBusy, insertEvent, deleteEvent } from '../_utils/gcal';
 import { buildIcs } from '../_utils/ics';
 import { confirmationEmail, hostEmail, type BookingEmailData } from '../_utils/emails';
 import { googleCalendarUrl, outlookCalendarUrl } from '../_utils/calendar-links';
@@ -30,6 +30,8 @@ interface BookPayload {
   notes?: string;
   website?: string; // honeypot
   elapsed?: number; // ms since form render
+  rescheduleId?: string; // moving an existing booking to this new slot
+  rescheduleToken?: string; // its cancel_token, proves ownership of the move
 }
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -87,6 +89,36 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
   const start = new Date(startMs);
   const end = new Date(startMs + mt.minutes * 60_000);
 
+  // Hard grid guard: reject any non-standard time (e.g. 13:06) outright, even if
+  // it somehow bypassed the availability list. Sound because the owner timezone
+  // (Europe/Warsaw) has whole-hour UTC offsets, so wall-clock :00/:30 land on
+  // UTC :00/:30 with zero seconds.
+  if (
+    start.getUTCSeconds() !== 0 ||
+    start.getUTCMilliseconds() !== 0 ||
+    start.getUTCMinutes() % rules.slotStepMinutes !== 0
+  ) {
+    return json({ ok: false, error: 'Please pick a standard time slot.' }, { status: 400 });
+  }
+
+  // Reschedule: if valid move credentials are supplied, resolve the booking being
+  // moved. A bad/absent token silently degrades to a plain new booking (no id
+  // enumeration). The old row is excluded from the busy re-check below and is
+  // cancelled only after the new slot is safely written.
+  const reId = (p.rescheduleId || '').toString();
+  const reToken = (p.rescheduleToken || '').toString();
+  let moving: { id: string; gcal_event_id: string | null } | null = null;
+  if (reId && reToken && env.DB) {
+    const row = await env.DB.prepare(
+      'SELECT id, cancel_token, status, gcal_event_id FROM bookings WHERE id = ?'
+    )
+      .bind(reId)
+      .first<{ id: string; cancel_token: string; status: string; gcal_event_id: string | null }>();
+    if (row && row.cancel_token === reToken && row.status === 'confirmed') {
+      moving = { id: row.id, gcal_event_id: row.gcal_event_id };
+    }
+  }
+
   // Authoritative availability re-check. Regenerating from the same rules +
   // live busy set means an arbitrary or already-taken time is rejected, closing
   // the gap between the client's earlier availability read and this write.
@@ -94,11 +126,19 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
   const horizonEndIso = new Date(now.getTime() + rules.horizonDays * 86_400_000).toISOString();
   const busy: BusyInterval[] = [];
   if (env.DB) {
-    const rows = await env.DB.prepare(
-      "SELECT start_utc, end_utc FROM bookings WHERE status = 'confirmed' AND end_utc > ? AND start_utc < ?"
-    )
-      .bind(now.toISOString(), horizonEndIso)
-      .all<{ start_utc: string; end_utc: string }>();
+    // When moving a booking, exclude its own row so the slot it currently holds
+    // (and its buffer) doesn't block the reschedule.
+    const rows = moving
+      ? await env.DB.prepare(
+          "SELECT start_utc, end_utc FROM bookings WHERE status = 'confirmed' AND id != ? AND end_utc > ? AND start_utc < ?"
+        )
+          .bind(moving.id, now.toISOString(), horizonEndIso)
+          .all<{ start_utc: string; end_utc: string }>()
+      : await env.DB.prepare(
+          "SELECT start_utc, end_utc FROM bookings WHERE status = 'confirmed' AND end_utc > ? AND start_utc < ?"
+        )
+          .bind(now.toISOString(), horizonEndIso)
+          .all<{ start_utc: string; end_utc: string }>();
     for (const r of rows.results ?? []) busy.push({ start: r.start_utc, end: r.end_utc });
   }
   if (isConfigured(env)) {
@@ -127,24 +167,43 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
   }
 
   // Google Calendar is best-effort: a hiccup must not lose a confirmed booking.
+  // When configured, the event is created with a Google Meet conference so the
+  // invite Google emails carries the join link (and we surface it below too).
+  let meetUrl: string | undefined;
   if (isConfigured(env)) {
     try {
-      const eventId = await insertEvent(env, BOOKING_CONTACTS.ownerCalendarId, {
+      const ev = await insertEvent(env, BOOKING_CONTACTS.ownerCalendarId, {
         summary: `${mt.name} · ${name}`,
         description: notes ? `From ${name} (${email}).\n\n${notes}` : `From ${name} (${email}).`,
         startUtcIso: start.toISOString(),
         endUtcIso: end.toISOString(),
         timeZone: rules.ownerTimezone,
+        withMeet: true,
         attendees: [
           { email, displayName: name },
           { email: BOOKING_CONTACTS.aliasEmail },
         ],
       });
-      if (env.DB && eventId) {
-        await env.DB.prepare('UPDATE bookings SET gcal_event_id = ? WHERE id = ?').bind(eventId, id).run();
+      meetUrl = ev.meetUrl;
+      if (env.DB && ev.id) {
+        await env.DB.prepare('UPDATE bookings SET gcal_event_id = ? WHERE id = ?').bind(ev.id, id).run();
       }
     } catch {
       /* keep the booking; calendar can be reconciled from the D1 row */
+    }
+  }
+
+  // Reschedule: the new slot is safely persisted, so retire the old booking now.
+  // Cancel its row and delete its calendar event (best-effort). The guest gets a
+  // fresh confirmation for the new time.
+  if (moving && env.DB) {
+    await env.DB.prepare("UPDATE bookings SET status = 'cancelled' WHERE id = ?").bind(moving.id).run();
+    if (moving.gcal_event_id && isConfigured(env)) {
+      try {
+        await deleteEvent(env, BOOKING_CONTACTS.ownerCalendarId, moving.gcal_event_id);
+      } catch {
+        /* the D1 row is cancelled; the calendar reconciles from it */
+      }
     }
   }
 
@@ -160,6 +219,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
       end,
       summary: title,
       description: notes || undefined,
+      location: meetUrl, // Google Meet link when the calendar is connected
       organizerName: 'Wojciech Łuszczyński',
       organizerEmail: 'hello@wojciech.io',
       attendeeName: name,
@@ -177,6 +237,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
       tzLine: `${fmtZone(start, TZ)} · ${TZ}`,
       note: notes || undefined,
       manageUrl,
+      meetUrl,
       gcalUrl: googleCalendarUrl({ title, start, end, details: notes || undefined }),
       outlookUrl: outlookCalendarUrl({ title, start, end, details: notes || undefined }),
       sendDate: fmtSendDate(now, TZ),
@@ -198,7 +259,9 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
         reply_to: 'hello@wojciech.io',
         subject: guest.subject,
         html: guest.html,
-        attachments: [{ filename: 'invite.ics', content: toBase64(ics), content_type: 'text/calendar' }],
+        attachments: [
+          { filename: 'invite.ics', content: toBase64(ics), content_type: 'text/calendar; charset=utf-8; method=REQUEST' },
+        ],
       }),
       send({
         from: BOOKING_CONTACTS.fromEmail,
@@ -210,7 +273,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
     ]);
   }
 
-  return json({ ok: true, id, start: start.toISOString(), end: end.toISOString() });
+  return json({ ok: true, id, start: start.toISOString(), end: end.toISOString(), rescheduled: Boolean(moving) });
 }
 
 export function onRequestGet() {

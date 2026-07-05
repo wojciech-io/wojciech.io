@@ -67,6 +67,10 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
       <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed">
         {S.lead}
       </p>
+      <div id="reschedule-note" hidden
+        class="mt-5 rounded-[var(--radius-card)] border border-[var(--color-accent-cta)] bg-[var(--color-surface-2)] px-4 py-3 text-sm text-[var(--color-text)]">
+        You're rescheduling an existing booking. Pick a new time and your old slot is freed automatically.
+      </div>
     </div>
 
     <!-- Step 1: meeting type -->
@@ -236,6 +240,15 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
     });
     $('tz-note').textContent = tz === 'UTC' ? S.tzLocal : S.tzLabel + ': ' + tz;
 
+    // Reschedule mode: reached from the manage-booking link
+    // (/meet/?reschedule=<id>&token=<token>). Booking then moves that booking
+    // to the new slot instead of creating a fresh one.
+    const _p = new URLSearchParams(location.search);
+    const rescheduleId = _p.get('reschedule') || '';
+    const rescheduleToken = _p.get('token') || '';
+    const isReschedule = Boolean(rescheduleId && rescheduleToken);
+    if (isReschedule) { const n = $('reschedule-note'); if (n) n.hidden = false; }
+
     const state = { type: INITIAL.type, minutes: INITIAL.minutes, typeName: INITIAL.typeName, dateKey: null, slotIso: null };
     const byDay = new Map(); // local YYYY-MM-DD -> [utc iso, ...]
     const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -367,6 +380,7 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
             notes: form.notes.value,
             website: form.website.value,
             elapsed: Date.now() - FORM_LOADED,
+            ...(isReschedule ? { rescheduleId, rescheduleToken } : {}),
           }),
         });
         const data = await res.json();

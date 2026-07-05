@@ -37,6 +37,10 @@ import Layout from '../../layouts/Layout.astro';
           <p id="cx-when" class="text-sm text-[var(--color-text-muted)] mb-6"></p>
           <p id="cx-cancel-error" role="alert" hidden class="text-sm text-red-600 dark:text-red-400 mb-4"></p>
           <div class="flex flex-col sm:flex-row gap-3">
+            <a id="cx-reschedule" href="/meet/"
+              class="inline-flex items-center justify-center rounded-[var(--radius-card)] bg-[var(--color-accent-cta)] px-5 py-3 text-sm font-semibold text-[var(--color-accent-text)] transition-opacity hover:opacity-90">
+              Reschedule
+            </a>
             <button id="cx-cancel-btn" type="button"
               class="inline-flex items-center justify-center rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface-2)] px-5 py-3 text-sm font-semibold text-[var(--color-text)] transition-colors hover:border-red-500/60 hover:text-red-600 dark:hover:text-red-400 disabled:opacity-40">
               Cancel this booking
@@ -89,6 +93,9 @@ import Layout from '../../layouts/Layout.astro';
         if (data.booking.status === 'cancelled') { show('cx-done'); return; }
         $('cx-detail').textContent = data.booking.name + ' · ' + data.booking.minutes + ' min';
         $('cx-when').textContent = fmt.format(new Date(data.booking.start));
+        // Reschedule = pick a new slot on /meet, which moves this booking and
+        // frees the old time once the new one is booked.
+        $('cx-reschedule').href = '/meet/?reschedule=' + encodeURIComponent(id) + '&token=' + encodeURIComponent(token);
         show('cx-confirm');
       })
       .catch(fail);
