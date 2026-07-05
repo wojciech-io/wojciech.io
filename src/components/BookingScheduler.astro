@@ -12,9 +12,11 @@ import type { SiteLocale } from '../data/locale-codes';
 
 interface Props {
   lang: SiteLocale;
+  /** Hide the built-in hero (eyebrow/H1/lead) when the host page has its own. */
+  hideHero?: boolean;
 }
 
-const { lang } = Astro.props;
+const { lang, hideHero = false } = Astro.props;
 const S = getMeetCopy(lang);
 
 // BCP-47 tag for server-side Intl (weekday headers). Client Intl reads
@@ -55,22 +57,24 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
 
 <section class="relative pt-10 pb-14 md:pt-14 md:pb-20 overflow-hidden">
   <div class="relative mx-auto max-w-6xl px-6">
-    <!-- Hero -->
-    <div class="max-w-2xl mb-10 md:mb-12">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-        <span class="obs-label-accent">{S.eyebrow}</span>
+    <!-- Hero (omitted when the host page supplies its own) -->
+    {!hideHero && (
+      <div class="max-w-2xl mb-10 md:mb-12">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+          <span class="obs-label-accent">{S.eyebrow}</span>
+        </div>
+        <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
+          {S.h1}
+        </h1>
+        <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed">
+          {S.lead}
+        </p>
       </div>
-      <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4">
-        {S.h1}
-      </h1>
-      <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed">
-        {S.lead}
-      </p>
-      <div id="reschedule-note" hidden
-        class="mt-5 rounded-[var(--radius-card)] border border-[var(--color-accent-cta)] bg-[var(--color-surface-2)] px-4 py-3 text-sm text-[var(--color-text)]">
-        You're rescheduling an existing booking. Pick a new time and your old slot is freed automatically.
-      </div>
+    )}
+    <div id="reschedule-note" hidden
+      class="max-w-2xl mb-8 rounded-[var(--radius-card)] border border-[var(--color-accent-cta)] bg-[var(--color-surface-2)] px-4 py-3 text-sm text-[var(--color-text)]">
+      You're rescheduling an existing booking. Pick a new time and your old slot is freed automatically.
     </div>
 
     <!-- Step 1: meeting type -->
@@ -99,9 +103,16 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
     <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
       <!-- Calendar + slots -->
       <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 md:p-6">
-        <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center justify-between gap-3 mb-5">
           <p class="obs-label-accent block">2 · {S.step2}</p>
-          <span id="tz-note" class="font-mono text-xs text-[var(--color-text-dim)]"></span>
+          <label class="flex items-center gap-1.5 shrink-0" title={S.tzLabel}>
+            <svg class="w-3.5 h-3.5 text-[var(--color-text-dim)] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18" stroke-linecap="round"/>
+            </svg>
+            <span class="sr-only">{S.tzLabel}</span>
+            <select id="tz-select"
+              class="max-w-[150px] sm:max-w-[190px] truncate rounded-md border border-[var(--color-border)] bg-[var(--color-bg)] px-2 py-1 font-mono text-xs text-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent-cta)]"></select>
+          </label>
         </div>
 
         <div class="grid gap-6 sm:grid-cols-2">
@@ -232,13 +243,29 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
     // the page locale and the visitor's own timezone with no translation table.
     let tz = 'UTC';
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (_) {}
+    // Month header + day header format wall dates (local Date objects), so they
+    // stay timezone-neutral. Slot instants follow the chosen timezone below.
     const fmtMonth = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
     const fmtDay = new Intl.DateTimeFormat(locale, { weekday: 'long', month: 'long', day: 'numeric' });
-    const fmtTime = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' });
-    const fmtSummary = new Intl.DateTimeFormat(locale, {
-      weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
-    });
-    $('tz-note').textContent = tz === 'UTC' ? S.tzLocal : S.tzLabel + ': ' + tz;
+    let fmtTime, fmtSummary, keyFmt;
+    function buildTzFormatters() {
+      fmtTime = new Intl.DateTimeFormat(locale, { timeZone: tz, hour: '2-digit', minute: '2-digit' });
+      fmtSummary = new Intl.DateTimeFormat(locale, { timeZone: tz, weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      keyFmt = new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' });
+    }
+    buildTzFormatters();
+
+    // Timezone picker: every slot is a UTC instant, so switching zone just
+    // re-buckets and re-renders. Full IANA list where supported; short fallback.
+    const tzSel = $('tz-select');
+    let zones;
+    try { zones = Intl.supportedValuesOf('timeZone'); } catch (_) {
+      zones = ['UTC', 'Europe/Warsaw', 'Europe/London', 'Europe/Berlin', 'America/New_York', 'America/Chicago', 'America/Los_Angeles', 'America/Sao_Paulo', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Singapore', 'Asia/Tokyo', 'Australia/Sydney'];
+    }
+    if (!zones.includes(tz)) zones = [tz].concat(zones);
+    tzSel.innerHTML = zones.map((z) => '<option value="' + z + '">' + z.replace(/_/g, ' ') + '</option>').join('');
+    tzSel.value = tz;
+    tzSel.addEventListener('change', () => { tz = tzSel.value; buildTzFormatters(); applyTz(); });
 
     // Reschedule mode: reached from the manage-booking link
     // (/meet/?reschedule=<id>&token=<token>). Booking then moves that booking
@@ -250,11 +277,33 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
     if (isReschedule) { const n = $('reschedule-note'); if (n) n.hidden = false; }
 
     const state = { type: INITIAL.type, minutes: INITIAL.minutes, typeName: INITIAL.typeName, dateKey: null, slotIso: null };
-    const byDay = new Map(); // local YYYY-MM-DD -> [utc iso, ...]
+    const byDay = new Map(); // wall-date YYYY-MM-DD -> [utc iso, ...]
+    let allSlots = []; // raw UTC ISO slots, kept so a timezone switch can re-bucket
     const today = new Date(); today.setHours(0, 0, 0, 0);
     let view = new Date(today.getFullYear(), today.getMonth(), 1);
 
+    // Calendar cells carry their own wall date; slots bucket by their wall date
+    // in the chosen timezone. Both are YYYY-MM-DD strings, so they line up.
     const localKey = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+    const slotKey = (iso) => keyFmt.format(new Date(iso));
+
+    function rebucket() {
+      byDay.clear();
+      for (const iso of allSlots) {
+        const key = slotKey(iso);
+        if (!byDay.has(key)) byDay.set(key, []);
+        byDay.get(key).push(iso);
+      }
+    }
+    // After a timezone change: re-bucket, drop the current selection, redraw.
+    function applyTz() {
+      rebucket();
+      state.dateKey = null; state.slotIso = null;
+      $('slots').innerHTML = '';
+      $('slots-label').textContent = S.selectDay;
+      renderCalendar();
+      updateSummary();
+    }
 
     async function loadAvailability() {
       byDay.clear(); state.dateKey = null; state.slotIso = null;
@@ -266,14 +315,16 @@ const initial = { type: featured.id, minutes: featured.minutes, typeName: featur
         });
         const data = await res.json();
         if (!data.ok) throw new Error(data.error || 'unavailable');
-        for (const iso of data.slots) {
-          const key = localKey(new Date(iso));
-          if (!byDay.has(key)) byDay.set(key, []);
-          byDay.get(key).push(iso);
+        allSlots = data.slots || [];
+        rebucket();
+        // Open on the month of the first slot, in the chosen timezone.
+        const firstKey = allSlots[0] ? slotKey(allSlots[0]) : null;
+        if (firstKey) {
+          const p = firstKey.split('-');
+          view = new Date(Number(p[0]), Number(p[1]) - 1, 1);
+        } else {
+          view = new Date(today.getFullYear(), today.getMonth(), 1);
         }
-        const first = data.slots[0] ? new Date(data.slots[0]) : null;
-        view = first ? new Date(first.getFullYear(), first.getMonth(), 1)
-                     : new Date(today.getFullYear(), today.getMonth(), 1);
         $('slots-label').textContent = S.selectDay;
         $('slots').innerHTML = '';
         renderCalendar();
