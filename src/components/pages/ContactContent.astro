@@ -1,7 +1,6 @@
 ---
 import { SITE } from '../../data/site';
-
-const calUrl = 'https://cal.com/wojciech-luszczynski/30min';
+import BookingScheduler from '../BookingScheduler.astro';
 ---
 
 <!-- Hero: framed portrait + intro; the booking calendar below is the primary CTA -->
@@ -21,24 +20,8 @@ const calUrl = 'https://cal.com/wojciech-luszczynski/30min';
     </div>
   </div>
 
-  <!-- Embedded scheduler: the calendar IS the CTA on this page. -->
-  <div class="relative mx-auto max-w-6xl px-6">
-    <div
-      data-cal-inline="wojciech-luszczynski/30min"
-      class="min-h-[620px] w-full overflow-hidden rounded-[var(--radius-card)] [color-scheme:normal]"
-    ></div>
-    <p class="mt-4 text-center text-sm text-[var(--color-text-muted)]">
-      Calendar not loading?
-      <a
-        href={calUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-hi)] transition-colors"
-        data-mp-cta="Book 30 minutes"
-        data-mp-location="contact_hero_fallback"
-      >Open the booking page →</a>
-    </p>
-  </div>
+  <!-- Own scheduler: the booking flow IS the CTA on this page. -->
+  <BookingScheduler lang="en" hideHero />
 </section>
 
 <!-- Context: what to expect, good fit, alternative -->
