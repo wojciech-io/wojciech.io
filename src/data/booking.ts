@@ -46,12 +46,21 @@ export const MEETING_BY_ID: Record<string, MeetingType> = Object.fromEntries(
 // compared in UTC so DST never corrupts a stored booking.
 export const BOOKING_RULES = {
   /** IANA zone the working hours are expressed in. */
-  ownerTimezone: 'Europe/Warsaw',
-  /** 0=Sun … 6=Sat. Mon–Fri. */
-  workingDays: [1, 2, 3, 4, 5],
-  /** Local clock window, inclusive start, exclusive end (a slot must fit fully). */
-  workStart: '09:00',
-  workEnd: '17:00',
+  ownerTimezone: 'Europe/Berlin',
+  /**
+   * Working window per weekday in the owner's local clock (0=Sun … 6=Sat).
+   * A slot must fit fully inside [start, end). A weekday missing from the map
+   * is closed. Weekdays run long; weekends are a short morning window.
+   */
+  hours: {
+    1: { start: '08:00', end: '19:00' }, // Mon
+    2: { start: '08:00', end: '19:00' }, // Tue
+    3: { start: '08:00', end: '19:00' }, // Wed
+    4: { start: '08:00', end: '19:00' }, // Thu
+    5: { start: '08:00', end: '19:00' }, // Fri
+    6: { start: '09:00', end: '14:00' }, // Sat
+    0: { start: '09:00', end: '14:00' }, // Sun
+  } as Record<number, { start: string; end: string }>,
   /** Grid granularity in minutes. Every candidate start sits on this step. */
   slotStepMinutes: 30,
   /** No same-hour bookings: earliest slot is now + this many hours. */
@@ -60,7 +69,7 @@ export const BOOKING_RULES = {
   horizonDays: 30,
   /** Padding kept free before and after every meeting. */
   bufferMinutes: 10,
-} as const;
+};
 
 /** Owner-side calendar targets. hello@ is an alias, so it rides as an attendee. */
 export const BOOKING_CONTACTS = {

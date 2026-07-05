@@ -14,9 +14,8 @@ export interface BusyInterval {
 
 export interface AvailabilityRules {
   ownerTimezone: string;
-  workingDays: number[]; // 0=Sun … 6=Sat
-  workStart: string; // 'HH:MM' local
-  workEnd: string; // 'HH:MM' local
+  /** Working window per weekday (0=Sun … 6=Sat) in local clock; undefined = closed. */
+  hours: Record<number, { start: string; end: string } | undefined>;
   slotStepMinutes: number;
   minNoticeHours: number;
   horizonDays: number;
@@ -93,8 +92,6 @@ export function generateAvailability(opts: {
     .map((b) => ({ start: Date.parse(b.start) - bufferMs, end: Date.parse(b.end) + bufferMs }))
     .filter((b) => Number.isFinite(b.start) && Number.isFinite(b.end));
 
-  const startMin = toMinutes(rules.workStart);
-  const endMin = toMinutes(rules.workEnd);
   const base = zonedYMD(now, rules.ownerTimezone);
   const out: string[] = [];
 
@@ -102,7 +99,10 @@ export function generateAvailability(opts: {
     // Increment the calendar date via UTC date math (no DST in pure date math).
     const dayDate = new Date(Date.UTC(base.y, base.m - 1, base.d + i));
     const weekday = dayDate.getUTCDay();
-    if (!rules.workingDays.includes(weekday)) continue;
+    const win = rules.hours[weekday];
+    if (!win) continue; // closed that weekday
+    const startMin = toMinutes(win.start);
+    const endMin = toMinutes(win.end);
     const y = dayDate.getUTCFullYear();
     const mo = dayDate.getUTCMonth() + 1;
     const da = dayDate.getUTCDate();
