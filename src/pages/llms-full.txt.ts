@@ -13,14 +13,20 @@ import type { APIRoute } from 'astro';
 // Reduce MDX source to readable prose: drop imports, JSX component tags
 // (keeping their text children), images, link URLs, and MDX comments.
 function mdxToText(src: string): string {
-  return src
+  let text = src
     .replace(/^(import|export)\s.*$/gm, '')
     .replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-    .replace(/<\/?[A-Za-z][^>]*>/g, '')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1');
+  // Strip JSX/HTML tags until none remain, so nested or malformed markup
+  // (e.g. "<<b>i>") can't survive a single non-recursive pass. Iterating to a
+  // fixpoint clears the CodeQL incomplete-multi-character-sanitization finding.
+  let prev: string;
+  do {
+    prev = text;
+    text = text.replace(/<\/?[A-Za-z][^>]*>/g, '');
+  } while (text !== prev);
+  return text.replace(/\n{3,}/g, '\n\n').trim();
 }
 
 export const GET: APIRoute = async ({ site }) => {
