@@ -24,7 +24,7 @@ export const GET: APIRoute = async ({ site }) => {
       {
         name: 'Wojciech Łuszczyński',
         url: `${origin}/about/`,
-        avatar: `${origin}/images/wojciech-avatar-384.webp`,
+        avatar: `${origin}/images/wojciech-avatar-2026-384.webp`,
       },
     ],
     items: posts.map((post) => {
