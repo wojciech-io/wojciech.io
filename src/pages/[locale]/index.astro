@@ -22,6 +22,7 @@ export function getStaticPaths() {
 const { copy } = Astro.props as { copy: LocalizedHomeCopy };
 const workHref = `/${copy.path}/work/`;
 const contactHref = `/${copy.path}/contact/`;
+const meetHref = `/${copy.path}/meet/`;
 const t = getUiStrings(copy.key);
 ---
 
@@ -51,9 +52,8 @@ const t = getUiStrings(copy.key);
     primaryCta={{ label: copy.primaryCta, href: workHref }}
     secondaryCta={{
       label: copy.secondaryCta,
-      href: contactHref,
+      href: meetHref,
       attrs: {
-        'data-cal-link': 'wojciech-luszczynski/30min',
         'data-mp-cta': 'Book a call',
         'data-mp-location': `localized_${copy.path}_hero`,
       },
@@ -86,7 +86,7 @@ const t = getUiStrings(copy.key);
     heading={copy.finalHeading}
     subtext={copy.finalSubtext}
     cta={copy.secondaryCta}
-    ctaHref={contactHref}
+    ctaHref={meetHref}
     ctaSecondary={copy.primaryCta}
     ctaSecondaryHref={workHref}
   />
