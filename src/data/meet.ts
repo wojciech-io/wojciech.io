@@ -457,6 +457,42 @@ export function getMeetCopy(locale: SiteLocale): MeetStrings {
   return meetCopy[locale] ?? meetCopy.en;
 }
 
+/** Absolute URL for a locale's scheduler page (en at /meet, rest at /<locale>/meet). */
+function meetUrl(locale: SiteLocale): string {
+  return locale === 'en' ? `${SITE.url}/meet/` : `${SITE.url}/${locale}/meet/`;
+}
+
+/**
+ * Page-level JSON-LD for the scheduler: a ContactPage whose mainEntity is
+ * Wojciech with a ReserveAction pointing back at the booking page. Gives answer
+ * engines and LLMs an explicit "this is where you reserve time with this person"
+ * signal on top of the global Person/WebSite schema.
+ */
+export function meetSchema(locale: SiteLocale): Record<string, unknown> {
+  const s = getMeetCopy(locale);
+  const url = meetUrl(locale);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: s.title,
+    description: s.description,
+    url,
+    inLanguage: locale === 'jp' ? 'ja' : locale,
+    isPartOf: { '@type': 'WebSite', name: 'wojciech.io', url: `${SITE.url}/` },
+    mainEntity: {
+      '@type': 'Person',
+      name: 'Wojciech Łuszczyński',
+      url: `${SITE.url}/`,
+      potentialAction: {
+        '@type': 'ReserveAction',
+        name: s.title,
+        target: url,
+        result: { '@type': 'Reservation', name: 'Intro or strategy call' },
+      },
+    },
+  };
+}
+
 /** Reciprocal hreflang cluster for the scheduler, mirroring homeAlternates. */
 export const meetAlternates = [
   { lang: 'x-default', href: `${SITE.url}/meet/` },
