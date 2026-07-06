@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import BookingScheduler from '../../components/BookingScheduler.astro';
 import {
   htmlLangForLocale,
   localizedPageAlternates,
@@ -33,7 +34,6 @@ const schema = {
 };
 
 const isContact = copy.slug === 'contact';
-const calUrl = 'https://cal.com/wojciech-luszczynski/30min';
 
 /* Contact form labels per locale */
 const contactLabels: Record<string, { name: string; email: string; message: string; messageHelp: string; send: string; alt: string; altSub: string; or: string; formIntro: string }> = {
@@ -61,36 +61,10 @@ const labels = isContact ? contactLabels[copy.locale] || contactLabels['de'] : n
   {isContact ? (
     <!-- Contact: dedicated layout matching EN /contact/ -->
     <Fragment>
-      <!-- Hero: booking is the primary CTA -->
-      <section id="book-call" class="relative pt-10 pb-10 md:pt-14 md:pb-12 overflow-hidden border-b border-[var(--color-border)]">
-        <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px] opacity-70" aria-hidden="true"></div>
-        <div class="relative mx-auto max-w-3xl px-6 text-center">
-          <span class="obs-label-accent mb-4 block">{copy.eyebrow}</span>
-          <h1 class="reveal-up text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4" data-reveal-index="0">
-            {copy.h1}
-          </h1>
-          <p class="reveal-up text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed max-w-2xl mx-auto mb-8" data-reveal-index="1">
-            {copy.lead}
-          </p>
-        </div>
-
-        <!-- Embedded scheduler: the calendar IS the CTA on this page. -->
-        <div class="relative mx-auto max-w-5xl px-6">
-          <div
-            data-cal-inline="wojciech-luszczynski/30min"
-            class="min-h-[620px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden"
-          ></div>
-          <p class="mt-4 text-center text-sm text-[var(--color-text-muted)]">
-            <a
-              href={calUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-hi)] transition-colors"
-              data-mp-cta={copy.primaryCta}
-              data-mp-location={`localized_${copy.locale}_contact_hero_fallback`}
-            >{copy.primaryCta} →</a>
-          </p>
-        </div>
+      <!-- Own /meet scheduler (localized) — replaces the old Cal.com embed so the
+           localized /contact gets the same responsive flow, covers and host card. -->
+      <section id="book-call">
+        <BookingScheduler lang={copy.locale} />
       </section>
 
       <!-- Info columns -->
