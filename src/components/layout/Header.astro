@@ -11,7 +11,8 @@ const pathname = Astro.url.pathname;
 const t = getUiStringsForPath(pathname);
 const uiLocale = getLocaleFromPath(pathname);
 const links = getPrimaryNavLinks(pathname);
-const bookCallHref = localizeHref('/contact/', uiLocale) + '#book-call';
+const bookCallHref = localizeHref('/meet/', uiLocale);
+const subscribeHref = '/subscribe/';
 
 const segments = pathname.split('/').filter(Boolean);
 const localeSegment = segments[0];
@@ -94,7 +95,6 @@ const languageOptions = [
       <a
         href={bookCallHref}
         class="btn-press shrink-0 inline-block min-w-40 text-center text-sm font-semibold px-4 py-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
-        data-cal-link="wojciech-luszczynski/30min"
         data-mp-cta="Book a call"
         data-mp-location="header"
       >
@@ -199,16 +199,25 @@ const languageOptions = [
         </div>
       </details>
     </div>
-    <!-- CTA -->
-    <a
-      href={bookCallHref}
-      class="mobile-nav-link btn-press flex items-center justify-center gap-2 w-full bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors text-sm"
-      data-cal-link="wojciech-luszczynski/30min"
-      data-mp-cta="Book a call"
-      data-mp-location="mobile_nav"
-    >
-      {t.cta.bookCall}
-    </a>
+    <!-- CTAs: newsletter (AI Espresso) + book a call -->
+    <div class="grid grid-cols-2 gap-3">
+      <a
+        href={subscribeHref}
+        class="mobile-nav-link flex items-center justify-center gap-2 w-full border border-[var(--color-border-2)] bg-[var(--color-surface)] text-[var(--color-text)] font-semibold py-3 rounded-[var(--radius-btn)] hover:border-[var(--color-accent)]/50 hover:text-[var(--color-accent-hi)] transition-colors text-sm"
+        data-mp-cta="AI Espresso"
+        data-mp-location="mobile_nav"
+      >
+        AI Espresso
+      </a>
+      <a
+        href={bookCallHref}
+        class="mobile-nav-link btn-press flex items-center justify-center gap-2 w-full bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] font-semibold py-3 rounded-[var(--radius-btn)] hover:bg-[var(--color-accent-cta-hi)] transition-colors text-sm"
+        data-mp-cta="Book a call"
+        data-mp-location="mobile_nav"
+      >
+        {t.cta.bookCall}
+      </a>
+    </div>
   </div>
 </div>
 
