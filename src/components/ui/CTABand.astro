@@ -15,7 +15,7 @@ const {
   heading = 'Have a system worth fixing?',
   subtext = 'Send the context, the current bottleneck, and what already exists. I will tell you where I would start.',
   cta = 'Book a call',
-  ctaHref = '/contact/#book-call',
+  ctaHref = '/meet/',
   // Secondary (outline) is the soft ask: the newsletter, routed to the
   // dedicated /subscribe page. Booking stays the primary money CTA. This is
   // why the footer's inline signup band drops out under a CTA band — the
@@ -25,8 +25,6 @@ const {
 } = Astro.props;
 const ctaIsExternal = ctaHref.startsWith('http');
 const secondaryIsExternal = ctaSecondaryHref.startsWith('http');
-// Booking CTAs open the compact Cal.com popup in place; href stays as fallback.
-const ctaIsBooking = ctaHref.includes('#book-call') || ctaHref.includes('cal.com');
 const headingLines = heading.split('\n');
 ---
 
@@ -74,7 +72,6 @@ const headingLines = heading.split('\n');
           <a
             href={ctaHref}
             {...(ctaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-            {...(ctaIsBooking ? { 'data-cal-link': 'wojciech-luszczynski/30min' } : {})}
             class="btn-press obs-mono inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
             data-mp-cta={cta}
             data-mp-location="cta_band"
