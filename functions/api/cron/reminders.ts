@@ -63,7 +63,7 @@ function emailData(row: BookingRow): BookingEmailData {
     meetingName: mt?.name ?? row.meeting_type,
     minutes: row.duration_min,
     dateLine: fmtDate(start, TZ),
-    timeLine: `${fmtHM(start, TZ)} – ${fmtHM(end, TZ)}`,
+    timeLine: `${fmtHM(start, TZ)} to ${fmtHM(end, TZ)}`,
     tzLine: `${fmtZone(start, TZ)} · ${TZ}`,
     note: row.notes || undefined,
     manageUrl: `${ORIGIN}/meet/cancel?id=${row.id}&token=${row.cancel_token}`,

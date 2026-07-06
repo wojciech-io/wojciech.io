@@ -233,7 +233,7 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
       meetingName: mt.name,
       minutes: mt.minutes,
       dateLine: fmtDate(start, TZ),
-      timeLine: `${fmtHM(start, TZ)} – ${fmtHM(end, TZ)}`,
+      timeLine: `${fmtHM(start, TZ)} to ${fmtHM(end, TZ)}`,
       tzLine: `${fmtZone(start, TZ)} · ${TZ}`,
       note: notes || undefined,
       manageUrl,
