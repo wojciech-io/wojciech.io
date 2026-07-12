@@ -136,7 +136,7 @@ export const apps: AppEntry[] = [
     tags: 'brand website music band rock react vite',
     searchName: 'ciryam band music website strona',
     tech: [{ label: 'React' }, { label: 'Vite' }, { label: 'Tailwind' }],
-    url: 'https://ciryam.eu',
+    url: 'https://ciryam.lovable.app/',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
     palette: BRAND_PALETTE,
