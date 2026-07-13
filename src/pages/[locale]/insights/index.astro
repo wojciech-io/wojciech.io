@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
+import PosterFeatured from '../../../components/insights/PosterFeatured.astro';
+import PosterCard from '../../../components/insights/PosterCard.astro';
 import { getLocalizedPage } from '../../../data/localizedPages';
 import { localizedHome, type LocaleKey } from '../../../data/locales';
 import { SITE } from '../../../data/site';
@@ -67,63 +69,32 @@ const breadcrumbSchema = {
     </div>
 
     {featuredPost && (
-      <a
+      <PosterFeatured
         href={`/${locale}/insights/${insightSlug(featuredPost)}/`}
-        class="group mb-10 block rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-7 card-hover sm:p-8"
-        data-featured-article
-      >
-        <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent)]">{labels.featured}</p>
-        <h2 class="mb-3 max-w-3xl text-[length:var(--text-h2)] font-semibold leading-tight text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)]">
-          {featuredPost.data.title}
-        </h2>
-        <p class="mb-5 max-w-3xl text-[var(--color-text-muted)]">{featuredPost.data.description}</p>
-        <div class="flex flex-wrap items-center gap-3 text-xs text-[var(--color-text-dim)]">
-          <time datetime={featuredPost.data.publishedAt.toISOString()}>{formatDate(featuredPost.data.publishedAt)}</time>
-          <span aria-hidden="true">·</span>
-          <span>{readTime(featuredPost.body, locale)}</span>
-          <span aria-hidden="true">·</span>
-          <span>{labels.readArticle}</span>
-        </div>
-      </a>
+        title={featuredPost.data.title}
+        description={featuredPost.data.description}
+        categoryLabel={featuredPost.data.category ?? 'Wpis'}
+        categoryKey={featuredPost.data.category ?? ''}
+        date={formatDate(featuredPost.data.publishedAt)}
+        read={readTime(featuredPost.body, locale)}
+        featuredLabel={labels.featured}
+        readLabel={labels.readArticle}
+      />
     )}
 
     <p class="mb-5 text-sm text-[var(--color-text-dim)]">{allPosts.length} {labels.articles}</p>
 
-    <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-      {restPosts.map((post) => (
-        <a
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {restPosts.map((post, i) => (
+        <PosterCard
           href={`/${locale}/insights/${insightSlug(post)}/`}
-          class="group flex min-h-[260px] flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover"
-        >
-          {post.data.coverImage && (
-            <div class="aspect-[16/9] overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
-              <img
-                src={post.data.coverImage}
-                alt=""
-                width="640"
-                height="360"
-                loading="lazy"
-                decoding="async"
-                class="h-full w-full object-cover object-[center_25%] transition-transform duration-500 group-hover:scale-[1.03]"
-              />
-            </div>
-          )}
-          <div class="flex flex-1 flex-col p-5">
-          <div class="mb-4 flex flex-wrap gap-1.5">
-            {post.data.tags.slice(0, 3).map((tag) => (
-              <span class="rounded-full border border-[var(--color-border)] bg-[var(--color-surface-2)] px-2 py-0.5 text-[11px] font-medium text-[var(--color-text-dim)]">{tag}</span>
-            ))}
-          </div>
-          <h2 class="mb-3 text-base font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)]">
-            {post.data.title}
-          </h2>
-          <p class="mb-5 text-sm leading-relaxed text-[var(--color-text-muted)]">{post.data.description}</p>
-          <div class="mt-auto flex items-center justify-between border-t border-[var(--color-border)] pt-3 text-[11px] text-[var(--color-text-dim)]">
-            <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
-            <span>{readTime(post.body, locale)}</span>
-          </div>
-          </div>
-        </a>
+          title={post.data.title}
+          categoryLabel={post.data.category ?? 'Wpis'}
+          categoryKey={post.data.category ?? ''}
+          date={formatDate(post.data.publishedAt)}
+          read={readTime(post.body, locale)}
+          index={i + 1}
+        />
       ))}
     </div>
   </div>

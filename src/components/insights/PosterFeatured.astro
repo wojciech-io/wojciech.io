@@ -1,0 +1,57 @@
+---
+// Wide featured poster for the /insights index. Presentational; the page passes
+// display strings. `categoryKey` (English) drives the theme + filter; the
+// visible label can be localised.
+import { getPoster } from '../../lib/insightsPoster';
+
+interface Props {
+  href: string;
+  title: string;
+  description: string;
+  categoryLabel: string;
+  categoryKey?: string;
+  date: string;
+  read: string;
+  featuredLabel: string;
+  readLabel: string;
+  arrowFlip?: boolean;
+}
+
+const {
+  href, title, description, categoryLabel, categoryKey = '',
+  date, read, featuredLabel, readLabel, arrowFlip = false,
+} = Astro.props;
+const t = getPoster(categoryKey);
+---
+
+<a
+  href={href}
+  class="group relative mb-14 block overflow-hidden rounded-[calc(var(--radius-card)*2)] border border-[var(--color-border)]"
+  data-featured-article
+  data-category={categoryKey}
+  style={`background:radial-gradient(90% 130% at 100% 100%, ${t.accent}2b 0%, transparent 42%), ${t.grad}`}
+>
+  <div class="pointer-events-none absolute inset-0" style="background-image:linear-gradient(var(--color-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--color-grid-line) 1px,transparent 1px);background-size:44px 44px;opacity:0.35"></div>
+  <span class="pointer-events-none absolute right-6 top-0 select-none text-[170px] leading-none font-semibold text-white/[0.04]" aria-hidden="true">{t.glyph}</span>
+
+  <div class="relative grid gap-8 p-8 md:p-12 lg:grid-cols-[1.5fr_1fr] lg:items-end">
+    <div>
+      <div class="mb-5 flex items-center gap-3">
+        <span class="rounded-full px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-[#0c0a06]" style={`background:${t.accent}`}>{featuredLabel}</span>
+        <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-white/60">{categoryLabel}</span>
+      </div>
+      <h2 dir="auto" class="max-w-2xl text-balance text-[length:clamp(2rem,3.4vw+0.6rem,3.3rem)] font-semibold leading-[1.02] tracking-tight text-white [text-shadow:0_1px_30px_rgb(0_0_0_/_0.35)]">
+        {title}
+      </h2>
+    </div>
+    <div class="lg:pb-2">
+      <p dir="auto" class="mb-6 max-w-md text-[15px] leading-relaxed text-white/70">{description}</p>
+      <div class="flex items-center gap-x-3 text-sm text-white/55">
+        <time>{date}</time><span aria-hidden="true">·</span><span>{read}</span>
+        <span class="ml-1 inline-flex items-center gap-1.5 font-medium text-white">{readLabel}
+          <svg class={`h-3.5 w-3.5 transition-transform group-hover:translate-x-1 ${arrowFlip ? 'rtl-flip-x' : ''}`} viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </div>
+  </div>
+</a>
