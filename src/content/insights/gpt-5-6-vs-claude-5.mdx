@@ -1,0 +1,364 @@
+---
+title: "GPT-5.6 vs Claude 5: the first tests say the biggest shift isn't a new benchmark leader"
+seoTitle: "GPT-5.6 Sol, Terra, Luna vs Claude Fable 5 and Sonnet 5"
+description: "OpenAI shipped GPT-5.6 Sol, Terra and Luna. Anthropic answered with Claude Fable 5 and Sonnet 5. After the first independent benchmarks there is no clean winner, but frontier intelligence just got cheaper and the fight moved from answering questions to finishing work."
+publishedAt: "2026-07-12"
+updatedAt: "2026-07-12"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+tldr:
+  - "Claude Fable 5 still leads the Artificial Analysis Intelligence Index at 60. GPT-5.6 Sol scores 59 and finishes the same benchmark at about one-third of Fable's cost. The gap is now money, not capability."
+  - "GPT-5.6 is three models, not one: Sol (flagship), Terra (balanced, index 55 at $2.50/$15) and Luna (volume, index 51 at $1/$6). The smart default is Terra, with Sol as an escalation, not Sol for everything."
+  - "Cheaper per token is not cheaper per result. Sonnet 5 burned around 300M tokens on one benchmark, five times the median, and can cost more per finished task than Opus 4.8 once its promo pricing ends."
+  - "Stop asking which model is best. Route the work: Luna to Terra to Sol, or Sonnet to execute and Fable to plan. The winner is the architecture, not the row with the highest number."
+faq:
+  - q: "Which AI model is the best right now, GPT-5.6 or Claude 5?"
+    a: "On the Artificial Analysis Intelligence Index, Claude Fable 5 leads at 60 and GPT-5.6 Sol is one point behind at 59, but Sol completes the benchmark at roughly one-third of Fable's cost. GPT-5.6 Terra may be the most commercially useful of all five. There is no single winner: the right model depends on the task, the cost per finished result and how much supervision you can spare."
+  - q: "Is GPT-5.6 cheaper than Claude Fable 5?"
+    a: "Yes. GPT-5.6 Sol lists at $5 per million input tokens and $30 output against Fable 5's $10 and $50, and independent testing put Sol at about one-third of Fable's cost per completed task. Terra ($2.50 / $15) and Luna ($1 / $6) undercut every Claude tier further."
+  - q: "Should I use Claude Sonnet 5 in Claude Code?"
+    a: "For clearly specified implementation, yes: it is the default in Claude Code and strong on debugging, tool use and messy existing codebases. For ambiguous architecture, use a stronger model to plan first. Sonnet 5 can take more steps, consume more context and cost more per finished task than a stronger model, so planning the hardest work with it is often a false economy."
+  - q: "What is the best GPT-5.6 model for everyday professional work?"
+    a: "Terra for most of it: analysis, research, document work and moderately hard coding at half the cost of the flagship. Keep Sol as an escalation path for the hardest problems, and use Luna for high-volume, low-risk workloads like classification, extraction and routing."
+---
+
+<figure>
+  <img
+    src="/images/insights/gpt-5-6-vs-claude-5-cover-v1.webp"
+    alt="GPT-5.6 vs Claude 5 title card: benchmark, routing and real impact, with a rising performance curve"
+    width="1536"
+    height="960"
+    loading="eager"
+    decoding="async"
+  />
+  <figcaption>Benchmark, routing, real impact: the three questions this piece answers.</figcaption>
+</figure>
+
+OpenAI and Anthropic shipped their newest model generations within weeks of each other. On the surface it looks like another round of benchmark war. It is not. The interesting move is structural, and it changes how I would build on either stack.
+
+OpenAI stopped selling one "best GPT." GPT-5.6 is a family of three:
+
+- **GPT-5.6 Sol**, the flagship,
+- **GPT-5.6 Terra**, the balanced capability-and-cost tier,
+- **GPT-5.6 Luna**, the fast, low-cost tier for volume.
+
+Anthropic positions two:
+
+- **Claude Fable 5** as its most capable widely released model,
+- **Claude Sonnet 5** as the practical agentic model for everyday work, automation and coding.
+
+All five carry roughly a million tokens of context and up to 128,000 output tokens. Context window has stopped being a differentiator. What separates them now is reliability, cost per finished task, tool use, speed, and how much supervision they need to run without me watching.
+
+<Callout type="note" title="What this piece is, and what it is not">
+  This is not my own n=1 benchmark. When I want receipts I run the models against my own repo and publish the commit, like I did for [Fable 5 against Opus and Sonnet](/insights/claude-fable-5-mythos-5/). This is the layer above that: the first independent benchmarks (Artificial Analysis, Claire Vo's cross-model test), published pricing, and the first days of real developer use, read through the eyes of someone who runs a business on these models. Independent numbers and anecdotes, plus my operating read. Not a verdict. Run your own.
+</Callout>
+
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "index", label: "Intelligence Index", align: "center", mono: true },
+    { key: "price", label: "In / out per 1M", align: "center", mono: true },
+    { key: "role", label: "Most logical role" }
+  ]}
+  rows={[
+    { model: "Claude Fable 5", index: "60", price: "$10 / $50", role: "Hardest problems, analysis, planning, high-stakes coding" },
+    { model: "GPT-5.6 Sol", index: "59", price: "$5 / $30", role: "Frontier capability at better economics, strong Codex integration" },
+    { model: "GPT-5.6 Terra", index: "55", price: "$2.50 / $15", role: "Default model for professional daily work" },
+    { model: "Claude Sonnet 5", index: "53", price: "$2 / $10 intro", role: "Clearly specified agentic execution and Claude Code" },
+    { model: "GPT-5.6 Luna", index: "51", price: "$1 / $6", role: "Fast, high-volume, low-cost workloads" }
+  ]}
+  highlight={[0]}
+  caption="Five models at a glance. Artificial Analysis Intelligence Index, published API list prices, and where each one earns its keep. The rest of this article is why the highlighted row is not the whole story."
+/>
+
+## The central finding: Fable leads, Sol is one point behind for a third of the price
+
+Claude Fable 5 scored 60 on the Artificial Analysis Intelligence Index. GPT-5.6 Sol at max reasoning scored 59. Artificial Analysis put Sol's cost at about $1.04 per task in that evaluation, roughly one-third of Fable's. Sol also took the lead on the Coding Agent Index with a score of 80.
+
+<Benchmark
+  label="Artificial Analysis Intelligence Index"
+  yours={60}
+  yoursLabel="Claude Fable 5"
+  baseline={59}
+  baselineLabel="GPT-5.6 Sol"
+  unit=""
+  caption="One point apart at the top. On the general index Fable keeps a hair's-width lead, and it is the kind of gap that disappears the moment you look at cost."
+/>
+
+This is not a knockout. It is a change in market economics.
+
+Fable can still be the right call for the single hardest problem, where model cost matters less than the probability of a correct answer. Sol looks like the better default for repeated frontier-level work, especially anything you run many times a day.
+
+<KeyTakeaway tone="accent" title="The shift in one line">
+  OpenAI did not need to beat Fable. It needed to get within a point at a third of the cost, then spread that same generation of capability across three price tiers. That reframes the whole question from "which model is best" to "which level of intelligence does this task actually need."
+</KeyTakeaway>
+
+## What GPT-5.6 actually changes
+
+### Sol: close to Fable, materially cheaper
+
+GPT-5.6 Sol lists at $5 per million input tokens and $30 output. Fable 5 lists at $10 and $50.
+
+Token price alone never tells the truth, because models spend different amounts of reasoning, take different numbers of steps and need different amounts of human correction. But the independent cost-per-task number says Sol's advantage is more than a pricing-table trick.
+
+<StatGrid
+  columns={3}
+  stats={[
+    { value: "$1.04", label: "Sol cost per task", sub: "Artificial Analysis eval" },
+    { value: "~3x", label: "Fable's cost vs Sol", sub: "same benchmark", delta: "cheaper", good: true },
+    { value: "80", label: "Sol, Coding Agent Index", sub: "current leader" }
+  ]}
+  caption="Sol's case is not that it wins every chart. It is that it lands next to Fable on quality while costing a fraction per completed job."
+/>
+
+Claire Vo ran Sol, Terra, Luna, Fable and Sonnet across PRDs, prototypes, wireframes, debugging and agentic voice. Sol won the overall test, strongest on PRDs, prototyping and browser use. Fable's problem was not raw capability. It was excessive precision and a harder collaboration style during the work itself.
+
+Early developer reports point the same way. People describe Sol as close to Fable, but faster, cheaper and more dependable on changes that touch several layers of a system at once. Anecdotes, not controlled experiments, but the direction matches the independent numbers.
+
+<PullQuote
+  quote="Fable did not lose on capability. It lost on how much work it was to work with."
+  source="The recurring note in the first cross-model tests"
+/>
+
+### Terra may be the most important model in the release
+
+Sol gets the attention. **Terra may have the bigger operational impact.**
+
+Terra lists at $2.50 per million input tokens and $15 output. OpenAI describes it as competitive with GPT-5.5 at half the cost. Artificial Analysis scored it 55 on the index, four points behind Sol.
+
+That is enough for a large share of real production work:
+
+<Comparison
+  items={[
+    { label: "Business analysis", body: "Reads, summarises and reasons over messy inputs well enough to brief a decision.", tag: "Terra", tone: "accent" },
+    { label: "Document and research work", body: "The volume layer of professional output: drafts, extraction, synthesis across sources.", tag: "Terra", tone: "accent" },
+    { label: "Code generation and refactoring", body: "Moderate-difficulty changes with clear scope, not the ambiguous architecture calls.", tag: "Terra", tone: "accent" },
+    { label: "Tool use and agent execution", body: "Multi-step runs where the plan is defined and the model executes it.", tag: "Terra", tone: "accent" }
+  ]}
+  caption="Not every benchmark, but enough production tasks that paying for Sol by default stops making sense."
+/>
+
+Not everyone is sold. Some testers note Terra scores below GPT-5.5 on several individual benchmarks and behaves more like a distilled mid-sized model than a cheaper Sol. Fair. A strong aggregate score does not mean even quality across every workload. But for a company the question is not "does Terra win every eval." It is:
+
+> Does Terra finish enough of our tasks that paying for Sol by default becomes unnecessary?
+
+For a lot of workloads the answer is yes.
+
+### Luna shows how fast capability is getting cheap
+
+GPT-5.6 Luna lists at $1 per million input tokens and $6 output. It scored 51.2 on the index, only just below Sonnet 5 at maximum reasoning.
+
+That does not mean Luna beats Sonnet on every task. Sonnet can be much better at specific agentic, coding or long-running work. What Luna shows is the pricing pressure GPT-5.6 creates: capability that recently needed an expensive frontier model is now sitting in a $1 input tier.
+
+<ToolCard
+  cols={3}
+  title="Where Luna is the rational pick"
+  caption="Judge Luna by the work it unlocks economically, not by whether it beats Fable on the hardest possible problem."
+  items={[
+    { icon: "code", name: "Classification and extraction", description: "High volume, low ambiguity, clear pass or fail. The classic cheap-model job." },
+    { icon: "chat", name: "Bulk content processing", description: "First drafts, variants, rewrites at scale where a human edits the output anyway." },
+    { icon: "cowork", name: "Simple agents and routing", description: "Triage a task, decide difficulty, then escalate the hard ones to a stronger tier." }
+  ]}
+/>
+
+So the best architecture is not Sol for everything. It routes work by difficulty and risk.
+
+<Diagram caption="The tiered routing that beats a single-model default: cheapest model that can finish the job, escalate only when it can't">
+  <Box label="Incoming task" />
+  <Arrow label="triage" />
+  <Box label="Luna" sub="volume · low risk" variant="muted" />
+  <Arrow label="too hard" />
+  <Box label="Terra" sub="daily professional work" variant="accent" />
+  <Arrow label="high stakes" />
+  <Box label="Sol" sub="hardest problems only" />
+</Diagram>
+
+## Fable 5 still has the strongest pure-capability case
+
+Claude Fable 5 stays first on the general index and performs particularly well on long analytical tasks, agentic coding, prototyping, spreadsheet work and problems that need self-verification. Anthropic's early partners described it as able to finish work that used to take many prompts, and to reflect on and check its own output at the highest effort setting.
+
+Fable also scored 80% on SWE-Bench Pro against Sol's 64.6%. But Sol led Terminal-Bench 2.1 at 88.8% against Fable's 83.1%.
+
+<Benchmark
+  label="SWE-Bench Pro"
+  yours={80}
+  yoursLabel="Claude Fable 5"
+  baseline={64.6}
+  baselineLabel="GPT-5.6 Sol"
+  unit="%"
+  caption="Fixing defined repository issues: Fable's home ground, a clear lead."
+/>
+
+<Benchmark
+  label="Terminal-Bench 2.1"
+  yours={88.8}
+  yoursLabel="GPT-5.6 Sol"
+  baseline={83.1}
+  baselineLabel="Claude Fable 5"
+  unit="%"
+  caption="Work inside a terminal environment: Sol takes it. Same two models, opposite result. This is why 'the best coding model' is a useless label."
+/>
+
+The two benchmarks measure different jobs, and the harness matters as much as the model:
+
+- **SWE-Bench** rewards fixing defined issues in a repo.
+- **Terminal-Bench** tests work in a terminal environment.
+- **Codex and Claude Code** add their own harnesses, system prompts, context management and tool strategies on top.
+
+The same underlying model performs differently through a raw API, inside Claude Code, inside Codex, or inside a third-party agent framework. Judge the environment, not just the weights.
+
+Fable's real disadvantages are cost and access. After its temporary suspension the model came back globally, but plenty of users criticised Anthropic for moving Fable use outside normal subscription allowances and onto extra paid credits. Fable may be the best specialist without being the best default employee.
+
+## Sonnet 5: a capable model with a positioning problem
+
+Sonnet 5 was meant to answer a simple question: which Claude model should people use every day?
+
+The product story is attractive. Sonnet 5 is available across Claude plans, the default for Free and Pro, runs in Claude Code, and is priced at an introductory $2 per million input tokens and $10 output until August 31, 2026, after which it rises to $3 and $15. Anthropic pitches it as materially more agentic than Sonnet 4.6: better at finishing multi-step tasks, checking its own output and working on messy existing codebases. Early-access partners reported strong debugging, tool use, testing and brownfield results.
+
+The independent picture is more mixed.
+
+<Callout type="warning" title="Cheaper per token, not always cheaper per result">
+  At maximum effort Sonnet 5 scored 53 on the Artificial Analysis index, but generated around 300 million tokens during the evaluation, five times the comparison median. Artificial Analysis concluded that once its promo pricing ends, Sonnet 5 can cost more per completed task than Opus 4.8. Claude Code users report the same pattern: cheaper per token, but on big jobs it takes more steps, eats more context and can end up costing more than a stronger model. Add complaints about excessive pushback, an overconfident tone and uneven planning.
+</Callout>
+
+That does not make Sonnet 5 weak. It suggests planning highly ambiguous work is not its natural role. A more rational split:
+
+<DataTable
+  columns={[
+    { key: "job", label: "The job" },
+    { key: "model", label: "My pick", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { job: "Architecture, planning, high-uncertainty work", model: "Fable or Sol", why: "The expensive part is being wrong. Pay for the model least likely to send you down a bad path." },
+    { job: "Implementing a clearly specified task", model: "Sonnet 5", why: "Scope is set, execution is the work. This is where its agentic strength shows and the price is right." },
+    { job: "Cost-effective daily analysis and execution", model: "Terra", why: "Frontier-adjacent quality at half the flagship cost, for the bulk of professional output." },
+    { job: "Scale and low-risk workflows", model: "Luna", why: "Volume that never justified a frontier model before now runs at a dollar per million in." }
+  ]}
+  caption="Match the model to the risk of the task, not to a single leaderboard row."
+/>
+
+<figure>
+  <img
+    src="/images/insights/gpt-5-6-vs-claude-5-desk-v1.webp"
+    alt="Operator working late at a desk with a laptop, notebook and a small shelf of books, city lights behind the window"
+    width="1536"
+    height="1024"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>The choice is no longer which model is smartest. It is which environment finishes your work.</figcaption>
+</figure>
+
+## The real contest: ChatGPT Work and Codex vs Claude Cowork and Claude Code
+
+Model-only comparisons describe real productivity worse every month.
+
+OpenAI put GPT-5.6 across ChatGPT, ChatGPT Work, Codex and the API. Paid users pick Sol, Terra or Luna inside Work and Codex and control reasoning effort. Max and ultra modes exist on eligible plans, and the API supports programmatic tool calling and parallel subagents. Anthropic offers a comparable system through Claude Chat, Cowork and Claude Code.
+
+<Comparison
+  items={[
+    { label: "OpenAI: ChatGPT Work + Codex", body: "Sol, Terra and Luna selectable inside Work and Codex, effort control, max and ultra modes, programmatic tool calling and parallel subagents. The pull is tighter integration with the rest of ChatGPT and more aggressive model economics.", tag: "tighter economics", tone: "accent" },
+    { label: "Anthropic: Cowork + Claude Code", body: "The same span of jobs through Claude Chat, Cowork and Claude Code. The edge stays Claude Code: still the most mature developer experience, especially for working naturally with an existing, messy codebase.", tag: "mature dev UX", tone: "accent" }
+  ]}
+  caption="This is no longer a choice between chatbots. It is a choice between execution environments for digital work."
+/>
+
+Both stacks move between the same jobs: conversation and analysis, documents and files, application-level work, editing a repository, running code, delegating to subagents. Anthropic's edge stays Claude Code, still the most mature and widely preferred developer experience, especially for working naturally with an existing codebase. OpenAI's answer is tighter integration between Codex and the rest of ChatGPT, plus more aggressive model economics.
+
+The first feedback does not crown a universal winner. Some developers still prefer Claude for frontend work, sticking to project conventions and generating code closer to intent. Others report Codex with Sol is more reliable when a problem crosses several layers of a system, and less likely to get stuck in a local solution.
+
+## What the numbers actually say
+
+Two conclusions survive all the caveats.
+
+**First, the capability gap between the flagship and the cheaper tiers is shrinking.** One point separates Fable and Sol on the general index. Four points separate Sol and Terra. The premium models are no longer a different league, just a different price.
+
+**Second, token price is not the number that matters.** A cheaper model can be more expensive per outcome when it generates more reasoning tokens, takes more steps or needs more correction. Cost per finished result is the only figure that touches a P&L, and it does not appear on any pricing page.
+
+<MetricDelta
+  before="Cost per token"
+  beforeLabel="What the price page shows"
+  after="Cost per finished result"
+  afterLabel="What actually hits your budget"
+  delta="the number nobody prints"
+  tone="warning"
+  label="The metric that decides everything, and the one no launch post puts on the slide"
+/>
+
+## How I would route the work
+
+### For most professional work: Terra
+
+Terra is the best starting point for analysis, research, document work, content and moderately hard coding. Sol should be an escalation path, not the universal default.
+
+### For the hardest problems: Sol or Fable
+
+Fable keeps a marginal overall lead and performs strongly on long, complex tasks. Sol delivers close capability at much better economics and is the more pragmatic organisational default.
+
+### Inside Claude Code: Sonnet executes, Fable plans
+
+Sonnet 5 fits clearly defined implementation. On ambiguous architectural work, using a stronger model to prepare the plan usually costs less than correcting the cheaper one three times.
+
+### For high-volume automation: Luna
+
+Do not judge Luna by whether it beats Fable on the hardest problem. Its value is enabling whole categories of work that never economically justified frontier AI before.
+
+## Final verdict
+
+<KeyTakeaway tone="accent" title="Where the five models land">
+  Claude Fable 5 is still the most capable overall. GPT-5.6 Sol is the strongest frontier competitor. GPT-5.6 Terra may be the most commercially important release of the batch. Claude Sonnet 5 is the biggest open question.
+</KeyTakeaway>
+
+OpenAI did not need to defeat Fable decisively. It only had to get close at a much lower cost, then distribute the same generation of capability across three economic tiers. As a result, "which model is best?" is becoming a weaker question.
+
+Better ones:
+
+- Which model actually finishes my specific workflow?
+- How much supervision does it need?
+- What does a correct outcome cost, not a million tokens?
+- Can it operate across my documents, applications and repositories?
+- When should the work escalate automatically to a stronger model?
+
+Frontier AI is no longer one model. It is becoming a tiered production system. In that system the winner is not the model with the highest number on one chart. It is the architecture that routes the right task to the right level of intelligence.
+
+## FAQ: GPT-5.6 vs Claude 5
+
+### Which AI model is the best right now, GPT-5.6 or Claude 5?
+
+On the Artificial Analysis Intelligence Index, Claude Fable 5 leads at 60 and GPT-5.6 Sol is one point behind at 59, but Sol completes the benchmark at roughly one-third of Fable's cost. GPT-5.6 Terra may be the most commercially useful of all five. There is no single winner: the right model depends on the task, the cost per finished result and how much supervision you can spare.
+
+### Is GPT-5.6 cheaper than Claude Fable 5?
+
+Yes. GPT-5.6 Sol lists at $5 per million input tokens and $30 output against Fable 5's $10 and $50, and independent testing put Sol at about one-third of Fable's cost per completed task. Terra ($2.50 / $15) and Luna ($1 / $6) undercut every Claude tier further.
+
+### Should I use Claude Sonnet 5 in Claude Code?
+
+For clearly specified implementation, yes: it is the default in Claude Code and strong on debugging, tool use and messy existing codebases. For ambiguous architecture, use a stronger model to plan first. Sonnet 5 can take more steps, consume more context and cost more per finished task than a stronger model, so planning the hardest work with it is often a false economy.
+
+### What is the best GPT-5.6 model for everyday professional work?
+
+Terra for most of it: analysis, research, document work and moderately hard coding at half the cost of the flagship. Keep Sol as an escalation path for the hardest problems, and use Luna for high-volume, low-risk workloads like classification, extraction and routing.
+
+## Sources and further reading
+
+<ToolCard
+  cols={3}
+  title="Primary sources"
+  caption="Top-level sources for the numbers cited above. Deep-linked permalinks change; these are the pages to check the live figures against."
+  items={[
+    { name: "Artificial Analysis", description: "The Intelligence Index and Coding Agent Index scores and per-task cost estimates cited throughout.", href: "https://artificialanalysis.ai/", tags: ["Benchmarks"] },
+    { name: "Anthropic news", description: "Claude Fable 5 and Sonnet 5 announcements, pricing and model cards.", href: "https://www.anthropic.com/news", tags: ["Anthropic"] },
+    { name: "OpenAI", description: "GPT-5.6 Sol, Terra and Luna announcements, pricing tiers and the Codex integration.", href: "https://openai.com/news/", tags: ["OpenAI"] }
+  ]}
+/>
+
+If you want the operator context around this, I have written up [my own benchmark of Claude Fable 5 against Opus and Sonnet](/insights/claude-fable-5-mythos-5/) and [the AI production stack I actually ship on](/insights/ai-production-stack/). Same principle as here: the model is one layer, the system that routes work around it is the job.
