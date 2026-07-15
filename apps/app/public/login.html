@@ -20,19 +20,18 @@
 </script>
 <style>
   :root {
-    --bg:#F3F2EF; --bg1:#FFFFFF; --bg2:#F0EFEC;
-    --lime:#EBFF00; --lime-dim:rgba(235,255,0,0.14); --lime-glow:rgba(235,255,0,0.25);
-    --border:rgba(0,0,0,0.08); --border-hi:rgba(0,0,0,0.15);
-    --text:#080808; --text-2:#555; --text-3:#888;
-    --card-shadow: 0 8px 28px rgba(0,0,0,0.06);
-    --radial-glow: transparent;
+    --bg:#FFFFFF; --surface:#FFFFFF;
+    --lime:#EBFF00; --lime-press:#d8ec00;
+    --border:rgba(0,0,0,0.14); --border-strong:#1A1919;
+    --text:#1A1919; --text-2:#5c5c5c; --text-3:#8a8a8a;
+    --ink:#080d1a;
   }
   [data-theme="dark"] {
-    --bg:#09090b; --bg1:#111113; --bg2:#1a1a1d;
-    --border:rgba(255,255,255,0.08); --border-hi:rgba(255,255,255,0.15);
-    --text:#f0f0f0; --text-2:#a0a0a8; --text-3:#666672;
-    --card-shadow: 0 0 32px rgba(235,255,0,0.06);
-    --radial-glow: radial-gradient(ellipse at 50% -10%, rgba(235,255,0,0.14) 0%, transparent 55%);
+    --bg:#0A0A0B; --surface:#0A0A0B;
+    --lime:#EBFF00; --lime-press:#d8ec00;
+    --border:rgba(255,255,255,0.16); --border-strong:#f2f2f2;
+    --text:#F2F2F2; --text-2:#9a9aa2; --text-3:#6a6a72;
+    --ink:#080d1a;
   }
 
   * { box-sizing: border-box; }
@@ -40,177 +39,113 @@
   body {
     margin: 0;
     background: var(--bg);
-    background-image: var(--radial-glow);
     color: var(--text);
-    font-family: 'Geist','Inter',system-ui,sans-serif;
-    transition: background .2s, color .2s;
+    font-family: 'Geist','Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    transition: background .15s, color .15s;
   }
 
-  .topbar { display:flex; align-items:center; justify-content:space-between; padding:20px 28px; }
+  /* ---- top bar ---- */
+  .topbar {
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 24px;
+  }
   .icon-btn {
-    width: 32px; height: 32px;
+    width: 34px; height: 34px;
     display: inline-flex; align-items: center; justify-content: center;
-    border-radius: 999px; border: none; background: none;
+    border: 1px solid var(--border); background: none;
     color: var(--text-2); cursor: pointer;
-    transition: color .15s, background .15s;
+    transition: color .12s, border-color .12s;
   }
-  .icon-btn:hover { color: var(--text); background: var(--bg2); }
-  [data-theme="dark"] .icon-btn { color: var(--lime); }
+  .icon-btn:hover { color: var(--text); border-color: var(--border-strong); }
 
-  .langtoggle {
-    display: inline-flex; align-items: center; gap: 0;
-    background: var(--bg1); border: 1px solid var(--border);
-    border-radius: 999px; padding: 3px;
-  }
+  .langtoggle { display: inline-flex; border: 1px solid var(--border); }
   .langbtn {
-    font-size: 11px; font-weight: 700; letter-spacing: .5px;
-    padding: 5px 11px; border-radius: 999px;
+    font-size: 12px; font-weight: 500; letter-spacing: .3px;
+    padding: 7px 12px;
     background: none; border: none; color: var(--text-3); cursor: pointer;
-    font-family: inherit; transition: all .15s;
+    font-family: inherit; transition: color .12s, background .12s;
   }
-  .langbtn.active { background: var(--lime); color: #080808; }
+  .langbtn + .langbtn { border-left: 1px solid var(--border); }
+  .langbtn:hover { color: var(--text); }
+  .langbtn.active { background: var(--lime); color: var(--ink); }
 
-  .stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 24px; }
+  /* ---- stage ---- */
+  .stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px 24px 48px; }
+  .panel { width: 100%; max-width: 372px; }
 
-  .card {
-    position: relative;
-    overflow: hidden;
-    width: 100%; max-width: 404px;
-    background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,255,255,.72)), var(--bg1);
-    border: 1px solid var(--border);
-    border-radius: 26px;
-    padding: 34px 32px 30px;
-    text-align: center;
-    box-shadow: 0 28px 80px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.55);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-  }
-  [data-theme="dark"] .card {
-    background: linear-gradient(180deg, rgba(22,22,24,.88), rgba(13,13,15,.78)), var(--bg1);
-    box-shadow: 0 28px 90px rgba(0,0,0,.42), 0 0 0 1px rgba(235,255,0,.05), inset 0 1px 0 rgba(255,255,255,.08);
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      linear-gradient(135deg, rgba(255,255,255,.30), transparent 38%),
-      linear-gradient(315deg, rgba(235,255,0,.14), transparent 34%);
-    opacity: .85;
-  }
-  .card > * { position: relative; z-index: 1; }
-
-  .avatar-wrap { display: flex; justify-content: center; margin-bottom: 16px; }
-  .avatar {
-    width: 96px; height: 96px;
-    border-radius: 50%;
-    border: 1px solid var(--lime);
-    object-fit: cover;
-    box-shadow: 0 0 0 7px var(--lime-dim), 0 24px 44px rgba(0,0,0,.18), 0 0 34px var(--lime-glow);
-  }
-  .avatar-fallback {
-    width: 84px; height: 84px;
-    border-radius: 50%;
-    border: 2px solid var(--lime);
-    background: linear-gradient(135deg, #2d4f7c 0%, #1a3050 100%);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px; font-weight: 900; color: rgba(255,255,255,.85);
-    letter-spacing: -1px;
-    box-shadow: 0 0 22px var(--lime-glow);
-  }
+  .mark { width: 46px; height: 46px; display: block; margin-bottom: 26px; }
 
   .name {
-    font-size: 24px; font-weight: 760; letter-spacing: 0;
-    margin: 0 0 10px;
+    font-size: 30px; font-weight: 400; line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
   }
-  .badge {
-    display: inline-block;
-    font-size: 10.5px; font-weight: 760; letter-spacing: 1.3px;
-    padding: 6px 13px; border-radius: 999px;
-    background: var(--lime); color: #080808;
-    margin-bottom: 14px;
-    text-transform: uppercase;
-  }
-  .tagline {
-    font-size: 13.5px; line-height: 1.6;
+  .role {
+    font-size: 14px; font-weight: 400; line-height: 1.5;
     color: var(--text-2);
-    margin: 0 0 20px;
-    padding: 0 6px;
+    margin: 0 0 30px;
   }
 
-  .login-meta {
-    display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
-    margin-bottom: 18px;
+  .form { display: flex; flex-direction: column; }
+  .label {
+    font-size: 12.5px; font-weight: 500; letter-spacing: .1px;
+    color: var(--text-2);
+    margin: 0 0 8px;
   }
-  .login-meta span {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 11px; font-weight: 620;
-    padding: 6px 12px; border-radius: 999px;
-    background: var(--bg2); color: var(--text-2);
-    border: 1px solid var(--border);
-  }
-
-  .divider { height: 1px; background: var(--border); margin: 4px 0 18px; }
-
-  .form { display: flex; flex-direction: column; gap: 8px; }
   .input {
-    width: 100%;
-    padding: 12px 16px;
-    background: color-mix(in oklch, var(--bg2) 82%, transparent);
+    width: 100%; height: 52px;
+    padding: 0 15px;
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 999px;
+    border-radius: 0;
     color: var(--text);
-    font-size: 13.5px; font-family: inherit;
-    outline: none; text-align: center;
-    transition: border-color .15s, box-shadow .15s;
+    font-size: 15px; font-family: inherit;
+    outline: none;
+    transition: border-color .12s, box-shadow .12s;
   }
   .input::placeholder { color: var(--text-3); }
-  .input:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(235,255,0,.14); }
+  .input:focus { border-color: var(--border-strong); box-shadow: inset 0 0 0 1px var(--border-strong); }
 
   .btn {
-    width: 100%;
-    padding: 13px;
-    background: var(--lime); color: #080808;
-    font-size: 13.5px; font-weight: 780; letter-spacing: 0;
-    border: none; border-radius: 999px;
+    width: 100%; height: 56px;
+    margin-top: 14px;
+    background: var(--lime); color: var(--ink);
+    font-size: 15px; font-weight: 500; letter-spacing: .1px;
+    border: 1px solid var(--lime); border-radius: 0;
     cursor: pointer; font-family: inherit;
-    transition: background .15s, transform .15s, opacity .15s;
+    transition: background .12s, border-color .12s;
   }
-  .btn:hover:not(:disabled) { background: #d4e600; transform: translateY(-1px); }
-  .btn:disabled { cursor: not-allowed; opacity: .6; }
+  .btn:hover:not(:disabled) { background: var(--lime-press); border-color: var(--lime-press); }
+  .btn:disabled { cursor: not-allowed; opacity: .55; }
 
   .err {
-    min-height: 18px;
-    font-size: 12px; color: #ef4444; font-weight: 600;
-    text-align: center;
-    opacity: 0; transition: opacity .2s;
+    min-height: 20px; margin-top: 12px;
+    font-size: 12.5px; color: #d92d20; font-weight: 500;
+    opacity: 0; transition: opacity .15s;
   }
+  [data-theme="dark"] .err { color: #ff6b60; }
   .err.show { opacity: 1; }
 
-  .footer { padding: 28px 24px 32px; text-align: center; }
-  .trusted-label {
-    font-size: 9.5px; font-weight: 700; letter-spacing: 2px;
-    color: var(--text-3); margin: 0 0 8px;
+  .foot {
+    margin-top: 34px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; font-weight: 400; letter-spacing: .2px;
+    color: var(--text-3);
   }
-  .trusted-row {
-    font-size: 11px; font-weight: 500;
-    color: var(--text-2);
-    margin: 0;
-    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
-  }
-  .trusted-sep { color: var(--text-3); opacity: .5; }
 
-  @media (max-width: 480px) {
-    .card { padding: 26px 22px 24px; }
-    .name { font-size: 20px; }
+  @media (max-width: 460px) {
     .topbar { padding: 14px 16px; }
+    .stage { padding: 4px 20px 40px; }
+    .name { font-size: 26px; }
+    .mark { margin-bottom: 22px; }
   }
 
-  /* Theme toggle icon swap */
   .icon-sun { display: none; }
   .icon-moon { display: block; }
   [data-theme="dark"] .icon-sun { display: block; }
@@ -220,47 +155,35 @@
 <body>
 
 <div class="topbar">
-  <button class="icon-btn" id="themeBtn" aria-label="Toggle theme" type="button">
-    <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-  </button>
   <div class="langtoggle" role="group" aria-label="Language">
     <button class="langbtn" data-lang="pl" type="button">PL</button>
     <button class="langbtn active" data-lang="en" type="button">EN</button>
     <button class="langbtn" data-lang="it" type="button">IT</button>
   </div>
+  <button class="icon-btn" id="themeBtn" aria-label="Toggle theme" type="button">
+    <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  </button>
 </div>
 
 <div class="stage">
-  <div class="card">
-    <div class="avatar-wrap">
-      <img class="avatar" id="avatar" src="/wojciech-avatar.webp" alt="Wojciech Łuszczyński" onerror="this.outerHTML='<div class=&quot;avatar-fallback&quot;>WŁ</div>'"/>
-    </div>
+  <div class="panel">
+    <svg class="mark" viewBox="0 0 32 32" role="img" aria-label="wojciech.io">
+      <rect width="32" height="32" rx="6" fill="#ebff00"/>
+      <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-weight="800" font-size="14" fill="#080d1a">.io</text>
+    </svg>
     <h1 class="name">Wojciech Łuszczyński</h1>
-    <span class="badge" data-i18n="badge">GTM Architect &amp; Growth Operator</span>
-    <p class="tagline" data-i18n="tagline">AI-native revenue systems for B2B SaaS and technology companies.</p>
-    <div class="login-meta">
-      <span data-i18n="meta1">Private workspace</span>
-      <span data-i18n="meta2">Apps</span>
-      <span data-i18n="meta3">CV</span>
-    </div>
-    <div class="divider"></div>
+    <p class="role" data-i18n="role">GTM Architect &amp; Growth Operator</p>
+
     <form class="form" id="loginForm" novalidate>
-      <input class="input" id="pw" type="password" placeholder="Password" autocomplete="current-password" required autofocus />
+      <label class="label" for="pw" data-i18n="label">Password</label>
+      <input class="input" id="pw" type="password" placeholder="••••••••" autocomplete="current-password" required autofocus />
       <button class="btn" id="submitBtn" type="submit" data-i18n="submit">Enter</button>
       <div class="err" id="err" role="alert" data-i18n="err">Wrong password</div>
     </form>
-  </div>
-</div>
 
-<div class="footer">
-  <p class="trusted-label">TRUSTED BY</p>
-  <p class="trusted-row">
-    <span>GetResponse</span><span class="trusted-sep">·</span>
-    <span>SentiOne</span><span class="trusted-sep">·</span>
-    <span>Gi Group</span><span class="trusted-sep">·</span>
-    <span>WebWave</span>
-  </p>
+    <p class="foot" data-i18n="foot">Private workspace. Access by invitation.</p>
+  </div>
 </div>
 
 <script>
@@ -275,24 +198,17 @@
 
   // i18n
   var I18N = {
-    en: { badge:'GTM Architect & Growth Operator', tagline:'AI-native revenue systems for B2B SaaS and technology companies.', submit:'Enter', err:'Wrong password', placeholder:'Password', meta1:'Private workspace', meta2:'Apps', meta3:'CV' },
-    pl: { badge:'GTM Architect & Growth Operator', tagline:'Systemy przychodowe AI-native dla firm B2B SaaS i technologicznych.', submit:'Wejdź', err:'Nieprawidłowe hasło', placeholder:'Hasło', meta1:'Prywatny workspace', meta2:'Aplikacje', meta3:'CV' },
-    it: { badge:'GTM Architect & Growth Operator', tagline:'Sistemi di revenue AI-native per aziende B2B SaaS e tecnologiche.', submit:'Entra', err:'Password errata', placeholder:'Password', meta1:'Workspace privato', meta2:'App', meta3:'CV' },
+    en: { role:'GTM Architect & Growth Operator', label:'Password', submit:'Enter', err:'Wrong password', foot:'Private workspace. Access by invitation.' },
+    pl: { role:'GTM Architect & Growth Operator', label:'Hasło', submit:'Wejdź', err:'Nieprawidłowe hasło', foot:'Prywatny workspace. Dostęp na zaproszenie.' },
+    it: { role:'GTM Architect & Growth Operator', label:'Password', submit:'Entra', err:'Password errata', foot:'Workspace privato. Accesso su invito.' },
   };
   function setLang(l) {
     var dict = I18N[l] || I18N.en;
     document.querySelectorAll('[data-i18n]').forEach(function(el){
       var key = el.getAttribute('data-i18n');
-      if (dict[key]) {
-        if (el.tagName === 'BUTTON' && el.id === 'submitBtn') {
-          el.textContent = dict.submit;
-        } else {
-          el.textContent = dict[key];
-        }
-      }
+      if (dict[key]) el.textContent = dict[key];
     });
-    var pw = document.getElementById('pw');
-    if (pw) pw.placeholder = dict.placeholder;
+    document.documentElement.setAttribute('lang', l);
     document.querySelectorAll('.langbtn').forEach(function(b){
       b.classList.toggle('active', b.getAttribute('data-lang') === l);
     });
@@ -328,11 +244,9 @@
         credentials: 'same-origin',
       });
       if (res.ok) {
-        // Cookie is set. Reload to let middleware serve the real app.
         window.location.href = '/';
         return;
       }
-      // 401 or any non-OK
       errEl.classList.add('show');
       pwInput.value = '';
       pwInput.focus();
