@@ -12,6 +12,7 @@ const statusLabel: Record<string, string> = {
   'in-progress': 'In progress',
   'private-mvp': 'Private MVP',
   'private-beta': 'Private beta',
+  private: 'Private',
   soon: 'Soon',
 };
 
@@ -23,15 +24,15 @@ const HAS_PREVIEW = new Set([
 ]);
 
 // Curated running order, not alphabetical and not by status. Strongest, most
-// on-brand previews lead; the one entry without a preview sits last.
-// Anything not listed falls in at the end, so adding an app can't silently
-// drop it from the page.
+// on-brand previews lead; the entries with a designed tile instead of a
+// screenshot sit last. Anything not listed falls in at the end, so adding an
+// app can't silently drop it from the page.
 const ORDER = [
   'wojciech-coach', 'klaro', 'notchcue', 'growthhub',
   'sabiszop', 'ads-assistant', 'camper-rental',
   'an-projekt', 'ciryam',
   'kade', 'relora', 'academy', 'gtm-starter-pack',
-  'dzialkometr',
+  'dzialkometr', 'mini-apps', 'content-hub',
 ];
 const rank = (id: string) => {
   const i = ORDER.indexOf(id);
@@ -359,7 +360,7 @@ const socials = [
                     {HAS_PREVIEW.has(app.id) ? (
                       <img class="thumb" src={`/previews/${app.id}.webp`} width="148" height="92" alt={`${app.name} preview`} loading="lazy" />
                     ) : (
-                      <div class="thumb-none" data-note="Rebuild in progress">
+                      <div class="thumb-none" data-note={app.tileNote}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" set:html={app.icon} />
                       </div>
                     )}
