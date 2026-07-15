@@ -53,7 +53,7 @@ export const apps: AppEntry[] = [
     category: 'Marketplace · B2C',
     badge: 'Marketplace',
     tagline: {
-      en: 'Smart shopping lists, receipts & recipes. Grocery-inspired UI with AI suggestions.',
+      en: 'A shopping-list app that reads your receipts and helps plan the next trip.',
       pl: 'Smart listy zakupów, paragony i przepisy. Grocery inspired dark glassmorphism UI z AI sugestiami.',
       it: 'Liste della spesa intelligenti, scontrini e ricette. UI glassmorphism con suggerimenti AI.',
     },
@@ -73,7 +73,7 @@ export const apps: AppEntry[] = [
     category: 'Growth · B2B SaaS',
     badge: 'SaaS',
     tagline: {
-      en: 'Growth dashboard for demand gen, lead scoring and revenue tracking in one place. Currently being rebuilt on Claude, stripped of legacy branding.',
+      en: 'A marketing dashboard for scoring leads and tracking revenue. Being rebuilt right now.',
       pl: 'Growth dashboard dla demand gen, lead scoringu i revenue trackingu w jednym miejscu. Aktualnie przepisywany na Claude, bez wcześniejszego brandingu.',
       it: 'Growth dashboard per demand gen, lead scoring e revenue tracking in un unico posto. Attualmente in ricostruzione su Claude, senza branding precedente.',
     },
@@ -93,7 +93,7 @@ export const apps: AppEntry[] = [
     category: 'Relationship OS · Public sector',
     badge: 'SaaS',
     tagline: {
-      en: 'Relationship operating system for local-government property teams. Contacts, owner context, communication status and next actions in one view.',
+      en: 'A simple CRM for public-sector property teams: who to contact and what happens next.',
       pl: 'System do zarządzania relacjami dla samorządowych zespołów nieruchomości. Kontakty, kontekst właściciela, status komunikacji i następne kroki w jednym widoku.',
       it: 'Sistema operativo per le relazioni dei team immobiliari della pubblica amministrazione. Contatti, contesto proprietario, stato della comunicazione e azioni successive in un\'unica vista.',
     },
@@ -113,7 +113,7 @@ export const apps: AppEntry[] = [
     category: 'Mac Utility · macOS native',
     badge: 'macOS',
     tagline: {
-      en: 'A quieter way to keep links. Holds the ones that need context before they are worth opening again. Local-first, no cloud.',
+      en: 'A Mac app for parking links you are not ready to open yet. Stays on your machine.',
       pl: 'Spokojniejszy sposób na trzymanie linków. Przechowuje te, które potrzebują kontekstu, zanim znów warto je otworzyć. Lokalnie, bez chmury.',
       it: 'Un modo più tranquillo di conservare i link. Tiene quelli che hanno bisogno di contesto prima di valere una seconda apertura. Local-first, senza cloud.',
     },
@@ -133,7 +133,7 @@ export const apps: AppEntry[] = [
     category: 'Program · AI for GTM',
     badge: 'Program',
     tagline: {
-      en: 'AI for GTM taught by an operator, not from slides. 36 episodes across marketing, sales and B2B founder work. Processes, not tool names.',
+      en: 'A video course on using AI for marketing and sales. 36 episodes, no fluff.',
       pl: 'AI dla GTM od operatora, nie ze slajdów. 36 odcinków o marketingu, sprzedaży i pracy founderów B2B. Procesy, nie nazwy narzędzi.',
       it: 'AI per il GTM insegnata da un operatore, non dalle slide. 36 episodi su marketing, vendite e lavoro dei founder B2B. Processi, non nomi di strumenti.',
     },
@@ -153,7 +153,7 @@ export const apps: AppEntry[] = [
     category: 'Open source · Claude Code',
     badge: 'Open source',
     tagline: {
-      en: 'Open-source starter pack for building AI GTM agents with Claude Code. For operators who want to ship AI-native workflows without starting from scratch.',
+      en: 'An open-source kit for building your own AI marketing agents with Claude Code.',
       pl: 'Otwartoźródłowy starter pack do budowania agentów AI GTM na Claude Code. Dla operatorów, którzy chcą wdrażać AI-native workflow bez zaczynania od zera.',
       it: 'Starter pack open source per costruire agenti AI GTM con Claude Code. Per operatori che vogliono realizzare workflow AI-native senza partire da zero.',
     },
@@ -173,7 +173,7 @@ export const apps: AppEntry[] = [
     category: 'Website · Interior Design',
     badge: 'Website',
     tagline: {
-      en: 'Interior design studio website. Interiors tailored to your life.',
+      en: 'A website I built for an interior-design studio.',
       pl: 'Strona internetowa pracowni projektowania wnętrz. Wnętrza dopasowane do Twojego życia.',
       it: 'Sito web dello studio di interior design. Interni su misura per la tua vita.',
     },
@@ -193,7 +193,7 @@ export const apps: AppEntry[] = [
     category: 'Website · Music Band',
     badge: 'Website',
     tagline: {
-      en: 'Official website of a Polish rock band with concerts, music, tickets and merch store.',
+      en: 'A website for a Polish rock band: tour dates, music, tickets and merch.',
       pl: 'Oficjalna strona polskiego zespołu rockowego z koncertami, muzyką, biletami i sklepem z merch.',
       it: 'Sito ufficiale di una band rock polacca con concerti, musica, biglietti e negozio merch.',
     },
@@ -213,7 +213,7 @@ export const apps: AppEntry[] = [
     category: 'Real Estate · PWA',
     badge: 'PWA',
     tagline: {
-      en: 'Plot value calculator with location analysis, utilities, MPZP and property valuation in one view.',
+      en: 'An app that estimates what a plot of land is worth.',
       pl: 'Kalkulator wartości działek z analizą lokalizacji, mediami, MPZP i wyceną nieruchomości.',
       it: 'Calcolatore del valore del terreno con analisi posizione, utenze e valutazione.',
     },
@@ -232,7 +232,7 @@ export const apps: AppEntry[] = [
     category: 'Marketing AI · B2B SaaS',
     badge: 'SaaS',
     tagline: {
-      en: 'Google Ads dashboard with AI ICP lead scoring (0-100). Shifts optimisation from CPL to CPL-ICP-fit.',
+      en: 'A Google Ads dashboard that ranks leads by how well they fit your ideal customer.',
       pl: 'Dashboard Google Ads z AI ICP lead scoringiem (0-100). Przesuwa optymalizację z CPL na CPL-ICP-fit.',
       it: 'Dashboard Google Ads con AI ICP lead scoring (0-100). Sposta l\'ottimizzazione da CPL a CPL-ICP-fit.',
     },
@@ -252,7 +252,7 @@ export const apps: AppEntry[] = [
     category: 'Desktop Utility · macOS',
     badge: 'macOS',
     tagline: {
-      en: 'Native macOS teleprompter placing private notes under the MacBook camera notch. Keeps eye contact during calls and demos.',
+      en: 'A Mac teleprompter that hides your notes under the camera notch, so you keep eye contact on calls.',
       pl: 'Natywny teleprompter macOS umieszczający prywatne notatki pod notchem kamery MacBooka.',
       it: 'Teleprompter nativo macOS che posiziona note private sotto il notch della fotocamera MacBook.',
     },
@@ -272,7 +272,7 @@ export const apps: AppEntry[] = [
     category: 'Booking Engine · Consumer',
     badge: 'Booking',
     tagline: {
-      en: 'Camper rental booking engine with dynamic pricing, availability management and a clean reservation flow.',
+      en: 'A booking site for renting out campers, with live pricing and availability.',
       pl: 'Booking engine do wynajmu kamperów z dynamicznymi cenami, zarządzaniem dostępnością i czystym flow rezerwacji.',
       it: 'Motore di prenotazione per noleggio camper con prezzi dinamici, gestione disponibilità e flusso di prenotazione semplice.',
     },
@@ -292,7 +292,7 @@ export const apps: AppEntry[] = [
     category: 'Mac Utility · macOS native',
     badge: 'macOS',
     tagline: {
-      en: 'Local-first Mac audit with cleanup preview and HTML report. Files move to Trash. Nothing disappears silently.',
+      en: 'A Mac cleaning app, like CleanMyMac, except everything it clears goes to Trash first.',
       pl: 'Lokalny audyt Maca z podglądem czyszczenia i raportem HTML. Pliki trafiają do Kosza. Nic nie znika po cichu.',
       it: 'Audit Mac locale con anteprima pulizia e report HTML. I file vanno nel Cestino, niente sparisce in silenzio.',
     },
@@ -310,7 +310,7 @@ export const apps: AppEntry[] = [
     category: 'Fitness · iPhone · Apple Watch · Mac',
     badge: 'iOS / watchOS / Mac',
     tagline: {
-      en: 'Private running and activity coach for the Apple ecosystem. HealthKit, live workout on Watch, adaptive plan, maps, badges and analysis on Mac.',
+      en: 'A running and fitness coach for iPhone and Apple Watch, like Strava but private.',
       pl: 'Prywatny trener biegania i aktywności dla ekosystemu Apple. Apple Health, trening live na Watchu, plan adaptacyjny, mapy, odznaki i analiza na Macu.',
       it: 'Coach privato per corsa e attività per l\'ecosistema Apple. HealthKit, allenamento live su Watch, piano adattivo, mappe, badge e analisi su Mac.',
     },
