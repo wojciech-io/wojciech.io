@@ -54,23 +54,27 @@ const targets = [
   { id: 'camper-rental', url: 'https://camper-rental-weld.vercel.app/' },
   { id: 'relora', url: 'https://relora-jet.vercel.app/' },
 
-  // ads-assistant is login-only in the browser (no guest mode), but a real
-  // screenshot of the working dashboard already ships with the case study.
-  { id: 'ads-assistant', from: 'public/images/work/ads-assistant-preview.jpg' },
-
-  // Kade is the one native app with real captures in the repo: a macOS dashboard
-  // and a portrait mobile view. Tiled side by side they fill a landscape tile
-  // without letterboxing either one.
+  // ads-assistant is login-only in the browser (no guest mode). A real dashboard
+  // screenshot ships with the case study, but it shows the dark side-nav AND a
+  // real client account name in the header. Crop to the metrics area only: drops
+  // the nav (per request) and, critically, the client name (active dispute, must
+  // never appear on the public site).
   {
-    id: 'kade',
-    compose: ['public/images/kade/dashboard.png', 'public/images/kade/mobile.png'],
-    background: '#0f1512',
+    id: 'ads-assistant',
+    from: 'public/images/work/ads-assistant-preview.jpg',
+    crop: { left: 240, top: 168, width: 1558, height: 700 },
   },
 
-  // Brand composites, NOT app screenshots. Used where there is no capture worth
-  // showing: notch and growthhub have live URLs, but their raw screenshots read
-  // badly at thumbnail size. If real captures ever land, swap these for { url }.
-  { id: 'notchcue', from: 'public/images/work/notch.webp' },
+  // Kade: use the macOS dashboard capture on its own (desktop-only, per request).
+  { id: 'kade', from: 'public/images/kade/dashboard.png' },
+
+  // NotchCue: screenshot its actual product landing page (notch.wojciech.io
+  // 301s to wojciech.io/apps/notch/), not the stock composite.
+  { id: 'notchcue', url: 'https://notch.wojciech.io' },
+
+  // Brand composite, NOT an app screenshot: growthhub's raw dashboard reads badly
+  // at thumbnail size, so use the case-study art. Swap for { url } if a real
+  // capture ever lands.
   { id: 'growthhub', from: 'public/images/work/growthhub.webp' },
   { id: 'klaro', from: 'public/images/work/klaro.webp' },
   { id: 'wojciech-coach', from: 'public/images/work/wojciech-coach.webp' },
@@ -134,9 +138,11 @@ for (const t of locals) {
   try {
     const src = path.resolve(t.from);
     await access(src);
-    const webp = await toThumb(src);
+    // Optional crop (e.g. to remove chrome or a client name) before thumbnailing.
+    const input = t.crop ? await sharp(src).extract(t.crop).toBuffer() : src;
+    const webp = await toThumb(input);
     await writeFile(path.join(OUT, `${t.id}.webp`), webp);
-    results.push({ id: t.id, src: 'repo', ok: true, kb: Math.round(webp.length / 1024) });
+    results.push({ id: t.id, src: t.crop ? 'repo:crop' : 'repo', ok: true, kb: Math.round(webp.length / 1024) });
   } catch (err) {
     results.push({ id: t.id, src: 'repo', ok: false, err: String(err).split('\n')[0].slice(0, 80) });
   }

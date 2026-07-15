@@ -434,6 +434,12 @@ const socials = [
 
         var view = 'apps';
 
+        // Each view is addressable via the URL hash so tabs are linkable and the
+        // browser back/forward buttons move between them.
+        var SLUG = { overview: 'overview', apps: 'applications', live: 'live-demos', microapps: 'micro-apps', access: 'access' };
+        var VIEW = {};
+        Object.keys(SLUG).forEach(function (k) { VIEW[SLUG[k]] = k; });
+
         function apply() {
           var term = (q.value || '').trim().toLowerCase();
           var shown = 0;
@@ -479,6 +485,7 @@ const socials = [
           setView('view-microapps', next === 'microapps');
           setView('view-access', next === 'access');
           if (isList) apply();
+          if (SLUG[next] && location.hash.slice(1) !== SLUG[next]) location.hash = SLUG[next];
         }
 
         navs.forEach(function (n) {
@@ -488,8 +495,13 @@ const socials = [
           if (view !== 'apps' && view !== 'live') show('apps');
           else apply();
         });
+        window.addEventListener('hashchange', function () {
+          var v = VIEW[location.hash.slice(1)] || 'apps';
+          if (v !== view) show(v);
+        });
 
-        apply();
+        // Open on the view named in the URL hash, defaulting to Applications.
+        show(VIEW[location.hash.slice(1)] || 'apps');
       })();
     </script>
   </body>
