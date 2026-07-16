@@ -1,105 +1,246 @@
 ---
-import Layout from '../layouts/Layout.astro';
+// Ramp-style stack map, served at /stack. Uses the shared shell (rail + topbar)
+// from src/styles/shell.css so it matches the portfolio at the root exactly.
+// The rail nav items are links here (not view-switch buttons like on index):
+// the portfolio views live on / and are addressed by hash.
+import '../styles/shell.css';
+
+const NAV_ICON: Record<string, string> = {
+  home: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+  layers: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  play: '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
+  lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
+};
+
+const socials = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/wojciech-luszczynski/', icon: '<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>' },
+  { label: 'GitHub', href: 'https://github.com/wojciechluszczynski', icon: '<path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>' },
+  { label: 'X', href: 'https://twitter.com/w_luszczynski', icon: '<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>' },
+  { label: 'Substack', href: 'https://substack.com/@wojciechluszczynski', icon: '<path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>' },
+];
+
+// Simple line icons per layer, same stroke language as the rail nav icons.
+const LAYER_ICON: Record<string, string> = {
+  code: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  database: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/>',
+  sparkle: '<path d="M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"/><path d="M19 4v3M20.5 5.5h-3M5 17v2M6 18H4"/>',
+  zap: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>',
+  card: '<rect x="2" y="5" width="20" height="14" rx="1"/><path d="M2 10h20"/>',
+  cpu: '<rect x="5" y="5" width="14" height="14" rx="1"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/>',
+  server: '<rect x="2" y="3" width="20" height="8" rx="1"/><rect x="2" y="13" width="20" height="8" rx="1"/><path d="M6 7h.01M6 17h.01"/>',
+  file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+};
+
+// The stack, in the operator's own words. English only, to match the portfolio.
+const stack = [
+  {
+    name: 'Frontend',
+    icon: LAYER_ICON.code,
+    tech: ['React', 'TypeScript', 'Tailwind', 'Vite', 'shadcn/ui', 'Next.js'],
+    note: 'Landing pages, operating dashboards and full SaaS apps. Type safety and component structure keep the product easy to extend after the first version ships.',
+  },
+  {
+    name: 'Backend & data',
+    icon: LAYER_ICON.database,
+    tech: ['Supabase', 'FastAPI', 'Cloud Run', 'BigQuery'],
+    note: 'Supabase gets auth, database and storage moving fast. As a project grows I add FastAPI, Cloud Run and BigQuery so reporting, scoring and integrations stay reliable at higher volume.',
+  },
+  {
+    name: 'AI',
+    icon: LAYER_ICON.sparkle,
+    tech: ['OpenAI', 'Anthropic', 'ElevenLabs'],
+    note: 'Added to specific jobs: document analysis, lead scoring, brief generation, search and summaries. What matters is input quality, decision logic and cost control.',
+  },
+  {
+    name: 'Automation',
+    icon: LAYER_ICON.zap,
+    tech: ['Zapier', 'Make', 'n8n'],
+    note: 'Connects CRM, email, webhooks, spreadsheets and sales tools. In practice: less manual transfer, better data quality and faster follow-up loops.',
+  },
+  {
+    name: 'Payments & email',
+    icon: LAYER_ICON.card,
+    tech: ['Stripe', 'Resend'],
+    note: 'Stripe covers payments, subscriptions and the customer portal. Resend closes onboarding, confirmations and lifecycle messages, the details that make a product feel mature.',
+  },
+  {
+    name: 'Native / desktop',
+    icon: LAYER_ICON.cpu,
+    tech: ['Swift', 'AppKit', 'Xcode'],
+    note: 'When native quality matters: menu-bar behaviour, local-first data, system APIs and a custom distribution pipeline give a better experience than a thin web wrapper.',
+  },
+  {
+    name: 'Infrastructure',
+    icon: LAYER_ICON.server,
+    tech: ['Vercel', 'Netlify', 'Cloudflare', 'Cloudflare Pages', 'GitHub'],
+    note: 'Hosting with fast previews, simple rollback and readable build history. These cover different needs without heavy DevOps overhead.',
+  },
+  {
+    name: 'Static & content',
+    icon: LAYER_ICON.file,
+    tech: ['Astro', 'Framer', 'Webflow'],
+    note: 'For work where content and publishing speed matter more than heavy app logic: landing pages, documentation and content-heavy projects.',
+  },
+];
+const toolCount = stack.reduce((n, c) => n + c.tech.length, 0);
 ---
 
-<Layout title="Stack · workspace" activePage="stack">
-<div class="tab-content" id="tab-stack">
-<div class="stack-page">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stack · app.wojciech.io</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style is:global>
+      /* Shared shell (rail, topbar, main frame) is in src/styles/shell.css.
+         Only the stack map is here. */
+      .sec-meta { margin-left: auto; color: var(--ink-3); font-size: 12px; }
 
-  <div class="stack-page-header">
-    <div class="eyebrow" data-pl="Mapa stacku" data-en="Stack map" data-it="Mappa dello stack">Stack map</div>
-    <h2 data-pl="Jak to buduję" data-en="How I build" data-it="Come costruisco">How I build</h2>
-    <p data-pl="Stack traktuję operacyjnie: front dla szybkości decyzji, backend dla wiarygodnych danych, automatyzacje dla powtarzalności, AI tam gdzie skraca realny proces." data-en="I treat the stack operationally: frontend for faster decisions, backend for reliable data, automation for repeatability, and AI where it shortens a real process." data-it="Tratto lo stack in modo operativo: frontend per decisioni più rapide, backend per dati affidabili, automazione per ripetibilità e AI dove accorcia un processo reale.">I treat the stack operationally: frontend for faster decisions, backend for reliable data, automation for repeatability, and AI where it shortens a real process.</p>
-  </div>
+      .stack { border: 1px solid var(--line); background: var(--surface); }
+      .srow { display: flex; align-items: flex-start; gap: 16px; padding: 18px 20px; border-bottom: 1px solid var(--line); transition: background 0.12s ease; }
+      .srow:last-child { border-bottom: 0; }
+      .srow:hover { background: #faf9f8; }
 
-  <div class="scat-list">
+      /* Icon tile: bordered, square, thin stroke. Echoes the visual-on-the-left
+         rhythm of the app rows without pretending to be a screenshot. */
+      .sicon { width: 40px; height: 40px; flex: none; border: 1px solid var(--line); background: var(--page); display: grid; place-items: center; color: var(--ink-2); transition: color 0.12s ease, border-color 0.12s ease; }
+      .srow:hover .sicon { color: var(--ink); border-color: var(--line-hi); }
 
-    <div class="scat-row">
-      <div class="scat-name">Frontend</div>
-      <div class="scat-icons">
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/react/61DAFB" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="React"><span>React</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/typescript/3178C6" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="TypeScript"><span>TypeScript</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Tailwind"><span>Tailwind</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/vite/646CFF" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Vite"><span>Vite</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/shadcnui/000000" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="shadcn/ui"><span>shadcn/ui</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/nextdotjs/000000" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Next.js"><span>Next.js</span></div>
+      .smain { flex: 1; min-width: 0; }
+      .scat { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 4px; }
+      .snote { font-size: 13px; color: var(--ink-2); max-width: 60ch; line-height: 1.5; }
+
+      .schips { width: 196px; flex: none; display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; padding-top: 2px; }
+      .chip { font-family: 'Geist Mono', monospace; font-size: 10px; border: 1px solid var(--line); padding: 2px 6px; color: var(--ink-2); border-radius: var(--radius); white-space: nowrap; }
+      .srow:hover .chip { border-color: var(--line-hi); }
+
+      @media (max-width: 1100px) {
+        .srow { flex-wrap: wrap; }
+        .smain { flex-basis: calc(100% - 56px); }
+        .schips { width: 100%; order: 3; padding-left: 56px; }
+      }
+      @media (max-width: 560px) {
+        .schips { padding-left: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="rail">
+        <a class="rail-brand" href="/">
+          <svg class="brand-tile" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="32" height="32" rx="6" fill="#ebff00"></rect>
+            <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
+              font-family="ui-sans-serif, system-ui, sans-serif" font-weight="800"
+              font-size="14" fill="#080d1a">.io</text>
+          </svg>
+          <span class="brand-word">app<span>.wojciech.io</span></span>
+        </a>
+
+        <a class="nav-item" href="/#overview">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" set:html={NAV_ICON.home} />
+          <span class="lbl">Overview</span>
+        </a>
+
+        <div class="rail-sep"></div>
+
+        <a class="nav-item" href="/#applications">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" set:html={NAV_ICON.grid} />
+          <span class="lbl">Applications</span>
+        </a>
+        <a class="nav-item" href="/#live-demos">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" set:html={NAV_ICON.play} />
+          <span class="lbl">Live demos</span>
+        </a>
+        <a class="nav-item is-active" href="/stack" aria-current="page">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" set:html={NAV_ICON.layers} />
+          <span class="lbl">Stack</span>
+        </a>
+
+        <div class="rail-group-label">Private</div>
+        <a class="nav-item" href="/#micro-apps">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" set:html={NAV_ICON.lock} />
+          <span class="lbl">Micro-apps</span>
+        </a>
+        <a class="nav-item" href="/#access">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" set:html={NAV_ICON.users} />
+          <span class="lbl">Access</span>
+        </a>
+
+        <div class="author">
+          <div class="author-row">
+            <img class="author-img" src="/wojciech-avatar-2026-384.webp" width="30" height="30" alt="Wojciech Łuszczyński" loading="lazy" />
+            <div>
+              <div class="author-name">Wojciech Łuszczyński</div>
+              <div class="author-role">GTM architect · builder</div>
+            </div>
+          </div>
+          <div class="author-socials">
+            {socials.map((s) => (
+              <a class="soc" href={s.href} target="_blank" rel="noopener me" title={s.label} aria-label={s.label}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" set:html={s.icon} />
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <div class="main">
+        <div class="topbar">
+          <label class="search">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input id="q" type="search" placeholder="Search apps, tags, tech…" autocomplete="off" aria-label="Search applications" />
+          </label>
+          <div class="top-spacer"></div>
+          <a class="top-link" href="https://wojciech.io" target="_blank" rel="noopener">wojciech.io ↗</a>
+        </div>
+
+        <div class="wrap">
+          <h1>How I build</h1>
+          <p class="sub">The stack, treated operationally: frontend for faster decisions, backend for reliable data, automation for repeatability, AI where it shortens a real process.</p>
+
+          <div class="sec">
+            <h2>Layers</h2>
+            <span class="ct">{stack.length}</span>
+            <span class="sec-meta">{toolCount} tools in rotation</span>
+          </div>
+
+          <div class="stack">
+            {stack.map((cat) => (
+              <div class="srow">
+                <div class="sicon">
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" set:html={cat.icon} />
+                </div>
+                <div class="smain">
+                  <div class="scat">{cat.name}</div>
+                  <div class="snote">{cat.note}</div>
+                </div>
+                <div class="schips">
+                  {cat.tech.map((t) => <span class="chip">{t}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      <div class="scat-enables" data-pl="Używam tego zestawu do szybkiego składania landingów, paneli operacyjnych i pełnych aplikacji SaaS. Type safety, komponenty i dobra struktura widoków pomagają później rozbudowywać produkt bez przepisywania go od zera." data-en="I use this layer for landing pages, operating dashboards and full SaaS apps. Type safety, component structure and predictable rendering keep the product easy to extend after the first version ships." data-it="Uso questo livello per landing page, dashboard operative e app SaaS complete. Type safety, componenti e rendering prevedibile rendono il prodotto più facile da estendere.">I use this layer for landing pages, operating dashboards and full SaaS apps. Type safety, component structure and predictable rendering keep the product easy to extend after the first version ships.</div>
     </div>
 
-    <div class="scat-row">
-      <div class="scat-name">Backend &amp; Data</div>
-      <div class="scat-icons">
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/supabase/3ECF8E" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Supabase"><span>Supabase</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/fastapi/009688" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="FastAPI"><span>FastAPI</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/googlecloud/4285F4" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Cloud Run"><span>Cloud Run</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/googlebigquery/669DF6" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="BigQuery"><span>BigQuery</span></div>
-      </div>
-      <div class="scat-enables" data-pl="Supabase daje szybki start z autoryzacją, bazą i storage. Gdy projekt rośnie, dokładam FastAPI, Cloud Run i BigQuery, żeby raporty, scoring i integracje działały stabilnie na większych wolumenach." data-en="Supabase gets auth, database and storage moving quickly. When the project grows, I add FastAPI, Cloud Run and BigQuery so reporting, scoring and integrations stay reliable at higher volume." data-it="Supabase avvia rapidamente auth, database e storage. Quando il progetto cresce, aggiungo FastAPI, Cloud Run e BigQuery per report, scoring e integrazioni affidabili.">Supabase gets auth, database and storage moving quickly. When the project grows, I add FastAPI, Cloud Run and BigQuery so reporting, scoring and integrations stay reliable at higher volume.</div>
-    </div>
-
-    <div class="scat-row">
-      <div class="scat-name">AI</div>
-      <div class="scat-icons">
-        <div class="tech-icon-item"><span class="tech-letter-mark" aria-hidden="true">AI</span><span>OpenAI</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/anthropic/D4A96A" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Anthropic"><span>Anthropic</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/elevenlabs/F5A623" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="ElevenLabs"><span>ElevenLabs</span></div>
-      </div>
-      <div class="scat-enables" data-pl="AI dokładam do konkretnych zadań: analiza dokumentów, scoring leadów, generowanie briefów, wyszukiwanie i automatyczne podsumowania. Najważniejsze jest dobre wejście, logika decyzji i kontrola kosztów." data-en="AI is added to specific jobs: document analysis, lead scoring, brief generation, search and automatic summaries. The important parts are input quality, decision logic and cost control." data-it="Aggiungo AI a compiti concreti: analisi documenti, lead scoring, generazione brief, search e riassunti automatici. Contano qualità input, logica decisionale e controllo costi.">AI is added to specific jobs: document analysis, lead scoring, brief generation, search and automatic summaries. The important parts are input quality, decision logic and cost control.</div>
-    </div>
-
-    <div class="scat-row">
-      <div class="scat-name">Automation</div>
-      <div class="scat-icons">
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/zapier/FF4A00" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Zapier"><span>Zapier</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/make/6D00CC" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Make"><span>Make</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/n8n/EA4B71" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="n8n"><span>n8n</span></div>
-      </div>
-      <div class="scat-enables" data-pl="Automatyzacje spinają CRM, e-mail, webhooki, arkusze i narzędzia sprzedażowe. W praktyce chodzi o mniej ręcznego przepisywania, lepszą jakość danych i szybsze zamykanie pętli follow-up." data-en="Automation connects CRM, email, webhooks, spreadsheets and sales tools. In practice it means less manual transfer, better data quality and faster follow-up loops." data-it="L'automazione collega CRM, email, webhook, fogli e strumenti sales. In pratica significa meno lavoro manuale, dati migliori e follow-up più rapidi.">Automation connects CRM, email, webhooks, spreadsheets and sales tools. In practice it means less manual transfer, better data quality and faster follow-up loops.</div>
-    </div>
-
-    <div class="scat-row">
-      <div class="scat-name">Payments &amp; Email</div>
-      <div class="scat-icons">
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/stripe/635BFF" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Stripe"><span>Stripe</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/resend/000000" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Resend"><span>Resend</span></div>
-      </div>
-      <div class="scat-enables" data-pl="Stripe obsługuje płatności, subskrypcje i portal klienta. Resend domyka onboarding, potwierdzenia i lifecycle messages, czyli elementy, które często decydują czy produkt wygląda dojrzale." data-en="Stripe covers payments, subscriptions and the customer portal. Resend closes onboarding, confirmations and lifecycle messages, the details that make a product feel mature." data-it="Stripe gestisce pagamenti, abbonamenti e portale cliente. Resend chiude onboarding, conferme e messaggi lifecycle, dettagli che fanno sembrare maturo un prodotto.">Stripe covers payments, subscriptions and the customer portal. Resend closes onboarding, confirmations and lifecycle messages, the details that make a product feel mature.</div>
-    </div>
-
-    <div class="scat-row">
-      <div class="scat-name">Native / Desktop</div>
-      <div class="scat-icons">
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/swift/F05138" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Swift"><span>Swift</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/apple/000000" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="AppKit"><span>AppKit</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/xcode/147EFB" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Xcode"><span>Xcode</span></div>
-      </div>
-      <div class="scat-enables" data-pl="Gdy potrzebna jest natywna jakość, wybieram Swift i AppKit. Menu bar, local-first, systemowe API i własny pipeline dystrybucji dają lepsze doświadczenie niż lekki wrapper webowy." data-en="When native quality matters, I use Swift and AppKit. Menu bar behavior, local-first data, system APIs and a custom distribution pipeline give a better experience than a thin web wrapper." data-it="Quando serve qualità nativa, uso Swift e AppKit. Menu bar, local-first, API di sistema e distribuzione dedicata danno un'esperienza migliore di un wrapper web.">When native quality matters, I use Swift and AppKit. Menu bar behavior, local-first data, system APIs and a custom distribution pipeline give a better experience than a thin web wrapper.</div>
-    </div>
-
-    <div class="scat-row">
-      <div class="scat-name">Infrastructure</div>
-      <div class="scat-icons">
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/vercel/000000" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Vercel"><span>Vercel</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/netlify/00C7B7" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Netlify"><span>Netlify</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/cloudflare/F38020" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Cloudflare"><span>Cloudflare</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/cloudflarepages/F38020" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Cloudflare Pages"><span>Cloudflare Pages</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/github/181717" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="GitHub"><span>GitHub</span></div>
-      </div>
-      <div class="scat-enables" data-pl="Preferuję hosting, który daje szybkie preview, prosty rollback i jasny podgląd buildów. Vercel, Netlify i Cloudflare Pages pokrywają różne potrzeby bez ciężkiej warstwy DevOps." data-en="I prefer hosting that gives fast previews, simple rollback and readable build history. Vercel, Netlify and Cloudflare Pages cover different needs without heavy DevOps overhead." data-it="Preferisco hosting con preview rapide, rollback semplice e cronologia build leggibile. Vercel, Netlify e Cloudflare Pages coprono bisogni diversi senza DevOps pesante.">I prefer hosting that gives fast previews, simple rollback and readable build history. Vercel, Netlify and Cloudflare Pages cover different needs without heavy DevOps overhead.</div>
-    </div>
-
-    <div class="scat-row">
-      <div class="scat-name">Static &amp; Content</div>
-      <div class="scat-icons">
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/astro/FF5D01" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Astro"><span>Astro</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/framer/0055FF" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Framer"><span>Framer</span></div>
-        <div class="tech-icon-item"><img src="https://cdn.simpleicons.org/webflow/4353FF" width="20" height="20" loading="lazy" onerror="this.style.display='none'" alt="Webflow"><span>Webflow</span></div>
-      </div>
-      <div class="scat-enables" data-pl="Astro, Framer i Webflow wybieram tam, gdzie treść i szybkość publikacji są ważniejsze niż ciężka logika aplikacyjna. To dobre miejsce na landing page, dokumentację i projekty content-heavy." data-en="Astro, Framer and Webflow fit work where content and publishing speed matter more than heavy app logic. They are good for landing pages, documentation and content-heavy projects." data-it="Astro, Framer e Webflow sono adatti quando contenuto e velocità di pubblicazione contano più della logica applicativa. Ottimi per landing, docs e progetti content-heavy.">Astro, Framer and Webflow fit work where content and publishing speed matter more than heavy app logic. They are good for landing pages, documentation and content-heavy projects.</div>
-    </div>
-
-  </div>
-
-</div>
-</Layout>
+    <script is:inline>
+      // The search box lives with the app list on /. From the stack page, send
+      // the typed term there so search still works from anywhere in the shell.
+      (function () {
+        var q = document.getElementById('q');
+        if (!q) return;
+        q.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter') return;
+          var term = (q.value || '').trim();
+          location.href = '/?q=' + encodeURIComponent(term) + '#applications';
+        });
+      })();
+    </script>
+  </body>
+</html>

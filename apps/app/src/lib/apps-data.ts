@@ -1,4 +1,4 @@
-export type AppStatus = 'live' | 'in-progress' | 'private-mvp' | 'private-beta' | 'soon';
+export type AppStatus = 'live' | 'in-progress' | 'private-mvp' | 'private-beta' | 'private' | 'soon';
 export type AppFilter = 'b2b' | 'consumer' | 'booking' | 'brand' | 'productivity';
 
 export interface AppEntry {
@@ -14,6 +14,8 @@ export interface AppEntry {
   url?: string;
   urlLabel?: { en: string; pl: string; it: string };
   status: AppStatus;
+  // Caption on the designed tile, for entries with no screenshot to show.
+  tileNote?: string;
   // Color palette — drives card-screen gradients, icon box, app-icon chip
   palette: BRAND_PALETTE;
   icon: string; // inner SVG markup (no outer <svg>)
@@ -35,6 +37,8 @@ const ICON = {
   bookmark: '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
   play: '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
   terminal: '<rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="7 9 10 12 7 15"/><path d="M13 15h4"/>',
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  layers: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
 };
 
 const BRAND_PALETTE = {
@@ -222,6 +226,7 @@ export const apps: AppEntry[] = [
     tech: [{ label: 'React' }, { label: 'Vite' }, { label: 'Supabase' }, { label: 'Mapbox' }, { label: 'Netlify' }],
     // No link: due for a rebuild, so the current build isn't worth showing.
     status: 'in-progress',
+    tileNote: 'Rebuild in progress',
     palette: BRAND_PALETTE,
     icon: ICON.pin,
   },
@@ -320,5 +325,45 @@ export const apps: AppEntry[] = [
     status: 'private-beta',
     palette: BRAND_PALETTE,
     icon: ICON.lightning,
+  },
+  {
+    id: 'content-hub',
+    name: 'Content Hub',
+    initials: 'CH',
+    category: 'Content Ops · AI',
+    badge: 'AI',
+    tagline: {
+      en: 'An AI content hub. Built for a client, so it stays unlinked and undescribed.',
+      pl: 'Hub contentowy z AI. Projekt klienta, więc bez linku i bez szczegółów.',
+      it: 'Hub di contenuti con AI. Lavoro per un cliente, quindi senza link e senza dettagli.',
+    },
+    tags: 'ai content marketing hub base44 private',
+    searchName: 'content hub ai content marketing',
+    tech: [{ label: 'Base44', accent: true }, { label: 'AI' }],
+    // No link and no client detail by design: the engagement stays masked.
+    status: 'private',
+    tileNote: 'Client work, masked',
+    palette: BRAND_PALETTE,
+    icon: ICON.network,
+  },
+  {
+    id: 'mini-apps',
+    name: 'Mini Apps',
+    initials: 'MA',
+    category: 'Utility apps · Early builds',
+    badge: 'Early',
+    tagline: {
+      en: 'The first three ideas I built: Działka+, Paczka+, Resume+. Early versions, still being worked on.',
+      pl: 'Pierwsze trzy pomysły, które zbudowałem: Działka+, Paczka+, Resume+. Wczesne wersje, wciąż rozwijane.',
+      it: 'Le prime tre idee che ho costruito: Działka+, Paczka+, Resume+. Versioni iniziali, ancora in sviluppo.',
+    },
+    tags: 'consumer utility early dzialka paczka resume mini apps',
+    searchName: 'mini apps dzialka paczka resume pierwsze pomysly',
+    // No link: the case study points back at this very page.
+    tech: [],
+    status: 'in-progress',
+    tileNote: 'First ideas, in development',
+    palette: BRAND_PALETTE,
+    icon: ICON.grid,
   },
 ];
