@@ -1,14 +1,29 @@
 ---
 import { getLocaleFromPath } from '../../data/uiStrings';
 import Icon from './Icon.astro';
-const isAr = getLocaleFromPath(Astro.url.pathname) === 'ar';
+const locale = getLocaleFromPath(Astro.url.pathname);
+const isAr = locale === 'ar';
+
+// Localized chrome for the search modal (was hardcoded EN for every non-AR locale).
+const searchStrings: Record<string, { search: string; close: string; loading: string; error: string }> = {
+  en: { search: 'Search', close: 'Close search', loading: 'Loading search…', error: 'Search index unavailable. Try refreshing the page.' },
+  pl: { search: 'Szukaj', close: 'Zamknij wyszukiwarkę', loading: 'Ładowanie wyszukiwarki…', error: 'Indeks wyszukiwania niedostępny. Odśwież stronę.' },
+  de: { search: 'Suche', close: 'Suche schließen', loading: 'Suche wird geladen…', error: 'Suchindex nicht verfügbar. Aktualisiere die Seite.' },
+  dk: { search: 'Søg', close: 'Luk søgning', loading: 'Indlæser søgning…', error: 'Søgeindeks utilgængeligt. Prøv at opdatere siden.' },
+  no: { search: 'Søk', close: 'Lukk søk', loading: 'Laster søk…', error: 'Søkeindeks utilgjengelig. Prøv å oppdatere siden.' },
+  jp: { search: '検索', close: '検索を閉じる', loading: '検索を読み込み中…', error: '検索インデックスを利用できません。ページを更新してください。' },
+  it: { search: 'Cerca', close: 'Chiudi ricerca', loading: 'Caricamento ricerca…', error: 'Indice di ricerca non disponibile. Aggiorna la pagina.' },
+  es: { search: 'Buscar', close: 'Cerrar búsqueda', loading: 'Cargando búsqueda…', error: 'Índice de búsqueda no disponible. Actualiza la página.' },
+  ar: { search: 'بحث', close: 'إغلاق البحث', loading: 'جارٍ تحميل البحث…', error: 'فهرس البحث غير متاح. حدّث الصفحة وحاول مجددًا.' },
+};
+const s = searchStrings[locale] ?? searchStrings.en;
 ---
 
 <div
   id="search-modal"
   role="dialog"
   aria-modal="true"
-  aria-label={isAr ? 'بحث' : 'Search'}
+  aria-label={s.search}
   class="fixed inset-0 z-[200] hidden items-start justify-center px-4 pt-[12vh]"
 >
   <div id="search-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
@@ -16,14 +31,14 @@ const isAr = getLocaleFromPath(Astro.url.pathname) === 'ar';
   <div class="relative w-full max-w-2xl overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] shadow-2xl">
     <!-- Header bar -->
     <div class="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
-      <span class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{isAr ? 'بحث' : 'Search'}</span>
+      <span class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{s.search}</span>
       <div class="flex items-center gap-3">
         <kbd class="hidden sm:inline-flex items-center gap-1 rounded border border-[var(--color-border)] bg-[var(--color-surface)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--color-text-dim)]">
           <span>esc</span>
         </kbd>
         <button
           id="search-close"
-          aria-label={isAr ? 'إغلاق البحث' : 'Close search'}
+          aria-label={s.close}
           class="flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-text)]"
         >
           <Icon name="close" class="h-3.5 w-3.5" />
@@ -34,7 +49,7 @@ const isAr = getLocaleFromPath(Astro.url.pathname) === 'ar';
     <!-- Loading state -->
     <div id="search-loading" class="hidden flex-col items-center justify-center gap-3 px-5 py-10">
       <div class="h-5 w-5 animate-spin rounded-full border-2 border-[var(--color-border-2)] border-t-[var(--color-accent)]"></div>
-      <p class="text-xs text-[var(--color-text-dim)]">{isAr ? 'جارٍ تحميل البحث…' : 'Loading search…'}</p>
+      <p class="text-xs text-[var(--color-text-dim)]">{s.loading}</p>
     </div>
 
     <!-- Dev notice (build first) -->
@@ -50,7 +65,7 @@ const isAr = getLocaleFromPath(Astro.url.pathname) === 'ar';
       id="search-error"
       class="hidden px-5 py-6 text-sm text-[var(--color-text-muted)]"
     >
-      {isAr ? 'فهرس البحث غير متاح. حدّث الصفحة وحاول مجددًا.' : 'Search index unavailable. Try refreshing the page.'}
+      {s.error}
     </p>
 
     <div id="pagefind-ui-root"></div>

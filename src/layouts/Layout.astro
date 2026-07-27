@@ -51,6 +51,21 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
 
 // hreflang + og:locale alternates are emitted centrally by SEOHead
 // (single source of truth, restricted to actually-localized pages).
+
+// Localized skip-to-content link (keyed by htmlLang; was hardcoded EN + an AR
+// special-case). Computed here because a TS `as` cast can't live in the markup
+// expression (Astro parses the generic `<...>` as JSX).
+const skipToContentLabels: Record<string, string> = {
+  'ar': 'تخطَّ إلى المحتوى',
+  'pl': 'Przejdź do treści',
+  'de-DE': 'Zum Inhalt springen',
+  'da-DK': 'Gå til indhold',
+  'nb-NO': 'Gå til innhold',
+  'ja-JP': 'コンテンツにスキップ',
+  'it-IT': 'Vai al contenuto',
+  'es-ES': 'Saltar al contenido',
+};
+const skipToContent = skipToContentLabels[htmlLang] ?? 'Skip to content';
 ---
 
 <!doctype html>
@@ -120,7 +135,7 @@ const resolvedCanonical = canonical ?? Astro.url.pathname.replace(/^\/en(\/|$)/,
     <a
       href="#main-content"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:rounded-[var(--radius-btn)] focus:bg-[var(--color-accent)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-[var(--color-accent-text)] focus:outline-none"
-    >{htmlLang === 'ar' ? 'تخطَّ إلى المحتوى' : 'Skip to content'}</a>
+    >{skipToContent}</a>
     <AnnouncementBar />
     <Header />
     <main id="main-content" class="flex-1" transition:animate="fade" data-pagefind-body>
