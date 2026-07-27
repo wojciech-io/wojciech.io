@@ -1,4 +1,4 @@
-export type AppStatus = 'live' | 'in-progress' | 'private-mvp' | 'private-beta' | 'soon';
+export type AppStatus = 'live' | 'in-progress' | 'private-mvp' | 'private-beta' | 'private' | 'soon';
 export type AppFilter = 'b2b' | 'consumer' | 'booking' | 'brand' | 'productivity';
 
 export interface AppEntry {
@@ -14,6 +14,8 @@ export interface AppEntry {
   url?: string;
   urlLabel?: { en: string; pl: string; it: string };
   status: AppStatus;
+  // Caption on the designed tile, for entries with no screenshot to show.
+  tileNote?: string;
   // Color palette — drives card-screen gradients, icon box, app-icon chip
   palette: BRAND_PALETTE;
   icon: string; // inner SVG markup (no outer <svg>)
@@ -31,6 +33,12 @@ const ICON = {
   truck: '<rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 4v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
   list: '<path d="M3 6h18M3 12h18M3 18h18"/><circle cx="7" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="7" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="7" cy="18" r="1" fill="currentColor" stroke="none"/>',
   lightning: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>',
+  network: '<circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4M12 11.5 6.6 16.9M12 11.5l5.4 5.4"/>',
+  bookmark: '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+  play: '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
+  terminal: '<rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="7 9 10 12 7 15"/><path d="M13 15h4"/>',
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  layers: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
 };
 
 const BRAND_PALETTE = {
@@ -49,15 +57,15 @@ export const apps: AppEntry[] = [
     category: 'Marketplace · B2C',
     badge: 'Marketplace',
     tagline: {
-      en: 'Smart shopping lists, receipts & recipes. Grocery-inspired UI with AI suggestions.',
+      en: 'A shopping-list app that reads your receipts and helps plan the next trip.',
       pl: 'Smart listy zakupów, paragony i przepisy. Grocery inspired dark glassmorphism UI z AI sugestiami.',
       it: 'Liste della spesa intelligenti, scontrini e ricette. UI glassmorphism con suggerimenti AI.',
     },
     tags: 'consumer pwa react typescript supabase',
     searchName: 'sabiszop sabi szop grocery shopping',
     tech: [{ label: 'React 18' }, { label: 'TypeScript' }, { label: 'Supabase' }, { label: 'Recharts' }, { label: 'Netlify' }],
-    url: 'https://sabiszop.netlify.app/',
-    urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
+    url: 'https://sabiszop.netlify.app/listy',
+    urlLabel: { en: 'Demo', pl: 'Demo', it: 'Demo' },
     status: 'live',
     palette: BRAND_PALETTE,
     icon: ICON.cart,
@@ -69,7 +77,7 @@ export const apps: AppEntry[] = [
     category: 'Growth · B2B SaaS',
     badge: 'SaaS',
     tagline: {
-      en: 'Growth dashboard for demand gen, lead scoring and revenue tracking in one place. Currently being rebuilt on Claude, stripped of legacy branding.',
+      en: 'A marketing dashboard for scoring leads and tracking revenue. Being rebuilt right now.',
       pl: 'Growth dashboard dla demand gen, lead scoringu i revenue trackingu w jednym miejscu. Aktualnie przepisywany na Claude, bez wcześniejszego brandingu.',
       it: 'Growth dashboard per demand gen, lead scoring e revenue tracking in un unico posto. Attualmente in ricostruzione su Claude, senza branding precedente.',
     },
@@ -83,24 +91,84 @@ export const apps: AppEntry[] = [
     icon: ICON.trendUp,
   },
   {
-    id: 'hireme',
-    name: 'HireMe',
-    initials: 'HM',
-    category: 'Recruitment · SaaS',
+    id: 'relora',
+    name: 'Relora',
+    initials: 'RE',
+    category: 'Relationship OS · Public sector',
     badge: 'SaaS',
     tagline: {
-      en: 'Job search command centre with funnel, priorities and activity in one view.',
-      pl: 'Tracker aplikacji o pracę jako centrum dowodzenia poszukiwań pracy. Lejek, priorytety, aktywność.',
-      it: 'Centro di controllo ricerca lavoro con funnel, priorità e attività in un\'unica vista.',
+      en: 'A simple CRM for public-sector property teams: who to contact and what happens next.',
+      pl: 'System do zarządzania relacjami dla samorządowych zespołów nieruchomości. Kontakty, kontekst właściciela, status komunikacji i następne kroki w jednym widoku.',
+      it: 'Sistema operativo per le relazioni dei team immobiliari della pubblica amministrazione. Contatti, contesto proprietario, stato della comunicazione e azioni successive in un\'unica vista.',
     },
-    tags: 'b2b saas recruitment hr ats jobs pwa',
-    searchName: 'hireme hire me rekrutacja recruitment ats',
-    tech: [{ label: 'React' }, { label: 'TypeScript' }, { label: 'Supabase' }, { label: 'Netlify' }],
-    url: 'https://hireme-amber.vercel.app/login',
+    tags: 'b2b saas ai workflow crm ops dashboard public-sector',
+    searchName: 'relora crm relacje nieruchomosci samorzad ops dashboard',
+    tech: [{ label: 'React' }, { label: 'TypeScript' }, { label: 'Vercel' }],
+    url: 'https://relora-jet.vercel.app/',
+    urlLabel: { en: 'Demo', pl: 'Demo', it: 'Demo' },
+    status: 'live',
+    palette: BRAND_PALETTE,
+    icon: ICON.network,
+  },
+  {
+    id: 'kade',
+    name: 'Kade',
+    initials: 'KA',
+    category: 'Mac Utility · macOS native',
+    badge: 'macOS',
+    tagline: {
+      en: 'A Mac app for parking links you are not ready to open yet. Stays on your machine.',
+      pl: 'Spokojniejszy sposób na trzymanie linków. Przechowuje te, które potrzebują kontekstu, zanim znów warto je otworzyć. Lokalnie, bez chmury.',
+      it: 'Un modo più tranquillo di conservare i link. Tiene quelli che hanno bisogno di contesto prima di valere una seconda apertura. Local-first, senza cloud.',
+    },
+    tags: 'productivity macos native swift desktop utility links local-first',
+    searchName: 'kade linki bookmarks macos local-first utility',
+    tech: [{ label: 'SwiftUI', accent: true }, { label: 'macOS', accent: true }, { label: 'Local-first' }],
+    url: 'https://wojciech.io/apps/kade/',
+    urlLabel: { en: 'Landing', pl: 'Strona', it: 'Landing' },
+    status: 'private-mvp',
+    palette: BRAND_PALETTE,
+    icon: ICON.bookmark,
+  },
+  {
+    id: 'academy',
+    name: 'Academy',
+    initials: 'AC',
+    category: 'Program · AI for GTM',
+    badge: 'Program',
+    tagline: {
+      en: 'A video course on using AI for marketing and sales. 36 episodes, no fluff.',
+      pl: 'AI dla GTM od operatora, nie ze slajdów. 36 odcinków o marketingu, sprzedaży i pracy founderów B2B. Procesy, nie nazwy narzędzi.',
+      it: 'AI per il GTM insegnata da un operatore, non dalle slide. 36 episodi su marketing, vendite e lavoro dei founder B2B. Processi, non nomi di strumenti.',
+    },
+    tags: 'ai gtm program education course marketing sales',
+    searchName: 'academy akademia kurs program ai gtm szkolenie',
+    tech: [{ label: 'Astro' }, { label: 'Stripe' }, { label: 'Cloudflare' }],
+    url: 'https://wojciech.io/apps/academy/',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
     palette: BRAND_PALETTE,
-    icon: ICON.users,
+    icon: ICON.play,
+  },
+  {
+    id: 'gtm-starter-pack',
+    name: 'GTM Agent Starter Pack',
+    initials: 'GS',
+    category: 'Open source · Claude Code',
+    badge: 'Open source',
+    tagline: {
+      en: 'An open-source kit for building your own AI marketing agents with Claude Code.',
+      pl: 'Otwartoźródłowy starter pack do budowania agentów AI GTM na Claude Code. Dla operatorów, którzy chcą wdrażać AI-native workflow bez zaczynania od zera.',
+      it: 'Starter pack open source per costruire agenti AI GTM con Claude Code. Per operatori che vogliono realizzare workflow AI-native senza partire da zero.',
+    },
+    tags: 'b2b ai gtm open-source claude-code agents mcp automation',
+    searchName: 'gtm starter pack claude code agent open source repo github',
+    tech: [{ label: 'Claude Code', accent: true }, { label: 'MCP', accent: true }, { label: 'Markdown' }],
+    url: 'https://github.com/wojciechluszczynski/gtm-agent-repo',
+    urlLabel: { en: 'GitHub', pl: 'GitHub', it: 'GitHub' },
+    status: 'live',
+    palette: BRAND_PALETTE,
+    icon: ICON.terminal,
   },
   {
     id: 'an-projekt',
@@ -109,14 +177,14 @@ export const apps: AppEntry[] = [
     category: 'Website · Interior Design',
     badge: 'Website',
     tagline: {
-      en: 'Interior design studio website. Interiors tailored to your life.',
+      en: 'A website I built for an interior-design studio.',
       pl: 'Strona internetowa pracowni projektowania wnętrz. Wnętrza dopasowane do Twojego życia.',
       it: 'Sito web dello studio di interior design. Interni su misura per la tua vita.',
     },
     tags: 'brand website interior design react vite lovable strona-www',
     searchName: 'an projekt an-projekt strona internetowa website',
     tech: [{ label: 'React' }, { label: 'Vite' }, { label: 'Lovable' }, { label: 'Tailwind' }],
-    url: 'https://an-projekt.com.pl/',
+    url: 'https://anprojekt.com.pl/',
     urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
     status: 'live',
     palette: BRAND_PALETTE,
@@ -129,7 +197,7 @@ export const apps: AppEntry[] = [
     category: 'Website · Music Band',
     badge: 'Website',
     tagline: {
-      en: 'Official website of a Polish rock band with concerts, music, tickets and merch store.',
+      en: 'A website for a Polish rock band: tour dates, music, tickets and merch.',
       pl: 'Oficjalna strona polskiego zespołu rockowego z koncertami, muzyką, biletami i sklepem z merch.',
       it: 'Sito ufficiale di una band rock polacca con concerti, musica, biglietti e negozio merch.',
     },
@@ -149,16 +217,16 @@ export const apps: AppEntry[] = [
     category: 'Real Estate · PWA',
     badge: 'PWA',
     tagline: {
-      en: 'Plot value calculator with location analysis, utilities, MPZP and property valuation in one view.',
+      en: 'An app that estimates what a plot of land is worth.',
       pl: 'Kalkulator wartości działek z analizą lokalizacji, mediami, MPZP i wyceną nieruchomości.',
       it: 'Calcolatore del valore del terreno con analisi posizione, utenze e valutazione.',
     },
     tags: 'consumer pwa react vite supabase real-estate nieruchomosci dzialka kalkulator',
     searchName: 'dzialkomierz dzialka nieruchomosci kalkulator',
     tech: [{ label: 'React' }, { label: 'Vite' }, { label: 'Supabase' }, { label: 'Mapbox' }, { label: 'Netlify' }],
-    url: 'https://dzialkometr.netlify.app/auth/login?next=%2Fapp',
-    urlLabel: { en: 'Open', pl: 'Otwórz', it: 'Apri' },
-    status: 'live',
+    // No link: due for a rebuild, so the current build isn't worth showing.
+    status: 'in-progress',
+    tileNote: 'Rebuild in progress',
     palette: BRAND_PALETTE,
     icon: ICON.pin,
   },
@@ -169,7 +237,7 @@ export const apps: AppEntry[] = [
     category: 'Marketing AI · B2B SaaS',
     badge: 'SaaS',
     tagline: {
-      en: 'Google Ads dashboard with AI ICP lead scoring (0-100). Shifts optimisation from CPL to CPL-ICP-fit.',
+      en: 'A Google Ads dashboard that ranks leads by how well they fit your ideal customer.',
       pl: 'Dashboard Google Ads z AI ICP lead scoringiem (0-100). Przesuwa optymalizację z CPL na CPL-ICP-fit.',
       it: 'Dashboard Google Ads con AI ICP lead scoring (0-100). Sposta l\'ottimizzazione da CPL a CPL-ICP-fit.',
     },
@@ -189,7 +257,7 @@ export const apps: AppEntry[] = [
     category: 'Desktop Utility · macOS',
     badge: 'macOS',
     tagline: {
-      en: 'Native macOS teleprompter placing private notes under the MacBook camera notch. Keeps eye contact during calls and demos.',
+      en: 'A Mac teleprompter that hides your notes under the camera notch, so you keep eye contact on calls.',
       pl: 'Natywny teleprompter macOS umieszczający prywatne notatki pod notchem kamery MacBooka.',
       it: 'Teleprompter nativo macOS che posiziona note private sotto il notch della fotocamera MacBook.',
     },
@@ -209,7 +277,7 @@ export const apps: AppEntry[] = [
     category: 'Booking Engine · Consumer',
     badge: 'Booking',
     tagline: {
-      en: 'Camper rental booking engine with dynamic pricing, availability management and a clean reservation flow.',
+      en: 'A booking site for renting out campers, with live pricing and availability.',
       pl: 'Booking engine do wynajmu kamperów z dynamicznymi cenami, zarządzaniem dostępnością i czystym flow rezerwacji.',
       it: 'Motore di prenotazione per noleggio camper con prezzi dinamici, gestione disponibilità e flusso di prenotazione semplice.',
     },
@@ -229,7 +297,7 @@ export const apps: AppEntry[] = [
     category: 'Mac Utility · macOS native',
     badge: 'macOS',
     tagline: {
-      en: 'Local-first Mac audit with cleanup preview and HTML report. Files move to Trash. Nothing disappears silently.',
+      en: 'A Mac cleaning app, like CleanMyMac, except everything it clears goes to Trash first.',
       pl: 'Lokalny audyt Maca z podglądem czyszczenia i raportem HTML. Pliki trafiają do Kosza. Nic nie znika po cichu.',
       it: 'Audit Mac locale con anteprima pulizia e report HTML. I file vanno nel Cestino, niente sparisce in silenzio.',
     },
@@ -247,7 +315,7 @@ export const apps: AppEntry[] = [
     category: 'Fitness · iPhone · Apple Watch · Mac',
     badge: 'iOS / watchOS / Mac',
     tagline: {
-      en: 'Private running and activity coach for the Apple ecosystem. HealthKit, live workout on Watch, adaptive plan, maps, badges and analysis on Mac.',
+      en: 'A running and fitness coach for iPhone and Apple Watch, like Strava but private.',
       pl: 'Prywatny trener biegania i aktywności dla ekosystemu Apple. Apple Health, trening live na Watchu, plan adaptacyjny, mapy, odznaki i analiza na Macu.',
       it: 'Coach privato per corsa e attività per l\'ecosistema Apple. HealthKit, allenamento live su Watch, piano adattivo, mappe, badge e analisi su Mac.',
     },
@@ -257,5 +325,45 @@ export const apps: AppEntry[] = [
     status: 'private-beta',
     palette: BRAND_PALETTE,
     icon: ICON.lightning,
+  },
+  {
+    id: 'content-hub',
+    name: 'Content Hub',
+    initials: 'CH',
+    category: 'Content Ops · AI',
+    badge: 'AI',
+    tagline: {
+      en: 'An AI content hub. Built for a client, so it stays unlinked and undescribed.',
+      pl: 'Hub contentowy z AI. Projekt klienta, więc bez linku i bez szczegółów.',
+      it: 'Hub di contenuti con AI. Lavoro per un cliente, quindi senza link e senza dettagli.',
+    },
+    tags: 'ai content marketing hub base44 private',
+    searchName: 'content hub ai content marketing',
+    tech: [{ label: 'Base44', accent: true }, { label: 'AI' }],
+    // No link and no client detail by design: the engagement stays masked.
+    status: 'private',
+    tileNote: 'Client work, masked',
+    palette: BRAND_PALETTE,
+    icon: ICON.network,
+  },
+  {
+    id: 'mini-apps',
+    name: 'Mini Apps',
+    initials: 'MA',
+    category: 'Utility apps · Early builds',
+    badge: 'Early',
+    tagline: {
+      en: 'The first three ideas I built: Działka+, Paczka+, Resume+. Early versions, still being worked on.',
+      pl: 'Pierwsze trzy pomysły, które zbudowałem: Działka+, Paczka+, Resume+. Wczesne wersje, wciąż rozwijane.',
+      it: 'Le prime tre idee che ho costruito: Działka+, Paczka+, Resume+. Versioni iniziali, ancora in sviluppo.',
+    },
+    tags: 'consumer utility early dzialka paczka resume mini apps',
+    searchName: 'mini apps dzialka paczka resume pierwsze pomysly',
+    // No link: the case study points back at this very page.
+    tech: [],
+    status: 'in-progress',
+    tileNote: 'First ideas, in development',
+    palette: BRAND_PALETTE,
+    icon: ICON.grid,
   },
 ];

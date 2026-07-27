@@ -46,6 +46,18 @@ const contactLabels: Record<string, { name: string; email: string; message: stri
   pl: { name: 'Imię', email: 'Email', message: 'Nad czym pracujesz?', messageHelp: 'Cel, stan aktualny, stack. Cokolwiek pomoże mi zrozumieć problem.', send: 'Wyślij wiadomość', alt: 'Napisz na LinkedIn', altSub: 'Strefa: Europe/Berlin', or: 'Lub napisz do mnie', formIntro: 'Wyślij kontekst, wąskie gardło i aktualny stack. Odpowiadam w ciągu 24h.' },
 };
 const labels = isContact ? contactLabels[copy.locale] || contactLabels['de'] : null;
+
+/* About page: localized labels for the InfoShare talk card (was hardcoded EN). */
+const talkLabels: Record<string, { eyebrow: string; title: string; watch: string }> = {
+  de: { eyebrow: 'YouTube · Vortrag', title: 'InfoShare 2023: KI-Systeme, GTM und ausgelieferte Produkte', watch: 'Auf YouTube ansehen' },
+  dk: { eyebrow: 'YouTube · Foredrag', title: 'InfoShare 2023: AI-systemer, GTM og leverede produkter', watch: 'Se på YouTube' },
+  no: { eyebrow: 'YouTube · Foredrag', title: 'InfoShare 2023: AI-systemer, GTM og leverte produkter', watch: 'Se på YouTube' },
+  jp: { eyebrow: 'YouTube · 講演', title: 'InfoShare 2023：AIシステム、GTM、そして世に出したプロダクト', watch: 'YouTubeで見る' },
+  it: { eyebrow: 'YouTube · Intervento', title: 'InfoShare 2023: sistemi AI, GTM e prodotti spediti', watch: 'Guarda su YouTube' },
+  es: { eyebrow: 'YouTube · Charla', title: 'InfoShare 2023: sistemas AI, GTM y productos lanzados', watch: 'Ver en YouTube' },
+  pl: { eyebrow: 'YouTube · Prelekcja', title: 'InfoShare 2023: systemy AI, GTM i wdrożone produkty', watch: 'Obejrzyj na YouTube' },
+};
+const talk = talkLabels[copy.locale] || talkLabels['de'];
 ---
 
 <Layout
@@ -59,9 +71,8 @@ const labels = isContact ? contactLabels[copy.locale] || contactLabels['de'] : n
 >
 
   {isContact ? (
-    <!-- Contact: dedicated layout matching EN /contact/ -->
     <Fragment>
-      <!-- Own /meet scheduler (localized) — replaces the old Cal.com embed so the
+      <!-- Own /meet scheduler (localized): replaces the old Cal.com embed so the
            localized /contact gets the same responsive flow, covers and host card. -->
       <section id="book-call">
         <BookingScheduler lang={copy.locale} />
@@ -110,7 +121,6 @@ const labels = isContact ? contactLabels[copy.locale] || contactLabels['de'] : n
 
     </Fragment>
   ) : (
-    <!-- Generic layout: about, work, ai-systems, insights -->
     <Fragment>
       <section class="relative overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-bg)]">
         <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px] opacity-70" aria-hidden="true"></div>
@@ -207,10 +217,10 @@ const labels = isContact ? contactLabels[copy.locale] || contactLabels['de'] : n
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>
               </span>
               <div class="min-w-0 flex-1">
-                <span class="obs-label-accent mb-1.5 block">YouTube · Talk</span>
-                <h3 class="text-sm font-semibold leading-snug text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">InfoShare 2023: AI systems, GTM, and shipped products</h3>
+                <span class="obs-label-accent mb-1.5 block">{talk.eyebrow}</span>
+                <h3 class="text-sm font-semibold leading-snug text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">{talk.title}</h3>
                 <span class="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[var(--color-text-dim)] transition-colors group-hover:text-[var(--color-accent-hi)]">
-                  Watch on YouTube
+                  {talk.watch}
                   <svg class="h-3 w-3 transition-transform duration-150 group-hover:translate-x-0.5 rtl-flip-x" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
               </div>

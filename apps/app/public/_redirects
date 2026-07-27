@@ -1,5 +1,12 @@
+# The portfolio lives at the root now. /apps is kept alive as a real edge
+# redirect because it is published in seven places (an insights article, three
+# case studies, /resources and /ar/resources). Astro.redirect() cannot be used
+# here: this build is static, so it emits a 2s meta-refresh page instead of a
+# real redirect, which is visible to the user as an unstyled flash.
+/apps       /                               301
+/apps/*     /                               301
+
 # Redirect deprecated pages to wojciech.io equivalents
-# app.wojciech.io scope is now just /apps and /stack — see chore/app-simplify
 /cv         https://wojciech.io/cv          301
 /contact    https://wojciech.io/contact     301
 /timeline   https://wojciech.io/timeline    301

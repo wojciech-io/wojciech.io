@@ -1,0 +1,146 @@
+/* Shared Ramp-style shell for app.wojciech.io: rail + topbar + main frame.
+   Single source of truth for the shell, imported by every page (index, stack).
+   Geometry measured off the live Ramp product UI: page #fcfbfa, rail #f4f2f0
+   @216px, surfaces #ffffff, lines #e9e5e2, radius 0, headings at weight 400.
+   Accent is Wojciech's #eaff00, spent on ONE element per screen. Page-specific
+   styles (the app list, the stack map) stay inline in their own page. */
+
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-Regular.woff2') format('woff2'); font-weight: 400; font-display: block; }
+@font-face { font-family: 'Geist'; src: url('/fonts/Geist-Medium.woff2') format('woff2'); font-weight: 500; font-display: block; }
+@font-face { font-family: 'Geist Mono'; src: url('/fonts/GeistMono-Regular.woff2') format('woff2'); font-weight: 400; font-display: block; }
+
+:root {
+  --page:    #fcfbfa;
+  --rail:    #f4f2f0;
+  --surface: #ffffff;
+  --line:    #e9e5e2;
+  --line-hi: #dcd7d3;
+  --ink:     #1a1919;
+  --ink-2:   #6b6866;
+  --ink-3:   #97928e;
+  --lime:    #eaff00;
+  --radius:  0px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+
+.shell { display: grid; grid-template-columns: 216px 1fr; min-height: 100vh; }
+
+/* ---------- rail ---------- */
+.rail {
+  background: var(--rail);
+  border-right: 1px solid var(--line);
+  padding: 16px 0 12px;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+}
+.rail-brand { display: flex; align-items: center; gap: 9px; padding: 2px 16px 20px; text-decoration: none; }
+/* The site's own favicon: lime tile, rounded, ".io". An asset, not a UI
+   surface, so its rounded corners stay while the interface is square. */
+.brand-tile { width: 26px; height: 26px; flex: none; display: block; }
+.brand-word { font-size: 14px; font-weight: 500; letter-spacing: -0.01em; }
+.brand-word span { color: var(--ink-3); font-weight: 400; }
+
+.rail-group-label {
+  padding: 16px 16px 6px;
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 400;
+}
+.rail-sep { height: 1px; background: var(--line-hi); margin: 10px 12px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 8px; padding: 7px 8px;
+  color: var(--ink-2); text-decoration: none;
+  border-radius: var(--radius);
+  font-size: 14px; font-weight: 400;
+  border: 1px solid transparent;
+  background: none; width: calc(100% - 16px);
+  font-family: inherit; text-align: left; cursor: pointer;
+}
+.nav-item:hover { background: rgba(0,0,0,0.035); color: var(--ink); }
+.nav-item.is-active { background: var(--surface); color: var(--ink); border-color: var(--line); }
+.nav-item svg { flex: none; opacity: 0.75; }
+.nav-item .lbl { flex: 1; }
+.pill {
+  min-width: 20px; height: 18px; padding: 0 6px;
+  display: grid; place-items: center;
+  background: var(--lime); color: var(--ink);
+  font-size: 11px; font-weight: 500;
+  border-radius: var(--radius);
+}
+.pill.is-quiet { background: var(--line-hi); color: var(--ink-2); }
+
+/* ---------- author ---------- */
+.author { margin-top: auto; padding: 14px 16px 4px; border-top: 1px solid var(--line-hi); }
+.author-row { display: flex; align-items: center; gap: 9px; }
+.author-img { width: 30px; height: 30px; flex: none; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--line-hi); }
+.author-name { font-size: 13px; font-weight: 500; line-height: 1.25; }
+.author-role { font-size: 11px; color: var(--ink-3); line-height: 1.25; }
+.author-socials { display: flex; gap: 2px; margin-top: 9px; }
+.soc { width: 26px; height: 26px; display: grid; place-items: center; color: var(--ink-3); border-radius: var(--radius); }
+.soc:hover { color: var(--ink); background: rgba(0,0,0,0.05); }
+
+/* ---------- topbar ---------- */
+.topbar {
+  height: 52px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 24px; background: var(--page);
+  position: sticky; top: 0; z-index: 5;
+}
+.search {
+  flex: 1; max-width: 380px; height: 32px;
+  border: 1px solid var(--line); background: var(--surface);
+  display: flex; align-items: center; gap: 8px; padding: 0 10px;
+  border-radius: var(--radius);
+}
+.search input { flex: 1; border: 0; outline: 0; background: none; font: inherit; font-size: 13px; color: var(--ink); }
+.search input::placeholder { color: var(--ink-3); }
+.search svg { color: var(--ink-3); flex: none; }
+.top-spacer { flex: 1; }
+.top-link { font-size: 13px; color: var(--ink-2); text-decoration: none; }
+.top-link:hover { color: var(--ink); }
+
+/* ---------- main ---------- */
+.main { display: flex; flex-direction: column; min-width: 0; }
+/* Fill the viewport. No max-width cap: on wide screens the content stretches to
+   the full width beside the rail instead of leaving a dead zone on the right.
+   A very high ceiling keeps 4K from getting silly without boxing normal widths.
+   min-height holds the frame full-height so switching to a short view (a locked
+   card) never collapses the page and yanks the scroll position. */
+.wrap { padding: 32px 40px 64px; max-width: 2200px; width: 100%; min-height: calc(100vh - 52px); }
+h1 { font-size: 28px; font-weight: 400; letter-spacing: -0.02em; margin: 0 0 4px; }
+.sub { color: var(--ink-2); margin: 0 0 28px; font-size: 14px; }
+
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 32px; border: 1px solid var(--line); background: var(--surface); }
+.metric { padding: 16px 18px; border-right: 1px solid var(--line); }
+.metric:last-child { border-right: 0; }
+.metric-k { font-size: 12px; color: var(--ink-2); margin-bottom: 6px; }
+.metric-v { font-size: 26px; font-weight: 400; letter-spacing: -0.02em; }
+
+.sec { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; }
+.sec h2 { font-size: 14px; font-weight: 500; margin: 0; }
+.sec .ct { color: var(--ink-3); font-size: 13px; }
+
+/* ---------- focus (keyboard only) ---------- */
+/* Dark, square ring: high contrast on both the rail and white surfaces, where a
+   lime ring would wash out. Mouse users never see it (:focus-visible). */
+:where(a, button, input, [tabindex]):focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 0; }
+.search:focus-within { border-color: var(--ink-3); }
+.search input:focus-visible { outline: none; }
+
+/* ---------- shell responsive ---------- */
+@media (max-width: 860px) {
+  .shell { grid-template-columns: 1fr; }
+  .rail { position: static; height: auto; }
+  .author { display: none; }
+}

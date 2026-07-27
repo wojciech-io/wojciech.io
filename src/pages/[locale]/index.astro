@@ -24,6 +24,65 @@ const workHref = `/${copy.path}/work/`;
 const contactHref = `/${copy.path}/contact/`;
 const meetHref = `/${copy.path}/meet/`;
 const t = getUiStrings(copy.key);
+
+// Polish deep-content: project cards are English by default (EN-only policy).
+// PL gets native prose so the homepage doesn't leak English blocks. Other
+// locales keep the English default list; AR has its own array on /ar/.
+const plProjects = [
+  {
+    cover: 'relora' as const,
+    screenshot: '/images/work/relora.webp',
+    title: 'Relora',
+    description: 'System operacyjny relacji dla zespołów nieruchomości w samorządach. Jedno miejsce na kontakty, kontekst właściciela, status komunikacji i kolejne kroki.',
+    tags: ['Workflow AI', 'CRM-lite', 'Panel operacyjny'],
+    href: 'https://relora-jet.vercel.app/',
+    problem: 'Ważne rozmowy z właścicielami żyły w skrzynkach, notatkach i głowie.',
+    system: 'Kontakty, relacje, briefy, status i follow-up w jednym widoku operatora.',
+    artifact: 'Działające demo z dashboardem, mapą relacji i przepływem zadań.',
+    outcome: 'Ręczne pilnowanie relacji zamienia się w uporządkowaną kolejkę operacyjną.',
+    external: true,
+  },
+  {
+    cover: 'ads-ai' as const,
+    screenshot: '/images/work/ad-assistant.webp',
+    title: 'AdsAI / Ad Assistant',
+    description: 'Kokpit Google Ads w wersji AI-native: wydatki, ROAS, dopasowanie do ICP, priorytety kampanii i kolejne najlepsze ruchy w jednym miejscu.',
+    tags: ['AI', 'Ads', 'GTM', 'Narzędzia operatora'],
+    href: 'https://ads-assistant-three.vercel.app/',
+    problem: 'Optymalizacja reklam rozjeżdżała się między raportami, intuicją i powtarzanymi kontrolami.',
+    system: 'Budżet, ICP, ROAS, alerty i działania wpięte w jedną pętlę decyzyjną.',
+    artifact: 'Działający dashboard z priorytetami kampanii i kolejką optymalizacji.',
+    outcome: 'Operator widzi, co wstrzymać, przeanalizować albo zoptymalizować, bez grzebania w raportach.',
+    external: true,
+  },
+  {
+    cover: 'kamperownia' as const,
+    screenshot: '/images/work/kamperownia.webp',
+    screenshotPosition: 'object-top',
+    title: 'Silnik rezerwacji kamperów',
+    description: 'Samoobsługowa strona wynajmu kamperów: przeglądanie pojazdów, sprawdzanie terminów i szybkie przejście od zainteresowania do rezerwacji.',
+    tags: ['Produkt', 'Rezerwacje', 'Aplikacja web'],
+    href: 'https://camper-rental-weld.vercel.app/',
+    problem: 'Popyt na wynajem potrzebował jaśniejszej ścieżki od przeglądania do rezerwacji.',
+    system: 'Flota, terminy, oferta i CTA rezerwacji w jednym przepływie front-endu.',
+    artifact: 'Responsywna strona rezerwacji z kartami pojazdów i wejściem do wyszukiwania.',
+    outcome: 'Ręczne zapytania zamieniają się w sproduktyzowane doświadczenie rezerwacji.',
+    external: true,
+  },
+  {
+    cover: 'notch' as const,
+    screenshot: '/images/work/notch.webp',
+    title: 'NotchCue',
+    description: 'Teleprompter na macOS do rozmów, demo i nagrań. Trzyma notatki blisko kamery, żeby przekaz brzmiał naturalnie.',
+    tags: ['macOS', 'Swift', 'Zbudowane z AI'],
+    href: '/apps/notch/',
+    problem: 'Notatki leżą z dala od kamery, co psuje kontakt wzrokowy na rozmowach i demo.',
+    system: 'Podpowiedzi żyją wokół notcha MacBooka, na skupionej powierzchni do czytania.',
+    artifact: 'Strona produktu i koncept aplikacji zbudowane wokół obszaru kamery.',
+    outcome: 'Mówca trzyma strukturę, nie brzmiąc jakby czytał.',
+    external: false,
+  },
+];
 ---
 
 <Layout
@@ -76,7 +135,7 @@ const t = getUiStrings(copy.key);
     steps={copy.steps}
   />
 
-  <ProjectsSection i18n={copy.sections.work} locale={copy.key} />
+  <ProjectsSection i18n={copy.sections.work} locale={copy.key} projects={copy.path === 'pl' ? plProjects : undefined} />
   <AILeverage i18n={copy.sections.ai} />
   <TestimonialsSection i18n={copy.sections.testimonials} />
   <InsightsPreview i18n={copy.sections.writing} locale={copy.path === 'pl' ? 'pl' : 'en'} />
