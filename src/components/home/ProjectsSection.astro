@@ -51,6 +51,13 @@ const t = {
   ctaLink: i18n?.ctaLink ?? 'Book a call →',
 };
 
+// Internal links must carry the locale segment: localized /work/ and /meet/ exist
+// for every SiteLocale (de/dk/no/jp/it/es/pl). The Arabic page renders this
+// component without a locale prop, so it stays on the English routes.
+const localePrefix = locale === 'en' ? '' : `/${locale}`;
+const workHref = `${localePrefix}/work/`;
+const meetHref = `${localePrefix}/meet/`;
+
 const defaultProjects: ProjectItem[] = [
   {
     cover: 'relora' as const,
@@ -129,7 +136,7 @@ const rest = projects.slice(1);
           <span class="text-[var(--color-text)]">{accentHeading(t.titleSecondary).lead}</span><span class="text-[var(--color-accent-cta)]" aria-hidden="true">{accentHeading(t.titleSecondary).mark}</span>
         </h2>
       </div>
-      <a href="/work/" class="obs-label-accent hover:text-[var(--color-text)] transition-colors hidden sm:block shrink-0 ml-4">
+      <a href={workHref} class="obs-label-accent hover:text-[var(--color-text)] transition-colors hidden sm:block shrink-0 ml-4">
         {t.allLink}
       </a>
     </div>
@@ -220,7 +227,7 @@ const rest = projects.slice(1);
 
       <!-- CTA card -->
       <a
-        href="/meet/"
+        href={meetHref}
         class="group flex flex-col justify-between rounded-[var(--radius-card)] border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 p-8 card-lift hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/8 transition-colors sm:col-span-2 lg:col-span-3 lg:flex-row lg:items-end lg:gap-8"
       >
         <div class="max-w-xl">
