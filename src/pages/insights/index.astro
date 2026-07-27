@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import PosterFeatured from '../../components/insights/PosterFeatured.astro';
+import PosterCard from '../../components/insights/PosterCard.astro';
 import { SITE } from '../../data/site';
 import {
   insightSlug,
@@ -26,11 +28,6 @@ for (const p of allPosts) {
     categoryCounts[p.data.category] = (categoryCounts[p.data.category] ?? 0) + 1;
   }
 }
-
-const author = {
-  name: 'Wojciech Łuszczyński',
-  avatar: 'https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=56&r=g',
-};
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -94,75 +91,20 @@ const formatDate = (date: Date) =>
       </div>
     </div>
 
-    <!-- Lead story: text-forward, modest cover. Sets the editorial tone without
-         dominating the page like a full-bleed hero card. -->
-    {featuredPost && (() => {
-      const slug = insightSlug(featuredPost);
-      return (
-        <a
-          href={`/insights/${slug}/`}
-          class="group mb-12 block border-b border-[var(--color-border)] pb-12"
-          data-featured-article
-          data-category={featuredPost.data.category ?? ''}
-        >
-          <div class="grid gap-8 lg:grid-cols-[1.45fr_1fr] lg:items-center">
-            <div>
-              <div class="mb-4 flex items-center gap-3">
-                <span class="obs-label-accent">Featured</span>
-                {featuredPost.data.category && (
-                  <>
-                    <span class="text-[var(--color-text-dim)]" aria-hidden="true">·</span>
-                    <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-dim)]">{featuredPost.data.category}</span>
-                  </>
-                )}
-              </div>
-              <h2 class="mb-4 text-balance text-[length:clamp(1.8rem,3vw+0.5rem,2.7rem)] font-semibold leading-[1.1] tracking-tight text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">
-                {featuredPost.data.title}
-              </h2>
-              <p class="mb-6 max-w-xl text-lg leading-relaxed text-[var(--color-text-muted)]">
-                {featuredPost.data.description}
-              </p>
-              <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-[var(--color-text-dim)]">
-                <img src={author.avatar} alt="" width="28" height="28" loading="lazy" decoding="async"
-                  class="h-7 w-7 rounded-full border border-[var(--color-border)] object-cover object-top" />
-                <time datetime={featuredPost.data.publishedAt.toISOString()}>{formatDate(featuredPost.data.publishedAt)}</time>
-                <span aria-hidden="true">·</span>
-                <span>{readTime(featuredPost.body, 'en')}</span>
-                <span class="ml-1 inline-flex items-center gap-1.5 font-medium text-[var(--color-text)]">
-                  Read article
-                  <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                    <path d="M2 6h8M6 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </span>
-              </div>
-            </div>
-
-            <!-- Modest cover: image when available, category-color fallback. Hidden on small screens (text leads). -->
-            <div
-              class="relative hidden aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] lg:block"
-            >
-              {featuredPost.data.coverImage
-                ? (
-                  <img
-                    src={featuredPost.data.coverImage}
-                    alt=""
-                    width="600"
-                    height="450"
-                    loading="eager"
-                    decoding="async"
-                    class="absolute inset-0 h-full w-full object-cover object-[center_25%] transition-transform duration-500 group-hover:scale-[1.03]"
-                  />
-                )
-                : (
-                  <p class="absolute inset-0 flex items-end p-5 text-lg font-semibold leading-snug text-[var(--color-text)]">
-                    {featuredPost.data.title}
-                  </p>
-                )}
-            </div>
-          </div>
-        </a>
-      );
-    })()}
+    <!-- Featured poster -->
+    {featuredPost && (
+      <PosterFeatured
+        href={`/insights/${insightSlug(featuredPost)}/`}
+        title={featuredPost.data.title}
+        description={featuredPost.data.description}
+        categoryLabel={featuredPost.data.category ?? 'Insight'}
+        categoryKey={featuredPost.data.category ?? ''}
+        date={formatDate(featuredPost.data.publishedAt)}
+        read={readTime(featuredPost.body, 'en')}
+        featuredLabel="Featured"
+        readLabel="Read"
+      />
+    )}
 
     <!-- Category filter: single clean row -->
     <div class="mb-2 flex flex-wrap gap-2" id="cat-nav" role="tablist" aria-label="Filter by category">
@@ -189,61 +131,20 @@ const formatDate = (date: Date) =>
 
     <p class="mb-2 mt-3 text-sm text-[var(--color-text-dim)]" id="article-count">{allPosts.length} <span>articles</span></p>
 
-    <!-- Article list: typographic index, hairline-separated rows. Reads as an
-         editorial archive, not a card grid. Small cover thumb stays a detail. -->
-    <div class="mb-16 border-t border-[var(--color-border)]" id="article-list">
-      {restPosts.map(post => {
-        const slug = insightSlug(post);
-        return (
-          <a
-            href={`/insights/${slug}/`}
-            class="article-row group -mx-3 flex items-center gap-5 rounded-[var(--radius-card)] border-b border-[var(--color-border)] px-3 py-5 transition-colors hover:bg-[var(--color-surface)]"
-            data-category={post.data.category ?? ''}
-          >
-            <div class="min-w-0 flex-1">
-              <div class="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-[var(--color-text-dim)]">
-                {post.data.category && (
-                  <span
-                    class="font-mono font-semibold uppercase tracking-widest text-[var(--color-accent)] hover:underline"
-                    data-filter-cat={post.data.category}
-                    role="button"
-                    tabindex="0"
-                  >{post.data.category}</span>
-                )}
-                <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
-                <span aria-hidden="true">·</span>
-                <span>{readTime(post.body, 'en')}</span>
-              </div>
-              <h3 class="mb-1 text-[length:clamp(1.05rem,1vw+0.7rem,1.35rem)] font-semibold leading-snug text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)] line-clamp-2">
-                {post.data.title}
-              </h3>
-              <p class="text-sm leading-relaxed text-[var(--color-text-muted)] line-clamp-1 md:line-clamp-2">
-                {post.data.description}
-              </p>
-            </div>
-
-            {post.data.coverImage && (
-              <div class="hidden aspect-[16/10] w-28 shrink-0 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] sm:block md:w-36">
-                <img
-                  src={post.data.coverImage}
-                  alt=""
-                  width="160"
-                  height="100"
-                  loading="lazy"
-                  decoding="async"
-                  class="h-full w-full object-cover object-[center_25%] transition-transform duration-500 group-hover:scale-[1.04]"
-                />
-              </div>
-            )}
-
-            <span class="shrink-0 text-[var(--color-text-dim)] transition-all group-hover:translate-x-0.5 group-hover:text-[var(--color-accent)]" aria-hidden="true">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </a>
-        );
-      })}
+    <!-- Poster grid: every card is a designed poster (deep per-topic colour,
+         headline set in, index number). One system, no ragged thumbnails. -->
+    <div class="mb-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" id="article-list">
+      {restPosts.map((post, i) => (
+        <PosterCard
+          href={`/insights/${insightSlug(post)}/`}
+          title={post.data.title}
+          categoryLabel={post.data.category ?? 'Insight'}
+          categoryKey={post.data.category ?? ''}
+          date={formatDate(post.data.publishedAt)}
+          read={readTime(post.body, 'en')}
+          index={i + 1}
+        />
+      ))}
     </div>
 
     <!-- Empty state -->
@@ -277,7 +178,7 @@ const formatDate = (date: Date) =>
 
 <script>
   const catBtns = document.querySelectorAll<HTMLButtonElement>('.cat-btn');
-  const rows    = document.querySelectorAll<HTMLElement>('.article-row');
+  const rows    = document.querySelectorAll<HTMLElement>('.js-article');
   const featured = document.querySelector<HTMLElement>('[data-featured-article]');
   const noResults = document.getElementById('no-results')!;
   const countEl   = document.getElementById('article-count')!;
