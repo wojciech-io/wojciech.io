@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../data/site';
+import { localizedPageAlternates } from '../data/localizedPages';
+
+const apps = [
+  { id: 'sabiszop', name: 'SabiSzop', desc: 'Smart shopping lists with receipts & recipes', url: 'https://sabiszop.netlify.app/listy', badge: 'PWA' },
+  { id: 'relora', name: 'Relora', desc: 'CRM for public-sector property teams', url: 'https://relora-jet.vercel.app/', badge: 'SaaS' },
+  { id: 'academy', name: 'Academy', desc: 'AI for GTM: 36-episode video course', url: 'https://wojciech.io/apps/academy/', badge: 'Course' },
+  { id: 'gtm-starter-pack', name: 'GTM Agent Starter Pack', desc: 'Open-source kit for AI marketing agents', url: 'https://github.com/wojciechluszczynski/gtm-agent-repo', badge: 'Open source' },
+  { id: 'an-projekt', name: 'AN Projekt', desc: 'Website for interior design studio', url: 'https://anprojekt.com.pl/', badge: 'Website' },
+  { id: 'ciryam', name: 'Ciryam', desc: 'Tour dates, music & merch for Polish rock band', url: 'https://ciryam.lovable.app/', badge: 'Website' },
+  { id: 'ads-assistant', name: 'Ads Assistant', desc: 'Google Ads dashboard with AI lead scoring', url: 'https://ads-assistant-three.vercel.app', badge: 'SaaS' },
+  { id: 'notchcue', name: 'NotchCue', desc: 'macOS teleprompter under the camera notch', url: 'https://notch.wojciech.io', badge: 'macOS' },
+  { id: 'camper-rental', name: 'Camper Rental', desc: 'Booking engine with dynamic pricing', url: 'https://camper-rental-weld.vercel.app/', badge: 'Booking' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Portfolio Apps · Wojciech Łuszczyński',
+  url: SITE.url + '/apps/',
+  description: 'Live portfolio apps: SaaS, booking engines, open-source tools, and brand websites built with AI-native workflows.',
+};
+---
+
+<Layout
+  title="Apps · Live Portfolio"
+  description="9 live portfolio apps: SaaS dashboards, booking engines, educational platforms, and brand websites. Built with AI-native workflows."
+  ogImage="/og/pages/work.png"
+  alternates={localizedPageAlternates('apps')}
+  schema={schema}
+>
+  <section class="mx-auto max-w-5xl px-6 py-12 md:py-16">
+    <div class="mb-12">
+      <p class="obs-label-accent mb-3 block">Portfolio</p>
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">Live Apps</h1>
+      <p class="text-base text-[var(--color-text-muted)] max-w-2xl">9 shipped products. Each proves a concept: SaaS design, booking flows, educational platforms, public-sector CRM, AI agents. Built with AI-native workflows from idea to production.</p>
+    </div>
+
+    <div class="space-y-3">
+      {apps.map((app) => (
+        <a
+          href={app.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex items-center justify-between p-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-2)] hover:border-[var(--color-accent)] transition-colors"
+        >
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-1">
+              <h3 class="font-semibold text-sm text-[var(--color-text)]">{app.name}</h3>
+              <span class="text-xs px-2 py-1 rounded bg-[var(--color-accent)]/10 text-[var(--color-accent)]">{app.badge}</span>
+            </div>
+            <p class="text-xs text-[var(--color-text-muted)]">{app.desc}</p>
+          </div>
+          <svg class="w-4 h-4 text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)] transition-colors shrink-0 ml-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 17L17 7M17 7H7m10 0v10"/>
+          </svg>
+        </a>
+      ))}
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-[var(--color-border)]">
+      <p class="text-sm text-[var(--color-text-muted)]"><strong>Full gallery:</strong> app.wojciech.io/apps displays all 16 apps (live, in-progress, private-mvp) with screenshots and metadata.</p>
+    </div>
+  </section>
+</Layout>
