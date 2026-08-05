@@ -33,6 +33,14 @@ describe('public middleware CSP', () => {
     expect(csp).toMatch(/connect-src[^;]*https:\/\/o4511411558678528\.ingest\.de\.sentry\.io/);
   });
 
+  it('does not allow Mixpanel, which only the subscribe subdomain loads', () => {
+    // subscribe.wojciech.io ships its own CSP from apps/subscribe, so the root
+    // never needed these. Keeping them widened script-src for a script no page
+    // here loads. Re-add only if a root page actually starts using Mixpanel.
+    expect(csp).not.toContain('mxpnl.com');
+    expect(csp).not.toContain('mixpanel.com');
+  });
+
   it('sets cross-origin isolation headers without breaking third-party embeds', () => {
     expect(PUBLIC_SECURITY_HEADERS['cross-origin-opener-policy']).toBe('same-origin-allow-popups');
     expect(PUBLIC_SECURITY_HEADERS['cross-origin-resource-policy']).toBe('same-origin');
