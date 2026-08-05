@@ -488,6 +488,12 @@ export const projectChrome: Record<SiteLocale, ProjectChrome> = {
 export const hreflangToOgLocale: Record<string, string> = {
   en: 'en_US',
   ...Object.fromEntries(localizedHomeList.map((locale) => [locale.hreflang, locale.ogLocale])),
+  // Arabic is a standalone RTL homepage, so it is absent from localizedHomeList
+  // and needs its own entry. Without it the ar hreflang has no Open Graph
+  // counterpart and every page silently drops og:locale:alternate for Arabic.
+  // Must match the ogLocale the Arabic pages declare, otherwise SEOHead fails
+  // to exclude the current locale and /ar/ lists itself as its own alternate.
+  ar: 'ar_SA',
 };
 
 export const homeAlternates = [
