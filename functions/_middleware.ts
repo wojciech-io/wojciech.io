@@ -59,13 +59,11 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
     "default-src 'self'",
     // wasm-unsafe-eval: Pagefind search compiles a WebAssembly module at runtime.
     // app.cal.com: embedded scheduler (inline on contact, popup on booking CTAs)
-    // cdn.mxpnl.com: Mixpanel (EU) library on the subscribe subdomain sign-up flow
-    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://eu-assets.i.posthog.com https://app.cal.com https://cdn.mxpnl.com",
+    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://eu-assets.i.posthog.com https://app.cal.com",
     "style-src 'self' 'unsafe-inline'",
     // cdn.simpleicons.org: tech-logo chips on the /stack overview page
     "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://cdn.simpleicons.org https://app.cal.com https://cal.com",
-    // api-eu.mixpanel.com: Mixpanel (EU) event ingestion (api_host) from the subscribe subdomain
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://cloudflareinsights.com https://o4511411558678528.ingest.de.sentry.io https://eu.i.posthog.com https://eu-assets.i.posthog.com https://app.cal.com https://api-eu.mixpanel.com",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://cloudflareinsights.com https://o4511411558678528.ingest.de.sentry.io https://eu.i.posthog.com https://eu-assets.i.posthog.com https://app.cal.com",
     "font-src 'self'",
     // worker-src: pagefind search uses web workers served from same origin
     "worker-src 'self'",
