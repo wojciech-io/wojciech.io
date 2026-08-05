@@ -9,6 +9,17 @@ export interface SectionStrings {
   testimonials: { eyebrow: string; title: string; titleSecondary: string };
 }
 
+/** Copy for the "Three lenses" section on a localized homepage. Optional: a
+    locale without it falls back to the EN defaults baked into ThreeLenses. */
+export interface LensStrings {
+  eyebrow: string;
+  titlePrimary: string;
+  titleSecondary: string;
+  aiNote: string;
+  aiLink: string;
+  lenses: Array<{ name: string; thesis: string; exploreLabel: string }>;
+}
+
 export interface LocalizedHomeCopy {
   key: LocaleKey;
   path: LocaleKey;
@@ -33,6 +44,7 @@ export interface LocalizedHomeCopy {
   finalHeading: string;
   finalSubtext: string;
   sections: SectionStrings;
+  lensSection?: LensStrings;
 }
 
 export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
@@ -310,6 +322,30 @@ export const localizedHome: Record<LocaleKey, LocalizedHomeCopy> = {
         label: 'średni wzrost pipeline'
       }
     ],
+    lensSection: {
+      eyebrow: 'W czym pomagam',
+      titlePrimary: 'Trzy perspektywy.',
+      titleSecondary: 'Jeden system operacyjny.',
+      aiNote: 'AI przechodzi przez wszystkie trzy: automatyzacje, agenci i workflowy AI wpięte w każdą z nich.',
+      aiLink: 'Jak buduję z AI →',
+      lenses: [
+        {
+          name: 'GTM',
+          thesis: 'Pipeline, który się kumuluje. CRM, outbound i płatne wpięte w jeden system, nie w cztery dashboardy.',
+          exploreLabel: 'Zobacz /gtm →',
+        },
+        {
+          name: 'Marketing',
+          thesis: 'Popyt zamiast wyświetleń. Pozycjonowanie, treści i marka zaprojektowane tak, żeby robiły pipeline.',
+          exploreLabel: 'Zobacz /marketing →',
+        },
+        {
+          name: 'Growth',
+          thesis: 'Eksperymenty, które wchodzą na produkcję. Aktywacja, retencja i pętle cyklu życia mierzone w przychodzie.',
+          exploreLabel: 'Zobacz /growth →',
+        },
+      ],
+    },
     sectionEyebrow: 'Jak pracuję',
     sectionTitlePrimary: 'Nie doradca.',
     sectionTitleSecondary: 'Operator.',
