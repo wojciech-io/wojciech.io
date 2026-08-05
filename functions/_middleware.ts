@@ -51,8 +51,9 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
   'cross-origin-resource-policy': 'same-origin',
   'cross-origin-embedder-policy': 'unsafe-none',
   'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=(), payment=()',
-  // CSP: keep in sync with public/_headers. Middleware wins over Pages _headers
-  // whenever Pages Functions run on the public site.
+  // Middleware wins over Pages _headers wherever Functions run; _headers covers
+  // the rest, so both carry the same policy. Agreement is enforced by
+  // src/__tests__/headers-sources-agree.test.ts rather than by remembering.
   // unsafe-inline required for Astro's is:inline scripts and Tailwind utilities.
   // gh.wojciech.io is for LiveEmbed demos.
   'content-security-policy': [
