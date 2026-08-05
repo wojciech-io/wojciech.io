@@ -33,6 +33,18 @@ describe('public middleware CSP', () => {
     expect(csp).toMatch(/connect-src[^;]*https:\/\/o4511411558678528\.ingest\.de\.sentry\.io/);
   });
 
+  it('allows the GA4 regional collect endpoint, not just www', () => {
+    // GA4 posts hits to region1.google-analytics.com (EU) and other regionN
+    // hosts elsewhere. An allowlist of only www blocks every hit at connect-src
+    // while the tag still loads, so the property looks configured and records
+    // nothing.
+    const connectSrc = csp.split(';').find((d) => d.trim().startsWith('connect-src')) ?? '';
+    expect(connectSrc).toContain('https://*.google-analytics.com');
+    // script-src keeps the exact www host: that is where the tag itself is
+    // served from, and it should not be widened to a wildcard.
+    expect(connectSrc).not.toContain('https://www.google-analytics.com');
+  });
+
   it('does not allow Mixpanel, which only the subscribe subdomain loads', () => {
     // subscribe.wojciech.io ships its own CSP from apps/subscribe, so the root
     // never needed these. Keeping them widened script-src for a script no page
