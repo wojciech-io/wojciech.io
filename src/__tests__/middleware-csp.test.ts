@@ -37,8 +37,8 @@ describe('public middleware CSP', () => {
     // subscribe.wojciech.io ships its own CSP from apps/subscribe, so the root
     // never needed these. Keeping them widened script-src for a script no page
     // here loads. Re-add only if a root page actually starts using Mixpanel.
-    expect(csp).not.toMatch(/mxpnl\.com/);
-    expect(csp).not.toMatch(/mixpanel\.com/);
+    expect(csp).not.toContain('mxpnl.com');
+    expect(csp).not.toContain('mixpanel.com');
   });
 
   it('sets cross-origin isolation headers without breaking third-party embeds', () => {
