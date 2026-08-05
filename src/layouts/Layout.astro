@@ -167,9 +167,18 @@ const skipToContent = skipToContentLabels[htmlLang] ?? 'Skip to content';
           gtag?: (...args: unknown[]) => void;
         };
         w.dataLayer = w.dataLayer || [];
-        w.gtag = (...args: unknown[]) => w.dataLayer?.push(args);
-        w.gtag('js', new Date());
-        w.gtag('config', GA_ID);
+        // gtag.js reads each dataLayer entry as an `arguments` object, not an
+        // array. An arrow function spreading into push() looks equivalent but
+        // leaves GA4 uninitialised: the tag loads, no _ga cookie is written and
+        // no hit is ever sent. Google's snippet uses `function` + `arguments`
+        // for exactly this reason, so keep it verbatim.
+        function gtag() {
+          // eslint-disable-next-line prefer-rest-params
+          w.dataLayer!.push(arguments);
+        }
+        w.gtag = gtag as unknown as (...args: unknown[]) => void;
+        gtag('js', new Date());
+        gtag('config', GA_ID);
       };
 
       const loadAnalytics = async () => {
