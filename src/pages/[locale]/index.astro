@@ -9,6 +9,7 @@ import AILeverage from '../../components/home/AILeverage.astro';
 import TestimonialsSection from '../../components/home/TestimonialsSection.astro';
 import InsightsPreview from '../../components/home/InsightsPreview.astro';
 import BrandLogos from '../../components/ui/BrandLogos.astro';
+import ThreeLenses from '../../components/home/ThreeLenses.astro';
 import { homeAlternates, localizedHomeList, type LocalizedHomeCopy } from '../../data/locales';
 import { getUiStrings } from '../../data/uiStrings';
 
@@ -20,6 +21,14 @@ export function getStaticPaths() {
 }
 
 const { copy } = Astro.props as { copy: LocalizedHomeCopy };
+
+// Route, icon, and cover stay identical across locales; only the words are
+// translated. Order matches lensSection.lenses: GTM, marketing, growth.
+const LENS_ROUTES = [
+  { path: '/gtm/', icon: 'nodes', cover: '/images/lens/gtm-hero.webp' },
+  { path: '/marketing/', icon: 'megaphone', cover: '/images/lens/marketing-hero.webp' },
+  { path: '/growth/', icon: 'trending-up', cover: '/images/lens/growth-hero.webp' },
+] as const;
 const workHref = `/${copy.path}/work/`;
 const contactHref = `/${copy.path}/contact/`;
 const meetHref = `/${copy.path}/meet/`;
@@ -127,6 +136,23 @@ const plProjects = [
       <BrandLogos variant="marquee" />
     </div>
   </section>
+
+  {copy.lensSection && (
+    <ThreeLenses
+      eyebrow={copy.lensSection.eyebrow}
+      titlePrimary={copy.lensSection.titlePrimary}
+      titleSecondary={copy.lensSection.titleSecondary}
+      aiNote={copy.lensSection.aiNote}
+      aiLink={copy.lensSection.aiLink}
+      aiHref={`/${copy.path}/ai-systems/`}
+      lenses={copy.lensSection.lenses.map((lens, index) => ({
+        ...lens,
+        href: `/${copy.path}${LENS_ROUTES[index].path}`,
+        icon: LENS_ROUTES[index].icon,
+        cover: LENS_ROUTES[index].cover,
+      }))}
+    />
+  )}
 
   <HowIWork
     eyebrow={copy.sectionEyebrow}
