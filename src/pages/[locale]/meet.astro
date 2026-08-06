@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import BookingScheduler from '../../components/BookingScheduler.astro';
-import { getMeetCopy, meetAlternates, meetSchema } from '../../data/meet';
+import { getMeetCopy, meetSchema } from '../../data/meet';
 import { localizedHome } from '../../data/locales';
 import { NON_EN_LOCALES, type LocaleKey } from '../../data/locale-codes';
 
@@ -15,7 +15,9 @@ export function getStaticPaths() {
 const { locale } = Astro.props as { locale: LocaleKey };
 const S = getMeetCopy(locale);
 const home = localizedHome[locale];
-const canonical = `/${locale}/meet/`;
+// Same consolidation as the English /meet: /[locale]/contact embeds this very
+// scheduler, so this page defers to it rather than competing for the same query.
+const canonical = `/${locale}/contact/`;
 ---
 
 <Layout
@@ -24,7 +26,7 @@ const canonical = `/${locale}/meet/`;
   title={S.title}
   description={S.description}
   canonical={canonical}
-  alternates={meetAlternates}
+  noindex
   schema={meetSchema(locale)}
 >
   <BookingScheduler lang={locale} />
