@@ -17,6 +17,9 @@ function loadAll() {
   return readdirSync(INSIGHTS_DIR)
     .filter((f) => f.endsWith('.md') || f.endsWith('.mdx'))
     .map((f) => {
+      // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal
+      // f comes from readdirSync(INSIGHTS_DIR): a plain filename from a constant
+      // directory, which cannot contain a path separator and so cannot escape it.
       const raw = readFileSync(resolve(INSIGHTS_DIR, f), 'utf-8');
       return { file: f, data: parseFrontmatter(raw) };
     });

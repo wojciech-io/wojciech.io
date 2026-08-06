@@ -12,13 +12,6 @@ permissions:
   issues: read
   pull-requests: read
 
-env:
-  DIGEST_TO: ${{ secrets.DIGEST_TO != '' && secrets.DIGEST_TO || 'hello@wojciech.io' }}
-  # Resend "from" must be on a domain verified in Resend. Override via
-  # secrets.DIGEST_FROM once the domain is verified; default assumes wojciech.io.
-  DIGEST_FROM: ${{ secrets.DIGEST_FROM != '' && secrets.DIGEST_FROM || 'wojciech.io ops <ops@wojciech.io>' }}
-  RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-
 jobs:
   digest:
     runs-on: ubuntu-latest
@@ -78,8 +71,17 @@ jobs:
           } > digest.md
           cat digest.md
 
+      # Secrets are scoped to this step rather than the workflow, so no other
+      # step or action in the job can read them. The `if` reads the secrets
+      # context directly: step-level env is not visible to that step's own `if`.
       - name: Send mail (Resend)
-        if: ${{ env.RESEND_API_KEY != '' }}
+        if: ${{ secrets.RESEND_API_KEY != '' }}
+        env:
+          DIGEST_TO: ${{ secrets.DIGEST_TO != '' && secrets.DIGEST_TO || 'hello@wojciech.io' }}
+          # Resend "from" must be on a domain verified in Resend. Override via
+          # secrets.DIGEST_FROM once the domain is verified; default assumes wojciech.io.
+          DIGEST_FROM: ${{ secrets.DIGEST_FROM != '' && secrets.DIGEST_FROM || 'wojciech.io ops <ops@wojciech.io>' }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
           # Resend sends HTML; convert the Markdown body to a <pre> block so it
           # renders readably without a Markdown step.
@@ -99,5 +101,5 @@ jobs:
           test "$http" = "200" || test "$http" = "201"
 
       - name: No RESEND_API_KEY configured
-        if: ${{ env.RESEND_API_KEY == '' }}
+        if: ${{ secrets.RESEND_API_KEY == '' }}
         run: echo "RESEND_API_KEY not set — digest built (see above) but not mailed. Add the secret to enable mail."
