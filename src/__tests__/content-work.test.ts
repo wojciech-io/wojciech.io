@@ -10,6 +10,10 @@ function loadAll() {
     .filter((f) => f.endsWith('.json'))
     .map((f) => ({
       file: f,
+      // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal
+      // f comes from readdirSync(WORK_DIR), so it is a plain filename from a
+      // constant directory. A filename cannot contain a path separator, so
+      // resolve() cannot escape WORK_DIR. No untrusted input reaches this.
       data: JSON.parse(readFileSync(resolve(WORK_DIR, f), 'utf-8')),
     }));
 }
