@@ -4,6 +4,11 @@ import { editions, totalIssues } from '../../data/newsletterEditions';
 const latest = editions[0];
 const inbox = editions.slice(1, 9);
 
+// Consent links sit on the dark band, so they need the band palette rather than
+// the page link colour. Extracted so the consent sentence fits on one line.
+const consentLinkStyle =
+  'color: var(--band-text); text-decoration: underline; text-underline-offset: 2px;';
+
 const EN_MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
@@ -218,10 +223,11 @@ const previewItems = [
 
             <label class="consent-row" for="sub-consent">
               <input type="checkbox" id="sub-consent" name="consent" required />
+              {/* One line on purpose: compressHTML drops newlines between a text
+                  node and a following inline element, which glued this sentence
+                  to both of its links. */}
               <span>
-                I agree to receive the AI Espresso newsletter by email from Wojciech Łuszczyński and accept the
-                <a href="/terms/" style="color: var(--band-text); text-decoration: underline; text-underline-offset: 2px;">Terms</a>
-                and <a href="/privacy/" style="color: var(--band-text); text-decoration: underline; text-underline-offset: 2px;">Privacy policy</a>. Unsubscribe anytime.
+                I agree to receive the AI Espresso newsletter by email from Wojciech Łuszczyński and accept the <a href="/terms/" style={consentLinkStyle}>Terms</a> and <a href="/privacy/" style={consentLinkStyle}>Privacy policy</a>. Unsubscribe anytime.
               </span>
             </label>
 
