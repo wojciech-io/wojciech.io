@@ -28,6 +28,15 @@ description = "Mixpanel project token — public-by-design, ships in every clien
 commits = ["a7aef16cf47cbc5d861ec6e14d6a7e7598e7bf84"]
 paths = ['''src/utils/mixpanel\.ts''']
 
+# AnnouncementBar STORAGE_KEY is a localStorage dismissal key, bumped to a new
+# value each time a new article is announced so the strip re-shows. It is not a
+# secret, but a value like 'wio-anno-gpt56-claude5' trips generic-api-key on
+# entropy. Matched by the secret value's stable 'wio-anno-' prefix, so this
+# survives future bumps and never blindfolds the scanner to the rest of the file.
+[[allowlists]]
+description = "AnnouncementBar STORAGE_KEY — public localStorage key, not a secret; entropy trips generic-api-key"
+regexes = ['''wio-anno-[a-z0-9-]+''']
+
 [[allowlists]]
 description = "content-guard.sh uses PEM header strings as detection-pattern literals, not actual keys. Allowlist the two commits where this file was introduced and patched."
 commits = [
