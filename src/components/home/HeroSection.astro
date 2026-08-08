@@ -102,7 +102,11 @@ const h2 = accentHeading(h1Secondary);
 
       <!-- Headline: large, regular weight (editorial), accent period -->
       <h1 class="reveal-up text-[length:clamp(2.4rem,6vw+0.5rem,4.4rem)] font-normal leading-[1.02] tracking-[-0.03em] mb-4 md:mb-6" data-reveal-index="0" transition:name="page-title-home">
-        <span class="text-[var(--color-text)]">{h1Primary}</span><br class="hidden md:block" />
+        {/* The <br> only shows md+; on mobile the two sentences wrap inline, so
+            they need an explicit space or compressHTML glues them into
+            "systems.Then". The md:hidden space supplies it without adding a
+            leading indent on the desktop line. */}
+        <span class="text-[var(--color-text)]">{h1Primary}</span><span class="md:hidden"> </span><br class="hidden md:block" />
         <span class="text-[var(--color-text)]">{h2.lead}</span><span class="hero-dot text-[var(--color-accent-cta)]" aria-hidden="true">{h2.mark}</span>
       </h1>
 
