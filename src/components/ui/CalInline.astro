@@ -10,12 +10,17 @@ interface Props {
   calLink?: string;
   /** Localized "loading" line, shown until the calendar iframe mounts over it. */
   loadingLabel?: string;
+  /** Localized label for the fallback link shown if the embed never mounts. */
+  fallbackLabel?: string;
   minHeight?: string;
 }
 
+import { CAL_BOOKING_LINK } from '../../data/site';
+
 const {
-  calLink = 'wojciech-luszczynski/30-minutes',
+  calLink = CAL_BOOKING_LINK,
   loadingLabel = 'Loading the calendar…',
+  fallbackLabel = 'Open the booking calendar',
   minHeight = '580px',
 } = Astro.props as Props;
 ---
@@ -26,19 +31,74 @@ const {
     style={`min-height:${minHeight}`}
   >
     {/* Loading state sits behind the calendar; Cal's iframe covers it on mount.
-        A blocked embed.js leaves this visible with the link fallback below. */}
-    <div class="cal-loading pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center gap-3 text-sm text-[var(--color-text-muted)]">
+        If the embed never mounts (blocked script, offline, content blocker),
+        the script below swaps the spinner for a real link so the visitor is
+        never stranded watching it spin. */}
+    <div class="cal-loading pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center gap-3 px-6 text-center text-sm text-[var(--color-text-muted)]">
       <span class="cal-spinner" aria-hidden="true"></span>
-      <span>{loadingLabel}</span>
+      <span class="cal-loading-label">{loadingLabel}</span>
+      <a
+        href={`https://cal.com/${calLink}`}
+        class="cal-fallback pointer-events-auto inline-flex items-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-6 py-3 font-semibold text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
+        target="_blank"
+        rel="noopener noreferrer"
+      >{fallbackLabel}</a>
+      {/* No JS: the embed can never mount, so lead with the link right away. */}
       <noscript>
-        <a href={`https://cal.com/${calLink}`} class="underline pointer-events-auto">Open the booking calendar</a>
+        <style>.cal-spinner,.cal-loading-label{display:none}.cal-fallback{display:inline-flex}</style>
       </noscript>
     </div>
     <div data-cal-inline={calLink} class="relative z-[1]" style={`width:100%;min-height:${minHeight};overflow:auto`}></div>
   </div>
 </div>
 
+<script is:inline>
+  /* Reveal the fallback link if no calendar iframe shows up. Runs per shell so
+     it works on every locale's contact page, and re-arms after a ClientRouter
+     navigation. Kept inline and dependency-free: this is the safety net for the
+     exact case where third-party scripts are not running. */
+  (() => {
+    const TIMEOUT_MS = 8000;
+    const arm = () => {
+      document.querySelectorAll('.cal-shell:not([data-cal-watched])').forEach((shell) => {
+        shell.setAttribute('data-cal-watched', '1');
+        const host = shell.querySelector('[data-cal-inline]');
+        if (!host) return;
+        const settle = () => {
+          if (host.querySelector('iframe')) {
+            shell.setAttribute('data-cal-state', 'ready');
+            return true;
+          }
+          return false;
+        };
+        if (settle()) return;
+        const obs = new MutationObserver(() => {
+          if (settle()) obs.disconnect();
+        });
+        obs.observe(host, { childList: true, subtree: true });
+        setTimeout(() => {
+          if (!settle()) shell.setAttribute('data-cal-state', 'failed');
+          obs.disconnect();
+        }, TIMEOUT_MS);
+      });
+    };
+    arm();
+    document.addEventListener('astro:page-load', arm);
+  })();
+</script>
+
 <style>
+  /* Default (embed loading or mounted): spinner shows, fallback link hidden. */
+  .cal-fallback {
+    display: none;
+  }
+  /* Embed failed to mount: drop the spinner, offer the real booking link. */
+  .cal-shell[data-cal-state='failed'] .cal-spinner {
+    display: none;
+  }
+  .cal-shell[data-cal-state='failed'] .cal-fallback {
+    display: inline-flex;
+  }
   .cal-spinner {
     width: 18px;
     height: 18px;

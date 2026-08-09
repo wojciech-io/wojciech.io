@@ -43,15 +43,40 @@ const CAL_ORIGIN = 'https://app.cal.com';
       });
     };
 
-    /* Popup triggers: warm embed.js on first intent; once loaded it binds the
-       clicks on [data-cal-link] itself. pointerover bubbles, focusin covers
-       keyboard users, touchstart covers mobile. */
+    /* Popup triggers: warm embed.js on first intent so the modal opens fast.
+       pointerover bubbles, focusin covers keyboard users, touchstart mobile. */
     const warm = (e) => {
       if (e.target && e.target.closest && e.target.closest('[data-cal-link]')) boot();
     };
     document.addEventListener('pointerover', warm, { passive: true });
     document.addEventListener('touchstart', warm, { passive: true });
     document.addEventListener('focusin', warm);
+
+    /* Open the scheduler explicitly. embed.js does bind [data-cal-link] itself,
+       but that binding swallows the click without opening the modal, so the
+       call is made here instead. Calls made before embed.js finishes are queued
+       by the loader and replay on arrival, so a cold click still works.
+       If no modal shows up (script blocked, offline), fall back to the href,
+       which points at the contact page and its inline calendar. */
+    document.addEventListener('click', (e) => {
+      if (e.defaultPrevented || e.button !== 0) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // let new-tab through
+      const trigger = e.target && e.target.closest && e.target.closest('[data-cal-link]');
+      if (!trigger) return;
+
+      e.preventDefault();
+      boot();
+      window.Cal('modal', {
+        calLink: trigger.getAttribute('data-cal-link'),
+        config: { theme: theme() },
+      });
+
+      const href = trigger.getAttribute('href');
+      if (!href) return;
+      setTimeout(() => {
+        if (!document.querySelector('cal-modal-box')) window.location.href = href;
+      }, 3500);
+    });
 
     mountInline();
     /* ClientRouter swaps the DOM on navigation; re-mount if a contact page arrives. */

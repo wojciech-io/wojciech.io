@@ -1,6 +1,7 @@
 ---
 import { accentHeading } from '../../lib/editorial';
 import Icon from './Icon.astro';
+import { CAL_BOOKING_LINK } from '../../data/site';
 interface Props {
   heading?: string;
   subtext?: string;
@@ -25,6 +26,10 @@ const {
 } = Astro.props;
 const ctaIsExternal = ctaHref.startsWith('http');
 const secondaryIsExternal = ctaSecondaryHref.startsWith('http');
+// When this band's primary CTA is the booking ask (any locale's /contact/),
+// open the Cal.com scheduler in place instead of making the visitor navigate.
+// The href stays intact as the fallback for a blocked embed.
+const ctaIsBooking = !ctaIsExternal && ctaHref.replace(/\/$/, '').endsWith('/contact');
 const headingLines = heading.split('\n');
 ---
 
@@ -72,6 +77,7 @@ const headingLines = heading.split('\n');
           <a
             href={ctaHref}
             {...(ctaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            {...(ctaIsBooking ? { 'data-cal-link': CAL_BOOKING_LINK } : {})}
             class="btn-press obs-mono inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
             data-mp-cta={cta}
             data-mp-location="cta_band"
