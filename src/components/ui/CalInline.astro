@@ -25,11 +25,12 @@ const {
 } = Astro.props as Props;
 ---
 
-<div class="relative mx-auto max-w-4xl px-6">
-  <div
-    class="cal-shell relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)]"
-    style={`min-height:${minHeight}`}
-  >
+{/* max-w-6xl px-6 is the site container: the calendar has to line up with the
+    header, the copy above it and the columns below, not sit in its own width. */}
+<div class="relative mx-auto max-w-6xl px-6">
+  {/* No border or surface here: Cal renders its own card, and wrapping it in a
+      second one produced a visible box-in-a-box. */}
+  <div class="cal-shell relative" style={`min-height:${minHeight}`}>
     {/* Loading state sits behind the calendar; Cal's iframe covers it on mount.
         If the embed never mounts (blocked script, offline, content blocker),
         the script below swaps the spinner for a real link so the visitor is
