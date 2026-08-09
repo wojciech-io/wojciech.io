@@ -1,0 +1,61 @@
+---
+// Inline Cal.com booking calendar in a styled card.
+//
+// CalEmbed (global, mounted once in Layout) finds the [data-cal-inline] element,
+// loads embed.js, mounts the calendar into it, and keeps theme + brand colour in
+// sync with the site. This component only supplies the styled container and a
+// loading state; it holds no script of its own.
+interface Props {
+  /** Cal.com public link: "username/event-slug". */
+  calLink?: string;
+  /** Localized "loading" line, shown until the calendar iframe mounts over it. */
+  loadingLabel?: string;
+  minHeight?: string;
+}
+
+const {
+  calLink = 'wojciech-luszczynski/30-minutes',
+  loadingLabel = 'Loading the calendar…',
+  minHeight = '580px',
+} = Astro.props as Props;
+---
+
+<div class="relative mx-auto max-w-4xl px-6">
+  <div
+    class="cal-shell relative overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)]"
+    style={`min-height:${minHeight}`}
+  >
+    {/* Loading state sits behind the calendar; Cal's iframe covers it on mount.
+        A blocked embed.js leaves this visible with the link fallback below. */}
+    <div class="cal-loading pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center gap-3 text-sm text-[var(--color-text-muted)]">
+      <span class="cal-spinner" aria-hidden="true"></span>
+      <span>{loadingLabel}</span>
+      <noscript>
+        <a href={`https://cal.com/${calLink}`} class="underline pointer-events-auto">Open the booking calendar</a>
+      </noscript>
+    </div>
+    <div data-cal-inline={calLink} class="relative z-[1]" style={`width:100%;min-height:${minHeight};overflow:auto`}></div>
+  </div>
+</div>
+
+<style>
+  .cal-spinner {
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-accent-cta);
+    animation: cal-spin 0.7s linear infinite;
+  }
+  @keyframes cal-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cal-spinner {
+      animation: none;
+      border-top-color: var(--color-border);
+    }
+  }
+</style>

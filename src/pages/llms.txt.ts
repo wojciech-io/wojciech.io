@@ -39,8 +39,7 @@ export const GET: APIRoute = async ({ site }) => {
 - [Work](${origin}/work/): case studies and systems built and still running in production.
 - [About](${origin}/about/): background, 20 years of experience, and the operating model.
 - [Insights](${origin}/insights/): original articles on AI-native GTM and growth systems.
-- [Book a call](${origin}/meet/): pick a time directly on Wojciech's own scheduler with live calendar availability, 15, 30 or 45 minute calls, timezone auto-detected.
-- [Contact](${origin}/contact/): send the context and the bottleneck.
+- [Contact](${origin}/contact/): book a 30-minute call directly on the live calendar (timezone auto-detected), or send the context and the bottleneck.
 - [AI Espresso newsletter](https://subscribe.wojciech.io/): a day of AI, in one sip.
 
 ## Who is Wojciech Łuszczyński?
