@@ -22,3 +22,7 @@ export const SITE = {
   ogImage:     '/og-default.png',
   locale:      'en_US',
 } as const;
+
+/** Cal.com booking link ("user/event-slug"). Single source of truth for the
+ *  inline calendar on /contact and every popup trigger across the site. */
+export const CAL_BOOKING_LINK = 'wojciech-luszczynski/30-minutes';
