@@ -49,10 +49,6 @@ const isIndexableSitemapUrl = (/** @type {string} */ page) => {
   if (path.startsWith('/decks/')) return false;
   if (path.startsWith('/og/')) return false;
   if (path.endsWith('/cv/')) return false;
-  // /meet and /[locale]/meet render the same BookingScheduler that /contact
-  // embeds. /contact is the canonical booking page, so /meet stays reachable as
-  // a short link but out of the sitemap.
-  if (path.endsWith('/meet/')) return false;
   if (noindexSitemapPaths.has(path)) return false;
 
   return true;

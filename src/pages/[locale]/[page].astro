@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import BookingScheduler from '../../components/BookingScheduler.astro';
+import CalInline from '../../components/ui/CalInline.astro';
 import {
   htmlLangForLocale,
   localizedPageAlternates,
@@ -47,6 +47,18 @@ const contactLabels: Record<string, { name: string; email: string; message: stri
 };
 const labels = isContact ? contactLabels[copy.locale] || contactLabels['de'] : null;
 
+// Localized "loading" line for the Cal.com calendar (shown for a beat on mount).
+const calLoadingLabels: Record<string, string> = {
+  de: 'Kalender wird geladen…',
+  dk: 'Indlæser kalenderen…',
+  no: 'Laster kalenderen…',
+  jp: 'カレンダーを読み込み中…',
+  it: 'Caricamento del calendario…',
+  es: 'Cargando el calendario…',
+  pl: 'Ładowanie kalendarza…',
+};
+const calLoadingLabel = calLoadingLabels[copy.locale] ?? 'Loading the calendar…';
+
 /* About page: localized labels for the InfoShare talk card (was hardcoded EN). */
 const talkLabels: Record<string, { eyebrow: string; title: string; watch: string }> = {
   de: { eyebrow: 'YouTube · Vortrag', title: 'InfoShare 2023: KI-Systeme, GTM und ausgelieferte Produkte', watch: 'Auf YouTube ansehen' },
@@ -72,10 +84,9 @@ const talk = talkLabels[copy.locale] || talkLabels['de'];
 
   {isContact ? (
     <Fragment>
-      <!-- Own /meet scheduler (localized): replaces the old Cal.com embed so the
-           localized /contact gets the same responsive flow, covers and host card. -->
-      <section id="book-call">
-        <BookingScheduler lang={copy.locale} />
+      <!-- Cal.com inline calendar, same as EN /contact. -->
+      <section id="book-call" class="py-8 md:py-10">
+        <CalInline loadingLabel={calLoadingLabel} />
       </section>
 
       <!-- Info columns -->
