@@ -13,6 +13,8 @@ interface Props {
   /** Localized label for the fallback link shown if the embed never mounts. */
   fallbackLabel?: string;
   minHeight?: string;
+  /** false when the page already provides the container (e.g. a two-column layout). */
+  contained?: boolean;
 }
 
 import { CAL_BOOKING_LINK } from '../../data/site';
@@ -22,12 +24,16 @@ const {
   loadingLabel = 'Loading the calendar…',
   fallbackLabel = 'Open the booking calendar',
   minHeight = '580px',
+  contained = true,
 } = Astro.props as Props;
+
+// Contained: the component supplies the site container (max-w-6xl px-6) so it
+// lines up with the header and the copy. Uncontained: the page already owns the
+// grid (two-column contact layout) and this just fills its cell.
+const wrapClass = contained ? 'relative mx-auto max-w-6xl px-6' : 'relative';
 ---
 
-{/* max-w-6xl px-6 is the site container: the calendar has to line up with the
-    header, the copy above it and the columns below, not sit in its own width. */}
-<div class="relative mx-auto max-w-6xl px-6">
+<div class={wrapClass}>
   {/* No border or surface here: Cal renders its own card, and wrapping it in a
       second one produced a visible box-in-a-box. */}
   <div class="cal-shell relative" style={`min-height:${minHeight}`}>
