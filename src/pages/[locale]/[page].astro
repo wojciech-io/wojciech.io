@@ -96,52 +96,58 @@ const talk = talkLabels[copy.locale] || talkLabels['de'];
 
   {isContact ? (
     <Fragment>
-      <!-- Cal.com inline calendar, same as EN /contact. -->
-      <section id="book-call" class="py-8 md:py-10">
-        <CalInline loadingLabel={calLoadingLabel} fallbackLabel={calFallbackLabel} />
-      </section>
-
-      <!-- Info columns -->
-      <section class="py-12 md:py-16 border-t border-b border-[var(--color-border)]">
-        <div class="mx-auto max-w-6xl px-6">
-          <div class="grid md:grid-cols-3 gap-8 md:gap-10">
-            {copy.sections.map((section, i) => (
-              <div>
-                <p class="obs-label-accent mb-3 block">{section.title}</p>
-                <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{section.body}</p>
-                {section.items && (
-                  <ul class="mt-4 space-y-2 text-sm text-[var(--color-text-muted)]">
-                    {section.items.map((item) => (
-                      <li class="flex items-start gap-2.5">
-                        <svg class="w-3.5 h-3.5 text-[var(--color-accent)] shrink-0 mt-1" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                          <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+      {/* Same layout as the English /contact: headline left, context right,
+          calendar at full grid width below. This branch previously rendered no
+          heading at all, so these pages shipped without an h1. */}
+      <section id="book-call" class="relative pt-10 pb-10 md:pt-14 md:pb-12 overflow-hidden">
+        <div class="relative mx-auto max-w-6xl px-6">
+          <div class="grid gap-10 lg:grid-cols-12 lg:gap-12 lg:items-end mb-10 md:mb-12">
+            <div class="lg:col-span-7">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+                <span class="obs-label-accent">{copy.eyebrow}</span>
               </div>
-            ))}
-          </div>
-          <!-- LinkedIn alternative -->
-          <div class="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-8 border-t border-[var(--color-border)]">
-            <a
-              href={SITE.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-hi)] transition-colors"
-            >
-              <svg class="w-4 h-4 text-[var(--color-accent)]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </svg>
-              {labels!.alt}
-            </a>
-            <span class="text-xs text-[var(--color-text-dim)]">{labels!.altSub}</span>
+              <h1 class="text-[length:var(--text-h1)] font-semibold text-[var(--color-text)] leading-tight tracking-tight mb-4" transition:name="page-title-contact">
+                {copy.h1}
+              </h1>
+              <p class="text-base md:text-lg text-[var(--color-text-muted)] leading-relaxed max-w-xl">
+                {copy.lead}
+              </p>
+            </div>
+
+            <div class="lg:col-span-5 lg:pl-4 lg:border-l border-[var(--color-border)] flex flex-col gap-5">
+              {copy.sections.map((section) => (
+                <div>
+                  <p class="obs-label-accent mb-2 block">{section.title}</p>
+                  <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{section.body}</p>
+                  {section.items && (
+                    <ul class="mt-3 space-y-2 text-sm text-[var(--color-text-muted)]">
+                      {section.items.map((item) => (
+                        <li class="flex items-start gap-2.5">
+                          <svg class="w-3.5 h-3.5 text-[var(--color-accent)] shrink-0 mt-1" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                            <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+                <a
+                  href={SITE.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-hi)] transition-colors"
+                >{labels!.alt}</a>. {labels!.altSub}
+              </p>
+            </div>
           </div>
         </div>
-      </section>
 
+        <CalInline loadingLabel={calLoadingLabel} fallbackLabel={calFallbackLabel} />
+      </section>
     </Fragment>
   ) : (
     <Fragment>
