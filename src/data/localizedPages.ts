@@ -103,7 +103,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Wenn das System feststeckt, reden wir ganz konkret.',
       lead: 'Schick Kontext, Stack und Bottleneck. Bei dem Anruf legen wir fest, ob der nächste Schritt ein Audit, ein Build Sprint oder eine konkrete Lösung ist.',
       primaryCta: '30 Minuten buchen',
-      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30-minutes',
       secondaryCta: 'LinkedIn öffnen',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -210,7 +210,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Når systemet sidder fast, taler vi konkret.',
       lead: 'Send kontekst, stak og flaskehals. Under samtalen afgør vi, om næste skridt er en audit, en build sprint eller en konkret løsning.',
       primaryCta: 'Book 30 minutter',
-      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30-minutes',
       secondaryCta: 'Åbn LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -317,7 +317,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Når systemet sitter fast, snakker vi konkret.',
       lead: 'Send kontekst, stakk og flaskehals. Under samtalen avgjør vi om neste trinn er en revisjon, en byggespurt eller en konkret løsning.',
       primaryCta: 'Bestill 30 minutter',
-      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30-minutes',
       secondaryCta: 'Åpne LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -424,7 +424,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'システムが行き詰まったら、具体的に話しましょう。',
       lead: 'コンテキスト、スタック、ボトルネックを送ってください。通話で、次の一手が監査か、ビルドスプリントか、具体的な打ち手かを一緒に決めます。',
       primaryCta: '30分を予約',
-      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30-minutes',
       secondaryCta: 'LinkedInを開く',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -531,7 +531,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Se il sistema è bloccato, parliamo concretamente.',
       lead: 'Invia contesto, stack e collo di bottiglia. Durante la call stabiliamo se il prossimo passo è un audit, uno sprint di build o una soluzione concreta.',
       primaryCta: 'Prenota 30 minuti',
-      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30-minutes',
       secondaryCta: 'Apri LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -638,7 +638,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Si el sistema está atascado, hablamos concretamente.',
       lead: 'Envía contexto, stack y cuello de botella. En la llamada determinamos si el siguiente paso es una auditoría, un sprint de build o una solución concreta.',
       primaryCta: 'Reservar 30 minutos',
-      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30-minutes',
       secondaryCta: 'Abrir LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
@@ -799,7 +799,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Kiedy system się blokuje, rozmawiamy konkretnie.',
       lead: 'Wyślij kontekst, stos i wąskie gardło. Na rozmowie ustalamy, czy następny krok to audyt, build sprint, czy konkretny fix.',
       primaryCta: 'Zarezerwuj 30 minut',
-      primaryHref: 'https://cal.com/wojciech-luszczynski/30min',
+      primaryHref: 'https://cal.com/wojciech-luszczynski/30-minutes',
       secondaryCta: 'LinkedIn',
       secondaryHref: 'https://www.linkedin.com/in/wojciech-luszczynski/',
       stats: [
