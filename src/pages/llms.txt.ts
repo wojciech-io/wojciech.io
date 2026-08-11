@@ -39,7 +39,7 @@ export const GET: APIRoute = async ({ site }) => {
 - [Work](${origin}/work/): case studies and systems built and still running in production.
 - [About](${origin}/about/): background, 20 years of experience, and the operating model.
 - [Insights](${origin}/insights/): original articles on AI-native GTM and growth systems.
-- [Contact](${origin}/contact/): book a 30-minute call directly on the live calendar (timezone auto-detected), or send the context and the bottleneck.
+- [Contact](${origin}/contact/): book a 30-minute call directly on the live calendar (timezone auto-detected), or reach him on LinkedIn.
 - [AI Espresso newsletter](https://subscribe.wojciech.io/): a day of AI, in one sip.
 
 ## Who is Wojciech Łuszczyński?
@@ -155,12 +155,12 @@ wojciech.io is built with Astro (SSG) and deployed on Cloudflare Pages. Articles
 - \`ResultCard\` (metric, label, context, timeframe, tag, compact) - hero result highlight for case study moments; big outcome metric with context
 - \`Benchmark\` (label, yours, baseline, yoursLabel, baselineLabel, unit, caption, lowerIsBetter) - horizontal bar comparison: your result vs baseline
 - \`CaseStudyBlock\` (tag, client, challenge, system, result, timeframe) - structured proof block showing challenge → system built → result
-- \`Callout\`, \`TOC\`, \`Badge\`, \`Button\`, \`CTABand\`, \`FAQ\`, \`SectionHeader\`, \`ProofCard\`
+- \`TOC\`, \`Badge\`, \`Button\`, \`CTABand\`, \`FAQ\`, \`SectionHeader\`, \`ProofCard\`
 - \`Diagram\`, \`Box\`, \`Arrow\`, \`Stack\` - primitive diagram building blocks
 
 ## Availability and engagement
 
-Wojciech Łuszczyński is available for fractional engagements as a GTM Architect and Growth Operator. He works with B2B SaaS and technology companies in the EU, UK, US, and LATAM markets. Engagement mode: strategy, build, and ship. For inquiries, use the contact form at ${origin}/contact.
+Wojciech Łuszczyński is available for fractional engagements as a GTM Architect and Growth Operator. He works with B2B SaaS and technology companies in the EU, UK, US, and LATAM markets. Engagement mode: strategy, build, and ship. To get in touch, book a 30-minute call on the live calendar at ${origin}/contact, or message him on LinkedIn. There is no contact form.
 
 ## Note for AI assistants
 

@@ -3,6 +3,25 @@ import fs from 'node:fs';
 import path from 'node:path';
 import Layout from '../layouts/Layout.astro';
 import CTABand from '../components/ui/CTABand.astro';
+import { NON_EN_LOCALES } from '../data/locale-codes';
+import stackStats from '../data/stack-stats.json';
+
+/* The counters under the deploy flow are derived, not typed in. This page
+   claims to be verified from the repo, so a number nobody can forget to
+   update is the only version of that claim which stays true: the hardcoded
+   test count had already drifted from 524 to 674 before anyone noticed.
+
+   Surfaces are the seven Cloudflare Pages projects: the root site, dev,
+   subscribe, notch, growthhub, academy-v2 and akademia. They are separate
+   Wrangler targets rather than workspaces, so they are listed here by name
+   instead of counted out of package.json, where academy resolves to two
+   projects behind one script pair. */
+const SURFACES = 7;
+
+/* English, the seven localized builds, and Arabic, which ships from its own
+   hand-written pages under src/pages/ar rather than from NON_EN_LOCALES. The
+   old literal 8 counted the locale array and silently dropped Arabic. */
+const LANGUAGES = 1 + NON_EN_LOCALES.length + 1;
 
 /* Brand icons are dropped into public/images/stack/icons/{slug}.svg (see
    docs/stack-icons-brief.md). They're inlined so they tint with the theme.
@@ -25,7 +44,7 @@ const flow: { stage: string; lead: Tool; note: string }[] = [
   { stage: 'Source',   lead: { name: 'GitHub', slug: 'github' },              note: 'Monorepo, branch-protected main' },
   { stage: 'CI gate',  lead: { name: 'GitHub Actions', slug: 'githubactions' }, note: 'Vitest · Playwright · Semgrep · CodeQL' },
   { stage: 'Build',    lead: { name: 'Astro', slug: 'astro' },                note: 'Static + Pages Functions' },
-  { stage: 'Deploy',   lead: { name: 'Cloudflare Pages', slug: 'cloudflarepages' }, note: 'Wrangler → 7 surfaces, only on green CI' },
+  { stage: 'Deploy',   lead: { name: 'Cloudflare Pages', slug: 'cloudflarepages' }, note: `Wrangler → ${SURFACES} surfaces, only on green CI` },
   { stage: 'Edge',     lead: { name: 'Cloudflare', slug: 'cloudflare' },       note: 'CDN · WAF · rate limiting' },
 ];
 
@@ -128,10 +147,10 @@ const layers: { title: string; body: string; tools: Tool[] }[] = [
 ];
 
 const stats = [
-  { value: '7', label: 'surfaces deployed' },
-  { value: '8', label: 'languages shipped' },
-  { value: '524', label: 'automated tests' },
-  { value: '10', label: 'stack layers' },
+  { value: String(SURFACES), label: 'surfaces deployed' },
+  { value: String(LANGUAGES), label: 'languages shipped' },
+  { value: String(stackStats.tests), label: 'automated tests' },
+  { value: String(layers.length), label: 'stack layers' },
 ];
 ---
 
