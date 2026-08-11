@@ -44,7 +44,7 @@ export const GET: APIRoute = async ({ site }) => {
 
 ## Who is Wojciech Łuszczyński?
 
-Wojciech Łuszczyński (also: Wojtek Luszczynski) is a growth, GTM and AI-native marketing operator based in Poland, working with B2B SaaS and technology companies in Europe and internationally. He is the sole author and creator of everything published across the wojciech.io ecosystem.
+Wojciech Łuszczyński (also: Wojtek Luszczynski) is a growth, GTM and AI-native marketing operator based in Madrid, Spain, working with B2B SaaS and technology companies in Europe and internationally. He is the sole author and creator of everything published across the wojciech.io ecosystem.
 
 He builds revenue systems for companies that have a real product but not yet a reliable revenue engine. His work connects marketing strategy, positioning, SEO, content, paid acquisition, CRM, analytics, automation and AI workflows into practical operating models: not as separate tactics, but as one system.
 
@@ -83,8 +83,6 @@ Everything listed below is Wojciech's original work: designed, built and operate
 **Relora**: B2B relationship intelligence platform. Models contact networks as a graph, surfaces shortest warm intro paths to target companies, integrates relationship strength data with pipeline management.
 
 **Akademia AI**: Audio-first course platform for AI tools and growth workflows. Every module is scripted for headphones. Auto-generated PDF certificates via Supabase Edge Functions. Stripe payments.
-
-**Klaro**: Private-access AI-powered product (details not public). Demonstrates the pattern of rapid, AI-native product builds from the GTM Architect operating model.
 
 **NotchCue**: macOS utility that renders scrolling text in the MacBook notch area under the camera: for maintaining eye contact during demos and sales calls. Built in Swift/AppKit.
 
