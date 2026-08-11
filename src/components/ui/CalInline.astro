@@ -36,7 +36,7 @@ const wrapClass = contained ? 'relative mx-auto max-w-6xl px-6' : 'relative';
 <div class={wrapClass}>
   {/* No border or surface here: Cal renders its own card, and wrapping it in a
       second one produced a visible box-in-a-box. */}
-  <div class="cal-shell relative" style={`min-height:${minHeight}`}>
+  <div class="cal-shell relative" style={`--cal-min-height:${minHeight}`}>
     {/* Loading state sits behind the calendar; Cal's iframe covers it on mount.
         If the embed never mounts (blocked script, offline, content blocker),
         the script below swaps the spinner for a real link so the visitor is
@@ -55,7 +55,11 @@ const wrapClass = contained ? 'relative mx-auto max-w-6xl px-6' : 'relative';
         <style>.cal-spinner,.cal-loading-label{display:none}.cal-fallback{display:inline-flex}</style>
       </noscript>
     </div>
-    <div data-cal-inline={calLink} class="relative z-[1]" style={`width:100%;min-height:${minHeight};overflow:auto`}></div>
+    {/* No overflow here. Cal's iframe reports its own height and the embed
+        script resizes the host to match, so a scroll container only ever
+        nested a second scroll inside the page one, which on touch means the
+        calendar swallows the swipe that was meant to scroll the page. */}
+    <div data-cal-inline={calLink} class="cal-host relative z-[1]"></div>
   </div>
 </div>
 
@@ -95,6 +99,24 @@ const wrapClass = contained ? 'relative mx-auto max-w-6xl px-6' : 'relative';
 </script>
 
 <style>
+  /* Reserved space for the loading state. Full height on desktop, where the
+     mounted calendar is about this tall anyway; on a phone the same reserve is
+     most of a screen of blank, so it drops to roughly half. Once Cal mounts,
+     the iframe drives the height and this floor stops mattering. */
+  .cal-shell,
+  .cal-host {
+    min-height: var(--cal-min-height);
+  }
+  .cal-host {
+    width: 100%;
+  }
+  @media (max-width: 767px) {
+    .cal-shell,
+    .cal-host {
+      min-height: min(var(--cal-min-height), 320px);
+    }
+  }
+
   /* Default (embed loading or mounted): spinner shows, fallback link hidden. */
   .cal-fallback {
     display: none;
