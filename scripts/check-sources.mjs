@@ -82,17 +82,27 @@ const decodeEntities = (s) =>
 /**
  * Drop scripts, styles, comments and tags; keep the prose.
  *
- * The closing-tag patterns allow whitespace before the `>`, because `</script >`
- * is valid HTML and a pattern that misses it leaves the whole script body in
- * the extracted text. That is not a rendering risk here, nothing is injected
- * anywhere, but it does corrupt the search: a quote that happens to appear in
- * a page's inline JSON would be reported as still present in its prose.
+ * The closing-tag patterns are `</name\b[^>]*>`, not `</name\s*>`. An end tag
+ * may carry whitespace and attributes before the `>`, so `</script foo=bar>`
+ * and `</script\t\n bar>` both close the element, and a pattern that only
+ * allows whitespace misses them and leaves the entire script body in the
+ * extracted text. Nothing is injected anywhere, so this is not a rendering
+ * risk, but it does corrupt the search: a quote that happens to appear in a
+ * page's inline JSON would be reported as still present in its prose.
+ *
+ * `\b` keeps `</scriptfoo>` out, which is an end tag for a different element.
+ *
+ * The second pass catches an unterminated block, which a truncated response
+ * can produce, by dropping everything from the opening tag to the end.
  */
+const stripElement = (html, name) =>
+  html
+    .replace(new RegExp(`<${name}\\b[^>]*>[\\s\\S]*?</${name}\\b[^>]*>`, 'gi'), ' ')
+    .replace(new RegExp(`<${name}\\b[^>]*>[\\s\\S]*$`, 'i'), ' ');
+
 const htmlToText = (html) =>
   decodeEntities(
-    html
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, ' ')
-      .replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi, ' ')
+    stripElement(stripElement(html, 'script'), 'style')
       .replace(/<!--[\s\S]*?-->/g, ' ')
       .replace(/<[^>]*>/g, ' '),
   );
