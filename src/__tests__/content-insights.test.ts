@@ -128,3 +128,38 @@ describe('insights redirects do not bury live articles', () => {
     ).toBe(false);
   });
 });
+
+// Cover art is easy to get wrong in a way nothing surfaces. Before PR #506 no
+// component read `coverImage` at all, so seven English articles pointed at
+// another article's cover while their own file sat unused in public/, and the
+// grid looked fine because it rendered a gradient instead. These two checks
+// make both mistakes fail the suite rather than wait to be noticed.
+describe('insight cover art', () => {
+  const entries = loadAll()
+    .map(({ file, data }) => ({
+      slug: file.replace(/\.mdx?$/, ''),
+      cover: typeof data.coverImage === 'string' ? data.coverImage : null,
+    }))
+    .filter((e): e is { slug: string; cover: string } => e.cover !== null);
+
+  it('no two English articles share a cover', () => {
+    const byCover = new Map<string, string[]>();
+    for (const { slug, cover } of entries) {
+      byCover.set(cover, [...(byCover.get(cover) ?? []), slug]);
+    }
+    const shared = [...byCover.entries()]
+      .filter(([, slugs]) => slugs.length > 1)
+      .map(([cover, slugs]) => `${cover} used by ${slugs.join(', ')}`);
+
+    expect(shared, `covers reused across articles:\n  ${shared.join('\n  ')}`).toEqual([]);
+  });
+
+  it('an article uses the cover named after it when that file exists', () => {
+    const available = new Set(readdirSync(resolve('./public/images/insights')));
+    const wrong = entries
+      .filter(({ slug, cover }) => available.has(`${slug}.webp`) && cover !== `/images/insights/${slug}.webp`)
+      .map(({ slug, cover }) => `${slug} points at ${cover} while /images/insights/${slug}.webp exists`);
+
+    expect(wrong, `articles wearing the wrong cover:\n  ${wrong.join('\n  ')}`).toEqual([]);
+  });
+});
