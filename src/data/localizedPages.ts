@@ -82,7 +82,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'AI ist kein Add-on. Sie ist eine neue Betriebsebene.',
       lead: 'Ich baue AI-Workflows so auf, dass sie im System verankert sind: Daten, Kontext, Regeln, Qualitätssicherung und eine klare Übergabe an Menschen.',
       primaryCta: 'Insights lesen',
-      primaryHref: '/de/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'System besprechen',
       secondaryHref: '/de/contact/',
       stats: [
@@ -124,7 +124,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Operator Notes zu AI, GTM und Revenue-Architektur.',
       lead: 'Die Artikel zeigen die Architektur, Entscheidungen und Lektionen von Systemen, die tatsächlich gebaut und betrieben werden.',
       primaryCta: 'Alle Artikel ansehen',
-      primaryHref: '/de/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'Termin vereinbaren',
       secondaryHref: '/de/contact/',
       stats: [
@@ -189,7 +189,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'AI er ikke en tilføjelse. Det er et nyt driftslag.',
       lead: 'Jeg bygger AI-arbejdsgange, hvor de er forankret i systemet: data, kontekst, regler, QA og en klar overdragelse til mennesker.',
       primaryCta: 'Læs indsigt',
-      primaryHref: '/dk/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'Diskuter systemet',
       secondaryHref: '/dk/contact/',
       stats: [
@@ -231,7 +231,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Operator Notes om AI, GTM og revenue-arkitektur.',
       lead: 'Artiklerne viser arkitektur, beslutninger og erfaringer fra systemer, der rent faktisk er bygget og kører.',
       primaryCta: 'Se alle artikler',
-      primaryHref: '/dk/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'Book et opkald',
       secondaryHref: '/dk/contact/',
       stats: [
@@ -296,7 +296,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'AI er ikke et tillegg. Det er et nytt driftslag.',
       lead: 'Jeg bygger AI-arbeidsflyter der de er forankret i systemet: data, kontekst, regler, kvalitetssikring og en tydelig overlevering til mennesker.',
       primaryCta: 'Les innsikt',
-      primaryHref: '/no/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'Diskuter systemet',
       secondaryHref: '/no/contact/',
       stats: [
@@ -338,7 +338,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Operator Notes om AI, GTM og revenue-arkitektur.',
       lead: 'Artiklene viser arkitektur, beslutninger og erfaringer fra systemer som faktisk er bygget og i drift.',
       primaryCta: 'Se alle artikler',
-      primaryHref: '/no/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'Bestill en samtale',
       secondaryHref: '/no/contact/',
       stats: [
@@ -403,7 +403,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'AIはアドオンではない。新しいオペレーティングレイヤーだ。',
       lead: 'AIワークフローは、システムに根を張る形で作ります。データ、コンテキスト、ルール、QA、そして人へのきれいな引き継ぎ。',
       primaryCta: 'インサイトを読む',
-      primaryHref: '/jp/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'システムについて話す',
       secondaryHref: '/jp/contact/',
       stats: [
@@ -445,7 +445,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'AI、GTM、Revenue architectureに関するオペレーターノート。',
       lead: '記事では、実際に構築して運用しているシステムのアーキテクチャ、判断、教訓を示します。',
       primaryCta: 'すべての記事を見る',
-      primaryHref: '/jp/insights/',
+      primaryHref: '/insights/',
       secondaryCta: '相談を予約',
       secondaryHref: '/jp/contact/',
       stats: [
@@ -510,7 +510,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'L\'AI non è un componente aggiuntivo. È un nuovo livello operativo.',
       lead: 'Costruisco workflow AI ancorati al sistema: dati, contesto, regole, controllo qualità e un passaggio chiaro agli esseri umani.',
       primaryCta: 'Leggi gli insights',
-      primaryHref: '/it/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'Discuti il sistema',
       secondaryHref: '/it/contact/',
       stats: [
@@ -552,7 +552,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Note dell\'operatore su AI, GTM e architettura revenue.',
       lead: 'Gli articoli mostrano architettura, decisioni e lezioni di sistemi effettivamente costruiti e operati.',
       primaryCta: 'Vedi tutti gli articoli',
-      primaryHref: '/it/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'Prenota una call',
       secondaryHref: '/it/contact/',
       stats: [
@@ -617,7 +617,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'La AI no es un complemento. Es una nueva capa operativa.',
       lead: 'Construyo workflows AI anclados al sistema: datos, contexto, reglas, control de calidad y un traspaso claro a los humanos.',
       primaryCta: 'Leer insights',
-      primaryHref: '/es/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'Discutir el sistema',
       secondaryHref: '/es/contact/',
       stats: [
@@ -659,7 +659,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Notas del operador sobre AI, GTM y arquitectura revenue.',
       lead: 'Los artículos muestran arquitectura, decisiones y lecciones de sistemas realmente construidos y operados.',
       primaryCta: 'Ver todos los artículos',
-      primaryHref: '/es/insights/',
+      primaryHref: '/insights/',
       secondaryCta: 'Reservar una llamada',
       secondaryHref: '/es/contact/',
       stats: [
