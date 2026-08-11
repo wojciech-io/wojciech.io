@@ -14,9 +14,11 @@ interface Props {
   read: string;
   index: number;
   arrowFlip?: boolean;
+  /** Article cover art. Falls back to the generated poster when absent. */
+  cover?: string;
 }
 
-const { href, title, categoryLabel, categoryKey = '', date, read, index, arrowFlip = false } = Astro.props;
+const { href, title, categoryLabel, categoryKey = '', date, read, index, arrowFlip = false, cover } = Astro.props;
 const t = getPoster(categoryKey);
 ---
 
@@ -26,7 +28,25 @@ const t = getPoster(categoryKey);
   data-category={categoryKey}
   style={`background:radial-gradient(80% 60% at 0% 0%, ${t.accent}1f 0%, transparent 55%), ${t.grad}`}
 >
-  <div class="pointer-events-none absolute inset-0" style="background-image:linear-gradient(var(--color-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--color-grid-line) 1px,transparent 1px);background-size:32px 32px;opacity:0.3"></div>
+  {cover ? (
+    /* The article's own cover art. 22 of these existed in public/images and
+       nothing rendered them: the field was in the schema and in the
+       frontmatter, and no component ever read it. The covers are light, and
+       this card sets white text, so the scrim below is what keeps the title
+       readable rather than a nicety. */
+    <>
+      <img
+        src={cover}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        class="pointer-events-none absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
+      />
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10"></div>
+    </>
+  ) : (
+    <div class="pointer-events-none absolute inset-0" style="background-image:linear-gradient(var(--color-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--color-grid-line) 1px,transparent 1px);background-size:32px 32px;opacity:0.3"></div>
+  )}
   <div class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={`background:radial-gradient(70% 50% at 100% 100%, ${t.accent}26 0%, transparent 60%)`}></div>
 
   <div class="relative flex items-center justify-between">
