@@ -4,6 +4,7 @@ import SectionHeader from '../ui/SectionHeader.astro';
 import PageBackdrop from '../ui/PageBackdrop.astro';
 import FAQ from '../ui/FAQ.astro';
 import Icon from '../ui/Icon.astro';
+import { cvData } from '../../data/cv';
 
 // Press + video. The talk carries its YouTube still: i.ytimg.com is already in
 // the CSP img-src allowlist, so it loads without vendoring a copy. The article
@@ -30,113 +31,51 @@ const pressLinks = [
   },
 ];
 
+/* Roles come from src/data/cv.ts, the same array the eight /cv pages render.
+   This page used to keep its own list, and the two drifted until they
+   described different careers: /about said "Independent operator" while the CV
+   said Head of Marketing somewhere else. One source now, and the bullets bring
+   the numbers with them.
+
+   Only presentation lives here. A brand mark, a link, a sector label and any
+   sub-brands are how a role looks on this page, not what the role was, so they
+   are keyed by company rather than pushed into the CV data. */
+const PRESENTATION: Record<string, { logo?: string; href?: string; sector?: string; brands?: string[] }> = {
+  'CodiLime':             { logo: '/images/logos/codilime.svg',        href: 'https://codilime.com',       sector: 'Cloud · DevOps · Enterprise' },
+  'WebWave':              { logo: '/images/logos/webwave.svg',         href: 'https://webwave.me',         sector: 'SaaS · Website Builder · AI' },
+  'Symfonia':             { logo: '/images/logos/symfonia.webp',       href: 'https://symfonia.pl',        sector: 'ERP · Business Software' },
+  'Tekhuset':             {                                            href: 'https://tekhuset.no',        sector: 'E-commerce · Nordics', brands: ['iviSkin', 'Neatsvor'] },
+  'SentiOne':             { logo: '/images/logos/sentione.png',        href: 'https://sentione.com',       sector: 'B2B SaaS · AI · Social Listening' },
+  'GetResponse':          { logo: '/images/logos/getresponse.svg?v=2', href: 'https://getresponse.com',    sector: 'Email · Marketing Automation' },
+  'Gi Group Holding':     { logo: '/images/logos/gigroup.png',         href: 'https://gigroupholding.com', sector: 'HR Tech · Enterprise' },
+  'Marquard Media Group': {                                            href: 'https://www.marquardgroup.com', sector: 'Media · Publishing', brands: ['Cosmopolitan', 'Esquire', "Harper's Bazaar", 'Joy', 'Playboy'] },
+  'Lilla House Digital':  {                                            href: 'https://lhdigital.pl',       sector: 'Digital Agency' },
+  'City of \u0141\u00f3d\u017a Office':  {                                            href: 'https://lodz.pl',            sector: 'Government · Public Sector' },
+};
+
 const timeline = [
+  /* Present-day entry, and the only one not from the CV: it is what this site
+     is, and it keeps the page from opening on a role that already ended. */
   {
     period: 'Now',
     role: 'Independent operator',
     company: 'wojciech.io',
-    description: 'Building the public portfolio, app workspace, case studies, and AI-native GTM tools as one operating system across wojciech.io and app.wojciech.io.',
+    bullets: [
+      'Building the public portfolio, app workspace, case studies and AI-native GTM tooling as one operating system',
+    ],
     contract: false,
     sector: 'AI · GTM · Products',
   },
-  {
-    period: 'Oct 2025 – Mar 2026',
-    role: 'Fractional GTM & Growth Lead',
-    company: 'CodiLime',
-    logo: '/images/logos/codilime.svg',
-    href: 'https://codilime.com',
-    description: 'End-to-end GTM execution: AI-driven growth loops across content, SEO, paid and lifecycle; lead magnets, conversion assets, and revenue-linked measurement.',
-    contract: true,
-    sector: 'Cloud · DevOps · Enterprise',
-  },
-  {
-    period: 'May – Oct 2025',
-    role: 'Fractional Head of Marketing',
-    company: 'WebWave',
-    logo: '/images/logos/webwave.svg',
-    href: 'https://webwave.me',
-    description: 'Fractional marketing leadership for an AI-powered website builder: GTM, positioning, commercial messaging, paid, SEO, and growth cadence.',
-    contract: true,
-    sector: 'SaaS · Website Builder · AI',
-  },
-  {
-    period: '2024 – Oct 2025',
-    role: 'Head of Growth & Web Development',
-    company: 'Symfonia',
-    logo: '/images/logos/symfonia.webp',
-    href: 'https://symfonia.pl',
-    description: 'Growth, web development, UX/CRO, migration, SEO, lead generation, and integrated campaigns for a large-scale business software brand.',
-    contract: false,
-    sector: 'ERP · Business Software',
-  },
-  {
-    period: 'Oct 2023 – Dec 2024',
-    role: 'Chief Marketing Officer',
-    company: 'Tekhuset AS',
-    brands: ['iviSkin', 'Neatsvor'],
-    href: 'https://tekhuset.no',
-    description: 'Marketing strategy across Norway, Denmark, and Sweden. Led SEO and CRO for e-commerce brands, achieving top-3 rankings in Nordic markets and a 25% uplift in conversion rates.',
-    contract: false,
-    sector: 'E-commerce · Nordics',
-  },
-  {
-    period: 'Oct 2020 – Jun 2024',
-    role: 'Global Head of Growth & Retention',
-    company: 'SentiOne',
-    logo: '/images/logos/sentione.png',
-    href: 'https://sentione.com',
-    description: 'Built and scaled B2B SaaS growth and retention across Europe, UK, US, and LATAM: demand generation, enterprise GTM, lifecycle, and deal-cycle acceleration.',
-    contract: false,
-    sector: 'B2B SaaS · AI · Social Listening',
-  },
-  {
-    period: '2022',
-    role: 'Global AI & Innovation Manager',
-    company: 'Gi Group Holding',
-    logo: '/images/logos/gigroup.png',
-    href: 'https://gigroupholding.com',
-    description: 'Project work on AI initiatives, digital process mapping, and innovation roadmap alignment across multiple business units.',
-    contract: true,
-    sector: 'HR Tech · Enterprise',
-  },
-  {
-    period: 'Oct 2019 – Oct 2020',
-    role: 'Head of Lifecycle Marketing',
-    company: 'GetResponse',
-    logo: '/images/logos/getresponse.svg?v=2',
-    href: 'https://getresponse.com',
-    description: 'Lifecycle marketing, CRM, segmentation, A/B testing, conversion optimisation, and customer engagement programs for a global SaaS product.',
-    contract: false,
-    sector: 'Email · Marketing Automation',
-  },
-  {
-    period: '2018 – 2019',
-    role: 'Head of Digital',
-    company: 'Marquard Group',
-    brands: ['Cosmopolitan', 'Esquire', "Harper's Bazaar", 'Joy', 'Playboy'],
-    href: 'https://www.marquardgroup.com',
-    description: 'Digital strategy, SEO, UX, PPC, and multi-brand publishing growth across a 9-portal media portfolio.',
-    contract: false,
-    sector: 'Media · Publishing',
-  },
-  {
-    period: '2018',
-    role: 'Head of Marketing',
-    company: 'Lilla House Digital',
-    href: 'https://lhdigital.pl',
-    description: 'Full-stack digital marketing: SEO, PPC, email, social, and conversion optimisation. Built and ran campaigns across multiple channels independently.',
-    contract: true,
-    sector: 'Digital Agency',
-  },
-  {
-    period: '2010 – 2018',
-    role: 'Head of MarComm / Sr PR Manager / PR Manager',
-    company: 'City of Łódź Office',
-    href: 'https://lodz.pl',
-    description: 'Eight-year communications track across PR, senior PR, and MarComm leadership: media relations, public campaigns, crisis communication, and city-wide messaging.',
-    contract: false,
-    sector: 'Government · Public Sector',
-  },
+  ...cvData.experience.map((entry) => ({
+    // The CV renders "present" separately so it can be localised, and wraps
+    // the range over two lines to fit its column. Neither applies here.
+    period: entry.period.replace(/\n/g, ' '),
+    role: entry.role.en,
+    company: entry.company,
+    bullets: entry.bullets.en,
+    contract: entry.contract ?? false,
+    ...PRESENTATION[entry.company],
+  })),
 ];
 
 const traits = [
@@ -299,7 +238,7 @@ const faq = [
           their own on a phone. The media and commerce marks travel with the
           roles that earned them, as `brands` inside the open panel. */}
       <div class="max-w-4xl divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
-        {timeline.map(({ period, role, company, logo, brands, href, description, contract, sector }, i) => (
+        {timeline.map(({ period, role, company, logo, brands, href, bullets, contract, sector }, i) => (
           <details class="role group" open={i === 0}>
             <summary class="flex cursor-pointer list-none items-center gap-4 py-5 transition-colors hover:bg-[var(--color-surface)]/60">
               {/* Fixed box so rows line up whether or not a mark exists. It
@@ -335,7 +274,16 @@ const faq = [
             </summary>
 
             <div class="pb-6 pl-0 sm:pl-[120px] -mt-1">
-              <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-text-muted)]">{description}</p>
+              {/* Bullets, not a paragraph. The CV carries the numbers per
+                  role, and a wall of prose buries them. */}
+              <ul class="m-0 max-w-2xl list-none space-y-2 p-0">
+                {bullets.map((line) => (
+                  <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[var(--color-text-muted)]">
+                    <span class="mt-[0.55rem] h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
 
               <div class="mt-3 flex flex-wrap items-center gap-2">
                 {sector && (
