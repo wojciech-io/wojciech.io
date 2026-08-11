@@ -4,6 +4,7 @@ import SectionHeader from '../ui/SectionHeader.astro';
 import PageBackdrop from '../ui/PageBackdrop.astro';
 import FAQ from '../ui/FAQ.astro';
 import Icon from '../ui/Icon.astro';
+import { cvData } from '../../data/cv';
 
 // Press + video. The talk carries its YouTube still: i.ytimg.com is already in
 // the CSP img-src allowlist, so it loads without vendoring a copy. The article
@@ -30,158 +31,66 @@ const pressLinks = [
   },
 ];
 
-const timeline = [
-  {
-    period: 'Now',
-    role: 'Independent operator',
-    company: 'wojciech.io',
-    description: 'Building the public portfolio, app workspace, case studies, and AI-native GTM tools as one operating system across wojciech.io and app.wojciech.io.',
-    contract: false,
-    sector: 'AI · GTM · Products',
-  },
-  {
-    period: 'Oct 2025 – Mar 2026',
-    role: 'Fractional GTM & Growth Lead',
-    company: 'CodiLime',
-    logo: '/images/logos/codilime.svg',
-    href: 'https://codilime.com',
-    description: 'End-to-end GTM execution: AI-driven growth loops across content, SEO, paid and lifecycle; lead magnets, conversion assets, and revenue-linked measurement.',
-    contract: true,
-    sector: 'Cloud · DevOps · Enterprise',
-  },
-  {
-    period: 'May – Oct 2025',
-    role: 'Fractional Head of Marketing',
-    company: 'WebWave',
-    logo: '/images/logos/webwave.svg',
-    href: 'https://webwave.me',
-    description: 'Fractional marketing leadership for an AI-powered website builder: GTM, positioning, commercial messaging, paid, SEO, and growth cadence.',
-    contract: true,
-    sector: 'SaaS · Website Builder · AI',
-  },
-  {
-    period: '2024 – Oct 2025',
-    role: 'Head of Growth & Web Development',
-    company: 'Symfonia',
-    logo: '/images/logos/symfonia.webp',
-    href: 'https://symfonia.pl',
-    description: 'Growth, web development, UX/CRO, migration, SEO, lead generation, and integrated campaigns for a large-scale business software brand.',
-    contract: false,
-    sector: 'ERP · Business Software',
-  },
-  {
-    period: 'Oct 2023 – Dec 2024',
-    role: 'Chief Marketing Officer',
-    company: 'Tekhuset AS',
-    brands: ['iviSkin', 'Neatsvor'],
-    href: 'https://tekhuset.no',
-    description: 'Marketing strategy across Norway, Denmark, and Sweden. Led SEO and CRO for e-commerce brands, achieving top-3 rankings in Nordic markets and a 25% uplift in conversion rates.',
-    contract: false,
-    sector: 'E-commerce · Nordics',
-  },
-  {
-    period: 'Oct 2020 – Jun 2024',
-    role: 'Global Head of Growth & Retention',
-    company: 'SentiOne',
-    logo: '/images/logos/sentione.png',
-    href: 'https://sentione.com',
-    description: 'Built and scaled B2B SaaS growth and retention across Europe, UK, US, and LATAM: demand generation, enterprise GTM, lifecycle, and deal-cycle acceleration.',
-    contract: false,
-    sector: 'B2B SaaS · AI · Social Listening',
-  },
-  {
-    period: '2022',
-    role: 'Global AI & Innovation Manager',
-    company: 'Gi Group Holding',
-    logo: '/images/logos/gigroup.png',
-    href: 'https://gigroupholding.com',
-    description: 'Project work on AI initiatives, digital process mapping, and innovation roadmap alignment across multiple business units.',
-    contract: true,
-    sector: 'HR Tech · Enterprise',
-  },
-  {
-    period: 'Oct 2019 – Oct 2020',
-    role: 'Head of Lifecycle Marketing',
-    company: 'GetResponse',
-    logo: '/images/logos/getresponse.svg?v=2',
-    href: 'https://getresponse.com',
-    description: 'Lifecycle marketing, CRM, segmentation, A/B testing, conversion optimisation, and customer engagement programs for a global SaaS product.',
-    contract: false,
-    sector: 'Email · Marketing Automation',
-  },
-  {
-    period: '2018 – 2019',
-    role: 'Head of Digital',
-    company: 'Marquard Group',
-    brands: ['Cosmopolitan', 'Esquire', "Harper's Bazaar", 'Joy', 'Playboy'],
-    href: 'https://www.marquardgroup.com',
-    description: 'Digital strategy, SEO, UX, PPC, and multi-brand publishing growth across a 9-portal media portfolio.',
-    contract: false,
-    sector: 'Media · Publishing',
-  },
-  {
-    period: '2018',
-    role: 'Head of Marketing',
-    company: 'Lilla House Digital',
-    href: 'https://lhdigital.pl',
-    description: 'Full-stack digital marketing: SEO, PPC, email, social, and conversion optimisation. Built and ran campaigns across multiple channels independently.',
-    contract: true,
-    sector: 'Digital Agency',
-  },
-  {
-    period: '2010 – 2018',
-    role: 'Head of MarComm / Sr PR Manager / PR Manager',
-    company: 'City of Łódź Office',
-    href: 'https://lodz.pl',
-    description: 'Eight-year communications track across PR, senior PR, and MarComm leadership: media relations, public campaigns, crisis communication, and city-wide messaging.',
-    contract: false,
-    sector: 'Government · Public Sector',
-  },
-];
+/* Roles come from src/data/cv.ts, the same array the eight /cv pages render.
+   This page used to keep its own list, and the two drifted until they
+   described different careers: /about said "Independent operator" while the CV
+   said Head of Marketing somewhere else. One source now, and the bullets bring
+   the numbers with them.
 
-const traits = [
-  {
-    icon: 'target',
-    label: 'Operator, not advisor',
-    body: 'I build and run the systems myself. Scope, then ship, then stay in until it works. If the right tool doesn\'t exist, I write it.',
-  },
-  {
-    icon: 'agent',
-    label: 'AI-native by practice',
-    body: 'Not a prompt engineer. I redesign the architecture of growth systems using AI: how they\'re built, iterated, and operated at scale.',
-  },
-  {
-    icon: 'package',
-    label: 'Builder with business context',
-    body: 'I can move from revenue strategy to a working product in the same engagement. That range is rare, and I maintain it deliberately.',
-  },
-  {
-    icon: 'pipeline',
-    label: 'Systems over sprints',
-    body: 'Compounding returns, not quarterly campaigns. The output is a system that runs without me in the loop.',
-  },
-];
+   Only presentation lives here. A brand mark, a link, a sector label and any
+   sub-brands are how a role looks on this page, not what the role was, so they
+   are keyed by company rather than pushed into the CV data. */
+const PRESENTATION: Record<string, { logo?: string; href?: string; sector?: string; brands?: string[] }> = {
+  'CodiLime':             { logo: '/images/logos/codilime.svg',        href: 'https://codilime.com',          sector: 'B2B technology services · SaaS GTM model' },
+  'WebWave':              { logo: '/images/logos/webwave.svg',         href: 'https://webwave.me',            sector: 'AI SaaS website builder' },
+  'Symfonia':             { logo: '/images/logos/symfonia.webp',       href: 'https://symfonia.pl',           sector: 'ERP / business software · web growth' },
+  'Tekhuset':             {                                            href: 'https://tekhuset.no',           sector: 'Nordic ecommerce · DTC · performance', brands: ['iviSkin', 'Neatsvor'] },
+  'SentiOne':             { logo: '/images/logos/sentione.png',        href: 'https://sentione.com',          sector: 'B2B SaaS · AI social listening and conversational AI' },
+  'GetResponse':          { logo: '/images/logos/getresponse.svg?v=2', href: 'https://getresponse.com',       sector: 'Email · marketing automation · global SaaS' },
+  'Gi Group Holding':     { logo: '/images/logos/gigroup.png',         href: 'https://gigroupholding.com',    sector: 'HR tech · enterprise AI' },
+  'Marquard Media Group': { logo: '/images/logos/marquard.svg',        href: 'https://www.marquardgroup.com', sector: 'Media group · nine portal digital portfolio', brands: ['Cosmopolitan', 'Esquire', "Harper's Bazaar", 'Joy', 'Playboy'] },
+  'Lilla House Digital':  { logo: '/images/logos/lhdigital.svg',       href: 'https://lhdigital.pl',          sector: 'SEO · paid · social · content' },
+  'City of \u0141\u00f3d\u017a Office':  { logo: '/images/logos/lodz.png',            href: 'https://lodz.pl',               sector: 'Brand · PR · campaigns' },
+  'mBank':                {                                            href: 'https://www.mbank.pl',          sector: 'B2C finance · banking · product acquisition' },
+  'LCDNiKP':              {                                            href: 'https://wckp.lodz.pl',          sector: 'Education · web design · internet services' },
+};
 
-const proofPoints = [
+const timeline = cvData.experience.map((entry) => ({
+  // The CV renders "present" separately so it can be localised, and wraps the
+  // range over two lines to fit its column. Neither applies here.
+  period: entry.period.replace(/\n/g, ' '),
+  role: entry.role.en,
+  company: entry.company,
+  bullets: entry.bullets.en,
+  contract: entry.contract ?? false,
+  ...PRESENTATION[entry.company],
+}));
+
+/* The CV's own SELECTED IMPACT block. What stood here before was four cards
+   reading Role / Focus / Practice / Proof, and the last one said "Built and
+   shipped: products, workflows, case studies, and writing", which is a
+   sentence that survives being said about anybody. These are numbers with a
+   named company attached, so they can be checked and they cannot be recycled. */
+const impact = [
   {
-    label: 'Role',
-    value: 'GTM architect',
-    detail: 'Growth operator and AI-native builder',
+    value: '+200%',
+    label: 'pipeline',
+    detail: 'from AI-native targeting, outbound, CRM intelligence and revenue cadence',
   },
   {
-    label: 'Focus',
-    value: 'Revenue systems',
-    detail: 'For B2B SaaS and technology companies',
+    value: '+80%',
+    label: 'new customers · SentiOne',
+    detail: 'through lifecycle experiments and funnel governance',
   },
   {
-    label: 'Practice',
-    value: '20 years',
-    detail: '10 B2B SaaS · 10 GTM · Europe, UK, US, LATAM',
+    value: '+60% / +50%',
+    label: 'brand recognition · organic traffic',
+    detail: 'via SEO systems, category content and AEO',
   },
   {
-    label: 'Proof',
-    value: 'Built and shipped',
-    detail: 'Products, workflows, case studies, and writing',
+    value: '+30% / +25%',
+    label: 'Symfonia leads · Tekhuset conversion',
+    detail: 'through CRO, analytics and checkout work',
   },
 ];
 
@@ -247,43 +156,21 @@ const faq = [
         </div>
       </div>
 
-      <!-- Proof rail -->
-      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {proofPoints.map(({ label, value, detail }) => (
-          <div class="obs-panel px-5 py-4 backdrop-blur-sm bg-[rgb(var(--color-surface-rgb)/0.72)]">
-            <span class="obs-label-accent mb-2 block">{label}</span>
-            <p class="text-base font-semibold text-[var(--color-text)]">{value}</p>
-            <p class="mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">{detail}</p>
+      {/* Numbers first, and each one names where it happened. A number with a
+          company on it is checkable; "built and shipped" is not. */}
+      <div class="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-2 lg:grid-cols-4">
+        {impact.map(({ label, value, detail }) => (
+          <div class="bg-[rgb(var(--color-surface-rgb)/0.86)] px-5 py-6 backdrop-blur-sm">
+            <p class="text-[length:clamp(1.5rem,1.4vw+1.1rem,2rem)] font-semibold leading-none tracking-tight text-[var(--color-text)]">{value}</p>
+            <p class="mt-2.5 text-[13px] font-medium leading-snug text-[var(--color-text)]">{label}</p>
+            <p class="mt-1.5 text-xs leading-relaxed text-[var(--color-text-muted)]">{detail}</p>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- What makes me atypical -->
-  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader
-        eyebrow="What makes me different"
-        heading="I connect revenue strategy, AI workflows, and shipped software into one operating model."
-        maxWidth="max-w-3xl"
-        class="mb-12"
-      />
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {traits.map(({ icon, label, body }) => (
-          <div class="obs-panel obs-glow p-7 card-lift">
-            <div class="w-9 h-9 rounded-lg bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center mb-5">
-              <Icon name={icon} class="w-[18px] h-[18px] text-[var(--color-accent-hi)]" />
-            </div>
-            <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{label}</h3>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Experience: logo wall + rail timeline, full width -->
+  <!-- Experience: one collapsible row per role, straight from the CV -->
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <SectionHeader
@@ -299,7 +186,7 @@ const faq = [
           their own on a phone. The media and commerce marks travel with the
           roles that earned them, as `brands` inside the open panel. */}
       <div class="max-w-4xl divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
-        {timeline.map(({ period, role, company, logo, brands, href, description, contract, sector }, i) => (
+        {timeline.map(({ period, role, company, logo, brands, href, bullets, contract, sector }, i) => (
           <details class="role group" open={i === 0}>
             <summary class="flex cursor-pointer list-none items-center gap-4 py-5 transition-colors hover:bg-[var(--color-surface)]/60">
               {/* Fixed box so rows line up whether or not a mark exists. It
@@ -335,7 +222,16 @@ const faq = [
             </summary>
 
             <div class="pb-6 pl-0 sm:pl-[120px] -mt-1">
-              <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-text-muted)]">{description}</p>
+              {/* Bullets, not a paragraph. The CV carries the numbers per
+                  role, and a wall of prose buries them. */}
+              <ul class="m-0 max-w-2xl list-none space-y-2 p-0">
+                {bullets.map((line) => (
+                  <li class="flex items-start gap-2.5 text-sm leading-relaxed text-[var(--color-text-muted)]">
+                    <span class="mt-[0.55rem] h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent)]" aria-hidden="true"></span>
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
 
               <div class="mt-3 flex flex-wrap items-center gap-2">
                 {sector && (
