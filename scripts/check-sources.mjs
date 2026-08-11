@@ -46,18 +46,56 @@ const normalize = (s) =>
     .trim()
     .toLowerCase();
 
-/** Crude but sufficient: drop scripts, styles and tags, keep the prose. */
+const NAMED_ENTITIES = {
+  nbsp: ' ',
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+};
+
+/**
+ * One pass, so nothing is decoded twice. A chain of sequential replaces turns
+ * `&amp;lt;` into `&lt;` and then into `<`, inventing markup the page never
+ * contained. Here each entity is matched once and its replacement is never
+ * rescanned, and an entity that is not recognised is left exactly as it was.
+ */
+const decodeEntities = (s) =>
+  s.replace(/&(#\d+|#x[0-9a-f]+|[a-z][a-z0-9]*);/gi, (whole, body) => {
+    if (body[0] === '#') {
+      const code =
+        body[1] === 'x' || body[1] === 'X'
+          ? Number.parseInt(body.slice(2), 16)
+          : Number.parseInt(body.slice(1), 10);
+      if (!Number.isInteger(code) || code < 1 || code > 0x10ffff) return whole;
+      try {
+        return String.fromCodePoint(code);
+      } catch {
+        return whole;
+      }
+    }
+    const named = NAMED_ENTITIES[body.toLowerCase()];
+    return named === undefined ? whole : named;
+  });
+
+/**
+ * Drop scripts, styles, comments and tags; keep the prose.
+ *
+ * The closing-tag patterns allow whitespace before the `>`, because `</script >`
+ * is valid HTML and a pattern that misses it leaves the whole script body in
+ * the extracted text. That is not a rendering risk here, nothing is injected
+ * anywhere, but it does corrupt the search: a quote that happens to appear in
+ * a page's inline JSON would be reported as still present in its prose.
+ */
 const htmlToText = (html) =>
-  html
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'");
+  decodeEntities(
+    html
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, ' ')
+      .replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi, ' ')
+      .replace(/<!--[\s\S]*?-->/g, ' ')
+      .replace(/<[^>]*>/g, ' '),
+  );
 
 async function collectFiles(dir) {
   const out = [];
