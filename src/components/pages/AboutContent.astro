@@ -6,10 +6,9 @@ import FAQ from '../ui/FAQ.astro';
 import Icon from '../ui/Icon.astro';
 import { cvData } from '../../data/cv';
 
-// Press + video. The talk carries its YouTube still: i.ytimg.com is already in
-// the CSP img-src allowlist, so it loads without vendoring a copy. The article
-// has no usable image, so it keeps the icon treatment and the pair is laid out
-// to survive one card having a thumbnail and the other not.
+// Press + video. Both cards use covers generated for the articles rather than
+// a YouTube still and an icon band: the still was low-resolution letterboxed
+// 4:3 and the icon card carried no image at all, so the pair never matched.
 const pressIconName: Record<string, string> = { play: 'play', article: 'file-text' };
 const pressLinks = [
   {
@@ -19,7 +18,7 @@ const pressLinks = [
     detail: 'On stage with Bartosz Baziński on building products that solve real problems.',
     label: 'Watch on YouTube',
     icon: 'play',
-    thumb: 'https://i.ytimg.com/vi/UWJN-DwqDbE/hqdefault.jpg',
+    thumb: '/images/insights/ai-production-stack.webp',
   },
   {
     href: 'https://mamstartup.pl/czy-mozna-budowac-globalny-startup-w-czasie-deglobalizacji/',
@@ -28,6 +27,7 @@ const pressLinks = [
     detail: 'Feature interview and podcast on global product thinking, AI adoption, and growth systems.',
     label: 'Read the article',
     icon: 'article',
+    thumb: '/images/insights/gpt-5-6-vs-claude-5-desk-v1.webp',
   },
 ];
 
@@ -162,7 +162,7 @@ const faq = [
         {impact.map(({ label, value, detail }) => (
           <div class="bg-[rgb(var(--color-surface-rgb)/0.86)] px-5 py-6 backdrop-blur-sm">
             <p class="text-[length:clamp(1.5rem,1.4vw+1.1rem,2rem)] font-semibold leading-none tracking-tight text-[var(--color-text)]">{value}</p>
-            <p class="mt-2.5 text-[13px] font-medium leading-snug text-[var(--color-text)]">{label}</p>
+            <p class="mt-2.5 text-sm font-medium leading-snug text-[var(--color-text)]">{label}</p>
             <p class="mt-1.5 text-xs leading-relaxed text-[var(--color-text-muted)]">{detail}</p>
           </div>
         ))}
@@ -205,9 +205,9 @@ const faq = [
                     the reader nothing, and the row can afford two lines. */}
                 <span class="block text-sm font-semibold leading-snug text-[var(--color-text)] sm:text-base">{role}</span>
                 <span class="mt-0.5 block text-xs text-[var(--color-text-dim)]">
-                  {logo && <span class="text-[var(--color-text-muted)]">{company} · </span>}
+                  {logo && <span class="font-normal text-[var(--color-text-muted)]">{company} · </span>}
                   <span class:list={[contract ? 'italic' : '']}>{period}</span>
-                  {contract && <span class="ml-1.5 uppercase tracking-wider opacity-60">Contract</span>}
+                  {contract && <span class="obs-label ml-2 text-[10px] opacity-70">Contract</span>}
                 </span>
               </span>
 
@@ -235,12 +235,12 @@ const faq = [
 
               <div class="mt-3 flex flex-wrap items-center gap-2">
                 {sector && (
-                  <span class="rounded-full border border-[var(--color-accent)]/15 bg-[var(--color-accent)]/8 px-2.5 py-0.5 text-[10px] font-medium text-[var(--color-accent)]">
+                  <span class="rounded-full border border-[var(--color-accent)]/15 bg-[var(--color-accent)]/8 px-2.5 py-0.5 text-xs font-medium text-[var(--color-accent)]">
                     {sector}
                   </span>
                 )}
                 {brands?.map((brand) => (
-                  <span class="rounded-full border border-[var(--color-border)] px-2.5 py-0.5 text-[10px] font-medium text-[var(--color-text-dim)]">
+                  <span class="rounded-full border border-[var(--color-border)] px-2.5 py-0.5 text-xs font-medium text-[var(--color-text-dim)]">
                     {brand}
                   </span>
                 ))}
@@ -290,11 +290,14 @@ const faq = [
                   alt=""
                   loading="lazy"
                   decoding="async"
-                  class="h-full w-full object-cover opacity-90 transition duration-300 group-hover:scale-[1.03] group-hover:opacity-100"
+                  class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                 />
-                <span class="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" aria-hidden="true"></span>
+                <span class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" aria-hidden="true"></span>
+                {/* Play badge only on the video. The article got one too when
+                    both cards gained a cover, which promised a player that is
+                    not there. */}
                 <span class="absolute bottom-3 left-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)] text-black shadow-lg">
-                  <Icon name="play" class="h-4 w-4" />
+                  <Icon name={icon === 'play' ? 'play' : (pressIconName[icon] ?? 'file-text')} class="h-4 w-4" />
                 </span>
               </span>
             ) : (
@@ -410,9 +413,13 @@ const faq = [
   }
 </style>
 
+{/* Ends on a full stop, not a question mark: the band renders the closing
+    punctuation in accent yellow, and a lone floating "?" read as a rendering
+    fault rather than a flourish. Copy is the ask itself, not a joke about
+    having just read a CV. */}
 <CTABand
-  heading="That is me. What are you building?"
-  subtext="If your GTM stack has grown into something nobody fully owns, that is the work I do. Send the mess."
+  heading="Tell me what is not converting."
+  subtext="If the GTM stack has grown into something nobody fully owns, that is the work. Bring the current state and the number you need to move."
   ctaSecondary="See the work"
   ctaSecondaryHref="/work/"
 />
