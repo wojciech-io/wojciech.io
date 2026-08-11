@@ -3,10 +3,12 @@ import CTABand from '../ui/CTABand.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import PageBackdrop from '../ui/PageBackdrop.astro';
 import FAQ from '../ui/FAQ.astro';
-import BrandLogos from '../ui/BrandLogos.astro';
 import Icon from '../ui/Icon.astro';
 
-// Press + video: styled icon links, no thumbnails. Each maps to a custom icon.
+// Press + video. The talk carries its YouTube still: i.ytimg.com is already in
+// the CSP img-src allowlist, so it loads without vendoring a copy. The article
+// has no usable image, so it keeps the icon treatment and the pair is laid out
+// to survive one card having a thumbnail and the other not.
 const pressIconName: Record<string, string> = { play: 'play', article: 'file-text' };
 const pressLinks = [
   {
@@ -16,6 +18,7 @@ const pressLinks = [
     detail: 'On stage with Bartosz Baziński on building products that solve real problems.',
     label: 'Watch on YouTube',
     icon: 'play',
+    thumb: 'https://i.ytimg.com/vi/UWJN-DwqDbE/hqdefault.jpg',
   },
   {
     href: 'https://mamstartup.pl/czy-mozna-budowac-globalny-startup-w-czasie-deglobalizacji/',
@@ -40,6 +43,7 @@ const timeline = [
     period: 'Oct 2025 – Mar 2026',
     role: 'Fractional GTM & Growth Lead',
     company: 'CodiLime',
+    logo: '/images/logos/codilime.svg',
     href: 'https://codilime.com',
     description: 'End-to-end GTM execution: AI-driven growth loops across content, SEO, paid and lifecycle; lead magnets, conversion assets, and revenue-linked measurement.',
     contract: true,
@@ -49,6 +53,7 @@ const timeline = [
     period: 'May – Oct 2025',
     role: 'Fractional Head of Marketing',
     company: 'WebWave',
+    logo: '/images/logos/webwave.svg',
     href: 'https://webwave.me',
     description: 'Fractional marketing leadership for an AI-powered website builder: GTM, positioning, commercial messaging, paid, SEO, and growth cadence.',
     contract: true,
@@ -58,6 +63,7 @@ const timeline = [
     period: '2024 – Oct 2025',
     role: 'Head of Growth & Web Development',
     company: 'Symfonia',
+    logo: '/images/logos/symfonia.webp',
     href: 'https://symfonia.pl',
     description: 'Growth, web development, UX/CRO, migration, SEO, lead generation, and integrated campaigns for a large-scale business software brand.',
     contract: false,
@@ -67,6 +73,7 @@ const timeline = [
     period: 'Oct 2023 – Dec 2024',
     role: 'Chief Marketing Officer',
     company: 'Tekhuset AS',
+    brands: ['iviSkin', 'Neatsvor'],
     href: 'https://tekhuset.no',
     description: 'Marketing strategy across Norway, Denmark, and Sweden. Led SEO and CRO for e-commerce brands, achieving top-3 rankings in Nordic markets and a 25% uplift in conversion rates.',
     contract: false,
@@ -76,6 +83,7 @@ const timeline = [
     period: 'Oct 2020 – Jun 2024',
     role: 'Global Head of Growth & Retention',
     company: 'SentiOne',
+    logo: '/images/logos/sentione.png',
     href: 'https://sentione.com',
     description: 'Built and scaled B2B SaaS growth and retention across Europe, UK, US, and LATAM: demand generation, enterprise GTM, lifecycle, and deal-cycle acceleration.',
     contract: false,
@@ -85,6 +93,7 @@ const timeline = [
     period: '2022',
     role: 'Global AI & Innovation Manager',
     company: 'Gi Group Holding',
+    logo: '/images/logos/gigroup.png',
     href: 'https://gigroupholding.com',
     description: 'Project work on AI initiatives, digital process mapping, and innovation roadmap alignment across multiple business units.',
     contract: true,
@@ -94,6 +103,7 @@ const timeline = [
     period: 'Oct 2019 – Oct 2020',
     role: 'Head of Lifecycle Marketing',
     company: 'GetResponse',
+    logo: '/images/logos/getresponse.svg?v=2',
     href: 'https://getresponse.com',
     description: 'Lifecycle marketing, CRM, segmentation, A/B testing, conversion optimisation, and customer engagement programs for a global SaaS product.',
     contract: false,
@@ -103,6 +113,7 @@ const timeline = [
     period: '2018 – 2019',
     role: 'Head of Digital',
     company: 'Marquard Group',
+    brands: ['Cosmopolitan', 'Esquire', "Harper's Bazaar", 'Joy', 'Playboy'],
     href: 'https://www.marquardgroup.com',
     description: 'Digital strategy, SEO, UX, PPC, and multi-brand publishing growth across a 9-portal media portfolio.',
     contract: false,
@@ -212,22 +223,11 @@ const faq = [
     <PageBackdrop src="/images/wojciech-office.webp" position="center 28%" opacity={0.12} eager />
 
     <div class="relative mx-auto max-w-6xl px-6">
-      <div class="grid lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] gap-10 md:gap-16 items-center animate-fade-up mb-12 md:mb-14">
-
-        <!-- Portrait photo: fills its column, no dead space beside it -->
-        <div class="relative w-full max-w-[20rem] lg:max-w-none aspect-[4/5] rounded-[var(--radius-card)] overflow-hidden shadow-[0_0_36px_rgba(235,255,0,0.08)] ring-1 ring-[var(--color-border)]">
-          <img
-            src="/images/wojciech-hero-tight.webp"
-            alt="Wojciech Łuszczyński"
-            class="w-full h-full object-cover object-[center_20%]"
-            width="1400"
-            height="1750"
-            loading="eager"
-            decoding="async"
-            fetchpriority="high"
-          />
-        </div>
-
+      {/* Text-only hero, the same shape every other top-level page uses. The
+          stock portrait that sat beside this said nothing the copy does not
+          say better, and on a phone it pushed the first sentence most of a
+          screen down. The office shot stays as the 12% backdrop. */}
+      <div class="max-w-3xl animate-fade-up mb-12 md:mb-14">
         <div>
           <div class="flex items-center gap-3 mb-4">
             <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
@@ -286,43 +286,82 @@ const faq = [
   <!-- Experience: logo wall + rail timeline, full width -->
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader eyebrow="Experience" heading="Where I've operated." class="mb-8" />
-      <BrandLogos variant="wrap" class="mb-12 md:mb-16" />
+      <SectionHeader
+        eyebrow="Experience"
+        heading="Where I've operated."
+        lead="Every role collapsed to the company and the years. Open one to see what the work actually was."
+        class="mb-10"
+      />
 
-      <div class="relative max-w-5xl">
-        <span class="absolute left-[3px] top-2 bottom-2 w-px bg-gradient-to-b from-[var(--color-accent)]/50 via-[var(--color-border)] to-[var(--color-border)] opacity-70" aria-hidden="true"></span>
-        {timeline.map(({ period, role, company, href, description, contract, sector }, i) => (
-          <div class:list={['relative grid sm:grid-cols-[150px_1fr] gap-x-8 gap-y-2 pl-9 sm:pl-11 py-6 border-b border-[var(--color-border)]', i === 0 ? 'pt-0' : '']}>
-            <span
-              class:list={[
-                'absolute left-0 h-[7px] w-[7px] rounded-full ring-[3px] ring-[var(--color-surface)]',
-                i === 0 ? 'top-[0.55rem] bg-[var(--color-accent)] shadow-[0_0_10px_1px_rgb(235_255_0/0.4)]' : 'top-[1.95rem] bg-[var(--color-text-dim)]',
-              ]}
-              aria-hidden="true"
-            ></span>
-            <div class="pt-0.5">
-              <p class:list={['text-xs font-mono text-[var(--color-text-dim)]', contract ? 'italic' : '']}>{period}</p>
-              {contract && <span class="mt-1 inline-block text-[9px] font-semibold uppercase tracking-wider text-[var(--color-text-dim)] opacity-60">Contract</span>}
-            </div>
-            <div>
-              <p class="text-base font-semibold text-[var(--color-text)] mb-1.5">{role}</p>
-              <div class="flex flex-wrap items-center gap-2 mb-2">
-                {href
-                  ? <a href={href} target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors inline-flex items-center gap-1 group">
-                      {company}
-                      <Icon name="external-link" class="w-3 h-3 opacity-40 group-hover:opacity-80 transition-opacity" />
-                    </a>
-                  : <p class="text-sm font-medium text-[var(--color-text-muted)]">{company}</p>
+      {/* Native <details>, no JavaScript. Each brand mark now sits on the role
+          it belongs to instead of in a flat wall above the timeline, where
+          thirteen unrelated logos read as a pile and wrapped into a block of
+          their own on a phone. The media and commerce marks travel with the
+          roles that earned them, as `brands` inside the open panel. */}
+      <div class="max-w-4xl divide-y divide-[var(--color-border)] border-y border-[var(--color-border)]">
+        {timeline.map(({ period, role, company, logo, brands, href, description, contract, sector }, i) => (
+          <details class="role group" open={i === 0}>
+            <summary class="flex cursor-pointer list-none items-center gap-4 py-5 transition-colors hover:bg-[var(--color-surface)]/60">
+              {/* Fixed box so rows line up whether or not a mark exists. It
+                  narrows on a phone: at 104px the logo column was taking a
+                  third of a 375px screen and squeezing the role title, which
+                  is the line people actually scan. */}
+              <span class="flex h-8 w-[76px] shrink-0 items-center sm:w-[104px]">
+                {logo
+                  ? <img src={logo} alt="" width="104" height="28" loading="lazy" decoding="async" class="role-logo max-h-6 w-auto max-w-full sm:max-h-7" />
+                  : <span class="text-xs font-semibold leading-tight text-[var(--color-text)] sm:text-sm">{company}</span>
                 }
+              </span>
+
+              <span class="min-w-0 flex-1">
+                {/* Wraps rather than truncates. "Head of Growth & Web D…" tells
+                    the reader nothing, and the row can afford two lines. */}
+                <span class="block text-sm font-semibold leading-snug text-[var(--color-text)] sm:text-base">{role}</span>
+                <span class="mt-0.5 block text-xs text-[var(--color-text-dim)]">
+                  {logo && <span class="text-[var(--color-text-muted)]">{company} · </span>}
+                  <span class:list={[contract ? 'italic' : '']}>{period}</span>
+                  {contract && <span class="ml-1.5 uppercase tracking-wider opacity-60">Contract</span>}
+                </span>
+              </span>
+
+              {/* The rotation is on this wrapper, not on the icon itself.
+                  Tailwind's group-open: utility produced no transform here,
+                  and a scoped rule cannot reach the <svg> because that element
+                  belongs to Icon.astro, not to this template. A span this
+                  template owns sidesteps both. */}
+              <span class="role-chevron flex shrink-0 text-[var(--color-text-dim)]">
+                <Icon name="chevron-down" class="h-4 w-4" />
+              </span>
+            </summary>
+
+            <div class="pb-6 pl-0 sm:pl-[120px] -mt-1">
+              <p class="max-w-2xl text-sm leading-relaxed text-[var(--color-text-muted)]">{description}</p>
+
+              <div class="mt-3 flex flex-wrap items-center gap-2">
                 {sector && (
-                  <span class="text-[10px] font-medium text-[var(--color-accent)] bg-[var(--color-accent)]/8 border border-[var(--color-accent)]/15 rounded-full px-2.5 py-0.5">
+                  <span class="rounded-full border border-[var(--color-accent)]/15 bg-[var(--color-accent)]/8 px-2.5 py-0.5 text-[10px] font-medium text-[var(--color-accent)]">
                     {sector}
                   </span>
                 )}
+                {brands?.map((brand) => (
+                  <span class="rounded-full border border-[var(--color-border)] px-2.5 py-0.5 text-[10px] font-medium text-[var(--color-text-dim)]">
+                    {brand}
+                  </span>
+                ))}
+                {href && (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group/link inline-flex items-center gap-1 text-xs font-medium text-[var(--color-text-dim)] transition-colors hover:text-[var(--color-accent-hi)]"
+                  >
+                    {company}
+                    <Icon name="external-link" class="h-3 w-3 opacity-40 transition-opacity group-hover/link:opacity-80" />
+                  </a>
+                )}
               </div>
-              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed max-w-xl">{description}</p>
             </div>
-          </div>
+          </details>
         ))}
       </div>
     </div>
@@ -336,19 +375,42 @@ const faq = [
         heading="Press and video."
         class="mb-10"
       />
-      <div class="grid sm:grid-cols-2 gap-4">
-        {pressLinks.map(({ href, source, title, detail, label, icon }, index) => (
+      <div class="grid gap-4 sm:grid-cols-2">
+        {pressLinks.map(({ href, source, title, detail, label, icon, thumb }, index) => (
           <a
             href={href}
             target="_blank"
             rel="noopener noreferrer"
             data-reveal-index={index + 1}
-            class="reveal-up group flex items-start gap-4 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 card-hover"
+            class="reveal-up group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover"
           >
-            <span class="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-badge)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent-hi)] transition-colors group-hover:border-[var(--color-accent)]/50 group-hover:bg-[var(--color-accent)]/20">
-              <Icon name={pressIconName[icon] ?? 'play'} class="h-5 w-5" />
-            </span>
-            <div class="min-w-0 flex-1">
+            {thumb ? (
+              /* 16:9 still with a play badge over it. The card without a
+                 thumbnail gets a matching band instead of a shorter card, so
+                 the pair stays the same height on one row. */
+              <span class="relative block aspect-video overflow-hidden bg-[var(--color-bg)]">
+                <img
+                  src={thumb}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover opacity-90 transition duration-300 group-hover:scale-[1.03] group-hover:opacity-100"
+                />
+                <span class="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" aria-hidden="true"></span>
+                <span class="absolute bottom-3 left-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)] text-black shadow-lg">
+                  <Icon name="play" class="h-4 w-4" />
+                </span>
+              </span>
+            ) : (
+              <span class="relative flex aspect-video items-center justify-center overflow-hidden bg-[linear-gradient(135deg,var(--color-surface),var(--color-bg))]">
+                <span class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:28px_28px] opacity-60" aria-hidden="true"></span>
+                <span class="relative inline-flex h-12 w-12 items-center justify-center rounded-[var(--radius-badge)] border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent-hi)] transition-colors group-hover:border-[var(--color-accent)]/50 group-hover:bg-[var(--color-accent)]/20">
+                  <Icon name={pressIconName[icon] ?? 'file-text'} class="h-5 w-5" />
+                </span>
+              </span>
+            )}
+
+            <div class="min-w-0 flex-1 p-5">
               <span class="obs-label-accent mb-1.5 block">{source}</span>
               <h3 class="text-sm font-semibold leading-snug text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">{title}</h3>
               <p class="mt-1.5 text-xs leading-relaxed text-[var(--color-text-muted)]">{detail}</p>
@@ -396,6 +458,61 @@ const faq = [
       </div>
     </div>
   </section>
+
+<style>
+  /* Kill the native disclosure triangle in both engines; the chevron in the
+     summary is the affordance. ::-webkit-details-marker is still needed for
+     Safari, which ignores list-style on <summary>. */
+  .role > summary::-webkit-details-marker {
+    display: none;
+  }
+  .role > summary::marker {
+    content: '';
+  }
+  .role > summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+    border-radius: var(--radius-btn);
+  }
+
+  /* Same monochrome silhouette the marquee uses, so mixed brand colours read
+     as one set and stay legible in both themes. */
+  .role-logo {
+    object-fit: contain;
+    object-position: left center;
+    filter: brightness(0);
+    opacity: 0.55;
+    transition: opacity 0.15s ease;
+  }
+  :root[data-theme='dark'] .role-logo {
+    filter: brightness(0) invert(1);
+    opacity: 0.6;
+  }
+  .role > summary:hover .role-logo,
+  .role[open] .role-logo {
+    opacity: 0.9;
+  }
+
+  /* The standalone `rotate` property, not `transform`. Something further up
+     the cascade already resolves `transform` on this span to the identity
+     matrix, which silently swallowed a `transform: rotate(180deg)` here.
+     `rotate` composes independently and is not affected by it. */
+  /* The chevron does not flip, deliberately. Rotating it on [open] applies
+     correctly to the row the server renders open and then refuses to apply to
+     any row toggled in the browser: the computed value settles at 0deg on
+     click, through both `transform` and the standalone `rotate` property, with
+     the selector verified as matching. A chevron that turns on one row and not
+     the others is worse than one that never turns, so it stays put and the
+     open panel itself is the state cue. */
+  .role-chevron {
+    opacity: 0.7;
+    transition: opacity 0.15s ease;
+  }
+  .role > summary:hover .role-chevron,
+  .role[open] .role-chevron {
+    opacity: 1;
+  }
+</style>
 
 <CTABand
   heading="That is me. What are you building?"
