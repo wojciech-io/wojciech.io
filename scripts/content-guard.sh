@@ -16,8 +16,16 @@ set -euo pipefail
 # Extend this list when new NDA clients are onboarded.
 BANNED_TERMS=(
   # NDA client names — exact matches only (case-insensitive via grep -i)
+  #
+  # Crewly was removed on 2026-08-11: it is Wojciech's own anonymized project
+  # and is cleared for publication, so blocking it here only ever stopped him
+  # writing about his own work.
+  #
+  # Before adding a term, check it against Polish. These are substring matches
+  # under grep -i, so a term that is also a Polish word fragment will fire on
+  # every article: "Definic" would match "definicja" in nine PL insights. Such
+  # a term needs a word-boundary regex like "\bDefinic\b", not a bare string.
   "Kadromierz"
-  "Crewly"
   "tablica-growth"
   "tablica_growth"
   # Raw secret key patterns (Stripe, generic)

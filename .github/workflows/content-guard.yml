@@ -32,3 +32,44 @@ jobs:
       - name: Run content guard (full scan)
         if: github.event_name != 'pull_request'
         run: bash scripts/content-guard.sh
+
+  # Separate job on purpose. The scan above is a gate and must stay red when it
+  # trips; this one is a report and must never block a merge, so it lives in its
+  # own check that always succeeds. Keep it out of the required-checks list.
+  anti-slop:
+    name: Anti-slop lint (advisory)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Install Vale
+        env:
+          VALE_VERSION: 3.17.0
+          VALE_SHA256: a903f1f60c3293fac643e0137f599a462881cc691ee19d6120dcfc786f1be86d
+        run: |
+          set -euo pipefail
+          url="https://github.com/errata-ai/vale/releases/download/v${VALE_VERSION}/vale_${VALE_VERSION}_Linux_64-bit.tar.gz"
+          curl -sSfL -o vale.tar.gz "$url"
+          # Pinned version plus checksum: the styles package this tool then
+          # downloads is also pinned, so two runs on the same content are
+          # comparable and a swapped release cannot slip in unnoticed.
+          echo "${VALE_SHA256}  vale.tar.gz" | sha256sum -c -
+          tar -xzf vale.tar.gz vale
+          sudo install -m 0755 vale /usr/local/bin/vale
+          vale --version
+
+      - name: Sync styles
+        run: vale sync
+
+      - name: Report (PR diff)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: bash scripts/anti-slop.sh --diff "$BASE" "$HEAD" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report (full scan)
+        if: github.event_name != 'pull_request'
+        run: bash scripts/anti-slop.sh >> "$GITHUB_STEP_SUMMARY"
