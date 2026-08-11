@@ -92,17 +92,20 @@ const decodeEntities = (s) =>
  *
  * `\b` keeps `</scriptfoo>` out, which is an end tag for a different element.
  *
- * The second pass catches an unterminated block, which a truncated response
+ * Script and style share one literal pattern with a backreference, so the
+ * close must match the element that opened and the two can never drift apart
+ * the way they did when they were separate lines. Building these with
+ * `new RegExp` and a name argument would read as a dynamic regex to the SAST
+ * gate, which blocks on it, so the alternation is spelled out here instead.
+ *
+ * The second pattern catches an unterminated block, which a truncated response
  * can produce, by dropping everything from the opening tag to the end.
  */
-const stripElement = (html, name) =>
-  html
-    .replace(new RegExp(`<${name}\\b[^>]*>[\\s\\S]*?</${name}\\b[^>]*>`, 'gi'), ' ')
-    .replace(new RegExp(`<${name}\\b[^>]*>[\\s\\S]*$`, 'i'), ' ');
-
 const htmlToText = (html) =>
   decodeEntities(
-    stripElement(stripElement(html, 'script'), 'style')
+    html
+      .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1\b[^>]*>/gi, ' ')
+      .replace(/<(script|style)\b[^>]*>[\s\S]*$/i, ' ')
       .replace(/<!--[\s\S]*?-->/g, ' ')
       .replace(/<[^>]*>/g, ' '),
   );
