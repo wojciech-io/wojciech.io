@@ -41,86 +41,56 @@ const pressLinks = [
    sub-brands are how a role looks on this page, not what the role was, so they
    are keyed by company rather than pushed into the CV data. */
 const PRESENTATION: Record<string, { logo?: string; href?: string; sector?: string; brands?: string[] }> = {
-  'CodiLime':             { logo: '/images/logos/codilime.svg',        href: 'https://codilime.com',       sector: 'Cloud · DevOps · Enterprise' },
-  'WebWave':              { logo: '/images/logos/webwave.svg',         href: 'https://webwave.me',         sector: 'SaaS · Website Builder · AI' },
-  'Symfonia':             { logo: '/images/logos/symfonia.webp',       href: 'https://symfonia.pl',        sector: 'ERP · Business Software' },
-  'Tekhuset':             {                                            href: 'https://tekhuset.no',        sector: 'E-commerce · Nordics', brands: ['iviSkin', 'Neatsvor'] },
-  'SentiOne':             { logo: '/images/logos/sentione.png',        href: 'https://sentione.com',       sector: 'B2B SaaS · AI · Social Listening' },
-  'GetResponse':          { logo: '/images/logos/getresponse.svg?v=2', href: 'https://getresponse.com',    sector: 'Email · Marketing Automation' },
-  'Gi Group Holding':     { logo: '/images/logos/gigroup.png',         href: 'https://gigroupholding.com', sector: 'HR Tech · Enterprise' },
-  'Marquard Media Group': {                                            href: 'https://www.marquardgroup.com', sector: 'Media · Publishing', brands: ['Cosmopolitan', 'Esquire', "Harper's Bazaar", 'Joy', 'Playboy'] },
-  'Lilla House Digital':  {                                            href: 'https://lhdigital.pl',       sector: 'Digital Agency' },
-  'City of \u0141\u00f3d\u017a Office':  {                                            href: 'https://lodz.pl',            sector: 'Government · Public Sector' },
+  'CodiLime':             { logo: '/images/logos/codilime.svg',        href: 'https://codilime.com',          sector: 'B2B technology services · SaaS GTM model' },
+  'WebWave':              { logo: '/images/logos/webwave.svg',         href: 'https://webwave.me',            sector: 'AI SaaS website builder' },
+  'Symfonia':             { logo: '/images/logos/symfonia.webp',       href: 'https://symfonia.pl',           sector: 'ERP / business software · web growth' },
+  'Tekhuset':             {                                            href: 'https://tekhuset.no',           sector: 'Nordic ecommerce · DTC · performance', brands: ['iviSkin', 'Neatsvor'] },
+  'SentiOne':             { logo: '/images/logos/sentione.png',        href: 'https://sentione.com',          sector: 'B2B SaaS · AI social listening and conversational AI' },
+  'GetResponse':          { logo: '/images/logos/getresponse.svg?v=2', href: 'https://getresponse.com',       sector: 'Email · marketing automation · global SaaS' },
+  'Gi Group Holding':     { logo: '/images/logos/gigroup.png',         href: 'https://gigroupholding.com',    sector: 'HR tech · enterprise AI' },
+  'Marquard Media Group': { logo: '/images/logos/marquard.svg',        href: 'https://www.marquardgroup.com', sector: 'Media group · nine portal digital portfolio', brands: ['Cosmopolitan', 'Esquire', "Harper's Bazaar", 'Joy', 'Playboy'] },
+  'Lilla House Digital':  { logo: '/images/logos/lhdigital.svg',       href: 'https://lhdigital.pl',          sector: 'SEO · paid · social · content' },
+  'City of \u0141\u00f3d\u017a Office':  { logo: '/images/logos/lodz.png',            href: 'https://lodz.pl',               sector: 'Brand · PR · campaigns' },
+  'mBank':                {                                            href: 'https://www.mbank.pl',          sector: 'B2C finance · banking · product acquisition' },
+  'LCDNiKP':              {                                            href: 'https://wckp.lodz.pl',          sector: 'Education · web design · internet services' },
 };
 
-const timeline = [
-  /* Present-day entry, and the only one not from the CV: it is what this site
-     is, and it keeps the page from opening on a role that already ended. */
-  {
-    period: 'Now',
-    role: 'Independent operator',
-    company: 'wojciech.io',
-    bullets: [
-      'Building the public portfolio, app workspace, case studies and AI-native GTM tooling as one operating system',
-    ],
-    contract: false,
-    sector: 'AI · GTM · Products',
-  },
-  ...cvData.experience.map((entry) => ({
-    // The CV renders "present" separately so it can be localised, and wraps
-    // the range over two lines to fit its column. Neither applies here.
-    period: entry.period.replace(/\n/g, ' '),
-    role: entry.role.en,
-    company: entry.company,
-    bullets: entry.bullets.en,
-    contract: entry.contract ?? false,
-    ...PRESENTATION[entry.company],
-  })),
-];
+const timeline = cvData.experience.map((entry) => ({
+  // The CV renders "present" separately so it can be localised, and wraps the
+  // range over two lines to fit its column. Neither applies here.
+  period: entry.period.replace(/\n/g, ' '),
+  role: entry.role.en,
+  company: entry.company,
+  bullets: entry.bullets.en,
+  contract: entry.contract ?? false,
+  ...PRESENTATION[entry.company],
+}));
 
-const traits = [
+/* The CV's own SELECTED IMPACT block. What stood here before was four cards
+   reading Role / Focus / Practice / Proof, and the last one said "Built and
+   shipped: products, workflows, case studies, and writing", which is a
+   sentence that survives being said about anybody. These are numbers with a
+   named company attached, so they can be checked and they cannot be recycled. */
+const impact = [
   {
-    icon: 'target',
-    label: 'Operator, not advisor',
-    body: 'I build and run the systems myself. Scope, then ship, then stay in until it works. If the right tool doesn\'t exist, I write it.',
+    value: '+200%',
+    label: 'pipeline',
+    detail: 'from AI-native targeting, outbound, CRM intelligence and revenue cadence',
   },
   {
-    icon: 'agent',
-    label: 'AI-native by practice',
-    body: 'Not a prompt engineer. I redesign the architecture of growth systems using AI: how they\'re built, iterated, and operated at scale.',
+    value: '+80%',
+    label: 'new customers · SentiOne',
+    detail: 'through lifecycle experiments and funnel governance',
   },
   {
-    icon: 'package',
-    label: 'Builder with business context',
-    body: 'I can move from revenue strategy to a working product in the same engagement. That range is rare, and I maintain it deliberately.',
+    value: '+60% / +50%',
+    label: 'brand recognition · organic traffic',
+    detail: 'via SEO systems, category content and AEO',
   },
   {
-    icon: 'pipeline',
-    label: 'Systems over sprints',
-    body: 'Compounding returns, not quarterly campaigns. The output is a system that runs without me in the loop.',
-  },
-];
-
-const proofPoints = [
-  {
-    label: 'Role',
-    value: 'GTM architect',
-    detail: 'Growth operator and AI-native builder',
-  },
-  {
-    label: 'Focus',
-    value: 'Revenue systems',
-    detail: 'For B2B SaaS and technology companies',
-  },
-  {
-    label: 'Practice',
-    value: '20 years',
-    detail: '10 B2B SaaS · 10 GTM · Europe, UK, US, LATAM',
-  },
-  {
-    label: 'Proof',
-    value: 'Built and shipped',
-    detail: 'Products, workflows, case studies, and writing',
+    value: '+30% / +25%',
+    label: 'Symfonia leads · Tekhuset conversion',
+    detail: 'through CRO, analytics and checkout work',
   },
 ];
 
@@ -186,43 +156,21 @@ const faq = [
         </div>
       </div>
 
-      <!-- Proof rail -->
-      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {proofPoints.map(({ label, value, detail }) => (
-          <div class="obs-panel px-5 py-4 backdrop-blur-sm bg-[rgb(var(--color-surface-rgb)/0.72)]">
-            <span class="obs-label-accent mb-2 block">{label}</span>
-            <p class="text-base font-semibold text-[var(--color-text)]">{value}</p>
-            <p class="mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">{detail}</p>
+      {/* Numbers first, and each one names where it happened. A number with a
+          company on it is checkable; "built and shipped" is not. */}
+      <div class="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-2 lg:grid-cols-4">
+        {impact.map(({ label, value, detail }) => (
+          <div class="bg-[rgb(var(--color-surface-rgb)/0.86)] px-5 py-6 backdrop-blur-sm">
+            <p class="text-[length:clamp(1.5rem,1.4vw+1.1rem,2rem)] font-semibold leading-none tracking-tight text-[var(--color-text)]">{value}</p>
+            <p class="mt-2.5 text-[13px] font-medium leading-snug text-[var(--color-text)]">{label}</p>
+            <p class="mt-1.5 text-xs leading-relaxed text-[var(--color-text-muted)]">{detail}</p>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- What makes me atypical -->
-  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
-    <div class="mx-auto max-w-6xl px-6">
-      <SectionHeader
-        eyebrow="What makes me different"
-        heading="I connect revenue strategy, AI workflows, and shipped software into one operating model."
-        maxWidth="max-w-3xl"
-        class="mb-12"
-      />
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {traits.map(({ icon, label, body }) => (
-          <div class="obs-panel obs-glow p-7 card-lift">
-            <div class="w-9 h-9 rounded-lg bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/20 flex items-center justify-center mb-5">
-              <Icon name={icon} class="w-[18px] h-[18px] text-[var(--color-accent-hi)]" />
-            </div>
-            <h3 class="text-base font-semibold text-[var(--color-text)] mb-2">{label}</h3>
-            <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{body}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Experience: logo wall + rail timeline, full width -->
+  <!-- Experience: one collapsible row per role, straight from the CV -->
   <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
     <div class="mx-auto max-w-6xl px-6">
       <SectionHeader
