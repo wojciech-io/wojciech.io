@@ -1,4 +1,7 @@
 import { describe, it, expect } from 'vitest';
+import { existsSync, readdirSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { CAL_BOOKING_LINK } from '../data/site';
 import { localizedHome, localizedHomeList } from '../data/locales';
 import {
   localizedPages,
@@ -8,6 +11,10 @@ import {
   htmlLangForLocale,
   ogLocaleForLocale,
 } from '../data/localizedPages';
+
+// Single source of truth for the booking URL. The old literal here pinned
+// `.../30min`, which returns 404; the live slug is `30-minutes`.
+const CAL_BOOKING_URL = `https://cal.com/${CAL_BOOKING_LINK}`;
 
 const EXPECTED_LOCALES = ['de', 'dk', 'no', 'jp', 'it', 'es', 'pl'] as const;
 const EXPECTED_SLUGS = ['about', 'work', 'gtm', 'marketing', 'growth', 'ai-systems', 'contact', 'insights'] as const;
@@ -146,9 +153,7 @@ describe('localizedPages', () => {
   it('primaryHref is a valid path or Cal.com booking URL', () => {
     for (const copy of localizedPages) {
       if (copy.slug === 'contact') {
-        expect(copy.primaryHref, `${copy.locale}/contact primaryHref`).toBe(
-          'https://cal.com/wojciech-luszczynski/30min',
-        );
+        expect(copy.primaryHref, `${copy.locale}/contact primaryHref`).toBe(CAL_BOOKING_URL);
       } else {
         expect(copy.primaryHref, `${copy.locale}/${copy.slug} primaryHref`).toMatch(/^\//);
       }
@@ -156,16 +161,27 @@ describe('localizedPages', () => {
   });
 
   it('localized CTA hrefs stay inside the active locale when a localized target exists', () => {
+    // Derived, not listed. The previous version asserted that every locale's
+    // insights CTA must be `/${locale}/insights/`, which is why twelve of them
+    // pointed at routes that were never built: six locales have no articles,
+    // so those pages do not exist and both CTAs on each were 404s.
+    //
+    // Reading the content directory instead means the rule is "point at an
+    // index that has something in it", and the test tightens on its own the
+    // day articles land in a new locale.
+    const hasArticles = (locale: string) => {
+      const dir = resolve(`./src/content/insights/${locale}`);
+      if (!existsSync(dir)) return false;
+      return readdirSync(dir).some((f) => f.endsWith('.md') || f.endsWith('.mdx'));
+    };
+
     for (const copy of localizedPages) {
       if (copy.slug === 'contact') {
-        expect(copy.primaryHref, `${copy.locale}/contact primaryHref`).toBe(
-          'https://cal.com/wojciech-luszczynski/30min',
-        );
+        expect(copy.primaryHref, `${copy.locale}/contact primaryHref`).toBe(CAL_BOOKING_URL);
       }
       if (copy.slug === 'insights') {
-        expect(copy.primaryHref, `${copy.locale}/insights primaryHref`).toBe(
-          `/${copy.locale}/insights/`,
-        );
+        const expected = hasArticles(copy.locale) ? `/${copy.locale}/insights/` : '/insights/';
+        expect(copy.primaryHref, `${copy.locale}/insights primaryHref`).toBe(expected);
       }
     }
   });
