@@ -73,3 +73,51 @@ jobs:
       - name: Report (full scan)
         if: github.event_name != 'pull_request'
         run: bash scripts/anti-slop.sh >> "$GITHUB_STEP_SUMMARY"
+
+  # Weekly only. This reads other people's live pages, so it has no business
+  # running on every push, and a third party editing their own docs is not a
+  # reason to fail anybody's build. It opens an issue instead.
+  source-decay:
+    name: Source decay (weekly)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Re-read declared sources
+        id: check
+        run: |
+          set -euo pipefail
+          node scripts/check-sources.mjs > report.md
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+          # Only escalate when a pinned quote is actually gone. "Unreachable"
+          # alone is too noisy to open an issue over: a bot block and a deleted
+          # page look identical from a runner.
+          if grep -q '\*\*drifted\*\*' report.md; then
+            echo "drifted=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "drifted=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open an issue if a quote has gone
+        if: steps.check.outputs.drifted == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # No --label: the repo has no matching label, and gh fails the step
+          # rather than creating the issue without one.
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "Source drift: a quoted fragment is no longer at its source" \
+            --body-file report.md

@@ -23,6 +23,23 @@ const insights = defineCollection({
     category: z.enum(['AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products']).optional(),
     locale: z.enum(ALL_LOCALES).default('en'),
     translationOf: z.string().optional(),
+    // External claims this article rests on, so scripts/check-sources.mjs can
+    // re-read them on a schedule. A comparison post is true on the day it ships
+    // and quietly stops being true when the other side edits their docs or
+    // changes a price, with no commit here to mark the moment.
+    //
+    // `quote` must be copied verbatim from the source. The checker normalizes
+    // whitespace before comparing, so a fragment wrapped across lines still
+    // matches, but a paraphrase will not and should not.
+    sources: z.array(z.object({
+      url: z.string().url(),
+      /** Exact fragment that must still be present. Omit to check reachability only. */
+      quote: z.string().optional(),
+      /** What this source is being cited for. Shown in the drift report. */
+      claim: z.string().optional(),
+      /** Date the quote was last confirmed by hand. */
+      checkedAt: z.coerce.date(),
+    })).optional(),
   }),
 });
 
