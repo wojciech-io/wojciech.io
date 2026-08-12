@@ -3,7 +3,11 @@
  *
  * EU data residency: events + config go to eu.i.posthog.com (assets on
  * eu-assets.i.posthog.com). The project key is a PUBLIC, write-only ingestion
- * token injected at build from PUBLIC_POSTHOG_KEY (set in Cloudflare Pages env).
+ * token inlined at build time from PUBLIC_POSTHOG_KEY. Production is built in
+ * GitHub Actions (.github/workflows/deploy.yml), not by Cloudflare, so the value
+ * has to be a GitHub Actions secret. A Cloudflare Pages environment variable of
+ * the same name is runtime-only and never reaches the bundle: setting it there
+ * looks like a fix and changes nothing.
  * Absent locally -> init() is a no-op, so dev/test never talk to PostHog.
  *
  * Consent gate: opt_out_capturing_by_default keeps everything silent until
