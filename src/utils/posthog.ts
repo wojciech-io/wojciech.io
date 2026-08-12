@@ -3,7 +3,15 @@
  *
  * EU data residency: events + config go to eu.i.posthog.com (assets on
  * eu-assets.i.posthog.com). The project key is a PUBLIC, write-only ingestion
- * token injected at build from PUBLIC_POSTHOG_KEY (set in Cloudflare Pages env).
+ * token injected at build from PUBLIC_POSTHOG_KEY.
+ *
+ * It lives in the GITHUB ACTIONS secrets, not in Cloudflare. This is a static
+ * build and `PUBLIC_` vars are inlined by Vite at build time, and the build
+ * runs in .github/workflows/deploy.yml, not on Cloudflare's side. A Pages
+ * secret of the same name is runtime-only and never reaches the bundle. This
+ * comment used to say Cloudflare, and there is now a dead Pages secret called
+ * PUBLIC_POSTHOG_KEY sitting there as evidence of somebody following it.
+ *
  * Absent locally -> init() is a no-op, so dev/test never talk to PostHog.
  *
  * Consent gate: opt_out_capturing_by_default keeps everything silent until
