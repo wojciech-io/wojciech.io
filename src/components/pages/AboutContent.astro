@@ -49,8 +49,17 @@ const PRESENTATION: Record<string, { logo?: string; href?: string; sector?: stri
   'GetResponse':          { logo: '/images/logos/getresponse.svg?v=2', href: 'https://getresponse.com',       sector: 'Email · marketing automation · global SaaS' },
   'Gi Group Holding':     { logo: '/images/logos/gigroup.png',         href: 'https://gigroupholding.com',    sector: 'HR tech · enterprise AI' },
   'Marquard Media Group': { logo: '/images/logos/marquard.svg',        href: 'https://www.marquardgroup.com', sector: 'Media group · nine portal digital portfolio', brands: ['Cosmopolitan', 'Esquire', "Harper's Bazaar", 'Joy', 'Playboy'] },
-  'Lilla House Digital':  { logo: '/images/logos/lhdigital.svg',       href: 'https://lhdigital.pl',          sector: 'SEO · paid · social · content' },
-  'City of \u0141\u00f3d\u017a Office':  { logo: '/images/logos/lodz.png',            href: 'https://lodz.pl',               sector: 'Brand · PR · campaigns' },
+  /* No mark for these two on purpose. Logos here render through
+     `filter: brightness(0)`, which keeps alpha and flattens colour, so the
+     treatment only works for marks that are shape-on-transparent. The lodz.pl
+     logo is knockout type inside a solid red plate: every pixel is opaque, so
+     the filter produced a featureless black slab with the wordmark gone. The
+     LH Digital mark is a two-tone logotype whose whole idea is the colour
+     split, which the same filter collapses. The text fallback reads better
+     than either. Restoring a mark here needs a transparent-background version,
+     not a different file. */
+  'Lilla House Digital':  {                                            href: 'https://lhdigital.pl',          sector: 'SEO · paid · social · content' },
+  'City of \u0141\u00f3d\u017a Office':  {                                            href: 'https://lodz.pl',               sector: 'Brand · PR · campaigns' },
   'mBank':                {                                            href: 'https://www.mbank.pl',          sector: 'B2C finance · banking · product acquisition' },
   'LCDNiKP':              {                                            href: 'https://wckp.lodz.pl',          sector: 'Education · web design · internet services' },
 };
