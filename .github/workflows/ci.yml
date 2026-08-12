@@ -90,22 +90,16 @@ jobs:
         if: steps.pw-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium webkit
 
-      # Only what genuinely needs a browser. The static markup assertions that
-      # used to run here (seo, hreflang, locale-html-lang, meta-assets) moved to
-      # `npm run test:built` in the build job. The interaction specs below were
-      # never wired into CI at all, so the cookie banner, the mobile nav and the
-      # insights filter shipped unverified.
+      # Runs the whole tests/e2e directory. This used to be a hand-maintained
+      # list of spec files, which silently drifted: three specs sat in the
+      # directory without ever running, and a green check covered 8 of 11.
+      # Adding a spec to tests/e2e is now enough to get it verified.
+      # visual.spec.ts is excluded via testIgnore in playwright.config.ts
+      # (macOS baselines do not survive a Linux runner).
+      # The static markup assertions that used to run here (seo, hreflang,
+      # locale-html-lang, meta-assets) live in `npm run test:built`.
       - name: Run browser-dependent E2E
-        run: >
-          npx playwright test
-          tests/e2e/smoke.spec.ts
-          tests/e2e/a11y.spec.ts
-          tests/e2e/links.spec.ts
-          tests/e2e/critical-paths.spec.ts
-          tests/e2e/cookie-banner.spec.ts
-          tests/e2e/mobile-nav.spec.ts
-          tests/e2e/insights-filter.spec.ts
-          tests/e2e/contact-form.spec.ts
+        run: npx playwright test tests/e2e
         env:
           CI: "true"
 
