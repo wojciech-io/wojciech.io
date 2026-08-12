@@ -17,6 +17,11 @@ const IS_PROD_SMOKE = BASE_URL.startsWith('https://');
 
 export default defineConfig({
   testDir: './tests',
+  // Screenshot baselines are generated on macOS and do not reproduce on the
+  // Linux CI runner, so visual regression stays a local-only suite. Everything
+  // else in tests/e2e runs in CI, which is why the workflow points at the
+  // directory instead of listing files.
+  testIgnore: IS_CI ? ['**/visual.spec.ts'] : [],
   fullyParallel: true,
   forbidOnly: IS_CI,
   retries: IS_CI ? 2 : 0,

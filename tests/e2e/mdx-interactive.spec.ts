@@ -41,10 +41,11 @@ test.describe('Interactive MDX components', () => {
     await expect(tabButtons.nth(0)).toHaveAttribute('aria-selected', 'false');
   });
 
-  test('component-showcase page renders all interactive demos', async ({ page }) => {
-    await page.goto('/insights/component-showcase/');
-    await expect(page.locator('[data-tabs]')).toBeVisible();
-    await expect(page.locator('[data-accordion]')).toBeVisible();
-    await expect(page.locator('[data-code-block]')).toBeVisible();
-  });
+  // A fifth test used to assert all three components on
+  // /insights/component-showcase/. That page was never generated: the insights
+  // route filters on `!draft` unconditionally, and the showcase entry carried
+  // `draft: true`, so it resolved to a 404 in dev, preview and production
+  // alike. The test only ever "passed" because it was not wired into CI.
+  // Tabs, Accordion and CodeBlock are each covered above on real articles, so
+  // the assertion is gone along with its fixture rather than restored.
 });
