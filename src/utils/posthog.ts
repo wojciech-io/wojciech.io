@@ -15,7 +15,36 @@
 
 import posthog from 'posthog-js';
 
-const KEY = import.meta.env.PUBLIC_POSTHOG_KEY as string | undefined;
+const RAW_KEY = import.meta.env.PUBLIC_POSTHOG_KEY as string | undefined;
+
+/**
+ * PostHog project keys are `phc_` followed by a long opaque string. Anything
+ * else is a placeholder, and a placeholder is worse than nothing here: init
+ * succeeds, a distinct_id persists, sessions start, and every request to /e/
+ * comes back `200 {"status":"Ok"}` because that endpoint accepts the payload
+ * and validates the key later. The events are then dropped and the dashboard
+ * stays empty while the browser shows a perfectly healthy integration.
+ *
+ * Production shipped with this key set to the single character "-" and looked
+ * fine from every angle except the one that matters. The old guard was
+ * `if (!KEY)`, and "-" is truthy.
+ */
+export function isValidProjectKey(key: unknown): key is string {
+  return typeof key === 'string' && /^phc_[A-Za-z0-9]{20,}$/.test(key.trim());
+}
+
+const KEY_LOOKS_REAL = isValidProjectKey(RAW_KEY);
+const KEY = KEY_LOOKS_REAL ? (RAW_KEY as string).trim() : undefined;
+
+if (import.meta.env.PROD && RAW_KEY && !KEY_LOOKS_REAL) {
+  // Loud on purpose: silent analytics is the failure this exists to prevent.
+  console.warn(
+    `[posthog] PUBLIC_POSTHOG_KEY is set but does not look like a project key ` +
+      `(expected phc_…, got ${JSON.stringify(RAW_KEY)}). Refusing to init: ` +
+      `PostHog would accept the events and discard them.`,
+  );
+}
+
 let initialised = false;
 
 function init() {
