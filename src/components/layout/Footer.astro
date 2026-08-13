@@ -88,12 +88,42 @@ const appWorkspace = {
 // PL articles live under /pl/insights/; AR article cards stay EN (per the AR
 // content rule), so AR keeps the /insights/ URLs.
 const writingBase = isPl ? '/pl/insights' : '/insights';
+
+/* Article titles per locale, in the order of `writingSlugs` below.
+ *
+ * A nested ternary carried these while only PL and AR were translated; every
+ * other locale silently fell through to English, so a German visitor read a
+ * German footer with four English headlines in it. A table makes a missing
+ * locale visible instead of hiding it behind a fallback.
+ *
+ * "AI", "GTM", "CRM" and "Claude Code" stay untranslated everywhere: that is
+ * the convention the rest of the site already follows (the DE nav says
+ * "AI-Systeme", IT "Sistemi AI", ES "Sistemas AI", JP "AIシステム"), and they
+ * are how these things are known in each market.
+ */
+const writingTitles: Record<string, [string, string, string, string]> = {
+  en: ['CRM-first AI adoption', 'Claude Code GTM Starter', 'Claude Code in client GTM', 'AI stack in production'],
+  pl: ['Wdrażanie AI: CRM-first', 'GTM z Claude Code', 'Claude Code w GTM u klientów', 'Stos AI w produkcji'],
+  de: ['AI-Einführung, CRM zuerst', 'Claude Code GTM Starter', 'Claude Code im Kunden-GTM', 'AI-Stack in Produktion'],
+  dk: ['AI-adoption, CRM først', 'Claude Code GTM Starter', 'Claude Code i kunders GTM', 'AI-stak i produktion'],
+  no: ['AI-adopsjon, CRM først', 'Claude Code GTM Starter', 'Claude Code i kunders GTM', 'AI-stack i produksjon'],
+  jp: ['CRMファーストのAI導入', 'Claude Code GTMスターター', '顧客のGTMでのClaude Code', '本番環境のAIスタック'],
+  it: ["Adozione dell'AI, prima il CRM", 'Claude Code GTM Starter', 'Claude Code nel GTM dei clienti', 'AI stack in produzione'],
+  es: ['Adopción de AI, primero el CRM', 'Claude Code GTM Starter', 'Claude Code en el GTM de clientes', 'Stack de AI en producción'],
+  ar: ['تبنّي الذكاء الاصطناعي بنهج CRM أولًا', 'الانطلاق في GTM مع Claude Code', 'Claude Code في GTM لدى العملاء', 'حزمة الذكاء الاصطناعي في الإنتاج'],
+};
+
+const writingSlugs = [
+  'crm-first-ai-adoption',
+  'claude-code-vs-clay',
+  'claude-code-client-gtm',
+  'ai-production-stack',
+] as const;
+
+const titles = writingTitles[locale] ?? writingTitles.en;
 const writing = [
-  { label: isAr ? 'تبنّي الذكاء الاصطناعي بنهج CRM أولًا' : isPl ? 'Wdrażanie AI: CRM-first'      : 'CRM-first AI adoption',     href: `${writingBase}/crm-first-ai-adoption/` },
-  { label: isAr ? 'الانطلاق في GTM مع Claude Code'         : isPl ? 'GTM z Claude Code'             : 'Claude Code GTM Starter',   href: `${writingBase}/claude-code-vs-clay/` },
-  { label: isAr ? 'Claude Code في GTM لدى العملاء'         : isPl ? 'Claude Code w GTM u klientów'  : 'Claude Code in client GTM', href: `${writingBase}/claude-code-client-gtm/` },
-  { label: isAr ? 'حزمة الذكاء الاصطناعي في الإنتاج'        : isPl ? 'Stos AI w produkcji'           : 'AI stack in production',    href: `${writingBase}/ai-production-stack/` },
-  { label: t.footer.allWriting,          href: insightsHref },
+  ...writingSlugs.map((slug, i) => ({ label: titles[i], href: `${writingBase}/${slug}/` })),
+  { label: t.footer.allWriting, href: insightsHref },
 ];
 
 const connect = [
