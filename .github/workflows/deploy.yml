@@ -34,8 +34,14 @@ jobs:
         env:
           # PUBLIC_ vars are inlined at build time; production is built here in
           # CI (not by Cloudflare), so the key must live as a GitHub secret.
+          # Setting one on the Pages project instead has no effect: this is a
+          # static build, and nothing reads Pages env vars at runtime.
           # Public PostHog project key, safe to expose in client JS.
           PUBLIC_POSTHOG_KEY: ${{ secrets.PUBLIC_POSTHOG_KEY }}
+          # Cloudflare Web Analytics site token, public by design. While this
+          # secret is absent the value is empty, the guard in Layout.astro stays
+          # false, and no beacon ships. Adding the secret is the whole switch.
+          PUBLIC_CF_BEACON_TOKEN: ${{ secrets.PUBLIC_CF_BEACON_TOKEN }}
 
       - name: Wrangler deploy
         run: npx wrangler pages deploy dist --project-name=wojciech-io --branch=main --commit-message=deploy-wojciech-io
