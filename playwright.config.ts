@@ -58,7 +58,11 @@ export default defineConfig({
   webServer: IS_PROD_SMOKE
     ? undefined
     : {
-        command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4321',
+        // PW_SKIP_BUILD is set in CI, where dist/ arrives as an artifact from
+        // the build job. Locally there is no artifact, so the build runs first.
+        command: process.env.PW_SKIP_BUILD
+          ? 'npm run preview -- --host 127.0.0.1 --port 4321'
+          : 'npm run build && npm run preview -- --host 127.0.0.1 --port 4321',
         url: 'http://127.0.0.1:4321',
         reuseExistingServer: !IS_CI,
         timeout: 120_000,
