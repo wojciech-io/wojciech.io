@@ -9,12 +9,17 @@
  * Not the only tag on the page, despite the name. Layout.astro also boots GA4
  * (pageviews only: gtag js + config, no events, no send_to, no Ads conversion
  * linking) behind the same consent check, and Sentry ships error reporting via
- * the Astro integration. Cloudflare Insights is wired but dormant: its script
- * is guarded on PUBLIC_CF_BEACON_TOKEN, which is unset, so no beacon is emitted.
+ * the Astro integration.
  *
- * Everything analytics-related is consent-gated through one chokepoint shared by
+ * GA4 and PostHog are consent-gated through one chokepoint shared by
  * CookieBanner, Layout, and the article page. Before consent the page ships no
- * gtag, no PostHog, no beacon. Keep it that way.
+ * gtag and no PostHog. Keep it that way.
+ *
+ * Cloudflare Web Analytics is the exception, by design: cookieless, storing
+ * nothing on the device, so it sits outside the gate and is the only tag that
+ * can count visitors who decline. It is dormant until PUBLIC_CF_BEACON_TOKEN
+ * exists as a GitHub Actions secret, since the guard in Layout.astro reads a
+ * build-time value. A token set on the Pages project does nothing here.
  *
  * Snake_case property names are kept for continuity with existing reports.
  */

@@ -397,9 +397,13 @@ const skipToContent = skipToContentLabels[htmlLang] ?? 'Skip to content';
       });
     </script>
 
-    <!-- CF_BEACON_TOKEN: set PUBLIC_CF_BEACON_TOKEN in Cloudflare Pages env vars
-         Get the token from CF dashboard → Analytics → Web Analytics → Add site
-         (account ID: 39783e1749680bed4039662ab696c3b1) -->
+    <!-- Cloudflare Web Analytics. PUBLIC_CF_BEACON_TOKEN must be a GitHub
+         Actions secret, not a Pages env var: this is a static build, so the
+         value is inlined here at build time and Pages never gets a say.
+         Token: CF dashboard → Analytics → Web Analytics → the site's snippet.
+         Unlike GA4 and PostHog above, this beacon is deliberately outside the
+         consent gate: it is cookieless and stores nothing on the device, so it
+         is the only tag that can measure visitors who decline. -->
     {import.meta.env.PUBLIC_CF_BEACON_TOKEN && (
       <script
         is:inline
