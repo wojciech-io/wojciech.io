@@ -17,6 +17,11 @@ const IS_PROD_SMOKE = BASE_URL.startsWith('https://');
 
 export default defineConfig({
   testDir: './tests',
+  // Screenshot baselines are generated on macOS and do not reproduce on the
+  // Linux CI runner, so visual regression stays a local-only suite. Everything
+  // else in tests/e2e runs in CI, which is why the workflow points at the
+  // directory instead of listing files.
+  testIgnore: IS_CI ? ['**/visual.spec.ts'] : [],
   fullyParallel: true,
   forbidOnly: IS_CI,
   retries: IS_CI ? 2 : 0,
@@ -53,7 +58,11 @@ export default defineConfig({
   webServer: IS_PROD_SMOKE
     ? undefined
     : {
-        command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 4321',
+        // PW_SKIP_BUILD is set in CI, where dist/ arrives as an artifact from
+        // the build job. Locally there is no artifact, so the build runs first.
+        command: process.env.PW_SKIP_BUILD
+          ? 'npm run preview -- --host 127.0.0.1 --port 4321'
+          : 'npm run build && npm run preview -- --host 127.0.0.1 --port 4321',
         url: 'http://127.0.0.1:4321',
         reuseExistingServer: !IS_CI,
         timeout: 120_000,

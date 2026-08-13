@@ -1,0 +1,114 @@
+---
+title: "Scoring leadów, który przeżywa kontakt ze sprzedażą"
+description: "Większość modeli scoringowych buduje marketing, sprzedaż je ignoruje, a po pół roku nikt do nich nie zagląda. Naprawa nie polega na lepszym algorytmie, tylko na ustaleniu, co jest dobrym kontem, zanim cokolwiek zważysz. Z modelu, który zbudowałem w CodiLime."
+publishedAt: "2026-08-12"
+tags:
+  - "RevOps"
+  - "Lead scoring"
+  - "CRM"
+  - "Pipeline"
+  - "GTM"
+featured: false
+draft: true
+coverType: "chart"
+category: "GTM Architecture"
+locale: "pl"
+translationOf: "lead-scoring-that-survives-sales"
+tldr:
+  - "Model, przy którym sprzedaż nie siedziała, to model, którego sprzedaż nie użyje, choćby matematyka była bez zarzutu"
+  - "Scoruj konto, nie kliknięcie. Stanowisko i firmografia przewidują realną szansę lepiej niż otwarcia maili"
+  - "Score to połowa systemu. Druga połowa to, co dzieje się w CRM w chwili przekroczenia progu"
+  - "Oceniaj model po jakości przekazania i pipelinie, a nie po tym, ile leadów oznaczy jako gorące"
+faq:
+  - q: "Dlaczego większość modeli scoringowych nie działa?"
+    a: "Buduje je sam marketing, waży na sygnałach zaangażowania w rodzaju otwarć i kliknięć, a potem podaje sprzedaży jako rzecz gotową. Sprzedaż nie ma powodu ufać liczbie, której nie pomagała zdefiniować, więc pracuje na własnej liście, a model staje się ozdobą."
+  - q: "Co scoring powinien właściwie mierzyć?"
+    a: "Dopasowanie przed zachowaniem. Firmografię, rolę kupującego i to, czy konto przypomina te, które już się zamknęły, ważone mocniej niż zaangażowanie. Zachowanie jest sygnałem czasu, nie sygnałem kwalifikacji."
+  - q: "Skąd wiadomo, że model działa?"
+    a: "Patrz na jakość przekazania i konwersję do szansy, a nie na to, ile leadów oznaczono jako gorące. Jeśli wysokie oceny nie konwertują lepiej niż niskie po pełnym cyklu, wagi są złe i model trzeba przeliczyć na wynikach."
+---
+
+Większość modeli scoringowych umiera tak samo. Marketing buduje model, waży go na otwarciach i kliknięciach, ustawia próg i ogłasza, że leady powyżej kreski są gotowe dla sprzedaży. Sprzedaż pracuje dalej na swojej liście. Pół roku później pole nadal jest w CRM i nikt na nie nie patrzy.
+
+Awaria nie jest matematyczna. Polega na tym, że liczba, której sprzedaż nie pomagała zdefiniować, to liczba, której sprzedaż nie ma powodu ufać.
+
+Zbudowałem model scoringowy i dashboard lejka jako fractional GTM & growth lead w [CodiLime](https://codilime.com), firmie usług technologicznych B2B, która sprzedaje projekty chmurowe i z bezpieczeństwa sieci do kupujących technicznych. To, co sprawiło, że model się przyjął, nie miało prawie nic wspólnego z wagami.
+
+<Callout type="warning" title="Test, który ma znaczenie">
+Model scoringowy działa wtedy, gdy handlowiec zmienia przez niego to, co robi rano jako pierwsze. Cała reszta to dashboard, którego nikt nie otwiera.
+</Callout>
+
+## Scoruj konto, nie kliknięcie
+
+Scoring po zaangażowaniu wygląda rzetelnie i przewiduje bardzo niewiele. Ktoś, kto otworzył cztery maile, może pisać pracę dyplomową. Ktoś, kto nie otworzył żadnego, może być szefem infrastruktury dokładnie w takiej firmie, jakie u ciebie kupują, i dostał link od kolegi.
+
+Najpierw dopasowanie: czy to konto wygląda jak te, które już się zamknęły, i czy ta osoba jest w roli, która może rozpocząć proces zakupowy. Zachowanie ma miejsce w modelu, ale jako sygnał czasu. Dopasowanie mówi, czy w ogóle pracować nad kontem. Zachowanie mówi, czy właśnie ten tydzień jest tym tygodniem.
+
+<BeforeAfter
+  label="Z czego zbudowany jest score"
+  before={{
+    title: "Zaangażowanie na pierwszym miejscu",
+    body: "Punkty za otwarcia, kliknięcia, odsłony i wypełnione formularze. Wysokie oceny zbierają się wokół czytelników newslettera i osób szukających pracy. Sprzedaż przestaje ufać temu polu w ciągu kwartału.",
+    caption: "Mierzy zainteresowanie twoimi mailami"
+  }}
+  after={{
+    title: "Dopasowanie pierwsze, zachowanie jako czas",
+    body: "Wagę niosą firmografia i rola. Zaangażowanie podnosi priorytet wewnątrz zbioru już zakwalifikowanego, zamiast go tworzyć. Sygnały kupującego technicznego liczą się bardziej niż wizyty na stronach marketingowych.",
+    caption: "Mierzy podobieństwo do zamkniętej transakcji"
+  }}
+/>
+
+## Buduj go z ludźmi, którzy mają go używać
+
+Warsztat, z którego wychodzi model, znaczy więcej niż sam model. Posadź handlowców pracujących na tych kontach i poproś, żeby opisali pięć ostatnich transakcji, które się zamknęły, i pięć ostatnich, które zmarnowały im czas. Zapisz, co mówią, a potem zamień to na wagi.
+
+Wychodzą z tego dwie rzeczy. Masz wagi oparte na tym, co realnie się zamykało, a nie na tym, co łatwo zmierzyć. I masz sprzedaż, która z góry zgodziła się, jak wygląda dobry lead, więc później nie odrzuci scoringu jako wymysłu marketingu. Sama go zdefiniowała.
+
+## Score to połowa systemu
+
+Liczba w polu sama z siebie nie zmienia niczego. Zachowanie zmienia to, co dzieje się w CRM w chwili przekroczenia progu: lead trafia do konkretnej osoby, ląduje na górze jej kolejki i rusza zegar pierwszego kontaktu.
+
+Dlatego model scoringowy pojechał razem z dashboardem lejka, a nie osobno. Priorytet konta to score. Jakość przekazania to, czy priorytetowe konto faktycznie zostało obsłużone i jak szybko. Jedno bez drugiego jest raportem.
+
+1. **Zdefiniuj dopasowanie ze sprzedażą, nie za nią.** Warsztat jest produktem, arkusz jest tylko artefaktem.
+2. **Waż firmografię i rolę wyżej niż zaangażowanie.** Zachowanie koryguje priorytet wewnątrz zbioru zakwalifikowanego.
+3. **Ustaw próg z przepustowości, nie z okrągłej liczby.** Jeśli sprzedaż obsłuży czterdzieści kont tygodniowo, kreska leży tam, gdzie przechodzi czterdzieści kont tygodniowo.
+4. **Kieruj w chwili przekroczenia.** Konkretny właściciel, góra kolejki, zegar pierwszego kontaktu w biegu.
+5. **Oprzyrząduj przekazanie, nie tylko score.** Czas do pierwszego kontaktu i konwersja do szansy, w podziale na przedziały ocen.
+6. **Przeliczaj na wynikach co kwartał.** Jeśli wysokie przedziały nie konwertują lepiej niż niskie po pełnym cyklu, wagi są złe.
+
+<DoDont
+  caption="Scoring, punkty zwrotne"
+  doLabel="Rób"
+  do={[
+    "Wyprowadź wagi z dziesięciu ostatnich transakcji, wygranych i zmarnowanych",
+    "Posadź przy budowie ludzi, którzy pracują na tych leadach",
+    "Ustaw próg z przepustowości sprzedaży",
+    "Mierz czas do pierwszego kontaktu obok score'u",
+    "Przeliczaj kwartalnie na tym, co faktycznie skonwertowało"
+  ]}
+  dont={[
+    "Ważyć modelu na otwarciach maili i odsłonach",
+    "Wypuszczać score'u bez reguły routingu za nim",
+    "Wybierać progu, bo 75 brzmi jak dobra liczba",
+    "Oceniać modelu po tym, ile leadów oznaczy jako gorące",
+    "Zostawiać wag nietkniętych po pierwszej wersji"
+  ]}
+/>
+
+## Na co patrzeć
+
+<KeyTakeaway
+  title="Kokpit scoringu"
+  items={[
+    "Konwersja do szansy według przedziału ocen, po pełnym cyklu",
+    "Czas od przekroczenia progu do pierwszego kontaktu sprzedaży, w godzinach",
+    "Udział wysoko ocenionych kont, które faktycznie obsłużono",
+    "Wskaźnik niezgody: leady, którym sprzedaż zmieniła priorytet wbrew score'owi",
+    "Dryf wag: które wejścia zmieniły się przy ostatnim przeliczeniu i dlaczego"
+  ]}
+/>
+
+Czwarta pozycja jest najbardziej użyteczną liczbą na tej liście i tą, którą zespoły pomijają. Za każdym razem, gdy handlowiec nadpisuje score, mówi ci coś, czego model jeszcze nie wie. Wysoki wskaźnik niezgody to nie jest sprzedaż robiąca problemy. To darmowe dane treningowe.
+
+Jeśli twój model scoringowy jest ignorowany, nie przebudowuj algorytmu. Poproś trzy osoby, które go ignorują, żeby opisały pięć swoich ostatnich dobrych transakcji, i zacznij od tego.

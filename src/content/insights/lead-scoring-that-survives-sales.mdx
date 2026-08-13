@@ -1,0 +1,114 @@
+---
+title: "Lead scoring that survives contact with sales"
+seoTitle: "Lead scoring models sales actually uses"
+description: "Most scoring models are built by marketing, ignored by sales, and quietly abandoned. The fix is not a better algorithm. It is agreeing what a good account looks like before you weight anything. From the model I built at CodiLime."
+publishedAt: "2026-08-12"
+tags:
+  - RevOps
+  - Lead scoring
+  - CRM
+  - Pipeline
+  - GTM
+category: "GTM Architecture"
+coverType: "chart"
+coverImage: "/images/insights/lead-scoring-that-survives-sales.webp"
+featured: false
+draft: true
+tldr:
+  - "A scoring model sales did not help build is a model sales will not use, no matter how good the maths is"
+  - "Score the account, not the click. Job title and firmographics beat email opens for predicting a real opportunity"
+  - "The score is only half the system. The other half is what happens in the CRM the moment it crosses the line"
+  - "Judge the model on handoff quality and pipeline, not on how many leads it labels hot"
+faq:
+  - q: "Why do most lead scoring models fail?"
+    a: "They are built by marketing alone, weighted on engagement signals like opens and clicks, and handed to sales as a finished thing. Sales has no reason to trust a number they did not help define, so they work their own list and the model becomes decoration."
+  - q: "What should a lead score actually measure?"
+    a: "Fit before behaviour. Firmographics, the buyer's role, and whether the account resembles the ones that already closed, weighted more heavily than engagement. Behaviour is a timing signal, not a qualification signal."
+  - q: "How do you know the model works?"
+    a: "Look at handoff quality and conversion to opportunity, not at how many leads it marks hot. If high scores do not convert better than low ones after a full cycle, the weights are wrong and the model needs retraining against outcomes."
+---
+
+Most lead scoring models die the same way. Marketing builds one and weights it on opens and clicks. A threshold goes in. Leads above the line are declared sales-ready. Sales works their own list instead. Six months later the field is still in the CRM and nobody looks at it.
+
+The failure is not mathematical. It is that a number sales did not help define is a number sales has no reason to trust.
+
+I built a scoring model and funnel dashboard as fractional GTM and growth lead at [CodiLime](https://codilime.com), a B2B technology services company selling cloud and network security work into technical buyers. The part that made it stick had almost nothing to do with the weights.
+
+<Callout type="warning" title="The test that matters">
+A scoring model is working when a salesperson changes what they do first in the morning because of it. Everything else is a dashboard nobody opens.
+</Callout>
+
+## Score the account, not the click
+
+Engagement scoring feels rigorous and predicts very little. Someone who opened four emails might be a student writing a thesis. Someone who opened nothing might be a head of infrastructure at exactly the kind of company that buys from you, forwarded a link by a colleague.
+
+Fit comes first: does this account look like the ones that already closed, and is this person in a role that can start a buying process. Behaviour belongs in the model, but as a timing signal. Fit tells you whether to work an account at all. Behaviour tells you whether this week is the week.
+
+<BeforeAfter
+  label="What the score is built from"
+  before={{
+    title: "Engagement first",
+    body: "Points for opens, clicks, page views and form fills. High scores cluster around newsletter readers and job seekers. Sales stops trusting the field within a quarter.",
+    caption: "Measures interest in your emails"
+  }}
+  after={{
+    title: "Fit first, behaviour as timing",
+    body: "Firmographics and role carry the weight. Engagement raises priority inside the qualified set rather than creating it. Technical-buyer signals count more than marketing-page visits.",
+    caption: "Measures resemblance to a closed deal"
+  }}
+/>
+
+## Build it with the people who have to use it
+
+The workshop that produces the model matters more than the model. Put the salespeople who work the accounts in a room and ask them to describe the last five deals that closed and the last five that wasted their time. Write down what they say, then turn it into weights.
+
+You come out with weights grounded in what actually closed rather than what is easy to measure. You also come out with sales having agreed in advance what a good lead looks like, which means later they cannot dismiss the score as a marketing invention. They defined it.
+
+## The score is half the system
+
+A number in a field changes nothing on its own. What changes behaviour is what happens in the CRM the moment a lead crosses the threshold. It gets an owner. It is placed at the top of that person's queue, with the first-touch clock already running.
+
+That is why the scoring model went out alongside a funnel dashboard rather than on its own. Account priority is the score. Handoff quality is whether the prioritised account actually got worked, and how fast. One without the other is a report.
+
+1. **Define fit with sales, not for them.** The workshop is the deliverable, the spreadsheet is the artefact.
+2. **Weight firmographics and role above engagement.** Behaviour adjusts priority inside the qualified set.
+3. **Set the threshold from capacity, not from a round number.** If sales can work forty accounts a week, the line sits where forty accounts a week cross it.
+4. **Route on crossing, immediately.** An owner, the top of their queue, and a running first-touch clock.
+5. **Instrument the handoff, not just the score.** Time to first touch and conversion to opportunity, per score band.
+6. **Retrain against outcomes each quarter.** If high bands do not out-convert low bands after a full cycle, the weights are wrong.
+
+<DoDont
+  caption="Scoring, where it turns"
+  doLabel="Do"
+  do={[
+    "Derive the weights from the last ten deals, won and wasted",
+    "Put the people who work the leads in the room while you build it",
+    "Set the threshold from sales capacity",
+    "Measure time to first touch alongside the score",
+    "Retrain quarterly against what actually converted"
+  ]}
+  dont={[
+    "Weight the model on email opens and page views",
+    "Publish a score without a routing rule behind it",
+    "Pick a threshold because 75 sounds like a good number",
+    "Judge the model on how many leads it marks hot",
+    "Leave the weights untouched after the first version"
+  ]}
+/>
+
+## What to watch
+
+<KeyTakeaway
+  title="The scoring dashboard"
+  items={[
+    "Conversion to opportunity by score band, after one full cycle",
+    "Time from threshold crossing to first sales touch, in hours",
+    "Share of high-scoring accounts that were actually worked",
+    "Disagreement rate: leads sales reprioritised against the score",
+    "Weight drift: which inputs changed at the last retrain and why"
+  ]}
+/>
+
+That fourth one is the most useful number in the list and the one teams skip. Every time a salesperson overrides the score, they are telling you something the model does not know yet. A high disagreement rate is not sales being difficult. It is free training data.
+
+If your scoring model is being ignored, do not rebuild the algorithm. Ask the three people who ignore it to describe their last five good deals, and start there.
