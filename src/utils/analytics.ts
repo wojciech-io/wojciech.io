@@ -17,9 +17,9 @@
  *
  * Cloudflare Web Analytics is the exception, by design: cookieless, storing
  * nothing on the device, so it sits outside the gate and is the only tag that
- * can count visitors who decline. It is dormant until PUBLIC_CF_BEACON_TOKEN
- * exists as a GitHub Actions secret, since the guard in Layout.astro reads a
- * build-time value. A token set on the Pages project does nothing here.
+ * counts visitors who decline. It is not wired in this repo at all. Cloudflare
+ * injects the beacon at the edge, so adding a build-time snippet back here
+ * would double-count every visit.
  *
  * Snake_case property names are kept for continuity with existing reports.
  */
