@@ -397,20 +397,13 @@ const skipToContent = skipToContentLabels[htmlLang] ?? 'Skip to content';
       });
     </script>
 
-    <!-- Cloudflare Web Analytics. PUBLIC_CF_BEACON_TOKEN must be a GitHub
-         Actions secret, not a Pages env var: this is a static build, so the
-         value is inlined here at build time and Pages never gets a say.
-         Token: CF dashboard → Analytics → Web Analytics → the site's snippet.
-         Unlike GA4 and PostHog above, this beacon is deliberately outside the
-         consent gate: it is cookieless and stores nothing on the device, so it
-         is the only tag that can measure visitors who decline. -->
-    {import.meta.env.PUBLIC_CF_BEACON_TOKEN && (
-      <script
-        is:inline
-        defer
-        src="https://static.cloudflareinsights.com/beacon.min.js"
-        data-cf-beacon={`{"token": "${import.meta.env.PUBLIC_CF_BEACON_TOKEN}"}`}
-      />
-    )}
+    <!-- Cloudflare Web Analytics is not wired here. Cloudflare injects the
+         beacon at the edge (dashboard: Analytics → Web Analytics → RUM →
+         Enable), which is why no snippet and no token live in this file.
+         Do not add a build-time snippet back: the page would then carry two
+         beacons and every visit would be counted twice. Unlike GA4 and
+         PostHog above, that beacon sits outside the consent gate on purpose,
+         being cookieless, so it is the one tag that counts visitors who
+         decline. -->
   </body>
 </html>
