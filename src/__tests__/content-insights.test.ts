@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import yaml from 'js-yaml';
+// js-yaml 5 dropped the default export; the parser is a named export now.
+import { load as parseYaml } from 'js-yaml';
 
 const INSIGHTS_DIR = resolve('./src/content/insights');
 const VALID_CATEGORIES = ['AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products'] as const;
@@ -10,7 +11,7 @@ const VALID_COVER_TYPES = ['terminal', 'builder', 'chart', 'product', 'system', 
 function parseFrontmatter(raw: string): Record<string, unknown> {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) throw new Error('No frontmatter block found');
-  return (yaml.load(match[1]) ?? {}) as Record<string, unknown>;
+  return (parseYaml(match[1]) ?? {}) as Record<string, unknown>;
 }
 
 function loadAll() {
