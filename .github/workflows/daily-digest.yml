@@ -71,11 +71,9 @@ jobs:
           } > digest.md
           cat digest.md
 
-      # Secrets are scoped to this step rather than the workflow, so no other
-      # step or action in the job can read them. The `if` reads the secrets
-      # context directly: step-level env is not visible to that step's own `if`.
+      # Secrets stay scoped to this step rather than the workflow, so no other
+      # step or action in the job can read them.
       - name: Send mail (Resend)
-        if: ${{ secrets.RESEND_API_KEY != '' }}
         env:
           DIGEST_TO: ${{ secrets.DIGEST_TO != '' && secrets.DIGEST_TO || 'hello@wojciech.io' }}
           # Resend "from" must be on a domain verified in Resend. Override via
@@ -83,6 +81,15 @@ jobs:
           DIGEST_FROM: ${{ secrets.DIGEST_FROM != '' && secrets.DIGEST_FROM || 'wojciech.io ops <ops@wojciech.io>' }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
+          # The key is checked here, not in an `if`. Step-level env is invisible
+          # to that step's own `if`, and the `secrets` context is not allowed
+          # there at all: using it failed workflow validation, so every run died
+          # before any job started and left no logs to explain why.
+          if [ -z "$RESEND_API_KEY" ]; then
+            echo "RESEND_API_KEY not set — digest built (see above) but not mailed."
+            exit 0
+          fi
+
           # Resend sends HTML; convert the Markdown body to a <pre> block so it
           # renders readably without a Markdown step.
           body=$(jq -Rs . < digest.md)
@@ -99,7 +106,3 @@ jobs:
             -d "$payload")
           echo "Resend HTTP $http"; cat /tmp/resend.out
           test "$http" = "200" || test "$http" = "201"
-
-      - name: No RESEND_API_KEY configured
-        if: ${{ secrets.RESEND_API_KEY == '' }}
-        run: echo "RESEND_API_KEY not set — digest built (see above) but not mailed. Add the secret to enable mail."
