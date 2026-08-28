@@ -1,0 +1,253 @@
+---
+title: "Sztuczny CMO bez planu to tylko bardzo szybki stażysta"
+seoTitle: "AI CMO w Claude Code: warstwa decyzji, którą wszyscy pomijają"
+description: "W sierpniu 2026 rozeszedł się post o zastąpieniu CMO siedmioma skillami w Claude. Najlepszy komentarz pod nim był pytaniem: kto ułożył ten plan? To jest wtyczka, którą zbudowałem jako odpowiedź: warstwa decyzji z przodu i bramka publikacji, która nie zamienia się w kolejkę."
+publishedAt: "2026-08-28"
+tags:
+  - AI
+  - Claude Code
+  - GTM
+  - Marketing
+  - Agents
+category: "AI Marketing"
+coverType: "system"
+# Odkomentuj po wygenerowaniu okładki pod pasującą ścieżką:
+# coverImage: "/images/insights/ai-cmo-claude-skills-marketing-system.webp"
+featured: true
+draft: false
+locale: "pl"
+translationOf: "ai-cmo-claude-skills-marketing-system"
+tldr:
+  - "Siedem skilli wykonawczych zastępuje zespół marketing ops, nie CMO. Robota CMO to wybieranie: dla kogo jesteś, czego nie robisz i co przerywasz, kiedy liczba nie drgnie"
+  - "Naprawa to warstwa decyzji: pozycjonowanie i plan kwartału jako wersjonowane pliki, które każdy skill wykonawczy musi przeczytać, zanim cokolwiek wyprodukuje"
+  - "Każdy materiał ma nagłówek z decyzją, zakładem i briefem, z których powstał. Nie ma nagłówka, nie ma publikacji"
+  - "Akceptowanie wszystkiego to sposób, w jaki stos agentowy zamienia się w kolejkę. Trzy poziomy przeglądu plus limit produkcji oparty o realną pojemność przeglądu"
+  - "Operator CMO jest otwarty: osiem skilli, trzy warstwy, MIT, instalowalny w Claude Code"
+faq:
+  - q: "Czy agent AI może zastąpić CMO?"
+    a: "Nie. Może zastąpić większość egzekucji, którą CMO i tak deleguje: pisanie, budowanie list, produkcję stron, raportowanie. Nie automatyzuje się wybieranie: komu sprzedajesz, kogo odrzucasz, które dwa zakłady dostają budżet w tym kwartale i co przerywasz, kiedy liczba nie drgnie. Stos agentowy bez pliku z decyzją to nie CMO, tylko bardzo szybki zespół marketing ops wycelowany w nic."
+  - q: "Czym jest warstwa decyzji w stosie marketingowym opartym o AI?"
+    a: "To dwa wersjonowane pliki przed egzekucją: positioning.md z ICP, problemem w słowach kupującego, udowodnionymi dowodami i anty-celami, oraz quarter.md z dwoma albo trzema zakładami, każdy z jedną metryką i warunkiem przerwania. Każdy skill wykonawczy czyta oba, zanim cokolwiek wyprodukuje, i zatrzymuje się, jeśli któregoś brakuje albo kwartał wygasł."
+  - q: "Jak powstrzymać agenta marketingowego przed wymyślaniem statystyk?"
+    a: "Zrób z dowodów białą listę, a nie filtr. Brief przepisuje dozwolone dowody z pliku pozycjonowania, a każda liczba, nazwa klienta, logo czy porównanie z konkurentem, której tam nie ma, nigdy nie trafia do draftu. Jeśli tekst jej potrzebuje, człowiek najpierw wpisuje ją do pliku pozycjonowania, ze źródłem i datą."
+  - q: "Czy człowiek akceptujący każdy output nie staje się wąskim gardłem?"
+    a: "Staje się, i to jest najczęstsza awaria takich stosów. Odpowiedź to przegląd w poziomach plus limit przepustowości. Rzeczy odwracalne i niskiego ryzyka idą automatycznie, publiczne materiały z już udowodnionymi tezami sprawdza się co N-ty, a wszystko trudne do cofnięcia czyta człowiek za każdym razem. Plan kwartału podaje tygodniową pojemność przeglądu, a produkcja zwalnia, kiedy kolejka ją przekroczy, zamiast wypuszczać nadmiar bez sprawdzenia."
+  - q: "Czym to się różni od folderu z promptami marketingowymi?"
+    a: "Prompt produkuje na żądanie. To produkuje wyłącznie pod decyzję, która istnieje w repozytorium, z przypisanym zakładem, i odmawia na piśmie, kiedy prośba nie pasuje do żadnego zakładu. Ta odmowa jest funkcją, nie usterką. To jest też pętla: skill przeglądu czyta wyniki pod kątem warunków przerwania i proponuje zmiany z powrotem w plikach decyzji, czego biblioteka promptów strukturalnie nie potrafi."
+sources:
+  - url: "https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/"
+    quote: "I could not afford a CMO, so I built one inside Claude"
+    claim: "Siedmiowarstwowy stos marketingowy w Claude, na który odpowiada ten artykuł"
+    checkedAt: "2026-08-28"
+---
+
+W sierpniu 2026 rozszedł się pewien post. Ignacio Prieto napisał, że nie stać go było na CMO, więc [zbudował go w Claude](https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/): siedem modułowych skilli, każdy jako zwykły plik, który można otworzyć i poprawić, każdy z jedną robotą, która wcześniej wymagała człowieka. Cztery miesiące później prowadził większość jego marketingu. Ponad siedemset komentarzy.
+
+To dobra konstrukcja. Sam większość z niej bym uruchomił. Ale najlepszy komentarz pod spodem nie był pochwałą, tylko pytaniem.
+
+<Quote author="Komentarz pod oryginalnym postem" source="LinkedIn, sierpień 2026">
+Te skille to egzekucja planu marketingowego. Kto ułożył ten plan?
+</Quote>
+
+I o tym jest cały ten tekst.
+
+## Co naprawdę zastępuje siedem skilli wykonawczych
+
+Wypisz, co robią te warstwy: research, treści, social, SEO, mail, raporty, recykling contentu. A teraz wypisz, co robi CMO we wtorek.
+
+Decyduje, który segment dostaje kwartał, a który czeka. Ucina kampanię, w którą trzy osoby są emocjonalnie zainwestowane. Mówi nie pomysłowi założyciela na podcast i tłumaczy, ile by kosztował. Ustala, że w tym roku nie idziemy po logo z enterprise. A na końcu wybiera, która z tych decyzji była błędna.
+
+Nic z tego nie jest egzekucją. Wszystko to jest wybieraniem.
+
+Uczciwa wersja tej tezy brzmi więc tak: siedem skilli zastępuje zespół marketing ops, i to szybki. To ma realną wartość i nie jest CMO. Luka nie leży w możliwościach, tylko w tym, że nic w tym stosie nie trzyma wyborów. Każdy skill po cichu wymyśla własną wersję strategii w momencie generowania i żadna z nich nie zgadza się z pozostałymi.
+
+<Callout type="warning" title="Awaria, której nie zauważysz przez kwartał">
+Stos agentowy bez pliku z decyzją nie produkuje słabych tekstów. Produkuje świetne teksty o czymś, czego nikt nie postanowił powiedzieć. Przez jakieś trzy miesiące czyta się to jak produktywność, i dokładnie tyle trwa, zanim zauważysz, że nic się nie skumulowało.
+</Callout>
+
+Pisałem już, że [CRM-first bije prompt-first we wdrażaniu AI](/pl/insights/crm-first-ai-adoption/), z tego samego strukturalnego powodu. Punktem wejścia nigdy nie jest model. Jest nim warstwa, która trzyma prawdę, na której model ma pracować.
+
+## Plik, którego brakowało
+
+Zbudowałem więc odpowiedź jako wtyczkę i postawiłem brakującą warstwę z przodu.
+
+**Warstwa decyzji to dwa wersjonowane pliki, które egzekucja musi przeczytać, zanim cokolwiek wyprodukuje.** `positioning.md` trzyma to, komu sprzedajesz, kogo odrzucasz, problem w prawdziwych słowach kupującego, dowody, których wolno użyć, ofertę i anty-cele. `quarter.md` trzyma dwa albo trzy zakłady, każdy z jedną metryką, warunkiem przerwania i datą.
+
+Oba leżą w repozytorium jako zwykły markdown. Do zdiffowania, do przejrzenia, przenośne do dowolnego narzędzia, które czyta pliki. Strategia, która mieszka na slajdzie z marca, jest niedostępna dla maszyny piszącej twój landing w sierpniu.
+
+<StackLayer
+  title="Operator CMO: trzy warstwy, osiem skilli"
+  layers={[
+    { name: "positioning", tech: "ICP, odmowy, problem w ich słowach, udowodnione dowody, anty-cele", badge: "decyzja" },
+    { name: "quarter", tech: "Dwa albo trzy zakłady, jedna metryka, warunek przerwania i data", badge: "decyzja" },
+    { name: "brief", tech: "Przypina prośbę do zakładu albo odmawia jej na piśmie", badge: "robota" },
+    { name: "content", tech: "Pisze z briefu, z kontrolą dowodów i przejściem anty-slop", badge: "robota" },
+    { name: "outbound", tech: "Listy i sekwencje, które stosują ICP i dyskwalifikatory dosłownie", badge: "robota" },
+    { name: "visibility", tech: "Pozycja w wyszukiwarce i cytowalność w AI, traktowane jako dwie roboty", badge: "robota" },
+    { name: "review", tech: "Jedyny skill, który może zmienić plik decyzji, i tylko przez diff", badge: "nauka" },
+    { name: "ship-gate", tech: "Trzy poziomy przeglądu, kontrole automatyczne i limit produkcji", badge: "polityka" },
+  ]}
+/>
+
+Nie chodzi o liczbę warstw. Chodzi o kierunek strzałek. W oryginalnym stosie siedem skilli stoi obok siebie, a strategię dostarcza człowiek ustnie, raz, a potem jeszcze raz, trochę inaczej, w kolejnym tygodniu. Tutaj egzekucja czyta z pliku, a plik jest artefaktem, o który się spieramy.
+
+## Nic nie wychodzi bez powołania się na decyzję
+
+Trzy zasady robią większość roboty. Pierwsza to zatrzymanie.
+
+Każdy skill wykonawczy czyta `positioning.md` i `quarter.md`, zanim cokolwiek wyprodukuje. Brak pliku, wygasły kwartał albo prośba, która nie pasuje do żadnego zakładu: skill się zatrzymuje i podaje jedną komendę, która go odblokuje. Nigdy nie wnioskuje strategii z repozytorium i nie leci dalej, bo wymyślone ICP będzie cytowane przez każdy materiał przez następne trzy miesiące i nikt tego nie wyłapie, skoro będzie idealnie spójne.
+
+Druga zasada to pochodzenie. Każdy draft zaczyna się nagłówkiem:
+
+```yaml
+bet: B2
+decision: positioning.md rev 2026-07-02
+brief: marketing/briefs/2026-08-28-zamkniecie-miesiaca.md
+gate: B
+claims_flagged: 0
+```
+
+Materiał, który nie potrafi wskazać decyzji, z której powstał, nie nadaje się do publikacji. To jest kontrola mechaniczna, nie kulturowa aspiracja, i na tym polega różnica między systemem a nawykiem.
+
+Trzecia zasada to ta, którą zostawiłbym, gdybym mógł zostawić jedną. **Żadnych nowych tez.** Brief przepisuje dozwolone dowody z pliku pozycjonowania. Każda liczba, nazwa klienta, logo, nagroda czy porównanie z konkurentem, której tam nie ma, nigdy nie trafia do draftu. Jeśli tekst jej potrzebuje, człowiek najpierw wpisuje ją do `positioning.md`, ze źródłem i datą.
+
+To odwraca zwykłe podejście. Większość zespołów próbuje łapać zmyślone statystyki na wyjściu, w akceptacji, i to nie działa, bo pewna siebie wymyślona liczba wygląda dokładnie jak prawdziwa. Biała lista sprawia, że tekst jest nudniejszy i uczciwy, dopóki ktoś nie pójdzie i tego nie udowodni.
+
+<BeforeAfter
+  label="Gdzie mieszka strategia"
+  before={{
+    title: "Siedem skilli, strategia w czacie",
+    body: "Kontekst każdego skilla siedzi w promptcie. Strategia to tyle, ile operator akurat pamiętał, żeby powiedzieć w tej sesji. Dwa skille produkują pod dwa różne, niewypowiedziane ICP i oba wyniki wyglądają dobrze.",
+    caption: "Szybko, spójnie, w nic"
+  }}
+  after={{
+    title: "Dwa pliki decyzji, egzekucja je czyta",
+    body: "Skille zatrzymują się, kiedy brakuje decyzji. Każdy materiał nazywa zakład, któremu służy. Prośba, która nie pasuje do żadnego zakładu, dostaje odmowę na piśmie, z wyliczonym kosztem zmiany planu.",
+    caption: "Wolniejszy start, kumuluje się od trzeciego tygodnia"
+  }}
+/>
+
+## Odmowa jest funkcją
+
+Skill `brief` przypina każdą prośbę do dokładnie jednego zakładu. Kiedy nic nie pasuje, nie pisze materiału. Zapisuje krótki plik z prośbą, listą zakładów, przy których ją sprawdzał, i powodem, dla którego żaden nie pasuje. Potem daje trzy opcje w przemyślanej kolejności: odpuść, dopisz do listy rzeczy, których w tym kwartale nie robimy, albo zmień plan kwartału, co oznacza ucięcie lub zmniejszenie istniejącego zakładu, żeby to sfinansować.
+
+Trzecia opcja jest ostatnia i ma podaną cenę. Większość próśb kończy się na pierwszej opcji, kiedy ta cena staje się widoczna. To najbardziej użyteczne zachowanie w całej wtyczce i jednocześnie to, które w pierwszym tygodniu boli najbardziej.
+
+## Wąskie gardło akceptacji to problem pojemności
+
+Druga krytyka pod oryginalnym postem była ostrzejsza od pierwszej i to w nią zaraz wejdzie większość ludzi budujących takie stosy: jeśli człowiek akceptuje każdy output, a agent produkuje szybciej, niż człowiek czyta, to akceptacja jest ograniczeniem. Wąskie gardło nie zniknęło. Przeniosło się do kolejki i dostało ładniejszą nazwę.
+
+Przeglądanie wszystkiego się nie skaluje. Nieprzeglądanie niczego jest niedbalstwem. Bramka sortuje więc robotę na trzy poziomy.
+
+<Compare
+  labelA="Akceptuję wszystko"
+  labelB="Bramka poziomowa z limitem"
+  tagA="kolejka"
+  tagB="naprawa"
+  caption="Przepustowość to to, co wyszło, a nie to, co się wygenerowało."
+>
+  <div slot="a">
+    Każdy materiał czeka na tę samą osobę. Czas przeglądu rośnie, sprawdzający zaczyna skanować wzrokiem, a skanowanie jest nie do odróżnienia od akceptowania. Raportowany output liczy to, co wyprodukowano, i to jest najczęstsze kłamstwo w tej kategorii.
+  </div>
+  <div slot="b">
+    Poziom A jest odwracalny, wewnętrzny i nie stawia żadnych tez, więc idzie bez udziału człowieka. Poziom B jest sprawdzany co N-ty i spada do pełnego przeglądu, jeśli dwa z ostatnich dwudziestu nie przejdą. Poziom C czyta człowiek za każdym razem: cennik, prawne, nazwani klienci, pierwszy kontakt z nazwanym kontem, wydatek na reklamę.
+  </div>
+</Compare>
+
+I zasada, która naprawdę zapobiega kolejce. `quarter.md` podaje tygodniową pojemność przeglądu jako prawdziwą liczbę, a skill briefu liczy kolejkę, zanim przyjmie nową robotę. Powyżej pojemności produkcja zwalnia. Nie obniża poziomu i nie wypuszcza nadmiaru bez sprawdzenia.
+
+Stos produkujący 40 materiałów tygodniowo przy pojemności przeglądu 10 na tydzień ma przepustowość 10 i zaległość 30. Nazywanie tego czterdziestką to liczba, która najpierw załatwia takim projektom budżet, a potem po cichu ich cofnięcie.
+
+<KeyTakeaway
+  title="Trzy liczby, które opisują maszynę, a nie rynek"
+  items={[
+    "Wyprodukowane kontra wysłane. Duża różnica znaczy, że ograniczeniem jest bramka, więc zwolnij produkcję zamiast dokładać skille",
+    "Czas przeglądu, mediana godzin od draftu do decyzji. Rosnący czas to wczesny sygnał, że wąskim gardłem stał się człowiek",
+    "Oflagowane tezy. Materiały, które potrzebowały dowodu, jakiego plik pozycjonowania nie miał. Rosnąca liczba znaczy, że pozycjonowanie się zestarzało, a nie że piszący są niechlujni"
+  ]}
+/>
+
+## Pętla zwrotna jest tym, co czyni z tego system
+
+Jeden skill może edytować pliki decyzji i tylko przez pokazanie diffa i czekanie na zgodę. `review` czyta log wyników pod kątem metryki i warunku przerwania każdego zakładu, a potem zwraca jeden z trzech werdyktów: idzie zgodnie z planem, nie idzie i oto konkretna zmiana, albo przerwane.
+
+Warunku przerwania, który się odpalił, się nie zmiękcza, a daty nie przesuwa się dlatego, że zakładowi już prawie się udało. Data była decyzją. Raz w miesiącu ten sam skill zadaje pytanie, którego przegląd tygodniowy nie umie: czy pozycjonowanie nadal jest prawdziwe. Dowody starsze niż pół roku, dyskwalifikatory, które nie odpaliły w żadnym przebiegu outboundu, język kupujących, który odjechał od zapisanych fraz, anty-cele po cichu złamane.
+
+Bez tej pętli to jest kulturalna maszynka do treści. To ten sam argument, co [kampanie się wypłaszczają, systemy się kumulują](/pl/insights/b2b-revenue-system-design-operator-framework/), zastosowany do samego stosu agentowego.
+
+## Instalacja
+
+Open source, MIT, na [GitHubie](https://github.com/wojciechluszczynski/operator-cmo).
+
+```bash
+/plugin marketplace add wojciechluszczynski/operator-cmo
+/plugin install operator-cmo@operator-cmo
+```
+
+Potem, w repozytorium, w którym mieszka twój marketing:
+
+```bash
+/operator-cmo:positioning     # plik decyzji, który czyta cała reszta
+/operator-cmo:quarter         # dwa albo trzy zakłady, z warunkami przerwania
+/operator-cmo:ship-gate       # co może wyjść i jak szybko
+/cmo                          # stan systemu, w dowolnym momencie
+```
+
+W repozytorium jest wypełniony przykład dla B2B SaaS ze średniej półki, żeby zobaczyć, jak te pliki wyglądają, kiedy są prawdziwe, a nie szablonowe. Firma w nim jest zmyślona. Poziom szczegółowości nie: poniżej tej kreski skille wykonawcze zaczynają zgadywać, a zgadywanie jest awarią, przed którą to wszystko ma chronić.
+
+Jeśli wolisz architekturę pod spodem niż zastosowanie marketingowe, [cztery warstwy, dzięki którym agent GTM działa na produkcji](/pl/insights/gtm-ai-agent-four-layer-architecture-guide/) opisują ten sam wzorzec dla outboundu, a [agent GTM za 2 dolary na przebieg](/pl/insights/how-to-build-gtm-ai-agent-outbound-crm/) ma liczby kosztowe.
+
+<DoDont
+  do={[
+    "Napisz positioning.md, zanim zainstalujesz choćby jeden skill wykonawczy",
+    "Trzymaj limit trzech zakładów, każdy z jedną metryką i datą przerwania",
+    "Zrób z dowodów białą listę w pliku decyzji, nie filtruj ich w akceptacji",
+    "Podaj tygodniową pojemność przeglądu jako prawdziwą liczbę i limituj do niej",
+    "Pozwól skillowi przeglądu proponować zmiany w planie i je czytaj"
+  ]}
+  dont={[
+    "Pozwalać skillowi wywnioskować ICP, bo pliku brakowało",
+    "Przesuwać datę przerwania, bo zakładowi prawie się udało",
+    "Liczyć wyprodukowane materiały jako wynik",
+    "Obiecywać, że zaakceptujesz wszystko",
+    "Dokładać dziewiąty skill na problem, o którym mówi ci bramka"
+  ]}
+/>
+
+## Gdzie to się zatrzymuje
+
+Nie wysyła. Żadnych maili, publikacji, wydatków na reklamę. Ostatnia akcja należy do człowieka, celowo.
+
+Nie zastępuje CMO. Zdejmuje z niego obciążenie egzekucją i zamienia strategię w artefakt do przejrzenia zamiast w spór, który każdy pamięta inaczej.
+
+Nie sprawi, że zły plan zadziała. Sprawi, że zły plan stanie się czytelny, zwykle w jakieś trzy tygodnie, czyli szybciej, niż większość firm dowiaduje się tego w jakikolwiek inny sposób.
+
+## Pytania, które padły
+
+### Czy agent AI może zastąpić CMO?
+
+Nie. Może zastąpić większość egzekucji, którą CMO i tak deleguje: pisanie, budowanie list, produkcję stron, raportowanie. Nie automatyzuje się wybieranie: komu sprzedajesz, kogo odrzucasz, które dwa zakłady dostają budżet w tym kwartale i co przerywasz, kiedy liczba nie drgnie. Stos agentowy bez pliku z decyzją to nie CMO, tylko bardzo szybki zespół marketing ops wycelowany w nic.
+
+### Czym jest warstwa decyzji w stosie marketingowym opartym o AI?
+
+To dwa wersjonowane pliki przed egzekucją: `positioning.md` z ICP, problemem w słowach kupującego, udowodnionymi dowodami i anty-celami, oraz `quarter.md` z dwoma albo trzema zakładami, każdy z jedną metryką i warunkiem przerwania. Każdy skill wykonawczy czyta oba, zanim cokolwiek wyprodukuje, i zatrzymuje się, jeśli któregoś brakuje albo kwartał wygasł.
+
+### Jak powstrzymać agenta marketingowego przed wymyślaniem statystyk?
+
+Zrób z dowodów białą listę, a nie filtr. Brief przepisuje dozwolone dowody z pliku pozycjonowania, a każda liczba, nazwa klienta, logo czy porównanie z konkurentem, której tam nie ma, nigdy nie trafia do draftu. Jeśli tekst jej potrzebuje, człowiek najpierw wpisuje ją do pliku pozycjonowania, ze źródłem i datą.
+
+### Czy człowiek akceptujący każdy output nie staje się wąskim gardłem?
+
+Staje się, i to jest najczęstsza awaria takich stosów. Odpowiedź to przegląd w poziomach plus limit przepustowości. Rzeczy odwracalne i niskiego ryzyka idą automatycznie, publiczne materiały z już udowodnionymi tezami sprawdza się co N-ty, a wszystko trudne do cofnięcia czyta człowiek za każdym razem. Plan kwartału podaje tygodniową pojemność przeglądu, a produkcja zwalnia, kiedy kolejka ją przekroczy, zamiast wypuszczać nadmiar bez sprawdzenia.
+
+### Czym to się różni od folderu z promptami marketingowymi?
+
+Prompt produkuje na żądanie. To produkuje wyłącznie pod decyzję, która istnieje w repozytorium, z przypisanym zakładem, i odmawia na piśmie, kiedy prośba nie pasuje do żadnego zakładu. Ta odmowa jest funkcją, nie usterką. To jest też pętla: skill przeglądu czyta wyniki pod kątem warunków przerwania i proponuje zmiany z powrotem w plikach decyzji, czego biblioteka promptów strukturalnie nie potrafi.
+
+## Uznanie i spór
+
+Pomysł na siedem warstw jest Ignacia, a rozszedł się dlatego, że był konkretny. Większość ludzi piszących o AI w marketingu w 2026 wciąż opisuje przyszłość. On wypuścił rzecz i pokazał pliki.
+
+Mój spór jest wąski. On nazwał warstwy od roboty. Ja uważam, że pierwszą nazywa się od wyboru, a potem sprawia, że cała reszta odmawia startu, dopóki ten wybór nie istnieje. Siedem skilli i jeden brakujący plik to bardzo szybki stażysta. Dołóż plik, a te same siedem skilli staje się systemem.
+
+Jeśli budujesz to w prawdziwej firmie i chcesz, żeby warstwa decyzji powstała porządnie, zanim wjedzie egzekucja, [to jest robota, którą robię](/pl/contact/).

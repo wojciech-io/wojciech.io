@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { load as parseYaml } from 'js-yaml';
 
 const INSIGHTS_DIR = resolve('./src/content/insights');
-const VALID_CATEGORIES = ['AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products'] as const;
+const VALID_CATEGORIES = ['AI Systems', 'AI Marketing', 'GTM Architecture', 'Operator Playbooks', 'Products'] as const;
 const VALID_COVER_TYPES = ['terminal', 'builder', 'chart', 'product', 'system', 'launch', 'default'] as const;
 
 function parseFrontmatter(raw: string): Record<string, unknown> {
