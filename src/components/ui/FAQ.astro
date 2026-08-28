@@ -6,12 +6,31 @@ interface FAQItem {
 
 interface Props {
   items: FAQItem[];
+  /** Emit FAQPage structured data. Turn off for a second FAQ on the same page:
+   *  one page may only carry one FAQPage block. */
+  schema?: boolean;
 }
 
 import Icon from './Icon.astro';
 
-const { items } = Astro.props;
+const { items, schema = true } = Astro.props;
+
+// Answer engines quote structured Q&A. Without this the questions render for
+// people and stay invisible to the engines that increasingly do the referring.
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map(({ question, answer }) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: { '@type': 'Answer', text: answer },
+  })),
+};
 ---
+
+{schema && items.length > 0 && (
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+)}
 
 <div class="divide-y-0">
   {items.map(({ question, answer }) => (

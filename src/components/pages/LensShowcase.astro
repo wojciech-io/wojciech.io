@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import Layout from '../../layouts/Layout.astro';
 import CTABand from '../ui/CTABand.astro';
+import FAQ from '../ui/FAQ.astro';
 import { accentHeading } from '../../lib/editorial';
 
 interface BuildItem {
@@ -44,6 +45,10 @@ interface Props {
   ctaHref?: string;
   ctaSecondary?: string;
   ctaSecondaryHref?: string;
+  /** Questions people actually ask before booking. Rendered for readers and
+   *  emitted as FAQPage, which is the form answer engines quote. */
+  faq?: Array<{ question: string; answer: string }>;
+  faqHeading?: string;
 }
 
 const {
@@ -73,7 +78,21 @@ const {
   // Secondary (outline) = the newsletter, to /subscribe. Booking is primary.
   ctaSecondary = 'Read AI Espresso',
   ctaSecondaryHref = '/subscribe/',
+  faq,
+  faqHeading = 'Questions people ask first',
 } = Astro.props as Props;
+
+// These pages describe an offering but carried only the site-wide Person and
+// WebSite blocks, so an answer engine had nothing telling it what is on sale.
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: title,
+  description,
+  serviceType: title,
+  areaServed: 'Worldwide',
+  provider: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: 'https://wojciech.io/' },
+};
 
 const h2 = accentHeading(h1Secondary);
 const bh = accentHeading(buildHeading);
@@ -94,6 +113,7 @@ const heroImageReady =
   canonical={canonical}
   ogImage={ogImage}
   alternates={alternates}
+  schema={serviceSchema}
 >
   <section class="relative overflow-hidden flex items-center min-h-[440px] md:min-h-[500px] lg:min-h-[560px]">
     <div class="hero-grid pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:44px_44px]" aria-hidden="true"></div>
@@ -174,6 +194,15 @@ const heroImageReady =
       </blockquote>
     </div>
   </section>
+
+  {faq && faq.length > 0 && (
+    <section class="py-14 md:py-20 border-t border-[var(--color-border)]">
+      <div class="mx-auto max-w-6xl px-6">
+        <p class="obs-label-accent mb-6 block">{faqHeading}</p>
+        <FAQ items={faq} />
+      </div>
+    </section>
+  )}
 
   <slot />
 
