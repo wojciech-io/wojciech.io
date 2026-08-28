@@ -30,10 +30,31 @@ jobs:
         with:
           urls: |
             https://wojciech.io/
-            https://wojciech.io/about
-            https://wojciech.io/work
-            https://wojciech.io/ai-systems
-            https://wojciech.io/insights
+            https://wojciech.io/about/
+            https://wojciech.io/work/
+            https://wojciech.io/ai-systems/
+            https://wojciech.io/insights/
           configPath: ./lighthouserc.json
           uploadArtifacts: true
           temporaryPublicStorage: false
+
+      # Scores lived only inside the uploaded artifact, so a green run said
+      # nothing about whether the numbers moved. Print them on the run itself.
+      - name: Summarise scores
+        if: always()
+        run: |
+          node -e '
+            const fs = require("fs");
+            const dir = ".lighthouseci";
+            if (!fs.existsSync(dir)) { console.log("no results"); process.exit(0); }
+            const rows = fs.readdirSync(dir).filter(f => f.startsWith("lhr-") && f.endsWith(".json"))
+              .map(f => JSON.parse(fs.readFileSync(dir + "/" + f, "utf8")))
+              .map(r => {
+                const s = k => Math.round((r.categories[k]?.score ?? 0) * 100);
+                const url = (r.finalDisplayedUrl || r.finalUrl || "").replace("https://wojciech.io", "") || "/";
+                return `| ${url} | ${s("performance")} | ${s("accessibility")} | ${s("best-practices")} | ${s("seo")} |`;
+              });
+            const out = ["| page | perf | a11y | best | seo |", "|---|---|---|---|---|", ...rows].join("\n");
+            console.log(out);
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, out + "\n");
+          '

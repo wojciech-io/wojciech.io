@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import AiSystemsContent from '../components/pages/AiSystemsContent.astro';
 import { SITE } from '../data/site';
 import { localizedPageAlternates } from '../data/localizedPages';
+import FAQ from '../components/ui/FAQ.astro';
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -39,6 +40,12 @@ const serviceSchema = {
     ],
   },
 };
+const faq = [
+  { question: "Will this replace people on my team?", answer: "No. It removes the work they should not be doing. The wins come from routing, enrichment, drafting and reporting, not from headcount." },
+  { question: "We tried an AI tool and it went nowhere. Why would this differ?", answer: "Because tools are not the problem. AI on top of a broken CRM produces faster nonsense. The data layer gets fixed first, then the workflow, then the model." },
+  { question: "What does this cost to run?", answer: "Less than most teams expect, and I will tell you the running cost before we build. If the workflow cannot pay for itself, it does not get built." },
+  { question: "Is our data safe?", answer: "Nothing customer-identifying goes into a third-party model without your say. Where that is a constraint, the workflow is designed around it from the start." },
+];
 ---
 
 <Layout
@@ -49,4 +56,11 @@ const serviceSchema = {
   schema={[breadcrumbSchema, serviceSchema]}
 >
   <AiSystemsContent />
+
+  <section class="py-14 md:py-20 border-t border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="obs-label-accent mb-6 block">Questions people ask first</p>
+      <FAQ items={faq} />
+    </div>
+  </section>
 </Layout>

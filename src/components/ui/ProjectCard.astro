@@ -18,6 +18,10 @@ interface Props {
   cluster?: Cluster;
   problem?: string;
   system?: string;
+  /** First card in the first cluster: it is the LCP element on /work/, and
+   *  lazy-loading it delayed the largest paint. Everything below the fold
+   *  stays lazy. */
+  priority?: boolean;
   artifact?: string;
   outcome?: string;
   external?: boolean;
@@ -47,6 +51,7 @@ const {
   external = false,
   revealIndex,
   labels = {},
+  priority = false,
 } = Astro.props;
 
 const proof = [
@@ -71,7 +76,7 @@ const ctaLabel = external ? (labels.viewProject ?? 'View project') : (labels.exp
   <div class="artifact-stage relative aspect-[16/9] overflow-hidden p-3.5">
     <div class="absolute inset-3.5 overflow-hidden rounded-[14px] transition-transform duration-500 group-hover:scale-[1.012]">
       {screenshot
-        ? <img src={screenshot} alt="" width="1456" height="1088" loading="lazy" decoding="async" class:list={['h-full w-full object-cover', screenshotPosition]} />
+        ? <img src={screenshot} alt="" width="1456" height="1088" loading={priority ? "eager" : "lazy"} fetchpriority={priority ? "high" : undefined} decoding="async" class:list={['h-full w-full object-cover', screenshotPosition]} />
         : <ProjectCover cover={cover} />}
     </div>
     {!screenshot && <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>}
