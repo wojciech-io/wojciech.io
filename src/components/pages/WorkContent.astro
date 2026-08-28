@@ -87,7 +87,7 @@ const clusters = [
   </section>
 
   <!-- Clusters: only render sections that have at least one published item -->
-  {clusters.filter(({ id }) => hasItems(id)).map(({ id, label, eyebrow, n, description, icon }) => {
+  {clusters.filter(({ id }) => hasItems(id)).map(({ id, label, eyebrow, n, description, icon }, clusterIndex) => {
     const items = allWork.filter((w) => w.data.cluster === id);
     const cardGridClass = [
       'grid gap-6',
@@ -117,8 +117,9 @@ const clusters = [
           </div>
           <!-- Cards -->
           <div class:list={cardGridClass}>
-            {items.map((item) => (
+            {items.map((item, cardIndex) => (
               <ProjectCard
+                priority={clusterIndex === 0 && cardIndex === 0}
                 title={item.data.title}
                 description={item.data.description}
                 tags={item.data.tags ?? []}
