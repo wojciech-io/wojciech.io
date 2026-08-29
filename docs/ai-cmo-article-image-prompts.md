@@ -93,23 +93,29 @@ Place it after the section "The refusal is the feature".
 **File:** `public/images/insights/ai-cmo-ship-gate.webp`
 Place it after the section "The approval bottleneck is a capacity problem".
 
-**Concept:** three lanes at different widths, and the queue that forms when the
-input is wider than the lane.
+**Concept:** three review lanes moving at different rates, and the backlog that
+piles up behind the narrowest one.
+
+**Do not render this as physical objects.** The first attempt used ceramic
+channels with ceramic tokens and it read as a stack of plates, not as a review
+queue. Everything in this frame is screen furniture: floating UI panels and
+card chips, the same material language as the panels on the cover.
 
 **Prompt:**
 
 > [style block]
-> Composition: three horizontal channels in matte ceramic running left to right
-> across the frame, stacked, of visibly different widths: the top one wide and
-> open, the middle one narrower with a small lime gate marker part way along, the
-> bottom one narrow with a lime gate marker at the start. Small identical pale
-> tokens flow along each channel. Above the narrowest channel, a neat stack of
-> waiting tokens has formed, not scattered, deliberately queued. One lime token
-> at the head of the queue. The man is at the right edge, in profile, out of
-> focus, watching. No text labels except three tiny letters A, B, C at the left
-> end of the channels. 1456 x 1088.
-
----
+> Composition: three floating horizontal UI lanes stacked with even gaps,
+> frosted glass with thin light-grey strokes, each labelled with a single small
+> letter at its left end: A, B, C. Inside each lane, a row of small rounded card
+> chips with faint grey placeholder bars, moving left to right. Lane A is evenly
+> spaced and unobstructed. Lane B has a thin vertical lime yellow gate bar part
+> way along, and the chips after it are slightly more spread out. Lane C has the
+> lime gate bar right at its start and only a few chips past it, while a dense
+> block of waiting chips is stacked up behind the bar, neatly overlapping like a
+> held queue, with one lime chip at the front of the queue. The man stands at the
+> right edge in soft focus, arms folded, looking at the lanes. Bright off-white
+> interior behind. No physical props, no ceramic discs, no plates, no bowls.
+> 1456 x 1088.
 
 ## 4. OG and LinkedIn share image
 
