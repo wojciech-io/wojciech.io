@@ -20,7 +20,7 @@ const insights = defineCollection({
     ogImage: z.string().optional(),
     coverImage: z.string().optional(),
     coverType: z.enum(['terminal', 'builder', 'chart', 'product', 'system', 'launch', 'default']).default('default'),
-    category: z.enum(['AI Systems', 'GTM Architecture', 'Operator Playbooks', 'Products']).optional(),
+    category: z.enum(['AI Systems', 'AI Marketing', 'GTM Architecture', 'Operator Playbooks', 'Products']).optional(),
     locale: z.enum(ALL_LOCALES).default('en'),
     translationOf: z.string().optional(),
     // External claims this article rests on, so scripts/check-sources.mjs can
