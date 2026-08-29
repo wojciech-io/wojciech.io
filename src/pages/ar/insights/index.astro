@@ -252,6 +252,22 @@ const formatDate = (date: Date) =>
   const initialCat = new URL(window.location.href).searchParams.get('cat') ?? 'All';
   applyFilter(initialCat);
 
+  const activateChip = (chip: HTMLElement) => {
+    applyFilter(chip.dataset.filterCat ?? 'All', true);
+    document.getElementById('cat-nav')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
+  // The chip is a span with role="button" and tabindex, so it takes focus but
+  // gets no key handling for free. Without this a keyboard user tabs onto it
+  // and nothing happens.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const chip = (e.target as Element).closest<HTMLElement>('[data-filter-cat]');
+    if (!chip) return;
+    e.preventDefault();
+    activateChip(chip);
+  });
+
   document.addEventListener('click', (e) => {
     const chip = (e.target as Element).closest<HTMLElement>('[data-filter-cat]');
     if (!chip) return;
