@@ -73,18 +73,52 @@ identical.
 **File:** `public/images/insights/ai-cmo-brief-refusal.webp`
 Place it after the section "The refusal is the feature".
 
-**Concept:** a request that fits no bet gets handed back, not written.
+**Concept:** a request that fits no bet is handed back, not written.
 
-**Prompt:**
+**Self-contained prompt.** Paste this on its own, in a fresh generation. Do not
+paste this file, and do not paste more than one prompt at a time: the first
+batch was generated from the whole document and came back as contact sheets of
+five thumbnails instead of five images.
 
-> [style block]
-> Composition: centre frame, three horizontal cards labelled with short type,
-> "B1", "B2", "B3", each with a thin lime underline. A fourth card floats above
-> them, slightly rotated, tinted a very pale grey and clearly not connected to
-> anything, with a small lime dot on its corner and a thin dashed line that stops
-> short of all three cards instead of joining one. The man is small in the left
-> background, out of focus, hands off the laptop. Emphasis on the gap between the
-> floating card and the three cards below it. 1456 x 1088.
+> A single photorealistic editorial image, one continuous scene filling the
+> whole frame. Not a grid, not a contact sheet, no panels, no captions, no
+> numbered labels, no borders.
+>
+> Scene: a bright minimal interior in bone white and warm off-white. Plaster
+> walls, a travertine ledge running across the lower third, one sculptural
+> rounded cream armchair at the far right, a green plant in a pale ceramic pot,
+> soft daylight from a window on the right casting a long gentle shadow across
+> the wall. Shallow depth of field, high-end product photography, calm and airy.
+>
+> A man in his mid thirties with dark curly hair and a short beard, wearing a
+> cream ribbed knit jumper and light beige chinos, stands at the far left,
+> turned three quarters away, one hand at his chin, thinking. He is soft and out
+> of focus and he is not looking at the camera.
+>
+> Floating in front of the wall, sharply in focus, is the subject: one wide
+> rounded card of frosted white glass, tilted slightly off axis, carrying faint
+> grey placeholder bars instead of readable text and a single small lime yellow
+> dot in its top right corner. It hovers above and apart from everything else.
+>
+> Below it, standing on the travertine ledge in a neat row, three upright
+> frosted white cards of equal size, each with a short thick lime yellow
+> underline near the top and grey placeholder bars beneath. They are labelled in
+> small clean dark sans type: B1, B2, B3.
+>
+> Thin dashed lime yellow lines descend from the tilted card toward the three
+> cards below, but each line stops short in the empty gap and ends in a small
+> lime yellow cross. Nothing connects. The visible gap between the floating card
+> and the row is the point of the picture.
+>
+> Palette: bone white, warm pale grey, soft beige, one green plant. Lime yellow
+> #EBFF00 appears only on the dot, the three underlines, and the dashed lines
+> with their crosses. No other colour. No readable sentences anywhere, no logos,
+> no neon, no dark background, no holographic blue interface. Aspect ratio 4:3,
+> 1456 x 1088.
+
+**Reject the render if:** the dashed lines actually reach the three cards, which
+inverts the meaning into "it fits all three"; or the floating card sits level
+with the row instead of above and apart from it.
 
 ---
 
@@ -93,21 +127,58 @@ Place it after the section "The refusal is the feature".
 **File:** `public/images/insights/ai-cmo-ship-gate.webp`
 Place it after the section "The approval bottleneck is a capacity problem".
 
-**Concept:** three lanes at different widths, and the queue that forms when the
-input is wider than the lane.
+**Concept:** three review lanes moving at different rates, and the backlog that
+piles up behind the narrowest one.
 
-**Prompt:**
+**Do not render this as physical objects.** The first attempt asked for ceramic
+channels holding ceramic tokens and came back looking like a stack of plates.
+Everything in this frame is screen furniture: glass panels and UI tiles, the
+same material language as the panels on the cover.
 
-> [style block]
-> Composition: three horizontal channels in matte ceramic running left to right
-> across the frame, stacked, of visibly different widths: the top one wide and
-> open, the middle one narrower with a small lime gate marker part way along, the
-> bottom one narrow with a lime gate marker at the start. Small identical pale
-> tokens flow along each channel. Above the narrowest channel, a neat stack of
-> waiting tokens has formed, not scattered, deliberately queued. One lime token
-> at the head of the queue. The man is at the right edge, in profile, out of
-> focus, watching. No text labels except three tiny letters A, B, C at the left
-> end of the channels. 1456 x 1088.
+**Self-contained prompt.** Paste on its own.
+
+> A single photorealistic editorial image, one continuous scene filling the
+> whole frame. Not a grid, not a contact sheet, no panels, no captions, no
+> numbered labels, no borders.
+>
+> Scene: a bright minimal interior in bone white and warm off-white. Plaster
+> wall, soft daylight from the right, a hint of a green plant at the far edge.
+> Shallow depth of field, high-end product photography, calm and airy.
+>
+> The subject is three floating horizontal lanes of frosted white glass, stacked
+> one above the other with even gaps, running left to right across the frame,
+> each with thin light grey edges and a soft shadow on the wall behind. Each
+> lane is labelled at its left end with a single small dark letter: A on the top
+> lane, B in the middle, C at the bottom.
+>
+> Inside each lane sits a row of small rounded rectangular cards, like little
+> interface tiles, white with two faint grey placeholder bars on each.
+>
+> Lane A: tiles evenly spaced along the whole lane with clear gaps, moving
+> freely, nothing blocking them.
+> Lane B: a thin vertical lime yellow bar crosses the lane about two thirds
+> along. Tiles are evenly spaced before it and more thinly spread after it.
+> Lane C: the thin vertical lime yellow bar sits right at the left end. Only
+> four or five tiles have passed it. Behind that bar, outside the lane, a dense
+> block of identical tiles is stacked up and overlapping like a held queue,
+> clearly waiting, with one single lime yellow tile at the front of the queue.
+>
+> A man in his mid thirties with dark curly hair and a cream knit jumper stands
+> at the right edge of the frame, in soft focus, arms folded, looking at the
+> lanes. He is not looking at the camera.
+>
+> Everything in this image is screen furniture: glass panels and interface
+> tiles. No physical objects, no ceramic discs, no stone tokens, no plates, no
+> bowls, no coins, no stacked crockery.
+>
+> Palette: bone white, warm pale grey, soft beige. Lime yellow #EBFF00 only on
+> the two vertical bars and the single tile at the head of the queue. No other
+> colour. No readable sentences, no logos, no neon, no dark background. Aspect
+> ratio 4:3, 1456 x 1088.
+
+**Reject the render if:** the tiles read as ceramic discs, coins or plates; the
+queue behind lane C is scattered rather than stacked; or all three lanes look
+equally full, which loses the whole point.
 
 ---
 
