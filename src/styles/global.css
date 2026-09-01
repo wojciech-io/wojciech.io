@@ -976,6 +976,22 @@ details.faq-item[open] .faq-body {
   margin-block: 2.5rem;
 }
 
+/* CodeBlock and Terminal draw their own frame. Without this reset the prose
+   `pre` rule below paints a second bordered box, with its own black left bar,
+   inside that frame: visible on every article using <CodeBlock>.
+   Written with plain class selectors on purpose. The `:where()` form has zero
+   specificity, so it tied with `.prose-content :where(pre)` and lost on source
+   order, which is why the first attempt at this fix changed nothing. */
+.prose-content .code-block pre,
+.prose-content .terminal pre {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  overflow-x: auto;
+}
+
 .prose-content :where(pre) {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
