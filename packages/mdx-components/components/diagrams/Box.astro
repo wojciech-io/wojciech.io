@@ -48,13 +48,17 @@ const { variant = 'default', label, sub } = Astro.props;
   }
 
   /* accent: lime fill for highlighted node */
+  /* accent: tinted card with a solid lime edge, not a solid lime slab. The
+     filled version put muted grey sub-text on fluorescent yellow, which failed
+     to read at body size and shouted next to everything around it. */
   .diagram-box[data-variant='accent'] {
-    background: var(--color-accent-cta);
-    border-color: var(--color-accent-cta);
-    color: var(--color-accent-text);
+    background: var(--color-accent-lo);
+    border-color: color-mix(in srgb, var(--color-accent-cta) 45%, var(--color-border-2));
+    border-left: 3px solid var(--color-accent-cta);
+    color: var(--color-text);
   }
   .diagram-box[data-variant='accent'] .diagram-box-sub {
-    color: rgba(12, 12, 12, 0.65);
+    color: var(--color-text-muted);
   }
 
   /* muted: dimmer for context-only nodes */
