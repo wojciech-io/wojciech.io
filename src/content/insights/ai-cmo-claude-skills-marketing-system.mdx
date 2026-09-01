@@ -19,7 +19,7 @@ tldr:
   - "The fix is a decision layer: positioning and a quarter plan as versioned files that every execution skill has to read before it produces anything"
   - "Every asset carries a header naming the decision, the bet and the brief it came from. No header, not publishable"
   - "Approve-everything is what turns an agent stack into a queue. Three review tiers plus a production throttle tied to real review capacity is the fix"
-  - "Operator CMO is open source: eight skills, three layers, MIT, installable in Claude Code"
+  - "Operator CMO is open source: nine skills, three layers, MIT, installable in Claude Code"
 faq:
   - q: "Can an AI agent replace a CMO?"
     a: "No. It can replace most of the execution a CMO delegates: drafting, list building, page production, reporting. The part that does not automate is choosing, which is deciding who you serve, what you refuse, which two bets get funded this quarter, and what you stop when the number does not move. An agent stack with no decision file is not a CMO, it is a very fast marketing ops team pointed at nothing."
@@ -42,9 +42,12 @@ A post went around in August 2026. Ignacio Prieto wrote that he could not afford
 
 It is a good build. I would run most of it. But the best comment under it was not praise, it was a question.
 
-<Quote author="A commenter under the original post" source="LinkedIn, August 2026">
-These skills are execution of a marketing plan. Who made the plan?
-</Quote>
+<PullQuote
+  quote="These skills are execution of a marketing plan. Who made the plan?"
+  source="A commenter under the original post"
+  role="LinkedIn, August 2026"
+  href="https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/"
+/>
 
 That question is the whole article.
 
@@ -58,9 +61,9 @@ None of that is execution. All of it is choosing.
 
 So the honest version of the claim is: seven skills replace a marketing ops team, and a fast one. That is worth real money, and it is not a CMO. The gap is not capability, it is that nothing in the stack holds the choices, so every skill is quietly inventing its own version of the strategy at generation time and none of them agree.
 
-<Callout type="warning" title="The failure you will not notice for a quarter">
+<KeyPoint type="takeaway" title="The failure you will not notice for a quarter">
 An agent stack with no decision file does not produce bad writing. It produces excellent writing about nothing anyone decided to say. That reads as productivity for about three months, which is exactly how long it takes to notice that none of it compounded.
-</Callout>
+</KeyPoint>
 
 I have written before that [CRM-first beats prompt-first in AI adoption](/insights/crm-first-ai-adoption/), for the same structural reason. The entry point is never the model. It is the layer that holds the truth the model is supposed to work from.
 
@@ -72,9 +75,24 @@ So I built the answer as a plugin, and put the missing layer in front.
 
 Both live in the repo as plain markdown. Diffable, reviewable, and portable to any tool that reads files. A strategy that lives in a slide from March is not available to the machine writing your landing page in August.
 
+<Diagram caption="Execution reads the decision before it produces anything. Miss the file, or run past the quarter's end date, and the skill stops instead of guessing.">
+  <Stack direction="column" gap="sm" align="stretch">
+    <Box variant="accent" label="positioning.md" sub="who we serve, who we refuse, what we may claim" />
+    <Box variant="accent" label="quarter.md" sub="two or three bets, one metric, a kill date" />
+  </Stack>
+  <Arrow direction="right" label="reads" />
+  <Stack direction="column" gap="sm">
+    <Box variant="outline" label="brief" />
+    <Box variant="outline" label="content" />
+    <Box variant="outline" label="outbound" />
+    <Box variant="outline" label="visibility" />
+  </Stack>
+</Diagram>
+
 <StackLayer
-  title="Operator CMO: three layers, eight skills"
+  title="Operator CMO: three layers, nine skills"
   layers={[
+    { name: "start", tech: "Guided first run: five steps, one question cluster at a time", badge: "setup" },
     { name: "positioning", tech: "ICP, refusals, the problem in their words, evidenced proof, anti-goals", badge: "decide" },
     { name: "quarter", tech: "Two or three bets, one metric each, a kill condition and a date", badge: "decide" },
     { name: "brief", tech: "Maps a request to a bet, or refuses it in writing", badge: "do" },
@@ -128,6 +146,16 @@ This inverts the usual approach. Most teams try to catch hallucinated stats on t
 
 The `brief` skill maps every request to exactly one bet. When nothing fits, it does not write the asset. It writes a short file recording the request, the bets it was tested against, and why none of them fit, then offers three options in a deliberate order: drop it, add it to the not-doing list, or change the quarter plan, which means killing or shrinking an existing bet to pay for it.
 
+<Diagram caption="A request that matches no bet is not written. It is recorded as a refusal, with the price of changing the plan spelled out next to it.">
+  <Box variant="muted" label="incoming request" sub="serves no bet" />
+  <Arrow direction="right" dashed label="no match" />
+  <Stack direction="row" gap="sm">
+    <Box variant="outline" label="B1" />
+    <Box variant="outline" label="B2" />
+    <Box variant="outline" label="B3" />
+  </Stack>
+</Diagram>
+
 Option three is last, and it names what it costs. Most requests stop at option one once that price is visible. This is the single most useful behaviour in the plugin and the one that feels worst in week one.
 
 ## The approval bottleneck is a capacity problem
@@ -153,6 +181,14 @@ Reviewing everything does not scale. Reviewing nothing is negligent. So the gate
 
 Then the rule that actually prevents the queue. `quarter.md` states a weekly review capacity, as a real number, and the brief skill counts the queue before accepting new work. Over capacity, production throttles. It does not downgrade a tier and it does not ship the overflow unreviewed.
 
+<Diagram caption="Throughput is what ships, not what gets generated. Reporting the left-hand number is how these projects get funded and then quietly cancelled.">
+  <Box variant="muted" label="produced" sub="40 / week" />
+  <Arrow direction="right" label="gate" />
+  <Box variant="accent" label="shipped" sub="10 / week" />
+  <Arrow direction="right" dashed label="overflow" />
+  <Box variant="outline" label="backlog" sub="30 and growing" />
+</Diagram>
+
 A stack producing 40 assets a week into a 10-a-week review capacity has a throughput of 10 and a backlog of 30. Calling that 40 is the number that gets these projects funded and then quietly cancelled.
 
 <KeyTakeaway
@@ -173,6 +209,28 @@ A fired kill condition is not softened and the date is not extended because the 
 Without that loop this is a content mill with good manners. It is the same argument as [campaigns plateau and systems compound](/insights/b2b-revenue-system-design-operator-framework/), applied to the agent stack itself.
 
 ## Install it
+
+<ToolCard
+  title="What this responds to, and what it ships"
+  cols={2}
+  items={[
+    {
+      name: "The original post",
+      description: "Ignacio Prieto's seven-layer Claude marketing stack, and the comment thread underneath it that asked who made the plan.",
+      href: "https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/",
+      meta: "linkedin.com",
+      icon: "chat",
+    },
+    {
+      name: "operator-cmo",
+      description: "The plugin this article argues for. Nine skills, the decision guard, the ship gate, templates and a worked example.",
+      href: "https://github.com/wojciechluszczynski/operator-cmo",
+      meta: "github.com",
+      status: "live",
+      icon: "code",
+    },
+  ]}
+/>
 
 Open source, MIT, on [GitHub](https://github.com/wojciechluszczynski/operator-cmo).
 
