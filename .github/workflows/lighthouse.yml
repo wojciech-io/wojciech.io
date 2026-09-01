@@ -19,9 +19,16 @@ permissions:
 
 jobs:
   lighthouse:
-    name: Lighthouse against prod
+    # Desktop only measured what the site does on a fast machine. The phone run
+    # is the one that matters here: this site has shipped an iOS regression
+    # before, and mobile is where it surfaced.
+    name: Lighthouse against prod (${{ matrix.profile }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [desktop, mobile]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -34,14 +41,17 @@ jobs:
             https://wojciech.io/work/
             https://wojciech.io/ai-systems/
             https://wojciech.io/insights/
-          configPath: ./lighthouserc.json
+          configPath: ${{ matrix.profile == 'mobile' && './lighthouserc.mobile.json' || './lighthouserc.json' }}
           uploadArtifacts: true
+          artifactName: lighthouse-results-${{ matrix.profile }}
           temporaryPublicStorage: false
 
       # Scores lived only inside the uploaded artifact, so a green run said
       # nothing about whether the numbers moved. Print them on the run itself.
       - name: Summarise scores
         if: always()
+        env:
+          PROFILE: ${{ matrix.profile }}
         run: |
           node -e '
             const fs = require("fs");
