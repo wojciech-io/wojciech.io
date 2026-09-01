@@ -116,13 +116,13 @@ Każdy skill wykonawczy czyta `positioning.md` i `quarter.md`, zanim cokolwiek w
 
 Druga zasada to pochodzenie. Każdy draft zaczyna się nagłówkiem:
 
-```yaml
+<CodeBlock filename="marketing/drafts/2026-08-28-zamkniecie-miesiaca.md" lang="yaml" caption="Nagłówek jest sednem. Materiał, który nie potrafi wskazać decyzji, z której powstał, nie nadaje się do publikacji.">
 bet: B2
 decision: positioning.md rev 2026-07-02
 brief: marketing/briefs/2026-08-28-zamkniecie-miesiaca.md
 gate: B
 claims_flagged: 0
-```
+</CodeBlock>
 
 Materiał, który nie potrafi wskazać decyzji, z której powstał, nie nadaje się do publikacji. To jest kontrola mechaniczna, nie kulturowa aspiracja, i na tym polega różnica między systemem a nawykiem.
 
@@ -148,15 +148,11 @@ To odwraca zwykłe podejście. Większość zespołów próbuje łapać zmyślon
 
 Skill `brief` przypina każdą prośbę do dokładnie jednego zakładu. Kiedy nic nie pasuje, nie pisze materiału. Zapisuje krótki plik z prośbą, listą zakładów, przy których ją sprawdzał, i powodem, dla którego żaden nie pasuje. Potem daje trzy opcje w przemyślanej kolejności: odpuść, dopisz do listy rzeczy, których w tym kwartale nie robimy, albo zmień plan kwartału, co oznacza ucięcie lub zmniejszenie istniejącego zakładu, żeby to sfinansować.
 
-<Diagram caption="Prośba, która nie pasuje do żadnego zakładu, nie jest pisana. Zostaje zapisana jako odmowa, z ceną zmiany planu obok.">
-  <Box variant="muted" label="prośba" sub="nie służy żadnemu zakładowi" />
-  <Arrow direction="right" dashed label="brak dopasowania" />
-  <Stack direction="row" gap="sm">
-    <Box variant="outline" label="B1" />
-    <Box variant="outline" label="B2" />
-    <Box variant="outline" label="B3" />
-  </Stack>
-</Diagram>
+<AnnotatedImage
+  src="/images/insights/ai-cmo-brief-refusal.webp"
+  alt="Karta z prośbą unosi się nad trzema kartami zakładów B1, B2 i B3, a przerywane linie urywają się i kończą krzyżykami, zamiast je łączyć."
+  caption="Prośba, która nie pasuje do żadnego zakładu, nie jest pisana. Zostaje zapisana jako odmowa, z ceną zmiany planu obok."
+/>
 
 Trzecia opcja jest ostatnia i ma podaną cenę. Większość próśb kończy się na pierwszej opcji, kiedy ta cena staje się widoczna. To najbardziej użyteczne zachowanie w całej wtyczce i jednocześnie to, które w pierwszym tygodniu boli najbardziej.
 
@@ -165,6 +161,12 @@ Trzecia opcja jest ostatnia i ma podaną cenę. Większość próśb kończy si�
 Druga krytyka pod oryginalnym postem była ostrzejsza od pierwszej i to w nią zaraz wejdzie większość ludzi budujących takie stosy: jeśli człowiek akceptuje każdy output, a agent produkuje szybciej, niż człowiek czyta, to akceptacja jest ograniczeniem. Wąskie gardło nie zniknęło. Przeniosło się do kolejki i dostało ładniejszą nazwę.
 
 Przeglądanie wszystkiego się nie skaluje. Nieprzeglądanie niczego jest niedbalstwem. Bramka sortuje więc robotę na trzy poziomy.
+
+<AnnotatedImage
+  src="/images/insights/ai-cmo-ship-gate.webp"
+  alt="Trzy poziome pasy oznaczone A, B i C. Pas A biegnie swobodnie, pas B ma bramkę w dwóch trzecich długości, pas C ma bramkę na starcie i spiętrzoną za nią kolejkę."
+  caption="Poziom A idzie swobodnie. Poziom B jest próbkowany. Poziom C czyta człowiek za każdym razem i to tam tworzy się kolejka, jeśli produkcja nie ma limitu."
+/>
 
 <Compare
   labelA="Akceptuję wszystko"
@@ -236,19 +238,26 @@ Bez tej pętli to jest kulturalna maszynka do treści. To ten sam argument, co [
 
 Open source, MIT, na [GitHubie](https://github.com/wojciechluszczynski/operator-cmo).
 
-```bash
-/plugin marketplace add wojciechluszczynski/operator-cmo
-/plugin install operator-cmo@operator-cmo
-```
+<Terminal
+  title="Claude Code"
+  commands={[
+    { cmd: "/plugin marketplace add wojciechluszczynski/operator-cmo" },
+    { cmd: "/plugin install operator-cmo@operator-cmo" },
+  ]}
+/>
 
 Potem, w repozytorium, w którym mieszka twój marketing:
 
-```bash
-/operator-cmo:positioning     # plik decyzji, który czyta cała reszta
-/operator-cmo:quarter         # dwa albo trzy zakłady, z warunkami przerwania
-/operator-cmo:ship-gate       # co może wyjść i jak szybko
-/cmo                          # stan systemu, w dowolnym momencie
-```
+<Terminal
+  title="Twoje repozytorium marketingu"
+  commands={[
+    { cmd: "/operator-cmo:start", output: "Prowadzone pierwsze uruchomienie. Pięć kroków, po jednej porcji pytań." },
+    { cmd: "/operator-cmo:positioning", output: "Plik decyzji, który czyta cała reszta." },
+    { cmd: "/operator-cmo:quarter", output: "Dwa albo trzy zakłady, każdy z warunkiem przerwania." },
+    { cmd: "/operator-cmo:ship-gate", output: "Co może wyjść i jak szybko." },
+    { cmd: "/cmo", output: "Stan systemu, w dowolnym momencie." },
+  ]}
+/>
 
 W repozytorium jest wypełniony przykład dla B2B SaaS ze średniej półki, żeby zobaczyć, jak te pliki wyglądają, kiedy są prawdziwe, a nie szablonowe. Firma w nim jest zmyślona. Poziom szczegółowości nie: poniżej tej kreski skille wykonawcze zaczynają zgadywać, a zgadywanie jest awarią, przed którą to wszystko ma chronić.
 

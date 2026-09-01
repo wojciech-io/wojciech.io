@@ -114,13 +114,13 @@ Every execution skill reads `positioning.md` and `quarter.md` before it produces
 
 The second rule is provenance. Every draft opens with a header:
 
-```yaml
+<CodeBlock filename="marketing/drafts/2026-08-28-month-end-close.md" lang="yaml" caption="The header is the point. An asset that cannot name the decision it came from is not publishable.">
 bet: B2
 decision: positioning.md rev 2026-07-02
 brief: marketing/briefs/2026-08-28-month-end-close.md
 gate: B
 claims_flagged: 0
-```
+</CodeBlock>
 
 An asset that cannot name the decision it came from is not publishable. That is a mechanical check, not a cultural aspiration, and it is the difference between a system and a habit.
 
@@ -146,15 +146,11 @@ This inverts the usual approach. Most teams try to catch hallucinated stats on t
 
 The `brief` skill maps every request to exactly one bet. When nothing fits, it does not write the asset. It writes a short file recording the request, the bets it was tested against, and why none of them fit, then offers three options in a deliberate order: drop it, add it to the not-doing list, or change the quarter plan, which means killing or shrinking an existing bet to pay for it.
 
-<Diagram caption="A request that matches no bet is not written. It is recorded as a refusal, with the price of changing the plan spelled out next to it.">
-  <Box variant="muted" label="incoming request" sub="serves no bet" />
-  <Arrow direction="right" dashed label="no match" />
-  <Stack direction="row" gap="sm">
-    <Box variant="outline" label="B1" />
-    <Box variant="outline" label="B2" />
-    <Box variant="outline" label="B3" />
-  </Stack>
-</Diagram>
+<AnnotatedImage
+  src="/images/insights/ai-cmo-brief-refusal.webp"
+  alt="A request card floating above three bet cards labelled B1, B2 and B3, with dashed lines that stop short and end in crosses instead of connecting."
+  caption="A request that matches no bet is not written. It is recorded as a refusal, with the price of changing the plan spelled out next to it."
+/>
 
 Option three is last, and it names what it costs. Most requests stop at option one once that price is visible. This is the single most useful behaviour in the plugin and the one that feels worst in week one.
 
@@ -163,6 +159,12 @@ Option three is last, and it names what it costs. Most requests stop at option o
 The second criticism under the original post was sharper than the first, and it is the one most people building these stacks are about to walk into: if a human approves every output, and the agent produces faster than the human reads, then approval is the constraint. The bottleneck did not go away. It moved into a queue and got a nicer name.
 
 Reviewing everything does not scale. Reviewing nothing is negligent. So the gate sorts work into three tiers.
+
+<AnnotatedImage
+  src="/images/insights/ai-cmo-ship-gate.webp"
+  alt="Three horizontal lanes labelled A, B and C. Lane A runs free, lane B has a gate part way along, lane C has a gate at the start and a queue of work piled up behind it."
+  caption="Tier A runs free. Tier B is sampled. Tier C is read every time, and that is where the queue forms if production is not capped."
+/>
 
 <Compare
   labelA="Approve everything"
@@ -234,19 +236,26 @@ Without that loop this is a content mill with good manners. It is the same argum
 
 Open source, MIT, on [GitHub](https://github.com/wojciechluszczynski/operator-cmo).
 
-```bash
-/plugin marketplace add wojciechluszczynski/operator-cmo
-/plugin install operator-cmo@operator-cmo
-```
+<Terminal
+  title="Claude Code"
+  commands={[
+    { cmd: "/plugin marketplace add wojciechluszczynski/operator-cmo" },
+    { cmd: "/plugin install operator-cmo@operator-cmo" },
+  ]}
+/>
 
 Then, in the repo where your marketing lives:
 
-```bash
-/operator-cmo:positioning     # the decision file everything else reads
-/operator-cmo:quarter         # two or three bets, with kill conditions
-/operator-cmo:ship-gate       # what may go out, and how fast
-/cmo                          # state of the system, any time
-```
+<Terminal
+  title="Your marketing repo"
+  commands={[
+    { cmd: "/operator-cmo:start", output: "Guided first run. Five steps, one question cluster at a time." },
+    { cmd: "/operator-cmo:positioning", output: "The decision file everything else reads." },
+    { cmd: "/operator-cmo:quarter", output: "Two or three bets, each with a kill condition." },
+    { cmd: "/operator-cmo:ship-gate", output: "What may go out, and how fast." },
+    { cmd: "/cmo", output: "State of the system, any time." },
+  ]}
+/>
 
 The repo ships a filled-in example workspace for a mid-market B2B SaaS, so you can see what these files look like when they are real rather than templated. The company in it is invented. The level of specificity is not: below that line, the execution skills start guessing, and guessing is the failure this exists to prevent.
 
