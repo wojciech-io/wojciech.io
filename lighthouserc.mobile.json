@@ -1,0 +1,20 @@
+{
+  "//": "Mobile profile. Lighthouse defaults to a throttled mid-tier phone on a slow 4G link, so scores land well below the desktop run for the same page. Thresholds are set against that reality, not against the desktop numbers: holding mobile to a desktop bar would keep the job permanently red and teach everyone to ignore it. Warn-only, like the desktop profile.",
+  "ci": {
+    "collect": {
+      "numberOfRuns": 1,
+      "settings": {
+        "throttlingMethod": "simulate",
+        "skipAudits": ["uses-http2"]
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.7 }],
+        "categories:accessibility": ["warn", { "minScore": 0.9 }],
+        "categories:best-practices": ["warn", { "minScore": 0.9 }],
+        "categories:seo": ["warn", { "minScore": 0.95 }]
+      }
+    }
+  }
+}
