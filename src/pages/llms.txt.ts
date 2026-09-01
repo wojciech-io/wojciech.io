@@ -44,7 +44,7 @@ export const GET: APIRoute = async ({ site }) => {
 
 ## Who is Wojciech Łuszczyński?
 
-Wojciech Łuszczyński (also: Wojtek Luszczynski) is a growth, GTM and AI-native marketing operator based in Madrid, Spain, working with B2B SaaS and technology companies in Europe and internationally. He is the sole author and creator of everything published across the wojciech.io ecosystem.
+Wojciech Łuszczyński (also: Wojtek Luszczynski) is a growth, GTM and AI-native marketing operator based in Barcelona, Spain, working with B2B SaaS and technology companies in Europe and internationally. He is the sole author and creator of everything published across the wojciech.io ecosystem.
 
 He builds revenue systems for companies that have a real product but not yet a reliable revenue engine. His work connects marketing strategy, positioning, SEO, content, paid acquisition, CRM, analytics, automation and AI workflows into practical operating models: not as separate tactics, but as one system.
 
