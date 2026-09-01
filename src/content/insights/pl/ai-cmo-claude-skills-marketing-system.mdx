@@ -21,7 +21,7 @@ tldr:
   - "Naprawa to warstwa decyzji: pozycjonowanie i plan kwartału jako wersjonowane pliki, które każdy skill wykonawczy musi przeczytać, zanim cokolwiek wyprodukuje"
   - "Każdy materiał ma nagłówek z decyzją, zakładem i briefem, z których powstał. Nie ma nagłówka, nie ma publikacji"
   - "Akceptowanie wszystkiego to sposób, w jaki stos agentowy zamienia się w kolejkę. Trzy poziomy przeglądu plus limit produkcji oparty o realną pojemność przeglądu"
-  - "Operator CMO jest otwarty: osiem skilli, trzy warstwy, MIT, instalowalny w Claude Code"
+  - "Operator CMO jest otwarty: dziewięć skilli, trzy warstwy, MIT, instalowalny w Claude Code"
 faq:
   - q: "Czy agent AI może zastąpić CMO?"
     a: "Nie. Może zastąpić większość egzekucji, którą CMO i tak deleguje: pisanie, budowanie list, produkcję stron, raportowanie. Nie automatyzuje się wybieranie: komu sprzedajesz, kogo odrzucasz, które dwa zakłady dostają budżet w tym kwartale i co przerywasz, kiedy liczba nie drgnie. Stos agentowy bez pliku z decyzją to nie CMO, tylko bardzo szybki zespół marketing ops wycelowany w nic."
@@ -44,9 +44,12 @@ W sierpniu 2026 rozszedł się pewien post. Ignacio Prieto napisał, że nie sta
 
 To dobra konstrukcja. Sam większość z niej bym uruchomił. Ale najlepszy komentarz pod spodem nie był pochwałą, tylko pytaniem.
 
-<Quote author="Komentarz pod oryginalnym postem" source="LinkedIn, sierpień 2026">
-Te skille to egzekucja planu marketingowego. Kto ułożył ten plan?
-</Quote>
+<PullQuote
+  quote="Te skille to egzekucja planu marketingowego. Kto ułożył ten plan?"
+  source="Komentarz pod oryginalnym postem"
+  role="LinkedIn, sierpień 2026"
+  href="https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/"
+/>
 
 I o tym jest cały ten tekst.
 
@@ -60,9 +63,9 @@ Nic z tego nie jest egzekucją. Wszystko to jest wybieraniem.
 
 Uczciwa wersja tej tezy brzmi więc tak: siedem skilli zastępuje zespół marketing ops, i to szybki. To ma realną wartość i nie jest CMO. Luka nie leży w możliwościach, tylko w tym, że nic w tym stosie nie trzyma wyborów. Każdy skill po cichu wymyśla własną wersję strategii w momencie generowania i żadna z nich nie zgadza się z pozostałymi.
 
-<Callout type="warning" title="Awaria, której nie zauważysz przez kwartał">
+<KeyPoint type="takeaway" title="Awaria, której nie zauważysz przez kwartał">
 Stos agentowy bez pliku z decyzją nie produkuje słabych tekstów. Produkuje świetne teksty o czymś, czego nikt nie postanowił powiedzieć. Przez jakieś trzy miesiące czyta się to jak produktywność, i dokładnie tyle trwa, zanim zauważysz, że nic się nie skumulowało.
-</Callout>
+</KeyPoint>
 
 Pisałem już, że [CRM-first bije prompt-first we wdrażaniu AI](/pl/insights/crm-first-ai-adoption/), z tego samego strukturalnego powodu. Punktem wejścia nigdy nie jest model. Jest nim warstwa, która trzyma prawdę, na której model ma pracować.
 
@@ -74,9 +77,24 @@ Zbudowałem więc odpowiedź jako wtyczkę i postawiłem brakującą warstwę z 
 
 Oba leżą w repozytorium jako zwykły markdown. Do zdiffowania, do przejrzenia, przenośne do dowolnego narzędzia, które czyta pliki. Strategia, która mieszka na slajdzie z marca, jest niedostępna dla maszyny piszącej twój landing w sierpniu.
 
+<Diagram caption="Egzekucja czyta decyzję, zanim cokolwiek wyprodukuje. Brak pliku albo wygasły kwartał i skill się zatrzymuje, zamiast zgadywać.">
+  <Stack direction="column" gap="sm" align="stretch">
+    <Box variant="accent" label="positioning.md" sub="komu sprzedajesz, kogo odrzucasz, co wolno twierdzić" />
+    <Box variant="accent" label="quarter.md" sub="dwa albo trzy zakłady, jedna metryka, data przerwania" />
+  </Stack>
+  <Arrow direction="right" label="czyta" />
+  <Stack direction="column" gap="sm">
+    <Box variant="outline" label="brief" />
+    <Box variant="outline" label="content" />
+    <Box variant="outline" label="outbound" />
+    <Box variant="outline" label="visibility" />
+  </Stack>
+</Diagram>
+
 <StackLayer
-  title="Operator CMO: trzy warstwy, osiem skilli"
+  title="Operator CMO: trzy warstwy, dziewięć skilli"
   layers={[
+    { name: "start", tech: "Prowadzone pierwsze uruchomienie: pięć kroków, po jednej porcji pytań", badge: "setup" },
     { name: "positioning", tech: "ICP, odmowy, problem w ich słowach, udowodnione dowody, anty-cele", badge: "decyzja" },
     { name: "quarter", tech: "Dwa albo trzy zakłady, jedna metryka, warunek przerwania i data", badge: "decyzja" },
     { name: "brief", tech: "Przypina prośbę do zakładu albo odmawia jej na piśmie", badge: "robota" },
@@ -130,6 +148,16 @@ To odwraca zwykłe podejście. Większość zespołów próbuje łapać zmyślon
 
 Skill `brief` przypina każdą prośbę do dokładnie jednego zakładu. Kiedy nic nie pasuje, nie pisze materiału. Zapisuje krótki plik z prośbą, listą zakładów, przy których ją sprawdzał, i powodem, dla którego żaden nie pasuje. Potem daje trzy opcje w przemyślanej kolejności: odpuść, dopisz do listy rzeczy, których w tym kwartale nie robimy, albo zmień plan kwartału, co oznacza ucięcie lub zmniejszenie istniejącego zakładu, żeby to sfinansować.
 
+<Diagram caption="Prośba, która nie pasuje do żadnego zakładu, nie jest pisana. Zostaje zapisana jako odmowa, z ceną zmiany planu obok.">
+  <Box variant="muted" label="prośba" sub="nie służy żadnemu zakładowi" />
+  <Arrow direction="right" dashed label="brak dopasowania" />
+  <Stack direction="row" gap="sm">
+    <Box variant="outline" label="B1" />
+    <Box variant="outline" label="B2" />
+    <Box variant="outline" label="B3" />
+  </Stack>
+</Diagram>
+
 Trzecia opcja jest ostatnia i ma podaną cenę. Większość próśb kończy się na pierwszej opcji, kiedy ta cena staje się widoczna. To najbardziej użyteczne zachowanie w całej wtyczce i jednocześnie to, które w pierwszym tygodniu boli najbardziej.
 
 ## Wąskie gardło akceptacji to problem pojemności
@@ -155,6 +183,14 @@ Przeglądanie wszystkiego się nie skaluje. Nieprzeglądanie niczego jest niedba
 
 I zasada, która naprawdę zapobiega kolejce. `quarter.md` podaje tygodniową pojemność przeglądu jako prawdziwą liczbę, a skill briefu liczy kolejkę, zanim przyjmie nową robotę. Powyżej pojemności produkcja zwalnia. Nie obniża poziomu i nie wypuszcza nadmiaru bez sprawdzenia.
 
+<Diagram caption="Przepustowość to to, co wyszło, a nie to, co się wygenerowało. Raportowanie lewej liczby to sposób, w jaki takie projekty najpierw dostają budżet, a potem po cichu znikają.">
+  <Box variant="muted" label="wyprodukowane" sub="40 / tydzień" />
+  <Arrow direction="right" label="bramka" />
+  <Box variant="accent" label="wysłane" sub="10 / tydzień" />
+  <Arrow direction="right" dashed label="nadmiar" />
+  <Box variant="outline" label="zaległość" sub="30 i rośnie" />
+</Diagram>
+
 Stos produkujący 40 materiałów tygodniowo przy pojemności przeglądu 10 na tydzień ma przepustowość 10 i zaległość 30. Nazywanie tego czterdziestką to liczba, która najpierw załatwia takim projektom budżet, a potem po cichu ich cofnięcie.
 
 <KeyTakeaway
@@ -175,6 +211,28 @@ Warunku przerwania, który się odpalił, się nie zmiękcza, a daty nie przesuw
 Bez tej pętli to jest kulturalna maszynka do treści. To ten sam argument, co [kampanie się wypłaszczają, systemy się kumulują](/pl/insights/b2b-revenue-system-design-operator-framework/), zastosowany do samego stosu agentowego.
 
 ## Instalacja
+
+<ToolCard
+  title="Na co to odpowiada i co dostajesz"
+  cols={2}
+  items={[
+    {
+      name: "Oryginalny post",
+      description: "Siedmiowarstwowy stos marketingowy Ignacia Prieto w Claude i wątek komentarzy, który zapytał, kto ułożył plan.",
+      href: "https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/",
+      meta: "linkedin.com",
+      icon: "chat",
+    },
+    {
+      name: "operator-cmo",
+      description: "Wtyczka, o którą spiera się ten tekst. Dziewięć skilli, strażnik decyzji, bramka publikacji, szablony i wypełniony przykład.",
+      href: "https://github.com/wojciechluszczynski/operator-cmo",
+      meta: "github.com",
+      status: "live",
+      icon: "code",
+    },
+  ]}
+/>
 
 Open source, MIT, na [GitHubie](https://github.com/wojciechluszczynski/operator-cmo).
 
