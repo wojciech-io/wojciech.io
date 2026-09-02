@@ -1,8 +1,9 @@
 ---
 title: "An AI CMO without a plan is just a very fast intern"
 seoTitle: "AI CMO in Claude Code: the decision layer most stacks skip"
-description: "A post about replacing a CMO with seven Claude skills went wide in August 2026, and the sharpest comment under it was a question: who made the plan? This is the plugin I built to answer it, with the decision layer in front and a ship gate that does not turn into a queue."
+description: "AI writes your landing page in ninety seconds. It is well written, and it is about a company nobody described, aimed at a buyer nobody picked. Here is the open source plugin I built to fix that, and the one file most AI marketing stacks are missing."
 publishedAt: "2026-08-28"
+updatedAt: "2026-09-01"
 tags:
   - AI
   - Claude Code
@@ -15,226 +16,242 @@ coverImage: "/images/insights/ai-cmo-claude-skills-marketing-system.webp"
 featured: true
 draft: false
 tldr:
-  - "Seven execution skills replace a marketing ops team, not a CMO. The CMO job is choosing: who you serve, what you refuse, and what you stop when the number does not move"
-  - "The fix is a decision layer: positioning and a quarter plan as versioned files that every execution skill has to read before it produces anything"
-  - "Every asset carries a header naming the decision, the bet and the brief it came from. No header, not publishable"
-  - "Approve-everything is what turns an agent stack into a queue. Three review tiers plus a production throttle tied to real review capacity is the fix"
-  - "Operator CMO is open source: nine skills, three layers, MIT, installable in Claude Code"
+  - "AI is very good at writing marketing. It is not good at deciding what the marketing should say, because nobody ever told it"
+  - "The fix is two files in your repo: who you sell to, and what you are betting on this quarter. Everything else has to read them first"
+  - "When a request does not match anything you are betting on, the system writes down why instead of writing the thing"
+  - "Promising to approve everything is how these projects die. You cap production at what you can actually review"
+  - "Operator CMO is my open source plugin for Claude Code. Nine skills, MIT, install it in two lines"
 faq:
   - q: "Can an AI agent replace a CMO?"
-    a: "No. It can replace most of the execution a CMO delegates: drafting, list building, page production, reporting. The part that does not automate is choosing, which is deciding who you serve, what you refuse, which two bets get funded this quarter, and what you stop when the number does not move. An agent stack with no decision file is not a CMO, it is a very fast marketing ops team pointed at nothing."
+    a: "It can replace most of the work a CMO hands to other people: writing, building lists, producing pages, pulling reports. It cannot do the deciding, which is who you sell to, who you turn away, what gets budget this quarter, and what you stop when the numbers do not move. An AI marketing stack with nothing written down is not a CMO. It is a very fast junior team pointed at nothing."
   - q: "What is a decision layer in an AI marketing stack?"
-    a: "Two versioned files that sit in front of execution: positioning.md, which holds the ICP, the problem in the buyer's words, the evidenced proof and the anti-goals, and quarter.md, which holds two or three bets with one metric and a kill condition each. Every execution skill reads both before it produces anything, and stops if either is missing or expired."
-  - q: "How do you stop an AI marketing agent from inventing statistics?"
-    a: "Make claims a whitelist rather than a filter. The brief copies allowed proof out of the positioning file, and any number, customer name, logo or competitor comparison that is not already evidenced there never reaches a draft. If the copy needs the claim, a human evidences it into the positioning file first, with a source and a date."
-  - q: "If a human approves every AI output, does that not become the bottleneck?"
-    a: "Yes, and that is the most common failure of these stacks. The answer is tiered review plus a throughput cap. Low-risk reversible work ships automatically, public work with only evidenced claims is sampled one in N, and anything hard to reverse gets read every time. Then the quarter plan states a weekly review capacity, and production throttles when the queue exceeds it instead of shipping the overflow unreviewed."
-  - q: "How is this different from a folder of marketing prompts?"
-    a: "Prompts produce output on request. This produces output only against a decision that exists in the repo, tagged with the bet it serves, and it refuses in writing when a request maps to no bet. The refusal is the feature. It is also a loop: a review skill reads results against the quarter's kill conditions and proposes diffs back into the decision files, which is the part a prompt library structurally cannot do."
+    a: "Two plain files kept in the same repository as the work. One says who you sell to, who you turn away, and which claims you are allowed to make. The other says what you are betting on this quarter, how you will measure it, and the date you stop if it is not working. Every skill that produces anything reads both first and stops if either is missing or out of date."
+  - q: "How do you stop an AI from inventing statistics about your company?"
+    a: "Give it a list of the claims it is allowed to make, instead of trying to catch invented ones later. Any number, customer name, logo or competitor comparison that is not already on that list never reaches a draft. Checking afterwards does not work, because a confident invented number reads exactly like a real one."
+  - q: "If a human approves every AI output, does that not just move the bottleneck?"
+    a: "Yes, and that is how most of these projects quietly fail. The answer is to sort work by risk and cap the volume. Low-risk internal work goes out on its own, public work using approved claims gets spot checked, and anything hard to take back gets read every time. Then you write down how many pieces you can genuinely review in a week, and production slows down when the queue gets longer than that."
+  - q: "How is this different from a folder of good marketing prompts?"
+    a: "A prompt gives you output whenever you ask. This gives you output only when the request matches something you decided to do, and it writes a short note explaining itself when it does not. It also loops: a review step reads your actual results, checks them against the dates you set, and proposes changes to the plan. A prompt library cannot do that, because it has no plan to change."
 sources:
+  - url: "https://github.com/wojciechluszczynski/operator-cmo"
+    claim: "The open source plugin this article describes"
+    checkedAt: "2026-09-01"
   - url: "https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/"
     quote: "I could not afford a CMO, so I built one inside Claude"
-    claim: "The seven-layer Claude marketing stack this article responds to"
+    claim: "The seven-skill stack this article was written in response to"
     checkedAt: "2026-08-28"
 ---
 
-A post went around in August 2026. Ignacio Prieto wrote that he could not afford a CMO, so he [built one inside Claude](https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/): seven modular skills, each a plain file he can open and correct, each owning a job that used to take a person. Four months later it ran most of his marketing. Seven hundred plus comments.
+Ask an AI to write your landing page and you will have one in ninety seconds. It will be well structured. It will be correctly spelled. It will sound confident.
 
-It is a good build. I would run most of it. But the best comment under it was not praise, it was a question.
+It will also be about a company nobody described, aimed at a buyer nobody picked, making a claim nobody checked.
 
-<PullQuote
-  quote="These skills are execution of a marketing plan. Who made the plan?"
-  source="A commenter under the original post"
-  role="LinkedIn, August 2026"
-  href="https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/"
-/>
+That is not a writing problem. Nobody ever told it who you sell to.
 
-That question is the whole article.
+## The stack everyone is building right now
 
-## What seven execution skills actually replace
+The popular version of this looks like a folder of skills. One writes blog posts. One writes social. One does SEO. One does email. One turns a webinar into eight LinkedIn posts. Each is a plain text file you can open and correct, which is genuinely a good idea, and people are getting real work out of it.
 
-Line up what those layers do: research, content, social, SEO, email, reporting, repurposing. Now line up what a CMO does on a Tuesday.
-
-They decide which segment gets the quarter and which one waits. They kill the campaign that three people are emotionally invested in. They say no to the founder's podcast idea and explain what it would cost. They decide the company will not chase the enterprise logo this year. Then, at the end, they choose which of those decisions was wrong.
-
-None of that is execution. All of it is choosing.
-
-So the honest version of the claim is: seven skills replace a marketing ops team, and a fast one. That is worth real money, and it is not a CMO. The gap is not capability, it is that nothing in the stack holds the choices, so every skill is quietly inventing its own version of the strategy at generation time and none of them agree.
-
-<KeyPoint type="takeaway" title="The failure you will not notice for a quarter">
-An agent stack with no decision file does not produce bad writing. It produces excellent writing about nothing anyone decided to say. That reads as productivity for about three months, which is exactly how long it takes to notice that none of it compounded.
-</KeyPoint>
-
-I have written before that [CRM-first beats prompt-first in AI adoption](/insights/crm-first-ai-adoption/), for the same structural reason. The entry point is never the model. It is the layer that holds the truth the model is supposed to work from.
-
-## The file that was missing
-
-So I built the answer as a plugin, and put the missing layer in front.
-
-**A decision layer is two versioned files that execution has to read before it produces anything.** `positioning.md` holds who you serve, who you refuse, the problem in the buyer's actual words, the proof you are allowed to cite, the offer, and the anti-goals. `quarter.md` holds two or three bets, each with one metric, a kill condition and a date.
-
-Both live in the repo as plain markdown. Diffable, reviewable, and portable to any tool that reads files. A strategy that lives in a slide from March is not available to the machine writing your landing page in August.
-
-<Diagram caption="Execution reads the decision before it produces anything. Miss the file, or run past the quarter's end date, and the skill stops instead of guessing.">
-  <Stack direction="column" gap="sm" align="stretch">
-    <Box variant="accent" label="positioning.md" sub="who we serve, who we refuse, what we may claim" />
-    <Box variant="accent" label="quarter.md" sub="two or three bets, one metric, a kill date" />
-  </Stack>
-  <Arrow direction="right" label="reads" />
-  <Stack direction="column" gap="sm">
-    <Box variant="outline" label="brief" />
-    <Box variant="outline" label="content" />
-    <Box variant="outline" label="outbound" />
-    <Box variant="outline" label="visibility" />
-  </Stack>
-</Diagram>
-
-<StackLayer
-  title="Operator CMO: three layers, nine skills"
-  layers={[
-    { name: "start", tech: "Guided first run: five steps, one question cluster at a time", badge: "setup" },
-    { name: "positioning", tech: "ICP, refusals, the problem in their words, evidenced proof, anti-goals", badge: "decide" },
-    { name: "quarter", tech: "Two or three bets, one metric each, a kill condition and a date", badge: "decide" },
-    { name: "brief", tech: "Maps a request to a bet, or refuses it in writing", badge: "do" },
-    { name: "content", tech: "Writes from the brief, with a claim pass and an anti-slop pass", badge: "do" },
-    { name: "outbound", tech: "Lists and sequences that apply the ICP and disqualifiers literally", badge: "do" },
-    { name: "visibility", tech: "Search ranking and answer-engine citation, treated as two jobs", badge: "do" },
-    { name: "review", tech: "The only skill allowed to edit a decision file, and only via a diff", badge: "learn" },
-    { name: "ship-gate", tech: "Three review tiers, automatic checks, and a production throttle", badge: "policy" },
-  ]}
-/>
-
-The layer count is not the point. The direction of the arrows is. In the original stack, seven skills sit side by side and the human supplies the strategy verbally, once, and then again slightly differently next week. Here, execution reads from a file, and the file is the artifact that gets argued about.
-
-## Nothing ships without citing a decision
-
-Three rules do most of the work. The first is a stop.
-
-Every execution skill reads `positioning.md` and `quarter.md` before it produces anything. Missing file, expired quarter, or a request that maps to no bet: it stops and names the one command that unblocks it. It never infers a strategy from the repo and carries on, because an invented ICP will be cited by every asset for the next three months and nobody will catch it, since it will be perfectly consistent.
-
-The second rule is provenance. Every draft opens with a header:
-
-<CodeBlock filename="marketing/drafts/2026-08-28-month-end-close.md" lang="yaml" caption="The header is the point. An asset that cannot name the decision it came from is not publishable.">
-bet: B2
-decision: positioning.md rev 2026-07-02
-brief: marketing/briefs/2026-08-28-month-end-close.md
-gate: B
-claims_flagged: 0
-</CodeBlock>
-
-An asset that cannot name the decision it came from is not publishable. That is a mechanical check, not a cultural aspiration, and it is the difference between a system and a habit.
-
-The third rule is the one I would keep if I could only keep one. **No new claims.** The brief copies allowed proof out of the positioning file. Any number, customer name, logo, award or competitor comparison that is not already evidenced there never reaches a draft. If the copy needs it, a human evidences it into `positioning.md` first, with a source and a date.
-
-This inverts the usual approach. Most teams try to catch hallucinated stats on the way out, in review, which fails because a confident invented number reads exactly like a real one. Whitelisting the claims means the copy is duller and honest until somebody goes and evidences it.
-
-<BeforeAfter
-  label="Where the strategy lives"
-  before={{
-    title: "Seven skills, strategy in the chat",
-    body: "Each skill gets its context from the prompt. The strategy is whatever the operator remembered to say that session. Two skills produce work against two different unstated ICPs and both outputs look good.",
-    caption: "Fast, consistent, pointed at nothing"
-  }}
-  after={{
-    title: "Two decision files, execution reads them",
-    body: "Skills stop when the decision is missing. Every asset names the bet it serves. A request that fits no bet gets refused in writing, with the cost of changing the plan spelled out.",
-    caption: "Slower to start, compounds after week three"
-  }}
-/>
-
-## The refusal is the feature
-
-The `brief` skill maps every request to exactly one bet. When nothing fits, it does not write the asset. It writes a short file recording the request, the bets it was tested against, and why none of them fit, then offers three options in a deliberate order: drop it, add it to the not-doing list, or change the quarter plan, which means killing or shrinking an existing bet to pay for it.
-
-<AnnotatedImage
-  src="/images/insights/ai-cmo-brief-refusal.webp"
-  alt="A request card floating above three bet cards labelled B1, B2 and B3, with dashed lines that stop short and end in crosses instead of connecting."
-  caption="A request that matches no bet is not written. It is recorded as a refusal, with the price of changing the plan spelled out next to it."
-/>
-
-Option three is last, and it names what it costs. Most requests stop at option one once that price is visible. This is the single most useful behaviour in the plugin and the one that feels worst in week one.
-
-## The approval bottleneck is a capacity problem
-
-The second criticism under the original post was sharper than the first, and it is the one most people building these stacks are about to walk into: if a human approves every output, and the agent produces faster than the human reads, then approval is the constraint. The bottleneck did not go away. It moved into a queue and got a nicer name.
-
-Reviewing everything does not scale. Reviewing nothing is negligent. So the gate sorts work into three tiers.
-
-<AnnotatedImage
-  src="/images/insights/ai-cmo-ship-gate.webp"
-  alt="Three horizontal lanes labelled A, B and C. Lane A runs free, lane B has a gate part way along, lane C has a gate at the start and a queue of work piled up behind it."
-  caption="Tier A runs free. Tier B is sampled. Tier C is read every time, and that is where the queue forms if production is not capped."
-/>
-
-<Compare
-  labelA="Approve everything"
-  labelB="Tiered gate with a throttle"
-  tagA="the queue"
-  tagB="the fix"
-  caption="Throughput is what ships, not what gets generated."
->
-  <div slot="a">
-    Every asset waits for the same person. Review latency climbs, the reviewer starts skimming, and skimming is indistinguishable from approving. Reported output counts what was produced, which is the most common lie in this category.
-  </div>
-  <div slot="b">
-    Tier A is reversible, internal and makes no claims, so it goes out with no human step. Tier B is sampled one in N, and drops to full review if two of the last twenty fail. Tier C is read every time: pricing, legal, named customers, first contact with a named account, paid spend.
-  </div>
-</Compare>
-
-Then the rule that actually prevents the queue. `quarter.md` states a weekly review capacity, as a real number, and the brief skill counts the queue before accepting new work. Over capacity, production throttles. It does not downgrade a tier and it does not ship the overflow unreviewed.
-
-<Diagram caption="Throughput is what ships, not what gets generated. Reporting the left-hand number is how these projects get funded and then quietly cancelled.">
-  <Box variant="muted" label="produced" sub="40 / week" />
-  <Arrow direction="right" label="gate" />
-  <Box variant="accent" label="shipped" sub="10 / week" />
-  <Arrow direction="right" dashed label="overflow" />
-  <Box variant="outline" label="backlog" sub="30 and growing" />
-</Diagram>
-
-A stack producing 40 assets a week into a 10-a-week review capacity has a throughput of 10 and a backlog of 30. Calling that 40 is the number that gets these projects funded and then quietly cancelled.
-
-<KeyTakeaway
-  title="Three numbers that describe the machine, not the market"
-  items={[
-    "Produced against shipped. A large gap means the gate is the constraint, so throttle production instead of adding skills",
-    "Review latency, median hours from draft to decision. Rising latency is the early signal that the human became the bottleneck",
-    "Claims flagged. Assets that needed evidence the positioning file did not have. A rising count means the positioning is stale, not that the writers are careless"
-  ]}
-/>
-
-## The loop back is the part that makes it a system
-
-One skill can edit the decision files, and only by showing a diff and waiting for a yes. `review` reads the results log against each bet's metric and kill condition, then returns one of three verdicts: on track, off track with a specific change named, or killed.
-
-A fired kill condition is not softened and the date is not extended because the bet was nearly there. The date was the decision. Monthly, the same skill asks the question the weekly pass cannot: is the positioning still true. Proof lines older than six months, disqualifiers that never fired in a single outbound run, buyer language that has drifted away from the phrases in the file, anti-goals that were quietly broken.
-
-Without that loop this is a content mill with good manners. It is the same argument as [campaigns plateau and systems compound](/insights/b2b-revenue-system-design-operator-framework/), applied to the agent stack itself.
-
-## Install it
+I built my own version, and then I put something in front of it that most of these stacks are missing. It is open source and you can install it in two lines:
 
 <ToolCard
-  title="What this responds to, and what it ships"
+  title="The plugin"
   cols={2}
   items={[
     {
-      name: "The original post",
-      description: "Ignacio Prieto's seven-layer Claude marketing stack, and the comment thread underneath it that asked who made the plan.",
-      href: "https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/",
-      meta: "linkedin.com",
-      icon: "chat",
-    },
-    {
       name: "operator-cmo",
-      description: "The plugin this article argues for. Nine skills, the decision guard, the ship gate, templates and a worked example.",
+      description: "Nine skills for Claude Code, in three layers. The setup wizard, the two decision files, and the gate that stops it flooding you. MIT licence.",
       href: "https://github.com/wojciechluszczynski/operator-cmo",
       meta: "github.com",
       status: "live",
       icon: "code",
     },
+    {
+      name: "How the architecture works",
+      description: "The same pattern applied to outbound: what the layers are, what each one owns, and what breaks when you skip one.",
+      href: "/insights/gtm-ai-agent-four-layer-architecture-guide/",
+      meta: "wojciech.io",
+      icon: "spark",
+    },
   ]}
 />
 
-Open source, MIT, on [GitHub](https://github.com/wojciechluszczynski/operator-cmo).
+The rest of this is why the missing piece matters, using one company as an example so it stays concrete.
+
+## What a CMO actually does on a Tuesday
+
+Line up what those marketing skills do: research, writing, social, SEO, email, reporting, repurposing.
+
+Now line up a real Tuesday. You decide which customer segment gets the next three months and which one waits. You kill a campaign three people are attached to. You tell the founder their podcast idea would cost four weeks and explain what it would take those four weeks away from. You decide the company is not chasing the big logo this year. Then, at the end of the quarter, you work out which of those calls was wrong.
+
+None of that is writing. All of it is choosing.
+
+So the honest version is: a good skill folder replaces a marketing operations team, and a fast one. That is worth real money. It is not a CMO. The gap is not that the AI cannot write. It is that nothing anywhere holds the choices, so every skill quietly invents its own version of the strategy each time it runs, and none of them match.
+
+<KeyPoint type="takeaway" title="The failure you will not notice for three months">
+A stack with nothing written down does not produce bad writing. It produces good writing about nothing anyone decided to say. That looks like productivity for about a quarter, which is exactly how long it takes to notice that none of it added up to anything.
+</KeyPoint>
+
+I have argued the same thing about CRMs: [the entry point is never the tool](/insights/crm-first-ai-adoption/), it is the layer that holds what is true.
+
+## Meet the company
+
+To keep this concrete, here is a company. It is invented. The level of detail is not, and it is the level you need before any of this works.
+
+Ada sells software that shortens month-end close for manufacturers. Her customers have 200 to 2,000 employees, run an ERP older than five years, and sit in Germany, Austria, Switzerland and Poland. She sells to the Head of Operations, IT sits on the committee, and the CFO signs.
+
+Her marketing team is her, two contractors, and now a folder of AI skills.
+
+## The two files
+
+Before Ada's stack is allowed to write anything, it reads two files. They live in the same repository as the work, in plain text, so they can be edited, argued with and tracked over time.
+
+**The first says who she sells to.** Not just the company size, but the trigger: what has to have just happened for this to be worth someone's attention this month. For Ada that is an ERP upgrade, a plant acquisition, or a failed audit in the last six months. Without one of those, the problem is real and the budget is not.
+
+It also says who she turns away, in three lines a machine can apply. Under 200 employees. No ERP, or one less than two years old. Consultancies buying for a client she never meets.
+
+And it holds the only claims her marketing is allowed to make, each with where it came from and when it was checked.
+
+**The second says what she is betting on this quarter.** Two bets, not eight. Each one has a claim, an audience, one number, and a date she stops.
+
+<Diagram caption="Everything that writes anything reads these two first. Miss them, or run past the date on the second one, and the skill stops instead of guessing.">
+  <Stack direction="column" gap="sm" align="stretch">
+    <Box variant="accent" label="Who we sell to" sub="and who we turn away, and what we may claim" />
+    <Box variant="accent" label="What we are betting on" sub="two bets, one number each, a date we stop" />
+  </Stack>
+  <Arrow direction="right" label="reads" />
+  <Stack direction="column" gap="sm">
+    <Box variant="outline" label="briefs" />
+    <Box variant="outline" label="writing" />
+    <Box variant="outline" label="outbound" />
+    <Box variant="outline" label="search" />
+  </Stack>
+</Diagram>
+
+That is the whole trick. Two files, and a rule that nothing gets produced without reading them.
+
+## Watch one request go through
+
+Ada's co-founder sends a message on Tuesday morning: we should start a podcast.
+
+In a normal skill folder, this produces a podcast plan by lunchtime. It will be a good plan. Nobody asked whether a podcast serves either of the two things Ada decided to do this quarter.
+
+Here, the request hits the briefing step first, and the briefing step has to match it to one of the two bets. It cannot. So it does not write the podcast plan. It writes this instead:
+
+<CodeBlock filename="marketing/briefs/2026-09-01-podcast.no-bet.md" lang="markdown" caption="The refusal is written down, dated, and kept. Next quarter, when someone asks again, there is a record of what it was tested against.">
+Request: start a podcast
+
+Tested against:
+  Bet 1, own the month-end close question  -> no, this is not search demand
+  Bet 2, outbound on trigger events        -> no, this reaches nobody with a trigger
+
+Options, in order:
+  1. Drop it.
+  2. Add it to the not-doing list and revisit in January.
+  3. Change the quarter. That means killing or shrinking bet 1 or bet 2
+     to pay for it. Bet 1 currently has 12 hours a week and 2,000 EUR
+     a month. A podcast would take most of both.
+</CodeBlock>
+
+<AnnotatedImage
+  src="/images/insights/ai-cmo-brief-refusal.webp"
+  alt="A request card floating above three smaller cards, with dashed lines that stop short and end in crosses instead of connecting to any of them."
+  caption="Nothing connects. The gap is the point: the request does not attach to anything the company decided to do."
+/>
+
+Option three is last on purpose, and it has a price on it. Most requests stop at option one the moment somebody sees what option three costs.
+
+This is the single most useful thing the system does, and the thing that feels worst in the first week. You are used to asking for something and getting it.
+
+## No new numbers, ever
+
+The second rule is shorter. The writing step may only use claims that are already in the first file, with a source and a date.
+
+Any number, customer name, logo, award, or comparison to a named competitor that is not on that list never reaches a draft. If Ada wants to say her customers pass audits more often, she has to put it in the file first, with evidence, by hand.
+
+Most teams do this the other way round: write freely, then catch the invented statistics in review. That does not work. A confident invented number reads exactly like a real one, especially at eleven at night when you are approving the fourth thing that day.
+
+<Compare
+  labelA="Catch it in review"
+  labelB="Approve the claim once"
+  tagA="what everyone does"
+  tagB="what works"
+  caption="You cannot spot an invented number by looking at it."
+>
+  <div slot="a">
+    The AI writes whatever sounds right. A human is supposed to notice which figures are real. They notice the first few. By month two they are skimming, and a made-up number is indistinguishable from a real one on the page.
+  </div>
+  <div slot="b">
+    The claims live in a file with sources and dates. Anything not on the list cannot be written at all. The copy is duller until somebody does the work to make a claim true, and that is the correct trade.
+  </div>
+</Compare>
+
+## The number that quietly kills these projects
+
+Here is the part almost nobody plans for.
+
+You promise to approve everything the AI produces. That sounds responsible. Then the AI produces forty things a week and you can genuinely read ten. The other thirty sit in a folder. Within a month you are either rubber-stamping or ignoring the whole thing.
+
+The bottleneck did not go away. It moved to you, and it got a nicer name.
+
+<AnnotatedImage
+  src="/images/insights/ai-cmo-ship-gate.webp"
+  alt="Three horizontal lanes. The top one runs freely, the middle one has a gate part way along, the bottom one has a gate at the start with work piled up behind it."
+  caption="Sort by risk. Internal drafts run free. Public work using approved claims gets spot checked. Anything hard to take back is read every time, and that is where the pile builds."
+/>
+
+So sort the work by how much damage it can do.
+
+Internal drafts, research and lists go out on their own. Blog updates and social posts using approved claims get spot checked, one in four, and the whole channel drops to full review if two of the last twenty had problems. Pricing, anything naming a customer, first contact with a named account and paid spend get read every single time.
+
+Then write down the honest number: how many pieces can you actually review in a week. Ada's is six spot checks and three full reads. When the queue gets longer than that, **the system slows down production**. It does not downgrade anything and it does not quietly let the overflow out.
+
+<Diagram caption="Throughput is what actually goes out, not what got generated. The number on the left is the one that gets these projects funded and then quietly cancelled.">
+  <Box variant="muted" label="produced" sub="40 a week" />
+  <Arrow direction="right" label="gate" />
+  <Box variant="accent" label="published" sub="10 a week" />
+  <Arrow direction="right" dashed label="overflow" />
+  <Box variant="outline" label="waiting" sub="30 and growing" />
+</Diagram>
+
+Forty produced into a ten a week review capacity is not forty. It is ten, and a backlog of thirty. Reporting it as forty is the most common lie in this whole category.
+
+## It has to be able to change its own mind
+
+One step is allowed to edit the two files, and only by showing you the change and waiting for a yes.
+
+Once a week it reads what actually happened against the numbers Ada set. Each bet gets one of three answers: on track, off track and here is the specific thing that changes, or stopped. A stop date that arrives is a stop date. It does not get extended because the bet was nearly there.
+
+Once a month it asks the harder question: is any of this still true. Claims older than six months. Rules that never once fired. Language customers use that has drifted away from what the file says. Things Ada swore she would not do this year, quietly done anyway.
+
+Without that loop, this is a content mill with good manners. Same argument as [campaigns plateau and systems compound](/insights/b2b-revenue-system-design-operator-framework/), turned on the AI stack itself.
+
+## What is actually in it
+
+<StackLayer
+  title="Nine skills, three jobs"
+  layers={[
+    { name: "start", tech: "Walks you through the whole setup in five steps, one question at a time", badge: "setup" },
+    { name: "positioning", tech: "Who you sell to, who you turn away, and what you may claim", badge: "decide" },
+    { name: "quarter", tech: "Two or three bets, one number each, and a date you stop", badge: "decide" },
+    { name: "brief", tech: "Matches a request to a bet, or writes down why it cannot", badge: "do" },
+    { name: "content", tech: "Writes from the brief, checks every claim, strips the AI tells", badge: "do" },
+    { name: "outbound", tech: "Lists and sequences that apply your rules literally", badge: "do" },
+    { name: "visibility", tech: "Getting found in search, and getting quoted by AI assistants", badge: "do" },
+    { name: "review", tech: "Reads your results and proposes changes to the plan", badge: "learn" },
+    { name: "ship-gate", tech: "Sorts by risk, caps the volume, stops the queue forming", badge: "policy" },
+  ]}
+/>
+
+## What I would not claim for it
+
+It does not send anything. No email goes out, nothing gets published, no ad money moves. The last action is always a person's, deliberately.
+
+It does not replace a CMO. It takes the production work off one, and it turns the strategy into something you can actually read and argue with instead of a slide deck from March.
+
+It will not make a bad plan work. It will make a bad plan obvious, usually inside three weeks, which is faster than most companies find out any other way.
+
+## Try it
 
 <Terminal
   title="Claude Code"
@@ -244,74 +261,69 @@ Open source, MIT, on [GitHub](https://github.com/wojciechluszczynski/operator-cm
   ]}
 />
 
-Then, in the repo where your marketing lives:
+Then, in the repository where your marketing lives, run one command and answer questions for half an hour:
 
 <Terminal
   title="Your marketing repo"
   commands={[
-    { cmd: "/operator-cmo:start", output: "Guided first run. Five steps, one question cluster at a time." },
-    { cmd: "/operator-cmo:positioning", output: "The decision file everything else reads." },
-    { cmd: "/operator-cmo:quarter", output: "Two or three bets, each with a kill condition." },
-    { cmd: "/operator-cmo:ship-gate", output: "What may go out, and how fast." },
-    { cmd: "/cmo", output: "State of the system, any time." },
+    { cmd: "/operator-cmo:start", output: "Walks the whole setup. Five steps, one question at a time." },
+    { cmd: "/cmo", output: "Shows the state of the system whenever you want it." },
   ]}
 />
 
-The repo ships a filled-in example workspace for a mid-market B2B SaaS, so you can see what these files look like when they are real rather than templated. The company in it is invented. The level of specificity is not: below that line, the execution skills start guessing, and guessing is the failure this exists to prevent.
-
-If you want the architecture underneath rather than the marketing application, [four layers that make a GTM agent work in production](/insights/gtm-ai-agent-four-layer-architecture-guide/) covers the same pattern for outbound, and [a GTM agent that costs $2 per run](/insights/how-to-build-gtm-ai-agent-outbound-crm/) has the cost numbers.
+The repository ships a filled-in example so you can see what these files look like when they are real rather than a template. It also has an [operator playbook](https://github.com/wojciechluszczynski/operator-cmo/blob/main/plugins/operator-cmo/references/operator-playbook.md) of the positions I take when someone's answer is vague, and a version of my own tone of voice rules you can use or replace.
 
 <DoDont
   do={[
-    "Write positioning.md before you install a single execution skill",
-    "Cap bets at three, with one metric and a kill date each",
-    "Whitelist claims in the decision file, do not filter them in review",
-    "State a weekly review capacity as a real number and throttle against it",
-    "Let the review skill propose diffs to the plan, and read them"
+    "Write down who you sell to before you install a single writing skill",
+    "Cap yourself at three bets, each with one number and a date you stop",
+    "Keep a list of claims you are allowed to make, with sources",
+    "Write down how many pieces you can really review in a week",
+    "Read the changes it proposes to your plan"
   ]}
   dont={[
-    "Let a skill infer the ICP because the file was missing",
-    "Extend a kill date because the bet was nearly there",
-    "Count produced assets as output",
+    "Let it guess who your customer is because the file was missing",
+    "Move a stop date because the bet was nearly working",
+    "Count things produced as things achieved",
     "Promise to approve everything",
-    "Add a ninth skill to fix a problem the gate is telling you about"
+    "Add another skill to fix a problem the queue is telling you about"
   ]}
 />
-
-## Where this stops
-
-It does not send. No email, no publish, no ad spend. The last action is a person's, on purpose.
-
-It does not replace a CMO. It removes the execution load around one, and it turns the strategy into a reviewable artifact instead of an argument people remember differently.
-
-It will not make a bad plan work. It will make a bad plan legible, usually within about three weeks, which is faster than most companies find out any other way.
 
 ## Questions people asked
 
 ### Can an AI agent replace a CMO?
 
-No. It can replace most of the execution a CMO delegates: drafting, list building, page production, reporting. The part that does not automate is choosing, which is deciding who you serve, what you refuse, which two bets get funded this quarter, and what you stop when the number does not move. An agent stack with no decision file is not a CMO, it is a very fast marketing ops team pointed at nothing.
+It can replace most of the work a CMO hands to other people: writing, building lists, producing pages, pulling reports. It cannot do the deciding, which is who you sell to, who you turn away, what gets budget this quarter, and what you stop when the numbers do not move. An AI marketing stack with nothing written down is not a CMO. It is a very fast junior team pointed at nothing.
 
 ### What is a decision layer in an AI marketing stack?
 
-Two versioned files that sit in front of execution: `positioning.md`, which holds the ICP, the problem in the buyer's words, the evidenced proof and the anti-goals, and `quarter.md`, which holds two or three bets with one metric and a kill condition each. Every execution skill reads both before it produces anything, and stops if either is missing or expired.
+Two plain files kept in the same repository as the work. One says who you sell to, who you turn away, and which claims you are allowed to make. The other says what you are betting on this quarter, how you will measure it, and the date you stop if it is not working. Every skill that produces anything reads both first and stops if either is missing or out of date.
 
-### How do you stop an AI marketing agent from inventing statistics?
+### How do you stop an AI from inventing statistics about your company?
 
-Make claims a whitelist rather than a filter. The brief copies allowed proof out of the positioning file, and any number, customer name, logo or competitor comparison that is not already evidenced there never reaches a draft. If the copy needs the claim, a human evidences it into the positioning file first, with a source and a date.
+Give it a list of the claims it is allowed to make, instead of trying to catch invented ones later. Any number, customer name, logo or competitor comparison that is not already on that list never reaches a draft. Checking afterwards does not work, because a confident invented number reads exactly like a real one.
 
-### If a human approves every AI output, does that not become the bottleneck?
+### If a human approves every AI output, does that not just move the bottleneck?
 
-Yes, and that is the most common failure of these stacks. The answer is tiered review plus a throughput cap. Low-risk reversible work ships automatically, public work with only evidenced claims is sampled one in N, and anything hard to reverse gets read every time. Then the quarter plan states a weekly review capacity, and production throttles when the queue exceeds it instead of shipping the overflow unreviewed.
+Yes, and that is how most of these projects quietly fail. The answer is to sort work by risk and cap the volume. Low-risk internal work goes out on its own, public work using approved claims gets spot checked, and anything hard to take back gets read every time. Then you write down how many pieces you can genuinely review in a week, and production slows down when the queue gets longer than that.
 
-### How is this different from a folder of marketing prompts?
+### How is this different from a folder of good marketing prompts?
 
-Prompts produce output on request. This produces output only against a decision that exists in the repo, tagged with the bet it serves, and it refuses in writing when a request maps to no bet. The refusal is the feature. It is also a loop: a review skill reads results against the quarter's kill conditions and proposes diffs back into the decision files, which is the part a prompt library structurally cannot do.
+A prompt gives you output whenever you ask. This gives you output only when the request matches something you decided to do, and it writes a short note explaining itself when it does not. It also loops: a review step reads your actual results, checks them against the dates you set, and proposes changes to the plan. A prompt library cannot do that, because it has no plan to change.
 
-## The credit, and the disagreement
+## Where the idea came from
 
-The seven-layer idea is Ignacio's, and the reason it travelled is that it was concrete. Most people writing about AI marketing in 2026 are still describing a future. He shipped a thing and showed the files.
+This started as an argument. In August 2026 Ignacio Prieto posted that he could not afford a CMO so he built one inside Claude, out of seven skill files. It went everywhere. The sharpest thing under it was a comment.
 
-My disagreement is narrow. He named the layers after the work. I think you name the first one after the choice, and then you make everything else refuse to run until that choice exists. Seven skills and one missing file is a very fast intern. Add the file and the same seven skills become a system.
+<PullQuote
+  quote="These skills are execution of a marketing plan. Who made the plan?"
+  source="A commenter under that post"
+  role="LinkedIn, August 2026"
+/>
 
-If you are building this inside a real company and want the decision layer written properly before the execution goes in, [that is the work I do](/contact/).
+Credit where it is due: he shipped a real thing and showed the files, which is more than most people writing about AI marketing in 2026 have done.
+
+My disagreement is narrow. He named the layers after the work. I think you name the first one after the choice, and then make everything else refuse to start until that choice exists. Seven skills and nothing written down is a very fast intern. Write the two files and the same seven skills become a system.
+
+If you want that written properly for a real company before the automation goes in, [that is the work I do](/contact/).
