@@ -1,8 +1,9 @@
 ---
 title: "Sztuczny CMO bez planu to tylko bardzo szybki stażysta"
 seoTitle: "AI CMO w Claude Code: warstwa decyzji, którą wszyscy pomijają"
-description: "W sierpniu 2026 rozeszedł się post o zastąpieniu CMO siedmioma skillami w Claude. Najlepszy komentarz pod nim był pytaniem: kto ułożył ten plan? To jest wtyczka, którą zbudowałem jako odpowiedź: warstwa decyzji z przodu i bramka publikacji, która nie zamienia się w kolejkę."
+description: "AI napisze ci landing w półtorej minuty. Będzie dobrze napisany i będzie o firmie, której nikt nie opisał, do kupującego, którego nikt nie wybrał. Oto wtyczka open source, którą zbudowałem, i jeden plik, którego brakuje prawie wszystkim stosom AI w marketingu."
 publishedAt: "2026-08-28"
+updatedAt: "2026-09-01"
 tags:
   - AI
   - Claude Code
@@ -17,226 +18,242 @@ draft: false
 locale: "pl"
 translationOf: "ai-cmo-claude-skills-marketing-system"
 tldr:
-  - "Siedem skilli wykonawczych zastępuje zespół marketing ops, nie CMO. Robota CMO to wybieranie: dla kogo jesteś, czego nie robisz i co przerywasz, kiedy liczba nie drgnie"
-  - "Naprawa to warstwa decyzji: pozycjonowanie i plan kwartału jako wersjonowane pliki, które każdy skill wykonawczy musi przeczytać, zanim cokolwiek wyprodukuje"
-  - "Każdy materiał ma nagłówek z decyzją, zakładem i briefem, z których powstał. Nie ma nagłówka, nie ma publikacji"
-  - "Akceptowanie wszystkiego to sposób, w jaki stos agentowy zamienia się w kolejkę. Trzy poziomy przeglądu plus limit produkcji oparty o realną pojemność przeglądu"
-  - "Operator CMO jest otwarty: dziewięć skilli, trzy warstwy, MIT, instalowalny w Claude Code"
+  - "AI świetnie pisze marketing. Nie umie zdecydować, co ten marketing ma mówić, bo nikt mu tego nie powiedział"
+  - "Naprawa to dwa pliki w repozytorium: komu sprzedajesz i na co stawiasz w tym kwartale. Cała reszta musi je najpierw przeczytać"
+  - "Kiedy prośba nie pasuje do niczego, na co stawiasz, system zapisuje dlaczego, zamiast pisać tę rzecz"
+  - "Obietnica, że zaakceptujesz wszystko, to sposób, w jaki te projekty umierają. Limitujesz produkcję do tego, co realnie przeczytasz"
+  - "Operator CMO to moja wtyczka open source do Claude Code. Dziewięć skilli, MIT, instalacja w dwóch linijkach"
 faq:
   - q: "Czy agent AI może zastąpić CMO?"
-    a: "Nie. Może zastąpić większość egzekucji, którą CMO i tak deleguje: pisanie, budowanie list, produkcję stron, raportowanie. Nie automatyzuje się wybieranie: komu sprzedajesz, kogo odrzucasz, które dwa zakłady dostają budżet w tym kwartale i co przerywasz, kiedy liczba nie drgnie. Stos agentowy bez pliku z decyzją to nie CMO, tylko bardzo szybki zespół marketing ops wycelowany w nic."
+    a: "Może zastąpić większość roboty, którą CMO i tak oddaje innym: pisanie, budowanie list, produkcję stron, raporty. Nie zrobi decydowania, czyli komu sprzedajesz, kogo odsyłasz z kwitkiem, co dostaje budżet w tym kwartale i co przerywasz, kiedy liczby nie drgną. Stos AI bez niczego zapisanego to nie CMO. To bardzo szybki junior wycelowany w nic."
   - q: "Czym jest warstwa decyzji w stosie marketingowym opartym o AI?"
-    a: "To dwa wersjonowane pliki przed egzekucją: positioning.md z ICP, problemem w słowach kupującego, udowodnionymi dowodami i anty-celami, oraz quarter.md z dwoma albo trzema zakładami, każdy z jedną metryką i warunkiem przerwania. Każdy skill wykonawczy czyta oba, zanim cokolwiek wyprodukuje, i zatrzymuje się, jeśli któregoś brakuje albo kwartał wygasł."
-  - q: "Jak powstrzymać agenta marketingowego przed wymyślaniem statystyk?"
-    a: "Zrób z dowodów białą listę, a nie filtr. Brief przepisuje dozwolone dowody z pliku pozycjonowania, a każda liczba, nazwa klienta, logo czy porównanie z konkurentem, której tam nie ma, nigdy nie trafia do draftu. Jeśli tekst jej potrzebuje, człowiek najpierw wpisuje ją do pliku pozycjonowania, ze źródłem i datą."
-  - q: "Czy człowiek akceptujący każdy output nie staje się wąskim gardłem?"
-    a: "Staje się, i to jest najczęstsza awaria takich stosów. Odpowiedź to przegląd w poziomach plus limit przepustowości. Rzeczy odwracalne i niskiego ryzyka idą automatycznie, publiczne materiały z już udowodnionymi tezami sprawdza się co N-ty, a wszystko trudne do cofnięcia czyta człowiek za każdym razem. Plan kwartału podaje tygodniową pojemność przeglądu, a produkcja zwalnia, kiedy kolejka ją przekroczy, zamiast wypuszczać nadmiar bez sprawdzenia."
-  - q: "Czym to się różni od folderu z promptami marketingowymi?"
-    a: "Prompt produkuje na żądanie. To produkuje wyłącznie pod decyzję, która istnieje w repozytorium, z przypisanym zakładem, i odmawia na piśmie, kiedy prośba nie pasuje do żadnego zakładu. Ta odmowa jest funkcją, nie usterką. To jest też pętla: skill przeglądu czyta wyniki pod kątem warunków przerwania i proponuje zmiany z powrotem w plikach decyzji, czego biblioteka promptów strukturalnie nie potrafi."
+    a: "Dwa zwykłe pliki trzymane w tym samym repozytorium co robota. Jeden mówi, komu sprzedajesz, kogo odrzucasz i jakie tezy wolno ci stawiać. Drugi mówi, na co stawiasz w tym kwartale, jak to zmierzysz i w którym dniu przerywasz, jeśli nie działa. Każdy skill, który cokolwiek produkuje, czyta oba i zatrzymuje się, jeśli któregoś brakuje albo jest nieaktualny."
+  - q: "Jak powstrzymać AI przed wymyślaniem statystyk o twojej firmie?"
+    a: "Daj mu listę tez, które wolno postawić, zamiast łapać zmyślone później. Każda liczba, nazwa klienta, logo czy porównanie z konkurentem, której na tej liście nie ma, nigdy nie trafi do draftu. Sprawdzanie po fakcie nie działa, bo pewna siebie wymyślona liczba wygląda dokładnie jak prawdziwa."
+  - q: "Czy człowiek akceptujący każdy output nie przenosi tylko wąskiego gardła na siebie?"
+    a: "Przenosi, i tak właśnie po cichu wykłada się większość tych projektów. Odpowiedź to sortowanie roboty po ryzyku i limit ilości. Rzeczy wewnętrzne i niskiego ryzyka idą same, publiczne materiały na zatwierdzonych tezach sprawdza się wyrywkowo, a wszystko trudne do cofnięcia czyta się za każdym razem. Potem zapisujesz, ile sztuk realnie przejrzysz w tygodniu, i produkcja zwalnia, kiedy kolejka to przekroczy."
+  - q: "Czym to się różni od folderu z dobrymi promptami?"
+    a: "Prompt daje output, kiedy poprosisz. To daje output tylko wtedy, gdy prośba pasuje do czegoś, co postanowiłeś robić, a kiedy nie pasuje, zapisuje krótką notkę z wyjaśnieniem. To jest też pętla: krok przeglądu czyta twoje realne wyniki, zestawia je z datami, które ustawiłeś, i proponuje zmiany w planie. Biblioteka promptów tego nie zrobi, bo nie ma planu, który mogłaby zmienić."
 sources:
+  - url: "https://github.com/wojciechluszczynski/operator-cmo"
+    claim: "Wtyczka open source opisana w tym artykule"
+    checkedAt: "2026-09-01"
   - url: "https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/"
     quote: "I could not afford a CMO, so I built one inside Claude"
-    claim: "Siedmiowarstwowy stos marketingowy w Claude, na który odpowiada ten artykuł"
+    claim: "Stos siedmiu skilli, w odpowiedzi na który powstał ten tekst"
     checkedAt: "2026-08-28"
 ---
 
-W sierpniu 2026 rozszedł się pewien post. Ignacio Prieto napisał, że nie stać go było na CMO, więc [zbudował go w Claude](https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/): siedem modułowych skilli, każdy jako zwykły plik, który można otworzyć i poprawić, każdy z jedną robotą, która wcześniej wymagała człowieka. Cztery miesiące później prowadził większość jego marketingu. Ponad siedemset komentarzy.
+Poproś AI o napisanie landinga, a będziesz go miał w półtorej minuty. Będzie dobrze poukładany. Będzie bez literówek. Będzie brzmiał pewnie.
 
-To dobra konstrukcja. Sam większość z niej bym uruchomił. Ale najlepszy komentarz pod spodem nie był pochwałą, tylko pytaniem.
+Będzie też o firmie, której nikt nie opisał, do kupującego, którego nikt nie wybrał, z tezą, której nikt nie sprawdził.
 
-<PullQuote
-  quote="Te skille to egzekucja planu marketingowego. Kto ułożył ten plan?"
-  source="Komentarz pod oryginalnym postem"
-  role="LinkedIn, sierpień 2026"
-  href="https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/"
-/>
+To nie jest problem z pisaniem. Nikt mu nie powiedział, komu sprzedajesz.
 
-I o tym jest cały ten tekst.
+## Stos, który wszyscy teraz budują
 
-## Co naprawdę zastępuje siedem skilli wykonawczych
+Popularna wersja tego wygląda jak folder ze skillami. Jeden pisze wpisy na bloga. Drugi social. Trzeci robi SEO. Czwarty maile. Piąty zamienia webinar w osiem postów na LinkedInie. Każdy to zwykły plik tekstowy, który można otworzyć i poprawić, co jest naprawdę dobrym pomysłem, i ludzie wyciskają z tego realną robotę.
 
-Wypisz, co robią te warstwy: research, treści, social, SEO, mail, raporty, recykling contentu. A teraz wypisz, co robi CMO we wtorek.
-
-Decyduje, który segment dostaje kwartał, a który czeka. Ucina kampanię, w którą trzy osoby są emocjonalnie zainwestowane. Mówi nie pomysłowi założyciela na podcast i tłumaczy, ile by kosztował. Ustala, że w tym roku nie idziemy po logo z enterprise. A na końcu wybiera, która z tych decyzji była błędna.
-
-Nic z tego nie jest egzekucją. Wszystko to jest wybieraniem.
-
-Uczciwa wersja tej tezy brzmi więc tak: siedem skilli zastępuje zespół marketing ops, i to szybki. To ma realną wartość i nie jest CMO. Luka nie leży w możliwościach, tylko w tym, że nic w tym stosie nie trzyma wyborów. Każdy skill po cichu wymyśla własną wersję strategii w momencie generowania i żadna z nich nie zgadza się z pozostałymi.
-
-<KeyPoint type="takeaway" title="Awaria, której nie zauważysz przez kwartał">
-Stos agentowy bez pliku z decyzją nie produkuje słabych tekstów. Produkuje świetne teksty o czymś, czego nikt nie postanowił powiedzieć. Przez jakieś trzy miesiące czyta się to jak produktywność, i dokładnie tyle trwa, zanim zauważysz, że nic się nie skumulowało.
-</KeyPoint>
-
-Pisałem już, że [CRM-first bije prompt-first we wdrażaniu AI](/pl/insights/crm-first-ai-adoption/), z tego samego strukturalnego powodu. Punktem wejścia nigdy nie jest model. Jest nim warstwa, która trzyma prawdę, na której model ma pracować.
-
-## Plik, którego brakowało
-
-Zbudowałem więc odpowiedź jako wtyczkę i postawiłem brakującą warstwę z przodu.
-
-**Warstwa decyzji to dwa wersjonowane pliki, które egzekucja musi przeczytać, zanim cokolwiek wyprodukuje.** `positioning.md` trzyma to, komu sprzedajesz, kogo odrzucasz, problem w prawdziwych słowach kupującego, dowody, których wolno użyć, ofertę i anty-cele. `quarter.md` trzyma dwa albo trzy zakłady, każdy z jedną metryką, warunkiem przerwania i datą.
-
-Oba leżą w repozytorium jako zwykły markdown. Do zdiffowania, do przejrzenia, przenośne do dowolnego narzędzia, które czyta pliki. Strategia, która mieszka na slajdzie z marca, jest niedostępna dla maszyny piszącej twój landing w sierpniu.
-
-<Diagram caption="Egzekucja czyta decyzję, zanim cokolwiek wyprodukuje. Brak pliku albo wygasły kwartał i skill się zatrzymuje, zamiast zgadywać.">
-  <Stack direction="column" gap="sm" align="stretch">
-    <Box variant="accent" label="positioning.md" sub="komu sprzedajesz, kogo odrzucasz, co wolno twierdzić" />
-    <Box variant="accent" label="quarter.md" sub="dwa albo trzy zakłady, jedna metryka, data przerwania" />
-  </Stack>
-  <Arrow direction="right" label="czyta" />
-  <Stack direction="column" gap="sm">
-    <Box variant="outline" label="brief" />
-    <Box variant="outline" label="content" />
-    <Box variant="outline" label="outbound" />
-    <Box variant="outline" label="visibility" />
-  </Stack>
-</Diagram>
-
-<StackLayer
-  title="Operator CMO: trzy warstwy, dziewięć skilli"
-  layers={[
-    { name: "start", tech: "Prowadzone pierwsze uruchomienie: pięć kroków, po jednej porcji pytań", badge: "setup" },
-    { name: "positioning", tech: "ICP, odmowy, problem w ich słowach, udowodnione dowody, anty-cele", badge: "decyzja" },
-    { name: "quarter", tech: "Dwa albo trzy zakłady, jedna metryka, warunek przerwania i data", badge: "decyzja" },
-    { name: "brief", tech: "Przypina prośbę do zakładu albo odmawia jej na piśmie", badge: "robota" },
-    { name: "content", tech: "Pisze z briefu, z kontrolą dowodów i przejściem anty-slop", badge: "robota" },
-    { name: "outbound", tech: "Listy i sekwencje, które stosują ICP i dyskwalifikatory dosłownie", badge: "robota" },
-    { name: "visibility", tech: "Pozycja w wyszukiwarce i cytowalność w AI, traktowane jako dwie roboty", badge: "robota" },
-    { name: "review", tech: "Jedyny skill, który może zmienić plik decyzji, i tylko przez diff", badge: "nauka" },
-    { name: "ship-gate", tech: "Trzy poziomy przeglądu, kontrole automatyczne i limit produkcji", badge: "polityka" },
-  ]}
-/>
-
-Nie chodzi o liczbę warstw. Chodzi o kierunek strzałek. W oryginalnym stosie siedem skilli stoi obok siebie, a strategię dostarcza człowiek ustnie, raz, a potem jeszcze raz, trochę inaczej, w kolejnym tygodniu. Tutaj egzekucja czyta z pliku, a plik jest artefaktem, o który się spieramy.
-
-## Nic nie wychodzi bez powołania się na decyzję
-
-Trzy zasady robią większość roboty. Pierwsza to zatrzymanie.
-
-Każdy skill wykonawczy czyta `positioning.md` i `quarter.md`, zanim cokolwiek wyprodukuje. Brak pliku, wygasły kwartał albo prośba, która nie pasuje do żadnego zakładu: skill się zatrzymuje i podaje jedną komendę, która go odblokuje. Nigdy nie wnioskuje strategii z repozytorium i nie leci dalej, bo wymyślone ICP będzie cytowane przez każdy materiał przez następne trzy miesiące i nikt tego nie wyłapie, skoro będzie idealnie spójne.
-
-Druga zasada to pochodzenie. Każdy draft zaczyna się nagłówkiem:
-
-<CodeBlock filename="marketing/drafts/2026-08-28-zamkniecie-miesiaca.md" lang="yaml" caption="Nagłówek jest sednem. Materiał, który nie potrafi wskazać decyzji, z której powstał, nie nadaje się do publikacji.">
-bet: B2
-decision: positioning.md rev 2026-07-02
-brief: marketing/briefs/2026-08-28-zamkniecie-miesiaca.md
-gate: B
-claims_flagged: 0
-</CodeBlock>
-
-Materiał, który nie potrafi wskazać decyzji, z której powstał, nie nadaje się do publikacji. To jest kontrola mechaniczna, nie kulturowa aspiracja, i na tym polega różnica między systemem a nawykiem.
-
-Trzecia zasada to ta, którą zostawiłbym, gdybym mógł zostawić jedną. **Żadnych nowych tez.** Brief przepisuje dozwolone dowody z pliku pozycjonowania. Każda liczba, nazwa klienta, logo, nagroda czy porównanie z konkurentem, której tam nie ma, nigdy nie trafia do draftu. Jeśli tekst jej potrzebuje, człowiek najpierw wpisuje ją do `positioning.md`, ze źródłem i datą.
-
-To odwraca zwykłe podejście. Większość zespołów próbuje łapać zmyślone statystyki na wyjściu, w akceptacji, i to nie działa, bo pewna siebie wymyślona liczba wygląda dokładnie jak prawdziwa. Biała lista sprawia, że tekst jest nudniejszy i uczciwy, dopóki ktoś nie pójdzie i tego nie udowodni.
-
-<BeforeAfter
-  label="Gdzie mieszka strategia"
-  before={{
-    title: "Siedem skilli, strategia w czacie",
-    body: "Kontekst każdego skilla siedzi w promptcie. Strategia to tyle, ile operator akurat pamiętał, żeby powiedzieć w tej sesji. Dwa skille produkują pod dwa różne, niewypowiedziane ICP i oba wyniki wyglądają dobrze.",
-    caption: "Szybko, spójnie, w nic"
-  }}
-  after={{
-    title: "Dwa pliki decyzji, egzekucja je czyta",
-    body: "Skille zatrzymują się, kiedy brakuje decyzji. Każdy materiał nazywa zakład, któremu służy. Prośba, która nie pasuje do żadnego zakładu, dostaje odmowę na piśmie, z wyliczonym kosztem zmiany planu.",
-    caption: "Wolniejszy start, kumuluje się od trzeciego tygodnia"
-  }}
-/>
-
-## Odmowa jest funkcją
-
-Skill `brief` przypina każdą prośbę do dokładnie jednego zakładu. Kiedy nic nie pasuje, nie pisze materiału. Zapisuje krótki plik z prośbą, listą zakładów, przy których ją sprawdzał, i powodem, dla którego żaden nie pasuje. Potem daje trzy opcje w przemyślanej kolejności: odpuść, dopisz do listy rzeczy, których w tym kwartale nie robimy, albo zmień plan kwartału, co oznacza ucięcie lub zmniejszenie istniejącego zakładu, żeby to sfinansować.
-
-<AnnotatedImage
-  src="/images/insights/ai-cmo-brief-refusal.webp"
-  alt="Karta z prośbą unosi się nad trzema kartami zakładów B1, B2 i B3, a przerywane linie urywają się i kończą krzyżykami, zamiast je łączyć."
-  caption="Prośba, która nie pasuje do żadnego zakładu, nie jest pisana. Zostaje zapisana jako odmowa, z ceną zmiany planu obok."
-/>
-
-Trzecia opcja jest ostatnia i ma podaną cenę. Większość próśb kończy się na pierwszej opcji, kiedy ta cena staje się widoczna. To najbardziej użyteczne zachowanie w całej wtyczce i jednocześnie to, które w pierwszym tygodniu boli najbardziej.
-
-## Wąskie gardło akceptacji to problem pojemności
-
-Druga krytyka pod oryginalnym postem była ostrzejsza od pierwszej i to w nią zaraz wejdzie większość ludzi budujących takie stosy: jeśli człowiek akceptuje każdy output, a agent produkuje szybciej, niż człowiek czyta, to akceptacja jest ograniczeniem. Wąskie gardło nie zniknęło. Przeniosło się do kolejki i dostało ładniejszą nazwę.
-
-Przeglądanie wszystkiego się nie skaluje. Nieprzeglądanie niczego jest niedbalstwem. Bramka sortuje więc robotę na trzy poziomy.
-
-<AnnotatedImage
-  src="/images/insights/ai-cmo-ship-gate.webp"
-  alt="Trzy poziome pasy oznaczone A, B i C. Pas A biegnie swobodnie, pas B ma bramkę w dwóch trzecich długości, pas C ma bramkę na starcie i spiętrzoną za nią kolejkę."
-  caption="Poziom A idzie swobodnie. Poziom B jest próbkowany. Poziom C czyta człowiek za każdym razem i to tam tworzy się kolejka, jeśli produkcja nie ma limitu."
-/>
-
-<Compare
-  labelA="Akceptuję wszystko"
-  labelB="Bramka poziomowa z limitem"
-  tagA="kolejka"
-  tagB="naprawa"
-  caption="Przepustowość to to, co wyszło, a nie to, co się wygenerowało."
->
-  <div slot="a">
-    Każdy materiał czeka na tę samą osobę. Czas przeglądu rośnie, sprawdzający zaczyna skanować wzrokiem, a skanowanie jest nie do odróżnienia od akceptowania. Raportowany output liczy to, co wyprodukowano, i to jest najczęstsze kłamstwo w tej kategorii.
-  </div>
-  <div slot="b">
-    Poziom A jest odwracalny, wewnętrzny i nie stawia żadnych tez, więc idzie bez udziału człowieka. Poziom B jest sprawdzany co N-ty i spada do pełnego przeglądu, jeśli dwa z ostatnich dwudziestu nie przejdą. Poziom C czyta człowiek za każdym razem: cennik, prawne, nazwani klienci, pierwszy kontakt z nazwanym kontem, wydatek na reklamę.
-  </div>
-</Compare>
-
-I zasada, która naprawdę zapobiega kolejce. `quarter.md` podaje tygodniową pojemność przeglądu jako prawdziwą liczbę, a skill briefu liczy kolejkę, zanim przyjmie nową robotę. Powyżej pojemności produkcja zwalnia. Nie obniża poziomu i nie wypuszcza nadmiaru bez sprawdzenia.
-
-<Diagram caption="Przepustowość to to, co wyszło, a nie to, co się wygenerowało. Raportowanie lewej liczby to sposób, w jaki takie projekty najpierw dostają budżet, a potem po cichu znikają.">
-  <Box variant="muted" label="wyprodukowane" sub="40 / tydzień" />
-  <Arrow direction="right" label="bramka" />
-  <Box variant="accent" label="wysłane" sub="10 / tydzień" />
-  <Arrow direction="right" dashed label="nadmiar" />
-  <Box variant="outline" label="zaległość" sub="30 i rośnie" />
-</Diagram>
-
-Stos produkujący 40 materiałów tygodniowo przy pojemności przeglądu 10 na tydzień ma przepustowość 10 i zaległość 30. Nazywanie tego czterdziestką to liczba, która najpierw załatwia takim projektom budżet, a potem po cichu ich cofnięcie.
-
-<KeyTakeaway
-  title="Trzy liczby, które opisują maszynę, a nie rynek"
-  items={[
-    "Wyprodukowane kontra wysłane. Duża różnica znaczy, że ograniczeniem jest bramka, więc zwolnij produkcję zamiast dokładać skille",
-    "Czas przeglądu, mediana godzin od draftu do decyzji. Rosnący czas to wczesny sygnał, że wąskim gardłem stał się człowiek",
-    "Oflagowane tezy. Materiały, które potrzebowały dowodu, jakiego plik pozycjonowania nie miał. Rosnąca liczba znaczy, że pozycjonowanie się zestarzało, a nie że piszący są niechlujni"
-  ]}
-/>
-
-## Pętla zwrotna jest tym, co czyni z tego system
-
-Jeden skill może edytować pliki decyzji i tylko przez pokazanie diffa i czekanie na zgodę. `review` czyta log wyników pod kątem metryki i warunku przerwania każdego zakładu, a potem zwraca jeden z trzech werdyktów: idzie zgodnie z planem, nie idzie i oto konkretna zmiana, albo przerwane.
-
-Warunku przerwania, który się odpalił, się nie zmiękcza, a daty nie przesuwa się dlatego, że zakładowi już prawie się udało. Data była decyzją. Raz w miesiącu ten sam skill zadaje pytanie, którego przegląd tygodniowy nie umie: czy pozycjonowanie nadal jest prawdziwe. Dowody starsze niż pół roku, dyskwalifikatory, które nie odpaliły w żadnym przebiegu outboundu, język kupujących, który odjechał od zapisanych fraz, anty-cele po cichu złamane.
-
-Bez tej pętli to jest kulturalna maszynka do treści. To ten sam argument, co [kampanie się wypłaszczają, systemy się kumulują](/pl/insights/b2b-revenue-system-design-operator-framework/), zastosowany do samego stosu agentowego.
-
-## Instalacja
+Zbudowałem własną wersję, a potem postawiłem przed nią coś, czego większości tych stosów brakuje. Jest otwarta i instaluje się w dwóch linijkach:
 
 <ToolCard
-  title="Na co to odpowiada i co dostajesz"
+  title="Wtyczka"
   cols={2}
   items={[
     {
-      name: "Oryginalny post",
-      description: "Siedmiowarstwowy stos marketingowy Ignacia Prieto w Claude i wątek komentarzy, który zapytał, kto ułożył plan.",
-      href: "https://www.linkedin.com/posts/ignacioprietom_i-could-not-afford-a-cmo-so-i-built-one-share-7497741014326009857-7mlJ/",
-      meta: "linkedin.com",
-      icon: "chat",
-    },
-    {
       name: "operator-cmo",
-      description: "Wtyczka, o którą spiera się ten tekst. Dziewięć skilli, strażnik decyzji, bramka publikacji, szablony i wypełniony przykład.",
+      description: "Dziewięć skilli do Claude Code, w trzech warstwach. Kreator startowy, dwa pliki decyzji i bramka, która nie pozwala ci się zalać. Licencja MIT.",
       href: "https://github.com/wojciechluszczynski/operator-cmo",
       meta: "github.com",
       status: "live",
       icon: "code",
     },
+    {
+      name: "Jak działa ta architektura",
+      description: "Ten sam wzorzec zastosowany do outboundu: czym są warstwy, co należy do której i co się psuje, kiedy jedną pominiesz.",
+      href: "/pl/insights/gtm-ai-agent-four-layer-architecture-guide/",
+      meta: "wojciech.io",
+      icon: "spark",
+    },
   ]}
 />
 
-Open source, MIT, na [GitHubie](https://github.com/wojciechluszczynski/operator-cmo).
+Reszta tekstu jest o tym, dlaczego brakujący element ma znaczenie, na przykładzie jednej firmy, żeby zostało konkretnie.
+
+## Co CMO naprawdę robi we wtorek
+
+Wypisz, co robią te skille: research, pisanie, social, SEO, mail, raporty, recykling.
+
+A teraz wypisz prawdziwy wtorek. Decydujesz, który segment dostaje najbliższe trzy miesiące, a który czeka. Ucinasz kampanię, do której trzy osoby są przywiązane. Mówisz założycielowi, że jego pomysł na podcast kosztuje cztery tygodnie, i tłumaczysz, czemu te cztery tygodnie zabierze. Ustalasz, że w tym roku nie idziecie po duże logo. A na koniec kwartału ustalasz, która z tych decyzji była błędna.
+
+Nic z tego nie jest pisaniem. Wszystko to jest wybieraniem.
+
+Uczciwa wersja brzmi więc tak: dobry folder ze skillami zastępuje zespół marketing ops, i to szybki. To jest warte realnych pieniędzy. To nie jest CMO. Luka nie polega na tym, że AI nie umie pisać. Polega na tym, że nic nigdzie nie trzyma wyborów, więc każdy skill po cichu wymyśla własną wersję strategii przy każdym uruchomieniu i żadna nie zgadza się z pozostałymi.
+
+<KeyPoint type="takeaway" title="Awaria, której nie zauważysz przez trzy miesiące">
+Stos bez niczego zapisanego nie produkuje słabych tekstów. Produkuje dobre teksty o czymś, czego nikt nie postanowił powiedzieć. Wygląda to na produktywność przez jakiś kwartał, czyli dokładnie tyle, ile trzeba, żeby zauważyć, że nic z tego się nie złożyło w całość.
+</KeyPoint>
+
+Pisałem to samo o CRM-ach: [punktem wejścia nigdy nie jest narzędzie](/pl/insights/crm-first-ai-adoption/), tylko warstwa, która trzyma to, co prawdziwe.
+
+## Poznaj firmę
+
+Żeby zostało konkretnie, oto firma. Jest zmyślona. Poziom szczegółu nie jest, i to jest poziom, którego potrzebujesz, zanim cokolwiek z tego zadziała.
+
+Ada sprzedaje oprogramowanie skracające zamknięcie miesiąca w produkcji. Jej klienci mają od 200 do 2000 pracowników, ERP starszy niż pięć lat, i siedzą w Niemczech, Austrii, Szwajcarii i Polsce. Sprzedaje do szefa operacji, IT siedzi w komitecie, a podpisuje CFO.
+
+Jej zespół marketingowy to ona, dwóch kontraktorów i od niedawna folder ze skillami AI.
+
+## Dwa pliki
+
+Zanim stos Ady dostanie prawo cokolwiek napisać, czyta dwa pliki. Leżą w tym samym repozytorium co robota, zwykłym tekstem, więc da się je edytować, kłócić się o nie i śledzić w czasie.
+
+**Pierwszy mówi, komu sprzedaje.** Nie tylko wielkość firmy, ale wyzwalacz: co musiało się właśnie wydarzyć, żeby to było warte czyjejś uwagi w tym miesiącu. U Ady to upgrade ERP, przejęcie zakładu albo nieudany audyt w ostatnim półroczu. Bez jednej z tych trzech rzeczy problem jest prawdziwy, a budżetu nie ma.
+
+Mówi też, kogo odrzuca, w trzech linijkach, które maszyna umie zastosować. Poniżej 200 osób. Brak ERP albo ERP młodszy niż dwa lata. Firmy doradcze kupujące dla klienta, którego Ada nigdy nie zobaczy.
+
+I trzyma jedyne tezy, które jej marketingowi wolno postawić, każdą ze źródłem i datą sprawdzenia.
+
+**Drugi mówi, na co stawia w tym kwartale.** Dwa zakłady, nie osiem. Każdy ma tezę, odbiorcę, jedną liczbę i datę, w której przerywa.
+
+<Diagram caption="Wszystko, co cokolwiek pisze, czyta najpierw te dwa. Brak ich albo minięta data z drugiego i skill się zatrzymuje, zamiast zgadywać.">
+  <Stack direction="column" gap="sm" align="stretch">
+    <Box variant="accent" label="Komu sprzedajemy" sub="kogo odrzucamy i co wolno nam twierdzić" />
+    <Box variant="accent" label="Na co stawiamy" sub="dwa zakłady, po jednej liczbie, data przerwania" />
+  </Stack>
+  <Arrow direction="right" label="czyta" />
+  <Stack direction="column" gap="sm">
+    <Box variant="outline" label="briefy" />
+    <Box variant="outline" label="pisanie" />
+    <Box variant="outline" label="outbound" />
+    <Box variant="outline" label="wyszukiwarki" />
+  </Stack>
+</Diagram>
+
+I to jest cała sztuczka. Dwa pliki i zasada, że nic nie powstaje bez ich przeczytania.
+
+## Zobacz, jak przechodzi jedna prośba
+
+Wspólnik Ady pisze we wtorek rano: powinniśmy zrobić podcast.
+
+W zwykłym folderze ze skillami do obiadu jest z tego plan podcastu. Będzie dobry. Nikt nie zapytał, czy podcast służy któremuś z dwóch rzeczy, które Ada postanowiła robić w tym kwartale.
+
+Tutaj prośba trafia najpierw na krok briefu, a krok briefu musi ją dopiąć do jednego z dwóch zakładów. Nie umie. Więc nie pisze planu podcastu. Zamiast tego pisze to:
+
+<CodeBlock filename="marketing/briefs/2026-09-01-podcast.no-bet.md" lang="markdown" caption="Odmowa jest zapisana, z datą, i zostaje. W kolejnym kwartale, kiedy ktoś zapyta znowu, jest ślad, przy czym ją sprawdzano.">
+Prośba: zrobić podcast
+
+Sprawdzone przy:
+  Zakład 1, przejąć pytanie o zamknięcie miesiąca -> nie, to nie jest popyt z wyszukiwarki
+  Zakład 2, outbound na wyzwalaczach             -> nie, to nie dociera do nikogo z wyzwalaczem
+
+Opcje, w kolejności:
+  1. Odpuścić.
+  2. Dopisać do listy rzeczy, których nie robimy, i wrócić w styczniu.
+  3. Zmienić kwartał. To znaczy uciąć albo zmniejszyć zakład 1 lub 2,
+     żeby to sfinansować. Zakład 1 ma teraz 12 godzin tygodniowo
+     i 2000 EUR miesięcznie. Podcast zabrałby większość jednego i drugiego.
+</CodeBlock>
+
+<AnnotatedImage
+  src="/images/insights/ai-cmo-brief-refusal.webp"
+  alt="Karta z prośbą unosi się nad trzema mniejszymi kartami, a przerywane linie urywają się i kończą krzyżykami, zamiast łączyć się z którąkolwiek."
+  caption="Nic się nie łączy. Ta przerwa jest sednem: prośba nie doczepia się do niczego, co firma postanowiła robić."
+/>
+
+Trzecia opcja jest ostatnia celowo i ma podaną cenę. Większość próśb kończy się na pierwszej w chwili, w której ktoś zobaczy, ile kosztuje trzecia.
+
+To jest najbardziej użyteczna rzecz, jaką ten system robi, i jednocześnie ta, która w pierwszym tygodniu boli najbardziej. Jesteś przyzwyczajony, że prosisz i dostajesz.
+
+## Żadnych nowych liczb, nigdy
+
+Druga zasada jest krótsza. Krok pisania może użyć wyłącznie tez, które są już w pierwszym pliku, ze źródłem i datą.
+
+Każda liczba, nazwa klienta, logo, nagroda czy porównanie z nazwanym konkurentem, której na tej liście nie ma, nigdy nie trafia do draftu. Jeśli Ada chce napisać, że jej klienci częściej przechodzą audyty, musi to najpierw sama wpisać do pliku, z dowodem.
+
+Większość zespołów robi to odwrotnie: piszemy swobodnie, a zmyślone statystyki wyłapiemy przy akceptacji. To nie działa. Pewna siebie wymyślona liczba wygląda dokładnie jak prawdziwa, zwłaszcza o dwudziestej trzeciej, przy czwartej rzeczy tego dnia.
+
+<Compare
+  labelA="Wyłapać przy akceptacji"
+  labelB="Zatwierdzić tezę raz"
+  tagA="co robią wszyscy"
+  tagB="co działa"
+  caption="Wymyślonej liczby nie da się rozpoznać, patrząc na nią."
+>
+  <div slot="a">
+    AI pisze to, co brzmi sensownie. Człowiek ma zauważyć, które liczby są prawdziwe. Zauważa pierwsze kilka. W drugim miesiącu już skanuje wzrokiem, a zmyślona liczba na stronie niczym się nie różni od prawdziwej.
+  </div>
+  <div slot="b">
+    Tezy leżą w pliku, ze źródłami i datami. Czego nie ma na liście, tego w ogóle nie da się napisać. Tekst jest nudniejszy, dopóki ktoś nie odrobi pracy i nie uczyni tezy prawdziwą, i to jest właściwa wymiana.
+  </div>
+</Compare>
+
+## Liczba, która po cichu zabija te projekty
+
+To jest część, której prawie nikt nie planuje.
+
+Obiecujesz, że zaakceptujesz wszystko, co AI wyprodukuje. Brzmi odpowiedzialnie. Potem AI produkuje czterdzieści rzeczy tygodniowo, a ty realnie przeczytasz dziesięć. Pozostałe trzydzieści leżą w folderze. W ciągu miesiąca albo przystawiasz pieczątkę bez czytania, albo olewasz całość.
+
+Wąskie gardło nie zniknęło. Przeniosło się na ciebie i dostało ładniejszą nazwę.
+
+<AnnotatedImage
+  src="/images/insights/ai-cmo-ship-gate.webp"
+  alt="Trzy poziome pasy. Górny biegnie swobodnie, środkowy ma bramkę w połowie, dolny ma bramkę na starcie i spiętrzoną za nią robotę."
+  caption="Sortuj po ryzyku. Wewnętrzne drafty idą swobodnie. Publiczne materiały na zatwierdzonych tezach sprawdza się wyrywkowo. Wszystko trudne do cofnięcia czyta się za każdym razem, i tam rośnie stos."
+/>
+
+Posortuj więc robotę po tym, ile szkód może narobić.
+
+Wewnętrzne drafty, research i listy idą same. Aktualizacje bloga i posty na zatwierdzonych tezach sprawdza się co czwarty, a cały kanał spada do pełnego przeglądu, jeśli dwie z ostatnich dwudziestu rzeczy miały problem. Cennik, wszystko z nazwiskiem klienta, pierwszy kontakt z nazwanym kontem i wydatki reklamowe czyta się za każdym razem.
+
+Potem zapisz uczciwą liczbę: ile sztuk realnie przejrzysz w tygodniu. U Ady to sześć wyrywkowych i trzy pełne. Kiedy kolejka robi się dłuższa, **system zwalnia produkcję**. Nie obniża niczego i nie wypuszcza po cichu nadmiaru.
+
+<Diagram caption="Przepustowość to to, co naprawdę wychodzi, a nie to, co się wygenerowało. Lewa liczba jest tą, która najpierw załatwia budżet, a potem ciche skasowanie projektu.">
+  <Box variant="muted" label="wyprodukowane" sub="40 na tydzień" />
+  <Arrow direction="right" label="bramka" />
+  <Box variant="accent" label="opublikowane" sub="10 na tydzień" />
+  <Arrow direction="right" dashed label="nadmiar" />
+  <Box variant="outline" label="czeka" sub="30 i rośnie" />
+</Diagram>
+
+Czterdzieści wyprodukowane przy pojemności dziesięciu na tydzień to nie czterdzieści. To dziesięć i zaległość trzydziestu. Raportowanie tego jako czterdziestki to najczęstsze kłamstwo w całej tej kategorii.
+
+## Musi umieć zmienić własne zdanie
+
+Jeden krok ma prawo edytować te dwa pliki, i tylko pokazując ci zmianę i czekając na zgodę.
+
+Raz w tygodniu czyta, co się naprawdę wydarzyło, przy liczbach, które Ada ustawiła. Każdy zakład dostaje jedną z trzech odpowiedzi: idzie zgodnie z planem, nie idzie i oto konkretna zmiana, albo przerwany. Data przerwania, która nadeszła, jest datą przerwania. Nie przesuwa się jej dlatego, że zakładowi prawie się udało.
+
+Raz w miesiącu zadaje trudniejsze pytanie: czy to wszystko jest jeszcze prawdą. Tezy starsze niż pół roku. Reguły, które ani razu nie zadziałały. Język klientów, który odjechał od tego, co jest w pliku. Rzeczy, o których Ada przysięgała, że w tym roku ich nie zrobi, a po cichu zrobiła.
+
+Bez tej pętli to jest kulturalna maszynka do treści. Ten sam argument, co [kampanie się wypłaszczają, a systemy kumulują](/pl/insights/b2b-revenue-system-design-operator-framework/), obrócony na sam stos AI.
+
+## Co jest w środku
+
+<StackLayer
+  title="Dziewięć skilli, trzy roboty"
+  layers={[
+    { name: "start", tech: "Przeprowadza cię przez całą konfigurację w pięciu krokach, po jednym pytaniu", badge: "setup" },
+    { name: "positioning", tech: "Komu sprzedajesz, kogo odrzucasz i co wolno ci twierdzić", badge: "decyzja" },
+    { name: "quarter", tech: "Dwa albo trzy zakłady, po jednej liczbie i data przerwania", badge: "decyzja" },
+    { name: "brief", tech: "Dopina prośbę do zakładu albo zapisuje, dlaczego nie da rady", badge: "robota" },
+    { name: "content", tech: "Pisze z briefu, sprawdza każdą tezę, zdejmuje ślady AI", badge: "robota" },
+    { name: "outbound", tech: "Listy i sekwencje, które stosują twoje reguły dosłownie", badge: "robota" },
+    { name: "visibility", tech: "Bycie znalezionym w wyszukiwarce i cytowanym przez asystentów AI", badge: "robota" },
+    { name: "review", tech: "Czyta twoje wyniki i proponuje zmiany w planie", badge: "nauka" },
+    { name: "ship-gate", tech: "Sortuje po ryzyku, limituje ilość, nie pozwala urosnąć kolejce", badge: "polityka" },
+  ]}
+/>
+
+## Czego bym o tym nie powiedział
+
+Nic nie wysyła. Żaden mail nie wychodzi, nic się nie publikuje, żadne pieniądze na reklamę się nie ruszają. Ostatnia akcja zawsze należy do człowieka, celowo.
+
+Nie zastępuje CMO. Zdejmuje z niego produkcję i zamienia strategię w coś, co da się przeczytać i podważyć, zamiast w talię slajdów z marca.
+
+Nie sprawi, że zły plan zadziała. Sprawi, że zły plan stanie się oczywisty, zwykle w trzy tygodnie, czyli szybciej, niż większość firm dowiaduje się tego w jakikolwiek inny sposób.
+
+## Spróbuj
 
 <Terminal
   title="Claude Code"
@@ -246,74 +263,69 @@ Open source, MIT, na [GitHubie](https://github.com/wojciechluszczynski/operator-
   ]}
 />
 
-Potem, w repozytorium, w którym mieszka twój marketing:
+Potem, w repozytorium, w którym mieszka twój marketing, odpalasz jedną komendę i przez pół godziny odpowiadasz na pytania:
 
 <Terminal
   title="Twoje repozytorium marketingu"
   commands={[
-    { cmd: "/operator-cmo:start", output: "Prowadzone pierwsze uruchomienie. Pięć kroków, po jednej porcji pytań." },
-    { cmd: "/operator-cmo:positioning", output: "Plik decyzji, który czyta cała reszta." },
-    { cmd: "/operator-cmo:quarter", output: "Dwa albo trzy zakłady, każdy z warunkiem przerwania." },
-    { cmd: "/operator-cmo:ship-gate", output: "Co może wyjść i jak szybko." },
-    { cmd: "/cmo", output: "Stan systemu, w dowolnym momencie." },
+    { cmd: "/operator-cmo:start", output: "Przeprowadza całą konfigurację. Pięć kroków, po jednym pytaniu." },
+    { cmd: "/cmo", output: "Pokazuje stan systemu, kiedy tylko chcesz." },
   ]}
 />
 
-W repozytorium jest wypełniony przykład dla B2B SaaS ze średniej półki, żeby zobaczyć, jak te pliki wyglądają, kiedy są prawdziwe, a nie szablonowe. Firma w nim jest zmyślona. Poziom szczegółowości nie: poniżej tej kreski skille wykonawcze zaczynają zgadywać, a zgadywanie jest awarią, przed którą to wszystko ma chronić.
-
-Jeśli wolisz architekturę pod spodem niż zastosowanie marketingowe, [cztery warstwy, dzięki którym agent GTM działa na produkcji](/pl/insights/gtm-ai-agent-four-layer-architecture-guide/) opisują ten sam wzorzec dla outboundu, a [agent GTM za 2 dolary na przebieg](/pl/insights/how-to-build-gtm-ai-agent-outbound-crm/) ma liczby kosztowe.
+W repozytorium jest wypełniony przykład, żeby zobaczyć, jak te pliki wyglądają, kiedy są prawdziwe, a nie szablonowe. Jest też [playbook operatora](https://github.com/wojciechluszczynski/operator-cmo/blob/main/plugins/operator-cmo/references/operator-playbook.md) z pozycjami, które zajmuję, kiedy czyjaś odpowiedź jest mętna, i wersja moich zasad tonu, której możesz użyć albo ją podmienić.
 
 <DoDont
   do={[
-    "Napisz positioning.md, zanim zainstalujesz choćby jeden skill wykonawczy",
-    "Trzymaj limit trzech zakładów, każdy z jedną metryką i datą przerwania",
-    "Zrób z dowodów białą listę w pliku decyzji, nie filtruj ich w akceptacji",
-    "Podaj tygodniową pojemność przeglądu jako prawdziwą liczbę i limituj do niej",
-    "Pozwól skillowi przeglądu proponować zmiany w planie i je czytaj"
+    "Zapisz, komu sprzedajesz, zanim zainstalujesz choćby jeden skill do pisania",
+    "Ogranicz się do trzech zakładów, każdy z jedną liczbą i datą przerwania",
+    "Trzymaj listę tez, które wolno ci stawiać, ze źródłami",
+    "Zapisz, ile sztuk realnie przejrzysz w tygodniu",
+    "Czytaj zmiany, które proponuje w twoim planie"
   ]}
   dont={[
-    "Pozwalać skillowi wywnioskować ICP, bo pliku brakowało",
-    "Przesuwać datę przerwania, bo zakładowi prawie się udało",
-    "Liczyć wyprodukowane materiały jako wynik",
+    "Pozwalać mu zgadywać, kim jest twój klient, bo pliku brakowało",
+    "Przesuwać daty przerwania, bo zakładowi prawie się udało",
+    "Liczyć wyprodukowane jako osiągnięte",
     "Obiecywać, że zaakceptujesz wszystko",
-    "Dokładać dziewiąty skill na problem, o którym mówi ci bramka"
+    "Dokładać kolejny skill na problem, o którym mówi ci kolejka"
   ]}
 />
-
-## Gdzie to się zatrzymuje
-
-Nie wysyła. Żadnych maili, publikacji, wydatków na reklamę. Ostatnia akcja należy do człowieka, celowo.
-
-Nie zastępuje CMO. Zdejmuje z niego obciążenie egzekucją i zamienia strategię w artefakt do przejrzenia zamiast w spór, który każdy pamięta inaczej.
-
-Nie sprawi, że zły plan zadziała. Sprawi, że zły plan stanie się czytelny, zwykle w jakieś trzy tygodnie, czyli szybciej, niż większość firm dowiaduje się tego w jakikolwiek inny sposób.
 
 ## Pytania, które padły
 
 ### Czy agent AI może zastąpić CMO?
 
-Nie. Może zastąpić większość egzekucji, którą CMO i tak deleguje: pisanie, budowanie list, produkcję stron, raportowanie. Nie automatyzuje się wybieranie: komu sprzedajesz, kogo odrzucasz, które dwa zakłady dostają budżet w tym kwartale i co przerywasz, kiedy liczba nie drgnie. Stos agentowy bez pliku z decyzją to nie CMO, tylko bardzo szybki zespół marketing ops wycelowany w nic.
+Może zastąpić większość roboty, którą CMO i tak oddaje innym: pisanie, budowanie list, produkcję stron, raporty. Nie zrobi decydowania, czyli komu sprzedajesz, kogo odsyłasz z kwitkiem, co dostaje budżet w tym kwartale i co przerywasz, kiedy liczby nie drgną. Stos AI bez niczego zapisanego to nie CMO. To bardzo szybki junior wycelowany w nic.
 
 ### Czym jest warstwa decyzji w stosie marketingowym opartym o AI?
 
-To dwa wersjonowane pliki przed egzekucją: `positioning.md` z ICP, problemem w słowach kupującego, udowodnionymi dowodami i anty-celami, oraz `quarter.md` z dwoma albo trzema zakładami, każdy z jedną metryką i warunkiem przerwania. Każdy skill wykonawczy czyta oba, zanim cokolwiek wyprodukuje, i zatrzymuje się, jeśli któregoś brakuje albo kwartał wygasł.
+Dwa zwykłe pliki trzymane w tym samym repozytorium co robota. Jeden mówi, komu sprzedajesz, kogo odrzucasz i jakie tezy wolno ci stawiać. Drugi mówi, na co stawiasz w tym kwartale, jak to zmierzysz i w którym dniu przerywasz, jeśli nie działa. Każdy skill, który cokolwiek produkuje, czyta oba i zatrzymuje się, jeśli któregoś brakuje albo jest nieaktualny.
 
-### Jak powstrzymać agenta marketingowego przed wymyślaniem statystyk?
+### Jak powstrzymać AI przed wymyślaniem statystyk o twojej firmie?
 
-Zrób z dowodów białą listę, a nie filtr. Brief przepisuje dozwolone dowody z pliku pozycjonowania, a każda liczba, nazwa klienta, logo czy porównanie z konkurentem, której tam nie ma, nigdy nie trafia do draftu. Jeśli tekst jej potrzebuje, człowiek najpierw wpisuje ją do pliku pozycjonowania, ze źródłem i datą.
+Daj mu listę tez, które wolno postawić, zamiast łapać zmyślone później. Każda liczba, nazwa klienta, logo czy porównanie z konkurentem, której na tej liście nie ma, nigdy nie trafi do draftu. Sprawdzanie po fakcie nie działa, bo pewna siebie wymyślona liczba wygląda dokładnie jak prawdziwa.
 
-### Czy człowiek akceptujący każdy output nie staje się wąskim gardłem?
+### Czy człowiek akceptujący każdy output nie przenosi tylko wąskiego gardła na siebie?
 
-Staje się, i to jest najczęstsza awaria takich stosów. Odpowiedź to przegląd w poziomach plus limit przepustowości. Rzeczy odwracalne i niskiego ryzyka idą automatycznie, publiczne materiały z już udowodnionymi tezami sprawdza się co N-ty, a wszystko trudne do cofnięcia czyta człowiek za każdym razem. Plan kwartału podaje tygodniową pojemność przeglądu, a produkcja zwalnia, kiedy kolejka ją przekroczy, zamiast wypuszczać nadmiar bez sprawdzenia.
+Przenosi, i tak właśnie po cichu wykłada się większość tych projektów. Odpowiedź to sortowanie roboty po ryzyku i limit ilości. Rzeczy wewnętrzne i niskiego ryzyka idą same, publiczne materiały na zatwierdzonych tezach sprawdza się wyrywkowo, a wszystko trudne do cofnięcia czyta się za każdym razem. Potem zapisujesz, ile sztuk realnie przejrzysz w tygodniu, i produkcja zwalnia, kiedy kolejka to przekroczy.
 
-### Czym to się różni od folderu z promptami marketingowymi?
+### Czym to się różni od folderu z dobrymi promptami?
 
-Prompt produkuje na żądanie. To produkuje wyłącznie pod decyzję, która istnieje w repozytorium, z przypisanym zakładem, i odmawia na piśmie, kiedy prośba nie pasuje do żadnego zakładu. Ta odmowa jest funkcją, nie usterką. To jest też pętla: skill przeglądu czyta wyniki pod kątem warunków przerwania i proponuje zmiany z powrotem w plikach decyzji, czego biblioteka promptów strukturalnie nie potrafi.
+Prompt daje output, kiedy poprosisz. To daje output tylko wtedy, gdy prośba pasuje do czegoś, co postanowiłeś robić, a kiedy nie pasuje, zapisuje krótką notkę z wyjaśnieniem. To jest też pętla: krok przeglądu czyta twoje realne wyniki, zestawia je z datami, które ustawiłeś, i proponuje zmiany w planie. Biblioteka promptów tego nie zrobi, bo nie ma planu, który mogłaby zmienić.
 
-## Uznanie i spór
+## Skąd wziął się pomysł
 
-Pomysł na siedem warstw jest Ignacia, a rozszedł się dlatego, że był konkretny. Większość ludzi piszących o AI w marketingu w 2026 wciąż opisuje przyszłość. On wypuścił rzecz i pokazał pliki.
+To zaczęło się od sporu. W sierpniu 2026 Ignacio Prieto napisał, że nie stać go było na CMO, więc zbudował go w Claude, z siedmiu plików ze skillami. Rozeszło się wszędzie. Najostrzejszą rzeczą pod spodem był komentarz.
 
-Mój spór jest wąski. On nazwał warstwy od roboty. Ja uważam, że pierwszą nazywa się od wyboru, a potem sprawia, że cała reszta odmawia startu, dopóki ten wybór nie istnieje. Siedem skilli i jeden brakujący plik to bardzo szybki stażysta. Dołóż plik, a te same siedem skilli staje się systemem.
+<PullQuote
+  quote="Te skille to egzekucja planu marketingowego. Kto ułożył ten plan?"
+  source="Komentarz pod tamtym postem"
+  role="LinkedIn, sierpień 2026"
+/>
 
-Jeśli budujesz to w prawdziwej firmie i chcesz, żeby warstwa decyzji powstała porządnie, zanim wjedzie egzekucja, [to jest robota, którą robię](/pl/contact/).
+Uczciwie: wypuścił prawdziwą rzecz i pokazał pliki, co jest więcej, niż zrobiła większość ludzi piszących o AI w marketingu w 2026.
+
+Mój spór jest wąski. On nazwał warstwy od roboty. Ja uważam, że pierwszą nazywa się od wyboru, a potem sprawia, że cała reszta odmawia startu, dopóki ten wybór nie istnieje. Siedem skilli i nic zapisanego to bardzo szybki stażysta. Napisz te dwa pliki, a te same siedem skilli staje się systemem.
+
+Jeśli chcesz, żeby to powstało porządnie dla prawdziwej firmy, zanim wjedzie automatyzacja, [to jest robota, którą robię](/pl/contact/).
