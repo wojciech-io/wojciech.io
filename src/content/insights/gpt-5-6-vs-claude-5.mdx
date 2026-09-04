@@ -3,7 +3,7 @@ title: "GPT-5.6 vs Claude 5: the first tests say the biggest shift isn't a new b
 seoTitle: "GPT-5.6 Sol, Terra, Luna vs Claude Fable 5 and Sonnet 5"
 description: "OpenAI shipped GPT-5.6 Sol, Terra and Luna. Anthropic answered with Claude Fable 5 and Sonnet 5. After the first independent benchmarks there is no clean winner, but frontier intelligence just got cheaper and the fight moved from answering questions to finishing work."
 publishedAt: "2026-07-12"
-updatedAt: "2026-07-12"
+updatedAt: "2026-09-04"
 tags:
   - AI
   - OpenAI
@@ -15,21 +15,34 @@ coverImage: "/images/insights/gpt-5-6-vs-claude-5-cover-v1.webp"
 featured: true
 draft: false
 locale: "en"
+sources:
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "The previously scheduled increase to $3/$15 per million input/output tokens on September 1, 2026 will not occur."
+    claim: "Sonnet 5 stays at $2/$10; the announced rise was cancelled"
+    checkedAt: "2026-09-04"
+  - url: "https://developers.openai.com/api/docs/pricing"
+    claim: "Current GPT-5.6 list prices: Sol $4/$20, Terra $2/$12, Luna $0.20/$1.20"
+    checkedAt: "2026-09-04"
 tldr:
   - "Claude Fable 5 still leads the Artificial Analysis Intelligence Index at 60. GPT-5.6 Sol scores 59 and finishes the same benchmark at about one-third of Fable's cost. The gap is now money, not capability."
-  - "GPT-5.6 is three models, not one: Sol (flagship), Terra (balanced, index 55 at $2.50/$15) and Luna (volume, index 51 at $1/$6). The smart default is Terra, with Sol as an escalation, not Sol for everything."
-  - "Cheaper per token is not cheaper per result. Sonnet 5 burned around 300M tokens on one benchmark, five times the median, and can cost more per finished task than Opus 4.8 once its promo pricing ends."
+  - "GPT-5.6 is three models, not one: Sol (flagship), Terra (balanced, index 55 at $2/$12) and Luna (volume, index 51 at $0.20/$1.20). The smart default is Terra, with Sol as an escalation, not Sol for everything."
+  - "Cheaper per token is not cheaper per result. Sonnet 5 burned around 300M tokens on one benchmark, five times the median, so it can still cost more per finished task than a stronger model even at $2/$10."
   - "Stop asking which model is best. Route the work: Luna to Terra to Sol, or Sonnet to execute and Fable to plan. The winner is the architecture, not the row with the highest number."
 faq:
   - q: "Which AI model is the best right now, GPT-5.6 or Claude 5?"
     a: "On the Artificial Analysis Intelligence Index, Claude Fable 5 leads at 60 and GPT-5.6 Sol is one point behind at 59, but Sol completes the benchmark at roughly one-third of Fable's cost. GPT-5.6 Terra may be the most commercially useful of all five. There is no single winner: the right model depends on the task, the cost per finished result and how much supervision you can spare."
   - q: "Is GPT-5.6 cheaper than Claude Fable 5?"
-    a: "Yes. GPT-5.6 Sol lists at $5 per million input tokens and $30 output against Fable 5's $10 and $50, and independent testing put Sol at about one-third of Fable's cost per completed task. Terra ($2.50 / $15) and Luna ($1 / $6) undercut every Claude tier further."
+    a: "Yes. GPT-5.6 Sol lists at $4 per million input tokens and $20 output against Fable 5's $10 and $50, and independent testing put Sol at about one-third of Fable's cost per completed task. Terra ($2 / $12) and Luna ($0.20 / $1.20) undercut every Claude tier further."
   - q: "Should I use Claude Sonnet 5 in Claude Code?"
     a: "For clearly specified implementation, yes: it is the default in Claude Code and strong on debugging, tool use and messy existing codebases. For ambiguous architecture, use a stronger model to plan first. Sonnet 5 can take more steps, consume more context and cost more per finished task than a stronger model, so planning the hardest work with it is often a false economy."
   - q: "What is the best GPT-5.6 model for everyday professional work?"
     a: "Terra for most of it: analysis, research, document work and moderately hard coding at half the cost of the flagship. Keep Sol as an escalation path for the hardest problems, and use Luna for high-volume, low-risk workloads like classification, extraction and routing."
 ---
+
+<Callout type="note" title="Updated 4 September 2026: these prices have fallen since publication">
+  Every GPT-5.6 tier has been cut since this went up in July, and Anthropic cancelled the Sonnet 5 increase. Sol is now $4 / $20 per million tokens, Terra $2 / $12, Luna $0.20 / $1.20, and Sonnet 5 stays at $2 / $10 permanently instead of rising to $3 / $15. Prices below are current as of today and pinned to their sources. The argument has not changed. It got cheaper. OpenAI has since shipped a new flagship, which I cover in [GPT-6 Astra came fourth on the intelligence index](/insights/gpt-6-astra-vs-claude/).
+</Callout>
+
 
 OpenAI and Anthropic shipped their newest model generations within weeks of each other. On the surface it looks like another round of benchmark war. It is not. The interesting move is structural, and it changes how I would build on either stack.
 
@@ -59,10 +72,10 @@ All five carry roughly a million tokens of context and up to 128,000 output toke
   ]}
   rows={[
     { model: "Claude Fable 5", index: "60", price: "$10 / $50", role: "Hardest problems, analysis, planning, high-stakes coding" },
-    { model: "GPT-5.6 Sol", index: "59", price: "$5 / $30", role: "Frontier capability at better economics, strong Codex integration" },
-    { model: "GPT-5.6 Terra", index: "55", price: "$2.50 / $15", role: "Default model for professional daily work" },
+    { model: "GPT-5.6 Sol", index: "59", price: "$4 / $20", role: "Frontier capability at better economics, strong Codex integration" },
+    { model: "GPT-5.6 Terra", index: "55", price: "$2 / $12", role: "Default model for professional daily work" },
     { model: "Claude Sonnet 5", index: "53", price: "$2 / $10 intro", role: "Clearly specified agentic execution and Claude Code" },
-    { model: "GPT-5.6 Luna", index: "51", price: "$1 / $6", role: "Fast, high-volume, low-cost workloads" }
+    { model: "GPT-5.6 Luna", index: "51", price: "$0.20 / $1.20", role: "Fast, high-volume, low-cost workloads" }
   ]}
   highlight={[0]}
   caption="Five models at a glance. Artificial Analysis Intelligence Index, published API list prices, and where each one earns its keep. The rest of this article is why the highlighted row is not the whole story."
@@ -94,7 +107,7 @@ Fable can still be the right call for the single hardest problem, where model co
 
 ### Sol: close to Fable, materially cheaper
 
-GPT-5.6 Sol lists at $5 per million input tokens and $30 output. Fable 5 lists at $10 and $50.
+GPT-5.6 Sol lists at $4 per million input tokens and $20 output. Fable 5 lists at $10 and $50.
 
 Token price alone never tells the truth, because models spend different amounts of reasoning, take different numbers of steps and need different amounts of human correction. But the independent cost-per-task number says Sol's advantage is more than a pricing-table trick.
 
@@ -143,9 +156,9 @@ For a lot of workloads the answer is yes.
 
 ### Luna shows how fast capability is getting cheap
 
-GPT-5.6 Luna lists at $1 per million input tokens and $6 output. It scored 51.2 on the index, only just below Sonnet 5 at maximum reasoning.
+GPT-5.6 Luna lists at $0.20 per million input tokens and $1.20 output. It scored 51.2 on the index, only just below Sonnet 5 at maximum reasoning.
 
-That does not mean Luna beats Sonnet on every task. Sonnet can be much better at specific agentic, coding or long-running work. What Luna shows is the pricing pressure GPT-5.6 creates: capability that recently needed an expensive frontier model is now sitting in a $1 input tier.
+That does not mean Luna beats Sonnet on every task. Sonnet can be much better at specific agentic, coding or long-running work. What Luna shows is the pricing pressure GPT-5.6 creates: capability that recently needed an expensive frontier model now sits in a twenty-cent input tier.
 
 <ToolCard
   cols={3}
@@ -210,12 +223,12 @@ Fable's real disadvantages are cost and access. After its temporary suspension t
 
 Sonnet 5 was meant to answer a simple question: which Claude model should people use every day?
 
-The product story is attractive. Sonnet 5 is available across Claude plans, the default for Free and Pro, runs in Claude Code, and is priced at an introductory $2 per million input tokens and $10 output until August 31, 2026, after which it rises to $3 and $15. Anthropic pitches it as materially more agentic than Sonnet 4.6: better at finishing multi-step tasks, checking its own output and working on messy existing codebases. Early-access partners reported strong debugging, tool use, testing and brownfield results.
+The product story is attractive. Sonnet 5 is available across Claude plans, the default for Free and Pro, runs in Claude Code, and costs $2 per million input tokens and $10 output. That started as introductory pricing due to expire on 31 August 2026, but Anthropic has confirmed the scheduled rise to $3 and $15 will not happen and $2/$10 is now the standard price. Anthropic pitches it as materially more agentic than Sonnet 4.6: better at finishing multi-step tasks, checking its own output and working on messy existing codebases. Early-access partners reported strong debugging, tool use, testing and brownfield results.
 
 The independent picture is more mixed.
 
 <Callout type="warning" title="Cheaper per token, not always cheaper per result">
-  At maximum effort Sonnet 5 scored 53 on the Artificial Analysis index, but generated around 300 million tokens during the evaluation, five times the comparison median. Artificial Analysis concluded that once its promo pricing ends, Sonnet 5 can cost more per completed task than Opus 4.8. Claude Code users report the same pattern: cheaper per token, but on big jobs it takes more steps, eats more context and can end up costing more than a stronger model. Add complaints about excessive pushback, an overconfident tone and uneven planning.
+  At maximum effort Sonnet 5 scored 53 on the Artificial Analysis index, but generated around 300 million tokens during the evaluation, five times the comparison median. Artificial Analysis expected that to make Sonnet 5 dearer per completed task than Opus 4.8 once the introductory pricing ended. That increase was cancelled, so the prediction never landed. The token burn is real regardless. Claude Code users report the same pattern: cheaper per token, but on big jobs it takes more steps, eats more context and can end up costing more than a stronger model. Add complaints about excessive pushback, an overconfident tone and uneven planning.
 </Callout>
 
 That does not make Sonnet 5 weak. It suggests planning highly ambiguous work is not its natural role. A more rational split:
@@ -230,7 +243,7 @@ That does not make Sonnet 5 weak. It suggests planning highly ambiguous work is 
     { job: "Architecture, planning, high-uncertainty work", model: "Fable or Sol", why: "The expensive part is being wrong. Pay for the model least likely to send you down a bad path." },
     { job: "Implementing a clearly specified task", model: "Sonnet 5", why: "Scope is set, execution is the work. This is where its agentic strength shows and the price is right." },
     { job: "Cost-effective daily analysis and execution", model: "Terra", why: "Frontier-adjacent quality at half the flagship cost, for the bulk of professional output." },
-    { job: "Scale and low-risk workflows", model: "Luna", why: "Volume that never justified a frontier model before now runs at a dollar per million in." }
+    { job: "Scale and low-risk workflows", model: "Luna", why: "Volume that never justified a frontier model before now runs at twenty cents per million in." }
   ]}
   caption="Match the model to the risk of the task, not to a single leaderboard row."
 />
@@ -327,7 +340,7 @@ On the Artificial Analysis Intelligence Index, Claude Fable 5 leads at 60 and GP
 
 ### Is GPT-5.6 cheaper than Claude Fable 5?
 
-Yes. GPT-5.6 Sol lists at $5 per million input tokens and $30 output against Fable 5's $10 and $50, and independent testing put Sol at about one-third of Fable's cost per completed task. Terra ($2.50 / $15) and Luna ($1 / $6) undercut every Claude tier further.
+Yes. GPT-5.6 Sol lists at $4 per million input tokens and $20 output against Fable 5's $10 and $50, and independent testing put Sol at about one-third of Fable's cost per completed task. Terra ($2 / $12) and Luna ($0.20 / $1.20) undercut every Claude tier further.
 
 ### Should I use Claude Sonnet 5 in Claude Code?
 
