@@ -23,7 +23,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import yaml from 'js-yaml';
+import { load as yamlLoad } from 'js-yaml';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = join(ROOT, 'src/content/insights');
@@ -124,7 +124,7 @@ function frontmatter(raw) {
   const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!m) return null;
   try {
-    return yaml.load(m[1]);
+    return yamlLoad(m[1]);
   } catch {
     return null;
   }

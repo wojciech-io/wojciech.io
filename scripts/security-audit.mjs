@@ -28,6 +28,12 @@ const DEV_ONLY = new Set([
   // its advisories do not affect production. miniflare hard-pins the version,
   // so an npm `override` cannot lift it without forking the dev tool.
   'undici',
+  // fast-uri reaches the tree only through commitlint, a devDependency that
+  // lints commit messages in CI (@commitlint/cli -> load -> config-validator
+  // -> ajv -> fast-uri). It is never imported by the site and never bundled
+  // into the Workers/Pages output. ajv pins the range, so an npm `override`
+  // cannot lift it without breaking commitlint's own schema validation.
+  'fast-uri',
 ]);
 
 let raw = '';
