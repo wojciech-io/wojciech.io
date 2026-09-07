@@ -1,0 +1,146 @@
+---
+title: "Sonnet 5 is now the cheaper model. That is not the same as the cheaper answer."
+seoTitle: "Claude Sonnet 5 vs GPT-5.6 Terra: price, scores, which to use"
+description: "Terra and Sonnet 5 both cost $2 per million input tokens, and Sonnet 5 is cheaper on output. Terra scores two points higher. Here is how I decide between them, and why the token price is the wrong place to look."
+publishedAt: "2026-09-05"
+updatedAt: "2026-09-05"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "launch"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://developers.openai.com/api/docs/pricing"
+    claim: "GPT-5.6 Terra lists at $2 per million input tokens and $12 output"
+    checkedAt: "2026-09-05"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "The previously scheduled increase to $3/$15 per million input/output tokens on September 1, 2026 will not occur."
+    claim: "Sonnet 5 stays at $2/$10, so the comparison is against a permanent price"
+    checkedAt: "2026-09-05"
+tldr:
+  - "They cost the same on input, $2 per million. On output Sonnet 5 is $10 and Terra is $12, so Sonnet 5 is now the cheaper model outright. That is the opposite of how this pairing was priced at launch."
+  - "Terra scored 55 on the Artificial Analysis index against Sonnet 5's 53, both from the GPT-5.6 launch round. The index has since moved to v4.1.1 and the whole scale shifted, so read the two-point gap, never the absolute numbers."
+  - "Sonnet 5 burned around 300 million tokens on one benchmark, five times the comparison median. A 17% cheaper output rate does not survive that kind of step count."
+  - "The honest tiebreaker is not the model. It is which harness you already run: Sonnet 5 is the default in Claude Code, Terra sits in ChatGPT and Codex. Switching harness costs more than either price gap."
+faq:
+  - q: "Is GPT-5.6 Terra better than Claude Sonnet 5?"
+    a: "On the Artificial Analysis index reported at the GPT-5.6 launch, Terra scored 55 and Sonnet 5 scored 53, so Terra is modestly ahead on general capability. On price the order is reversed: both list at $2 per million input tokens, but Sonnet 5 outputs at $10 against Terra's $12. Two index points for a 20% higher output rate is a genuinely close call, and it is usually settled by which tool you already work in rather than by either number."
+  - q: "Which is cheaper, Claude Sonnet 5 or GPT-5.6 Terra?"
+    a: "Sonnet 5, on list price. Input is identical at $2 per million tokens; output is $10 for Sonnet 5 and $12 for Terra. But list price only decides the bill if both models take a similar number of steps, and independent testing found Sonnet 5 generating around 300 million tokens on one benchmark, five times the median. On long agentic runs the cheaper rate can produce the larger invoice."
+  - q: "Should I switch from Sonnet 5 to Terra?"
+    a: "Probably not on these numbers alone. The gap between them is smaller than the cost of changing the harness you work in, retraining your prompts and rebuilding whatever tooling sits around the model. Switch when you are already moving ecosystem for another reason, or when you have measured your own cost per finished task and Terra wins it. Do not switch on a two-point index difference."
+  - q: "What is GPT-5.6 Terra best at?"
+    a: "It is the balanced tier: analysis, research, document work and moderately hard coding, at a fraction of what the Sol flagship costs. OpenAI positions it as the sensible default with Sol kept as an escalation path rather than an everyday model. If most of your work is professional output that does not need frontier reasoning, Terra is the tier that was designed for it."
+---
+
+At the GPT-5.6 launch the story was simple. Terra was the cheap capable one and OpenAI was undercutting Anthropic on price.
+
+Check the two pricing pages today and that has quietly inverted.
+
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "input", label: "Input / 1M", align: "center", mono: true },
+    { key: "output", label: "Output / 1M", align: "center", mono: true },
+    { key: "index", label: "Index at launch", align: "center", mono: true }
+  ]}
+  rows={[
+    { model: "Claude Sonnet 5", input: "$2.00", output: "$10.00", index: "53" },
+    { model: "GPT-5.6 Terra", input: "$2.00", output: "$12.00", index: "55" }
+  ]}
+  highlight={[0]}
+  caption="List prices read from Anthropic's and OpenAI's own pricing pages today. Index figures are the Artificial Analysis numbers reported at the GPT-5.6 launch round, and the caveat on them matters more than the numbers do."
+/>
+
+Identical on input. Sonnet 5 is 17% cheaper on output. Terra is two index points ahead.
+
+So the pairing has become close, in the way that makes people waste an afternoon on a spreadsheet and still pick wrong.
+
+## Why the price comparison flipped
+
+Neither side announced it as a response to the other.
+
+OpenAI cut the whole GPT-5.6 line. Terra went from $2.50 / $15 to **$2 / $12**. Sol and Luna came down too, Luna hardest, from $1 / $6 to $0.20 / $1.20.
+
+Anthropic did something quieter that mattered more. It cancelled a price rise. Sonnet 5 launched at $2 / $10 described as introductory pricing that would end on 31 August 2026 and step up to $3 / $15. That step never happened, and the docs now say plainly that the increase **will not occur**. Sonnet 5 sits at $2 / $10 permanently.
+
+Had that rise gone through, Terra at $2 / $12 would today be the cheaper model on both axes and this article would not exist. One cancelled price change decided the entire comparison.
+
+<Callout type="note" title="Do not mix index versions">
+  Terra's 55 and Sonnet 5's 53 both come from the Artificial Analysis round published with the GPT-5.6 launch. The index has since moved to v4.1.1, and the whole scale shifted underneath: Claude Fable 5 read 60 in the July round and reads 62.1 in the current one. Nothing about the model changed. Comparing a number from one version against a number from another produces a confident answer that means nothing. Read the two-point gap between Terra and Sonnet 5, not the absolute values, and re-read both when the next round is published.
+</Callout>
+
+## The number that actually decides the bill
+
+A 17% output discount sounds decisive until you look at how many tokens each model spends getting to the end.
+
+Artificial Analysis found Sonnet 5, at maximum effort, generating around **300 million tokens** during its evaluation. That was roughly five times the comparison median. Claude Code users have reported the same shape independently: cheap per token, but on large jobs it takes more steps, consumes more context, and can finish more expensive than a stronger model would have been.
+
+Put those two facts next to each other and the arithmetic stops being about rates. A model 17% cheaper per token that takes twice as many steps costs you more. The one that is 20% dearer and finishes in a single pass is the bargain.
+
+<KeyPoint>
+  Rate per token is a property of the price list. Cost per finished task is a property of your workload. Only one of them appears on your invoice.
+</KeyPoint>
+
+This is the same argument I made about [Luna against Sonnet 5](/insights/gpt-5-6-vs-claude-5/), where the price gap is tenfold and still does not decide it, and about [GPT-6 Astra](/insights/gpt-6-astra-vs-claude/), where OpenAI's entire cost claim rests on step count rather than rate.
+
+It cuts both ways here. I am not telling you Terra wins on cost per task. I am telling you that neither of us knows until it runs on your work, and that the two-dollar row in the price table is not evidence.
+
+## The tiebreaker nobody puts in the comparison
+
+Here is the part that decides it in practice, and it has nothing to do with either model.
+
+Sonnet 5 is the default inside Claude Code. Terra lives in ChatGPT and Codex. If you already run one of those harnesses, the model is not really the unit you are choosing. You are choosing the tool, the prompts you have tuned, the permissions you have configured, and whatever scaffolding you built around it.
+
+Moving that costs more than either price gap recovers, and not in licence fees. The cost is the fortnight where everything is slightly worse while you rebuild the parts you forgot you had.
+
+<DataTable
+  columns={[
+    { key: "sit", label: "Where you are" },
+    { key: "pick", label: "What I would do" },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { sit: "Already in Claude Code", pick: "Stay on Sonnet 5", why: "It is cheaper on output and already wired in. Two index points do not pay for a migration." },
+    { sit: "Already in ChatGPT or Codex", pick: "Stay on Terra", why: "Same logic in reverse. It is the tier built to be the everyday default." },
+    { sit: "Choosing from scratch", pick: "Test both on one real task", why: "Measure cost per finished result, not per token. The gap is small enough that your workload decides it." },
+    { sit: "Work is long and agentic", pick: "Measure step count first", why: "This is where Sonnet 5's token burn shows up, and where the cheaper rate can lose." },
+    { sit: "Work is short and well specified", pick: "Sonnet 5", why: "Scope is set, execution is the job, and the output discount is real when the step count is low." }
+  ]}
+  caption="The honest version of this comparison is mostly about where you already are. That is not a cop-out. Migration cost is a real number and it is usually bigger than the gap."
+/>
+
+## What would change my mind
+
+Three things, and I will update this piece when any of them is published.
+
+The next Artificial Analysis round on v4.1.1, with both models measured on the same scale. Two points on the old scale may be one point or four on the new one.
+
+A published cost-per-completed-task comparison for these two specifically. The 300 million token figure is the only step-count evidence in this article and it comes from one evaluation of one model.
+
+Any further move on price. This entire comparison turned on a rise that was cancelled rather than on anything either model does, which tells you how thin the margin is.
+
+## Questions people asked
+
+### Is GPT-5.6 Terra better than Claude Sonnet 5?
+
+Modestly, on capability: 55 against 53 on the index reported at the GPT-5.6 launch. On price the order reverses, since both cost $2 per million input tokens but Sonnet 5 outputs at $10 against Terra's $12. Two points for a 20% higher output rate is close enough that the harness you already use usually decides it.
+
+### Which is cheaper?
+
+Sonnet 5, on list price. That only settles the bill if both take a similar number of steps, and Sonnet 5 has the worse record there: around 300 million tokens on one benchmark, five times the median. On long runs the cheaper rate can produce the larger invoice.
+
+### Should I switch?
+
+Not on these numbers alone. The gap is smaller than the cost of changing harness, re-tuning prompts and rebuilding tooling. Switch when you are moving ecosystem anyway, or when you have measured your own cost per finished task and Terra wins it.
+
+### What is Terra actually for?
+
+It is the balanced tier, covering analysis, research, document work and moderately hard coding, with Sol kept as an escalation rather than a default. If your work is professional output that rarely needs frontier reasoning, that is the tier it was designed for.
+
+If you want this applied to your own stack rather than to a price table, [the contact page](/contact/) is the fastest route to me.
