@@ -2,9 +2,9 @@ import type { CollectionEntry } from 'astro:content';
 import type { LocaleKey } from '../data/locales';
 
 export type InsightPost = CollectionEntry<'insights'>;
-export type InsightLocale = 'en' | 'pl' | 'de';
+export type InsightLocale = 'en' | 'pl' | 'de' | 'es';
 
-export const localizedInsightLocales = ['pl', 'de'] as const satisfies readonly LocaleKey[];
+export const localizedInsightLocales = ['pl', 'de', 'es'] as const satisfies readonly LocaleKey[];
 
 export const insightLocaleLabels: Record<InsightLocale, {
   allInsights: string;
@@ -81,6 +81,25 @@ export const insightLocaleLabels: Record<InsightLocale, {
     next: 'Weiter',
     authorLabel: 'Über den Autor',
     authorBio: 'GTM-Architekt und Growth Operator, der KI-native Umsatzsysteme für B2B-SaaS- und Technologieunternehmen baut. Ich verbinde Positionierung, SEO, Content, bezahlte Akquise, CRM, Automatisierung, Analytics und KI-Workflows zu einer praktikablen Wachstumsinfrastruktur.',
+  },
+  es: {
+    allInsights: 'Todos los artículos',
+    article: 'Artículo',
+    articles: 'artículos',
+    bylineRole: 'GTM Architect & Growth Operator',
+    featured: 'Destacado',
+    newsletter: 'Newsletter',
+    newsletterHeading: 'Recibe el próximo antes que nadie.',
+    newsletterBody: 'Cuando publique un artículo nuevo sobre sistemas de IA, arquitectura GTM o modelos operativos de crecimiento, serás el primero en saberlo.',
+    readArticle: 'Leer artículo',
+    readTimeSuffix: 'min de lectura',
+    tldrTitle: 'Resumen · Lo esencial',
+    subscribe: 'Suscribirse',
+    moreFromInsights: 'Más artículos',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    authorLabel: 'Sobre el autor',
+    authorBio: 'Arquitecto de GTM y operador de crecimiento que construye sistemas de ingresos nativos de IA para empresas B2B SaaS y tecnológicas. Conecto posicionamiento, SEO, contenido, adquisición de pago, CRM, automatización, analítica y flujos de trabajo con IA en una infraestructura de crecimiento que funciona.',
   },
 };
 
