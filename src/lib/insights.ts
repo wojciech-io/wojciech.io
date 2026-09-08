@@ -2,9 +2,9 @@ import type { CollectionEntry } from 'astro:content';
 import type { LocaleKey } from '../data/locales';
 
 export type InsightPost = CollectionEntry<'insights'>;
-export type InsightLocale = 'en' | 'pl';
+export type InsightLocale = 'en' | 'pl' | 'de';
 
-export const localizedInsightLocales = ['pl'] as const satisfies readonly LocaleKey[];
+export const localizedInsightLocales = ['pl', 'de'] as const satisfies readonly LocaleKey[];
 
 export const insightLocaleLabels: Record<InsightLocale, {
   allInsights: string;
@@ -63,6 +63,25 @@ export const insightLocaleLabels: Record<InsightLocale, {
     authorLabel: 'O autorze',
     authorBio: 'Architekt GTM i operator wzrostu budujący natywne dla AI systemy przychodów dla B2B SaaS i firm technologicznych. Łączę pozycjonowanie, SEO, treści, płatne pozyskiwanie, CRM, automatyzację, analitykę i przepływy pracy AI w praktyczną infrastrukturę wzrostu.'
   },
+  de: {
+    allInsights: 'Alle Beiträge',
+    article: 'Beitrag',
+    articles: 'Beiträge',
+    bylineRole: 'GTM Architect & Growth Operator',
+    featured: 'Empfohlen',
+    newsletter: 'Newsletter',
+    newsletterHeading: 'Den nächsten zuerst lesen.',
+    newsletterBody: 'Wenn ich einen neuen Beitrag über KI-Systeme, GTM-Architektur oder operative Wachstumsmodelle veröffentliche, erfahren Sie es als Erstes.',
+    readArticle: 'Beitrag lesen',
+    readTimeSuffix: 'Min. Lesezeit',
+    tldrTitle: 'Kurzfassung · Die wichtigsten Punkte',
+    subscribe: 'Abonnieren',
+    moreFromInsights: 'Mehr aus den Beiträgen',
+    previous: 'Zurück',
+    next: 'Weiter',
+    authorLabel: 'Über den Autor',
+    authorBio: 'GTM-Architekt und Growth Operator, der KI-native Umsatzsysteme für B2B-SaaS- und Technologieunternehmen baut. Ich verbinde Positionierung, SEO, Content, bezahlte Akquise, CRM, Automatisierung, Analytics und KI-Workflows zu einer praktikablen Wachstumsinfrastruktur.',
+  },
 };
 
 export function insightSlug(post: InsightPost) {
@@ -82,11 +101,31 @@ export function sortInsights(a: InsightPost, b: InsightPost) {
     || b.data.publishedAt.getTime() - a.data.publishedAt.getTime();
 }
 
-export function localizedInsightAlternates(slug: string) {
+/**
+ * Which localized versions of `baseSlug` actually exist. Hreflang must never
+ * advertise a translation that is not published: a locale added to
+ * `localizedInsightLocales` before its articles land would otherwise point
+ * search engines straight at a 404.
+ */
+export function insightAlternateLocales(posts: InsightPost[], baseSlug: string): string[] {
+  return localizedInsightLocales.filter((locale) =>
+    posts.some(
+      (post) =>
+        post.data.locale === locale &&
+        !post.data.draft &&
+        (post.data.translationOf ?? insightSlug(post)) === baseSlug
+    )
+  );
+}
+
+export function localizedInsightAlternates(slug: string, translatedLocales: readonly string[] = []) {
   return [
     { lang: 'x-default', href: `https://wojciech.io/insights/${slug}/` },
     { lang: 'en', href: `https://wojciech.io/insights/${slug}/` },
-    { lang: 'pl', href: `https://wojciech.io/pl/insights/${slug}/` },
+    ...translatedLocales.map((locale) => ({
+      lang: locale,
+      href: `https://wojciech.io/${locale}/insights/${slug}/`,
+    })),
   ];
 }
 
@@ -94,7 +133,10 @@ export function localizedInsightIndexAlternates() {
   return [
     { lang: 'x-default', href: 'https://wojciech.io/insights/' },
     { lang: 'en', href: 'https://wojciech.io/insights/' },
-    { lang: 'pl', href: 'https://wojciech.io/pl/insights/' },
+    ...localizedInsightLocales.map((locale) => ({
+      lang: locale,
+      href: `https://wojciech.io/${locale}/insights/`,
+    })),
   ];
 }
 
