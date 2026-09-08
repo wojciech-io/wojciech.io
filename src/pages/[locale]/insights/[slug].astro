@@ -64,6 +64,7 @@ import {
   insightSlug,
   isLocalePost,
   localizedInsightAlternates,
+  insightAlternateLocales,
   localizedInsightLocales,
   sortInsights,
 } from '../../../lib/insights';
@@ -121,6 +122,8 @@ const localeCopy = localizedHome[locale];
 const labels = insightLocaleLabels[locale];
 const { Content } = await render(post);
 const slug = insightSlug(post);
+const baseSlug = post.data.translationOf ?? slug;
+const allInsightPosts = await getCollection('insights');
 const canonicalPath = `/${locale}/insights/${slug}/`;
 const canonicalURL = new URL(canonicalPath, Astro.site).href;
 const publishedAt = post.data.publishedAt.toISOString();
@@ -189,7 +192,7 @@ const schema = [
   type="article"
   publishedAt={publishedAt}
   updatedAt={updatedAt}
-  alternates={localizedInsightAlternates(post.data.translationOf ?? slug)}
+  alternates={localizedInsightAlternates(baseSlug, insightAlternateLocales(allInsightPosts, baseSlug))}
   schema={schema}
 >
   <div class="fixed left-0 top-0 z-40 h-1 w-full bg-[color-mix(in_srgb,var(--color-border)_55%,transparent)]" aria-hidden="true" />

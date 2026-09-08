@@ -82,7 +82,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'AI ist kein Add-on. Sie ist eine neue Betriebsebene.',
       lead: 'Ich baue AI-Workflows so auf, dass sie im System verankert sind: Daten, Kontext, Regeln, Qualitätssicherung und eine klare Übergabe an Menschen.',
       primaryCta: 'Insights lesen',
-      primaryHref: '/insights/',
+      primaryHref: '/de/insights/',
       secondaryCta: 'System besprechen',
       secondaryHref: '/de/contact/',
       stats: [
@@ -124,7 +124,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Operator Notes zu AI, GTM und Revenue-Architektur.',
       lead: 'Die Artikel zeigen die Architektur, Entscheidungen und Lektionen von Systemen, die tatsächlich gebaut und betrieben werden.',
       primaryCta: 'Alle Artikel ansehen',
-      primaryHref: '/insights/',
+      primaryHref: '/de/insights/',
       secondaryCta: 'Termin vereinbaren',
       secondaryHref: '/de/contact/',
       stats: [
