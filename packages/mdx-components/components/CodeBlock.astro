@@ -1,19 +1,29 @@
 ---
 /**
  * CodeBlock — styled code block with filename, language label, and copy button.
+ *
+ * Takes its content either as children or as a `code` string, the same way
+ * PullQuote takes `quote`. Seven usages across five articles were already
+ * passing `code`, and with only a slot to render into they shipped an empty
+ * black box where a CLAUDE.md template was supposed to be. A template literal
+ * is the practical way to write multi-line code in MDX without the markdown
+ * parser touching it, so the prop is the right shape to support.
+ *
  * Usage:
  *   <CodeBlock filename="wrangler.toml" lang="toml">
  *     name = "growthhub-cron"
- *     main = "src/index.ts"
  *   </CodeBlock>
+ *
+ *   <CodeBlock filename="CLAUDE.md" lang="markdown" code={`# Operator identity`} />
  */
 interface Props {
   filename?: string;
   lang?: string;
   caption?: string;
+  code?: string;
 }
 
-const { filename, lang, caption } = Astro.props;
+const { filename, lang, caption, code } = Astro.props;
 ---
 
 <figure class="code-block" data-code-block>
@@ -35,7 +45,7 @@ const { filename, lang, caption } = Astro.props;
     </div>
   )}
   <div class="code-block__body">
-    <pre><code><slot /></code></pre>
+    <pre><code>{code ?? <slot />}</code></pre>
   </div>
   {caption && <figcaption class="code-block__caption">{caption}</figcaption>}
 </figure>

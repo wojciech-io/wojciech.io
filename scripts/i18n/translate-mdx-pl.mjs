@@ -8,9 +8,10 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// The key is only needed to translate. Importing this module to test the
+// parsing must not exit the process, so the check moved down to the run block.
 const KEY = process.env.DEEPL_API_KEY;
-if (!KEY) { console.error('DEEPL_API_KEY missing'); process.exit(1); }
-const ENDPOINT = KEY.endsWith(':fx')
+const ENDPOINT = KEY?.endsWith(':fx')
   ? 'https://api-free.deepl.com/v2/translate'
   : 'https://api.deepl.com/v2/translate';
 
@@ -40,6 +41,20 @@ const JSX_TRANSLATABLE = new Set([
   'desc', 'description', 'name', 'content', 'value', 'caption',
   'before', 'after', 'metric', 'unit',
 ]);
+
+// Attributes whose value is an array of bare strings rather than keyed
+// objects. These need their own pass: there is no "key:" in front of an item,
+// so the keyed regex above never sees them.
+const JSX_TRANSLATABLE_ARRAYS = new Set([
+  'do', 'dont', 'items', 'labels', 'bullets', 'points', 'rows', 'tabs', 'slides',
+]);
+
+// DataTable rows are keyed by whatever the columns declare: { test: "...",
+// question: "..." }. Those keys are arbitrary by design, so neither the keyed
+// pass (which only knows a fixed attribute list) nor the bare-array pass
+// (which only takes strings after "[" or ",") ever sees the cells. Inside a
+// rows array every string value is a table cell, so all of them translate.
+const OPAQUE_VALUE = /^(?:[\d.,%+-]+|https?:\/\/\S+|[a-z][\w.-]*(?:\(\))?|[A-Z][A-Z0-9_]+)$/;
 
 // ── glossary placeholder ──────────────────────────────────────────────────
 // DeepL `tag_handling=xml` preserves `<x />`. We wrap glossary terms in
@@ -190,17 +205,84 @@ function tokenizeBody(body) {
 // { sanitized: 'block with __SLOT_N__', slots: ['original value strings'] }
 function extractJsxAttrs(block) {
   const slots = [];
-  // Match attrName="value", attrName='value', or attrName: "value" (object props inside {})
+  const take = (value, quote) => {
+    const id = slots.length;
+    slots.push(value);
+    return `${quote}__SLOT_${id}__${quote}`;
+  };
+
+  // Pass 1: keyed strings. attrName="value", attrName='value', and the
+  // object form title: "value" inside a {[ ... ]} array.
   const re = /(\w+)(=|:\s*)("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')/g;
-  const sanitized = block.replace(re, (full, attr, sep, q, dq, sq) => {
+  let sanitized = block.replace(re, (full, attr, sep, q, dq, sq) => {
     if (!JSX_TRANSLATABLE.has(attr)) return full;
     const value = dq !== undefined ? dq : sq;
     if (!value.trim()) return full;
-    const id = slots.length;
-    slots.push(value);
-    const quote = q[0];
-    return `${attr}${sep}${quote}__SLOT_${id}__${quote}`;
+    return `${attr}${sep}${take(value, q[0])}`;
   });
+
+  // Pass 2: bare string arrays. do={['Ship the one thing', '...']} carries no
+  // key in front of each string, so pass 1 cannot see it and the strings went
+  // out untranslated. Three Polish articles shipped English DoDont bullets,
+  // an English Callout body and three English Steps blocks this way, and each
+  // one is rendered text the reader sees.
+  for (const attr of JSX_TRANSLATABLE_ARRAYS) {
+    const opener = new RegExp(`\\b${attr}=\\{\\[`, 'g');
+    let match;
+    while ((match = opener.exec(sanitized)) !== null) {
+      // Walk to the matching close bracket rather than regexing for it: an
+      // item can itself contain brackets and quotes.
+      let depth = 0;
+      let quote = null;
+      let end = -1;
+      for (let i = match.index + match[0].length - 1; i < sanitized.length; i += 1) {
+        const ch = sanitized[i];
+        if (quote) {
+          if (ch === quote && sanitized[i - 1] !== '\\') quote = null;
+          continue;
+        }
+        if (ch === '"' || ch === "'" || ch === '`') { quote = ch; continue; }
+        if (ch === '[' || ch === '{') depth += 1;
+        else if (ch === ']' || ch === '}') {
+          depth -= 1;
+          if (depth === 0) { end = i; break; }
+        }
+      }
+      if (end === -1) break;
+
+      const before = sanitized.slice(0, match.index);
+      const region = sanitized.slice(match.index, end + 1);
+      const after = sanitized.slice(end + 1);
+
+      // Only strings that are list items: not preceded by "key:" (pass 1 has
+      // those) and not already a slot placeholder.
+      let rewritten = region.replace(
+        /(^|[[,]\s*)("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')/g,
+        (full, lead, q, dq, sq) => {
+          const value = dq !== undefined ? dq : sq;
+          if (!value.trim() || value.startsWith('__SLOT_')) return full;
+          return `${lead}${take(value, q[0])}`;
+        }
+      );
+
+      if (attr === 'rows') {
+        rewritten = rewritten.replace(
+          /(:\s*)("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')/g,
+          (full, lead, q, dq, sq) => {
+            const value = dq !== undefined ? dq : sq;
+            if (!value.trim() || value.startsWith('__SLOT_')) return full;
+            // A bare identifier, number or URL is data, not a cell to translate.
+            if (OPAQUE_VALUE.test(value)) return full;
+            return `${lead}${take(value, q[0])}`;
+          }
+        );
+      }
+
+      sanitized = before + rewritten + after;
+      opener.lastIndex = match.index + rewritten.length;
+    }
+  }
+
   return { sanitized, slots };
 }
 
@@ -350,9 +432,14 @@ async function translateFile(slug) {
   console.log(`[${slug}] wrote ${join('pl', `${slug}.mdx`)}`);
 }
 
+// ── Exports for tests ────────────────────────────────────────────────────
+export { extractJsxAttrs, JSX_TRANSLATABLE, JSX_TRANSLATABLE_ARRAYS };
+
 // ── Run ──────────────────────────────────────────────────────────────────
 // Pass slugs as args to retranslate only those (e.g. to repair specific files).
 // With no args, translates every EN article.
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+if (!KEY) { console.error('DEEPL_API_KEY missing'); process.exit(1); }
 const argSlugs = process.argv.slice(2).map((s) => s.replace(/\.mdx$/, ''));
 const slugs = argSlugs.length
   ? argSlugs
@@ -365,3 +452,4 @@ for (const slug of slugs) {
   await translateFile(slug);
 }
 console.log(`\nDeepL chars (approx): ${[...cache.keys()].reduce((n, s) => n + s.length, 0)}`);
+}
