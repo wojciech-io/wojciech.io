@@ -20,9 +20,9 @@ tldr:
   - "Codex ogarniał składnię Swift; ja ogarniałem decyzje produktowe, UX i pętle iteracji"
   - "Wydanie natywnej aplikacji ze wsparciem AI to teraz realny, samodzielny projekt na weekend"
 ---
-Kontakt wzrokowy podczas rozmów wideo to problem rozwiązany w teorii, ale w praktyce nie do zrealizowania. Twoje notatki są na drugim ekranie, w aplikacji Notion lub: co gorsza: w twojej głowie. W chwili, gdy spoglądasz w lewo, rozmówca to zauważa.
+Kontakt wzrokowy podczas rozmów wideo to problem rozwiązany w teorii, ale w praktyce nie do zrealizowania. Twoje notatki są na drugim ekranie, w Notion albo, co gorsza, w twojej głowie. W chwili, gdy spoglądasz w lewo, rozmówca to zauważa.
 
-Chciałem mieć aplikację, która wyświetla się dokładnie w miejscu, gdzie znajduje się aparat. W przypadku modelu „MacBook Pro” oznacza to obszar wycięcia u góry wyświetlacza. Tekst wyświetlany w tym miejscu jest wizualnie powiązany z aparatem, co po raz pierwszy pozwala czytanie przy zachowaniu naturalnego kontaktu wzrokowego.
+Chciałem mieć aplikację, która wyświetla się dokładnie w miejscu, gdzie znajduje się aparat. W MacBooku Pro to obszar wycięcia u góry wyświetlacza. Tekst w tym miejscu leży wizualnie przy aparacie, więc po raz pierwszy da się czytać i utrzymać naturalny kontakt wzrokowy.
 
 ## Dlaczego warto budować, a nie kupować
 
@@ -44,7 +44,7 @@ Przebieg pracy wyglądał następująco:
 <Steps
   items={[
     { title: "Opisz interfejs użytkownika", meta: "1", body: "Opis w przystępnym języku tego, czego chciałem: położenie okna, sposób działania, skróty klawiszowe." },
-    { title: "Codex generuje", meta: "2", body: "Swift /Struktura AppKit, kod szablonowy, elementy interfejsu okna, konfiguracja NSPanel." },
+    { title: "Codex generuje", meta: "2", body: "Struktura Swift i AppKit, kod szablonowy, elementy interfejsu okna, konfiguracja NSPanel." },
     { title: "Przegląd i test", meta: "3", body: "Uruchom symulator, sprawdź zachowanie w odniesieniu do modelu mentalnego, dostosuj opis." },
     { title: "Powtórz", meta: "4", body: "Powtarzaj tę czynność, aż zachowanie będzie zgodne z oczekiwaniami. Zazwyczaj wystarczy 3–5 rund na każdą funkcję." }
   ]}
@@ -57,12 +57,16 @@ Codex nie zajmuje się kwestią estetyki. Początkowy rozmiar okna był nieodpow
 
 NotchCue to standardowe narzędzie macOS z kilkoma celowymi ograniczeniami:
 
-<Benchmark
+<DataTable
+  columns={[
+    { key: "choice", label: "Wybór", mono: true },
+    { key: "effect", label: "Co daje" },
+  ]}
   rows={[
-    { label: 'NSPanel + .nonactivatingPanel', value: 'Nigdy nie odwraca uwagi od okna spotkania' },
-    { label: 'NSWindow.Level.floating', value: 'Zawsze na wierzchu, poniżej powiadomień systemowych' },
-    { label: 'Tryb ręczny krok po kroku', value: 'Klawisze strzałek służą do przechodzenia między punktami' },
-    { label: 'Pozycjonowanie z uwzględnieniem nacięć', value: 'Prawidłowe przesunięcie w osi Y zgodnie z modelem MacBook' },
+    { choice: "NSPanel + .nonactivatingPanel", effect: "Nigdy nie odwraca uwagi od okna spotkania" },
+    { choice: "NSWindow.Level.floating", effect: "Zawsze na wierzchu, poniżej powiadomień systemowych" },
+    { choice: "Tryb ręczny krok po kroku", effect: "Klawisze strzałek służą do przechodzenia między punktami" },
+    { choice: "Pozycjonowanie z uwzględnieniem nacięć", effect: "Prawidłowe przesunięcie w osi Y zgodnie z modelem MacBook" },
   ]}
 />
 
@@ -72,10 +76,10 @@ Najciekawszym wyzwaniem było wykrywanie wycięcia w wyświetlaczu. Codex pomóg
 
 Możliwości samodzielnego tworzenia aplikacji natywnych przy pomocy AI są większe, niż większość ludzi sądzi. Projekt NotchCue przeszedł od pomysłu do działającej wersji w ciągu jednego weekendu. Jeszcze rok temu wymagałoby to albo wcześniejszej znajomości Swift, albo zatrudnienia zewnętrznego wykonawcy.
 
-Schemat: opisanie zamierzonego celu, sprawdzenie wyniku, dostosowanie do własnych preferencji, wydanie — jest powtarzalny. Od tamtej pory wykorzystałem go przy tworzeniu trzech innych niewielkich narzędzi macOS.
+Ten schemat jest powtarzalny: opisujesz zamierzony cel, sprawdzasz wynik, dostosowujesz do własnych preferencji, wydajesz. Od tamtej pory wykorzystałem go przy tworzeniu trzech innych niewielkich narzędzi macOS.
 
 <Callout type="tip" title="Wzór ten można odtworzyć">
-Describe intent, review output, adjust taste, ship. Works for Swift, works for Astro, works for anything where the syntax is learnable but the product decisions are yours. Start small, own the decisions, let the model handle syntax.
+Opisz zamiar, sprawdź wynik, dopasuj do własnego gustu, wydaj. Działa przy Swifcie, działa przy Astro, działa wszędzie tam, gdzie składni da się nauczyć, a decyzje produktowe należą do ciebie. Zacznij od małego, trzymaj decyzje przy sobie, składnię zostaw modelowi.
 </Callout>
 
 ---

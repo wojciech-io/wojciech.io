@@ -74,6 +74,34 @@ jobs:
         if: github.event_name != 'pull_request'
         run: bash scripts/anti-slop.sh >> "$GITHUB_STEP_SUMMARY"
 
+  # Also advisory, also in its own always-green check. This one covers every
+  # locale rather than English alone: the tells it measures are structural, so
+  # they survive translation. Needs no Vale and no styles download, which is
+  # why it is a separate job from the lint above rather than another step in
+  # it. See docs/copy-quality.md.
+  slop-structure:
+    name: Structural copy check (advisory)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version: 24
+
+      - name: Report (PR diff)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/slop-structure.mjs --diff "$BASE" "$HEAD" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report (full scan)
+        if: github.event_name != 'pull_request'
+        run: node scripts/slop-structure.mjs >> "$GITHUB_STEP_SUMMARY"
+
   # Weekly only. This reads other people's live pages, so it has no business
   # running on every push, and a third party editing their own docs is not a
   # reason to fail anybody's build. It opens an issue instead.
