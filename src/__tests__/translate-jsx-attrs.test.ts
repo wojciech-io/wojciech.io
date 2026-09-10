@@ -73,6 +73,22 @@ describe('translator JSX extraction', () => {
     expect(slots).toContain('After the grid');
   });
 
+  // DataTable rows are keyed by whatever the columns declare, so the keys are
+  // arbitrary and neither pass could see the cells.
+  it('collects DataTable row cells despite their arbitrary keys', () => {
+    const { slots } = extract(
+      `<DataTable columns={[{ key: "test", label: "Test" }]} rows={[{ test: "Frequency", question: "How often does this happen?" }]} />`
+    );
+    expect(slots).toEqual(['Test', 'Frequency', 'How often does this happen?']);
+  });
+
+  it('leaves numbers, identifiers and URLs in row cells alone', () => {
+    const { slots } = extract(
+      `<DataTable columns={[{ key: "cost", label: "Cost" }]} rows={[{ cost: "1.25", model: "gpt-5.6", notes: "Cheapest for batch work" }]} />`
+    );
+    expect(slots).toEqual(['Cost', 'Cheapest for batch work']);
+  });
+
   it('covers the array-valued props the components actually take', () => {
     for (const prop of ['do', 'dont', 'items', 'labels', 'rows', 'tabs', 'slides']) {
       expect(JSX_TRANSLATABLE_ARRAYS.has(prop)).toBe(true);

@@ -49,6 +49,13 @@ const JSX_TRANSLATABLE_ARRAYS = new Set([
   'do', 'dont', 'items', 'labels', 'bullets', 'points', 'rows', 'tabs', 'slides',
 ]);
 
+// DataTable rows are keyed by whatever the columns declare: { test: "...",
+// question: "..." }. Those keys are arbitrary by design, so neither the keyed
+// pass (which only knows a fixed attribute list) nor the bare-array pass
+// (which only takes strings after "[" or ",") ever sees the cells. Inside a
+// rows array every string value is a table cell, so all of them translate.
+const OPAQUE_VALUE = /^(?:[\d.,%+-]+|https?:\/\/\S+|[a-z][\w.-]*(?:\(\))?|[A-Z][A-Z0-9_]+)$/;
+
 // ── glossary placeholder ──────────────────────────────────────────────────
 // DeepL `tag_handling=xml` preserves `<x />`. We wrap glossary terms in
 // `<x id="N"/>` before translation, restore after.
@@ -249,7 +256,7 @@ function extractJsxAttrs(block) {
 
       // Only strings that are list items: not preceded by "key:" (pass 1 has
       // those) and not already a slot placeholder.
-      const rewritten = region.replace(
+      let rewritten = region.replace(
         /(^|[[,]\s*)("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')/g,
         (full, lead, q, dq, sq) => {
           const value = dq !== undefined ? dq : sq;
@@ -257,6 +264,19 @@ function extractJsxAttrs(block) {
           return `${lead}${take(value, q[0])}`;
         }
       );
+
+      if (attr === 'rows') {
+        rewritten = rewritten.replace(
+          /(:\s*)("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')/g,
+          (full, lead, q, dq, sq) => {
+            const value = dq !== undefined ? dq : sq;
+            if (!value.trim() || value.startsWith('__SLOT_')) return full;
+            // A bare identifier, number or URL is data, not a cell to translate.
+            if (OPAQUE_VALUE.test(value)) return full;
+            return `${lead}${take(value, q[0])}`;
+          }
+        );
+      }
 
       sanitized = before + rewritten + after;
       opener.lastIndex = match.index + rewritten.length;
