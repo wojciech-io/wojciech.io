@@ -28,6 +28,12 @@ const DEV_ONLY = new Set([
   // its advisories do not affect production. miniflare hard-pins the version,
   // so an npm `override` cannot lift it without forking the dev tool.
   'undici',
+  // sharp reaches the tree in two copies. The one this project imports, and the
+  // one Astro uses, are both 0.35.4 and therefore already patched. The only
+  // vulnerable copy is 0.35.2, pulled in by miniflare -> wrangler (both waived
+  // above) inside the growthhub-cron workspace. Fixing it means a semver-major
+  // wrangler bump for a dev emulator that never ships to Workers/Pages.
+  'sharp',
   // fast-uri reaches the tree only through commitlint, a devDependency that
   // lints commit messages in CI (@commitlint/cli -> load -> config-validator
   // -> ajv -> fast-uri). It is never imported by the site and never bundled
