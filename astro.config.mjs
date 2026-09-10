@@ -74,7 +74,14 @@ const serializeSitemapItem = (/** @type {any} */ item) => {
 export default defineConfig({
   site: 'https://wojciech.io',
   build: {
-    inlineStylesheets: 'always',
+    // Measured, not assumed. Inlining put 131 KiB of CSS into all 163 documents
+    // and made /work/ a 274 KiB response. Lighthouse could not see the cost,
+    // because it measures a cold first load and scored both variants at 66.
+    // Navigation is where it showed up: tapping a link in the mobile menu under
+    // 1.6 Mbps throttling took 1061ms inlined against 732ms with a shared
+    // sheet, because ClientRouter refetches the whole document every time and
+    // an external stylesheet is cached after the first page.
+    inlineStylesheets: 'never',
   },
   // Prewarm every in-viewport link on idle. Without this, ClientRouter does a
   // cold fetch of the full (CSS-inlined) document on every tap — on mobile,
