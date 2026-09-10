@@ -153,7 +153,7 @@ const rest = projects.slice(1);
         <div class="artifact-stage relative min-h-[260px] overflow-hidden p-5 md:p-8">
           <div class="h-full min-h-[220px] overflow-hidden rounded-[14px] transition-transform duration-500 group-hover:scale-[1.012]">
             {featured.screenshot
-              ? <img src={featured.screenshot} alt="" width="1456" height="1088" loading="lazy" decoding="async" class="h-full w-full object-cover object-center" />
+              ? <img src={featured.screenshot} srcset={featured.screenshot?.startsWith("/images/work/") ? `${featured.screenshot.replace(/\.webp$/, "")}-640w.webp 640w, ${featured.screenshot.replace(/\.webp$/, "")}-960w.webp 960w, ${featured.screenshot} 1456w` : undefined} sizes="(max-width: 767px) 92vw, (max-width: 1279px) 46vw, 700px" alt="" width="1456" height="1088" loading="lazy" decoding="async" class="h-full w-full object-cover object-center" />
               : <ProjectCover cover={featured.cover} />}
           </div>
           {!featured.screenshot && <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>}
