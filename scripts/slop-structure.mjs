@@ -201,6 +201,37 @@ const PERSON_VERB = {
   },
 };
 
+// ── Compiled patterns ─────────────────────────────────────────────────────────
+//
+// Built once per locale at load rather than per file. Every input is a literal
+// from the constants above: a fixed conjunction list, a fixed pronoun list and
+// a fixed item shape. Nothing here is reachable from user input, and this
+// script only ever reads .mdx files already committed to the repository.
+//
+// nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+const compileRegExp = (source, flags) => new RegExp(source, flags);
+
+const ITEM = '[\\p{L}\\p{N}][\\p{L}\\p{N}-]*(?:\\s+[\\p{L}\\p{N}][\\p{L}\\p{N}-]*){0,2}';
+
+const COMPILED = new Map(
+  Object.keys(LANG).map((locale) => {
+    // "fast, cheap and effective": three short parallel items. Each item is
+    // capped at three words, which is what separates a rhetorical tricolon
+    // from an ordinary sentence holding two commas and a conjunction.
+    const conj = LANG[locale].and.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    return [
+      locale,
+      {
+        tricolon: compileRegExp(`${B0}${ITEM},\\s${ITEM},?\\s(?:${conj})\\s${ITEM}${B1}`, 'giu'),
+        person: PERSON[locale] ? compileRegExp(PERSON[locale], 'giu') : null,
+        personVerb: PERSON_VERB[locale] ? compileRegExp(PERSON_VERB[locale].pattern, 'giu') : null,
+      },
+    ];
+  })
+);
+
+const ENGLISH_MARKER_RE = compileRegExp(ENGLISH_MARKERS, 'giu');
+
 // ── Text extraction ───────────────────────────────────────────────────────────
 
 /** Strip everything the reader does not read as running sentences. */
@@ -344,6 +375,7 @@ function detectLocale(file) {
 function analyse(file, raw) {
   const locale = detectLocale(file);
   const lang = LANG[locale] ?? null;
+  const compiled = COMPILED.get(locale) ?? null;
 
   const prose = extractProse(raw);
   const headings = extractHeadings(prose);
@@ -379,17 +411,7 @@ function analyse(file, raw) {
 
   // Tricolon: "A, B and C" inside one sentence.
   let tricolons = 0;
-  if (lang) {
-    const conj = lang.and.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-    // Three short parallel items: "fast, cheap and effective". Each item is
-    // capped at three words, which is what separates a rhetorical tricolon
-    // from an ordinary sentence that happens to contain two commas and a
-    // conjunction. Without the cap this fired on half the corpus and measured
-    // nothing.
-    const item = '[\\p{L}\\p{N}][\\p{L}\\p{N}-]*(?:\\s+[\\p{L}\\p{N}][\\p{L}\\p{N}-]*){0,2}';
-    const re = new RegExp(`${B0}${item},\\s${item},?\\s(?:${conj})\\s${item}${B1}`, 'giu');
-    tricolons = (prose.match(re) ?? []).length;
-  }
+  if (compiled) tricolons = (prose.match(compiled.tricolon) ?? []).length;
 
   // Antithesis: "not X but Y".
   let antitheses = 0;
@@ -402,10 +424,9 @@ function analyse(file, raw) {
   // are supposed to stay English.
   const untranslated = [];
   if (locale !== 'en') {
-    const marker = new RegExp(ENGLISH_MARKERS, 'giu');
     const rate = (text) => {
       const total = countWords(text);
-      return total === 0 ? 0 : (text.match(marker) ?? []).length / total;
+      return total === 0 ? 0 : (text.match(ENGLISH_MARKER_RE) ?? []).length / total;
     };
     for (const paragraph of paragraphs) {
       if (countWords(paragraph) < 12) continue;
@@ -438,12 +459,11 @@ function analyse(file, raw) {
   }
 
   // Register. Impersonal prose is off-voice by the spec, not by taste.
-  const personSrc = PERSON[locale];
-  let personHits = personSrc ? (prose.match(new RegExp(personSrc, 'giu')) ?? []).length : 0;
-  const verbRule = PERSON_VERB[locale];
-  if (verbRule) {
-    const hits = prose.match(new RegExp(verbRule.pattern, 'giu')) ?? [];
-    personHits += hits.filter((w) => !verbRule.notVerbs.has(w.toLowerCase())).length;
+  let personHits = compiled?.person ? (prose.match(compiled.person) ?? []).length : 0;
+  if (compiled?.personVerb) {
+    const { notVerbs } = PERSON_VERB[locale];
+    const hits = prose.match(compiled.personVerb) ?? [];
+    personHits += hits.filter((w) => !notVerbs.has(w.toLowerCase())).length;
   }
   const emDashes = (raw.match(/—/g) ?? []).length;
 
