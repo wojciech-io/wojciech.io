@@ -58,12 +58,14 @@ function load(): Entry[] {
     const raw = readFileSync(path, 'utf8');
     const fm = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
     const block = fm?.[1] ?? '';
-    const field = (name: string) => block.match(new RegExp(`^${name}: "(.*)"$`, 'm'))?.[1] ?? null;
+    // Three literal patterns rather than one built from a field name. The
+    // dynamic version read better and tripped semgrep's non-literal-regexp
+    // rule, and there are only ever three fields to read.
     return {
       file: relative(INSIGHTS_DIR, path),
-      title: field('title') ?? '',
-      seoTitle: field('seoTitle'),
-      description: field('description') ?? '',
+      title: block.match(/^title: "(.*)"$/m)?.[1] ?? '',
+      seoTitle: block.match(/^seoTitle: "(.*)"$/m)?.[1] ?? null,
+      description: block.match(/^description: "(.*)"$/m)?.[1] ?? '',
     };
   });
 }

@@ -19,7 +19,11 @@ tldr:
   - "The signal-to-noise ratio matters more than the number of fields"
 ---
 
-A CRM that requires manual input is a broken CRM. Not because people are lazy: because the incentive is wrong. The rep enters data so the manager can see it. The manager sees it so leadership can report on it. At no point in that chain does the person doing the data entry get value back.
+Every stalled CRM I have been handed had the same thing wrong with it, and it was never the software.
+
+The rep enters data so the manager can see it. The manager sees it so leadership can report on it. Nobody in that chain gets anything back for the typing, so the typing stops, and six months later the pipeline review opens with somebody saying the numbers are not quite current.
+
+That is not laziness. It is an incentive pointing the wrong way, and you cannot train your way out of it.
 
 <BeforeAfter
   label="The CRM model flip"
@@ -27,7 +31,7 @@ A CRM that requires manual input is a broken CRM. Not because people are lazy: b
   after={{ title: "CRM as operating system", body: "Inputs are automatic. Processing is automatic. Rep sees which accounts to prioritize, who is going cold, what the next action is.", caption: "Data entry as side effect of doing the work." }}
 />
 
-The data entry happens as a side effect of doing the work, not as extra work.
+Flip the direction and the problem dissolves. The entry stops being a task and becomes a side effect of doing the work.
 
 ## The four layers
 
@@ -43,7 +47,7 @@ The data entry happens as a side effect of doing the work, not as extra work.
 
 ### Layer 1: Capture
 
-Everything that touches a prospect or customer should write to the CRM without human action.
+Anything that touches a prospect should land in the CRM without anybody deciding to put it there.
 
 - Email sent → logged
 - Meeting booked → logged with attendees
@@ -52,40 +56,40 @@ Everything that touches a prospect or customer should write to the CRM without h
 - Contract sent → stage updated
 - Payment received → stage updated
 
-If you have gaps in this layer, fix them before anything else. The analysis is only as good as the inputs.
+Gaps here come first, before any scoring model or dashboard. Everything downstream inherits whatever this layer misses.
 
 ### Layer 2: Enrichment
 
-Every account in your CRM should have a minimum viable enrichment set that refreshes automatically:
+Every account needs a floor of enrichment that refreshes on its own:
 
 - Firmographic: employees, revenue range, industry, tech stack
 - Signal: recent funding, hiring in relevant departments, product launches, leadership changes
 - Relationship: existing connections via LinkedIn 1st-degree, warm intro paths
 
-Enrichment runs on account creation and on a weekly refresh schedule. Stale data is worse than no data: it creates false confidence.
+Run it on account creation, then weekly. The weekly part matters more than it sounds: stale data is worse than an empty field, because a rep trusts it.
 
 ### Layer 3: Scoring
 
-A simple scoring model is better than no scoring model. Start with three inputs:
+Start with three inputs and resist adding a fourth:
 
 1. ICP fit score (firmographic match to your ideal customer profile)
 2. Engagement score (recency and frequency of interaction with your team)
 3. Intent signal score (website visits, content downloads, product page activity if measurable)
 
-Combine into a single priority score. Update weekly. Use it to generate the prioritized account list that reps see each Monday morning.
+Combine them into one number, refresh it weekly, and let it produce the list a rep opens on Monday morning.
 
-The model doesn't need to be sophisticated. A weighted sum of three inputs, manually calibrated once a quarter, outperforms intuition-based prioritization.
+It does not need to be clever. A weighted sum of three inputs, recalibrated by hand once a quarter, beats prioritising on instinct, and it has one property a cleverer model loses: a rep who disagrees with the ranking can see exactly which input put an account where it is. Agree the weights with sales before anyone has a reason to argue about them.
 
 ### Layer 4: Routing
 
-Define explicit rules for what happens at each stage transition:
+Write the rule for every stage transition down, explicitly, before anyone needs it:
 
 - New inbound lead → ICP check → if fit, route to SDR; if not fit, route to nurture
 - SQLed → route to AE with enrichment brief attached
 - Stalled > 21 days → alert owner, flag in weekly pipeline review
 - Churned → route to winback sequence after 90 days
 
-Routing rules replace manager intervention for the 80% of cases that are rule-based. Manager time is reserved for the 20% that require actual judgment.
+Rules handle the cases that were always rule-shaped, which is most of them. What is left over is the part that actually needed a manager, and now a manager has time for it.
 
 ## What a healthy CRM looks like
 
@@ -106,13 +110,15 @@ Routing rules replace manager intervention for the 80% of cases that are rule-ba
 
 ## The build vs. configure question
 
-For most growth-stage B2B companies, the answer is configure, not build. [HubSpot](https://www.hubspot.com/) or [Salesforce](https://www.salesforce.com/) with correct automation setup gets you 90% of the operating system without custom development.
+Configure. Almost always configure.
+
+[HubSpot](https://www.hubspot.com/) or [Salesforce](https://www.salesforce.com/) with the automation set up properly gets you most of this operating system without a line of custom code, and the pieces you would have built are the pieces you would then have to maintain.
 
 Build only the pieces that:
 - your CRM genuinely can't do (usually custom scoring logic or exotic integrations)
 - are so high-frequency that a native workaround creates daily friction
 
-Everything else: configure deeply, resist adding more tools.
+Everything else gets configured deeply. Resist adding a tool to paper over a layer you have not finished.
 
 ---
 
