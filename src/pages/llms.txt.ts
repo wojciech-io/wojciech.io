@@ -12,9 +12,32 @@ import type { APIRoute } from 'astro';
 export const GET: APIRoute = async ({ site }) => {
   const origin = (site ?? new URL('https://wojciech.io/')).origin;
 
-  const posts = (await getCollection('insights', ({ data }) => !data.draft))
+  const published = await getCollection('insights', ({ data }) => !data.draft);
+
+  const posts = published
     .filter((post) => !/^[a-z]{2}\//.test(post.id))
     .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+  // Which locales actually carry articles, counted from the collection rather
+  // than declared in prose. The sentence below used to name Polish and only
+  // Polish, and was wrong from the day German shipped. An answer engine reading
+  // that sentence has no reason to look for the other four.
+  const localeNames: Record<string, string> = {
+    pl: 'Polish', de: 'German', es: 'Spanish', it: 'Italian',
+    dk: 'Danish', no: 'Norwegian', jp: 'Japanese',
+  };
+  const translationCounts = new Map<string, number>();
+  for (const post of published) {
+    const prefix = post.id.match(/^([a-z]{2})\//)?.[1];
+    if (prefix) translationCounts.set(prefix, (translationCounts.get(prefix) ?? 0) + 1);
+  }
+  const translations = [...translationCounts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([locale, count]) => `${localeNames[locale] ?? locale} (${count} at ${origin}/${locale}/insights/)`);
+
+  const translationLine = translations.length
+    ? `Articles are written in English first. Translations are published in ${translations.join(', ')}.`
+    : 'Articles are written in English.';
 
   const latest = posts.slice(0, 8);
   const articleList = latest
@@ -92,7 +115,7 @@ Full product catalogue at app.wojciech.io.
 
 ## Writing and insights
 
-All content at ${origin}/insights is original, based on systems Wojciech has personally built and run. Articles are written in English, with Polish translations published at ${origin}/pl/insights/. The full text of every article is available in one file at ${origin}/llms-full.txt.
+All content at ${origin}/insights is original, based on systems Wojciech has personally built and run. ${translationLine} The full text of every article is available in one file at ${origin}/llms-full.txt.
 
 Latest articles (newest first; ${posts.length} published in total):
 
