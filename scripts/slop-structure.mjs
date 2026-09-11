@@ -67,7 +67,12 @@ const LANG = {
   },
   pl: {
     and: ['i', 'oraz', 'lub', 'albo'],
-    antithesis: [new RegExp(`${B0}nie\\s+[^.,;!?]{2,60},?\\s+(?:tylko|lecz|ale)${B1}`, 'giu')],
+    // The comma is required, not optional. Polish writes the antithesis as
+    // "nie X, tylko Y"; without the comma the same words are "nie tylko X",
+    // which is "not only X" and a different construction. The optional comma
+    // collapsed the two and reported "nie przenosi tylko" ("does not only
+    // transfer") as a rhetorical tic three times over.
+    antithesis: [new RegExp(`${B0}nie\\s+[^.,;!?]{2,60},\\s+(?:tylko|lecz|ale)${B1}`, 'giu')],
   },
   de: {
     and: ['und', 'oder'],
