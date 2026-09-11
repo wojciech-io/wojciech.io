@@ -21,7 +21,11 @@ tldr:
   - "Stosunek sygnału do szumu liczy się bardziej niż liczba pól"
 ---
 
-CRM wymagający ręcznego wpisywania jest zepsutym CRM. Nie dlatego, że ludzie są leniwi: dlatego, że bodziec jest zły. Rep wpisuje dane, żeby manager mógł je zobaczyć. Manager je widzi, żeby kierownictwo mogło raportować. W żadnym punkcie tego łańcucha osoba wpisująca dane nie dostaje wartości z powrotem.
+Każdy zatkany CRM, który dostałem do naprawy, miał zepsute to samo, i nigdy nie było to oprogramowanie.
+
+Handlowiec wpisuje dane, żeby zobaczył je manager. Manager je widzi, żeby kierownictwo miało z czego raportować. Nikt w tym łańcuchu nie dostaje nic z powrotem za samo klepanie, więc klepanie ustaje, a pół roku później pipeline review zaczyna się od zdania, że liczby nie są do końca aktualne.
+
+To nie lenistwo. To bodziec wycelowany w złą stronę, a z tego nie da się wyszkolić.
 
 <BeforeAfter
   label="Zmiana modelu CRM"
@@ -29,7 +33,7 @@ CRM wymagający ręcznego wpisywania jest zepsutym CRM. Nie dlatego, że ludzie 
   after={{ title: "CRM jako system operacyjny", body: "Inputy są automatyczne. Przetwarzanie jest automatyczne. Rep widzi, które accounty mają priorytet, kto stygnie, jaka jest następna akcja.", caption: "Wpisywanie danych jako efekt uboczny pracy." }}
 />
 
-Wpisywanie danych następuje jako efekt uboczny pracy, nie jako dodatkowa praca.
+Odwróć kierunek, a problem znika. Wpisywanie przestaje być zadaniem i staje się efektem ubocznym roboty.
 
 ## Cztery warstwy
 
@@ -45,7 +49,7 @@ Wpisywanie danych następuje jako efekt uboczny pracy, nie jako dodatkowa praca.
 
 ### Warstwa 1: Capture
 
-Wszystko, co dotyka prospect lub klienta, powinno zapisywać do CRM bez udziału człowieka.
+Cokolwiek dotknie prospekta, ma wylądować w CRM bez decyzji człowieka, że trzeba to tam wpisać.
 
 - Mail wysłany → zalogowany
 - Spotkanie zarezerwowane → zalogowane z uczestnikami
@@ -54,7 +58,7 @@ Wszystko, co dotyka prospect lub klienta, powinno zapisywać do CRM bez udziału
 - Umowa wysłana → stage zaktualizowany
 - Płatność otrzymana → stage zaktualizowany
 
-Jeśli masz luki w tej warstwie, napraw je przed wszystkim innym. Analiza jest tak dobra, jak inputy.
+Luki tutaj załatwiasz pierwsze, przed jakimkolwiek scoringiem i dashboardem. Wszystko dalej dziedziczy to, czego ta warstwa nie złapała.
 
 ### Warstwa 2: Enrichment
 
@@ -76,18 +80,18 @@ Prosty model scoring jest lepszy niż brak modelu scoring. Zacznij od trzech inp
 
 Połącz w jeden priority score. Aktualizuj co tydzień. Użyj do generowania spriorytetyzowanej listy accountów, którą repowie widzą w każdy poniedziałek rano.
 
-Model nie musi być wyrafinowany. Suma ważona trzech inputów, ręcznie kalibrowana raz na kwartał, pokonuje priorytetyzację opartą na intuicji.
+Nie musi być wyrafinowany. Suma ważona trzech inputów, kalibrowana ręcznie raz na kwartał, bije priorytetyzację na wyczucie i ma jedną własność, którą sprytniejszy model traci: handlowiec, który nie zgadza się z kolejnością, widzi dokładnie, który input wepchnął dany account tam, gdzie jest. Wagi dogadaj ze sprzedażą, zanim ktokolwiek będzie miał powód się o nie kłócić.
 
 ### Warstwa 4: Routing
 
-Zdefiniuj explicite reguły tego, co dzieje się przy każdym przejściu stage:
+Spisz regułę dla każdego przejścia stage'a, wprost, zanim ktoś jej potrzebuje:
 
 - Nowy inbound lead → check ICP → jeśli fit, routing do SDR; jeśli brak fit, routing do nurture
 - SQLed → routing do AE z dołączonym enrichment brief
 - Stalled > 21 dni → alert do ownera, flaga w tygodniowym pipeline review
 - Churned → routing do sekwencji winback po 90 dniach
 
-Reguły routing zastępują interwencje managera dla 80% przypadków opartych na regułach. Czas managera jest zarezerwowany dla 20%, które wymagają rzeczywistej oceny.
+Reguły obsługują przypadki, które i tak miały kształt reguły, czyli większość. Zostaje ta część, która naprawdę potrzebowała managera, i teraz manager ma na nią czas.
 
 ## Jak wygląda zdrowy CRM
 
@@ -107,13 +111,15 @@ Reguły routing zastępują interwencje managera dla 80% przypadków opartych na
 
 ## Pytanie build vs configure
 
-Dla większości firm B2B w fazie growth odpowiedź brzmi: konfiguruj, nie buduj. [HubSpot](https://www.hubspot.com/) lub [Salesforce](https://www.salesforce.com/) z poprawnym setupem automation dają ci 90% systemu operacyjnego bez custom development.
+Konfiguruj. Prawie zawsze konfiguruj.
+
+[HubSpot](https://www.hubspot.com/) albo [Salesforce](https://www.salesforce.com/) z porządnie ustawioną automatyzacją dają większość tego systemu operacyjnego bez jednej linijki własnego kodu, a części, które byś zbudował, to dokładnie te, które potem musiałbyś utrzymywać.
 
 Buduj tylko te części, które:
 - twój CRM naprawdę nie potrafi (zwykle custom scoring logic lub egzotyczne integracje)
 - są tak częste, że natywny workaround tworzy codzienne tarcie
 
-Wszystko inne: konfiguruj głęboko, opieraj się pokusie dodawania kolejnych narzędzi.
+Resztę konfigurujesz głęboko. Nie dokładaj narzędzia, żeby zakleić warstwę, której nie dokończyłeś.
 
 ---
 
