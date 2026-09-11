@@ -1,0 +1,373 @@
+---
+title: "GPT-5.6 contro Claude 5: i primi test dicono che il cambiamento vero non è chi guida la classifica"
+seoTitle: "GPT-5.6 Luna vs Claude Sonnet 5: prezzo, punteggi, quale usare"
+description: "GPT-5.6 Luna segna 51,2 contro il 53 di Claude Sonnet 5, a un decimo del prezzo. Quando vince il modello economico, quando è falsa economia e come si confrontano i cinque livelli di GPT-5.6 e Claude 5 su benchmark e costo."
+publishedAt: "2026-07-12"
+updatedAt: "2026-09-11"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "launch"
+coverImage: "/images/insights/gpt-5-6-vs-claude-5-cover-v1.webp"
+featured: false
+draft: false
+locale: "it"
+translationOf: "gpt-5-6-vs-claude-5"
+sources:
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "The previously scheduled increase to $3/$15 per million input/output tokens on September 1, 2026 will not occur."
+    claim: "Sonnet 5 resta a 2 / 10 dollari; l'aumento annunciato è stato annullato"
+    checkedAt: "2026-09-04"
+  - url: "https://developers.openai.com/api/docs/pricing"
+    claim: "Prezzi di listino attuali di GPT-5.6: Sol 4 / 20, Terra 2 / 12, Luna 0,20 / 1,20 dollari"
+    checkedAt: "2026-09-04"
+tldr:
+  - "Claude Fable 5 guida ancora l'indice di intelligenza di Artificial Analysis con 60. GPT-5.6 Sol segna 59 e chiude lo stesso benchmark a circa un terzo del costo di Fable. La distanza ormai è denaro, non capacità."
+  - "GPT-5.6 sono tre modelli, non uno: Sol (di punta), Terra (equilibrato, indice 55 a 2 / 12 dollari) e Luna (volume, indice 51 a 0,20 / 1,20). La scelta sensata di default è Terra, con Sol come escalation, non Sol per tutto."
+  - "Più economico per token non vuol dire più economico per risultato. Sonnet 5 ha bruciato circa 300 milioni di token in una sola valutazione, cinque volte la mediana, quindi può costare più per attività completata di un modello più forte anche a 2 / 10 dollari."
+  - "Smetti di chiedere quale modello sia il migliore. Instrada il lavoro: Luna verso Terra verso Sol, oppure Sonnet per eseguire e Fable per pianificare. A vincere è l'architettura, non la riga con il numero più alto."
+faq:
+  - q: "GPT-5.6 Luna è meglio di Claude Sonnet 5?"
+    a: "Sulla capacità pura no: Luna segna 51,2 sull'indice di intelligenza di Artificial Analysis e Sonnet 5 segna 53 al massimo ragionamento. Sul prezzo la distanza va nell'altra direzione e non è piccola: Luna costa 0,20 dollari per milione di token in ingresso e 1,20 in uscita, contro i 2 e 10 di Sonnet 5. È un decimo del costo in ingresso per un paio di punti di indice. Usa Luna per lavoro ad alto volume e bassa ambiguità, dove una risposta sbagliata costa poco da intercettare: classificazione, estrazione, instradamento, prime bozze. Usa Sonnet 5 quando l'attività è agentica o lunga, perché Sonnet compie meno passi per arrivare in fondo e dentro Claude Code è già integrato. La trappola è giudicare entrambi sul prezzo per token invece che sul costo per attività completata."
+  - q: "Qual è il modello di AI migliore adesso, GPT-5.6 o Claude 5?"
+    a: "Sull'indice di intelligenza di Artificial Analysis, Claude Fable 5 guida con 60 e GPT-5.6 Sol resta un punto dietro con 59, ma Sol completa il benchmark a circa un terzo del costo di Fable. GPT-5.6 Terra è forse il più utile dal punto di vista commerciale di tutti e cinque. Non esiste un vincitore unico: il modello giusto dipende dall'attività, dal costo per risultato completato e da quanta supervisione puoi permetterti."
+  - q: "GPT-5.6 costa meno di Claude Fable 5?"
+    a: "Sì. GPT-5.6 Sol costa 4 dollari per milione di token in ingresso e 20 in uscita, contro i 10 e 50 di Fable 5, e i test indipendenti hanno collocato Sol intorno a un terzo del costo di Fable per attività completata. Terra (2 / 12) e Luna (0,20 / 1,20) stanno ancora più sotto di qualsiasi livello Claude."
+  - q: "Conviene usare Claude Sonnet 5 dentro Claude Code?"
+    a: "Per implementazione ben specificata sì: è il modello di default in Claude Code ed è forte su debugging, uso degli strumenti e codebase esistenti e disordinate. Per architetture ambigue, pianifica prima con un modello più forte. Sonnet 5 può compiere più passi, consumare più contesto e costare più per attività completata di un modello superiore, quindi pianificare con lui il lavoro più difficile è spesso falsa economia."
+  - q: "Qual è il modello GPT-5.6 migliore per il lavoro professionale quotidiano?"
+    a: "Terra per la maggior parte: analisi, ricerca, lavoro sui documenti e programmazione di difficoltà media a metà del costo del modello di punta. Tieni Sol come percorso di escalation per i problemi più duri e usa Luna per carichi ad alto volume e basso rischio come classificazione, estrazione e instradamento."
+---
+
+<Callout type="note" title="Aggiornato il 4 settembre 2026: questi prezzi sono scesi dalla pubblicazione">
+  Tutti i livelli di GPT-5.6 sono stati tagliati da quando questo testo è uscito a luglio, e Anthropic ha annullato l'aumento di Sonnet 5. Sol ora è a 4 / 20 dollari per milione di token, Terra a 2 / 12, Luna a 0,20 / 1,20, e Sonnet 5 resta a 2 / 10 in modo permanente invece di salire a 3 / 15. I prezzi qui sotto sono quelli di oggi e sono ancorati alle loro fonti. L'argomento non è cambiato. È diventato più economico. OpenAI ha nel frattempo rilasciato un nuovo modello di punta, che tratto in [GPT-6 Astra è arrivato quarto nell'indice di intelligenza](/insights/gpt-6-astra-vs-claude/).
+</Callout>
+
+
+OpenAI e Anthropic hanno rilasciato le loro generazioni di modelli più recenti a poche settimane di distanza. In superficie sembra l'ennesimo round di guerra dei benchmark. Non lo è. La mossa interessante è strutturale e cambia il modo in cui costruirei su entrambi gli stack.
+
+OpenAI ha smesso di vendere un unico "GPT migliore". GPT-5.6 è una famiglia di tre:
+
+- **GPT-5.6 Sol**, il modello di punta,
+- **GPT-5.6 Terra**, il livello che bilancia capacità e costo,
+- **GPT-5.6 Luna**, il livello veloce ed economico per il volume.
+
+Anthropic ne posiziona due:
+
+- **Claude Fable 5** come modello più capace a distribuzione ampia,
+- **Claude Sonnet 5** come modello agentico pratico per il lavoro quotidiano, l'automazione e la programmazione.
+
+Tutti e cinque portano circa un milione di token di contesto e fino a 128.000 token in uscita. La finestra di contesto ha smesso di fare la differenza. Quello che li separa adesso è l'affidabilità, il costo per attività completata, l'uso degli strumenti, la velocità e quanta supervisione serve perché lavorino senza che io stia a guardare.
+
+<Callout type="note" title="Cos'è questo testo e cosa non è">
+  Questo non è un mio benchmark con n=1. Quando voglio prove eseguo i modelli sul mio repository e pubblico il commit, come ho fatto per [Fable 5 contro Opus e Sonnet](/insights/claude-fable-5-mythos-5/). Questo è lo strato sopra: i primi benchmark indipendenti (Artificial Analysis, il test incrociato di Claire Vo), i prezzi pubblicati e i primi giorni di uso reale da parte degli sviluppatori, letti da chi porta avanti un'attività su questi modelli. Numeri e aneddoti di terzi, più la mia lettura operativa. Non è un verdetto. Fai le tue prove.
+</Callout>
+
+<DataTable
+  columns={[
+    { key: "model", label: "Modello" },
+    { key: "index", label: "Indice di intelligenza", align: "center", mono: true },
+    { key: "price", label: "In / out per 1M", align: "center", mono: true },
+    { key: "role", label: "Ruolo più logico" }
+  ]}
+  rows={[
+    { model: "Claude Fable 5", index: "60", price: "$10 / $50", role: "Problemi più duri, analisi, pianificazione, programmazione ad alto rischio" },
+    { model: "GPT-5.6 Sol", index: "59", price: "$4 / $20", role: "Capacità di frontiera con conti migliori, integrazione forte con Codex" },
+    { model: "GPT-5.6 Terra", index: "55", price: "$2 / $12", role: "Modello di default per il lavoro professionale quotidiano" },
+    { model: "Claude Sonnet 5", index: "53", price: "$2 / $10", role: "Esecuzione agentica ben specificata e Claude Code" },
+    { model: "GPT-5.6 Luna", index: "51", price: "$0,20 / $1,20", role: "Carichi veloci, ad alto volume e a basso costo" }
+  ]}
+  highlight={[0]}
+  caption="Cinque modelli a colpo d'occhio. Indice di intelligenza di Artificial Analysis, prezzi di listino pubblicati delle API e dove ciascuno si guadagna lo stipendio. Il resto dell'articolo spiega perché la riga evidenziata non è tutta la storia."
+/>
+
+## Il dato centrale: Fable guida, Sol resta un punto dietro a un terzo del prezzo
+
+Claude Fable 5 ha segnato 60 sull'indice di intelligenza di Artificial Analysis. GPT-5.6 Sol al massimo ragionamento ha segnato 59. Artificial Analysis ha collocato il costo di Sol intorno a 1,04 dollari per attività in quella valutazione, circa un terzo di quello di Fable. Sol si è anche preso la testa dell'indice degli agenti di programmazione con un punteggio di 80.
+
+<Benchmark
+  label="Indice di intelligenza di Artificial Analysis"
+  yours={60}
+  yoursLabel="Claude Fable 5"
+  baseline={59}
+  baselineLabel="GPT-5.6 Sol"
+  unit=""
+  caption="Un punto di distanza in cima. Sull'indice generale Fable tiene un vantaggio minimo, di quelli che spariscono appena guardi il costo."
+/>
+
+Questo non è un knockout. È un cambiamento nell'economia del mercato.
+
+Fable può restare la scelta giusta per il problema singolo più duro, quello in cui il costo del modello pesa meno della probabilità di una risposta corretta. Sol sembra il default migliore per lavoro di frontiera ripetuto, soprattutto per qualsiasi cosa tu esegua molte volte al giorno.
+
+<KeyTakeaway tone="accent" title="Il cambiamento in una riga">
+  OpenAI non doveva battere Fable. Doveva arrivare a un punto di distanza a un terzo del costo, e poi distribuire la stessa generazione di capacità su tre fasce di prezzo. Questo riformula l'intera domanda: non più "quale modello è il migliore", ma "quale livello di intelligenza serve davvero a questa attività".
+</KeyTakeaway>
+
+## Cosa cambia davvero GPT-5.6
+
+### Sol: vicino a Fable, nettamente più economico
+
+GPT-5.6 Sol costa 4 dollari per milione di token in ingresso e 20 in uscita. Fable 5 costa 10 e 50.
+
+Il prezzo per token da solo non dice mai la verità, perché i modelli spendono quantità diverse di ragionamento, compiono un numero diverso di passi e richiedono una quantità diversa di correzione umana. Ma il dato indipendente sul costo per attività dice che il vantaggio di Sol è più di un trucco da tabella prezzi.
+
+<StatGrid
+  columns={3}
+  stats={[
+    { value: "1,04 $", label: "Costo di Sol per attività", sub: "valutazione Artificial Analysis" },
+    { value: "~3x", label: "Costo di Fable rispetto a Sol", sub: "stesso benchmark", delta: "più economico", good: true },
+    { value: "80", label: "Sol, indice agenti di programmazione", sub: "leader attuale" }
+  ]}
+  caption="La tesi di Sol non è che vinca ogni classifica. È che atterra accanto a Fable sulla qualità costando una frazione per lavoro completato."
+/>
+
+Claire Vo ha messo alla prova Sol, Terra, Luna, Fable e Sonnet su documenti di prodotto, prototipi, wireframe, debugging e voce agentica. Sol ha vinto il test complessivo, con i risultati migliori su documenti di prodotto, prototipazione e uso del browser. Il problema di Fable non era la capacità pura. Era un eccesso di precisione e uno stile di collaborazione più faticoso durante il lavoro stesso.
+
+Le prime testimonianze degli sviluppatori vanno nella stessa direzione. Descrivono Sol come vicino a Fable, ma più veloce, più economico e più affidabile sui cambiamenti che toccano più livelli di un sistema insieme. Aneddoti, non esperimenti controllati, ma la direzione coincide con i numeri indipendenti.
+
+<PullQuote
+  quote="Fable non ha perso sulla capacità. Ha perso su quanta fatica costava lavorarci insieme."
+  source="La nota ricorrente nei primi test incrociati fra modelli"
+/>
+
+### Terra è forse il modello più importante del rilascio
+
+Sol si prende l'attenzione. **Terra ha forse l'impatto operativo maggiore.**
+
+Terra costa 2 dollari per milione di token in ingresso e 12 in uscita. OpenAI lo descrive come competitivo con GPT-5.5 a metà prezzo. Artificial Analysis gli ha dato 55 sull'indice, quattro punti dietro Sol.
+
+Basta per una quota grossa del lavoro reale di produzione:
+
+<Comparison
+  items={[
+    { label: "Analisi di business", body: "Legge, sintetizza e ragiona su materiale disordinato abbastanza bene da preparare una decisione.", tag: "Terra", tone: "accent" },
+    { label: "Documenti e ricerca", body: "Lo strato di volume della produzione professionale: bozze, estrazione, sintesi fra più fonti.", tag: "Terra", tone: "accent" },
+    { label: "Generazione e refactoring di codice", body: "Modifiche di difficoltà media con perimetro chiaro, non le scelte architetturali ambigue.", tag: "Terra", tone: "accent" },
+    { label: "Strumenti ed esecuzione di agenti", body: "Esecuzioni a più passi dove il piano è definito e il modello lo porta a termine.", tag: "Terra", tone: "accent" }
+  ]}
+  caption="Non tutti i benchmark, ma abbastanza attività di produzione da far perdere senso al pagare Sol di default."
+/>
+
+Non tutti sono convinti. Alcuni osservano che Terra segna sotto GPT-5.5 su diversi benchmark singoli e si comporta più come un modello medio distillato che come un Sol economico. È giusto. Un punteggio aggregato alto non significa qualità uniforme su ogni carico. Ma per un'azienda la domanda non è "Terra vince ogni valutazione?". È:
+
+> Terra porta a termine abbastanza nostre attività da rendere superfluo pagare Sol di default?
+
+Per molti carichi la risposta è sì.
+
+### Luna mostra quanto in fretta la capacità stia diventando economica
+
+GPT-5.6 Luna costa 0,20 dollari per milione di token in ingresso e 1,20 in uscita. Ha segnato 51,2 sull'indice, appena sotto Sonnet 5 al massimo ragionamento.
+
+Questo non significa che Luna batta Sonnet su ogni attività. Sonnet può essere molto migliore su lavoro agentico, di programmazione o di lunga durata. Quello che Luna mostra è la pressione sui prezzi che GPT-5.6 crea: capacità che fino a poco fa richiedeva un modello di frontiera costoso adesso sta in una fascia da venti centesimi in ingresso.
+
+<ToolCard
+  cols={3}
+  title="Dove Luna è la scelta razionale"
+  caption="Giudica Luna dal lavoro che sblocca sul piano economico, non dal fatto che batta Fable sul problema più difficile possibile."
+  items={[
+    { icon: "code", name: "Classificazione ed estrazione", description: "Alto volume, bassa ambiguità, passa o non passa. Il lavoro classico del modello economico." },
+    { icon: "chat", name: "Elaborazione di contenuti in massa", description: "Prime bozze, varianti e riscritture su scala, dove comunque un umano rivede l'output." },
+    { icon: "cowork", name: "Agenti semplici e instradamento", description: "Smista un'attività, decide la difficoltà e manda le più dure a un livello più forte." }
+  ]}
+/>
+
+Quindi l'architettura migliore non è Sol per tutto. Instrada il lavoro per difficoltà e rischio.
+
+<Diagram caption="L'instradamento a livelli che batte un singolo modello di default: il modello più economico in grado di chiudere il lavoro, con escalation solo quando non ce la fa">
+  <Box label="Attività in arrivo" />
+  <Arrow label="smistamento" />
+  <Box label="Luna" sub="volume · rischio basso" variant="muted" />
+  <Arrow label="troppo difficile" />
+  <Box label="Terra" sub="lavoro professionale quotidiano" variant="accent" />
+  <Arrow label="posta in gioco alta" />
+  <Box label="Sol" sub="solo i problemi più duri" />
+</Diagram>
+
+## Fable 5 ha ancora l'argomento più forte sulla capacità pura
+
+Claude Fable 5 resta primo sull'indice generale e rende particolarmente bene su attività analitiche lunghe, programmazione agentica, prototipazione, lavoro su fogli di calcolo e problemi che richiedono di verificarsi da soli. I primi partner di Anthropic lo hanno descritto come capace di portare a termine lavoro che prima richiedeva molti prompt, e di rileggere e controllare il proprio output al livello di sforzo massimo.
+
+Fable ha anche segnato 80 % su SWE-Bench Pro contro il 64,6 % di Sol. Ma Sol ha guidato Terminal-Bench 2.1 con l'88,8 % contro l'83,1 % di Fable.
+
+<Benchmark
+  label="SWE-Bench Pro"
+  yours={80}
+  yoursLabel="Claude Fable 5"
+  baseline={64.6}
+  baselineLabel="GPT-5.6 Sol"
+  unit="%"
+  caption="Risolvere problemi definiti dentro un repository: il terreno di casa di Fable, vantaggio netto."
+/>
+
+<Benchmark
+  label="Terminal-Bench 2.1"
+  yours={88.8}
+  yoursLabel="GPT-5.6 Sol"
+  baseline={83.1}
+  baselineLabel="Claude Fable 5"
+  unit="%"
+  caption="Lavoro dentro un terminale: se lo prende Sol. Gli stessi due modelli, risultato opposto. Per questo 'il miglior modello per programmare' è un'etichetta inutile."
+/>
+
+I due benchmark misurano lavori diversi, e l'ambiente conta quanto il modello:
+
+- **SWE-Bench** premia la risoluzione di problemi definiti in un repository.
+- **Terminal-Bench** valuta il lavoro dentro un ambiente di terminale.
+- **Codex e Claude Code** aggiungono sopra i propri ambienti, istruzioni di sistema, gestione del contesto e strategie di strumenti.
+
+Lo stesso modello di base rende in modo diverso attraverso una API grezza, dentro Claude Code, dentro Codex o dentro il framework di agenti di terze parti. Giudica l'ambiente, non solo i pesi.
+
+Gli svantaggi veri di Fable sono costo e accesso. Dopo la sospensione temporanea il modello è tornato ovunque, ma parecchi utenti hanno criticato Anthropic per aver spostato l'uso di Fable fuori dalle quote normali di abbonamento e dentro crediti a pagamento separati. Fable può essere il miglior specialista senza essere il miglior dipendente di default.
+
+## Sonnet 5: un modello capace con un problema di posizionamento
+
+Sonnet 5 doveva rispondere a una domanda semplice: quale modello Claude dovrebbe usare la gente tutti i giorni?
+
+La storia di prodotto è attraente. Sonnet 5 è disponibile su tutti i piani Claude, è il default su Free e Pro, gira dentro Claude Code e costa 2 dollari per milione di token in ingresso e 10 in uscita. Era partito come prezzo introduttivo in scadenza il 31 agosto 2026, ma Anthropic ha confermato che l'aumento previsto a 3 e 15 non ci sarà e che 2 / 10 è ormai il prezzo standard. Anthropic lo presenta come nettamente più agentico di Sonnet 4.6: migliore nel chiudere attività a più passi, nel controllare il proprio output e nel lavorare su codebase esistenti e disordinate. I partner con accesso anticipato hanno riportato buoni risultati su debugging, uso degli strumenti, test e codice preesistente.
+
+Il quadro indipendente è più disomogeneo.
+
+<Callout type="warning" title="Più economico per token, non sempre più economico per risultato">
+  Allo sforzo massimo Sonnet 5 ha segnato 53 sull'indice di Artificial Analysis, ma ha generato circa 300 milioni di token durante la valutazione, cinque volte la mediana del confronto. Artificial Analysis si aspettava che questo lo rendesse più caro per attività completata di Opus 4.8 una volta finito il prezzo introduttivo. Quell'aumento è stato annullato, quindi la previsione non si è mai avverata. Il consumo di token resta reale comunque. Gli utenti di Claude Code descrivono lo stesso schema: più economico per token, ma sui lavori grossi compie più passi, si mangia più contesto e può finire per costare più di un modello più forte. Aggiungici le lamentele su resistenza eccessiva, un tono troppo sicuro di sé e una pianificazione irregolare.
+</Callout>
+
+Questo non rende debole Sonnet 5. Suggerisce che pianificare lavoro molto ambiguo non è il suo ruolo naturale. Una divisione più razionale:
+
+<DataTable
+  columns={[
+    { key: "job", label: "Il lavoro" },
+    { key: "model", label: "La mia scelta", mono: true },
+    { key: "why", label: "Perché" }
+  ]}
+  rows={[
+    { job: "Architettura, pianificazione, lavoro ad alta incertezza", model: "Fable o Sol", why: "La parte costosa è sbagliare. Paga per il modello con meno probabilità di mandarti sulla strada sbagliata." },
+    { job: "Implementare un'attività ben specificata", model: "Sonnet 5", why: "Il perimetro è fissato, il lavoro è eseguire. Qui la sua forza agentica si vede e il prezzo torna." },
+    { job: "Analisi ed esecuzione quotidiana a buon costo", model: "Terra", why: "Qualità vicina alla frontiera a metà del modello di punta, per il grosso della produzione professionale." },
+    { job: "Scala e flussi a basso rischio", model: "Luna", why: "Volume che prima non giustificava mai un modello di frontiera e adesso gira a venti centesimi per milione in ingresso." }
+  ]}
+  caption="Abbina il modello al rischio dell'attività, non a una riga di classifica."
+/>
+
+<figure>
+  <img
+    src="/images/insights/gpt-5-6-vs-claude-5-desk-v1.webp"
+    alt="Operatore al lavoro a tarda sera a una scrivania con portatile, quaderno e un piccolo scaffale di libri, luci della città dietro la finestra"
+    width="1536"
+    height="1024"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>La scelta non è più quale modello sia più intelligente. È quale ambiente porta a termine il tuo lavoro.</figcaption>
+</figure>
+
+## La gara vera: ChatGPT Work e Codex contro Claude Cowork e Claude Code
+
+I confronti fra soli modelli descrivono ogni mese peggio la produttività reale.
+
+OpenAI ha messo GPT-5.6 dentro ChatGPT, ChatGPT Work, Codex e le API. Gli utenti a pagamento scelgono Sol, Terra o Luna dentro Work e Codex e regolano lo sforzo di ragionamento. Esistono modalità max e ultra sui piani che le prevedono, e le API supportano chiamate a strumenti da programma e subagenti in parallelo. Anthropic offre un sistema paragonabile con Claude Chat, Cowork e Claude Code.
+
+<Comparison
+  items={[
+    { label: "OpenAI: ChatGPT Work + Codex", body: "Sol, Terra e Luna selezionabili dentro Work e Codex, controllo dello sforzo, modalità max e ultra, chiamate a strumenti da programma e subagenti in parallelo. L'attrattiva è l'integrazione più stretta con il resto di ChatGPT e conti sui modelli più aggressivi.", tag: "conti migliori", tone: "accent" },
+    { label: "Anthropic: Cowork + Claude Code", body: "La stessa gamma di lavori da Claude Chat, Cowork e Claude Code. Il vantaggio resta Claude Code: ancora l'esperienza di sviluppo più matura, soprattutto per muoversi con naturalezza dentro una codebase esistente e disordinata.", tag: "sviluppo più maturo", tone: "accent" }
+  ]}
+  caption="Questa non è più una scelta fra chatbot. È una scelta fra ambienti di esecuzione per il lavoro digitale."
+/>
+
+I due stack si muovono fra gli stessi lavori: conversazione e analisi, documenti e file, lavoro a livello di applicazione, modifica di un repository, esecuzione di codice, delega a subagenti. Il vantaggio di Anthropic resta Claude Code, ancora l'esperienza di sviluppo più matura e la preferita da più persone, soprattutto per lavorare con naturalezza su una codebase esistente. La risposta di OpenAI è un'integrazione più stretta fra Codex e il resto di ChatGPT, più conti sui modelli più aggressivi.
+
+I primi riscontri non incoronano un vincitore universale. Alcuni sviluppatori preferiscono ancora Claude per il frontend, perché rispetta le convenzioni del progetto e genera codice più vicino all'intenzione. Altri raccontano che Codex con Sol è più affidabile quando un problema attraversa più livelli di un sistema, e che si incastra meno in una soluzione locale.
+
+## Cosa dicono davvero i numeri
+
+Due conclusioni sopravvivono a tutte le riserve.
+
+**Primo: la distanza di capacità fra il modello di punta e le fasce economiche si sta stringendo.** Un punto separa Fable da Sol sull'indice generale. Quattro punti separano Sol da Terra. I modelli premium non sono più un altro campionato, solo un altro prezzo.
+
+**Secondo: il prezzo per token non è il numero che conta.** Un modello più economico può costare di più per risultato quando genera più token di ragionamento, compie più passi o richiede più correzione. Il costo per risultato completato è l'unica cifra che tocca un conto economico, e non compare su nessuna pagina di prezzi.
+
+<MetricDelta
+  before="Costo per token"
+  beforeLabel="Quello che mostra la pagina prezzi"
+  after="Costo per risultato completato"
+  afterLabel="Quello che arriva davvero sul tuo budget"
+  delta="il numero che nessuno stampa"
+  tone="warning"
+  label="La metrica che decide tutto, e quella che nessun annuncio di lancio mette sulla slide"
+/>
+
+## Come instraderei il lavoro
+
+### Per la maggior parte del lavoro professionale: Terra
+
+Terra è il punto di partenza migliore per analisi, ricerca, documenti, contenuti e programmazione di difficoltà media. Sol dovrebbe essere un percorso di escalation, non il default universale.
+
+### Per i problemi più duri: Sol o Fable
+
+Fable tiene un vantaggio complessivo minimo e rende con forza su attività lunghe e complesse. Sol offre una capacità vicina con conti molto migliori ed è il default più pragmatico per un'organizzazione.
+
+### Dentro Claude Code: Sonnet esegue, Fable pianifica
+
+Sonnet 5 si adatta all'implementazione ben definita. Sul lavoro architetturale ambiguo, usare un modello più forte per preparare il piano costa di solito meno che correggere tre volte quello economico.
+
+### Per automazione ad alto volume: Luna
+
+Non giudicare Luna dal fatto che batta Fable sul problema più difficile. Il suo valore sta nell'abilitare intere categorie di lavoro che prima non giustificavano economicamente l'AI di frontiera.
+
+## Verdetto finale
+
+<KeyTakeaway tone="accent" title="Dove atterrano i cinque modelli">
+  Claude Fable 5 resta il più capace nel complesso. GPT-5.6 Sol è il concorrente di frontiera più forte. GPT-5.6 Terra è forse il rilascio commercialmente più importante del gruppo. Claude Sonnet 5 è la maggiore incognita.
+</KeyTakeaway>
+
+OpenAI non doveva sconfiggere Fable in modo netto. Doveva solo arrivarci vicino a un costo molto più basso, e poi distribuire la stessa generazione di capacità su tre fasce economiche. Il risultato è che "quale modello è il migliore?" sta diventando una domanda sempre più debole.
+
+Domande migliori:
+
+- Quale modello porta davvero a termine il mio flusso di lavoro specifico?
+- Quanta supervisione richiede?
+- Quanto costa un risultato corretto, non un milione di token?
+- Riesce a operare sui miei documenti, applicazioni e repository?
+- Quando il lavoro dovrebbe passare automaticamente a un modello più forte?
+
+L'AI di frontiera non è più un modello. Sta diventando un sistema di produzione a livelli. In quel sistema non vince il modello con il numero più alto su una classifica. Vince l'architettura che manda l'attività giusta al livello di intelligenza giusto.
+
+## Domande frequenti: GPT-5.6 contro Claude 5
+
+### GPT-5.6 Luna è meglio di Claude Sonnet 5?
+
+Sulla capacità pura no: Luna segna 51,2 sull'indice di intelligenza di Artificial Analysis e Sonnet 5 segna 53 al massimo ragionamento. Sul prezzo la distanza va nell'altra direzione e non è piccola: Luna costa 0,20 dollari per milione di token in ingresso e 1,20 in uscita, contro i 2 e 10 di Sonnet 5. È un decimo del costo in ingresso per un paio di punti di indice. Usa Luna per lavoro ad alto volume e bassa ambiguità, dove una risposta sbagliata costa poco da intercettare: classificazione, estrazione, instradamento, prime bozze. Usa Sonnet 5 quando l'attività è agentica o lunga, perché Sonnet compie meno passi per arrivare in fondo e dentro Claude Code è già integrato. La trappola è giudicare entrambi sul prezzo per token invece che sul costo per attività completata.
+
+### Qual è il modello di AI migliore adesso, GPT-5.6 o Claude 5?
+
+Sull'indice di intelligenza di Artificial Analysis, Claude Fable 5 guida con 60 e GPT-5.6 Sol resta un punto dietro con 59, ma Sol completa il benchmark a circa un terzo del costo di Fable. GPT-5.6 Terra è forse il più utile dal punto di vista commerciale di tutti e cinque. Non esiste un vincitore unico: il modello giusto dipende dall'attività, dal costo per risultato completato e da quanta supervisione puoi permetterti.
+
+### GPT-5.6 costa meno di Claude Fable 5?
+
+Sì. GPT-5.6 Sol costa 4 dollari per milione di token in ingresso e 20 in uscita, contro i 10 e 50 di Fable 5, e i test indipendenti hanno collocato Sol intorno a un terzo del costo di Fable per attività completata. Terra (2 / 12) e Luna (0,20 / 1,20) stanno ancora più sotto di qualsiasi livello Claude.
+
+### Conviene usare Claude Sonnet 5 dentro Claude Code?
+
+Per implementazione ben specificata sì: è il modello di default in Claude Code ed è forte su debugging, uso degli strumenti e codebase esistenti e disordinate. Per architetture ambigue, pianifica prima con un modello più forte. Sonnet 5 può compiere più passi, consumare più contesto e costare più per attività completata di un modello superiore, quindi pianificare con lui il lavoro più difficile è spesso falsa economia.
+
+### Qual è il modello GPT-5.6 migliore per il lavoro professionale quotidiano?
+
+Terra per la maggior parte: analisi, ricerca, lavoro sui documenti e programmazione di difficoltà media a metà del costo del modello di punta. Tieni Sol come percorso di escalation per i problemi più duri e usa Luna per carichi ad alto volume e basso rischio come classificazione, estrazione e instradamento.
+
+## Fonti e letture
+
+<ToolCard
+  cols={3}
+  title="Fonti primarie"
+  caption="Fonti di primo livello per i numeri citati sopra. I link profondi cambiano; queste sono le pagine su cui verificare le cifre aggiornate."
+  items={[
+    { name: "Artificial Analysis", description: "I punteggi dell'indice di intelligenza e dell'indice degli agenti di programmazione, e le stime di costo per attività citate in tutto il testo.", href: "https://artificialanalysis.ai/", tags: ["Benchmark"] },
+    { name: "Anthropic news", description: "Annunci di Claude Fable 5 e Sonnet 5, prezzi e schede dei modelli.", href: "https://www.anthropic.com/news", tags: ["Anthropic"] },
+    { name: "OpenAI", description: "Annunci di GPT-5.6 Sol, Terra e Luna, fasce di prezzo e integrazione con Codex.", href: "https://openai.com/news/", tags: ["OpenAI"] }
+  ]}
+/>
+
+Se vuoi il contesto operativo intorno a tutto questo, ho scritto [il mio benchmark di Claude Fable 5 contro Opus e Sonnet](/insights/claude-fable-5-mythos-5/) e [lo stack di produzione con AI su cui lavoro davvero](/insights/ai-production-stack/). Stesso principio di qui: il modello è uno strato, e il lavoro è il sistema che gli smista il lavoro intorno.

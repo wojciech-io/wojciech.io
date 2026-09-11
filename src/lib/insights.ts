@@ -2,9 +2,9 @@ import type { CollectionEntry } from 'astro:content';
 import type { LocaleKey } from '../data/locales';
 
 export type InsightPost = CollectionEntry<'insights'>;
-export type InsightLocale = 'en' | 'pl' | 'de' | 'es';
+export type InsightLocale = 'en' | 'pl' | 'de' | 'es' | 'it';
 
-export const localizedInsightLocales = ['pl', 'de', 'es'] as const satisfies readonly LocaleKey[];
+export const localizedInsightLocales = ['pl', 'de', 'es', 'it'] as const satisfies readonly LocaleKey[];
 
 export const insightLocaleLabels: Record<InsightLocale, {
   allInsights: string;
@@ -100,6 +100,25 @@ export const insightLocaleLabels: Record<InsightLocale, {
     next: 'Siguiente',
     authorLabel: 'Sobre el autor',
     authorBio: 'Arquitecto de GTM y operador de crecimiento que construye sistemas de ingresos nativos de IA para empresas B2B SaaS y tecnológicas. Conecto posicionamiento, SEO, contenido, adquisición de pago, CRM, automatización, analítica y flujos de trabajo con IA en una infraestructura de crecimiento que funciona.',
+  },
+  it: {
+    allInsights: 'Tutti gli articoli',
+    article: 'Articolo',
+    articles: 'articoli',
+    bylineRole: 'GTM Architect & Growth Operator',
+    featured: 'In evidenza',
+    newsletter: 'Newsletter',
+    newsletterHeading: 'Ricevi il prossimo per primo.',
+    newsletterBody: 'Quando pubblico un articolo nuovo su sistemi di AI, architettura GTM o modelli operativi di crescita, lo saprai per primo.',
+    readArticle: 'Leggi l\'articolo',
+    readTimeSuffix: 'min di lettura',
+    tldrTitle: 'In breve · I punti chiave',
+    subscribe: 'Iscriviti',
+    moreFromInsights: 'Altri articoli',
+    previous: 'Precedente',
+    next: 'Successivo',
+    authorLabel: 'Sull\'autore',
+    authorBio: 'GTM Architect e growth operator che costruisce sistemi di ricavi nativi per l\'AI per aziende B2B SaaS e tecnologiche. Collego posizionamento, SEO, contenuti, acquisizione a pagamento, CRM, automazione, analytics e flussi di lavoro con AI in un\'infrastruttura di crescita che funziona.',
   },
 };
 

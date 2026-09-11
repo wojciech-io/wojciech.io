@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-// @ts-expect-error — plain .mjs script, no type declarations
 import { extractJsxAttrs, JSX_TRANSLATABLE_ARRAYS } from '../../scripts/i18n/translate-mdx-pl.mjs';
 
 /**
