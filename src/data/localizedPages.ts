@@ -552,7 +552,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
       h1: 'Note dell\'operatore su AI, GTM e architettura revenue.',
       lead: 'Gli articoli mostrano architettura, decisioni e lezioni di sistemi effettivamente costruiti e operati.',
       primaryCta: 'Vedi tutti gli articoli',
-      primaryHref: '/insights/',
+      primaryHref: '/it/insights/',
       secondaryCta: 'Prenota una call',
       secondaryHref: '/it/contact/',
       stats: [
