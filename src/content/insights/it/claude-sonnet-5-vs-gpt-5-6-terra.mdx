@@ -1,0 +1,147 @@
+---
+title: "Sonnet 5 adesso è il modello più economico. Non è la stessa cosa della risposta più economica."
+seoTitle: "Claude Sonnet 5 vs GPT-5.6 Terra: prezzo, punteggi, quale usare"
+description: "Terra e Sonnet 5 costano entrambi 2 dollari per milione di token in ingresso, e Sonnet 5 costa meno in uscita. Terra segna due punti in più. Ecco come scelgo fra i due, e perché il prezzo per token è il posto sbagliato dove guardare."
+publishedAt: "2026-09-05"
+updatedAt: "2026-09-11"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "launch"
+featured: false
+draft: false
+locale: "it"
+translationOf: "claude-sonnet-5-vs-gpt-5-6-terra"
+sources:
+  - url: "https://developers.openai.com/api/docs/pricing"
+    claim: "GPT-5.6 Terra costa 2 dollari per milione di token in ingresso e 12 in uscita"
+    checkedAt: "2026-09-05"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "The previously scheduled increase to $3/$15 per million input/output tokens on September 1, 2026 will not occur."
+    claim: "Sonnet 5 resta a 2 / 10 dollari, quindi il confronto è contro un prezzo definitivo"
+    checkedAt: "2026-09-05"
+tldr:
+  - "Costano uguale in ingresso, 2 dollari per milione. In uscita Sonnet 5 sta a 10 e Terra a 12, quindi Sonnet 5 adesso è il modello più economico in assoluto. È l'opposto di come questa coppia era prezzata al lancio."
+  - "Terra ha segnato 55 sull'indice di Artificial Analysis contro il 53 di Sonnet 5, entrambi dal giro di lancio di GPT-5.6. L'indice è poi passato alla v4.1.1 e tutta la scala si è spostata, quindi leggi la distanza di due punti, mai i numeri assoluti."
+  - "Sonnet 5 ha bruciato circa 300 milioni di token su un solo benchmark, cinque volte la mediana del confronto. Una tariffa in uscita più bassa del 17% non sopravvive a un conteggio di passi del genere."
+  - "Il vero elemento che decide non è il modello. È quale harness usi già: Sonnet 5 è il default in Claude Code, Terra sta dentro ChatGPT e Codex. Cambiare harness costa più di entrambe le differenze di prezzo."
+faq:
+  - q: "GPT-5.6 Terra è meglio di Claude Sonnet 5?"
+    a: "Sull'indice di Artificial Analysis riportato al lancio di GPT-5.6, Terra ha segnato 55 e Sonnet 5 ha segnato 53, quindi Terra è modestamente avanti sulla capacità generale. Sul prezzo l'ordine si inverte: costano entrambi 2 dollari per milione di token in ingresso, ma Sonnet 5 esce a 10 contro i 12 di Terra. Due punti di indice per una tariffa in uscita superiore del 20% è una scelta davvero al fotofinish, e di solito la decide lo strumento in cui già lavori più che uno dei due numeri."
+  - q: "Quale costa meno, Claude Sonnet 5 o GPT-5.6 Terra?"
+    a: "Sonnet 5, sul listino. L'ingresso è identico a 2 dollari per milione di token; l'uscita è 10 per Sonnet 5 e 12 per Terra. Ma il listino decide la fattura solo se i due modelli compiono un numero di passi simile, e i test indipendenti hanno trovato Sonnet 5 a generare circa 300 milioni di token su un solo benchmark, cinque volte la mediana. Sulle esecuzioni agentiche lunghe la tariffa più bassa può produrre la fattura più alta."
+  - q: "Dovrei passare da Sonnet 5 a Terra?"
+    a: "Probabilmente no, non su questi numeri da soli. La distanza fra i due è più piccola del costo di cambiare l'harness in cui lavori, ritarare i prompt e ricostruire tutto quello che ci sta intorno. Cambia quando stai già spostando ecosistema per un altro motivo, oppure quando hai misurato il tuo costo per attività completata e vince Terra. Non cambiare per due punti di indice."
+  - q: "In cosa è forte GPT-5.6 Terra?"
+    a: "È il livello equilibrato: analisi, ricerca, lavoro sui documenti e programmazione di difficoltà media, a una frazione di quello che costa il modello di punta Sol. OpenAI lo posiziona come il default sensato, tenendo Sol come percorso di escalation invece che come modello di tutti i giorni. Se gran parte del tuo lavoro è produzione professionale che non richiede ragionamento di frontiera, Terra è il livello pensato per quello."
+---
+
+Al lancio di GPT-5.6 la storia era semplice. Terra era quello capace ed economico e OpenAI stava andando sotto ad Anthropic sul prezzo.
+
+Guarda oggi le due pagine dei prezzi e la cosa si è silenziosamente ribaltata.
+
+<DataTable
+  columns={[
+    { key: "model", label: "Modello" },
+    { key: "input", label: "Ingresso / 1M", align: "center", mono: true },
+    { key: "output", label: "Uscita / 1M", align: "center", mono: true },
+    { key: "index", label: "Indice al lancio", align: "center", mono: true }
+  ]}
+  rows={[
+    { model: "Claude Sonnet 5", input: "$2,00", output: "$10,00", index: "53" },
+    { model: "GPT-5.6 Terra", input: "$2,00", output: "$12,00", index: "55" }
+  ]}
+  highlight={[0]}
+  caption="Prezzi di listino letti oggi sulle pagine ufficiali di Anthropic e OpenAI. Le cifre di indice sono i numeri di Artificial Analysis riportati al giro di lancio di GPT-5.6, e l'avvertenza su quei numeri conta più dei numeri stessi."
+/>
+
+Identici in ingresso. Sonnet 5 costa il 17% in meno in uscita. Terra è avanti di due punti di indice.
+
+Così la coppia è diventata serrata, nel modo che fa perdere un pomeriggio su un foglio di calcolo e scegliere comunque male.
+
+## Perché il confronto sui prezzi si è ribaltato
+
+Nessuna delle due parti lo ha annunciato come risposta all'altra.
+
+OpenAI ha tagliato tutta la linea GPT-5.6. Terra è passata da 2,50 / 15 a **2 / 12 dollari**. Anche Sol e Luna sono scesi, Luna di più, da 1 / 6 a 0,20 / 1,20.
+
+Anthropic ha fatto una cosa più silenziosa e più pesante. Ha annullato un aumento. Sonnet 5 era uscito a 2 / 10 dollari descritto come prezzo introduttivo destinato a finire il 31 agosto 2026 e a salire a 3 / 15. Quel passaggio non è mai avvenuto, e la documentazione adesso dice chiaramente che l'aumento **non ci sarà**. Sonnet 5 resta a 2 / 10 in modo definitivo.
+
+Se quell'aumento fosse passato, Terra a 2 / 12 sarebbe oggi il modello più economico su entrambi gli assi e questo articolo non esisterebbe. Un aumento di prezzo annullato ha deciso l'intero confronto.
+
+<Callout type="note" title="Non mescolare le versioni dell'indice">
+  Il 55 di Terra e il 53 di Sonnet 5 vengono entrambi dal giro di Artificial Analysis pubblicato con il lancio di GPT-5.6. L'indice è poi passato alla v4.1.1, e tutta la scala si è spostata sotto: Claude Fable 5 leggeva 60 nel giro di luglio e legge 62,1 in quello attuale. Del modello non è cambiato niente. Confrontare un numero di una versione con un numero di un'altra produce una risposta sicura di sé che non significa nulla. Leggi la distanza di due punti fra Terra e Sonnet 5, non i valori assoluti, e rileggi entrambi quando uscirà il giro successivo.
+</Callout>
+
+## Il numero che decide davvero la fattura
+
+Uno sconto del 17% in uscita sembra decisivo finché non guardi quanti token spende ciascun modello per arrivare in fondo.
+
+Artificial Analysis ha trovato Sonnet 5, allo sforzo massimo, a generare circa **300 milioni di token** durante la valutazione. Erano all'incirca cinque volte la mediana del confronto. Gli utenti di Claude Code hanno riportato la stessa forma in modo indipendente: economico per token, ma sui lavori grossi compie più passi, consuma più contesto e può finire per costare più di quanto sarebbe costato un modello più forte.
+
+Metti quei due fatti uno accanto all'altro e l'aritmetica smette di riguardare le tariffe. Un modello più economico del 17% per token che compie il doppio dei passi ti costa di più. Quello che costa il 20% in più e chiude in un solo passaggio è l'affare.
+
+<KeyPoint>
+  La tariffa per token è una proprietà del listino. Il costo per attività completata è una proprietà del tuo carico di lavoro. Solo uno dei due compare sulla tua fattura.
+</KeyPoint>
+
+È lo stesso argomento che ho fatto su [Luna contro Sonnet 5](/it/insights/gpt-5-6-vs-claude-5/), dove la distanza di prezzo è di dieci volte e comunque non decide, e su [GPT-6 Astra](/it/insights/gpt-6-astra-vs-claude/), dove l'intera affermazione di costo di OpenAI poggia sul conteggio dei passi invece che sulla tariffa.
+
+Qui taglia in entrambe le direzioni. Non ti sto dicendo che Terra vince sul costo per attività. Ti sto dicendo che nessuno dei due lo sa finché non gira sul tuo lavoro, e che la riga da due dollari nella tabella dei prezzi non è una prova.
+
+## L'elemento decisivo che nessuno mette nel confronto
+
+Ecco la parte che decide in pratica, e non ha niente a che vedere con nessuno dei due modelli.
+
+Sonnet 5 è il default dentro Claude Code. Terra vive in ChatGPT e Codex. Se già usi uno di questi harness, il modello non è davvero l'unità che stai scegliendo. Stai scegliendo lo strumento, i prompt che hai tarato, i permessi che hai configurato e tutta l'impalcatura che hai costruito intorno.
+
+Spostare quella roba costa più di quanto recuperi da entrambe le differenze di prezzo, e non in costi di licenza. Il costo sono le due settimane in cui tutto va leggermente peggio mentre ricostruisci i pezzi che ti eri dimenticato di avere.
+
+<DataTable
+  columns={[
+    { key: "sit", label: "Dove ti trovi" },
+    { key: "pick", label: "Cosa farei" },
+    { key: "why", label: "Perché" }
+  ]}
+  rows={[
+    { sit: "Già dentro Claude Code", pick: "Resta su Sonnet 5", why: "Costa meno in uscita ed è già integrato. Due punti di indice non pagano una migrazione." },
+    { sit: "Già dentro ChatGPT o Codex", pick: "Resta su Terra", why: "Stessa logica al contrario. È il livello costruito per essere il default quotidiano." },
+    { sit: "Scegli da zero", pick: "Prova entrambi su un'attività vera", why: "Misura il costo per risultato completato, non per token. La distanza è abbastanza piccola da farla decidere al tuo carico di lavoro." },
+    { sit: "Il lavoro è lungo e agentico", pick: "Misura prima il conteggio dei passi", why: "È qui che si vede il consumo di token di Sonnet 5, ed è qui che la tariffa più bassa può perdere." },
+    { sit: "Il lavoro è corto e ben specificato", pick: "Sonnet 5", why: "Il perimetro è fissato, il lavoro è eseguire, e lo sconto in uscita è reale quando i passi sono pochi." }
+  ]}
+  caption="La versione onesta di questo confronto riguarda soprattutto dove ti trovi già. Non è una scappatoia. Il costo di migrazione è un numero vero ed è di solito più grande della distanza."
+/>
+
+## Cosa mi farebbe cambiare idea
+
+Tre cose, e aggiornerò questo testo quando una di queste verrà pubblicata.
+
+Il prossimo giro di Artificial Analysis sulla v4.1.1, con entrambi i modelli misurati sulla stessa scala. Due punti sulla scala vecchia possono valerne uno o quattro su quella nuova.
+
+Un confronto pubblicato di costo per attività completata specifico per questi due. La cifra dei 300 milioni di token è l'unica prova sul conteggio dei passi in questo articolo e viene da una sola valutazione di un solo modello.
+
+Qualsiasi ulteriore movimento sul prezzo. L'intero confronto è girato su un aumento annullato invece che su qualcosa che i due modelli fanno, il che ti dice quanto è sottile il margine.
+
+## Domande che mi sono arrivate
+
+### GPT-5.6 Terra è meglio di Claude Sonnet 5?
+
+Modestamente, sulla capacità: 55 contro 53 sull'indice riportato al lancio di GPT-5.6. Sul prezzo l'ordine si inverte, perché costano entrambi 2 dollari per milione di token in ingresso ma Sonnet 5 esce a 10 contro i 12 di Terra. Due punti per una tariffa in uscita superiore del 20% è abbastanza serrato da far decidere di solito all'harness che già usi.
+
+### Quale costa meno?
+
+Sonnet 5, sul listino. Questo regola la fattura solo se entrambi compiono un numero simile di passi, e su quel fronte Sonnet 5 ha il precedente peggiore: circa 300 milioni di token su un benchmark, cinque volte la mediana. Sulle esecuzioni lunghe la tariffa più bassa può produrre la fattura più alta.
+
+### Dovrei cambiare?
+
+Non su questi numeri da soli. La distanza è più piccola del costo di cambiare harness, ritarare i prompt e ricostruire gli strumenti. Cambia quando stai comunque spostando ecosistema, oppure quando hai misurato il tuo costo per attività completata e vince Terra.
+
+### A cosa serve davvero Terra?
+
+È il livello equilibrato, e copre analisi, ricerca, lavoro sui documenti e programmazione di difficoltà media, con Sol tenuto come escalation invece che come default. Se il tuo lavoro è produzione professionale che raramente richiede ragionamento di frontiera, quello è il livello pensato per te.
+
+Se vuoi questo ragionamento applicato al tuo stack invece che a una tabella di prezzi, [la pagina dei contatti](/it/contact/) è la via più rapida per raggiungermi.
