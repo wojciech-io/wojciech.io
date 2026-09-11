@@ -81,11 +81,13 @@ Katalog `/memory/` przechowuje wszystko, co agent musi wiedzieć o kliencie i co
   objections.md  : typowe obiekcje i zatwierdzone odpowiedzi
 ```
 
-To właśnie sprawia, że agent jest kumulatywny. Research z wtorkowej sesji jest dostępny w czwartek. Obsługa obiekcji zatwierdzona w poprzednim miesiącu jest w każdej kolejnej sesji. Agent nie potrzebuje ponownego briefingu, czyta pliki pamięci.
+To jest ta warstwa, dzięki której praca się kumuluje. Research z wtorku nadal tam leży w czwartek. Odpowiedź na obiekcję, którą zatwierdziłem miesiąc temu, pojawia się w każdej kolejnej sesji, bez wklejania jej z powrotem.
+
+Nikt nie briefuje agenta od nowa. On czyta pliki.
 
 ## Warstwa 4: Skille operatora, czyli reużywalne programy promptowe
 
-Skille to zdefiniowane programy promptowe, które wykonują konkretne zadanie GTM. Starter pack zawiera pięć:
+Skill to program promptowy z jednym zadaniem. Starter pack wiezie pięć:
 
 **research**: Na podstawie nazwy firmy tworzy ustrukturyzowany brief badawczy: przegląd firmy, ostatnie sygnały, prawdopodobne pain points, ocena dopasowania do ICP.
 
@@ -97,11 +99,11 @@ Skille to zdefiniowane programy promptowe, które wykonują konkretne zadanie GT
 
 **score**: Na podstawie grupy leadów, ocenia każdy względem definicji ICP i zwraca priorytetyzowaną listę.
 
-Każdy skill to ustrukturyzowany prompt z zdefiniowanymi wejściami, wyjściami i zasadami. Uruchamiasz skill po nazwie: `/research Acme Corp`. Agent czyta definicję skilla, wykonuje go i zwraca ustrukturyzowany wynik.
+Każdy deklaruje swoje wejścia, kształt wyjścia i zasady, a potem wołasz go po nazwie: `/research Acme Corp`. Agent czyta definicję, wykonuje ją i oddaje coś o przewidywalnym kształcie, i o to właśnie chodzi. Odpowiedź, którą musisz ręcznie przeformatować, to odpowiedź, którą napisałeś sam.
 
 ## Dlaczego warstwy mają znaczenie
 
-Większość GTM opartych na promptach rozpada się, bo są bezstanowe. Każda rozmowa zaczyna się od zera. Architektura czterech warstw to rozwiązuje:
+Większość setupów GTM opartych na promptach rozpada się z jednego powodu. Są bezstanowe, więc każda rozmowa zaczyna się od zera, a operator zużywa pierwsze dziesięć minut na odbudowanie kontekstu, który tłumaczył tydzień wcześniej. Cztery warstwy to tyle, ile było trzeba, żeby przestać to robić:
 
 - Tożsamość jest trwała (CLAUDE.md)
 - Możliwości są realne (narzędzia MCP)
