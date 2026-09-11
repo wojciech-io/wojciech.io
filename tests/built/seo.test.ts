@@ -1,7 +1,9 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { assetExists, html, linkHref, meta, requireDist, schemaTypes, text } from './helpers';
+
+const INSIGHTS_SRC = resolve('./src/content/insights');
 
 /**
  * SEO foundations, ported from tests/e2e/seo.spec.ts.
@@ -126,6 +128,33 @@ describe('SEO foundations', () => {
 
   it('llms.txt present and non-trivial', () => {
     expect(text('/llms.txt').length, 'llms.txt too short: should describe the site').toBeGreaterThan(500);
+  });
+
+  /**
+   * llms.txt is what an answer engine reads to find out what exists here, and
+   * it said "Polish translations" for as long as there were only Polish ones.
+   * German, Spanish and Italian shipped and the sentence stayed, so an engine
+   * reading it had no reason to look for four locales' worth of articles.
+   *
+   * The sentence is derived from the collection now. This asserts it stayed
+   * derived: every locale directory that holds a published article has to be
+   * named in the file.
+   */
+  it('llms.txt names every locale that actually has articles', () => {
+    const llms = text('/llms.txt');
+    const localeDirs = readdirSync(INSIGHTS_SRC, { withFileTypes: true })
+      .filter((e) => e.isDirectory() && /^[a-z]{2}$/.test(e.name))
+      .filter((e) =>
+        // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal
+        // e.name is a two-letter directory name from a constant directory.
+        readdirSync(join(INSIGHTS_SRC, e.name)).some((f) => f.endsWith('.mdx'))
+      )
+      .map((e) => e.name);
+
+    expect(localeDirs.length, 'expected at least one translated locale').toBeGreaterThan(0);
+
+    const missing = localeDirs.filter((locale) => !llms.includes(`/${locale}/insights/`));
+    expect(missing, 'llms.txt does not mention these translated locales').toEqual([]);
   });
 
   describe('sitemap', () => {

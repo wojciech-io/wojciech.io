@@ -112,6 +112,8 @@ const VAGUE_HEADING = [
   /^why (this|that|it) matters\b/i,
   /^how (this|it) works( in practice)?[?.]?$/i,
   /^what (this|that|it) means( for you)?[?.]?$/i,
+  /^what (this|that|it) looks like( in practice)?[?.]?$/i,
+  /^jak to wyglada w praktyce[?.]?$/i,
   /\band why (it|this|that) matters\b/i,
   /^(the )?(importance|benefits|advantages|power) of\b/i,
   /\bwhat you need to know\b/i,
