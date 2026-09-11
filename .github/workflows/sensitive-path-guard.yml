@@ -27,9 +27,16 @@ jobs:
           BLOCKED=".agent-reports/ .agent-state/ .claude/ .codex-tasks/ archive/insights-legacy/ templates/ prompts/ HANDOFF.md"
           # docs/ is gitignored except for public-safe reference and audit files.
           # Everything else under docs/ is blocked.
+          #
+          # This list is a second copy of the exceptions at the bottom of
+          # .gitignore and the two have to be edited together. A doc added to
+          # .gitignore alone is committable locally and fails here; a doc added
+          # here alone is never committed in the first place, which is how
+          # copy-quality.md went missing between #575 and #582 while two files
+          # told readers to go and look at it.
           is_allowed_doc() {
             case "$1" in
-              docs/10-tone-of-voice.md|docs/design-system.md|docs/lighthouse-baseline-*.md|docs/security-audit-*.md|docs/insight-cover-generation-brief.md|docs/*-image-prompts.md)
+              docs/10-tone-of-voice.md|docs/design-system.md|docs/copy-quality.md|docs/lighthouse-baseline-*.md|docs/security-audit-*.md|docs/insight-cover-generation-brief.md|docs/*-image-prompts.md)
                 return 0
                 ;;
               *)
