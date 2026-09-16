@@ -1,0 +1,160 @@
+---
+title: "Add 50,000 tokens to a GPT-6 Astra prompt and the bill more than doubles. The 272K line, explained."
+seoTitle: "GPT-5.6 and GPT-6 long context pricing: the 272K threshold"
+description: "Above 272K input tokens, OpenAI bills the whole request at 2x input and 1.5x output. Claude keeps one rate to 1M. Worked costs for every current model."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://developers.openai.com/api/docs/models/gpt-6-astra"
+    quote: "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request."
+    claim: "GPT-6 Astra's long-context pricing rule"
+    checkedAt: "2026-09-16"
+  - url: "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+    quote: "Prompts with >272K input tokens are priced at 2x input and 1.5x output for the full request."
+    claim: "GPT-5.6's long-context pricing rule, stated the same way on Sol, Terra and Luna"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "A 900k-token request is billed at the same per-token rate as a 9k-token request."
+    claim: "Claude 4.6 and later models charge one rate across the whole 1M context window"
+    checkedAt: "2026-09-16"
+tldr:
+  - "Every current GPT-5.6 model and GPT-6 Astra bills a prompt above 272K input tokens at 2x input and 1.5x output, and the multiplier applies to the whole request, not just the tokens past the line."
+  - "That makes the threshold a cliff. A 250K-token Astra prompt with a 5K answer costs $2.75. At 300K input it costs $6.38: 20% more tokens, 132% more money."
+  - "Claude does not do this. Anthropic's pricing page says a 900K-token request is billed at the same per-token rate as a 9K-token one, across the 1M window on Claude 4.6 and later models."
+  - "Above 272K, the order changes: Opus 5 is cheaper than GPT-5.6 Sol, Sonnet 5 is cheaper than GPT-5.6 Terra, and Claude Fable 5.1 costs half of GPT-6 Astra."
+faq:
+  - q: "How does OpenAI price prompts over 272K tokens?"
+    a: "For GPT-5.6 Sol, Terra and Luna, OpenAI's model pages say prompts with more than 272K input tokens are priced at 2x input and 1.5x output for the full request. The GPT-6 Astra page says 2x input and cache rates and 1.5x output for the full request. The multiplier applies to every token in that request, including the first 272K."
+  - q: "Does Claude charge more for long context?"
+    a: "Not on current models. Anthropic's pricing page says Claude 4.6 and later models include the full 1M token context window at standard pricing, and that a 900K-token request is billed at the same per-token rate as a 9K-token request. Claude Haiku 4.5 has a 200K window, so the question does not arise for it."
+  - q: "What does a 300K-token prompt cost on each model?"
+    a: "With a 5K-token answer, at list prices on 16 September 2026: GPT-6 Astra $6.38, Claude Fable 5.1 $3.25, GPT-5.6 Sol $2.55, Claude Opus 5 $1.63, GPT-5.6 Terra $1.29, Claude Sonnet 5 $0.65 and GPT-5.6 Luna $0.13. The OpenAI figures include the 272K multiplier; the Claude figures are at standard rates."
+  - q: "How do I avoid the 272K pricing threshold?"
+    a: "Keep individual requests under 272K input tokens where the task allows: retrieve the relevant parts of a document instead of sending all of it, split long inputs across requests, or use server-side context trimming. Where the task genuinely needs a very long prompt, compare against a Claude model, which keeps one rate across its 1M window."
+---
+
+OpenAI's model pages each carry one sentence below the price table. On GPT-5.6 Sol it reads: prompts with more than 272K input tokens are priced at 2x input and 1.5x output for the full request.
+
+The last four words are the ones that cost money.
+
+## It is a cliff, not a tier
+
+"For the full request" means the multiplier is not applied to the tokens above 272K. It is applied to all of them, from the first. Cross the line by one token and the whole prompt, and the whole answer, reprices.
+
+The simplest way to see it is to walk a GPT-6 Astra request across the line, with a 5,000-token answer each time:
+
+<DataTable
+  columns={[
+    { key: "input", label: "Input tokens", align: "center", mono: true },
+    { key: "rate", label: "Astra rate in / out", align: "center", mono: true },
+    { key: "cost", label: "Request cost", align: "center", mono: true }
+  ]}
+  rows={[
+    { input: "250,000", rate: "$10 / $50", cost: "$2.75" },
+    { input: "272,000", rate: "$10 / $50", cost: "$2.97" },
+    { input: "272,001", rate: "$20 / $75", cost: "$5.82" },
+    { input: "300,000", rate: "$20 / $75", cost: "$6.38" }
+  ]}
+  highlight={[2]}
+  caption="Arithmetic on GPT-6 Astra's list prices and its stated long-context rule, from OpenAI's model page, read on 16 September 2026. Each row assumes a 5,000-token answer and no cache."
+/>
+
+From 250K to 300K input is 20% more tokens. The request costs **132% more**. One token across the line nearly doubles it on its own.
+
+<KeyPoint>
+  Below 272K you pay per token. Above it you pay a surcharge on the entire request. That makes prompt length a pricing decision on OpenAI's models, not just a context decision.
+</KeyPoint>
+
+## Which models it applies to
+
+The rule sits on every current model page I checked, in two wordings:
+
+- **GPT-5.6 Sol, Terra and Luna:** 2x input and 1.5x output for the full request.
+- **GPT-6 Astra:** 2x input and cache rates and 1.5x output for the full request. Cached input doubles too.
+
+All four have a context window of 1,050,000 tokens. The window is large. Using it is expensive.
+
+## Claude does not do this
+
+Anthropic's pricing page says Claude 4.6 and later models include the full 1M token context window at standard pricing, and gives the example directly: a 900K-token request is billed at the same per-token rate as a 9K-token request. Prompt caching and batch discounts apply at standard rates across the whole window.
+
+Claude Haiku 4.5 has a 200K window, so it never reaches the question.
+
+## What a 300K-token prompt costs on each model
+
+Same request on every current model: 300,000 input tokens, 5,000 output tokens, no cache, list prices.
+
+<DataTable
+  columns={[
+    { key: "model", label: "Model" },
+    { key: "rate", label: "Rate applied, in / out", align: "center", mono: true },
+    { key: "cost", label: "Cost", align: "center", mono: true },
+    { key: "idx", label: "Index v4.3", align: "center", mono: true }
+  ]}
+  rows={[
+    { model: "GPT-6 Astra", rate: "$20 / $75 (2x, 1.5x)", cost: "$6.38", idx: "53" },
+    { model: "Claude Fable 5.1", rate: "$10 / $50", cost: "$3.25", idx: "53" },
+    { model: "GPT-5.6 Sol", rate: "$8 / $30 (2x, 1.5x)", cost: "$2.55", idx: "47" },
+    { model: "Claude Opus 5", rate: "$5 / $25", cost: "$1.63", idx: "51" },
+    { model: "GPT-5.6 Terra", rate: "$4 / $18 (2x, 1.5x)", cost: "$1.29", idx: "42" },
+    { model: "Claude Sonnet 5", rate: "$2 / $10", cost: "$0.65", idx: "38" },
+    { model: "GPT-5.6 Luna", rate: "$0.40 / $1.80 (2x, 1.5x)", cost: "$0.13", idx: "38" }
+  ]}
+  caption="List prices from Anthropic's pricing page and OpenAI's model pages, with OpenAI's long-context rule applied; Sol at its current promotional price. Index from Artificial Analysis, v4.3. Read on 16 September 2026."
+/>
+
+Three pairings move once the prompt crosses 272K:
+
+- **Claude Fable 5.1 costs half of GPT-6 Astra**, at the same index score. Below the line they list at the same $10 / $50, so a tie becomes a 2x gap.
+- **Claude Opus 5 becomes cheaper than GPT-5.6 Sol** on both input and output, while scoring four points higher. This is the one that genuinely reverses: below the line Sol is 20% cheaper, which I went through in [Opus 5 against Sol](/insights/claude-opus-5-vs-gpt-5-6-sol/).
+- **Claude Sonnet 5 is half the price of GPT-5.6 Terra.** Below the line they share a $2 input price and Sonnet 5 is only slightly cheaper on output, so a small gap becomes a 2x one.
+
+Luna stays the cheapest model in the table even with the surcharge. At $0.40 / $1.80 it still undercuts everything else here.
+
+## How to stay under the line
+
+If the task allows it, keep individual requests below 272K input tokens:
+
+1. **Retrieve instead of sending everything.** Most long-document work needs the relevant sections, not the whole file.
+2. **Split the input** across requests where the work is separable, such as per-file review or per-section extraction.
+3. **Trim history** in long agent sessions before it pushes a request over, rather than letting it accumulate.
+
+If the task genuinely needs one very long prompt, like reasoning across a whole codebase or a large contract set, compare against a Claude model before assuming the OpenAI price. On that workload the rate card you read first is not the rate you pay.
+
+## What would change my mind
+
+OpenAI changing the threshold or dropping the full-request wording. A marginal surcharge on only the tokens past 272K would turn the cliff into a slope and remove most of this article's effect.
+
+Anthropic introducing long-context pricing on its current models. That would erase the crossovers above.
+
+Sol's price after 21 November. OpenAI calls its current price promotional, and a move to the undiscounted figure its discount implies would widen Opus 5's lead above 272K further.
+
+## Questions people asked
+
+### How does OpenAI price prompts over 272K tokens?
+
+At 2x input and 1.5x output for the full request on GPT-5.6 Sol, Terra and Luna, and at 2x input and cache rates and 1.5x output on GPT-6 Astra. The multiplier applies to every token in the request.
+
+### Does Claude charge more for long context?
+
+Not on current models. Claude 4.6 and later include the full 1M window at standard pricing, with a 900K-token request billed at the same per-token rate as a 9K-token one.
+
+### What does a 300K-token prompt cost on each model?
+
+With a 5K-token answer at list prices: Astra $6.38, Fable 5.1 $3.25, Sol $2.55, Opus 5 $1.63, Terra $1.29, Sonnet 5 $0.65, Luna $0.13.
+
+### How do I avoid the 272K pricing threshold?
+
+Retrieve relevant sections instead of whole documents, split separable inputs across requests, and trim long agent histories. Where one very long prompt is unavoidable, compare against a Claude model.
+
+If you are running long-context workloads and want the cost modelled on your own prompts, [the contact page](/contact/) is the fastest route to me.

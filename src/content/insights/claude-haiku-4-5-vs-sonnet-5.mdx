@@ -1,0 +1,155 @@
+---
+title: "Sonnet 5 costs twice what Haiku 4.5 does per token. Per page, closer to 2.6 times. What that buys."
+seoTitle: "Claude Haiku 4.5 vs Sonnet 5: price, scores, which to use"
+description: "Haiku 4.5 at $1 / $5 scores 18. Sonnet 5 at $2 / $10 scores 38, with five times the context and a year newer knowledge. The real price gap, and when Haiku wins."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "This tokenizer produces approximately 30% more tokens for the same text."
+    claim: "Sonnet 5 uses the newer tokenizer; Haiku 4.5 predates it"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview.md"
+    quote: "it is deprecated on Claude Opus 4.6 and Claude Sonnet 4.6 and not accepted on later models"
+    claim: "Extended thinking with budget_tokens does not carry over to Sonnet 5"
+    checkedAt: "2026-09-16"
+  # The retirement row sits in a section the docs render client-side; the
+  # markdown version of the same page carries it.
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview.md"
+    quote: "Not sooner than October 15, 2026"
+    claim: "Haiku 4.5's earliest possible retirement date on Anthropic's platforms"
+    checkedAt: "2026-09-16"
+tldr:
+  - "Claude Sonnet 5 lists at $2 / $10 per million tokens and Haiku 4.5 at $1 / $5. Sonnet 5 uses Anthropic's newer tokenizer, about 30% more tokens for the same text, so per page it costs closer to 2.6 times as much."
+  - "That buys 20 points on Artificial Analysis's Intelligence Index v4.3, 38 against Haiku's 18, plus five times the context window, twice the output limit and a knowledge cutoff about a year newer."
+  - "Haiku 4.5 is labelled Anthropic's fastest model, but Artificial Analysis measured the two at similar speeds: 84.7 output tokens per second for Haiku with reasoning, 79.5 for Sonnet 5."
+  - "Haiku 4.5's retirement window opens no sooner than 15 October 2026. For new work inside Anthropic's lineup, Sonnet 5 is the default; Haiku fits only short, simple, high-volume tasks."
+faq:
+  - q: "Is Claude Sonnet 5 better than Haiku 4.5?"
+    a: "Yes, by a wide margin. Artificial Analysis's Intelligence Index v4.3 scores Sonnet 5 at 38 and Haiku 4.5 at 18 with reasoning. Sonnet 5 also has a 1M token context window against Haiku's 200K, 128K max output against 64K, and a reliable knowledge cutoff of January 2026 against February 2025. Haiku 4.5 is half the price per token."
+  - q: "How much more expensive is Sonnet 5 than Haiku 4.5?"
+    a: "Twice as much per token at list price: $2 per million input tokens and $10 output against $1 and $5. Sonnet 5 uses Anthropic's newer tokenizer, which produces approximately 30% more tokens for the same text, so per page of text it costs closer to 2.6 times as much. Artificial Analysis's blended price is $1.54 against $0.77."
+  - q: "Is Claude Haiku 4.5 faster than Sonnet 5?"
+    a: "Anthropic labels Haiku 4.5 its fastest model and Sonnet 5 fast. Artificial Analysis's measured output speeds are close: 84.7 tokens per second for Haiku 4.5 with reasoning and 81.5 without, against 79.5 for Sonnet 5 at max effort. The speed gap is small enough that it rarely decides between them."
+  - q: "Should I use Claude Haiku 4.5 or Sonnet 5?"
+    a: "Sonnet 5 for almost all new work inside Anthropic's lineup: twenty more index points, far more context and newer knowledge for about 2.6 times the per-page price. Haiku 4.5 still fits short, simple, very high-volume tasks where 200K tokens is plenty and half the price matters. Its retirement window opens no sooner than 15 October 2026, so plan the move either way."
+---
+
+Inside Anthropic's lineup, the small-model decision used to be simple: Haiku for volume, Sonnet for anything that needs thinking.
+
+It is still roughly that. The price gap is bigger than the rate card shows, though, and the speed gap is smaller.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "haiku", label: "Claude Haiku 4.5", align: "center", mono: true },
+    { key: "sonnet", label: "Claude Sonnet 5", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M tokens", haiku: "$1 / $5", sonnet: "$2 / $10" },
+    { row: "Tokenizer", haiku: "Previous", sonnet: "Newer, ~30% more tokens" },
+    { row: "Effective per page vs Haiku", haiku: "1x", sonnet: "~2.6x" },
+    { row: "Intelligence Index v4.3", haiku: "18 (reasoning)", sonnet: "38 (max)" },
+    { row: "Output speed, tokens/s", haiku: "84.7", sonnet: "79.5" },
+    { row: "Anthropic's latency label", haiku: "Fastest", sonnet: "Fast" },
+    { row: "Context / max output", haiku: "200K / 64K", sonnet: "1M / 128K" },
+    { row: "Reliable knowledge cutoff", haiku: "Feb 2025", sonnet: "Jan 2026" },
+    { row: "Thinking", haiku: "Extended", sonnet: "Adaptive" },
+    { row: "Retirement", haiku: "Not sooner than 15 Oct 2026", sonnet: "Not sooner than 30 Jun 2027" }
+  ]}
+  highlight={[2]}
+  caption="Prices, tokenizer, specs, thinking modes and retirement from Anthropic's pricing and models pages. Index and speed from Artificial Analysis, read on 16 September 2026 against Intelligence Index v4.3. The per-page row applies Anthropic's approximately 30% tokenizer figure."
+/>
+
+## The price gap is wider than 2x
+
+Sonnet 5 lists at exactly twice Haiku 4.5's price, and that is the number most comparisons stop at.
+
+Anthropic's pricing page adds that Claude 4.7 and later models use a newer tokenizer, one that produces approximately 30% more tokens for the same text. Sonnet 5 is on it. Haiku 4.5 predates it.
+
+So the same prompt costs more tokens on Sonnet 5 before any rate is applied, and twice the rate times about 1.3 times the tokens is **roughly 2.6 times the cost per page**. Still a reasonable trade. Budget for 2.6, not 2.
+
+Anthropic notes the exact increase depends on content and workload shape. I would count real prompts on both before signing a forecast, the same advice I gave for [Sonnet 4.6 against Sonnet 5](/insights/claude-sonnet-4-6-vs-sonnet-5/), where the same tokenizer shift eats most of a price cut.
+
+## What 2.6 times buys
+
+Twenty index points, 38 against 18. That is wider than the whole step from Sonnet 5 up to Opus 5, and it comes at the cheap end of the lineup where nobody expects a gap that size.
+
+Five times the context: 1M tokens against 200K, and twice the output at 128K against 64K.
+
+Knowledge about a year newer: a reliable cutoff of January 2026 against February 2025. That alone can decide it for anything touching recent tools, APIs or events.
+
+<KeyPoint>
+  At the small end, the jump from Haiku 4.5 to Sonnet 5 is the largest capability step per dollar in Anthropic's lineup. It is not a premium tier. It is the tier where most work belongs.
+</KeyPoint>
+
+## The speed gap is smaller than the label
+
+Anthropic labels Haiku 4.5 its fastest model and Sonnet 5 fast. On Artificial Analysis's measurement the two are close: **84.7 output tokens per second** for Haiku 4.5 with reasoning, 81.5 without, and **79.5** for Sonnet 5 at max effort.
+
+Labels describe the lineup relative to itself, and time to a finished answer also depends on how much each model writes. But if speed was the main reason a pipeline sits on Haiku 4.5, it is worth measuring again.
+
+## What changes in the code
+
+Haiku 4.5 uses extended thinking, the mode set with a thinking type of enabled and a `budget_tokens` value. Anthropic's models page says that mode is deprecated on the 4.6 generation and **not accepted on later models**, and Sonnet 5 uses adaptive thinking steered by an effort parameter instead.
+
+Any request that sends `budget_tokens` to Haiku 4.5 needs changing before the model ID moves. Context and output limits change in your favour, so nothing breaks there.
+
+## The retirement window
+
+Anthropic lists Haiku 4.5's retirement as not sooner than 15 October 2026, and Sonnet 5's as not sooner than 30 June 2027. Both are floors, not scheduled shutdowns. The first one is a month away, which is reason enough to put a Haiku 4.5 migration plan on the list now.
+
+## Which one I would use
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "Most new work inside Anthropic's lineup", pick: "Sonnet 5", why: "Twenty more index points, five times the context, newer knowledge." },
+    { work: "Anything needing knowledge from 2025 or 2026", pick: "Sonnet 5", why: "Haiku 4.5's reliable cutoff is February 2025." },
+    { work: "Short, simple classification at huge volume", pick: "Haiku 4.5", why: "Half the rate, and the index gap may not show on trivial tasks. Plan for its retirement window." },
+    { work: "Prompts over 200K tokens", pick: "Sonnet 5", why: "Haiku 4.5 cannot take them." },
+    { work: "Volume work, vendor is flexible", pick: "Neither", why: "GPT-5.6 Luna scores 38 at $0.20 / $1.20, cheaper than Haiku 4.5." }
+  ]}
+  caption="Sonnet 5 as the default, Haiku 4.5 only for trivial high-volume work, and a look outside Anthropic if the vendor is not fixed."
+/>
+
+If your vendor is not fixed, the cheaper comparison is [Haiku 4.5 against GPT-5.6 Luna](/insights/claude-haiku-4-5-vs-gpt-5-6-luna/). If Sonnet 5 is not enough, the next step up is [Sonnet 5 against Opus 5](/insights/claude-sonnet-5-vs-opus-5/).
+
+## What would change my mind
+
+A new small Claude model on the current tokenizer and a newer knowledge cutoff. That would reset every row of this table.
+
+A measured tokenizer difference on your own prompts well away from 30%. The 2.6 figure rests on Anthropic's approximation.
+
+## Questions people asked
+
+### Is Claude Sonnet 5 better than Haiku 4.5?
+
+Yes: 38 against 18 on the Intelligence Index v4.3, with five times the context window, twice the output limit and a knowledge cutoff about a year newer. Haiku 4.5 is half the price per token.
+
+### How much more expensive is Sonnet 5 than Haiku 4.5?
+
+Twice as much per token, $2 / $10 against $1 / $5. With Sonnet 5's newer tokenizer producing about 30% more tokens for the same text, closer to 2.6 times per page.
+
+### Is Claude Haiku 4.5 faster than Sonnet 5?
+
+Anthropic labels it faster, but Artificial Analysis measured them close: 84.7 tokens per second for Haiku 4.5 with reasoning against 79.5 for Sonnet 5.
+
+### Should I use Claude Haiku 4.5 or Sonnet 5?
+
+Sonnet 5 for almost all new work inside Anthropic's lineup. Haiku 4.5 only for short, simple, very high-volume tasks, with a plan for its retirement window.
+
+If you are sizing a model change across a large pipeline, [the contact page](/contact/) is the fastest route to me.
