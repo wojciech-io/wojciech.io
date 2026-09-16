@@ -1,0 +1,150 @@
+---
+title: "Fable 5.1 costs about four times GPT-5.6 Terra for 11 more points. They are not competing for the same job."
+seoTitle: "GPT-5.6 Terra vs Fable 5.1: price, scores, when to use"
+description: "Fable 5.1 scores 53 to Terra's 42 at $10 / $50 against $2 / $12. Why Terra is the default, Fable 5.1 is the escalation, and one price where they nearly meet."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://developers.openai.com/api/docs/models/gpt-5.6-terra"
+    quote: "1.5x output for the full request"
+    claim: "Terra prompts above 272K input tokens are billed at 2x input and 1.5x output"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "a cache hit costs 2.5% of the standard input price"
+    claim: "Fable 5.1 reads cached tokens at $0.25 per million, close to Terra's $0.20"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/build-with-claude/thinking"
+    quote: "the tokens Claude spends reasoning are billed as output tokens"
+    claim: "Fable 5.1's always-on thinking is billed at its $50 output rate"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview"
+    quote: "For demanding reasoning and long-horizon agentic work"
+    claim: "Anthropic positions Fable 5.1 for demanding reasoning and long-horizon agentic work"
+    checkedAt: "2026-09-16"
+tldr:
+  - "On Artificial Analysis's Intelligence Index v4.3, Claude Fable 5.1 scores 53 and GPT-5.6 Terra scores 42. At list price Fable 5.1 costs 5x Terra on input and about 4.2x on output."
+  - "Blended and measured costs agree. Fable 5.1's blended price is $7.17 per million against Terra's $1.74, and Artificial Analysis spent $13,129 running its index on Fable 5.1 against $2,501 on Terra."
+  - "One line nearly meets: cached input. Fable 5.1 reads cache at $0.25 per million and Terra at $0.20. The overall gap only shrinks toward that when cached context dwarfs output, and Fable 5.1's always-on thinking keeps output high."
+  - "Terra is the model for most daily professional work. Fable 5.1 is the one you escalate to when Terra fails on long, hard, agentic work. Pick by routing, not by choosing one."
+faq:
+  - q: "Is Claude Fable 5.1 better than GPT-5.6 Terra?"
+    a: "Yes, by a wide margin on published benchmarks. Artificial Analysis's Intelligence Index v4.3 scores Fable 5.1 at 53 and Terra at 42, an 11-point gap. Terra is faster, at 98.8 output tokens per second against Fable 5.1's 65.1, and about four times cheaper. They sit at different tiers: Terra is OpenAI's balanced everyday model and Fable 5.1 is Anthropic's model for demanding reasoning and long-horizon agentic work."
+  - q: "How much more expensive is Claude Fable 5.1 than GPT-5.6 Terra?"
+    a: "At list price, 5x on input and about 4.2x on output: $10 and $50 per million tokens against $2 and $12. Artificial Analysis's blended price is $7.17 against $1.74, about 4.1x, and its full-index run cost was $13,129 against $2,501, about 5.3x. Cached input is the exception, at $0.25 per million against $0.20."
+  - q: "What about Claude Fable 5 against GPT-5.6 Terra?"
+    a: "Fable 5 scores 50 against Terra's 42 on the same index, and it costs the same as Fable 5.1 at list price, with a more expensive cache read at $1 per million. Unless you are pinned to Fable 5 by an integration that uses forced tool use or edits conversation history, Fable 5.1 is the better model at the same price."
+  - q: "Should I use Claude Fable 5.1 or GPT-5.6 Terra?"
+    a: "Use Terra as the default for analysis, research, document work and moderately hard coding, and escalate to Fable 5.1 for long-horizon agentic tasks that Terra fails. Running everything on Fable 5.1 pays roughly four times as much for work Terra can finish, and running everything on Terra leaves the hardest tasks undone."
+---
+
+Search Console keeps showing me this pairing in both directions. Fable against Terra. Terra against Fable 5. A flagship against a mid-tier model usually means one of two questions.
+
+Either they want to know how much capability the price buys, or they are trying to decide which to standardise on. The first question has a clean answer. The second is the wrong question.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "fable", label: "Claude Fable 5.1", align: "center", mono: true },
+    { key: "terra", label: "GPT-5.6 Terra", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", fable: "$10 / $50", terra: "$2 / $12" },
+    { row: "Cache read per 1M", fable: "$0.25", terra: "$0.20" },
+    { row: "Above 272K input tokens", fable: "$10 / $50", terra: "$4 / $18" },
+    { row: "Intelligence Index v4.3", fable: "53", terra: "42" },
+    { row: "Blended price per 1M", fable: "$7.17", terra: "$1.74" },
+    { row: "Cost to run the full index", fable: "$13,129", terra: "$2,501" },
+    { row: "Output speed, tokens/s", fable: "65.1", terra: "98.8" },
+    { row: "Knowledge cutoff", fable: "Jun 2026", terra: "16 Feb 2026" }
+  ]}
+  highlight={[1]}
+  caption="Prices and cutoffs from Anthropic's pricing and models pages and OpenAI's GPT-5.6 Terra model page. Index, blended price, run cost and speed from Artificial Analysis, read on 16 September 2026 against Intelligence Index v4.3."
+/>
+
+## What 11 points costs
+
+Fable 5.1 leads Terra by 11 points on Intelligence Index v4.3. That is a lot. It is almost the whole distance between Anthropic's own Sonnet 5 and Opus 5.
+
+Every way of measuring the price says roughly four to five times:
+
+- **List:** 5x on input, about 4.2x on output.
+- **Blended:** $7.17 against $1.74, about 4.1x.
+- **Measured:** $13,129 against $2,501 to run Artificial Analysis's full index, about 5.3x.
+
+The three numbers come from different methods and land in the same place. That consistency is worth something on its own. It suggests that, on Artificial Analysis's tasks at least, neither model is hiding a large token-efficiency effect that makes it much cheaper per task than its rate implies, the way there is between [GPT-6 Astra and Sol](/insights/gpt-6-astra-vs-gpt-5-6-sol/).
+
+## The one price where they nearly meet
+
+Read the cache row. Fable 5.1 reads cached tokens at $0.25 per million, because Anthropic prices its cache hits at 2.5% of input. Terra reads cache at $0.20. On that single line the flagship costs 25% more than the mid-tier model, not four times as much.
+
+The whole-request gap only moves toward that 25% when cached input is overwhelmingly larger than output. It rarely is. Under 272K tokens, a request costs 0.25 × cached + 50 × output on Fable 5.1 and 0.20 × cached + 12 × output on Terra, both in millions of tokens. Output is where Fable 5.1 is four times dearer. And it keeps adaptive thinking on for every request, which Anthropic's thinking docs say is billed as output tokens even when the thinking text is not returned to you.
+
+<KeyPoint>
+  The cache discount narrows the gap for long loops that re-read a large context and answer briefly. It does not narrow it for a model that thinks before every answer, which is how Fable 5.1 always runs.
+</KeyPoint>
+
+Long prompts narrow it from the other side. Above 272K input tokens Terra bills the whole request at 2x input and 1.5x output, so $4 / $18. Fable 5.1 stays at $10 / $50 across its 1M window, which narrows the list-price gap to 2.5x on input and 2.8x on output for long-context work.
+
+## If you searched for Fable 5
+
+A lot of the searches name Fable 5 rather than 5.1. On the same index Fable 5 scores 50, three points below 5.1, at the same $10 / $50 list price and a cache read four times as expensive, at $1 per million.
+
+Unless an integration pins you to Fable 5, the useful comparison is 5.1. What stops an easy migration is covered in [Fable 5.1 against Fable 5](/insights/claude-fable-5-1-vs-fable-5/): forced tool use and conversation-history edits both break.
+
+## Route, do not choose
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "Analysis, research, documents, everyday coding", pick: "GPT-5.6 Terra", why: "This is what the tier is for, at a quarter of Fable 5.1's price and faster." },
+    { work: "Long-horizon agentic work Terra has failed", pick: "Claude Fable 5.1", why: "Eleven points is the gap that shows up as a task finished instead of abandoned." },
+    { work: "Hours-long coding session, large refactor", pick: "Claude Fable 5.1", why: "Anthropic's listed gains for Fable 5.1 concentrate exactly here." },
+    { work: "Anything a user waits on", pick: "GPT-5.6 Terra", why: "98.8 against 65.1 tokens per second, before counting Fable 5.1's thinking." },
+    { work: "Very long prompts, answer quality critical", pick: "Test both", why: "Above 272K, Terra's multiplier narrows the gap to under 3x. Measure on your own documents." }
+  ]}
+  caption="Standardising on either one is the mistake. Terra as the default and Fable 5.1 as the escalation costs far less than Fable 5.1 everywhere and finishes more than Terra everywhere."
+/>
+
+The same routing logic, with an even wider price gap, runs through [Fable 5.1 against GPT-5.6 Luna](/insights/claude-fable-5-1-vs-gpt-5-6-luna/). Within Anthropic's own lineup, the cheaper escalation step is [Opus 5 against Fable 5.1](/insights/claude-opus-5-vs-fable-5-1/).
+
+## What would change my mind
+
+A Terra price change. OpenAI's Terra page carries no promotional note, unlike Sol's, but any move changes a ratio this large.
+
+A cost-per-completed-task figure for Terra on long agentic work. If Terra fails and retries often enough on that work, the effective price gap could shrink well below four times.
+
+The next index version. Eleven points is wide enough to survive a rebalance, but the absolute numbers will move.
+
+## Questions people asked
+
+### Is Claude Fable 5.1 better than GPT-5.6 Terra?
+
+Yes, by 11 points on Artificial Analysis's Intelligence Index v4.3, 53 against 42. Terra is faster and about four times cheaper, and it sits a tier below as OpenAI's everyday model.
+
+### How much more expensive is Claude Fable 5.1 than GPT-5.6 Terra?
+
+5x on input and about 4.2x on output at list price, about 4.1x blended, and about 5.3x in full-index run cost. Cached input is the exception, at $0.25 against $0.20.
+
+### What about Claude Fable 5 against GPT-5.6 Terra?
+
+Fable 5 scores 50 against Terra's 42 at the same list price as Fable 5.1, with a pricier cache read. Unless an integration pins you to it, Fable 5.1 is the better model for the same money.
+
+### Should I use Claude Fable 5.1 or GPT-5.6 Terra?
+
+Terra as the default for daily professional work, Fable 5.1 as the escalation for long-horizon agentic tasks Terra fails. Standardising on either costs you money or unfinished work.
+
+If you are designing a routing layer between tiers like these, [the contact page](/contact/) is the fastest route to me.

@@ -1,0 +1,163 @@
+---
+title: "GPT-5.6 Sol beats Sonnet 5 by 9 points. Its price is promotional, and Sonnet 5's is not."
+seoTitle: "GPT-5.6 Sol vs Claude Sonnet 5: price, scores, which to use"
+description: "Sol scores 47 to Sonnet 5's 38 at twice the price. OpenAI calls Sol's pricing promotional through at least 21 November. What that does to the comparison."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "launch"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+    quote: "promotional pricing is available at least through November 21, 2026"
+    claim: "Sol's $4 / $20 is promotional, with no committed price after 21 November 2026"
+    checkedAt: "2026-09-16"
+  - url: "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+    quote: "a 20% reduction in input pricing and a 33% reduction in output pricing"
+    claim: "The stated discount implies a reference price of $5 / $30 for Sol"
+    checkedAt: "2026-09-16"
+  - url: "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+    quote: "1.5x output for the full request"
+    claim: "Sol prompts above 272K input tokens are billed at 2x input and 1.5x output for the whole request"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "The previously scheduled increase to $3/$15 per million input/output tokens on September 1, 2026 will not occur."
+    claim: "Sonnet 5's $2 / $10 is now the standard price, with the scheduled rise cancelled"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "A 900k-token request is billed at the same per-token rate as a 9k-token request."
+    claim: "Claude charges one rate across the whole 1M context window"
+    checkedAt: "2026-09-16"
+tldr:
+  - "On Artificial Analysis's Intelligence Index v4.3, GPT-5.6 Sol scores 47 and Claude Sonnet 5 scores 38. Nine points is a real capability gap, and Sol costs exactly twice as much: $4 / $20 against $2 / $10."
+  - "OpenAI's own model page describes Sol's pricing as promotional, available at least through 21 November 2026. Anthropic made Sonnet 5's $2 / $10 its standard price. Only one of these prices has an end date on it."
+  - "Long prompts widen the gap. Above 272K input tokens, Sol bills the whole request at 2x input and 1.5x output, so $8 / $30. Claude charges one rate across the full 1M window, so Sonnet 5 stays at $2 / $10."
+  - "Sol is the stronger model and worth paying for on hard work with normal-length prompts. Build nothing on its current price that would break at a higher one."
+faq:
+  - q: "Is GPT-5.6 Sol better than Claude Sonnet 5?"
+    a: "On capability, clearly. Artificial Analysis's Intelligence Index v4.3 scores GPT-5.6 Sol at 47 and Claude Sonnet 5 at 38, a nine-point gap, which is much larger than the one or two points that separate most cheap-tier pairs. Sonnet 5 is faster, at 79.5 output tokens per second against Sol's 64.7, and half the price."
+  - q: "Is GPT-5.6 Sol more expensive than Claude Sonnet 5?"
+    a: "Yes, exactly twice as expensive at list price: $4 per million input tokens and $20 output against Sonnet 5's $2 and $10. On prompts above 272K input tokens Sol bills the whole request at 2x input and 1.5x output, which is $8 and $30, while Claude keeps one rate across its full 1M context window. OpenAI also describes Sol's current pricing as promotional through at least 21 November 2026."
+  - q: "Is GPT-5.6 Sol's price going up?"
+    a: "OpenAI has not announced an increase. Its model page says promotional pricing is available at least through 21 November 2026, which commits to that date and nothing after it. Anthropic's Sonnet 5 price went the other way: launched as introductory, then made the standard price. Treat Sol's price as good until 21 November and unknown after."
+  - q: "Should I use GPT-5.6 Sol or Claude Sonnet 5?"
+    a: "Sol for hard work with prompts under 272K tokens, where nine index points matter more than doubling the bill. Sonnet 5 for fast, well-specified work, for anything a user waits on, and for long-context workloads above 272K tokens, where Sol's multiplier makes it four times the input price. If you build on Sol, keep its cost model valid at a higher price than today's."
+---
+
+Search Console tells me people keep typing this comparison into Google, in every word order. Sol against Sonnet 5. Sonnet 5 against Sol.
+
+The usual answer is a benchmark row and a price row. The row that decides it is on neither.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "sol", label: "GPT-5.6 Sol", align: "center", mono: true },
+    { key: "sonnet", label: "Claude Sonnet 5", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", sol: "$4 / $20", sonnet: "$2 / $10" },
+    { row: "Price status", sol: "Promotional, to at least 21 Nov", sonnet: "Standard" },
+    { row: "Above 272K input tokens", sol: "$8 / $30", sonnet: "$2 / $10" },
+    { row: "Intelligence Index v4.3", sol: "47", sonnet: "38" },
+    { row: "Output speed, tokens/s", sol: "64.7", sonnet: "79.5" },
+    { row: "Blended price per 1M", sol: "$3.08", sonnet: "$1.54" },
+    { row: "Context window", sol: "1,050,000", sonnet: "1M" },
+    { row: "Knowledge cutoff", sol: "16 Feb 2026", sonnet: "Jan 2026" }
+  ]}
+  highlight={[1]}
+  caption="Prices, context and cutoffs from OpenAI's GPT-5.6 Sol model page and Anthropic's pricing and models pages. Index, speed and blended price from Artificial Analysis, read on 16 September 2026 against Intelligence Index v4.3."
+/>
+
+Nine index points. Twice the price. And a word on OpenAI's own page that most comparisons leave out.
+
+## Nine points is a real gap
+
+Most of the pairings people argue about are separated by a point or two. Luna and Sonnet 5 are level at 38 on v4.3. Sol against Sonnet 5 is a different kind of comparison: **47 against 38**, on the same version of the same index.
+
+That is two thirds of the gap between Anthropic's own Opus 5 and Sonnet 5, which I wrote up in [Sonnet 5 against Opus 5](/insights/claude-sonnet-5-vs-opus-5/). So if the question is only which model is more capable, it has a clear answer.
+
+The question people are really asking is whether nine points are worth double the bill. That depends on two things the index does not measure.
+
+## The price with an end date
+
+OpenAI's model page for Sol lists $4 per million input tokens and $20 output, and describes that as a 20% reduction in input pricing and a 33% reduction in output pricing. The next sentence: promotional pricing is available **at least through November 21, 2026**.
+
+Run those percentages backwards and they imply a reference price of **$5 / $30**. The page does not say Sol returns to that after 21 November. It commits to a date, not to a price, and anything past that date is unknown.
+
+Anthropic's Sonnet 5 went through the opposite process. It launched at $2 / $10 described as introductory, with a scheduled rise to $3 / $15 on 1 September. Anthropic cancelled the rise, and the pricing page now says the increase will not occur.
+
+<KeyPoint>
+  Of the two prices in this comparison, one is the vendor's standard price and one is promotional until 21 November. That asymmetry matters more than the ratio for anything you build today and run next year.
+</KeyPoint>
+
+I am not predicting an increase. I am saying a cost model that only works at $4 / $20 has a date on it, that date is about nine weeks away, and the page's own arithmetic points at $5 / $30 as the undiscounted figure.
+
+## Long prompts double Sol's input price
+
+The second thing sits in the pricing notes.
+
+On Sol, a prompt with more than **272K input tokens** is billed at 2x input and 1.5x output, and the multiplier applies to the whole request, not only the tokens above the line. Past that threshold Sol costs $8 / $30.
+
+Claude does not do that. Anthropic's pricing page says models from 4.6 on include the full 1M context window at standard pricing, and gives the example directly: a 900k-token request is billed at the same per-token rate as a 9k-token request.
+
+So the price ratio depends on prompt length:
+
+- **Under 272K input tokens:** Sol costs 2x Sonnet 5.
+- **Over 272K input tokens:** Sol costs 4x Sonnet 5 on input and 3x on output.
+
+If your workload is whole repositories, long contracts, or large retrieval contexts, the second line is your price, and it changes the answer.
+
+## Where each one wins
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "Hard reasoning, normal-length prompts", pick: "GPT-5.6 Sol", why: "Nine index points is a real capability difference, and under 272K the price is only 2x." },
+    { work: "Prompts above 272K input tokens", pick: "Claude Sonnet 5", why: "Sol's whole request goes to $8 / $30. Sonnet 5 stays at $2 / $10 across the window." },
+    { work: "Anything a user waits on", pick: "Claude Sonnet 5", why: "79.5 against 64.7 tokens per second." },
+    { work: "A product priced on today's model cost", pick: "Claude Sonnet 5", why: "Its price is Anthropic's standard one. Sol's is promotional to at least 21 November." },
+    { work: "High volume, low ambiguity", pick: "Neither", why: "GPT-5.6 Luna matches Sonnet 5's index score at a tenth of the price." }
+  ]}
+  caption="The pattern: Sol when capability decides and prompts are normal length, Sonnet 5 when latency, long context or price certainty decides."
+/>
+
+For the cheaper tiers on either side, I compared [Luna against Sonnet 5](/insights/gpt-5-6-vs-claude-5/) and [Terra against Sonnet 5](/insights/claude-sonnet-5-vs-gpt-5-6-terra/). If you are weighing Sol against the tier Anthropic actually positions against it, see [Opus 5 against Sol](/insights/claude-opus-5-vs-gpt-5-6-sol/).
+
+## What would change my mind
+
+OpenAI publishing Sol's price after 21 November. If it confirms $4 / $20 as standard, the price-certainty row disappears and Sol's case on normal-length work gets simpler. If it moves to the implied $5 / $30, the ratio to Sonnet 5 goes from 2x to 2.5x input and 3x output.
+
+A cost-per-completed-task comparison for this pair. Artificial Analysis's run costs cover its whole index, not a specific workload, and a stronger model that finishes in fewer steps can close part of a 2x price gap.
+
+A change to either vendor's long-context policy. The 272K line is the biggest single swing factor in this comparison, and it is a pricing decision, not a technical one.
+
+## Questions people asked
+
+### Is GPT-5.6 Sol better than Claude Sonnet 5?
+
+On capability, clearly: 47 against 38 on Artificial Analysis's Intelligence Index v4.3. Sonnet 5 is faster and half the price.
+
+### Is GPT-5.6 Sol more expensive than Claude Sonnet 5?
+
+Twice as expensive at list price, $4 / $20 against $2 / $10. Above 272K input tokens Sol bills the whole request at $8 / $30 while Sonnet 5 stays at $2 / $10, and Sol's current price is promotional through at least 21 November 2026.
+
+### Is GPT-5.6 Sol's price going up?
+
+OpenAI has not announced an increase. Its page commits to promotional pricing through at least 21 November 2026 and says nothing about after. Treat it as known until then.
+
+### Should I use GPT-5.6 Sol or Claude Sonnet 5?
+
+Sol for hard work with prompts under 272K tokens. Sonnet 5 for latency-sensitive work, long-context work above 272K, and anything whose economics must hold at a price you cannot see yet.
+
+If you are pricing a product on top of one of these, [the contact page](/contact/) is the fastest route to me.
