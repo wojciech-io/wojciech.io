@@ -1,0 +1,127 @@
+---
+title: "Mythos 5.1 to nie lepszy Fable 5.1. To te same zdolności za innymi drzwiami."
+seoTitle: "Claude Mythos 5.1 vs Fable 5.1: na czym polega różnica"
+description: "Dokumentacja Anthropic podaje dla Mythos 5.1 te same zdolności, parametry i cenę co dla Fable 5.1. Różni je to, kto ma dostęp, i jedna kontrola w API."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "system"
+featured: false
+draft: false
+locale: "pl"
+translationOf: "claude-mythos-5-1-vs-fable-5-1"
+sources:
+  - url: "https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1"
+    quote: "Same capabilities as Claude Fable 5.1."
+    claim: "Anthropic opisuje Mythos 5.1 jako model o tych samych zdolnościach co Fable 5.1"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1"
+    quote: "Claude Mythos 5.1 doesn't run this check."
+    claim: "Kontrola edycji historii, która potrafi zepsuć integracje z Fable 5.1, nie działa na Mythos 5.1"
+    checkedAt: "2026-09-16"
+  - url: "https://anthropic.com/glasswing"
+    quote: "Securing critical software for the AI era"
+    claim: "Project Glasswing, jedyna droga do Mythos, to program zabezpieczania krytycznego oprogramowania"
+    checkedAt: "2026-09-16"
+tldr:
+  - "Dokumentacja Anthropic opisuje Mythos 5.1 jako model o tych samych zdolnościach co Fable 5.1. Mają wspólne okno kontekstu 1 mln tokenów, maks. wyjście 128 tys., zawsze włączone adaptacyjne myślenie, tokenizer i cenę."
+  - "Różnica, która się liczy, to dostęp. Mythos 5.1 jest dostępny tylko dla zatwierdzonych uczestników Project Glasswing, programu Anthropic do zabezpieczania krytycznego oprogramowania. Wszyscy inni używają Fable 5.1."
+  - "Jest jedna różnica w API. Fable 5.1 sprawdza, czy edytowałeś historię rozmowy przed blokiem myślenia, i potrafi odrzucić zapytanie. Mythos 5.1 tej kontroli nie wykonuje."
+  - "Jeśli nie jesteś w Glasswing, porównanie ma jednowyrazową odpowiedź. Jeśli jesteś, i tak testuj integrację na Fable 5.1, bo to kontrola historii psuje się na modelu publicznym."
+faq:
+  - q: "Czy Claude Mythos 5.1 jest lepszy od Fable 5.1?"
+    a: "W zdolnościach nie, według Anthropic. Dokumentacja opisuje Claude Mythos 5.1 jako model o tych samych zdolnościach co Claude Fable 5.1, a oba mają te same parametry i cenę: okno kontekstu 1 mln tokenów, 128 tys. tokenów maksymalnego wyjścia, zawsze włączone adaptacyjne myślenie, ten sam tokenizer oraz $10 za milion tokenów wejściowych i $50 za wyjście. Różnią się tym, kto ma do nich dostęp, i jedną kontrolą w API, której Mythos 5.1 nie wykonuje."
+  - q: "Jak dostać dostęp do Claude Mythos 5.1?"
+    a: "Tylko przez Project Glasswing. Anthropic udostępnia Mythos 5.1 zatwierdzonym klientom w tym programie i każe kontaktować się w sprawie dostępu z opiekunem konta w Anthropic, AWS albo Google Cloud. Glasswing skupia się na zabezpieczaniu krytycznego oprogramowania, a wśród partnerów startowych są AWS, Apple, Google, Microsoft i Linux Foundation. Opiekunowie projektów open source mogą aplikować przez program Claude for Open Source."
+  - q: "Jaka jest różnica w API między Mythos 5.1 a Fable 5.1?"
+    a: "Kontrola edycji historii. W Fable 5.1 zmiana czegokolwiek przed blokiem myślenia, na przykład promptu systemowego, narzędzi albo wcześniejszej wiadomości, może sprawić, że następne zapytanie się nie powiedzie albo ten blok zostanie pominięty. Dokumentacja Anthropic mówi, że Claude Mythos 5.1 tej kontroli nie wykonuje. Wymuszone użycie narzędzi jest według dokumentacji nieobsługiwane w obu. Zasada, że wcześniejsze modele nie mogą czytać bloków myślenia, jest opisana dla Fable 5.1, a dla Mythos 5.1 dokumentacja jej wprost nie podaje."
+  - q: "Wybrać Mythos 5.1 czy Fable 5.1?"
+    a: "Jeśli nie jesteś zatwierdzonym uczestnikiem Project Glasswing, Fable 5.1, bo tylko z niego możesz skorzystać. Jeśli jesteś, wybieraj pod pracę: Mythos istnieje dla celu programu, czyli bezpieczeństwa. Tak czy inaczej testuj każdą integrację, która sama buduje historię wiadomości, na Fable 5.1, bo tam działa kontrola historii."
+---
+
+Ludzie ciągle pytają, który z nich jest lepszy. Dokumentacja Anthropic odpowiada na to jednym wierszem w tabeli modeli, w której większość czytelników patrzy tylko na kolumnę z identyfikatorem.
+
+Opis Claude Mythos 5.1 brzmi: **te same zdolności co Claude Fable 5.1**.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "fable", label: "Claude Fable 5.1", align: "center", mono: true },
+    { key: "mythos", label: "Claude Mythos 5.1", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Zdolności", fable: "Punkt odniesienia", mythos: "Takie same jak Fable 5.1" },
+    { row: "Wej. / wyj. za 1 mln", fable: "$10 / $50", mythos: "$10 / $50" },
+    { row: "Odczyt cache za 1 mln", fable: "$0,25", mythos: "$0,25" },
+    { row: "Kontekst / maks. wyjście", fable: "1 mln / 128 tys.", mythos: "1 mln / 128 tys." },
+    { row: "Myślenie", fable: "Adaptacyjne, zawsze włączone", mythos: "Adaptacyjne, zawsze włączone" },
+    { row: "Wymuszone użycie narzędzi", fable: "Nieobsługiwane", mythos: "Nieobsługiwane" },
+    { row: "Kontrola edycji historii", fable: "Działa", mythos: "Nie działa" },
+    { row: "Kto może używać", fable: "Wszyscy klienci", mythos: "Tylko Project Glasswing" },
+    { row: "ID w API", fable: "claude-fable-5-1", mythos: "claude-mythos-5-1" }
+  ]}
+  highlight={[6, 7]}
+  caption="Wszystko tutaj pochodzi ze strony What's new in Claude Fable 5.1 w dokumentacji Anthropic i z cennika, stan na 16 września 2026. Poza identyfikatorem modelu różnią się tylko dwa podświetlone wiersze."
+/>
+
+Poza nazwą różnią się dwa wiersze. I to jest cała historia.
+
+## Prawdziwa różnica to drzwi
+
+Mythos 5.1 jest dostępny tylko dla zatwierdzonych klientów w Project Glasswing. Anthropic opisuje Glasswing jako program zabezpieczania krytycznego oprogramowania w erze AI. Wśród partnerów startowych są AWS, Apple, Broadcom, Cisco, CrowdStrike, Google, JPMorganChase, Linux Foundation, Microsoft, NVIDIA i Palo Alto Networks, a dostęp rozszerzono na ponad 40 innych organizacji, które budują albo utrzymują krytyczną infrastrukturę programową.
+
+W sprawie dostępu dokumentacja odsyła do opiekuna konta w Anthropic, AWS albo Google Cloud. Opiekunowie projektów open source mają osobną drogę przez program Claude for Open Source.
+
+Jeśli nic z tego cię nie dotyczy, porównanie jest zakończone. Nie wywołasz Mythos 5.1, a nic w jego dokumentacji nie sugeruje, że używając Fable 5.1, tracisz jakiekolwiek zdolności.
+
+## Jedyna różnica w API
+
+W dokumentacji jest dokładnie jedna różnica w zachowaniu i przemawia za Mythos dla każdego, czyj kod przepisuje historię.
+
+W Fable 5.1 zmiana czegokolwiek, co stoi przed blokiem myślenia, czy to promptu systemowego, tablicy narzędzi, czy wcześniejszej wiadomości, kończy się błędem przy następnym zapytaniu albo pominięciem tego bloku, jeśli włączysz taką opcję. To jedna z trzech zmian łamiących kompatybilność między Fable 5 a Fable 5.1.
+
+Dokumentacja Anthropic mówi to wprost: Claude Mythos 5.1 tej kontroli nie wykonuje.
+
+<Callout type="warning" title="Nie rozwijaj na Mythos, jeśli wdrażasz na Fable">
+  Jeśli twoja organizacja ma dostęp do Glasswing i jednocześnie obsługuje pracę przez Fable 5.1, ta kontrola jest pułapką. Kod, który edytuje historię, działa na Mythos 5.1 i psuje się na Fable 5.1, a egzekwowanie reguły w Fable 5.1 zależy od tego, kiedy utworzono konto wywołujące. Wszystko, co samo buduje tablicę wiadomości, testuj na Fable 5.1, z włączonym pomijaniem bloków i logowaniem input_transformations.
+</Callout>
+
+Wymuszone użycie narzędzi jest według dokumentacji nieobsługiwane w obu modelach, więc ta zmiana dotyczy cię tak czy inaczej. Jednokierunkowa zasada dla bloków myślenia, których nie przeczyta żaden wcześniejszy model Claude, jest opisana dla Fable 5.1, a dla Mythos 5.1 dokumentacja jej wprost nie podaje, więc testuj zamiast zakładać.
+
+## Co mają wspólnego poza parametrami
+
+Oba mają 30-dniową retencję danych i nie są dostępne w trybie zero data retention, chyba że Anthropic wyraźnie się na to zgodzi. Oba są tym, co Anthropic nazywa Covered Models, podobnie jak wcześniej Fable 5 i Mythos 5.
+
+Oba też oznaczają to, co wygenerują. Tekst z każdego z nich ma statystyczny znak wodny Anthropic na każdej platformie, na której model jest dostępny, a obsługiwane pliki graficzne, wideo i audio dostają podpisane poświadczenia C2PA Content Credentials przy pobieraniu przez Files API.
+
+## To który?
+
+Jeśli nie jesteś zatwierdzonym uczestnikiem Glasswing: **Fable 5.1**. Z niego możesz korzystać, a dokumentacja nie daje żadnego powodu w zdolnościach, żeby chcieć drugiego.
+
+Jeśli jesteś: wybieraj pod pracę, do której program powstał, i traktuj Fable 5.1 jako cel kompatybilności dla wszystkiego, co działa także poza nim.
+
+Jeśli tak naprawdę decydujesz, czy model klasy Fable jest w ogóle wart swojej ceny, to inne pytanie, a bardziej przydatne porównanie to [Opus 5 kontra Fable 5.1](/pl/insights/claude-opus-5-vs-fable-5-1/). Wszystkie modele w jednej tabeli są w [porównaniu modeli AI](/pl/insights/ai-model-comparison/).
+
+## Pytania, które padły
+
+### Czy Claude Mythos 5.1 jest lepszy od Fable 5.1?
+
+W zdolnościach nie, według Anthropic. Dokumentacja opisuje Claude Mythos 5.1 jako model o tych samych zdolnościach co Claude Fable 5.1, a oba mają te same parametry i cenę: okno kontekstu 1 mln tokenów, 128 tys. tokenów maksymalnego wyjścia, zawsze włączone adaptacyjne myślenie, ten sam tokenizer oraz $10 za milion tokenów wejściowych i $50 za wyjście. Różnią się tym, kto ma do nich dostęp, i jedną kontrolą w API, której Mythos 5.1 nie wykonuje.
+
+### Jak dostać dostęp do Claude Mythos 5.1?
+
+Tylko przez Project Glasswing. Anthropic udostępnia Mythos 5.1 zatwierdzonym klientom w tym programie i każe kontaktować się w sprawie dostępu z opiekunem konta w Anthropic, AWS albo Google Cloud. Glasswing skupia się na zabezpieczaniu krytycznego oprogramowania, a wśród partnerów startowych są AWS, Apple, Google, Microsoft i Linux Foundation. Opiekunowie projektów open source mogą aplikować przez program Claude for Open Source.
+
+### Jaka jest różnica w API między Mythos 5.1 a Fable 5.1?
+
+Kontrola edycji historii. W Fable 5.1 zmiana czegokolwiek przed blokiem myślenia, na przykład promptu systemowego, narzędzi albo wcześniejszej wiadomości, może sprawić, że następne zapytanie się nie powiedzie albo ten blok zostanie pominięty. Dokumentacja Anthropic mówi, że Claude Mythos 5.1 tej kontroli nie wykonuje. Wymuszone użycie narzędzi jest według dokumentacji nieobsługiwane w obu. Zasada, że wcześniejsze modele nie mogą czytać bloków myślenia, jest opisana dla Fable 5.1, a dla Mythos 5.1 dokumentacja jej wprost nie podaje.
+
+### Wybrać Mythos 5.1 czy Fable 5.1?
+
+Jeśli nie jesteś zatwierdzonym uczestnikiem Project Glasswing, Fable 5.1, bo tylko z niego możesz skorzystać. Jeśli jesteś, wybieraj pod pracę: Mythos istnieje dla celu programu, czyli bezpieczeństwa. Tak czy inaczej testuj każdą integrację, która sama buduje historię wiadomości, na Fable 5.1, bo tam działa kontrola historii.
+
+Jeśli sprawdzasz, co model z ograniczonym dostępem oznacza dla roadmapy produktu, [strona kontaktowa](/pl/contact/) to najszybsza droga do mnie.
