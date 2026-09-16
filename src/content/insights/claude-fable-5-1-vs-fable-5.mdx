@@ -1,0 +1,147 @@
+---
+title: "Fable 5.1 costs the same as Fable 5 and breaks three things. Check them before you change the model ID."
+seoTitle: "Claude Fable 5.1 vs Fable 5: what changed, what breaks"
+description: "Same $10 / $50 price, cache reads at a quarter of the cost, 53 against 50 on Artificial Analysis. Three breaking API changes, and how to find them first."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "launch"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1"
+    quote: "If you already call Claude Fable 5, three changes are breaking"
+    claim: "Anthropic lists three breaking changes from Fable 5 to Fable 5.1"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1"
+    quote: "The check is enforced for new accounts created on or after August 31, 2026."
+    claim: "The history-editing check is enforced only for accounts created on or after 31 August 2026"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "a cache hit costs 2.5% of the standard input price"
+    claim: "Fable 5.1 cache reads cost $0.25 per million against Fable 5's $1"
+    checkedAt: "2026-09-16"
+tldr:
+  - "Fable 5.1 keeps Fable 5's $10 / $50 price and cuts cache reads from $1 to $0.25 per million tokens. On Artificial Analysis's Intelligence Index v4.3 it scores 53 against Fable 5's 50."
+  - "Three changes are breaking. Forced tool use now returns a 400 error. Earlier models cannot read its thinking blocks. Editing an earlier turn invalidates every thinking block after it."
+  - "The third one is enforced only for accounts created on or after 31 August 2026. An older account will pass every test and fail after an account move, which is the worst time to find out."
+  - "Cheaper per cached token is not cheaper to run. Artificial Analysis's blended price fell from $7.70 to $7.17, but running its full index cost $13,129 on Fable 5.1 against $11,161 on Fable 5."
+faq:
+  - q: "What changed between Claude Fable 5 and Fable 5.1?"
+    a: "The list price stayed at $10 per million input tokens and $50 output, and cache reads fell from $1 to $0.25 per million. Anthropic lists gains in long-running agentic coding, knowledge work with documents and spreadsheets, research, vision, long context and computer use. On the Artificial Analysis Intelligence Index v4.3 it scores 53 against Fable 5's 50. Three API changes are breaking, and several default behaviours differ, including less predictable parallel tool calling."
+  - q: "What are the breaking changes in Claude Fable 5.1?"
+    a: "Three. Setting tool_choice to any or to a named tool returns a 400 error, so forced tool use no longer works. Thinking blocks produced by Fable 5.1 cannot be read by any earlier model, so a router that falls back mid-conversation silently loses that reasoning. And modifying anything before a Fable 5.1 thinking block, including the system prompt or tools, invalidates every thinking block after it."
+  - q: "Is Claude Fable 5.1 cheaper than Fable 5?"
+    a: "Per cached token, yes: cache reads cost $0.25 per million on Fable 5.1 against $1 on Fable 5, and Artificial Analysis's blended price fell from $7.70 to $7.17. Per full evaluation, no: running Artificial Analysis's index cost $13,128.86 on Fable 5.1 against $11,160.86 on Fable 5. Cache-heavy agent loops get cheaper; workloads that make Fable 5.1 write more get dearer."
+  - q: "How do I migrate from Fable 5 to Fable 5.1?"
+    a: "Change the model ID from claude-fable-5 to claude-fable-5-1, then remove any tool_choice of type any or tool, and move schema enforcement to strict tool use or structured outputs. Make the conversation history append-only, and run a session with the prefix mismatch behaviour set to drop_block while logging input_transformations to find where your code edits history. Then re-tune effort and re-run your evals."
+---
+
+Fable 5.1 is the rare upgrade where the price stays put and one line of the bill gets cheaper. It is also an upgrade that will break integrations which change nothing but the model ID.
+
+Same docs page. Most people read the first fact and never reach the second.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "old", label: "Claude Fable 5", align: "center", mono: true },
+    { key: "new", label: "Claude Fable 5.1", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", old: "$10 / $50", new: "$10 / $50" },
+    { row: "Cache read per 1M", old: "$1.00", new: "$0.25" },
+    { row: "Intelligence Index v4.3", old: "50", new: "53" },
+    { row: "Blended price per 1M", old: "$7.70", new: "$7.17" },
+    { row: "Cost to run the full index", old: "$11,161", new: "$13,129" },
+    { row: "Forced tool use", old: "Supported", new: "400 error" },
+    { row: "API ID", old: "claude-fable-5", new: "claude-fable-5-1" }
+  ]}
+  caption="Prices, capabilities and breaking changes from Anthropic's pricing page and its What's new in Claude Fable 5.1 page. Index, blended price and run cost from Artificial Analysis, read on 16 September 2026 against Intelligence Index v4.3."
+/>
+
+## Three changes break working code
+
+Anthropic says it plainly: if you already call Claude Fable 5, three changes are breaking.
+
+**1. Forced tool use returns an error.** A request with `tool_choice` set to `{"type": "any"}` or to a named tool gets a 400 back. The reason given is that thinking is always on, a forced call would skip it, and the model would put its reasoning into the tool arguments instead. The fix is `tool_choice: {"type": "auto"}` with strict tool use or structured outputs, plus a plain instruction in the prompt saying when to use the tool.
+
+**2. Earlier models cannot read its thinking blocks.** The preservation runs one way. Fable 5.1 reads thinking from older Claude models, and no older model reads Fable 5.1's. If you run a router or a fallback that switches models mid-conversation, the API drops the unreadable blocks before the model sees them. Without a specific beta header, it does that silently.
+
+**3. Editing earlier turns invalidates thinking.** Change anything before a Fable 5.1 thinking block, including the system prompt or the tools array, and the next request errors, or drops the block if you opt into that behaviour. Injecting a status line into an old turn and removing it on the next request counts. So does rebuilding the system prompt between requests.
+
+<Callout type="warning" title="The third change can pass every test you run">
+  Anthropic enforces the history check for new accounts created on or after 31 August 2026. On an older account the API records the mismatch and does nothing about it unless you ask. An integration can pass all its tests today on a long-standing account and start failing when it runs under an account created after that date, a client's or a new team's. Test with the drop behaviour switched on before you migrate, not after.
+</Callout>
+
+Claude Code, claude.ai, Claude Managed Agents and the Claude Agent SDK keep the history intact for you, so all of this lands on code that builds its own `messages` array. That code has to change.
+
+## Cheaper per token is not cheaper to run
+
+The pricing story is real and narrower than it sounds.
+
+Cache reads on Fable 5.1 cost 0.025 times the base input price, which is $0.25 per million, against $1 on Fable 5. A long agent loop that re-reads a large cached prefix pays a quarter of what it paid before for that part of the bill. Artificial Analysis's blended price, which weights cache hits heavily, moved from $7.70 to $7.17.
+
+Then look at what it cost Artificial Analysis to run the whole index: **$13,128.86 on Fable 5.1 against $11,160.86 on Fable 5**. About 18% more, at identical list prices.
+
+The list rates did not change, so the difference is how many tokens the run consumed. A cheaper cache read cannot offset a run that uses more tokens overall, and it does not touch output at all.
+
+<KeyPoint>
+  Re-reading context got cheaper. Writing did not. Measure your own mix before you tell anyone the upgrade saves money.
+</KeyPoint>
+
+## What changed without an error message
+
+These differences show up with no code change, and none of them fails loudly:
+
+- **Parallel tool calling is more variable.** Where Fable 5 batched several tool calls, Fable 5.1 may make one per turn. The answers are not worse. The extra round trips cost tokens and time.
+- **Fewer progress updates during long runs**, especially at higher effort. A UI that relied on narration between tool calls goes quiet.
+- **More answers from memory at low effort.** It calls search or retrieval less often at the lowest setting.
+- **Whole-file rewrites for small edits**, which cost more output tokens than a targeted change.
+- **Unmarked quotations in summaries.** It is more likely to reproduce source passages without marking them as quotes.
+
+That last one matters more than it looks if you publish summaries, and Anthropic's own prompting guide for Fable 5.1 gives it a section of its own. Read it before a summary goes out under your name.
+
+## Should you move?
+
+Yes, once the three breaking changes are handled. The index gain is three points at no change in list price, and the capability gains Anthropic lists sit where people use a Fable-class model in the first place: long agentic coding, research, and documents that end up finished.
+
+The order I would do it in:
+
+1. Search for `tool_choice` set to `any` or `tool` and move that enforcement to strict tool use or structured outputs.
+2. Run a session with the prefix mismatch behaviour set to `drop_block` and log `input_transformations`. That tells you exactly where your code edits history.
+3. Replace injected per-turn reminders with turn-scoped system messages.
+4. Change the model ID.
+5. Re-run evals, and watch token counts on agent loops for the one-call-per-turn pattern.
+
+If you are also weighing Fable 5.1 against the cheaper tier below it, I compared it with [Claude Opus 5](/insights/claude-opus-5-vs-fable-5-1/). If you have been offered Mythos 5.1, I covered how that differs in [Mythos 5.1 against Fable 5.1](/insights/claude-mythos-5-1-vs-fable-5-1/).
+
+## What would change my mind
+
+A measured cost per completed task on an agentic coding workload with a large cached repository. That is the one place the cache discount could outweigh the extra output, and the whole-index run cost does not answer it.
+
+Enforcement of the history check for older accounts too. Today it depends on when the account was created, and the day that changes, the third breaking change stops being a latent risk for everyone who skipped it.
+
+## Questions people asked
+
+### What changed between Claude Fable 5 and Fable 5.1?
+
+The price stayed at $10 / $50 and cache reads fell from $1 to $0.25 per million. It scores 53 against 50 on the Artificial Analysis Intelligence Index v4.3, with gains in long agentic coding, documents, research, vision, long context and computer use. Three API changes are breaking.
+
+### What are the breaking changes in Claude Fable 5.1?
+
+Forced tool use returns a 400 error. Earlier models cannot read its thinking blocks, so a mid-conversation fallback silently loses that reasoning. Editing anything before a thinking block invalidates every thinking block after it.
+
+### Is Claude Fable 5.1 cheaper than Fable 5?
+
+Per cached token, yes, and the blended price fell from $7.70 to $7.17. Per full evaluation, no: $13,128.86 against $11,160.86 to run Artificial Analysis's index.
+
+### How do I migrate from Fable 5 to Fable 5.1?
+
+Remove forced tool use, make history append-only, test with the drop behaviour on and log `input_transformations`, then change the model ID and re-run your evals.
+
+If your integration builds its own message history and you want a second pair of eyes before migrating, [the contact page](/contact/) is the fastest route to me.
