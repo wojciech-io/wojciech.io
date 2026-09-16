@@ -1,0 +1,177 @@
+---
+title: "Claude Code and Codex tie at 62 on the Coding Agent Index. Codex gets there for 40% less per task."
+seoTitle: "Claude Code vs Codex: coding agent benchmark and cost"
+description: "Fable 5.1 in Claude Code and GPT-6 Astra in Codex both score 62. Per task, Codex costs $7.47 against $12.39 and uses 3.3M tokens against 5.7M. Where each leads."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - Claude Code
+  - OpenAI
+  - AI Systems
+category: "AI Systems"
+coverType: "terminal"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://artificialanalysis.ai/methodology/coding-agents-benchmarking"
+    quote: "Coding Agent Index v1.5 is the equal-weight average of DeepSWE v1.1, Terminal-Bench 4.0 and SWE-Atlas-QnA."
+    claim: "What the Coding Agent Index measures"
+    checkedAt: "2026-09-16"
+  - url: "https://artificialanalysis.ai/methodology/coding-agents-benchmarking"
+    quote: "The current public index covers 303 evaluated tasks across the 3 benchmark components."
+    claim: "How many tasks sit behind each score"
+    checkedAt: "2026-09-16"
+  - url: "https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-codex"
+    quote: "Codex has a lower cost per task than Claude Code"
+    claim: "Cost per task: Codex with GPT-6 Astra $7.47, Claude Code with Fable 5.1 $12.39"
+    checkedAt: "2026-09-16"
+tldr:
+  - "On Artificial Analysis's Coding Agent Index v1.5, Claude Code running Claude Fable 5.1 and Codex running GPT-6 Astra both score 62. Artificial Analysis gives Claude Code the edge on decimals."
+  - "Codex reaches that score for $7.47 per task against Claude Code's $12.39, in 29.4 minutes against 34.8, using 3.3 million tokens against 5.7 million."
+  - "They lead in different places. Codex wins DeepSWE, the long-horizon repository tasks, 68% to 64%. Claude Code wins Terminal-Bench 4.0, 58% to 56%, and SWE-Atlas-QnA, 65% to 62%."
+  - "One step down, Claude Code with Opus 5 scores 60 for $10.79 per task and Codex with GPT-5.6 Sol scores 55 for $6.58. The harness choice is really a choice of model, cost and where your work leans."
+faq:
+  - q: "Is Claude Code better than Codex?"
+    a: "They are level at the top of Artificial Analysis's Coding Agent Index v1.5: Claude Code with Claude Fable 5.1 and Codex with GPT-6 Astra both score 62, with Claude Code ahead on decimals. Codex is cheaper and faster per task, at $7.47 and 29.4 minutes against $12.39 and 34.8 minutes. Claude Code leads on Terminal-Bench 4.0 and SWE-Atlas-QnA; Codex leads on DeepSWE."
+  - q: "Which is cheaper, Claude Code or Codex?"
+    a: "Codex, on Artificial Analysis's measurement at the top of each lineup: $7.47 per task with GPT-6 Astra against $12.39 with Claude Fable 5.1 in Claude Code, about 40% less. It also used 3.3 million tokens per task against 5.7 million. The cost is calculated from API pay-per-token pricing, not consumer subscription plans."
+  - q: "What does the Coding Agent Index measure?"
+    a: "It is the equal-weight average of three benchmarks run inside coding agent harnesses: DeepSWE v1.1 with 113 long-horizon software engineering tasks, Terminal-Bench 4.0 with 66 agentic terminal tasks, and SWE-Atlas-QnA with 124 repository question-and-answer tasks, 303 tasks in all. Each task is attempted three times and the scores averaged."
+  - q: "Should I use Claude Code or Codex?"
+    a: "At the top tier the scores are level, so decide on cost and where your work leans. Codex with GPT-6 Astra is cheaper per task and stronger on long-horizon repository work. Claude Code with Fable 5.1 is stronger on terminal work and on answering questions about a codebase. If you are already in one harness, the gap is not large enough to justify moving."
+---
+
+For a year the argument about coding agents ran on vibes. People who liked Claude Code said it respected their codebase, the conventions and the way things were already done. People who liked Codex said it did not get stuck.
+
+Artificial Analysis now runs the same 303 tasks through both, and publishes the scores, the cost and the time. At the top, the answer is a tie. Underneath the tie, they are not the same tool.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "cc", label: "Claude Code + Fable 5.1", align: "center", mono: true },
+    { key: "cx", label: "Codex + GPT-6 Astra", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Coding Agent Index v1.5", cc: "62", cx: "62" },
+    { row: "DeepSWE v1.1", cc: "64%", cx: "68%" },
+    { row: "Terminal-Bench 4.0", cc: "58%", cx: "56%" },
+    { row: "SWE-Atlas-QnA", cc: "65%", cx: "62%" },
+    { row: "Cost per task", cc: "$12.39", cx: "$7.47" },
+    { row: "Time per task", cc: "34.8 min", cx: "29.4 min" },
+    { row: "Tokens per task", cc: "5.7M", cx: "3.3M" }
+  ]}
+  highlight={[4]}
+  caption="From Artificial Analysis's Claude Code vs Codex comparison, read on 16 September 2026. Fable 5.1 was run at max effort with fallback, GPT-6 Astra at max effort. Cost per task uses API pay-per-token pricing, not subscription plans."
+/>
+
+## What the index actually runs
+
+The Coding Agent Index v1.5 is the equal-weight average of three benchmarks, each run inside a real agent harness:
+
+- **DeepSWE v1.1**, 113 long-horizon software engineering tasks
+- **Terminal-Bench 4.0**, 66 agentic terminal tasks
+- **SWE-Atlas-QnA**, 124 questions about a repository, graded against Scale AI's rubric with Claude Opus 4.5 as the judge
+
+Every task is attempted three times and the scores are averaged, then averaged across tasks so each task counts equally. Timeouts score zero. So do safety refusals.
+
+That design matters. This is not a model answering coding questions. It is the model plus the harness, doing the work, with the refusals and the timeouts counted against it.
+
+## The tie hides three different results
+
+Artificial Analysis gives Claude Code the edge on decimals, but at 62 each, the headline is a draw. The breakdown is not:
+
+- **DeepSWE, long-horizon repository work:** Codex leads, 68% to 64%.
+- **Terminal-Bench 4.0:** Claude Code leads, 58% to 56%.
+- **SWE-Atlas-QnA, explaining a codebase:** Claude Code leads, 65% to 62%.
+
+So the old anecdotes were not wrong. They were describing different work. If most of what you hand an agent is long feature work across a repository, the Codex column is the one to read. If it is terminal operations and understanding an unfamiliar codebase, Claude Code's.
+
+<KeyPoint>
+  A tied index is an average of three races with different winners. Pick by the race that looks like your work, not by the average.
+</KeyPoint>
+
+## Codex is cheaper to reach the same score
+
+This is where the two separate cleanly.
+
+Codex with Astra cost **$7.47 per task** against Claude Code with Fable 5.1 at **$12.39**, about 40% less. It finished in 29.4 minutes against 34.8. And it used **3.3 million tokens per task against 5.7 million**.
+
+The token figure explains the cost figure. Astra lists at the same $10 / $50 per million as Fable 5.1, so the saving is not a cheaper rate. It is fewer tokens spent getting to the same score, the same efficiency I described in [GPT-6 Astra against Sol](/insights/gpt-6-astra-vs-gpt-5-6-sol/).
+
+Artificial Analysis calculates these costs from API pay-per-token pricing and treats cached input separately where the provider prices it that way. If you run either tool on a subscription plan, your costs will look different, but the relative token use will not.
+
+## One tier down, the gap opens
+
+<DataTable
+  columns={[
+    { key: "agent", label: "Harness and model" },
+    { key: "idx", label: "Index", align: "center", mono: true },
+    { key: "cost", label: "Cost / task", align: "center", mono: true },
+    { key: "time", label: "Time / task", align: "center", mono: true },
+    { key: "tok", label: "Tokens / task", align: "center", mono: true }
+  ]}
+  rows={[
+    { agent: "Claude Code + Fable 5.1 (max)", idx: "62", cost: "$12.39", time: "34.8 min", tok: "5.7M" },
+    { agent: "Codex + GPT-6 Astra (max)", idx: "62", cost: "$7.47", time: "29.4 min", tok: "3.3M" },
+    { agent: "Claude Code + Opus 5 (max)", idx: "60", cost: "$10.79", time: "41.9 min", tok: "11.4M" },
+    { agent: "Codex + GPT-5.6 Sol (max)", idx: "55", cost: "$6.58", time: "20.6 min", tok: "10.2M" },
+    { agent: "Claude Code + Qwen3.8 Max", idx: "43", cost: "$3.48", time: "1.1 h", tok: "8.7M" },
+    { agent: "Codex + DeepSeek V4 Pro", idx: "43", cost: "$0.24", time: "40.3 min", tok: "24.2M" },
+    { agent: "Codex + DeepSeek V4 Flash", idx: "39", cost: "$0.08", time: "18.3 min", tok: "15.4M" }
+  ]}
+  caption="All variants from Artificial Analysis's Claude Code vs Codex comparison, read on 16 September 2026."
+/>
+
+Below the top, the lineups diverge. Claude Code with Opus 5 scores 60, five points above Codex with Sol at 55, and costs $10.79 against $6.58. Opus 5 is the better coder here and Sol is the cheaper and faster one, at 20.6 minutes per task.
+
+The bottom of the table is worth a look too. Both harnesses run models from other labs. Codex with DeepSeek V4 Flash scores 39 for **eight cents a task**, which is 63% of the top score at under 1% of Fable 5.1's cost. That is not a replacement for a flagship. It is a very cheap first pass.
+
+## How I would choose
+
+<DataTable
+  columns={[
+    { key: "sit", label: "Your situation" },
+    { key: "pick", label: "Pick", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { sit: "Already running one harness", pick: "Stay", why: "A tie at the top is not a reason to migrate prompts, permissions and habits." },
+    { sit: "Long feature work across a repository", pick: "Codex + Astra", why: "Leads DeepSWE 68% to 64%, and costs about 40% less per task." },
+    { sit: "Terminal operations, understanding a codebase", pick: "Claude Code + Fable 5.1", why: "Leads Terminal-Bench 4.0 and SWE-Atlas-QnA." },
+    { sit: "Cost per task decides", pick: "Codex", why: "Cheaper at the top tier and at the tier below." },
+    { sit: "Best score below the flagships", pick: "Claude Code + Opus 5", why: "60 against Sol's 55, for about 64% more per task." }
+  ]}
+  caption="At the top the index is tied, so the decision is about where your work leans and what a task costs."
+/>
+
+For the models inside the harnesses, I compared [Opus 5 against Fable 5.1](/insights/claude-opus-5-vs-fable-5-1/) and [Opus 5 against Sol](/insights/claude-opus-5-vs-gpt-5-6-sol/). For the other benchmark people quote, see [the Intelligence Index v4.3 explained](/insights/artificial-analysis-intelligence-index-v4-3/).
+
+## What would change my mind
+
+A version bump to the Coding Agent Index. v1.5 is equal-weighted across three benchmarks; a reweighting toward long-horizon work would break the tie in Codex's favour, and toward codebase questions in Claude Code's.
+
+Subscription-plan cost figures. Most people run these tools on plans, not raw API billing, and a plan that absorbs token use changes which one is cheaper for you.
+
+Any new top model in either harness, because a tie this close rarely survives the next release on either side.
+
+## Questions people asked
+
+### Is Claude Code better than Codex?
+
+They tie at 62 on Artificial Analysis's Coding Agent Index v1.5 at the top of each lineup, with Claude Code ahead on decimals. Codex is cheaper and faster per task; Claude Code leads on Terminal-Bench 4.0 and SWE-Atlas-QnA, and Codex on DeepSWE.
+
+### Which is cheaper, Claude Code or Codex?
+
+Codex: $7.47 per task with GPT-6 Astra against $12.39 with Fable 5.1 in Claude Code, and 3.3 million tokens against 5.7 million. Costs are from API pricing, not subscription plans.
+
+### What does the Coding Agent Index measure?
+
+The equal-weight average of DeepSWE v1.1, Terminal-Bench 4.0 and SWE-Atlas-QnA, run inside coding agent harnesses: 303 tasks, each attempted three times.
+
+### Should I use Claude Code or Codex?
+
+At the top tier they are level, so decide on cost and where your work leans. If you are already in one, the gap is not large enough to justify moving.
+
+If you are setting up coding agents for a team and want the harness chosen against your actual work, [the contact page](/contact/) is the fastest route to me.

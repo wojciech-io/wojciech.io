@@ -1,0 +1,153 @@
+---
+title: "GPT-5.6 Luna is cheaper than Claude Haiku 4.5 and scores twice as high. Here is what Haiku still has."
+seoTitle: "Claude Haiku 4.5 vs GPT-5.6 Luna: price, scores, verdict"
+description: "Luna costs $0.20 / $1.20 and scores 38. Haiku 4.5 costs $1 / $5 and scores 18. On the numbers it is not close, and Haiku's retirement window opens in October."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview"
+    quote: "The fastest model with near-frontier intelligence"
+    claim: "Anthropic's positioning of Haiku 4.5"
+    checkedAt: "2026-09-16"
+  # The retirement row sits in a section the docs render client-side; the
+  # markdown version of the same page carries it.
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview.md"
+    quote: "Not sooner than October 15, 2026"
+    claim: "Haiku 4.5's earliest possible retirement date on Anthropic's platforms"
+    checkedAt: "2026-09-16"
+  - url: "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
+    quote: "1.5x output for the full request"
+    claim: "Luna prompts above 272K input tokens are billed at 2x input and 1.5x output"
+    checkedAt: "2026-09-16"
+tldr:
+  - "GPT-5.6 Luna lists at $0.20 / $1.20 per million tokens. Claude Haiku 4.5 lists at $1 / $5. Luna is five times cheaper on input and about four times cheaper on output."
+  - "On Artificial Analysis's Intelligence Index v4.3, Luna scores 38. Haiku 4.5 scores 18 with reasoning and an estimated 15 without. Luna is also faster, at 115 tokens per second against Haiku's 84.7."
+  - "Luna has a 1,050,000 token context window against Haiku's 200K, and a knowledge cutoff of February 2026 against Haiku's reliable cutoff of February 2025."
+  - "Haiku 4.5 is the smallest current Claude model, and Anthropic's own page says it retires not sooner than 15 October 2026. Its remaining case is staying inside Anthropic, not the numbers."
+faq:
+  - q: "Is GPT-5.6 Luna better than Claude Haiku 4.5?"
+    a: "On every published measure I can find, yes. Artificial Analysis's Intelligence Index v4.3 scores Luna at 38 and Haiku 4.5 at 18 with reasoning, or an estimated 15 without. Luna is faster at 115 output tokens per second against 84.7, has a 1,050,000 token context window against 200K, and a newer knowledge cutoff. It is also cheaper."
+  - q: "Which is cheaper, Claude Haiku 4.5 or GPT-5.6 Luna?"
+    a: "Luna. It costs $0.20 per million input tokens and $1.20 output against Haiku 4.5's $1 and $5, so five times cheaper on input and about four times on output. Artificial Analysis's blended price is $0.17 against $0.77. On prompts above 272K input tokens Luna bills at 2x input and 1.5x output, but Haiku cannot accept a prompt that long at all."
+  - q: "When is Claude Haiku 4.5 being retired?"
+    a: "Anthropic's models page gives its retirement as not sooner than 15 October 2026 on Anthropic-operated platforms, meaning that is the earliest possible date rather than a scheduled one. Amazon Bedrock and Google Cloud set their own dates. Anything built on Haiku 4.5 should have a migration plan."
+  - q: "Should I use Claude Haiku 4.5 or GPT-5.6 Luna?"
+    a: "For new work where you are free to choose a vendor, Luna: it is cheaper, scores higher, is faster and takes far longer prompts. Keep Haiku 4.5 only where staying inside Anthropic matters more than the numbers, such as an existing Claude integration or a data agreement, and plan for its retirement window."
+---
+
+Anthropic describes Haiku 4.5 as the fastest model with near-frontier intelligence. Inside Anthropic's lineup, the first half is true.
+
+Put it next to GPT-5.6 Luna and the numbers support neither half.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "haiku", label: "Claude Haiku 4.5", align: "center", mono: true },
+    { key: "luna", label: "GPT-5.6 Luna", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", haiku: "$1 / $5", luna: "$0.20 / $1.20" },
+    { row: "Cache read per 1M", haiku: "$0.10", luna: "$0.02" },
+    { row: "Intelligence Index v4.3", haiku: "18 (reasoning)", luna: "38" },
+    { row: "Output speed, tokens/s", haiku: "84.7", luna: "115.0" },
+    { row: "Blended price per 1M", haiku: "$0.77", luna: "$0.17" },
+    { row: "Context window", haiku: "200K", luna: "1,050,000" },
+    { row: "Max output", haiku: "64K", luna: "128,000" },
+    { row: "Knowledge cutoff", haiku: "Feb 2025 (reliable)", luna: "16 Feb 2026" },
+    { row: "Retirement", haiku: "Not sooner than 15 Oct 2026", luna: "Not stated" }
+  ]}
+  caption="Prices, specs and retirement from Anthropic's pricing and models pages and OpenAI's GPT-5.6 Luna model page. Index, speed and blended price from Artificial Analysis, read on 16 September 2026 against Intelligence Index v4.3. Haiku 4.5's non-reasoning variant scores an estimated 15."
+/>
+
+Cheaper, higher scoring, faster, longer context, newer knowledge. I went looking for the row where Haiku 4.5 comes out ahead, in any of the numbers either vendor publishes or Artificial Analysis measures, and did not find one.
+
+## Twenty points at a fifth of the price
+
+On Intelligence Index v4.3, Luna scores **38**. Haiku 4.5 scores **18** with reasoning on and an estimated **15** without.
+
+Twenty points is not a small-model rounding error. It is wider than the gap between Sonnet 5 and Opus 5 in Anthropic's own lineup, which I wrote up in [Sonnet 5 against Opus 5](/insights/claude-sonnet-5-vs-opus-5/). And Luna is the cheaper model: five times cheaper on input, about four times on output, $0.17 against $0.77 blended.
+
+Speed usually decides the small tier. Luna wins that too, at 115 output tokens per second against Haiku 4.5's 84.7 on Artificial Analysis's measurement.
+
+## The context gap is structural
+
+Haiku 4.5 has a 200K context window and a 64K output limit. Luna has 1,050,000 and 128,000.
+
+You cannot engineer around that. A 400K-token document fits in Luna's window and does not fit in Haiku's at all. Luna does charge more for it: above 272K input tokens it bills the whole request at 2x input and 1.5x output, so $0.40 / $1.80. That is still cheaper than Haiku's standard rate, on a prompt Haiku cannot take.
+
+<KeyPoint>
+  Most small-model comparisons argue about price and speed. This one is decided before either comes up, by how much the model can read.
+</KeyPoint>
+
+## The retirement window
+
+Anthropic's models page lists Haiku 4.5's retirement as **not sooner than 15 October 2026** on Anthropic-operated platforms.
+
+"Not sooner than" is a floor, not a scheduled shutdown. Nothing says Haiku 4.5 goes away on that date. But it is the earliest date Anthropic has committed to keeping it, a month from now, and Amazon Bedrock and Google Cloud set their own. If a production system depends on Haiku 4.5, the migration plan belongs on this quarter's list, whichever model it points to.
+
+## What Haiku 4.5 still has
+
+Not the numbers. What it has is Anthropic.
+
+- **An existing Claude integration.** If your prompts, tools and evaluation harness are built on the Claude API, switching vendor for the small tier adds a second API, a second set of behaviours and a second bill.
+- **Commercial and data terms.** If your agreements, data residency or procurement approvals cover Anthropic and not OpenAI, that decides it regardless of price.
+- **One vendor for routing.** A router that escalates from a small Claude model to Opus 5 or Fable 5.1 keeps everything in one API.
+
+Those are real reasons. They are reasons to stay, not reasons to choose Haiku 4.5 fresh.
+
+## Which one I would use
+
+<DataTable
+  columns={[
+    { key: "sit", label: "Situation" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { sit: "New high-volume work, free to choose", pick: "GPT-5.6 Luna", why: "Cheaper, twenty index points higher, faster, five times the context." },
+    { sit: "Documents longer than 200K tokens", pick: "GPT-5.6 Luna", why: "Haiku 4.5 cannot take them." },
+    { sit: "Existing Claude integration, simple tasks", pick: "Haiku 4.5, for now", why: "Staying in one API has a cost of its own. Plan for the retirement window." },
+    { sit: "Agreements cover Anthropic only", pick: "Claude", why: "Consider Sonnet 5 for anything Haiku 4.5 struggles with; it scores 38 at $2 / $10." }
+  ]}
+  caption="On the numbers, Luna. On vendor constraints, Claude, with a plan for what replaces Haiku 4.5."
+/>
+
+For the Claude-side alternative, I compared [Haiku 4.5 against Sonnet 5](/insights/claude-haiku-4-5-vs-sonnet-5/). Luna against Anthropic's mid tier is in [Luna against Sonnet 5](/insights/gpt-5-6-vs-claude-5/).
+
+## What would change my mind
+
+A new small Claude model. Haiku 4.5's reliable knowledge cutoff is February 2025, and a successor is the most likely thing to change this comparison.
+
+A Luna price change. At $0.20 input, a move of a few cents changes the ratio a lot.
+
+A cost-per-task comparison on simple, high-volume work. On very short tasks the index gap may not show up at all, and then the question is only price and speed, which Luna still wins on.
+
+## Questions people asked
+
+### Is GPT-5.6 Luna better than Claude Haiku 4.5?
+
+On every published measure I can find, yes: 38 against 18 on the Intelligence Index v4.3, faster, a far larger context window, a newer knowledge cutoff, and cheaper.
+
+### Which is cheaper, Claude Haiku 4.5 or GPT-5.6 Luna?
+
+Luna: $0.20 / $1.20 against $1 / $5, and $0.17 against $0.77 blended. Above 272K tokens Luna's price rises, but Haiku 4.5 cannot take a prompt that long.
+
+### When is Claude Haiku 4.5 being retired?
+
+Not sooner than 15 October 2026 on Anthropic-operated platforms, which is a floor rather than a scheduled date. Bedrock and Google Cloud set their own.
+
+### Should I use Claude Haiku 4.5 or GPT-5.6 Luna?
+
+Luna for new work where you can choose the vendor. Haiku 4.5 only where staying inside Anthropic matters more than the numbers, with a plan for its retirement window.
+
+If you are moving a high-volume pipeline off a small model, [the contact page](/contact/) is the fastest route to me.
