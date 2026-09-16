@@ -1,0 +1,138 @@
+---
+title: "Fable 5.1 costs 50 times GPT-5.6 Luna on input. The useful question is how much work you can send down."
+seoTitle: "GPT-5.6 Luna vs Claude Fable 5.1: price, scores, routing"
+description: "Fable 5.1 scores 53 to Luna's 38 at $10 / $50 against $0.20 / $1.20. The widest price gap people search for, and why it is a routing problem, not a choice."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "system"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
+    quote: "1.5x output for the full request"
+    claim: "Luna prompts above 272K input tokens are billed at 2x input and 1.5x output"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/build-with-claude/thinking"
+    quote: "the tokens Claude spends reasoning are billed as output tokens"
+    claim: "Fable 5.1's always-on thinking is billed at its $50 output rate"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "a cache hit costs 2.5% of the standard input price"
+    claim: "Fable 5.1 cache reads cost $0.25 per million"
+    checkedAt: "2026-09-16"
+tldr:
+  - "On Artificial Analysis's Intelligence Index v4.3, Claude Fable 5.1 scores 53 and GPT-5.6 Luna scores 38. At list price Fable 5.1 costs 50x on input and about 42x on output: $10 / $50 against $0.20 / $1.20."
+  - "Every measure agrees on the scale. Blended price is $7.17 against $0.17 per million, and Artificial Analysis spent $13,129 running its index on Fable 5.1 against $320 on Luna."
+  - "Nobody should choose one of these for everything. Luna is the volume tier and Fable 5.1 is the top escalation. The real decision is what share of your tasks Luna can finish on its own."
+  - "The arithmetic is striking. A mix that sends 80% of tokens to Luna and 20% to Fable 5.1 lands at about $1.57 per million blended, almost exactly Claude Sonnet 5's $1.54."
+faq:
+  - q: "Is Claude Fable 5.1 better than GPT-5.6 Luna?"
+    a: "Yes, by 15 points on Artificial Analysis's Intelligence Index v4.3: 53 against 38. Luna is faster, at 115 output tokens per second against Fable 5.1's 65.1, and roughly 40 to 50 times cheaper depending on how you measure. They are built for opposite ends of the same system: Luna for high-volume, low-ambiguity work, Fable 5.1 for demanding reasoning and long-horizon agentic work."
+  - q: "How much more expensive is Claude Fable 5.1 than GPT-5.6 Luna?"
+    a: "At list price, 50 times on input and about 42 times on output: $10 and $50 per million tokens against $0.20 and $1.20. Artificial Analysis's blended price is $7.17 against $0.17, about 42 times, and its full-index run cost was $13,129 against $320, about 41 times. Cached input is 12.5 times: $0.25 against $0.02."
+  - q: "Can GPT-5.6 Luna replace Claude Fable 5.1?"
+    a: "For some tasks, and that is the point. Luna scores level with Claude Sonnet 5 on the same index, so it handles a large share of classification, extraction, routing and first-draft work. It is not the model to trust with the long-horizon agentic tasks Fable 5.1 is built for. The saving comes from sending every task Luna can finish to Luna, and only escalating the rest."
+  - q: "How should I split work between Fable 5.1 and Luna?"
+    a: "Triage every task first, send what Luna can finish to Luna, and escalate failures and long-horizon work to Fable 5.1. Using Artificial Analysis's blended prices as a rough guide, a mix with 80% of tokens on Luna and 20% on Fable 5.1 costs about $1.57 per million, almost exactly Claude Sonnet 5's blended $1.54, while keeping the top model for the hardest fifth."
+---
+
+This is the comparison with the widest price gap that shows up in my Search Console. Fable against Luna. Luna against Fable 5.
+
+At first glance it looks like a mistake, like comparing a surgeon's hourly rate with a courier's. The numbers make it clear these two were never meant to replace each other. They were meant to be used together.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "fable", label: "Claude Fable 5.1", align: "center", mono: true },
+    { key: "luna", label: "GPT-5.6 Luna", align: "center", mono: true },
+    { key: "ratio", label: "Ratio", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input per 1M", fable: "$10.00", luna: "$0.20", ratio: "50x" },
+    { row: "Output per 1M", fable: "$50.00", luna: "$1.20", ratio: "~42x" },
+    { row: "Cache read per 1M", fable: "$0.25", luna: "$0.02", ratio: "12.5x" },
+    { row: "Blended price per 1M", fable: "$7.17", luna: "$0.17", ratio: "~42x" },
+    { row: "Cost to run the full index", fable: "$13,129", luna: "$320", ratio: "~41x" },
+    { row: "Intelligence Index v4.3", fable: "53", luna: "38", ratio: "+15 pts" },
+    { row: "Output speed, tokens/s", fable: "65.1", luna: "115.0", ratio: "Luna 1.8x" }
+  ]}
+  caption="Prices from Anthropic's pricing page and OpenAI's GPT-5.6 Luna model page. Blended price, run cost, index and speed from Artificial Analysis, read on 16 September 2026 against Intelligence Index v4.3."
+/>
+
+Forty to fifty times the price for 15 more points. Put like that, nobody would buy Fable 5.1. Nobody would be right.
+
+## Fifteen points is a real gap, in a specific place
+
+Luna at 38 scores level with Claude Sonnet 5 on this index. That is not a toy. It is enough for classification, extraction, routing, first drafts and short well-specified tasks, which is a large share of what most systems actually do all day.
+
+Fable 5.1 at 53 ties for the top of the index. Anthropic positions it for demanding reasoning and long-horizon agentic work: coding sessions that run for hours, research that follows up on what it finds, analysis that ends in a finished document. The 15 points are the measure of that difference, and nothing I have read says Luna closes it on long-horizon work.
+
+Everything below rests on one assumption. Test it on your own work. The assumption is that the 15 points show up at the hard end. If they do, then on easy tasks both models succeed and one costs 42 times less, while on hard tasks one finishes and the other does not, and the price difference stops mattering.
+
+## The arithmetic of sending work down
+
+That makes the useful question not "which one" but "what share of the work can Luna finish".
+
+Artificial Analysis's blended prices give a rough way to see it. Split tokens between the two and the mix costs:
+
+- **50% Luna, 50% Fable 5.1:** about $3.67 per million
+- **80% Luna, 20% Fable 5.1:** about $1.57 per million
+- **95% Luna, 5% Fable 5.1:** about $0.52 per million
+
+The middle line is the interesting one. **At 80 / 20, the mix costs almost exactly what Claude Sonnet 5 costs on its own, at $1.54 blended.** You pay mid-tier prices overall and still send your hardest fifth of the work to a model that ties for first place.
+
+<KeyPoint>
+  Blended prices assume a fixed mix of cached, input and output tokens, and hard tasks usually use more tokens than easy ones. So treat these as the shape of the trade, not a quote. The shape is what matters. Routing turns a 42x price gap into a mid-tier bill.
+</KeyPoint>
+
+Thinking makes the escalation side dearer than a rate card suggests. Fable 5.1 always thinks, and Anthropic's docs say the tokens it spends reasoning are billed as output tokens even when you never see them. Every task you escalate unnecessarily costs its $50 output rate on work Luna would have finished at $1.20.
+
+## What a triage step has to get right
+
+The router is where this saves or loses money, and it fails in two directions:
+
+- **Escalating too much** turns the mix back into a flagship bill. At 50 / 50 it costs about $3.67 per million, close to Opus 5's $3.85 on its own, and Opus 5 alone scores 51. Past that point a router is extra machinery for no saving.
+- **Escalating too little** sends hard tasks to Luna, which fails them. A failed task costs its tokens, the retry, and whatever depended on the answer.
+
+The practical version is simple. Let Luna try first on anything short and well specified, check the result against something cheap and objective, and escalate on failure or on any task you already know is long-horizon. Above 272K input tokens Luna bills the whole request at 2x input and 1.5x output, so check long-context work separately: Fable 5.1 keeps one rate across its window.
+
+## If you searched for Fable 5
+
+Fable 5 scores 50 on the same index at the same $10 / $50 list price, with a cache read of $1 per million instead of $0.25. Everything above holds, with a slightly worse top tier. Unless an integration pins you to it, the upgrade is covered in [Fable 5.1 against Fable 5](/insights/claude-fable-5-1-vs-fable-5/).
+
+For the middle ground between these two, see [Fable 5.1 against GPT-5.6 Terra](/insights/claude-fable-5-1-vs-gpt-5-6-terra/). For Luna against the Claude model it ties with on the index, see [Luna against Sonnet 5](/insights/gpt-5-6-vs-claude-5/).
+
+## What would change my mind
+
+Published cost-per-completed-task figures on a mixed workload. The blended arithmetic above uses fixed token mixes, and the real saving depends on how many more tokens the hard tasks consume.
+
+A cheaper escalation tier that closes the gap to Fable 5.1. Opus 5 already scores 51 at half Fable 5.1's price, which makes it the more sensible top step for many routers, and I compared the two in [Opus 5 against Fable 5.1](/insights/claude-opus-5-vs-fable-5-1/).
+
+A Luna price change. At $0.20 input, a small move in absolute terms is a large move in the ratio.
+
+## Questions people asked
+
+### Is Claude Fable 5.1 better than GPT-5.6 Luna?
+
+Yes, by 15 points on Artificial Analysis's Intelligence Index v4.3, 53 against 38. Luna is faster and 40 to 50 times cheaper, and it is built for the opposite end of the same system.
+
+### How much more expensive is Claude Fable 5.1 than GPT-5.6 Luna?
+
+50x on input and about 42x on output at list price, about 42x blended, and about 41x in full-index run cost. Cached input is 12.5x.
+
+### Can GPT-5.6 Luna replace Claude Fable 5.1?
+
+For the share of tasks Luna can finish, yes, and that share is where the saving is. It is not the model to trust with the long-horizon agentic work Fable 5.1 exists for.
+
+### How should I split work between Fable 5.1 and Luna?
+
+Let Luna try the short, well-specified work first and escalate failures and long-horizon tasks. On blended prices, an 80 / 20 token split costs about $1.57 per million, almost exactly Sonnet 5's $1.54.
+
+If you are building the triage step for a router like this, [the contact page](/contact/) is the fastest route to me.
