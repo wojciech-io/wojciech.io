@@ -1,0 +1,173 @@
+---
+title: "DeepSeek V4.1 Flash beats GPT-5.6 Luna on score and speed. Whether it beats it on price depends on the clock."
+seoTitle: "DeepSeek V4.1 Flash vs GPT-5.6 Luna: price, speed, scores"
+description: "V4.1 Flash scores 40 to Luna's 38 at almost twice the speed. Off-peak it undercuts Luna; at peak it costs more on input. When the peak hours fall."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - OpenAI
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://api-docs.deepseek.com/quick_start/pricing/"
+    quote: "01:00 - 04:00 and 06:00 - 10:00 UTC"
+    claim: "DeepSeek's peak-price hours, Monday to Friday"
+    checkedAt: "2026-09-16"
+  - url: "https://api-docs.deepseek.com/quick_start/pricing/"
+    quote: "deepseek-flash"
+    claim: "V4.1 Flash off-peak $0.15 / $0.60 with $0.003 cache hits; peak $0.30 / $1.20 with $0.006 cache hits"
+    checkedAt: "2026-09-16"
+  - url: "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
+    quote: "1.5x output for the full request"
+    claim: "Luna prompts above 272K input tokens are billed at 2x input and 1.5x output"
+    checkedAt: "2026-09-16"
+tldr:
+  - "On Artificial Analysis's Intelligence Index v4.3, DeepSeek V4.1 Flash scores 40 and GPT-5.6 Luna scores 37.50. V4.1 Flash is also close to twice as fast, at 214.4 against 115 output tokens per second."
+  - "DeepSeek prices by time of day. Off-peak V4.1 Flash costs $0.15 / $0.60 per million tokens, below Luna's $0.20 / $1.20. At peak it costs $0.30 / $1.20, above Luna on input and level on output."
+  - "Peak runs 01:00 to 04:00 and 06:00 to 10:00 UTC on weekdays. In Warsaw or Berlin in September that is 03:00 to 06:00 and 08:00 to 12:00, which covers the European working morning."
+  - "V4.1 Flash is open weights and has a 384K max output against Luna's 128K. Luna's edge is a flat price, no peak window to schedule around."
+faq:
+  - q: "Is DeepSeek V4.1 Flash better than GPT-5.6 Luna?"
+    a: "Modestly, and faster. Artificial Analysis's Intelligence Index v4.3 scores DeepSeek V4.1 Flash at 40 with reasoning at max effort and GPT-5.6 Luna at 37.50, and measures V4.1 Flash at 214.4 output tokens per second against Luna's 115. V4.1 Flash is also open weights, and its maximum output is 384K tokens against Luna's 128K."
+  - q: "Which is cheaper, DeepSeek V4.1 Flash or GPT-5.6 Luna?"
+    a: "It depends on the time of day. DeepSeek's off-peak price is $0.15 per million input tokens and $0.60 output, cheaper than Luna's $0.20 and $1.20 on both. During peak hours DeepSeek charges $0.30 and $1.20, which is more than Luna on input and the same on output. Cached input is far cheaper on DeepSeek at either time: $0.003 off-peak and $0.006 at peak, against Luna's $0.02."
+  - q: "When are DeepSeek's peak hours?"
+    a: "DeepSeek's pricing page lists peak hours as 01:00 to 04:00 and 06:00 to 10:00 UTC, Monday through Friday, with all other hours off-peak. In Central European Summer Time that is 03:00 to 06:00 and 08:00 to 12:00. After the clocks change in late October, it becomes 02:00 to 05:00 and 07:00 to 11:00."
+  - q: "Should I use DeepSeek V4.1 Flash or GPT-5.6 Luna?"
+    a: "For batch work you can schedule outside peak hours, DeepSeek V4.1 Flash: higher score, faster, and cheaper off-peak, with very cheap cached input. For work that runs whenever users need it, especially during the European morning, Luna's flat price is simpler and cheaper on input at peak. If you need open weights to self-host, V4.1 Flash is the only one of the two that offers them."
+---
+
+Most API pricing has one number per model. DeepSeek's has two, and which one you pay depends on what time it is in UTC.
+
+That turns a straightforward cheap-tier comparison into a scheduling question.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "ds", label: "DeepSeek V4.1 Flash", align: "center", mono: true },
+    { key: "luna", label: "GPT-5.6 Luna", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M, off-peak", ds: "$0.15 / $0.60", luna: "$0.20 / $1.20" },
+    { row: "Input / output per 1M, peak", ds: "$0.30 / $1.20", luna: "$0.20 / $1.20" },
+    { row: "Cached input per 1M", ds: "$0.003 off-peak, $0.006 peak", luna: "$0.02" },
+    { row: "Intelligence Index v4.3", ds: "40 (reasoning, max)", luna: "37.50 (max)" },
+    { row: "Output speed, tokens/s", ds: "214.4", luna: "115.0" },
+    { row: "Context / max output", ds: "1M / 384K", luna: "1,050,000 / 128,000" },
+    { row: "Weights", ds: "Open, downloadable", luna: "None found" }
+  ]}
+  highlight={[0, 1]}
+  caption="Prices, peak hours, context and max output from DeepSeek's pricing page and OpenAI's GPT-5.6 Luna model page. Index, speed and weights status from Artificial Analysis, read on 16 September 2026 against Intelligence Index v4.3."
+/>
+
+## On score and speed, V4.1 Flash leads
+
+Artificial Analysis scores V4.1 Flash at **40** with reasoning at max effort, against Luna at **37.50**. That is a lead of two and a half points.
+
+The speed gap is bigger. V4.1 Flash generates **214.4 output tokens per second** to Luna's 115, close to twice as fast, and at this tier speed is often the reason to pick a model in the first place.
+
+V4.1 Flash also allows far longer answers, with a maximum output of 384K tokens against Luna's 128K, and it is open weights, so you can download it and run it on your own hardware. I could not find published weights for Luna.
+
+## On price, it depends on the clock
+
+DeepSeek's pricing page lists two rates for V4.1 Flash:
+
+- **Off-peak:** $0.15 input, $0.60 output, $0.003 for a cache hit.
+- **Peak:** $0.30 input, $1.20 output, $0.006 for a cache hit.
+
+Luna costs $0.20 / $1.20 with $0.02 cached, at any hour.
+
+So off-peak, V4.1 Flash is cheaper than Luna on everything: 25% less on input and half on output. At peak it costs **50% more than Luna on input and the same on output**, though cached input stays far cheaper on DeepSeek at either hour.
+
+<KeyPoint>
+  The same model is the cheaper choice at 13:00 in Warsaw and the more expensive one on input at 10:00. For a steady workload that runs all day, you pay a blend of the two.
+</KeyPoint>
+
+## When peak actually falls
+
+DeepSeek lists peak as **01:00 to 04:00 and 06:00 to 10:00 UTC, Monday through Friday**. All other hours, including weekends, are off-peak.
+
+Converted for a European team:
+
+<DataTable
+  columns={[
+    { key: "window", label: "Peak window" },
+    { key: "utc", label: "UTC", align: "center", mono: true },
+    { key: "cest", label: "Warsaw / Berlin, until late October", align: "center", mono: true },
+    { key: "cet", label: "Warsaw / Berlin, after", align: "center", mono: true }
+  ]}
+  rows={[
+    { window: "First", utc: "01:00 - 04:00", cest: "03:00 - 06:00", cet: "02:00 - 05:00" },
+    { window: "Second", utc: "06:00 - 10:00", cest: "08:00 - 12:00", cet: "07:00 - 11:00" }
+  ]}
+  caption="DeepSeek's peak hours from its pricing page, converted for Central European Summer Time (UTC+2) and Central European Time (UTC+1)."
+/>
+
+The second window is the one that matters. In September it covers **08:00 to 12:00** in Central Europe, so an assistant that serves a European team during office hours pays peak rates for the whole working morning.
+
+A US team sees the reverse. Both windows fall in the late evening and early morning on the East Coast, outside most working hours.
+
+## Scheduling is the whole strategy
+
+The pricing rewards moving work you control:
+
+1. **Batch jobs** such as nightly classification or extraction can run off-peak and pay $0.15 / $0.60.
+2. **Heavy cached context** is cheap at any hour, at $0.003 or $0.006 per million.
+3. **Interactive work** during the European morning pays peak, where Luna's flat $0.20 input is cheaper.
+
+If you cannot schedule the work, the comparison narrows to score and speed against a higher input price during the hours you probably use most.
+
+Luna has a pricing trap of its own. Above 272K input tokens OpenAI bills the whole request at 2x input and 1.5x output, which I went through in [the 272K pricing cliff](/insights/openai-272k-long-context-pricing-vs-claude/).
+
+## Which one I would use
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "Batch jobs you can schedule", pick: "DeepSeek V4.1 Flash", why: "Off-peak it is cheaper than Luna on every rate, and it scores higher." },
+    { work: "European daytime interactive use", pick: "GPT-5.6 Luna", why: "Peak pricing covers the working morning; Luna's input is cheaper then." },
+    { work: "Very long outputs", pick: "DeepSeek V4.1 Flash", why: "384K max output against Luna's 128K." },
+    { work: "Need to self-host", pick: "DeepSeek V4.1 Flash", why: "Open weights. I found none for Luna." },
+    { work: "Predictable monthly spend", pick: "GPT-5.6 Luna", why: "One price at every hour, nothing to schedule around." }
+  ]}
+  caption="Score and speed favour V4.1 Flash. Price favours whichever model matches when your work runs."
+/>
+
+For other challengers to Luna at this tier, see [Gemini 3.8 Flash against Luna](/insights/gemini-3-8-flash-vs-gpt-5-6-luna/) and [Haiku 4.5 against Luna](/insights/claude-haiku-4-5-vs-gpt-5-6-luna/).
+
+## What would change my mind
+
+DeepSeek moving the peak windows. They are a pricing policy, and the European morning overlap is the biggest single factor here.
+
+A Luna price cut. Its input is already within five cents of DeepSeek's off-peak rate, so output, at twice DeepSeek's off-peak price, is where a cut would change this comparison.
+
+Cost per task on a real workload. DeepSeek V4.1 Flash cost Artificial Analysis $476.89 to run its index against $319.93 for Luna, but that run was priced at DeepSeek's peak input rate, 50% above Luna's. I have not seen a like-for-like run at off-peak prices.
+
+## Questions people asked
+
+### Is DeepSeek V4.1 Flash better than GPT-5.6 Luna?
+
+Modestly, and faster: 40 against 37.50 on the Intelligence Index v4.3, and 214.4 against 115 output tokens per second. It is also open weights with a 384K max output.
+
+### Which is cheaper, DeepSeek V4.1 Flash or GPT-5.6 Luna?
+
+It depends on the time. Off-peak, DeepSeek at $0.15 / $0.60 is cheaper on every rate, while at peak its $0.30 / $1.20 is more than Luna on input and the same on output. Its cached input costs less at any hour.
+
+### When are DeepSeek's peak hours?
+
+01:00 to 04:00 and 06:00 to 10:00 UTC, Monday to Friday. In Central European Summer Time, 03:00 to 06:00 and 08:00 to 12:00; after late October, 02:00 to 05:00 and 07:00 to 11:00.
+
+### Should I use DeepSeek V4.1 Flash or GPT-5.6 Luna?
+
+V4.1 Flash for batch work you can schedule off-peak, and for very long outputs or self-hosting. Luna for interactive work during the European morning and for predictable spend.
+
+If you are deciding where to run a high-volume pipeline and when, [the contact page](/contact/) is the fastest route to me.

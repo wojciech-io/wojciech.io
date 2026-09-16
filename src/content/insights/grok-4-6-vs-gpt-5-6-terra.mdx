@@ -1,0 +1,173 @@
+---
+title: "Grok 4.6 costs the same as GPT-5.6 Terra on input and half on output. Its long-context line sits at 200K."
+seoTitle: "Grok 4.6 vs GPT-5.6 Terra: price, scores, which to use"
+description: "Grok 4.6 scores 44 to Terra's 42 at $2 / $6 against $2 / $12. It doubles every rate once a prompt reaches 200K tokens, and stops at 500K. Where each wins."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - OpenAI
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://docs.x.ai/docs/models"
+    claim: "Grok 4.6: 500K context; $2 / $0.50 cached / $6 below 200K prompt tokens, $4 / $1 / $12 at or above, for every token in the request"
+    checkedAt: "2026-09-16"
+  - url: "https://docs.x.ai/docs/guides/reasoning"
+    quote: "the reasoning tokens are billed as part of your total consumption"
+    claim: "xAI's reasoning guide says reasoning tokens are billed, without naming the rate"
+    checkedAt: "2026-09-16"
+  - url: "https://developers.openai.com/api/docs/models/gpt-5.6-terra"
+    quote: "1.5x output for the full request"
+    claim: "Terra prompts above 272K input tokens are billed at 2x input and 1.5x output"
+    checkedAt: "2026-09-16"
+  - url: "https://developers.openai.com/api/docs/guides/reasoning"
+    claim: "OpenAI bills reasoning tokens as output tokens"
+    checkedAt: "2026-09-16"
+  - url: "https://artificialanalysis.ai/articles/artificial-analysis-intelligence-index-v4-3"
+    quote: "Grok 4.6 (high)"
+    claim: "Grok 4.6 (high) at 44.41 and GPT-5.6 Terra (max) at 42.25 on v4.3"
+    checkedAt: "2026-09-16"
+  - url: "https://artificialanalysis.ai/methodology"
+    quote: "we calculate a blended price assuming a 7:2:1 ratio of cache hit, input, and output tokens"
+    claim: "Artificial Analysis's blended price assumes seven cached and two fresh input tokens for every output token"
+    checkedAt: "2026-09-16"
+tldr:
+  - "On Artificial Analysis's Intelligence Index v4.3, SpaceXAI's Grok 4.6 at high reasoning scores 44.41 and GPT-5.6 Terra at max effort scores 42.25. About two points to Grok."
+  - "Both cost $2 per million input tokens. Grok 4.6 charges $6 for output against Terra's $12, and Terra charges $0.20 for cached input against Grok's $0.50. Under 200K tokens, Terra is only cheaper when cached tokens outnumber output tokens by more than 20 to 1."
+  - "The long-context lines differ. Grok 4.6 doubles every rate for the whole request once a prompt reaches 200K tokens, and its window ends at 500K. Terra's surcharge starts above 272K and its window runs to 1,050,000."
+  - "Terra is faster, at 98.8 output tokens per second against 57.7. Grok is the cheaper default under 200K; Terra wins very cache-heavy loops, latency-sensitive work, and prompts between 200K and 272K or above 500K."
+faq:
+  - q: "Is Grok 4.6 better than GPT-5.6 Terra?"
+    a: "Slightly, on published benchmarks. Artificial Analysis's Intelligence Index v4.3 scores Grok 4.6 at 44.41 with high reasoning and GPT-5.6 Terra at 42.25 at max effort. Terra is considerably faster, at 98.8 output tokens per second against Grok's 57.7, and has more than twice the context window."
+  - q: "Which is cheaper, Grok 4.6 or GPT-5.6 Terra?"
+    a: "Under 200K tokens, usually Grok 4.6. Both cost $2 per million input tokens, Grok charges $6 for output against Terra's $12, and Terra charges $0.20 for cached input against Grok's $0.50. Terra only comes out cheaper when cached tokens outnumber output tokens by more than 20 to 1. At Artificial Analysis's 7:2:1 blend of cached, fresh and output tokens, Grok is $1.35 per million against $1.74. Between 200K and 272K prompt tokens Terra is cheaper, because Grok's surcharge has started and Terra's has not."
+  - q: "How does Grok 4.6 price long prompts?"
+    a: "SpaceXAI's model page lists Grok 4.6 at $2 input, $0.50 cached and $6 output below 200K prompt tokens, and $4, $1 and $12 at or above 200K, applied to every token in the request. The context window is 500K tokens. GPT-5.6 Terra's surcharge starts later, above 272K input tokens, at 2x input and 1.5x output, and its window is 1,050,000 tokens."
+  - q: "Should I use Grok 4.6 or GPT-5.6 Terra?"
+    a: "Grok 4.6 for work under 200K tokens where output is a real share of the bill, since it is half the price on output and two index points ahead. Terra for agent loops with more than 20 cached tokens per output token, for latency-sensitive work, for prompts between 200K and 272K tokens where Grok has already doubled and Terra has not, and for anything longer than Grok's 500K window."
+---
+
+Grok 4.6 and GPT-5.6 Terra both charge $2 per million input tokens and sit two points apart on the index. Everything past those two numbers is built differently. Which one is cheaper for you depends on how much of your work is cached, how much of it is output, and how long your prompts get.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "grok", label: "Grok 4.6", align: "center", mono: true },
+    { key: "terra", label: "GPT-5.6 Terra", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", grok: "$2 / $6", terra: "$2 / $12" },
+    { row: "Cached input per 1M", grok: "$0.50", terra: "$0.20" },
+    { row: "Long-context line", grok: "200K prompt tokens", terra: "272K input tokens" },
+    { row: "Price past the line, in / out", grok: "$4 / $12", terra: "$4 / $18" },
+    { row: "Context window", grok: "500K", terra: "1,050,000" },
+    { row: "Intelligence Index v4.3", grok: "44.41 (high)", terra: "42.25 (max)" },
+    { row: "Output speed, tokens/s", grok: "57.7", terra: "98.8" },
+    { row: "Blended price per 1M", grok: "$1.35", terra: "$1.74" },
+    { row: "Cost to run the full index", grok: "$2,352", terra: "$2,501" }
+  ]}
+  highlight={[0, 2]}
+  caption="Prices, thresholds and context from SpaceXAI's model documentation and OpenAI's GPT-5.6 Terra model page. Index to two decimals from Artificial Analysis's v4.3 announcement; speed, blended price and run cost from its model pages. Read on 16 September 2026."
+/>
+
+## Two points apart, and close on total cost
+
+Grok 4.6 at high reasoning scores **44.41** on Intelligence Index v4.3 and Terra at max effort scores **42.25**. I would call that a small lead for Grok.
+
+Running the full index cost Artificial Analysis $2,352 on Grok and $2,501 on Terra, about 6% apart. Averaged over a broad mix of tasks, the two cost about the same, but no single workload is an average, and on any one of them the price lists pull apart quickly.
+
+## Output-heavy work favours Grok
+
+Both charge $2 per million input tokens. On output, **Grok 4.6 charges $6 and Terra $12**.
+
+Work that writes a lot relative to what it reads is much cheaper on Grok. Long-form drafting and code generation are the obvious cases.
+
+## Terra needs a lot of cache to win
+
+Cached input is where Terra fights back: **$0.20 per million against Grok's $0.50**.
+
+Input costs the same on both, so the bill turns on two differences. Grok charges $0.30 more per million cached tokens and $6 less per million output tokens. Terra only comes out cheaper when cached tokens outnumber output tokens by **more than 20 to 1**.
+
+That line sits further out than it sounds. Artificial Analysis's blended price assumes seven cached tokens for every output token, and at that mix Grok is still cheaper, $1.35 per million against $1.74.
+
+Some agent loops do cross it. One that re-reads a 100K-token context every turn and writes a 2,000-token answer runs at 50 to 1. Per turn that comes to about 6.2 cents on Grok and 4.4 cents on Terra, before fresh input, which costs the same on both.
+
+Reasoning pulls the ratio back down. OpenAI bills Terra's reasoning tokens as output. xAI's documentation says only that Grok's are billed as part of total consumption, so check an invoice before relying on it. If they are priced as output too, the same loop thinking for 10,000 tokens a turn falls to about 8 to 1, and Grok is cheaper again.
+
+<KeyPoint>
+  Under 200K tokens, work out one ratio before anything else on the price lists: cached tokens per output token, reasoning included. Below 20 to 1, Grok 4.6 is cheaper. Above it, Terra is.
+</KeyPoint>
+
+## The two long-context lines
+
+Both vendors surcharge long prompts for the whole request. They draw the line in different places.
+
+SpaceXAI's documentation lists Grok 4.6 at its standard rates below 200K prompt tokens, and at **$4 input, $1 cached and $12 output once the prompt reaches 200K**, for every token in the request. The context window ends at **500K**.
+
+OpenAI's Terra page puts its line at **272K input tokens**, where the whole request moves to 2x input and 1.5x output: $4 / $18. The window runs to 1,050,000.
+
+That creates four zones:
+
+- **Under 200K:** input is level at $2. Grok is cheaper on output, Terra on cache, with the 20-to-1 ratio deciding.
+- **200K to 272K:** Grok has doubled to $4 / $12. Terra is still at $2 / $12. **Terra is cheaper.**
+- **272K to 500K:** both surcharged, Grok at $4 / $12 and Terra at $4 / $18. Grok is cheaper on output.
+- **Over 500K:** only Terra can take the prompt.
+
+The OpenAI side of this is in [the 272K pricing cliff](/insights/openai-272k-long-context-pricing-vs-claude/), and SpaceXAI's version is the same idea with the cliff drawn lower.
+
+## Speed favours Terra
+
+Terra generates **98.8 output tokens per second** and Grok 4.6 **57.7**, so Terra is about 70% faster. In anything a person waits on, that difference lands on every response.
+
+## Which one I would use
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "Output is a real share of the bill, prompts under 200K", pick: "Grok 4.6", why: "Half the output price, and two index points ahead." },
+    { work: "Loops with over 20 cached tokens per output token", pick: "GPT-5.6 Terra", why: "Cached input at $0.20 against $0.50 outweighs the output price." },
+    { work: "Prompts between 200K and 272K tokens", pick: "GPT-5.6 Terra", why: "Grok has doubled every rate; Terra has not yet." },
+    { work: "Prompts over 500K tokens", pick: "GPT-5.6 Terra", why: "Grok 4.6's window ends at 500K." },
+    { work: "Latency-sensitive interactive work", pick: "GPT-5.6 Terra", why: "98.8 against 57.7 tokens per second." }
+  ]}
+  caption="Close on capability and total run cost. The cache ratio, prompt length and latency needs decide."
+/>
+
+For Terra against the tiers people usually weigh it with, see [Terra against Sonnet 5](/insights/claude-sonnet-5-vs-gpt-5-6-terra/) and [Fable 5.1 against Terra](/insights/claude-fable-5-1-vs-gpt-5-6-terra/).
+
+## What would change my mind
+
+A move of either long-context line. The 200K and 272K thresholds are pricing decisions, and they decide a whole band of workloads.
+
+A Grok 4.6 speed improvement. Terra's clearest advantage is being 70% faster.
+
+Measured cost per task on a real agent loop. The 20-to-1 line is arithmetic on list prices, and the number of tokens each model actually spends on the same task can move it either way.
+
+## Questions people asked
+
+### Is Grok 4.6 better than GPT-5.6 Terra?
+
+Slightly: 44.41 against 42.25 on the Intelligence Index v4.3. Terra is faster and has more than twice the context window.
+
+### Which is cheaper, Grok 4.6 or GPT-5.6 Terra?
+
+Under 200K tokens, usually Grok 4.6: the same $2 input and half the output price. Terra is cheaper when cached tokens outnumber output by more than 20 to 1, and on prompts between 200K and 272K tokens.
+
+### How does Grok 4.6 price long prompts?
+
+Below 200K prompt tokens it costs $2 / $0.50 / $6. At or above 200K, every token in the request costs $4 / $1 / $12, and the window ends at 500K. Terra's surcharge starts above 272K.
+
+### Should I use Grok 4.6 or GPT-5.6 Terra?
+
+Grok 4.6 for work under 200K tokens where output is a real share of the bill. Terra for loops with more than 20 cached tokens per output token and for latency-sensitive work. Terra also wins on prompts between 200K and 272K tokens, and on anything over 500K.
+
+If you are matching a model's price structure to your own token mix, [the contact page](/contact/) is the fastest route to me.
