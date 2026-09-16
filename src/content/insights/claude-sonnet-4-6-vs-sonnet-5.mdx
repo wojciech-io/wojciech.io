@@ -1,0 +1,161 @@
+---
+title: "Sonnet 5 is 33% cheaper than Sonnet 4.6 per token. Per page of text, it is closer to 13%."
+seoTitle: "Claude Sonnet 4.6 vs Sonnet 5: real price, upgrade or not"
+description: "Sonnet 5 lists at $2 / $10 against Sonnet 4.6's $3 / $15, but its tokenizer produces about 30% more tokens for the same text. The real saving, and what breaks."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "This tokenizer produces approximately 30% more tokens for the same text."
+    claim: "Claude 4.7 and later models tokenize the same text into about 30% more tokens than Sonnet 4.6"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "Claude Sonnet 4.6 and earlier models use the previous tokenizer."
+    claim: "Sonnet 4.6 is on the old tokenizer and Sonnet 5 is on the new one"
+    checkedAt: "2026-09-16"
+  # The table footnotes on this page are rendered client-side and never reach
+  # the HTML the checker reads. The same page served as markdown carries them.
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview.md"
+    quote: "it is deprecated on Claude Opus 4.6 and Claude Sonnet 4.6 and not accepted on later models"
+    claim: "Extended thinking with budget_tokens does not carry over to Sonnet 5"
+    checkedAt: "2026-09-16"
+tldr:
+  - "Sonnet 5 lists at $2 / $10 per million tokens and Sonnet 4.6 at $3 / $15. That reads as a 33% price cut on both sides."
+  - "Anthropic's pricing page says models from Claude 4.7 on use a newer tokenizer that produces about 30% more tokens for the same text, and Sonnet 4.6 is on the old one. Per page of text, the saving is closer to 13%."
+  - "It is still an upgrade on every axis I can measure: cheaper per page, about twice as fast at 79.5 against 40.4 tokens per second, and higher on the Artificial Analysis index."
+  - "What breaks is thinking. Extended thinking with budget_tokens is deprecated on Sonnet 4.6 and not accepted on later models. Code that sets it needs changing before the model ID does."
+faq:
+  - q: "Is Sonnet 5 cheaper than Sonnet 4.6?"
+    a: "Yes, but by less than the price list suggests. Sonnet 5 costs $2 per million input tokens and $10 output against Sonnet 4.6's $3 and $15, which is 33% less. Sonnet 5 uses the newer tokenizer introduced with Claude Opus 4.7, which produces about 30% more tokens for the same text. Per page of text, $2 times 1.3 is $2.60 against $3 on input, and $10 times 1.3 is $13 against $15 on output: a saving of about 13%. The exact figure depends on your content."
+  - q: "Should I upgrade from Claude Sonnet 4.6 to Sonnet 5?"
+    a: "Yes, for almost every workload. It is cheaper per page of text, about twice as fast on Artificial Analysis's measurement, and scores higher on its index. Before you change the model ID, remove any extended thinking configuration that sets budget_tokens, because it is not accepted on models after the 4.6 generation, and re-check any cost forecast that assumed a 33% saving."
+  - q: "Why does Sonnet 5 use more tokens than Sonnet 4.6?"
+    a: "Because the tokenizer changed. Anthropic's pricing page says Claude 4.7 and later models use a newer tokenizer that produces approximately 30% more tokens for the same text, while Sonnet 4.6 and earlier use the previous one. The same prompt and the same answer are counted as more tokens, so a per-token price comparison between the two overstates the saving."
+  - q: "What breaks when moving from Sonnet 4.6 to Sonnet 5?"
+    a: "Thinking configuration is the one to check. Extended thinking, set with thinking type enabled and a budget_tokens value, is deprecated on Sonnet 4.6 and not accepted on later models, which use adaptive thinking steered by an effort parameter instead. Any request that still sends budget_tokens needs updating before you switch."
+---
+
+Sonnet 5 costs $2 / $10 per million tokens. Sonnet 4.6 costs $3 / $15. A third off both sides.
+
+That is the number people put in the migration ticket, and it is wrong in a way the pricing page quietly explains.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "old", label: "Claude Sonnet 4.6", align: "center", mono: true },
+    { key: "new", label: "Claude Sonnet 5", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M tokens", old: "$3 / $15", new: "$2 / $10" },
+    { row: "Tokenizer", old: "Previous", new: "Newer, ~30% more tokens" },
+    { row: "Effective input / output per page", old: "$3 / $15", new: "~$2.60 / ~$13" },
+    { row: "Batch input / output per 1M", old: "$1.50 / $7.50", new: "$1 / $5" },
+    { row: "Output speed, tokens/s", old: "40.4", new: "79.5" },
+    { row: "Intelligence Index v4.3", old: "25 (non-reasoning)", new: "38 (max effort)" },
+    { row: "Thinking", old: "Extended, deprecated", new: "Adaptive" }
+  ]}
+  highlight={[2]}
+  caption="List prices, tokenizer notes and thinking modes from Anthropic's pricing and models pages. The effective row applies Anthropic's own approximately 30% figure and will vary with your content. Speed and index from Artificial Analysis, read on 16 September 2026."
+/>
+
+The middle row is the one to read. Everything else in this piece follows from it.
+
+## The tokenizer ate most of the price cut
+
+Anthropic's pricing page carries a note most people never scroll to. Claude 4.7 and later models use a newer tokenizer, and it produces approximately 30% more tokens for the same text. It then says, in a separate sentence, that Sonnet 4.6 and earlier models use the previous tokenizer.
+
+Sonnet 5 is on the new one. Sonnet 4.6 is on the old one.
+
+So the same prompt, sent to both, is counted as more tokens on Sonnet 5. Apply Anthropic's own figure and the per-page arithmetic looks like this:
+
+- Input: $2 × 1.3 = **$2.60** per page-equivalent, against $3
+- Output: $10 × 1.3 = **$13** per page-equivalent, against $15
+
+That is a saving of about 13%, not 33%. Still a saving. Less than a third of the one in the ticket.
+
+<KeyPoint>
+  A per-token price is only comparable between models that count tokens the same way. Across a tokenizer change, compare cost per page of your own text, never the two numbers on the price list.
+</KeyPoint>
+
+The 30% is Anthropic's approximation, and the same page says the exact increase depends on the content and workload shape. If the saving matters to a budget, count your own prompts on both models before anyone signs the forecast.
+
+## It is still an upgrade
+
+None of that makes Sonnet 5 the worse deal. On every axis I can measure it comes out ahead.
+
+**Cheaper per page**, by roughly 13% on both input and output.
+
+**About twice as fast.** Artificial Analysis measured Sonnet 5 at 79.5 output tokens per second and Sonnet 4.6 at 40.4.
+
+**Higher on the index**, with a caveat on the comparison. Sonnet 5 at maximum effort scores 38 on Intelligence Index v4.3. The Sonnet 4.6 figure shown is its non-reasoning variant at 25. That is not a like-for-like pair, so I read it as direction rather than distance, and a 13-point gap is wide enough that I would trust the direction.
+
+I would not keep new work on Sonnet 4.6. The reason to move carefully is not the model. It is the request format.
+
+## What breaks: thinking
+
+Anthropic's models page describes extended thinking, the mode where you set a thinking type of enabled and a `budget_tokens` value, and then says it is deprecated on Claude Opus 4.6 and Claude Sonnet 4.6 and not accepted on later models.
+
+Sonnet 5 uses adaptive thinking instead. The model decides how much to think, and you steer it with an effort parameter, which defaults to high.
+
+If your integration sends `budget_tokens`, changing the model ID is not a one-line migration. The request is shaped for a mode the new model does not take.
+
+<DataTable
+  columns={[
+    { key: "check", label: "Before you switch" },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { check: "Search your code for budget_tokens", why: "Extended thinking is not accepted after the 4.6 generation. Move to adaptive thinking with an effort level." },
+    { check: "Re-count tokens on real prompts", why: "The newer tokenizer produces about 30% more tokens for the same text, so context budgets and max_tokens limits shrink in practice." },
+    { check: "Re-do the cost forecast", why: "A plan built on a 33% saving will overshoot. Per page, the list prices imply closer to 13%." },
+    { check: "Check any hard token limits", why: "A prompt that fitted comfortably on Sonnet 4.6 counts as more tokens on Sonnet 5, though both have the full 1M context window." }
+  ]}
+  caption="Four checks, in the order I would do them. The first one breaks requests; the other three break forecasts."
+/>
+
+The tokenizer change catches limits as well as invoices. A `max_tokens` setting tuned on Sonnet 4.6 output now covers roughly a quarter less text. If an answer starts getting cut off after the switch, look there first.
+
+## Who should stay on Sonnet 4.6
+
+Almost nobody, for new work.
+
+The case for waiting is narrow: a large integration built around `budget_tokens` that you cannot change this quarter, or a cost model contractually pinned to Sonnet 4.6's token counts. In either case the right move is to schedule the change, not to avoid it.
+
+For choosing between Sonnet 5 and the tiers around it, I compared it against [Opus 5](/insights/claude-sonnet-5-vs-opus-5/), against [GPT-5.6 Luna](/insights/gpt-5-6-vs-claude-5/) and against [GPT-5.6 Terra](/insights/claude-sonnet-5-vs-gpt-5-6-terra/).
+
+## What would change my mind
+
+A measured token count on a real mixed workload that lands far from 30%. The 13% figure rests entirely on Anthropic's approximation. If your prompts come in at 15% more tokens instead, the saving rises to about 23%.
+
+A like-for-like index figure. A reasoning variant of Sonnet 4.6 on v4.3 would turn the index row from direction into distance.
+
+A retirement date for Sonnet 4.6. That would turn "schedule the change" into a deadline.
+
+## Questions people asked
+
+### Is Sonnet 5 cheaper than Sonnet 4.6?
+
+Yes, by less than the price list suggests. $2 / $10 against $3 / $15 is 33% less per token, but Sonnet 5's tokenizer produces about 30% more tokens for the same text. Per page, that works out closer to 13% cheaper.
+
+### Should I upgrade from Claude Sonnet 4.6 to Sonnet 5?
+
+Yes, for almost every workload. It is cheaper per page, about twice as fast and higher on the index. Remove any `budget_tokens` configuration first and redo cost forecasts that assumed 33%.
+
+### Why does Sonnet 5 use more tokens than Sonnet 4.6?
+
+Because the tokenizer changed. Claude 4.7 and later models use a newer tokenizer that produces about 30% more tokens for the same text, and Sonnet 4.6 is on the previous one.
+
+### What breaks when moving from Sonnet 4.6 to Sonnet 5?
+
+Thinking configuration. Extended thinking with `budget_tokens` is deprecated on Sonnet 4.6 and not accepted on later models, which use adaptive thinking with an effort parameter.
+
+If you are planning a migration across a larger codebase, [the contact page](/contact/) is the fastest route to me.

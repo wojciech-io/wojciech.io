@@ -1,0 +1,158 @@
+---
+title: "Anthropic tells you to start with Opus 5. Here is when Fable 5.1 earns twice the price."
+seoTitle: "Claude Opus 5 vs Fable 5.1: price, scores, which to use"
+description: "Fable 5.1 scores 53 to Opus 5's 51 and costs twice as much per token. Anthropic's own docs say start with Opus 5. The cases where that advice is wrong."
+publishedAt: "2026-09-16"
+updatedAt: "2026-09-16"
+tags:
+  - AI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview"
+    quote: "If you're unsure which model to use, start with"
+    claim: "Anthropic's own default recommendation is Opus 5, with Fable 5.1 as the escalation"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "a cache hit costs 2.5% of the standard input price"
+    claim: "Fable 5.1 cache reads cost $0.25 per million, half of Opus 5's $0.50"
+    checkedAt: "2026-09-16"
+  - url: "https://artificialanalysis.ai/articles/benchmarking-gpt-6-astra"
+    quote: "ahead of Claude Opus 5 (60)"
+    claim: "Coding Agent Index: Fable 5.1 in Claude Code 62, Opus 5 60"
+    checkedAt: "2026-09-16"
+tldr:
+  - "On the Artificial Analysis Intelligence Index v4.3, Fable 5.1 scores 53 and Opus 5 scores 51. List price is exactly double: $10 / $50 per million tokens against $5 / $25."
+  - "Anthropic's own models page says to start with Opus 5 and move to Fable 5.1 only when your evals on Opus 5 at higher effort still fall short. I agree with that default, and the numbers back it."
+  - "One line in the price table runs the other way. Fable 5.1 reads cached tokens at $0.25 per million, half what Opus 5 charges. It only wins a request when cached input is more than a hundred times the output."
+  - "It rarely is, because Fable 5.1 thinks at length: about 78k output tokens per index task. Artificial Analysis spent $13,129 running the index on Fable 5.1 and $7,275 on Opus 5."
+faq:
+  - q: "Is Claude Fable 5.1 better than Claude Opus 5?"
+    a: "Slightly, on published benchmarks. Fable 5.1 scores 53 and Opus 5 scores 51 on the Artificial Analysis Intelligence Index v4.3, and on the Coding Agent Index Fable 5.1 in Claude Code scores 62 against Opus 5's 60. Two points each time, for a model that costs twice as much per token and spent about 1.8 times as much to run the full index. Anthropic's own recommendation is to start with Opus 5 and escalate to Fable 5.1 when your evals on Opus 5 at higher effort still fall short."
+  - q: "How much more expensive is Fable 5.1 than Opus 5?"
+    a: "Exactly double at list price: $10 per million input tokens and $50 output for Fable 5.1, against $5 and $25 for Opus 5. The exception is cached input, which Fable 5.1 reads at $0.25 per million and Opus 5 at $0.50. That only makes Fable 5.1 cheaper on a request where cached input exceeds roughly a hundred times the output, and a thinking-heavy model rarely stays under that line."
+  - q: "Should I use Opus 5 or Fable 5.1 in Claude Code?"
+    a: "Start on Opus 5 for day-to-day implementation and move a task to Fable 5.1 when it is long-horizon and Opus 5 has already failed it at high effort. The Coding Agent Index puts Fable 5.1 in Claude Code at 62 and Opus 5 at 60, which is not a gap that justifies doubling the bill on every task."
+  - q: "Is Fable 5.1 faster than Opus 5?"
+    a: "Per token, yes: Artificial Analysis measured Fable 5.1 at 65.1 output tokens per second and Opus 5 at 49.4. Per answer, usually not, because Fable 5.1 writes far more tokens before it finishes. Anthropic's own models table labels Fable 5.1 slower and Opus 5 moderate, and that is the number you feel."
+---
+
+Above Anthropic's model comparison table sits a sentence most people scroll past. Unsure which model to use? Start with Claude Opus 5, it says, and move to Fable 5.1 only when your evals on Opus 5 at higher effort still fall short.
+
+A vendor, telling you not to buy its most expensive product by default. I think the advice is right. The numbers behind it are more interesting than the advice.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "fable", label: "Claude Fable 5.1", align: "center", mono: true },
+    { key: "opus", label: "Claude Opus 5", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", fable: "$10 / $50", opus: "$5 / $25" },
+    { row: "Cache read per 1M", fable: "$0.25", opus: "$0.50" },
+    { row: "Intelligence Index v4.3", fable: "53", opus: "51" },
+    { row: "Coding Agent Index", fable: "62", opus: "60" },
+    { row: "Output speed, tokens/s", fable: "65.1", opus: "49.4" },
+    { row: "Cost to run the full index", fable: "$13,129", opus: "$7,275" },
+    { row: "Context / max output", fable: "1M / 128K", opus: "1M / 128K" },
+    { row: "Reliable knowledge cutoff", fable: "Jun 2026", opus: "May 2026" }
+  ]}
+  caption="Prices from Anthropic's pricing page. Index scores, speed and run cost from Artificial Analysis, read on 16 September 2026 against Intelligence Index v4.3. Coding Agent Index from Artificial Analysis's GPT-6 Astra benchmarking note, where Fable 5.1 was measured inside Claude Code."
+/>
+
+Two points on general intelligence. Two points on coding agents. Double the price. Everything else in this piece is about whether those two points are worth it on your work.
+
+## Two points is the smallest gap in Anthropic's lineup
+
+For scale: Opus 5 sits 13 points above Sonnet 5 on the same index, which I wrote up separately in [Sonnet 5 against Opus 5](/insights/claude-sonnet-5-vs-opus-5/). The step from Opus 5 to Fable 5.1 is a sixth of that, and it costs more money than the step below it.
+
+That does not make Fable 5.1 a bad model. It makes it a specialist. Anthropic describes it as the model for demanding reasoning and long-horizon agentic work, and the gains it lists are concentrated there: coding sessions that run for hours, research that follows up on what it finds, analysis that ends in a finished document rather than an answer.
+
+If your task is shorter than that, you are paying for a capability you are not using.
+
+## The one price where Fable 5.1 is cheaper
+
+Read the cache column and the table flips.
+
+Fable 5.1 reads cached tokens at 0.025 times its input price: $0.25 per million. The other current Claude models, Mythos 5.1 aside, read at 0.1 times, which puts Opus 5 at $0.50 and means that on the input side of a cache-heavy agent loop the expensive model is the cheaper one.
+
+It holds for input only. The arithmetic for a single request, with C for cached input tokens and O for output tokens, both in millions:
+
+- Fable 5.1 costs 0.25 × C + 50 × O
+- Opus 5 costs 0.50 × C + 25 × O
+
+Fable 5.1 comes out cheaper only when **C is more than 100 times O**. That is a narrow window. Re-read a 200,000-token context and write 2,000 tokens back, and you sit exactly on its edge.
+
+<KeyPoint>
+  The cache discount is real. It pays off for the long loop that re-reads a large repository and answers briefly. It rarely pays off for a model that thinks at length before every answer, which is how Fable 5.1 runs at its default effort of high.
+</KeyPoint>
+
+## Why the thinking decides the bill
+
+Artificial Analysis measured how much each model writes per task on its index. Fable 5.1, at maximum effort, averaged about 78,000 output tokens per task. That is roughly three times what GPT-6 Astra used for the same score, which is the comparison I made in [the Astra piece](/insights/gpt-6-astra-vs-claude/).
+
+Those tokens sit in the O term of the arithmetic above, at $50 per million. At that volume the ratio of cached input to output needed to break even is out of reach for most real work, and the cache discount becomes a rounding error.
+
+The run cost shows the same thing from the other side. Artificial Analysis spent $13,129 running its full index on Fable 5.1 and $7,275 on Opus 5. That is 1.8 times the cost for the two-point gap.
+
+## The speed number misleads in the same direction
+
+Fable 5.1 generates 65.1 tokens per second against Opus 5's 49.4. On that row alone, Fable 5.1 looks faster.
+
+Anthropic's own table labels Fable 5.1 **slower** and Opus 5 **moderate**, and both are true. Tokens per second measures the typing. Time to a finished answer measures the typing plus how much there is to type, and Fable 5.1 has adaptive thinking always on. A faster typist writing three times as much finishes later.
+
+If a person waits on the response, that is the number that matters, and it favours Opus 5.
+
+## When I would pay for Fable 5.1
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "Day-to-day implementation in Claude Code", pick: "Opus 5", why: "Two Coding Agent Index points do not justify doubling every task's cost." },
+    { work: "A task Opus 5 has already failed at high effort", pick: "Fable 5.1", why: "This is Anthropic's own escalation rule, and it is the right one. Escalate the task, not the default." },
+    { work: "Hours-long migration or refactor", pick: "Fable 5.1", why: "Long-horizon coding is where the listed gains concentrate, and one failed run costs more than the price difference." },
+    { work: "Research that ends in a finished document", pick: "Fable 5.1", why: "Multistep research and document work are named improvement areas. Worth testing on your own brief." },
+    { work: "Anything a user waits on", pick: "Opus 5", why: "Fable 5.1 is labelled slower by its own vendor. Latency is felt, benchmarks are not." },
+    { work: "Your code relies on forced tool use", pick: "Opus 5", why: "Fable 5.1 rejects tool_choice any or tool with a 400 error. Fix that before you migrate anything." }
+  ]}
+  caption="The pattern: Opus 5 as the default, Fable 5.1 as a per-task escalation. Routing the hard task up costs less than running everything at the top."
+/>
+
+That last row is not a footnote. Fable 5.1 does not support forced tool use, and a request that sets `tool_choice` to `any` or to a named tool fails outright. I covered that and the other two breaking changes in [Fable 5.1 against Fable 5](/insights/claude-fable-5-1-vs-fable-5/).
+
+## What would change my mind
+
+A published cost-per-completed-task comparison between the two on agentic coding specifically. The run-cost figures here cover the whole index, and a coding workload with a large cached repository is the one place the cache arithmetic could tip the other way.
+
+A bigger gap on the next index version. Two points is within the range where a rebalanced evaluation set moves the order. If v5 opens it to six or eight, the escalation rule loosens.
+
+Any change to either price. The ratio is exactly two, and a small cut to Fable 5.1 changes the default for long-running work.
+
+## Questions people asked
+
+### Is Claude Fable 5.1 better than Claude Opus 5?
+
+Slightly, on published benchmarks: 53 against 51 on the Artificial Analysis Intelligence Index v4.3, and 62 against 60 on the Coding Agent Index. Two points each time, for twice the price per token and 1.8 times the cost to run the full index. Anthropic's own advice is to start with Opus 5 and escalate when your evals fall short.
+
+### How much more expensive is Fable 5.1 than Opus 5?
+
+Double at list price: $10 and $50 per million tokens against $5 and $25. Cached input is the exception, at $0.25 against $0.50, but that only wins a request where cached input is more than a hundred times the output.
+
+### Should I use Opus 5 or Fable 5.1 in Claude Code?
+
+Opus 5 for day-to-day implementation, Fable 5.1 for a long-horizon task Opus 5 has already failed at high effort. Escalate the task, not the default.
+
+### Is Fable 5.1 faster than Opus 5?
+
+Per token, yes, 65.1 against 49.4 tokens per second. Per answer, usually not, because it writes far more before it finishes. Anthropic labels Fable 5.1 slower and Opus 5 moderate.
+
+If you are deciding this for a team rather than for yourself, [the contact page](/contact/) is the fastest route to me.
