@@ -1,8 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
-import { insightSlug, isLocalePost, sortInsights, type InsightLocale } from '../../lib/insights';
-import ArticleCover from '../ui/ArticleCover.astro';
-import Icon from '../ui/Icon.astro';
+import { insightSlug, isLocalePost, readTime, sortInsights, type InsightLocale } from '../../lib/insights';
+import PosterFeatured from '../insights/PosterFeatured.astro';
+import PosterCard from '../insights/PosterCard.astro';
 import type { SectionStrings } from '../../data/locales';
 import { accentHeading } from '../../lib/editorial';
 
@@ -17,13 +17,17 @@ const t = {
   title: i18n?.title ?? 'Operator notes.',
   allLink: i18n?.allLink ?? 'All writing →',
   readLink: i18n?.readLink ?? 'Read →',
-  ctaBody: i18n?.ctaBody ?? 'New notes on AI systems, GTM architecture, and shipped products, published as they are ready.',
 };
 
 const insightsBase = locale === 'pl' ? '/pl/insights' : '/insights';
 const posts = (await getCollection('insights', isLocalePost(locale)))
   .sort(sortInsights)
   .slice(0, 5);
+// Same poster system as the /insights index: one featured poster, then cards.
+const formatDate = (date: Date) =>
+  date.toLocaleDateString(locale === 'pl' ? 'pl-PL' : 'en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+const readLabel = t.readLink.replace(/\s*[→←]\s*$/, '');
+const latestLabel = locale === 'pl' ? 'Najnowszy' : 'Latest';
 ---
 
 <section class="relative py-[var(--space-section)]">
@@ -49,89 +53,33 @@ const posts = (await getCollection('insights', isLocalePost(locale)))
       </a>
     </div>
 
-    <!-- Featured first article -->
     {posts[0] && (
-      <a
+      <PosterFeatured
         href={`${insightsBase}/${insightSlug(posts[0])}/`}
-        class="reveal-up group block mb-6 obs-panel obs-glow overflow-hidden card-lift"
-        data-reveal-index="0"
-      >
-        <div class="grid md:grid-cols-[1.2fr_1fr] gap-0">
-          <div class="relative aspect-[16/9] md:aspect-auto overflow-hidden bg-[var(--color-surface-2)]">
-            {posts[0].data.coverImage ? (
-              <img
-                src={posts[0].data.coverImage}
-                alt={`Cover: ${posts[0].data.title}`}
-                width="600"
-                height="340"
-                loading="lazy"
-                decoding="async"
-                class="w-full h-full object-cover object-[center_25%] transition-transform duration-500 group-hover:scale-[1.03]"
-              />
-            ) : (
-              <ArticleCover coverType={posts[0].data.coverType} compact />
-            )}
-          </div>
-          <div class="p-6 md:p-8 flex flex-col justify-center">
-            <div class="flex items-center gap-3 mb-4">
-              <span class="obs-badge">{posts[0].data.category ?? 'Insight'}</span>
-              <span class="t-data text-[var(--color-text-dim)]">
-                {new Date(posts[0].data.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-              </span>
-            </div>
-            <h3 class="text-fluid-xl font-semibold leading-snug text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors mb-3">
-              {posts[0].data.title}
-            </h3>
-            <p class="t-small text-[var(--color-text-muted)] mb-5 line-clamp-3">
-              {posts[0].data.description}
-            </p>
-            <span class="t-data text-[var(--color-text-dim)] group-hover:text-[var(--color-accent-hi)] transition-colors">
-              {t.readLink}
-            </span>
-          </div>
-        </div>
-      </a>
+        title={posts[0].data.title}
+        description={posts[0].data.description}
+        categoryLabel={posts[0].data.category ?? 'Insight'}
+        categoryKey={posts[0].data.category ?? ''}
+        date={formatDate(posts[0].data.publishedAt)}
+        read={readTime(posts[0].body, locale)}
+        featuredLabel={latestLabel}
+        readLabel={readLabel}
+      />
     )}
 
-    <!-- Log: flat editorial ledger (hairline rows, flush to the column) -->
-    <div class="border-t border-[var(--color-border)]">
-      <div class="hidden sm:grid grid-cols-[100px_1fr_120px_40px] gap-4 py-2.5 border-b border-[var(--color-border)]">
-        <span class="obs-label">date</span>
-        <span class="obs-label">title</span>
-        <span class="obs-label">category</span>
-        <span></span>
-      </div>
-      {posts.slice(1).map((post, index) => (
-        <a
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {posts.slice(1).map((post, i) => (
+        <PosterCard
           href={`${insightsBase}/${insightSlug(post)}/`}
-          class="reveal-up group grid sm:grid-cols-[100px_1fr_120px_40px] gap-2 sm:gap-4 py-3.5 border-b border-[var(--color-border)] transition-colors"
-          data-reveal-index={index + 1}
-        >
-          <span class="t-data text-[var(--color-text-dim)] self-center">
-            {new Date(post.data.publishedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
-          </span>
-          <span class="t-small text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors self-center">
-            {post.data.title}
-          </span>
-          <span class="hidden sm:block self-center">
-            <span class="obs-badge">{post.data.category ?? 'Insight'}</span>
-          </span>
-          <span class="hidden sm:flex items-center justify-end text-[var(--color-text-dim)] group-hover:text-[var(--color-accent-hi)] transition-colors">
-            <Icon name="chevron-right" class="h-3.5 w-3.5 rtl-flip-x" />
-          </span>
-        </a>
+          title={post.data.title}
+          categoryLabel={post.data.category ?? 'Insight'}
+          categoryKey={post.data.category ?? ''}
+          date={formatDate(post.data.publishedAt)}
+          read={readTime(post.body, locale)}
+          index={i + 2}
+          cover={post.data.coverImage}
+        />
       ))}
-    </div>
-
-    <!-- Footer CTA -->
-    <div class="mt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <p class="t-small text-[var(--color-text-muted)]">{t.ctaBody}</p>
-      <a
-        href={`${insightsBase}/`}
-        class="t-button btn-press inline-flex items-center gap-2 text-[var(--color-accent-text)] bg-[var(--color-accent-cta)] rounded-[var(--radius-btn)] px-6 py-3.5 hover:bg-[var(--color-accent-cta-hi)] transition-colors whitespace-nowrap"
-      >
-        {t.allLink}
-      </a>
     </div>
 
   </div>

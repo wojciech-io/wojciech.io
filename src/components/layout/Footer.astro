@@ -38,6 +38,7 @@ const contactHref = localizeHref('/contact/', locale);
 const insightsHref = locale === 'pl' ? '/pl/insights/' : locale === 'ar' ? '/ar/insights/' : '/insights/';
 
 const isAr = locale === 'ar';
+const statusLabel = isAr ? 'حالة الأنظمة' : locale === 'pl' ? 'Status usług' : 'System status';
 
 // Column headings (not part of UiStrings; localized inline). Three balanced
 // columns replace the old Pages/Writing/Network split, where one column carried
@@ -155,33 +156,21 @@ const connect = [
 ];
 ---
 
-<footer class="mt-auto w-full border-t border-[var(--color-border)] relative overflow-hidden">
-  <!-- Subtle grid overlay like hero sections -->
-  <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-grid-line)_1px,transparent_1px)] bg-[size:48px_48px] opacity-50" aria-hidden="true" />
-
-  <!-- Accent top-line -->
-  <div class="h-px w-full bg-[linear-gradient(90deg,transparent_0%,var(--color-accent-cta)_30%,var(--color-accent-cta)_70%,transparent_100%)] opacity-30" aria-hidden="true" />
+<footer class="site-footer relative mt-auto w-full overflow-hidden bg-[var(--color-ink)] text-[var(--color-ink-text)]">
+  <div class="footer-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+  <div class="footer-glow pointer-events-none absolute -top-48 left-1/2 h-96 w-[48rem] -translate-x-1/2 rounded-full" aria-hidden="true"></div>
 
   <div class="relative mx-auto w-full max-w-6xl px-6">
 
-    <!-- ═══ AI ESPRESSO BAND ═══ -->
     {showNewsletter && <FooterNewsletter />}
 
-    <!-- ═══ DESKTOP (lg+): brand + 3 even columns ═══ -->
-    <div class="hidden lg:grid lg:grid-cols-[210px_1fr_1fr_1fr] lg:gap-x-10 lg:items-start py-14">
-
-      <!-- Brand -->
-      <div class="flex flex-col gap-5">
-        <a href="/" dir="ltr" class="wordmark-brand inline-flex items-center gap-0 no-underline group">
-          <span class="t-data font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">wojciech</span>
-          <span class="obs-mono ml-0.5 inline-flex items-center justify-center h-5 w-5 rounded-[6px] bg-[var(--color-text)] dark:bg-[var(--color-accent-cta)] text-[8px] font-bold leading-none text-[var(--color-bg)] dark:text-[var(--color-accent-text)]">.io</span>
-        </a>
-        <p class="t-small text-[var(--color-text-muted)]">
-          {t.footer.brandTagline}
-        </p>
+    <!-- Closing statement and the one ask -->
+    <div class="flex flex-col gap-8 border-b border-[var(--color-ink-border)] py-14 md:flex-row md:items-end md:justify-between md:py-20">
+      <p class="t-h2 max-w-2xl text-[var(--color-ink-text)]">{t.footer.brandTagline}</p>
+      <div class="flex flex-wrap gap-3 md:shrink-0">
         <a
           href={contactHref}
-          class="t-button mt-1 inline-flex items-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur px-3.5 py-2 text-[var(--color-text)] no-underline transition-all hover:border-[var(--color-accent-cta)] hover:bg-[var(--color-accent-lo)] self-start"
+          class="t-button btn-press inline-flex items-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-6 py-3.5 text-[var(--color-accent-text)] no-underline transition-colors hover:bg-[var(--color-accent-cta-hi)]"
         >
           {t.footer.getInTouch}
         </a>
@@ -189,21 +178,29 @@ const connect = [
           href={appWorkspace.href}
           target="_blank"
           rel="noopener noreferrer"
-          class="t-caption link-underline inline-flex items-center gap-1.5 text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)] self-start"
+          class="t-button btn-press inline-flex items-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-ink-border)] px-6 py-3.5 text-[var(--color-ink-text)] no-underline transition-colors hover:border-[var(--color-ink-text)]"
         >
           {appWorkspace.label}
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="rtl-flip-x"><path d="M3.5 8.5 8.5 3.5M4.5 3.5h4v4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        {/* Socials belong to the brand block: on their own in the bottom bar they
-            read as an afterthought and left this column bottom-heavy with space. */}
-        <div class="mt-1 flex items-center gap-1 -ml-2">
+      </div>
+    </div>
+
+    <!-- Brand and three link columns, one layout at every width -->
+    <div class="grid grid-cols-2 gap-x-6 gap-y-10 py-14 md:grid-cols-4 md:gap-x-10">
+      <div class="col-span-2 md:col-span-1 flex flex-col gap-5">
+        <a href="/" dir="ltr" class="wordmark-brand inline-flex items-center gap-0 self-start no-underline group">
+          <span class="t-data font-semibold text-[var(--color-ink-text)]">wojciech</span>
+          <span class="obs-mono ml-0.5 inline-flex h-5 w-5 items-center justify-center rounded-[6px] bg-[var(--color-accent-cta)] text-[8px] font-bold leading-none text-[var(--color-accent-text)]">.io</span>
+        </a>
+        <div class="-ml-2 flex items-center gap-1">
           {connect.map(({ label, href, icon }) => (
             <a
               href={href}
               target={href.startsWith('http') ? '_blank' : undefined}
               rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
               aria-label={label}
-              class="inline-flex h-8 w-8 items-center justify-center rounded-md text-[var(--color-text-dim)] no-underline transition-colors hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]"
+              class="inline-flex h-9 w-9 items-center justify-center rounded-md text-[var(--color-ink-muted)] no-underline transition-colors hover:bg-[var(--color-ink-2)] hover:text-[var(--color-ink-text)]"
             >
               <span class="inline-flex items-center" set:html={icon} />
             </a>
@@ -211,151 +208,69 @@ const connect = [
         </div>
       </div>
 
-      <!-- Explore -->
-      <nav aria-label={col.explore}>
-        <p class="obs-label mb-5">
-          <span class="mb-3 block h-px w-6 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-          {col.explore}
-        </p>
-        <ul class="m-0 list-none space-y-3 p-0">
-          {explore.map(({ label, href }) => (
-            <li>
-              <a href={href} class="t-small link-underline text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]">{label}</a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <!-- Site -->
-      <nav aria-label={col.site}>
-        <p class="obs-label mb-5">
-          <span class="mb-3 block h-px w-6 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-          {col.site}
-        </p>
-        <ul class="m-0 list-none space-y-3 p-0">
-          {site.map(({ label, href }) => (
-            <li>
-              <a href={href} class="t-small link-underline text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]">{label}</a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <!-- Writing -->
-      <nav aria-label={col.writing}>
-        <p class="obs-label mb-5">
-          <span class="mb-3 block h-px w-6 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-          {col.writing}
-        </p>
-        <ul class="m-0 list-none space-y-3 p-0">
-          {writing.map(({ label, href }) => (
-            <li>
-              <a href={href} class="t-small link-underline text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]">{label}</a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
+      {[
+        { heading: col.explore, links: explore },
+        { heading: col.site, links: site },
+        { heading: col.writing, links: writing },
+      ].map(({ heading, links }, i) => (
+        <nav aria-label={heading} class={i === 2 ? 'col-span-2 md:col-span-1' : ''}>
+          <p class="t-label mb-5 text-[var(--color-accent-cta)]">{heading}</p>
+          <ul class="m-0 list-none space-y-3 p-0">
+            {links.map(({ label, href }) => (
+              <li>
+                <a href={href} class="t-small text-[var(--color-ink-muted)] no-underline transition-colors hover:text-[var(--color-ink-text)]">{label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))}
     </div>
 
-    <!-- ═══ MOBILE / TABLET (< lg) ═══ -->
-    <div class="lg:hidden py-10">
-
-      <!-- Brand -->
-      <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <a href="/" dir="ltr" class="wordmark-brand mb-3 inline-flex items-center gap-0 no-underline">
-            <span class="t-data font-semibold text-[var(--color-text)]">wojciech</span>
-            <span class="obs-mono ml-0.5 inline-flex items-center justify-center h-5 w-5 rounded-[6px] bg-[var(--color-text)] dark:bg-[var(--color-accent-cta)] text-[8px] font-bold leading-none text-[var(--color-bg)] dark:text-[var(--color-accent-text)]">.io</span>
-          </a>
-          <p class="t-small text-[var(--color-text-muted)]">
-            {t.footer.brandTagline}
-          </p>
-        </div>
-        <a
-          href={contactHref}
-          class="t-button inline-flex items-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-glass)] backdrop-blur px-3.5 py-2 text-[var(--color-text)] no-underline transition-all hover:border-[var(--color-accent-cta)] hover:bg-[var(--color-accent-lo)] self-start"
-        >
-          {t.footer.getInTouch}
-        </a>
+    <!-- Bottom bar -->
+    <div class="flex flex-col gap-3 border-t border-[var(--color-ink-border)] py-6 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-1">
+        <p class="t-caption whitespace-nowrap text-[var(--color-ink-muted)]">&copy; {year} Wojciech Łuszczyński</p>
+        <nav class="t-caption flex items-center gap-x-5" aria-label={isPL ? 'Informacje prawne' : 'Legal'}>
+          <a href={privacyHref} class="text-[var(--color-ink-muted)] no-underline transition-colors hover:text-[var(--color-ink-text)]">{privacyLabel}</a>
+          <a href={termsHref} class="text-[var(--color-ink-muted)] no-underline transition-colors hover:text-[var(--color-ink-text)]">{termsLabel}</a>
+        </nav>
       </div>
-
-      <!-- Nav columns -->
-      <div class="grid grid-cols-1 gap-y-8 sm:grid-cols-3 sm:gap-x-6">
-        <nav aria-label={col.explore}>
-          <p class="obs-label mb-3">
-            <span class="mb-3 block h-px w-6 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-            {col.explore}
-          </p>
-          <ul class="m-0 list-none space-y-2 p-0">
-            {explore.map(({ label, href }) => (
-              <li>
-                <a href={href} class="t-small link-underline text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]">{label}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <nav aria-label={col.site}>
-          <p class="obs-label mb-3">
-            <span class="mb-3 block h-px w-6 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-            {col.site}
-          </p>
-          <ul class="m-0 list-none space-y-2 p-0">
-            {site.map(({ label, href }) => (
-              <li>
-                <a href={href} class="t-small link-underline text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]">{label}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* One column below sm. Two columns split three navs into a 2+1 that
-            left half the footer empty, and squeezed article titles into two
-            lines each. Stacked, every label gets the full width and the
-            reading order matches the source order. */}
-        <nav aria-label={col.writing}>
-          <p class="obs-label mb-3">
-            <span class="mb-3 block h-px w-6 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-            {col.writing}
-          </p>
-          <ul class="m-0 list-none space-y-2 p-0">
-            {writing.map(({ label, href }) => (
-              <li>
-                <a href={href} class="t-small link-underline text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]">{label}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-      </div>
-
-      <!-- App workspace: the one external product link, below the columns. -->
-      <a
-        href={appWorkspace.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="t-small link-underline mt-8 inline-flex items-center gap-1.5 text-[var(--color-text-muted)] no-underline transition-colors hover:text-[var(--color-text)]"
-      >
-        {appWorkspace.label}
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="rtl-flip-x"><path d="M3.5 8.5 8.5 3.5M4.5 3.5h4v4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <a href="/status/" class="t-caption inline-flex items-center gap-2 self-start text-[var(--color-ink-muted)] no-underline transition-colors hover:text-[var(--color-ink-text)] sm:self-auto">
+        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        {statusLabel}
       </a>
     </div>
 
-    <!-- ═══ BOTTOM BAR ═══ -->
-    <div class="relative flex items-center justify-between gap-4 border-t border-[var(--color-border)] py-5">
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <p class="t-caption text-[var(--color-text-dim)] whitespace-nowrap">
-          &copy; {year} Wojciech Łuszczyński
-        </p>
-        <nav class="t-caption flex items-center gap-x-4" aria-label={isPL ? 'Informacje prawne' : 'Legal'}>
-          <a href={privacyHref} class="text-[var(--color-text-dim)] no-underline transition-colors hover:text-[var(--color-text)]">{privacyLabel}</a>
-          <a href={termsHref} class="text-[var(--color-text-dim)] no-underline transition-colors hover:text-[var(--color-text)]">{termsLabel}</a>
-        </nav>
-      </div>
-    </div>
+    <!-- Oversized wordmark as the last thing on the page: identity, not links. -->
+    <p class="footer-mark pointer-events-none select-none" dir="ltr" aria-hidden="true">wojciech.io</p>
   </div>
 
   <script type="application/ld+json" set:html={JSON.stringify(espressoSchema)} />
 </footer>
 
+<style>
+  .footer-grid {
+    background-image:
+      linear-gradient(to right, var(--color-ink-border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-ink-border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.35;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
+  }
+  .footer-glow {
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--color-accent-cta) 12%, transparent), transparent 70%);
+  }
+  .footer-mark {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: clamp(3.5rem, 15vw, 12rem);
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+    margin: 0 0 -0.12em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--color-ink-border);
+    text-align: center;
+  }
+</style>

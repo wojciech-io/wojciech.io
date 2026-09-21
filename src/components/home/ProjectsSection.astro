@@ -1,7 +1,6 @@
 ---
 import ProjectCard from '../ui/ProjectCard.astro';
 import ProjectCover from '../ui/ProjectCover.astro';
-import Icon from '../ui/Icon.astro';
 import { projectChrome, type SectionStrings } from '../../data/locales';
 import type { SiteLocale } from '../../data/locale-codes';
 import { accentHeading } from '../../lib/editorial';
@@ -45,10 +44,6 @@ const t = {
   title: i18n?.title ?? 'Projects that shipped.',
   titleSecondary: i18n?.titleSecondary ?? 'Systems that still run.',
   allLink: i18n?.allLink ?? 'All work →',
-  ctaEyebrow: i18n?.ctaEyebrow ?? 'Work with me',
-  ctaHeading: i18n?.ctaHeading ?? 'Have a revenue problem worth solving?',
-  ctaBody: i18n?.ctaBody ?? 'Book a 30-minute call. We figure out what\'s broken and whether it\'s worth working together.',
-  ctaLink: i18n?.ctaLink ?? 'Book a call →',
 };
 
 // Internal links must carry the locale segment: localized /work/ and /contact/ exist
@@ -56,7 +51,6 @@ const t = {
 // component without a locale prop, so it stays on the English routes.
 const localePrefix = locale === 'en' ? '' : `/${locale}`;
 const workHref = `${localePrefix}/work/`;
-const contactHref = `${localePrefix}/contact/`;
 
 const defaultProjects: ProjectItem[] = [
   {
@@ -225,25 +219,6 @@ const rest = projects.slice(1);
         </div>
       ))}
 
-      <!-- CTA card -->
-      <a
-        href={contactHref}
-        class="group flex flex-col justify-between rounded-[var(--radius-card)] border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 p-8 card-lift hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent)]/8 transition-colors sm:col-span-2 lg:col-span-3 lg:flex-row lg:items-end lg:gap-8"
-      >
-        <div class="max-w-xl">
-          <span class="obs-label-accent mb-5 block">{t.ctaEyebrow}</span>
-          <h3 class="t-lead font-semibold text-[var(--color-text)] mb-3 group-hover:text-[var(--color-accent-hi)] transition-colors">
-            {t.ctaHeading}
-          </h3>
-          <p class="t-small text-[var(--color-text-muted)]">
-            {t.ctaBody}
-          </p>
-        </div>
-        <div class="t-label btn-press mt-8 inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-6 py-3.5 text-[var(--color-accent-text)] transition-colors group-hover:bg-[var(--color-accent-cta-hi)] lg:mt-0 lg:self-auto">
-          <span>{t.ctaLink.replace(' →', '').replace(' ←', '')}</span>
-          <Icon name="arrow-right" class="rtl-flip-x h-[13px] w-[13px]" />
-        </div>
-      </a>
     </div>
 
   </div>
