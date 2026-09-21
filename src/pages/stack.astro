@@ -128,11 +128,11 @@ const layers: { title: string; body: string; tools: Tool[] }[] = [
   },
   {
     title: 'Resilience',
-    body: 'Azure Static Web Apps holds a weekly cold standby. Failover is operator-triggered, auto-detects health, then flips DNS via the Cloudflare API. Rollback is a non-destructive git revert.',
+    body: 'Cloudflare Pages serves every page from the edge. BetterStack checks each subdomain every three minutes, and a Playwright smoke run checks production every morning. Rollback is a non-destructive git revert.',
     tools: [
-      { name: 'Azure SWA', slug: 'microsoftazure' },
-      { name: 'Cloudflare DNS', slug: 'cloudflare' },
+      { name: 'Cloudflare Pages', slug: 'cloudflare' },
       { name: 'BetterStack' },
+      { name: 'Playwright' },
     ],
   },
   {
@@ -155,7 +155,7 @@ const stats = [
 
 <Layout
   title="Production Stack"
-  description="The real stack behind wojciech.io and its subdomains. Astro, Cloudflare, Terraform, Vitest, Playwright, signed cookies, and a manual failover plan that has actually been tested."
+  description="The real stack behind wojciech.io and its subdomains. Astro, Cloudflare, Terraform, Vitest, Playwright, signed cookies, and uptime checks on every subdomain."
 >
   <!-- Hero -->
   <section class="relative overflow-hidden border-b border-[var(--color-border)]">
