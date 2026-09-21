@@ -112,6 +112,24 @@ Fluid utility sizes (Tailwind `text-fluid-*` classes, replace breakpoint pairs):
 | `--text-fluid-2xl` | `1.5rem → 1.875rem` | `text-fluid-2xl` | `text-2xl md:text-3xl` |
 | `--text-fluid-3xl` | `1.875rem → 2.25rem` | `text-fluid-3xl` | `text-3xl md:text-4xl` |
 
+### Type roles
+
+Every piece of text takes one role, defined once in `src/styles/global.css` (`@utility t-*`). Components add a colour and, where emphasis is needed, `font-semibold`; they never set their own size, weight, leading or tracking. `heading-roles.test.ts` enforces this for h1 and h2.
+
+| Role | Class | Family | Size | Weight | Tracking | Use |
+|---|---|---|---|---|---|---|
+| Display | `t-display` | Geist | `--text-hero` (38 → 72px) | 600 | −0.03em | Landing hero h1 |
+| H1 | `t-h1` | Geist | `--text-h1` (28 → 48px) | 600 | −0.02em | Page h1, featured story title |
+| H2 | `t-h2` | Geist | `--text-h2` (24 → 40px) | 600 | −0.02em | Section headings |
+| H3 | `t-h3` | Geist | `--text-h3` (18 → 24px) | 600 | −0.02em | Card titles, list items, sub-sections |
+| Lead | `t-lead` | Geist | `--text-lead` (16 → 20px) | 400 | 0 | Paragraph under a heading |
+| Body | `t-body` | Geist | 16px | 400 | 0 | Running text |
+| Small | `t-small` | Geist | 14px | 400 | 0 | Card descriptions |
+| Caption | `t-caption` | Geist | 12px | 400 | 0 | Footnotes, legal line |
+| Label | `t-label` | Geist Mono | 11px | 600 | 0.12em, uppercase | Eyebrows, categories, pills (`obs-label`, `obs-label-accent`) |
+| Data | `t-data` | Geist Mono | 13px | 400 | 0 | Dates, figures, inline code |
+| Button | `t-button` | Geist Mono | 12px | 600 | 0.08em, uppercase | Every button and CTA link |
+
 ### Typography rules
 
 - Articles (`src/content/insights`) render at `--text-body-lg` for body text, `--width-prose: 65ch` max-width.
