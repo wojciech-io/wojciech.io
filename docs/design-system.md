@@ -96,7 +96,7 @@ Fluid sizes (scale with viewport):
 
 | Token | Range | Usage |
 |---|---|---|
-| `--text-hero` | `2rem → 3.8rem` | Hero primary headline |
+| `--text-hero` | `2.4rem → 4.5rem` | The h1 of every landing hero: home, `/apps/*`, `/subscribe/` |
 | `--text-h1` | `1.75rem → 3rem` | Page h1 |
 | `--text-h2` | `1.5rem → 2.5rem` | Section h2 |
 | `--text-h3` | `1.125rem → 1.5rem` | Subsection h3 |
@@ -117,6 +117,7 @@ Fluid utility sizes (Tailwind `text-fluid-*` classes, replace breakpoint pairs):
 - Articles (`src/content/insights`) render at `--text-body-lg` for body text, `--width-prose: 65ch` max-width.
 - Eyebrow labels: `--text-xs`, `font-weight: 600`, `letter-spacing: 0.1em`, uppercase, `--color-accent`.
 - Do not use `font-size` in px in component styles; use a token or Tailwind class.
+- Landing hero h1: `text-[length:var(--text-hero)] font-semibold leading-[1.02] tracking-[-0.03em]`. Page h1 (about, work, insights, …): `--text-h1`, semibold. No per-page `clamp()` for either; `hero-typography.test.ts` enforces it.
 
 ---
 
