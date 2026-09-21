@@ -130,6 +130,7 @@ const languageOptions = [
   class="fixed inset-0 z-[100] flex flex-col bg-[var(--color-bg)] duration-300 ease-out translate-x-full opacity-0 pointer-events-none lg:hidden"
   style="transition-property: transform, opacity; will-change: transform, opacity;"
   aria-hidden="true"
+  inert
   role="dialog"
   aria-modal="true"
   aria-label="Navigation"
@@ -245,6 +246,9 @@ const languageOptions = [
       overlay.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
       overlay.classList.add('translate-x-0', 'opacity-100');
       overlay.setAttribute('aria-hidden', 'false');
+      // inert keeps the closed menu's links out of the tab order; aria-hidden alone
+      // hid them from screen readers but not from the keyboard.
+      overlay.inert = false;
       openBtn.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
       lines[0].style.transform = 'translateY(6.5px) rotate(45deg)';
@@ -256,6 +260,7 @@ const languageOptions = [
       overlay.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
       overlay.classList.remove('translate-x-0', 'opacity-100');
       overlay.setAttribute('aria-hidden', 'true');
+      overlay.inert = true;
       openBtn.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
       lines[0].style.transform = '';
