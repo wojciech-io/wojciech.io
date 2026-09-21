@@ -128,6 +128,30 @@ describe('insights redirects do not bury live articles', () => {
       `${slug}: live article is 301'd to /insights/ in public/_redirects`,
     ).toBe(false);
   });
+
+  // Retired translations are 301'd to their English original. Cloudflare
+  // follows a rule even when a page exists at the path, so a translation
+  // published again under an old slug would vanish behind its own redirect.
+  const localeDirs = readdirSync(INSIGHTS_DIR, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name);
+  const localePaths = localeDirs.flatMap((loc) => {
+    // loc comes from readdirSync(INSIGHTS_DIR): a directory name, not user input.
+    // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
+    const files = readdirSync(resolve(INSIGHTS_DIR, loc)).filter(
+      (f) => f.endsWith('.md') || f.endsWith('.mdx'),
+    );
+    const index = files.length > 0 ? [`/${loc}/insights/`] : [];
+    return [...index, ...files.map((f) => `/${loc}/insights/${f.replace(/\.(md|mdx)$/, '')}/`)];
+  });
+  const redirected = new Set(rules.flatMap(([from]) => [from, `${from}/`]));
+
+  it.each(localePaths)('%s: live translation is not redirected away', (path) => {
+    expect(
+      redirected.has(path),
+      `${path} is published but public/_redirects sends it elsewhere; delete its rules`,
+    ).toBe(false);
+  });
 });
 
 // Cover art is easy to get wrong in a way nothing surfaces. Before PR #506 no
