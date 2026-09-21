@@ -11,6 +11,9 @@ function loadAll() {
     .filter((f) => f.endsWith('.json'))
     .map((f) => ({
       file: f,
+      // f comes from readdirSync(DIR): a plain filename from a constant
+      // directory, which cannot contain a path separator and so cannot escape it.
+      // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
       data: JSON.parse(readFileSync(resolve(DIR, f), 'utf-8')),
     }));
 }
