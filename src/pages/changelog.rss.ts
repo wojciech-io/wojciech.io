@@ -41,7 +41,7 @@ export const GET: APIRoute = async ({ site }) => {
           <link>${link}</link>
           <guid isPermaLink="false">${guid}</guid>
           <pubDate>${pubDate}</pubDate>
-          <author>hello@wojciech.io (Wojciech Łuszczyński)</author>
+          <author>hello@wojciech.io (Wojciech Luszczynski)</author>
         </item>`;
     })
     .join('');
@@ -50,13 +50,13 @@ export const GET: APIRoute = async ({ site }) => {
     `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Wojciech Łuszczyński · Changelog</title>
+    <title>Wojciech Luszczynski · Changelog</title>
     <description>What I'm shipping on wojciech.io. Every merged PR, in feed-reader form.</description>
     <link>${new URL('/', origin).href}</link>
     <atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />
     <language>en-us</language>
-    <managingEditor>hello@wojciech.io (Wojciech Łuszczyński)</managingEditor>
-    <webMaster>hello@wojciech.io (Wojciech Łuszczyński)</webMaster>
+    <managingEditor>hello@wojciech.io (Wojciech Luszczynski)</managingEditor>
+    <webMaster>hello@wojciech.io (Wojciech Luszczynski)</webMaster>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <ttl>360</ttl>
     ${items}

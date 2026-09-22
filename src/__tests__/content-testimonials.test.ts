@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readdirSync, readFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
 const DIR = resolve('./src/content/testimonials');
@@ -49,10 +49,18 @@ describe('testimonial content entries', () => {
     expect(Array.isArray(data.tags)).toBe(true);
   });
 
-  it.each(entries)('$file: avoids remote avatar dependencies and uses LinkedIn source links', ({ data }) => {
-    expect(data.avatar, 'remote profile photos should not be used').toBeUndefined();
+  // Photos are published with each person's written consent and self-hosted:
+  // never hotlinked from LinkedIn's CDN, whose signed URLs expire.
+  it.each(entries)('$file: self-hosted avatar and a LinkedIn profile link', ({ data }) => {
+    if (data.avatar) {
+      expect(data.avatar, 'avatar must be a local file').toMatch(/^\/images\/testimonials\/[a-z0-9-]+\.webp$/);
+      // data.avatar is checked against the pattern above: no separators beyond
+      // /images/testimonials/, so it cannot leave public/.
+      // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
+      expect(existsSync(resolve('./public', `.${data.avatar}`)), `${data.avatar} missing from public/`).toBe(true);
+    }
     if (data.href) {
-      expect(data.href).toMatch(/^https:\/\/[a-z]{2}\.linkedin\.com\/in\//);
+      expect(data.href).toMatch(/^https:\/\/(www|[a-z]{2})\.linkedin\.com\/in\//);
     }
   });
 });

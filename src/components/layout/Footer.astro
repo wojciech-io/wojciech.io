@@ -1,4 +1,5 @@
 ---
+import { personName } from '../../data/site';
 import { SITE } from '../../data/site';
 import { getUiStringsForPath, getLocaleFromPath, localizeHref } from '../../data/uiStrings';
 import FooterNewsletter from './FooterNewsletter.astro';
@@ -28,10 +29,10 @@ const espressoSchema = {
   '@type': 'Periodical',
   name: 'AI Espresso',
   description:
-    'A free daily newsletter by Wojciech Łuszczyński. Three stories on AI models, agents, and GTM systems every weekday morning, each with a why it matters, readable in three minutes.',
+    `A free daily newsletter by ${personName(locale)}. Three stories on AI models, agents, and GTM systems every weekday morning, each with a why it matters, readable in three minutes.`,
   url: SITE.url + '/subscribe/',
   inLanguage: 'en',
-  publisher: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: SITE.url + '/' },
+  publisher: { '@type': 'Person', name: personName(locale), url: SITE.url + '/' },
 };
 
 const contactHref = localizeHref('/contact/', locale);
@@ -229,7 +230,7 @@ const connect = [
     <!-- Bottom bar -->
     <div class="flex flex-col gap-3 border-t border-[var(--color-ink-border)] py-6 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex flex-wrap items-center gap-x-5 gap-y-1">
-        <p class="t-caption whitespace-nowrap text-[var(--color-ink-muted)]">&copy; {year} Wojciech Łuszczyński</p>
+        <p class="t-caption whitespace-nowrap text-[var(--color-ink-muted)]">&copy; {year} {personName(locale)}</p>
         <nav class="t-caption flex items-center gap-x-5" aria-label={isPL ? 'Informacje prawne' : 'Legal'}>
           <a href={privacyHref} class="text-[var(--color-ink-muted)] no-underline transition-colors hover:text-[var(--color-ink-text)]">{privacyLabel}</a>
           <a href={termsHref} class="text-[var(--color-ink-muted)] no-underline transition-colors hover:text-[var(--color-ink-text)]">{termsLabel}</a>

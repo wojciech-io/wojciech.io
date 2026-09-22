@@ -1,6 +1,9 @@
 ---
-import { SITE } from '../../data/site';
+import { SITE, personName } from '../../data/site';
+import { getLocaleFromPath } from '../../data/uiStrings';
 import { hreflangToOgLocale } from '../../data/locales';
+// Polish diacritics on Polish pages only; Latin spelling everywhere else.
+const authorName = personName(getLocaleFromPath(Astro.url.pathname));
 
 interface Props {
   title?: string;
@@ -19,7 +22,7 @@ interface Props {
 
 const {
   title,
-  description = 'Wojciech Łuszczyński, growth operator, GTM architect, AI-native builder.',
+  description = `${SITE.name}, growth operator, GTM architect, AI-native builder.`,
   canonical,
   ogImage = '/og-default.png',
   ogImageAlt,
@@ -32,7 +35,7 @@ const {
   schema,
 } = Astro.props;
 
-const siteTitle = SITE.nameDisplay;
+const siteTitle = authorName;
 // Shorter brand suffix keeps SERP titles closer to Google's ~60ch
 // truncation point; the full author name still lives in og:site_name and
 // the Person JSON-LD, so brand signal isn't lost.
@@ -58,7 +61,7 @@ const baseSchema = [
   {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Wojciech Łuszczyński',
+    name: authorName,
     alternateName: 'Wojtek Luszczynski',
     url: SITE.url + '/',
     image: SITE.url + '/images/wojciech-avatar-2026-384.webp',
@@ -100,7 +103,7 @@ const baseSchema = [
     name: siteTitle,
     url: SITE.url + '/',
     inLanguage: 'en',
-    author: { '@type': 'Person', name: 'Wojciech Łuszczyński', url: SITE.url + '/' },
+    author: { '@type': 'Person', name: authorName, url: SITE.url + '/' },
   },
 ];
 const pageSchema = Array.isArray(schema) ? schema : schema ? [schema] : [];
@@ -122,7 +125,7 @@ const schemaItems = [...baseSchema, ...pageSchema];
 <link rel="dns-prefetch" href="https://eu-assets.i.posthog.com" />
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
-<meta name="author" content="Wojciech Łuszczyński" />
+<meta name="author" content={authorName} />
 <link rel="canonical" href={canonicalURL} />
 {alternates.map((item) => (
   <link rel="alternate" hreflang={item.lang} href={item.href} />
@@ -166,9 +169,9 @@ const schemaItems = [...baseSchema, ...pageSchema];
 }
 
 <!-- Feed autodiscovery -->
-<link rel="alternate" type="application/rss+xml" title="Wojciech Łuszczyński · Insights" href="/rss.xml" />
-<link rel="alternate" type="application/feed+json" title="Wojciech Łuszczyński · Insights" href="/feed.json" />
-<link rel="alternate" type="application/rss+xml" title="Wojciech Łuszczyński · Changelog" href="/changelog.rss" />
+<link rel="alternate" type="application/rss+xml" title={`${authorName} · Insights`} href="/rss.xml" />
+<link rel="alternate" type="application/feed+json" title={`${authorName} · Insights`} href="/feed.json" />
+<link rel="alternate" type="application/rss+xml" title={`${authorName} · Changelog`} href="/changelog.rss" />
 
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=9" />

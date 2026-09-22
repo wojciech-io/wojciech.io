@@ -14,7 +14,7 @@ export const GET: APIRoute = async ({ site }) => {
 
   const feed = {
     version: 'https://jsonfeed.org/version/1.1',
-    title: 'Wojciech Łuszczyński · Insights',
+    title: 'Wojciech Luszczynski · Insights',
     home_page_url: `${origin}/`,
     feed_url: feedUrl,
     description:
@@ -22,7 +22,7 @@ export const GET: APIRoute = async ({ site }) => {
     language: 'en-US',
     authors: [
       {
-        name: 'Wojciech Łuszczyński',
+        name: 'Wojciech Luszczynski',
         url: `${origin}/about/`,
         avatar: `${origin}/images/wojciech-avatar-2026-384.webp`,
       },
@@ -51,7 +51,7 @@ export const GET: APIRoute = async ({ site }) => {
         ...(post.data.updatedAt
           ? { date_modified: post.data.updatedAt.toISOString() }
           : {}),
-        authors: [{ name: 'Wojciech Łuszczyński' }],
+        authors: [{ name: 'Wojciech Luszczynski' }],
         tags: [
           ...(post.data.category ? [post.data.category] : []),
           ...post.data.tags,
