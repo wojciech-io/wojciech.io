@@ -37,8 +37,16 @@ const toCard = (t: typeof sorted[number]) => ({
   avatar: t.data.avatar,
 });
 
+// Translated overrides carry only the words. Profile link and photo always come
+// from the collection, so a fixed link cannot go stale on one locale.
+const byAuthor = new Map(sorted.map((t) => [t.data.author, t.data]));
+const withSourceLinks = (item: TestimonialCard): TestimonialCard => {
+  const source = byAuthor.get(item.name);
+  return { ...item, linkedin: source?.href ?? item.linkedin, avatar: item.avatar ?? source?.avatar };
+};
+
 // One continuous animated marquee — every featured testimonial, in order.
-const allTestimonials = itemsProp ?? sorted.map(toCard);
+const allTestimonials = itemsProp ? itemsProp.map(withSourceLinks) : sorted.map(toCard);
 ---
 
 <section class="py-[var(--space-section)] bg-[var(--color-bg)] border-t border-[var(--color-border)]">
