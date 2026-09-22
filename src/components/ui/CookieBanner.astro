@@ -1,7 +1,7 @@
 ---
 // Analytics consent banner
-// - Floating ink card, bottom-right on the content grid (bottom sheet on phones);
-//   reject and accept carry equal weight
+// - One ink bar at the bottom, centred on the max-w-6xl content grid (text left,
+//   buttons right); bottom sheet on phones; reject and accept carry equal weight
 // - Stores choice in localStorage as 'cookie-consent' = 'accepted' | 'declined'
 // - On accept: fires initAfterConsent() which initialises GA4 + PostHog
 // - On decline: fires optOut() so PostHog stays in opt-out mode
@@ -17,16 +17,17 @@ const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/pr
 
 <div
   id="cookie-banner"
-  class="cookie-card fixed inset-x-4 bottom-4 z-50 sm:inset-x-auto sm:bottom-6 sm:w-[23rem]"
+  class="cookie-card pointer-events-none fixed inset-x-4 bottom-4 z-50 sm:inset-x-0 sm:bottom-6"
   data-state="hidden"
   role="dialog"
   aria-label="Analytics consent"
   aria-live="polite"
 >
-  <div class="relative overflow-hidden rounded-[calc(var(--radius-card)*1.5)] border border-[var(--color-ink-border)] bg-[var(--color-ink)] p-5 text-[var(--color-ink-text)] shadow-[0_24px_60px_-20px_rgb(0_0_0_/_0.55)]">
-    <div class="flex items-start gap-4">
+  <div class="mx-auto sm:max-w-6xl sm:px-6">
+  <div class="pointer-events-auto relative flex flex-col gap-5 overflow-hidden rounded-[calc(var(--radius-card)*1.5)] border border-[var(--color-ink-border)] bg-[var(--color-ink)] p-5 text-[var(--color-ink-text)] shadow-[0_24px_60px_-20px_rgb(0_0_0_/_0.55)] sm:flex-row sm:items-center sm:gap-8 sm:px-6 sm:py-4">
+    <div class="flex items-start gap-4 sm:flex-1 sm:items-center">
       <!-- The cover-art motif in miniature: three quiet bars and one that moved. -->
-      <svg class="mt-1 h-9 w-9 shrink-0" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+      <svg class="mt-1 h-9 w-9 shrink-0 sm:mt-0" viewBox="0 0 36 36" fill="none" aria-hidden="true">
         <rect x="3" y="14" width="5" height="19" rx="1.5" fill="currentColor" opacity=".28" />
         <rect x="11" y="10" width="5" height="23" rx="1.5" fill="currentColor" opacity=".28" />
         <rect x="19" y="16" width="5" height="17" rx="1.5" fill="currentColor" opacity=".28" />
@@ -36,7 +37,7 @@ const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/pr
         {t.cookie.bannerText}{' '}<a href={privacyHref} class="whitespace-nowrap text-[var(--color-ink-text)] underline underline-offset-2 hover:text-[var(--color-accent-cta)]">{t.cookie.privacyPolicy}</a>
       </p>
     </div>
-    <div class="mt-5 grid grid-cols-2 gap-2">
+    <div class="grid grid-cols-2 gap-2 sm:flex sm:shrink-0">
       <button
         id="cookie-decline"
         class="t-button btn-press whitespace-nowrap rounded-[var(--radius-btn)] border border-[var(--color-ink-border)] px-2 py-3 sm:px-4 text-[var(--color-ink-text)] transition-colors hover:border-[var(--color-ink-text)]"
@@ -51,6 +52,7 @@ const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/pr
       </button>
     </div>
   </div>
+  </div>
 </div>
 
 <style>
@@ -61,14 +63,6 @@ const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/pr
     transform: translateY(calc(100% + 2rem));
     opacity: 0;
     pointer-events: none;
-  }
-  /* Right edge sits on the max-w-6xl px-6 content edge, not the viewport edge,
-     so the card lines up with the header CTA instead of floating over the
-     headline and buttons on the left. */
-  @media (min-width: 640px) {
-    .cookie-card {
-      right: max(1.5rem, calc((100% - 72rem) / 2 + 1.5rem));
-    }
   }
   .cookie-card[data-state='shown'] {
     transform: none;
