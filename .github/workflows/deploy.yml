@@ -102,8 +102,12 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: 39783e1749680bed4039662ab696c3b1
 
+  # academy.wojciech.io and notch.wojciech.io are retired. Their Pages projects
+  # now serve only subdomains/<name>/_redirects (301 to the matching page on
+  # wojciech.io). No build, no functions: deploying from the folder itself keeps
+  # the root functions/ out of the upload.
   deploy-academy:
-    name: Deploy academy.wojciech.io
+    name: Deploy academy.wojciech.io (redirect only)
     if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment:
@@ -115,24 +119,16 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "24"
-          cache: "npm"
 
-      - run: npm ci
-
-      - run: npm run build:academy
-
-      # Same CWD-functions fix as subscribe: academy has its own functions
-      # (_middleware.ts + api/) that the root-CWD deploy was silently replacing
-      # with the main site's set.
       - name: Wrangler deploy
-        working-directory: apps/academy
-        run: npx wrangler pages deploy dist --project-name=akademia-wojciech-io --branch=main --commit-message=deploy-academy-wojciech-io
+        working-directory: subdomains/academy
+        run: npx --yes wrangler@4.131.2 pages deploy . --project-name=akademia-wojciech-io --branch=main --commit-message=deploy-academy-redirect
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: 39783e1749680bed4039662ab696c3b1
 
   deploy-notch:
-    name: Deploy notch.wojciech.io
+    name: Deploy notch.wojciech.io (redirect only)
     if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment:
@@ -144,14 +140,10 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "24"
-          cache: "npm"
-
-      - run: npm ci
-
-      - run: npm run build:notch
 
       - name: Wrangler deploy
-        run: npx wrangler pages deploy apps/notch/dist --project-name=notch-wojciech-io --branch=main --commit-message=deploy-notch-wojciech-io
+        working-directory: subdomains/notch
+        run: npx --yes wrangler@4.131.2 pages deploy . --project-name=notch-wojciech-io --branch=main --commit-message=deploy-notch-redirect
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: 39783e1749680bed4039662ab696c3b1
