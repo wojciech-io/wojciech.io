@@ -8,54 +8,62 @@ interface Testimonial {
   avatar?: string;
 }
 interface Props {
-  /** All testimonials, rendered as one continuous full-bleed marquee. Cards
-      scroll off the viewport edge (not clipped inside a box) and the edge fade
-      dissolves to the page background, so nothing reads as a hard cut. */
+  /** All testimonials, one continuous marquee inside the page container.
+      The edges fade out (mask), so cards dissolve at the container edge
+      instead of running off the screen. */
   items: Testimonial[];
 }
 const { items } = Astro.props;
-// Duplicate the set so the track loops seamlessly (translateX -50%).
-const loop = [...items, ...items];
+// Duplicate the set so the track loops seamlessly (translateX -50%). The copy
+// is inert and aria-hidden: one reading, one tab stop per person.
+const loop = [...items.map((t) => ({ ...t, copy: false })), ...items.map((t) => ({ ...t, copy: true }))];
+const initials = (name: string) =>
+  name.split(/\s+/).filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toUpperCase();
 ---
 
 {items.length > 0 && (
-  <div class="relative overflow-hidden" id="testimonial-ticker" dir="ltr" aria-label="Testimonials">
-    {/* Edge fades dissolve to the page background (cream/roast), not a lighter
-        surface — so the marquee melts into the page instead of graying out. */}
-    <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 sm:w-40 md:w-56 [background:linear-gradient(to_right,var(--color-bg)_35%,transparent)]"></div>
-    <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 sm:w-40 md:w-56 [background:linear-gradient(to_left,var(--color-bg)_35%,transparent)]"></div>
-
-    <div class="testimonial-ticker-track flex gap-5 px-6" dir="ltr" style="will-change: transform;">
-      {loop.map((t) => (
-        <figure dir="auto" class="shrink-0 w-[320px] sm:w-[360px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 flex flex-col">
-          <blockquote class="t-body text-[var(--color-text)] mb-5 line-clamp-5">
-            &ldquo;{t.quote}&rdquo;
-          </blockquote>
-
-          <figcaption class="flex items-center justify-between gap-3 mt-auto pt-4 border-t border-[var(--color-border)]">
-            <div class="min-w-0">
-              <p class="t-label truncate text-[var(--color-text-muted)]">{t.name}</p>
-              <p class="t-label truncate text-[var(--color-text-dim)] mt-1">{t.role} · {t.company}</p>
-            </div>
-            {t.linkedin && (
-              <a
-                href={t.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`${t.name} on LinkedIn`}
-                class="shrink-0 text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-              </a>
-            )}
-          </figcaption>
-        </figure>
-      ))}
+  <div class="mx-auto max-w-6xl px-6">
+    <div class="testimonial-ticker relative overflow-hidden" id="testimonial-ticker" dir="ltr" aria-label="Testimonials">
+      <div class="testimonial-ticker-track flex w-max gap-5" dir="ltr" style="will-change: transform;">
+        {loop.map((t) => {
+          const Card = t.linkedin ? 'a' : 'div';
+          const linkProps = t.linkedin
+            ? { href: t.linkedin, target: '_blank', rel: 'noopener noreferrer', 'aria-label': `${t.name}, ${t.role} at ${t.company}, on LinkedIn` }
+            : {};
+          return (
+            <Card
+              {...linkProps}
+              {...(t.copy ? { inert: true, 'aria-hidden': 'true' } : {})}
+              class="group shrink-0 w-[300px] sm:w-[340px] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 flex flex-col no-underline transition-colors hover:border-[var(--color-border-2)]"
+            >
+              <blockquote dir="auto" class="t-small text-[var(--color-text)] mb-6 line-clamp-6">&ldquo;{t.quote}&rdquo;</blockquote>
+              <div class="mt-auto flex items-center gap-3 pt-4 border-t border-[var(--color-border)]">
+                {t.avatar ? (
+                  <img src={t.avatar} alt="" width="44" height="44" loading="lazy" decoding="async" class="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-[var(--color-border)]" />
+                ) : (
+                  <span class="t-label grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--color-surface-2)] text-[var(--color-text-muted)]" aria-hidden="true">{initials(t.name)}</span>
+                )}
+                <div class="min-w-0 flex-1">
+                  <p class="t-small truncate font-semibold text-[var(--color-text)] group-hover:underline underline-offset-2">{t.name}</p>
+                  <p class="t-caption truncate text-[var(--color-text-dim)]">{t.role} · {t.company}</p>
+                </div>
+                {t.linkedin && (
+                  <svg class="h-4 w-4 shrink-0 text-[var(--color-text-dim)] transition-colors group-hover:text-[#0a66c2]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                )}
+              </div>
+            </Card>
+          );
+        })}
+      </div>
     </div>
   </div>
 )}
 
 <style>
+  .testimonial-ticker {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
   @keyframes ticker-scroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
@@ -69,10 +77,13 @@ const loop = [...items, ...items];
     animation-play-state: paused;
   }
   @media (prefers-reduced-motion: reduce) {
-    .testimonial-ticker-track {
-      animation: none;
+    .testimonial-ticker {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      -webkit-mask-image: none;
+      mask-image: none;
     }
+    .testimonial-ticker-track { animation: none; }
+    .testimonial-ticker-track > [inert] { display: none; }
   }
 </style>

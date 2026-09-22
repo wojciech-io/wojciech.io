@@ -1,4 +1,6 @@
 ---
+import { getLocaleFromPath } from '../../data/uiStrings';
+import { personName } from '../../data/site';
 /* Editorial hero. Prop-driven so the English homepage and every localized
    homepage render the exact same layout — only the copy differs. Defaults
    carry the English copy, so `<HeroSection />` (the EN page) works with no props.
@@ -34,7 +36,7 @@ const {
   primaryCta = { label: 'See the work', href: '/work/' },
   secondaryCta = { label: 'Get the newsletter', href: '/subscribe/' },
   metaLine = 'GTM · marketing · growth × AI · Barcelona',
-  name = 'Wojciech Łuszczyński',
+  name = personName(getLocaleFromPath(Astro.url.pathname)),
 } = Astro.props as Props;
 
 /* The editorial accent mark is rendered by its own span; the helper splits the

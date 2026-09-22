@@ -35,7 +35,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
   de: {
     "about": {
       title: 'Über Wojciech · AI-native GTM Operator',
-      description: 'Profil von Wojciech Łuszczyński: GTM-Architekt, Growth Operator und Entwickler von AI-native Revenue-Systemen für B2B SaaS.',
+      description: 'Profil von Wojciech Luszczynski: GTM-Architekt, Growth Operator und Entwickler von AI-native Revenue-Systemen für B2B SaaS.',
       eyebrow: 'Profil',
       h1: 'GTM-Architektur, Growth Execution und AI-Systeme in einem Operator.',
       lead: 'Ich arbeite dort, wo Strategie, Daten, Tools und Umsetzung aufeinandertreffen. Mein Fokus liegt auf B2B-SaaS-Teams mit einem echten Produkt, aber ohne stabiles Revenue-System.',
@@ -142,7 +142,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
   dk: {
     "about": {
       title: 'Om Wojciech - AI-nativ GTM-operator',
-      description: 'Profil af Wojciech Łuszczyński: GTM-arkitekt, vækstoperatør og opbygger af AI-native revenue-systemer til B2B SaaS.',
+      description: 'Profil af Wojciech Luszczynski: GTM-arkitekt, vækstoperatør og opbygger af AI-native revenue-systemer til B2B SaaS.',
       eyebrow: 'Profil',
       h1: 'GTM-arkitektur, væksteksekvering og AI-systemer i én operator.',
       lead: 'Jeg arbejder, hvor strategi, data, værktøjer og udførelse mødes. Fokus er B2B SaaS-teams med et rigtigt produkt, men uden et stabilt revenue-system.',
@@ -249,7 +249,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
   no: {
     "about": {
       title: 'Om Wojciech - AI-nativ GTM-operator',
-      description: 'Profil av Wojciech Łuszczyński: GTM-arkitekt, vekstoperatør og utvikler av AI-native revenue-systemer for B2B SaaS.',
+      description: 'Profil av Wojciech Luszczynski: GTM-arkitekt, vekstoperatør og utvikler av AI-native revenue-systemer for B2B SaaS.',
       eyebrow: 'Profil',
       h1: 'GTM-arkitektur, vekstgjennomføring og AI-systemer i én og samme operator.',
       lead: 'Jeg jobber der strategi, data, verktøy og gjennomføring møtes. Fokus er B2B SaaS-team med et ekte produkt, men uten et stabilt revenue-system.',
@@ -356,7 +356,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
   jp: {
     "about": {
       title: 'ヴォイチェフについて - AIネイティブGTMオペレーター',
-      description: 'Wojciech Łuszczyńskiのプロフィール：GTMアーキテクト、グロースオペレーター、B2B SaaS向けAIネイティブRevenue system構築者。',
+      description: 'Wojciech Luszczynskiのプロフィール：GTMアーキテクト、グロースオペレーター、B2B SaaS向けAIネイティブRevenue system構築者。',
       eyebrow: 'プロフィール',
       h1: 'GTM設計、グロース実行、AIシステムを、ひとりのオペレーターに。',
       lead: '戦略、データ、ツール、実行が交わる場所で動いています。フォーカスは、製品はあるのに安定したRevenue systemがないB2B SaaSチームです。',
@@ -463,7 +463,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
   it: {
     "about": {
       title: 'Chi sono · Wojciech, GTM Operator AI-native',
-      description: 'Profilo di Wojciech Łuszczyński: architetto GTM, growth operator e costruttore di sistemi di revenue AI-native per B2B SaaS.',
+      description: 'Profilo di Wojciech Luszczynski: architetto GTM, growth operator e costruttore di sistemi di revenue AI-native per B2B SaaS.',
       eyebrow: 'Profilo',
       h1: 'Architettura GTM, esecuzione della crescita e sistemi AI in un unico operatore.',
       lead: 'Lavoro dove strategia, dati, strumenti ed esecuzione si incontrano. Mi concentro su team B2B SaaS con un prodotto reale ma senza un sistema di revenue stabile.',
@@ -570,7 +570,7 @@ const pageCopy: Record<LocaleKey, Record<CorePageSlug, Omit<LocalizedPageCopy, '
   es: {
     "about": {
       title: 'Sobre Wojciech · Operador GTM AI-native',
-      description: 'Perfil de Wojciech Łuszczyński: arquitecto GTM, operador de crecimiento y constructor de sistemas de revenue AI-native para B2B SaaS.',
+      description: 'Perfil de Wojciech Luszczynski: arquitecto GTM, operador de crecimiento y constructor de sistemas de revenue AI-native para B2B SaaS.',
       eyebrow: 'Perfil',
       h1: 'Arquitectura GTM, ejecución del crecimiento y sistemas AI en un solo operador.',
       lead: 'Trabajo donde estrategia, datos, herramientas y ejecución se encuentran. Me centro en equipos B2B SaaS con un producto real pero sin un sistema de revenue estable.',
