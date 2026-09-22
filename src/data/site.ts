@@ -6,9 +6,8 @@ export const SITE = {
   email:       'hello@wojciech.io',
 
   url:         'https://wojciech.io',
-  appUrl:      'https://app.wojciech.io',
   subscribeUrl:'https://subscribe.wojciech.io',
-  notchUrl:    'https://notch.wojciech.io',
+  notchUrl:    'https://wojciech.io/apps/notch/',
 
   linkedin:    'https://www.linkedin.com/in/wojciech-luszczynski/',
   linkedinHandle: 'wojciech-luszczynski',
