@@ -2,7 +2,7 @@
 
 Reference for all design tokens, typography, spacing, colour, and component conventions across wojciech.io and its subdomains.
 
-Source of truth: `src/styles/tokens.css`. All values below are extracted from that file; update both when changing a token.
+Source of truth: `src/styles/tokens.css`. All values below are extracted from that file; update this page when changing a token. The subdomain apps get the same file through `@wojciech/tokens` (`packages/tokens/index.css` only re-imports it), so there is no second copy to keep in sync.
 
 ---
 
