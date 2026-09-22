@@ -1,6 +1,7 @@
 ---
 // Analytics consent banner
-// - Floating ink card, bottom-left (bottom sheet on phones); reject and accept carry equal weight
+// - Floating ink card, bottom-right on the content grid (bottom sheet on phones);
+//   reject and accept carry equal weight
 // - Stores choice in localStorage as 'cookie-consent' = 'accepted' | 'declined'
 // - On accept: fires initAfterConsent() which initialises GA4 + PostHog
 // - On decline: fires optOut() so PostHog stays in opt-out mode
@@ -16,7 +17,7 @@ const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/pr
 
 <div
   id="cookie-banner"
-  class="cookie-card fixed inset-x-4 bottom-4 z-50 sm:inset-x-auto sm:left-6 sm:bottom-6 sm:w-[23rem]"
+  class="cookie-card fixed inset-x-4 bottom-4 z-50 sm:inset-x-auto sm:bottom-6 sm:w-[23rem]"
   data-state="hidden"
   role="dialog"
   aria-label="Analytics consent"
@@ -60,6 +61,14 @@ const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/pr
     transform: translateY(calc(100% + 2rem));
     opacity: 0;
     pointer-events: none;
+  }
+  /* Right edge sits on the max-w-6xl px-6 content edge, not the viewport edge,
+     so the card lines up with the header CTA instead of floating over the
+     headline and buttons on the left. */
+  @media (min-width: 640px) {
+    .cookie-card {
+      right: max(1.5rem, calc((100% - 72rem) / 2 + 1.5rem));
+    }
   }
   .cookie-card[data-state='shown'] {
     transform: none;
