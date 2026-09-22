@@ -61,6 +61,19 @@ const h2 = accentHeading(h1Secondary);
     class="hero-photo-side hidden lg:block absolute right-0 top-0 bottom-0 w-[62%] overflow-hidden bg-[url('/images/wojciech-hero-loft.webp')] bg-cover bg-no-repeat bg-[position:center_22%]"
     aria-hidden="true"
   >
+    <!-- 5 s loop that starts and ends on this exact photo. No src in the markup:
+         the script below attaches it after page load, on desktop only, and never
+         with reduced motion or data saver, so LCP stays the still photo. -->
+    <video
+      class="hero-loop absolute inset-0 h-full w-full object-cover object-[center_22%] opacity-0"
+      data-src="/media/wojciech-hero-loop.mp4"
+      muted
+      loop
+      playsinline
+      preload="none"
+      disablepictureinpicture
+      tabindex="-1"
+    ></video>
     <!-- The photo renders 1:1 (no filters, no baked-in fades): every blend into
          the page is painted here in CSS so the source file never needs another
          generator pass. Scrim first (settles the warm shot on the dark theme),
@@ -149,7 +162,32 @@ const h2 = accentHeading(h1Secondary);
   </div>
 </section>
 
+<script>
+  const startHeroLoop = () => {
+    const video = document.querySelector<HTMLVideoElement>('.hero-loop');
+    if (!video?.dataset.src || video.src) return;
+    const desktop = window.matchMedia('(min-width: 1024px)').matches;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    if (!desktop || calm || saveData) return;
+    video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+    video.src = video.dataset.src;
+    video.play().catch(() => {});
+  };
+  if (document.readyState === 'complete') startHeroLoop();
+  else window.addEventListener('load', startHeroLoop, { once: true });
+  document.addEventListener('astro:page-load', startHeroLoop);
+</script>
+
 <style>
+  /* First frame equals the background photo, so the fade-in is invisible; it
+     only hides the blank element while the file is still arriving. */
+  .hero-loop {
+    transition: opacity 0.6s ease;
+  }
+  .hero-loop.is-playing {
+    opacity: 1;
+  }
   /* Grid dissolves toward the edges so it reads as depth, not a flat sheet. */
   .hero-grid {
     -webkit-mask-image: radial-gradient(ellipse 85% 75% at 28% 32%, #000 38%, transparent 100%);
