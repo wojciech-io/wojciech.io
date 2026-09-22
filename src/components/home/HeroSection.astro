@@ -61,11 +61,13 @@ const h2 = accentHeading(h1Secondary);
     class="hero-photo-side hidden lg:block absolute right-0 top-0 bottom-0 w-[62%] overflow-hidden bg-[url('/images/wojciech-hero-loft.webp')] bg-cover bg-no-repeat bg-[position:center_22%]"
     aria-hidden="true"
   >
-    <!-- 5 s loop that starts and ends on this exact photo. No src in the markup:
+    <!-- 5 s loop that starts and ends on this exact photo (AV1 468 KB, H.264
+         fallback 816 KB, both 1664 px from the 2 MB master). No src in the markup:
          the script below attaches it after page load, on desktop only, and never
          with reduced motion or data saver, so LCP stays the still photo. -->
     <video
       class="hero-loop absolute inset-0 h-full w-full object-cover object-[center_22%] opacity-0"
+      data-src-av1="/media/wojciech-hero-loop.webm"
       data-src="/media/wojciech-hero-loop.mp4"
       muted
       loop
@@ -171,8 +173,13 @@ const h2 = accentHeading(h1Secondary);
     const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
     if (!desktop || calm || saveData) return;
     video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
-    video.src = video.dataset.src;
+    const av1 = video.dataset.srcAv1 && video.canPlayType('video/webm; codecs="av01.0.08M.10"') === 'probably';
+    video.src = av1 ? video.dataset.srcAv1! : video.dataset.src;
     video.play().catch(() => {});
+    // A tab opened in the background may refuse the first play(); retry on show.
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && video.paused) video.play().catch(() => {});
+    });
   };
   if (document.readyState === 'complete') startHeroLoop();
   else window.addEventListener('load', startHeroLoop, { once: true });
