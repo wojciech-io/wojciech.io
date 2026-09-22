@@ -8,7 +8,6 @@ import shippedData from '../../data/shipped.json';
  * PRs on main, see scripts/generate-shipped.mjs) and exposes it as a stable,
  * documented JSON contract for downstream consumers:
  *   - the /roadmap "Shipped recently" UI section
- *   - the /status surface health board
  *   - external monitors / newsletter automation
  *
  * Static import so Vite bundles the data into the serverless function.

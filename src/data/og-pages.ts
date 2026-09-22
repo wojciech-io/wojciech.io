@@ -61,11 +61,6 @@ export const OG_PAGES: Record<string, OGPageMeta> = {
     eyebrow: 'Roadmap',
     description: 'A live look at what is in production, what is being built, and what is next.',
   },
-  status: {
-    title: 'Network Status · Live Service Health',
-    eyebrow: 'Status',
-    description: 'Live availability of every surface across this network, probed in real time.',
-  },
   // Locale homes: tytuł wspólny, descriptions skrócone z data/locales.ts
   // do limitu OG (120 ch) z zachowaniem sensu. Eyebrow = lokalna nazwa.
   pl: {

@@ -111,7 +111,7 @@ Everything listed below is Wojciech's original work: designed, built and operate
 
 **Booking Engine**: Custom web booking system with real-time availability and automated confirmation flows.
 
-Full product catalogue at app.wojciech.io.
+Full product catalogue at ${origin}/work/.
 
 ## Writing and insights
 
@@ -132,10 +132,9 @@ ${articleList}
 - [Italian site](${origin}/it/)
 - [Spanish site](${origin}/es/)
 - [What I'm doing now](${origin}/now)
-- [App workspace](https://app.wojciech.io)
 - [Newsletter](https://subscribe.wojciech.io)
-- [AI Academy](https://academy.wojciech.io)
-- [NotchCue app](https://notch.wojciech.io)
+- [AI Academy](${origin}/apps/academy/)
+- [NotchCue app](${origin}/apps/notch/)
 - [Writing](${origin}/insights)
 - [RSS feed](${origin}/rss.xml)
 - [JSON feed](${origin}/feed.json)
