@@ -24,6 +24,11 @@ export const insightLocaleLabels: Record<InsightLocale, {
   next: string;
   authorLabel: string;
   authorBio: string;
+  share: string;
+  shareArticle: string;
+  copyLink: string;
+  linkCopied: string;
+  onThisPage: string;
 }> = {
   en: {
     allInsights: 'All insights',
@@ -43,6 +48,11 @@ export const insightLocaleLabels: Record<InsightLocale, {
     next: 'Next',
     authorLabel: 'About the author',
     authorBio: 'GTM Architect and Growth Operator building AI-native revenue systems for B2B SaaS and technology companies. I connect positioning, SEO, content, paid acquisition, CRM, automation, analytics and AI workflows into practical growth infrastructure.',
+    share: 'Share',
+    shareArticle: 'Share this article',
+    copyLink: 'Copy link',
+    linkCopied: 'Link copied',
+    onThisPage: 'On this page',
   },
   pl: {
     allInsights: 'Wszystkie spostrzeżenia',
@@ -61,7 +71,12 @@ export const insightLocaleLabels: Record<InsightLocale, {
     previous: 'Poprzedni',
     next: 'Następny',
     authorLabel: 'O autorze',
-    authorBio: 'Architekt GTM i operator wzrostu budujący natywne dla AI systemy przychodów dla B2B SaaS i firm technologicznych. Łączę pozycjonowanie, SEO, treści, płatne pozyskiwanie, CRM, automatyzację, analitykę i przepływy pracy AI w praktyczną infrastrukturę wzrostu.'
+    authorBio: 'Architekt GTM i operator wzrostu budujący natywne dla AI systemy przychodów dla B2B SaaS i firm technologicznych. Łączę pozycjonowanie, SEO, treści, płatne pozyskiwanie, CRM, automatyzację, analitykę i przepływy pracy AI w praktyczną infrastrukturę wzrostu.',
+    share: 'Udostępnij',
+    shareArticle: 'Udostępnij artykuł',
+    copyLink: 'Kopiuj link',
+    linkCopied: 'Link skopiowany',
+    onThisPage: 'W tym artykule',
   },
   de: {
     allInsights: 'Alle Beiträge',
@@ -81,6 +96,11 @@ export const insightLocaleLabels: Record<InsightLocale, {
     next: 'Weiter',
     authorLabel: 'Über den Autor',
     authorBio: 'GTM-Architekt und Growth Operator, der KI-native Umsatzsysteme für B2B-SaaS- und Technologieunternehmen baut. Ich verbinde Positionierung, SEO, Content, bezahlte Akquise, CRM, Automatisierung, Analytics und KI-Workflows zu einer praktikablen Wachstumsinfrastruktur.',
+    share: 'Teilen',
+    shareArticle: 'Artikel teilen',
+    copyLink: 'Link kopieren',
+    linkCopied: 'Link kopiert',
+    onThisPage: 'Auf dieser Seite',
   },
   es: {
     allInsights: 'Todos los artículos',
@@ -100,6 +120,11 @@ export const insightLocaleLabels: Record<InsightLocale, {
     next: 'Siguiente',
     authorLabel: 'Sobre el autor',
     authorBio: 'Arquitecto de GTM y operador de crecimiento que construye sistemas de ingresos nativos de IA para empresas B2B SaaS y tecnológicas. Conecto posicionamiento, SEO, contenido, adquisición de pago, CRM, automatización, analítica y flujos de trabajo con IA en una infraestructura de crecimiento que funciona.',
+    share: 'Compartir',
+    shareArticle: 'Compartir artículo',
+    copyLink: 'Copiar enlace',
+    linkCopied: 'Enlace copiado',
+    onThisPage: 'En esta página',
   },
   it: {
     allInsights: 'Tutti gli articoli',
@@ -119,6 +144,11 @@ export const insightLocaleLabels: Record<InsightLocale, {
     next: 'Successivo',
     authorLabel: 'Sull\'autore',
     authorBio: 'GTM Architect e growth operator che costruisce sistemi di ricavi nativi per l\'AI per aziende B2B SaaS e tecnologiche. Collego posizionamento, SEO, contenuti, acquisizione a pagamento, CRM, automazione, analytics e flussi di lavoro con AI in un\'infrastruttura di crescita che funziona.',
+    share: 'Condividi',
+    shareArticle: 'Condividi l\'articolo',
+    copyLink: 'Copia link',
+    linkCopied: 'Link copiato',
+    onThisPage: 'In questa pagina',
   },
 };
 
