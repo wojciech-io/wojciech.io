@@ -64,7 +64,8 @@ const h2 = accentHeading(h1Secondary);
     <!-- 5 s loop that starts and ends on this exact photo (AV1 468 KB, H.264
          fallback 816 KB, both 1664 px from the 2 MB master). No src in the markup:
          the script below attaches it after page load, on desktop only, and never
-         with reduced motion or data saver, so LCP stays the still photo. -->
+         with reduced motion, data saver or a slow link (below 4G or 5 Mb/s),
+         so LCP stays the still photo and slow connections never fetch it. -->
     <video
       class="hero-loop absolute inset-0 h-full w-full object-cover object-[center_22%] opacity-0"
       data-src-av1="/media/wojciech-hero-loop.webm"
@@ -170,8 +171,17 @@ const h2 = accentHeading(h1Secondary);
     if (!video?.dataset.src || video.src) return;
     const desktop = window.matchMedia('(min-width: 1024px)').matches;
     const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-    if (!desktop || calm || saveData) return;
+    // Slow or metered links keep the still photo: the loop is decoration, and
+    // the photo underneath is already the finished frame.
+    const conn = (navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string; downlink?: number };
+    }).connection;
+    const slowLink = Boolean(
+      conn?.saveData ||
+        (conn?.effectiveType && conn.effectiveType !== '4g') ||
+        (typeof conn?.downlink === 'number' && conn.downlink > 0 && conn.downlink < 5),
+    );
+    if (!desktop || calm || slowLink) return;
     video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
     const av1 = video.dataset.srcAv1 && video.canPlayType('video/webm; codecs="av01.0.08M.10"') === 'probably';
     video.src = av1 ? video.dataset.srcAv1! : video.dataset.src;
