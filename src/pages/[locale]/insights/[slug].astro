@@ -1,4 +1,5 @@
 ---
+import { personName } from '../../../data/site';
 import { getCollection, render } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import ArticleCover from '../../../components/ui/ArticleCover.astro';
@@ -135,7 +136,7 @@ const formatDate = (date: Date) =>
 
 const authorSchema = {
   '@type': 'Person',
-  name: 'Wojciech Łuszczyński',
+  name: personName(locale),
   alternateName: 'Wojtek Luszczynski',
   url: SITE.url + '/',
   image: 'https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=384&r=g',
@@ -230,10 +231,10 @@ const schema = [
         {post.data.description}
       </p>
       <div class="flex items-center gap-3 border-b border-[var(--color-border)] pb-8">
-        <a href={`/${locale}/about/`} aria-label="Wojciech Łuszczyński profile">
+        <a href={`/${locale}/about/`} aria-label={`${personName(locale)} profile`}>
           <img
             src="https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=72&r=g"
-            alt="Wojciech Łuszczyński"
+            alt={personName(locale)}
             width="36"
             height="36"
             loading="eager"
@@ -243,7 +244,7 @@ const schema = [
         </a>
         <div class="min-w-0">
           <p class="t-small text-[var(--color-text)]">
-            <a href={`/${locale}/about/`} class="transition-colors hover:text-[var(--color-accent)]">Wojciech Łuszczyński</a>
+            <a href={`/${locale}/about/`} class="transition-colors hover:text-[var(--color-accent)]">{personName(locale)}</a>
           </p>
           <p class="t-caption text-[var(--color-text-dim)]">
             {labels.bylineRole} · <a href={`/${locale}/insights/`} class="transition-colors hover:text-[var(--color-accent)]">Insights</a> · {formatDate(post.data.publishedAt)}
@@ -265,7 +266,7 @@ const schema = [
       <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
         <img
           src="https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=96&r=g"
-          alt="Wojciech Łuszczyński"
+          alt={personName(locale)}
           width="48"
           height="48"
           loading="lazy"
@@ -273,7 +274,7 @@ const schema = [
           class="h-12 w-12 rounded-full border border-[var(--color-border)] object-cover"
         />
         <div>
-          <h2 class="t-h3 mb-2 text-[var(--color-text)]">Wojciech Łuszczyński</h2>
+          <h2 class="t-h3 mb-2 text-[var(--color-text)]">{personName(locale)}</h2>
           <p class="t-small mb-4 text-[var(--color-text-muted)]">{labels.authorBio}</p>
           <div class="flex flex-wrap gap-2">
             <a href={`/${locale}/about/`} class="t-caption rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 py-0.5 text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-accent)]">Profile</a>

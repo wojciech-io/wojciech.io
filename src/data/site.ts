@@ -26,3 +26,9 @@ export const SITE = {
 /** Cal.com booking link ("user/event-slug"). Single source of truth for the
  *  inline calendar on /contact and every popup trigger across the site. */
 export const CAL_BOOKING_LINK = 'wojciech-luszczynski/30-minutes';
+
+/** The name as a visitor should read it: Polish diacritics on Polish pages
+ *  only, the Latin spelling everywhere else (titles, nav, schema, captions). */
+export function personName(locale?: string | null): string {
+  return locale === 'pl' ? SITE.nameDisplay : SITE.name;
+}

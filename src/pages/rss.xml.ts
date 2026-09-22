@@ -25,7 +25,7 @@ export const GET: APIRoute = async ({ site }) => {
           <link>${url}</link>
           <guid isPermaLink="true">${url}</guid>
           <pubDate>${post.data.publishedAt.toUTCString()}</pubDate>
-          <author>hello@wojciech.io (Wojciech Łuszczyński)</author>
+          <author>hello@wojciech.io (Wojciech Luszczynski)</author>
           ${categories.map((c) => `<category>${escapeXml(c)}</category>`).join('\n          ')}
         </item>`;
     })
@@ -35,13 +35,13 @@ export const GET: APIRoute = async ({ site }) => {
     `<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Wojciech Łuszczyński · Insights</title>
+    <title>Wojciech Luszczynski · Insights</title>
     <description>Articles on growth, AI systems, GTM architecture, and building revenue systems for B2B SaaS.</description>
     <link>${new URL('/insights/', origin).href}</link>
     <atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />
     <language>en-us</language>
-    <managingEditor>hello@wojciech.io (Wojciech Łuszczyński)</managingEditor>
-    <webMaster>hello@wojciech.io (Wojciech Łuszczyński)</webMaster>
+    <managingEditor>hello@wojciech.io (Wojciech Luszczynski)</managingEditor>
+    <webMaster>hello@wojciech.io (Wojciech Luszczynski)</webMaster>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <ttl>1440</ttl>
     ${items}
