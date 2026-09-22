@@ -19,133 +19,94 @@
   })();
 </script>
 <style>
+  /* Same tokens and type roles as wojciech.io (src/styles/tokens.css,
+     global.css t-*), so the private workspace reads as the same product. */
+  @font-face { font-family: 'Geist'; src: url('/fonts/Geist-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+  @font-face { font-family: 'Geist'; src: url('/fonts/Geist-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+  @font-face { font-family: 'Geist Mono'; src: url('/fonts/GeistMono-Medium.woff2') format('woff2'); font-weight: 500 700; font-display: swap; }
   :root {
-    --bg:#FFFFFF; --surface:#FFFFFF;
-    --lime:#EBFF00; --lime-press:#d8ec00;
-    --border:rgba(0,0,0,0.14); --border-strong:#1A1919;
-    --text:#1A1919; --text-2:#5c5c5c; --text-3:#8a8a8a;
-    --ink:#080d1a;
+    --bg:#f4f3ef; --surface:#fffefb; --surface-2:#ecebe4;
+    --border:#dcdbd3; --border-2:#c3c1b5;
+    --text:#080808; --text-muted:#52514a; --text-dim:#67665f;
+    --lime:#eaff00; --lime-hi:#dcf000; --on-lime:#080808;
+    --grid:rgb(8 8 8 / 0.045);
+    --radius-card:12px; --radius-btn:7px;
+    --sans:'Geist', ui-sans-serif, system-ui, sans-serif;
+    --mono:'Geist Mono', ui-monospace, monospace;
   }
   [data-theme="dark"] {
-    --bg:#0A0A0B; --surface:#0A0A0B;
-    --lime:#EBFF00; --lime-press:#d8ec00;
-    --border:rgba(255,255,255,0.16); --border-strong:#f2f2f2;
-    --text:#F2F2F2; --text-2:#9a9aa2; --text-3:#6a6a72;
-    --ink:#080d1a;
+    --bg:#141009; --surface:#1c1710; --surface-2:#261f15;
+    --border:#2c2418; --border-2:#3c3322;
+    --text:#f4f0e7; --text-muted:#b0a897; --text-dim:#999180;
+    --lime:#ebff00; --lime-hi:#f5ff66; --on-lime:#141009;
+    --grid:rgb(244 240 231 / 0.05);
   }
-
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
     margin: 0;
-    background: var(--bg);
+    background:
+      linear-gradient(to right, var(--grid) 1px, transparent 1px) 0 0 / 48px 48px,
+      linear-gradient(to bottom, var(--grid) 1px, transparent 1px) 0 0 / 48px 48px,
+      var(--bg);
     color: var(--text);
-    font-family: 'Geist','Inter',system-ui,-apple-system,sans-serif;
+    font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    transition: background .15s, color .15s;
   }
-
-  /* ---- top bar ---- */
-  .topbar {
-    display: flex; align-items: center; justify-content: flex-end;
-    gap: 10px;
-    padding: 20px 24px;
+  /* role: label */
+  .langbtn, .label, .role, .foot {
+    font-family: var(--mono); font-size: 0.6875rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
   }
+  .topbar { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 20px 24px; }
   .icon-btn {
-    width: 34px; height: 34px;
-    display: inline-flex; align-items: center; justify-content: center;
-    border: 1px solid var(--border); background: none;
-    color: var(--text-2); cursor: pointer;
-    transition: color .12s, border-color .12s;
+    width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border-2); border-radius: var(--radius-btn); background: var(--surface);
+    color: var(--text-dim); cursor: pointer; transition: color .15s, border-color .15s;
   }
-  .icon-btn:hover { color: var(--text); border-color: var(--border-strong); }
-
-  .langtoggle { display: inline-flex; border: 1px solid var(--border); }
-  .langbtn {
-    font-size: 12px; font-weight: 500; letter-spacing: .3px;
-    padding: 7px 12px;
-    background: none; border: none; color: var(--text-3); cursor: pointer;
-    font-family: inherit; transition: color .12s, background .12s;
-  }
+  .icon-btn:hover { color: var(--text); border-color: var(--text); }
+  .langtoggle { display: inline-flex; border: 1px solid var(--border-2); border-radius: var(--radius-btn); overflow: hidden; background: var(--surface); }
+  .langbtn { padding: 0 10px; height: 30px; background: none; border: none; color: var(--text-dim); cursor: pointer; transition: color .15s, background .15s; }
   .langbtn + .langbtn { border-left: 1px solid var(--border); }
   .langbtn:hover { color: var(--text); }
-  .langbtn.active { background: var(--lime); color: var(--ink); }
-
-  /* ---- stage ---- */
-  .stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px 24px 48px; }
-  .panel { width: 100%; max-width: 372px; }
-
-  .mark { width: 46px; height: 46px; display: block; margin-bottom: 26px; }
-
-  .name {
-    font-size: 30px; font-weight: 400; line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin: 0 0 8px;
+  .langbtn.active { background: var(--lime); color: var(--on-lime); }
+  .stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px 20px 48px; }
+  .panel {
+    width: 100%; max-width: 400px; padding: 36px 32px 28px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card);
+    box-shadow: 0 24px 60px -30px rgb(0 0 0 / 0.25);
   }
-  .role {
-    font-size: 14px; font-weight: 400; line-height: 1.5;
-    color: var(--text-2);
-    margin: 0 0 30px;
-  }
-
+  .wordmark { display: inline-flex; align-items: center; margin-bottom: 28px; font-family: var(--mono); font-size: 0.8125rem; font-weight: 600; color: var(--text); }
+  .wordmark span { margin-left: 2px; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 6px; background: var(--lime); color: var(--on-lime); font-size: 8px; font-weight: 700; }
+  /* role: h1 at its phone size */
+  .name { font-size: 1.75rem; font-weight: 600; line-height: 1.12; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .role { color: var(--text-dim); margin: 0 0 28px; }
   .form { display: flex; flex-direction: column; }
-  .label {
-    font-size: 12.5px; font-weight: 500; letter-spacing: .1px;
-    color: var(--text-2);
-    margin: 0 0 8px;
-  }
+  .label { color: var(--text-muted); margin: 0 0 8px; }
   .input {
-    width: 100%; height: 52px;
-    padding: 0 15px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 0;
-    color: var(--text);
-    font-size: 15px; font-family: inherit;
-    outline: none;
-    transition: border-color .12s, box-shadow .12s;
+    width: 100%; height: 48px; padding: 0 14px;
+    background: var(--bg); border: 1px solid var(--border-2); border-radius: var(--radius-btn);
+    color: var(--text); font-size: 1rem; font-family: var(--sans); outline: none;
+    transition: border-color .15s, box-shadow .15s;
   }
-  .input::placeholder { color: var(--text-3); }
-  .input:focus { border-color: var(--border-strong); box-shadow: inset 0 0 0 1px var(--border-strong); }
-
+  .input::placeholder { color: var(--text-dim); }
+  .input:focus { border-color: var(--text); box-shadow: 0 0 0 3px color-mix(in srgb, var(--lime) 45%, transparent); }
+  /* role: button */
   .btn {
-    width: 100%; height: 56px;
-    margin-top: 14px;
-    background: var(--lime); color: var(--ink);
-    font-size: 15px; font-weight: 500; letter-spacing: .1px;
-    border: 1px solid var(--lime); border-radius: 0;
-    cursor: pointer; font-family: inherit;
-    transition: background .12s, border-color .12s;
+    width: 100%; height: 48px; margin-top: 12px;
+    background: var(--lime); color: var(--on-lime);
+    font-family: var(--mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    border: none; border-radius: var(--radius-btn); cursor: pointer; transition: background .15s;
   }
-  .btn:hover:not(:disabled) { background: var(--lime-press); border-color: var(--lime-press); }
+  .btn:hover:not(:disabled) { background: var(--lime-hi); }
   .btn:disabled { cursor: not-allowed; opacity: .55; }
-
-  .err {
-    min-height: 20px; margin-top: 12px;
-    font-size: 12.5px; color: #d92d20; font-weight: 500;
-    opacity: 0; transition: opacity .15s;
-  }
-  [data-theme="dark"] .err { color: #ff6b60; }
+  .err { min-height: 20px; margin-top: 12px; font-size: 0.875rem; color: #b42318; opacity: 0; transition: opacity .15s; }
+  [data-theme="dark"] .err { color: #ff8a80; }
   .err.show { opacity: 1; }
-
-  .foot {
-    margin-top: 34px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-    font-size: 12px; font-weight: 400; letter-spacing: .2px;
-    color: var(--text-3);
-  }
-
-  @media (max-width: 460px) {
-    .topbar { padding: 14px 16px; }
-    .stage { padding: 4px 20px 40px; }
-    .name { font-size: 26px; }
-    .mark { margin-bottom: 22px; }
-  }
-
+  .foot { margin: 24px 0 0; padding-top: 18px; border-top: 1px solid var(--border); color: var(--text-dim); }
   .icon-sun { display: none; }
   .icon-moon { display: block; }
   [data-theme="dark"] .icon-sun { display: block; }
@@ -168,12 +129,9 @@
 
 <div class="stage">
   <div class="panel">
-    <svg class="mark" viewBox="0 0 32 32" role="img" aria-label="wojciech.io">
-      <rect width="32" height="32" rx="6" fill="#ebff00"/>
-      <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-weight="800" font-size="14" fill="#080d1a">.io</text>
-    </svg>
+    <p class="wordmark" dir="ltr" aria-label="wojciech.io">wojciech<span aria-hidden="true">.io</span></p>
     <h1 class="name">Wojciech Łuszczyński</h1>
-    <p class="role" data-i18n="role">GTM Architect &amp; Growth Operator</p>
+    <p class="role" data-i18n="role">AI-native revenue operator</p>
 
     <form class="form" id="loginForm" novalidate>
       <label class="label" for="pw" data-i18n="label">Password</label>
@@ -198,9 +156,9 @@
 
   // i18n
   var I18N = {
-    en: { role:'GTM Architect & Growth Operator', label:'Password', submit:'Enter', err:'Wrong password', foot:'Private workspace. Access by invitation.' },
-    pl: { role:'GTM Architect & Growth Operator', label:'Hasło', submit:'Wejdź', err:'Nieprawidłowe hasło', foot:'Prywatny workspace. Dostęp na zaproszenie.' },
-    it: { role:'GTM Architect & Growth Operator', label:'Password', submit:'Entra', err:'Password errata', foot:'Workspace privato. Accesso su invito.' },
+    en: { role:'AI-native revenue operator', label:'Password', submit:'Enter', err:'Wrong password', foot:'Private workspace. Access by invitation.' },
+    pl: { role:'AI-native revenue operator', label:'Hasło', submit:'Wejdź', err:'Nieprawidłowe hasło', foot:'Prywatny workspace. Dostęp na zaproszenie.' },
+    it: { role:'AI-native revenue operator', label:'Password', submit:'Entra', err:'Password errata', foot:'Workspace privato. Accesso su invito.' },
   };
   function setLang(l) {
     var dict = I18N[l] || I18N.en;
