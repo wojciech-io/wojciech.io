@@ -25,9 +25,6 @@ const t = {
   stackLabel: i18n?.stackLabel ?? 'Tech stack',
   body: i18n?.body ?? 'Not for faster copy. For a different operating model. AI goes into prospecting, enrichment, sequencing, and scoring. The whole motion runs faster. Not just one task on the list.',
   allSystemsLink: i18n?.allSystemsLink ?? 'See all AI systems →',
-  stackStatus: i18n?.stackStatus ?? 'operator stack · always running',
-  bridgeStatus: i18n?.bridgeStatus ?? 'MCP bridge · live',
-  activeLabel: i18n?.activeLabel ?? 'active',
 };
 const rows = i18n?.rows ?? defaultRows;
 
@@ -66,90 +63,41 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
           {t.link}
         </a>
 
-        <!-- Before / After as a transformation: the old way struck out, a dashed
-             accent arrow (same motif as the newsletter delivery thread), and the
-             new state as an accent chip. Reads as change, not a table. -->
+        <!-- Before → after ledger. Columns are fixed so every arrow and every
+             chip sits at the same x; below 30rem of column width (tablet two-up,
+             phones) each row wraps to label on top, change underneath, instead
+             of squeezing the middle column until "before" runs under the chip. -->
         <div class="xform-ledger">
           {rows.map(({ label, before, after }, index) => (
-            <div class="xform-row reveal-up group" data-reveal-index={index + 1}>
-              <p class="xform-label">{label}</p>
-              <span class="xform-pre">
-                <span class="xform-before">{before}</span>
-                <span class="xform-arrow" aria-hidden="true"></span>
-              </span>
-              <span class="xform-after">{after}</span>
+            <div class="xform-row reveal-up" data-reveal-index={index + 1}>
+              <p class="xform-label t-small">{label}</p>
+              <p class="xform-before t-data"><s>{before}</s><span class="xform-arrow" aria-hidden="true">→</span></p>
+              <p class="xform-after"><span class="t-label">{after}</span></p>
             </div>
           ))}
         </div>
       </div>
 
-      <!-- Right: animated tech stack -->
+      <!-- Right: the stack, name and role only -->
       <div class="reveal-scale">
         <div class="flex items-center gap-3 mb-4">
           <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
-          <span class="obs-label">{t.stackLabel}</span>
+          <span class="obs-label-accent">{t.stackLabel}</span>
         </div>
-        <div class="obs-panel overflow-hidden">
-          <!-- Stack header: single live marker + mono status (no terminal chrome) -->
-          <div class="flex items-center gap-2 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
-            <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
-            <span class="t-label text-[var(--color-text-dim)]">{t.stackStatus}</span>
-          </div>
+        <ul class="obs-panel divide-y divide-[var(--color-border)] overflow-hidden">
+          {stack.map(({ name, core }, i) => (
+            <li class="flex items-center gap-4 px-5 py-4">
+              <span
+                class={`h-2 w-2 shrink-0 rounded-full ${core ? 'bg-[var(--color-accent-cta)] ring-4 ring-[color-mix(in_srgb,var(--color-accent-cta)_22%,transparent)]' : 'bg-[var(--color-border-2)]'}`}
+                aria-hidden="true"
+              ></span>
+              <span class="t-data font-semibold text-[var(--color-text)] w-32 shrink-0">{name}</span>
+              <span class="t-small text-[var(--color-text-muted)]">{roles[i]}</span>
+            </li>
+          ))}
+        </ul>
 
-          <!-- Stack items -->
-          <div class="divide-y divide-[var(--color-border)]">
-            {stack.map(({ name, core }, i) => (
-              <div
-                class="stack-item group flex items-center gap-4 px-5 py-3.5 hover:bg-[var(--color-surface-2)] transition-colors duration-150"
-                style={`--delay: ${i * 80}ms`}
-              >
-                <!-- Status dot: accent + live ping for AI core, quiet dim for infra -->
-                <span
-                  class="relative flex h-2 w-2 shrink-0"
-                  aria-hidden="true"
-                >
-                  {core && (
-                    <span
-                      class="absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-50 animate-ping"
-                      style={`animation-delay: ${i * 200}ms; animation-duration: 2.4s;`}
-                    ></span>
-                  )}
-                  <span
-                    class={`relative inline-flex h-2 w-2 rounded-full ${core ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-text-dim)]'}`}
-                  ></span>
-                </span>
-
-                <!-- Tool name -->
-                <span class="t-data font-semibold text-[var(--color-text)] group-hover:text-[var(--color-accent-hi)] transition-colors min-w-[108px]">
-                  {name}
-                </span>
-
-                <!-- Role -->
-                <span class="t-data text-[var(--color-text-dim)] group-hover:text-[var(--color-text-muted)] transition-colors flex-1">
-                  {roles[i]}
-                </span>
-
-                <!-- Status indicator -->
-                <span class="t-data text-[var(--color-text-dim)] shrink-0">{t.activeLabel}</span>
-              </div>
-            ))}
-          </div>
-
-          <!-- Animated connection line at bottom -->
-          <div class="px-5 py-3 border-t border-[var(--color-border)] bg-[var(--color-surface-2)]">
-            <div class="flex items-center gap-2">
-              <div class="flex-1 h-px bg-[var(--color-border)] relative overflow-hidden">
-                <div class="data-flow absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-[var(--color-accent)]/60 to-transparent"></div>
-              </div>
-              <span class="t-data text-[var(--color-text-dim)] shrink-0">{t.bridgeStatus}</span>
-              <div class="flex-1 h-px bg-[var(--color-border)] relative overflow-hidden">
-                <div class="data-flow absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-[var(--color-accent)]/60 to-transparent" style="animation-delay: 0.5s;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <a href={systemsHref} class="t-caption mt-4 inline-flex items-center gap-1.5 text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors">
+        <a href={systemsHref} class="t-small mt-4 inline-flex items-center gap-1.5 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors">
           {t.allSystemsLink}
         </a>
       </div>
@@ -159,137 +107,53 @@ const roles = i18n?.roles ?? stack.map((s) => s.role);
 </section>
 
 <style>
-  /* Before → after transformation ledger. Every row shares columns so the
-     struck-out "before", the dashed connector and the accent chip line up
-     down the whole ledger instead of floating at ragged x positions. */
-  .xform-ledger { border-top: 1px solid var(--color-border); }
-  /* Mobile: label on its own line, then the before → chip chain full width. */
+  .xform-ledger {
+    container-type: inline-size;
+    border-top: 1px solid var(--color-border);
+  }
   .xform-row {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: max-content max-content;
+    justify-content: start;
+    grid-template-areas:
+      'label label'
+      'before after';
     align-items: center;
     column-gap: 1rem;
     row-gap: 0.375rem;
     padding: 0.875rem 0;
     border-bottom: 1px solid var(--color-border);
   }
-  .xform-label {
-    flex: 0 0 100%;
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    transition: color 0.15s ease;
-  }
-  .xform-row:hover .xform-label { color: var(--color-text); }
-
-  .xform-pre {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .xform-after { flex: 0 0 auto; }
-
-  /* Desktop: a shared 3-column subgrid (label · before+connector · chip) so
-     every chip starts at the same x and the connectors align. */
-  @media (min-width: 640px) {
-    .xform-ledger { display: grid; grid-template-columns: auto 1fr auto; }
-    .xform-row {
-      display: grid;
-      grid-column: 1 / -1;
-      grid-template-columns: subgrid;
-      column-gap: 1.25rem;
-      row-gap: 0;
-    }
-    .xform-label { flex: none; }
-    .xform-pre { flex: none; }
-    .xform-after { justify-self: start; }
-  }
-
+  .xform-label { grid-area: label; color: var(--color-text); }
   .xform-before {
-    font-size: 0.75rem;
-    color: var(--color-text-dim);
-    text-decoration: line-through;
-    text-decoration-color: color-mix(in srgb, var(--color-text-dim) 60%, transparent);
-    white-space: nowrap;
-    flex: 0 0 auto;
-  }
-  /* CSS-drawn dashed connector with a chevron head; stretches to fill the gap
-     between "before" and the chip so the arrow length is identical per row. */
-  .xform-arrow {
-    flex: 1;
-    min-width: 1.75rem;
+    grid-area: before;
     display: flex;
     align-items: center;
-    color: color-mix(in srgb, var(--color-accent-cta) 72%, var(--color-border));
+    gap: 0.625rem;
+    color: var(--color-text-dim);
   }
-  .xform-arrow::before {
-    content: '';
-    flex: 1;
-    border-top: 2px dashed currentColor;
-    opacity: 0.8;
+  .xform-before s {
+    text-decoration-color: color-mix(in srgb, var(--color-text-dim) 70%, transparent);
   }
-  .xform-arrow::after {
-    content: '';
-    width: 7px; height: 7px;
-    border-top: 2px solid currentColor;
-    border-right: 2px solid currentColor;
-    transform: rotate(45deg);
-    flex-shrink: 0;
-    margin-left: -6px;
-  }
-  .xform-after {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+  .xform-arrow { color: var(--color-accent-hi); font-family: var(--font-sans); }
+  .xform-after { grid-area: after; justify-self: start; }
+  .xform-after span {
+    display: inline-block;
     color: var(--color-accent-hi);
-    background: color-mix(in srgb, var(--color-accent-cta) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent-cta) 34%, transparent);
+    background: color-mix(in srgb, var(--color-accent-cta) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent-cta) 38%, transparent);
     border-radius: 999px;
-    padding: 0.25rem 0.625rem;
+    padding: 0.3rem 0.7rem;
     white-space: nowrap;
-    transition: background-color 0.15s ease;
-  }
-  .xform-row:hover .xform-after {
-    background: color-mix(in srgb, var(--color-accent-cta) 22%, transparent);
   }
 
-  @keyframes data-flow {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(600%); }
-  }
-
-  .data-flow {
-    animation: data-flow 2.2s ease-in-out infinite;
-  }
-
-  .stack-item {
-    opacity: 0;
-    transform: translateY(6px);
-    animation: stack-reveal 0.4s ease forwards;
-    animation-delay: var(--delay, 0ms);
-  }
-
-  @keyframes stack-reveal {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .stack-item {
-      opacity: 1;
-      transform: none;
-      animation: none;
-    }
-    .data-flow {
-      animation: none;
-    }
-    .animate-ping {
-      animation: none;
+  /* Wide column: one line per row, fixed columns for before and after. */
+  @container (min-width: 30rem) {
+    .xform-row {
+      grid-template-columns: minmax(0, 1fr) 10.5rem 9.5rem;
+      justify-content: stretch;
+      grid-template-areas: 'label before after';
+      row-gap: 0;
     }
   }
 </style>

@@ -130,6 +130,12 @@ Every piece of text takes one role, defined once in `src/styles/global.css` (`@u
 | Data | `t-data` | Geist Mono | 13px | 400 | 0 | Dates, figures, inline code |
 | Button | `t-button` | Geist Mono | 12px | 600 | 0.08em, uppercase | Every button and CTA link |
 
+Scoped CSS follows the same scale: a `font-size` in a component `<style>` block is one of the role sizes (0.6875, 0.75, 0.875 or 1rem, or `--text-lead` / `--text-h3` / `--text-h2` / `--text-h1` / `--text-hero`), weight 400 or 600, tracking −0.02em, 0.08em or 0.12em.
+
+Exempt, because the text is part of a drawing rather than copy: the illustrated covers (`ProjectCover`, `ArticleCover`), slide decks, the printable CV, the wordmark, and anything `aria-hidden`.
+
+`tests/e2e/typography-budget.spec.ts` counts distinct rendered text styles per page (desktop) and fails above 24. Measured 2026-09-21: 12–21 per page, 40 across 14 pages (was 103).
+
 ### Typography rules
 
 - Articles (`src/content/insights`) render at `--text-body-lg` for body text, `--width-prose: 65ch` max-width.

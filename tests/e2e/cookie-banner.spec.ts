@@ -8,18 +8,18 @@ test.describe('Cookie banner', () => {
   test('is visible on first load', async ({ page }) => {
     await page.addInitScript((key) => localStorage.removeItem(key), COOKIE_KEY);
     await page.goto(pageUrl('/'));
-    await expect(page.locator('#cookie-banner')).toHaveClass(/translate-y-0/);
+    await expect(page.locator('#cookie-banner')).toHaveAttribute('data-state', 'shown');
   });
 
   test('accept stores consent and hides banner', async ({ page }) => {
     await page.addInitScript((key) => localStorage.removeItem(key), COOKIE_KEY);
     await page.goto(pageUrl('/'));
     const banner = page.locator('#cookie-banner');
-    await expect(banner).toHaveClass(/translate-y-0/);
+    await expect(banner).toHaveAttribute('data-state', 'shown');
 
     await page.locator('#cookie-accept').click();
 
-    await expect(banner).toHaveClass(/translate-y-full/);
+    await expect(banner).toHaveAttribute('data-state', 'hidden');
     await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), COOKIE_KEY)).toBe('accepted');
   });
 
@@ -27,11 +27,11 @@ test.describe('Cookie banner', () => {
     await page.addInitScript((key) => localStorage.removeItem(key), COOKIE_KEY);
     await page.goto(pageUrl('/'));
     const banner = page.locator('#cookie-banner');
-    await expect(banner).toHaveClass(/translate-y-0/);
+    await expect(banner).toHaveAttribute('data-state', 'shown');
 
     await page.locator('#cookie-decline').click();
 
-    await expect(banner).toHaveClass(/translate-y-full/);
+    await expect(banner).toHaveAttribute('data-state', 'hidden');
     await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), COOKIE_KEY)).toBe('declined');
   });
 
@@ -39,7 +39,7 @@ test.describe('Cookie banner', () => {
     await page.addInitScript((key) => localStorage.setItem(key, 'accepted'), COOKIE_KEY);
     await page.goto(pageUrl('/'));
     await page.waitForTimeout(1200);
-    await expect(page.locator('#cookie-banner')).toHaveClass(/translate-y-full/);
+    await expect(page.locator('#cookie-banner')).toHaveAttribute('data-state', 'hidden');
   });
 
   test('does not call analytics before consent', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Cookie banner', () => {
 
     await page.addInitScript((key) => localStorage.removeItem(key), COOKIE_KEY);
     await page.goto(pageUrl('/'));
-    await expect(page.locator('#cookie-banner')).toHaveClass(/translate-y-0/);
+    await expect(page.locator('#cookie-banner')).toHaveAttribute('data-state', 'shown');
     await page.waitForTimeout(700);
 
     expect(analyticsRequests).toEqual([]);

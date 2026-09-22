@@ -1,6 +1,6 @@
 ---
 // Analytics consent banner
-// - Compact single-line design, slides up from the bottom
+// - Floating ink card, bottom-left (bottom sheet on phones); reject and accept carry equal weight
 // - Stores choice in localStorage as 'cookie-consent' = 'accepted' | 'declined'
 // - On accept: fires initAfterConsent() which initialises GA4 + PostHog
 // - On decline: fires optOut() so PostHog stays in opt-out mode
@@ -16,39 +16,59 @@ const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/pr
 
 <div
   id="cookie-banner"
-  class="fixed bottom-0 left-0 right-0 z-50 translate-y-full transition-transform duration-300 ease-out"
+  class="cookie-card fixed inset-x-4 bottom-4 z-50 sm:inset-x-auto sm:left-6 sm:bottom-6 sm:w-[23rem]"
+  data-state="hidden"
   role="dialog"
   aria-label="Analytics consent"
   aria-live="polite"
 >
-  <div class="border-t border-[var(--color-border)] bg-[var(--color-surface)]">
-    <div class="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-3 sm:flex-row sm:items-center sm:gap-6">
-
-      <!-- Text -->
-      <p class="t-caption flex-1 text-[var(--color-text-muted)]">
-        {t.cookie.bannerText}
-        <a href={privacyHref} class="ml-1 text-[var(--color-accent)] hover:text-[var(--color-accent-hi)] underline underline-offset-2 whitespace-nowrap">{t.cookie.privacyPolicy}</a>
+  <div class="relative overflow-hidden rounded-[calc(var(--radius-card)*1.5)] border border-[var(--color-ink-border)] bg-[var(--color-ink)] p-5 text-[var(--color-ink-text)] shadow-[0_24px_60px_-20px_rgb(0_0_0_/_0.55)]">
+    <div class="flex items-start gap-4">
+      <!-- The cover-art motif in miniature: three quiet bars and one that moved. -->
+      <svg class="mt-1 h-9 w-9 shrink-0" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+        <rect x="3" y="14" width="5" height="19" rx="1.5" fill="currentColor" opacity=".28" />
+        <rect x="11" y="10" width="5" height="23" rx="1.5" fill="currentColor" opacity=".28" />
+        <rect x="19" y="16" width="5" height="17" rx="1.5" fill="currentColor" opacity=".28" />
+        <rect x="27" y="3" width="5" height="30" rx="1.5" fill="var(--color-accent-cta)" />
+      </svg>
+      <p class="t-small text-[var(--color-ink-muted)]">
+        {t.cookie.bannerText}{' '}<a href={privacyHref} class="whitespace-nowrap text-[var(--color-ink-text)] underline underline-offset-2 hover:text-[var(--color-accent-cta)]">{t.cookie.privacyPolicy}</a>
       </p>
-
-      <!-- Actions -->
-      <div class="flex shrink-0 items-center gap-2">
-        <button
-          id="cookie-decline"
-          class="t-button text-[var(--color-text-dim)] hover:text-[var(--color-text)] transition-colors px-3 py-1.5 rounded-[var(--radius-btn)] hover:bg-[var(--color-surface-2)]"
-        >
-          {t.cookie.reject}
-        </button>
-        <button
-          id="cookie-accept"
-          class="t-button btn-press px-4 py-1.5 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-cta-hi)] transition-colors"
-        >
-          {t.cookie.accept}
-        </button>
-      </div>
-
+    </div>
+    <div class="mt-5 grid grid-cols-2 gap-2">
+      <button
+        id="cookie-decline"
+        class="t-button btn-press whitespace-nowrap rounded-[var(--radius-btn)] border border-[var(--color-ink-border)] px-2 py-3 sm:px-4 text-[var(--color-ink-text)] transition-colors hover:border-[var(--color-ink-text)]"
+      >
+        {t.cookie.reject}
+      </button>
+      <button
+        id="cookie-accept"
+        class="t-button btn-press whitespace-nowrap rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-2 py-3 sm:px-4 text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
+      >
+        {t.cookie.accept}
+      </button>
     </div>
   </div>
 </div>
+
+<style>
+  .cookie-card {
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease;
+  }
+  .cookie-card[data-state='hidden'] {
+    transform: translateY(calc(100% + 2rem));
+    opacity: 0;
+    pointer-events: none;
+  }
+  .cookie-card[data-state='shown'] {
+    transform: none;
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cookie-card { transition: none; }
+  }
+</style>
 
 <script>
   const COOKIE_KEY = 'cookie-consent';
@@ -62,15 +82,13 @@ const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/pr
   }
 
   function hideBanner() {
-    banner.classList.add('translate-y-full');
-    banner.classList.remove('translate-y-0');
+    banner.dataset.state = 'hidden';
   }
 
   function showBanner() {
     // Small delay so it slides in after page has settled
     setTimeout(() => {
-      banner.classList.remove('translate-y-full');
-      banner.classList.add('translate-y-0');
+      banner.dataset.state = 'shown';
     }, 1000);
   }
 
