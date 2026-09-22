@@ -101,7 +101,10 @@ jobs:
           # Gated apps — probe their login surface (gate response itself is bare).
           check_url "gh.wojciech.io/login"  "https://gh.wojciech.io/login"   blocking
 
-          check_url "app.wojciech.io/login" "https://app.wojciech.io/login"  blocking
+          # app.wojciech.io sits behind Cloudflare Access since 2026-09-22, so
+          # /login now ends on Cloudflare's own login page (no Permissions-Policy
+          # we control). Reported, not blocking.
+          check_url "app.wojciech.io/login" "https://app.wojciech.io/login"  warning
 
           if [ "$FAILED" -ne 0 ]; then
             echo "::error::One or more subdomains missing required security headers"
