@@ -81,6 +81,12 @@ const skipToContent = skipToContentLabels[htmlLang] ?? 'Skip to content';
     {preloadImage && (
       <link rel="preload" as="image" href={preloadImage} media="(min-width: 1024px)" fetchpriority="high" />
     )}
+    {/* Below lg the hero photo is a stacked <img> with a srcset; preload the
+        matching candidate so a phone fetches ~17 KB instead of the 90 KB
+        desktop file. */}
+    {preloadImage === '/images/wojciech-hero-loft.webp' && (
+      <link rel="preload" as="image" imagesrcset="/images/wojciech-hero-loft-640.webp 640w, /images/wojciech-hero-loft-960.webp 960w, /images/wojciech-hero-loft.webp 1448w" imagesizes="(min-width: 768px) 720px, calc(100vw - 48px)" media="(max-width: 1023px)" fetchpriority="high" />
+    )}
     <script is:inline>
       document.documentElement.classList.add('js');
       (function() {

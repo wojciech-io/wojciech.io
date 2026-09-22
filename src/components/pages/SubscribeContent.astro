@@ -64,15 +64,20 @@ const previewItems = [
          image renders unfiltered (no baked-in fades): the eased left fade and
          the dark-theme scrim below do all the blending in CSS. -->
     <div class="subscribe-hero-photo hidden lg:block absolute right-0 top-0 bottom-0" style="width: 56%; overflow: hidden;" aria-hidden="true">
-      <img
-        src="/images/wojciech-hero-loft.webp"
-        alt=""
-        width="1448"
-        height="1086"
-        loading="eager"
-        decoding="async"
-        style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 22%;"
-      />
+      {/* The source only matches lg+, so phones (where this panel is hidden and
+          the stacked photo below takes over) never download the 90 KB file. */}
+      <picture>
+        <source media="(min-width: 1024px)" srcset="/images/wojciech-hero-loft.webp" />
+        <img
+          src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+          alt=""
+          width="1448"
+          height="1086"
+          loading="eager"
+          decoding="async"
+          style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 22%;"
+        />
+      </picture>
       <div class="subscribe-photo-scrim" style="position: absolute; inset: 0; pointer-events: none;"></div>
       <div class="subscribe-photo-fade" style="position: absolute; inset: 0 auto 0 0; width: 52%; pointer-events: none;"></div>
       <div style="position: absolute; inset: auto 0 0 0; height: 24%; background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%); pointer-events: none;"></div>
@@ -88,7 +93,9 @@ const previewItems = [
              loft photo above). Framed to the column, blended at the base. -->
         <div class="lg:hidden relative mb-7">
           <img
-            src="/images/wojciech-hero-loft.webp"
+            src="/images/wojciech-hero-loft-960.webp"
+          srcset="/images/wojciech-hero-loft-640.webp 640w, /images/wojciech-hero-loft-960.webp 960w, /images/wojciech-hero-loft.webp 1448w"
+          sizes="(min-width: 768px) 720px, calc(100vw - 48px)"
             alt=""
             width="1200"
             height="900"
