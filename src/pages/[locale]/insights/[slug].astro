@@ -3,6 +3,8 @@ import { personName } from '../../../data/site';
 import { getCollection, render } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import ArticleCover from '../../../components/ui/ArticleCover.astro';
+import ArticleShare from '../../../components/article/ArticleShare.astro';
+import ArticleToc from '../../../components/article/ArticleToc.astro';
 // MDX article components (canonical source: packages/mdx-components)
 import Callout from '@wojciech/mdx-components/components/Callout.astro';
 import VideoEmbed from '@wojciech/mdx-components/components/VideoEmbed.astro';
@@ -121,7 +123,8 @@ const { post, prevPost, nextPost, related } = Astro.props;
 const locale = post.data.locale as LocaleKey;
 const localeCopy = localizedHome[locale];
 const labels = insightLocaleLabels[locale];
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const readMinutes = Math.max(4, Math.ceil((post.body?.split(/\s+/).length ?? 0) / 220));
 const slug = insightSlug(post);
 const baseSlug = post.data.translationOf ?? slug;
 const allInsightPosts = await getCollection('insights');
@@ -199,19 +202,17 @@ const schema = [
   <div class="fixed left-0 top-0 z-40 h-1 w-full bg-[color-mix(in_srgb,var(--color-border)_55%,transparent)]" aria-hidden="true" />
   <div id="progress-bar" class="fixed left-0 top-0 z-50 h-1 w-0 bg-[var(--color-accent)] shadow-[0_0_8px_2px_color-mix(in_srgb,var(--color-accent)_55%,transparent)] transition-none" role="progressbar" aria-label="Reading progress" aria-valuenow={0} aria-valuemin={0} aria-valuemax={100} />
 
-  <ArticleCover coverType={post.data.coverType} coverImage={post.data.coverImage} tags={post.data.tags} title={post.data.title} />
 
   <article
     id="article-content"
-    class="mx-auto max-w-3xl px-6 pb-16 pt-[var(--space-section)]"
     data-slug={slug}
     data-title={post.data.title}
     data-category={post.data.category ?? ''}
     data-tags={post.data.tags.join(',')}
-    data-read-time={Math.max(4, Math.ceil((post.body?.split(/\s+/).length ?? 0) / 220))}
+    data-read-time={readMinutes}
     data-pagefind-meta={`date:${post.data.publishedAt.toISOString().split('T')[0]},category:${post.data.category ?? 'Insights'},locale:${locale}`}
   >
-    <header class="mb-10">
+    <header class="mx-auto max-w-6xl px-6 pb-10 pt-10 md:pt-16">
       <a href={`/${locale}/insights/`} class="t-caption mb-6 inline-flex items-center gap-1.5 text-[var(--color-text-dim)] transition-colors hover:text-[var(--color-accent)]">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
           <path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -224,13 +225,14 @@ const schema = [
           <span class="t-caption rounded-[var(--radius-badge)] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-2.5 py-0.5 text-[var(--color-text-muted)]">{tag}</span>
         ))}
       </div>
-      <h1 class="t-h1 mb-5 text-[var(--color-text)]" data-pagefind-weight="10">
+      <h1 class="t-h1 mb-5 max-w-4xl text-[var(--color-text)]" data-pagefind-weight="10">
         {post.data.title}
       </h1>
-      <p class="t-lead mb-6 text-[var(--color-text-muted)]" data-pagefind-weight="5">
+      <p class="t-lead mb-8 max-w-3xl text-[var(--color-text-muted)]" data-pagefind-weight="5">
         {post.data.description}
       </p>
-      <div class="flex items-center gap-3 border-b border-[var(--color-border)] pb-8">
+      <div class="flex flex-wrap items-center justify-between gap-x-8 gap-y-5">
+        <div class="flex items-center gap-3">
         <a href={`/${locale}/about/`} aria-label={`${personName(locale)} profile`}>
           <img
             src="https://www.gravatar.com/avatar/31d046a24e8df6bd8cf76fc7026d1907c48cb173ad319077f9d8f43c55f4523d?s=72&r=g"
@@ -247,21 +249,39 @@ const schema = [
             <a href={`/${locale}/about/`} class="transition-colors hover:text-[var(--color-accent)]">{personName(locale)}</a>
           </p>
           <p class="t-caption text-[var(--color-text-dim)]">
-            {labels.bylineRole} · <a href={`/${locale}/insights/`} class="transition-colors hover:text-[var(--color-accent)]">Insights</a> · {formatDate(post.data.publishedAt)}
+            {labels.bylineRole} · <a href={`/${locale}/insights/`} class="transition-colors hover:text-[var(--color-accent)]">Insights</a> · {formatDate(post.data.publishedAt)} · {readMinutes} {labels.readTimeSuffix}
           </p>
         </div>
+        </div>
+        <ArticleShare url={canonicalURL} title={post.data.title} label={labels.share} copyLabel={labels.copyLink} copiedLabel={labels.linkCopied} />
       </div>
     </header>
 
-    {post.data.tldr && post.data.tldr.length > 0 && <TLDR items={post.data.tldr} title={labels.tldrTitle} />}
+    <ArticleCover coverType={post.data.coverType} coverImage={post.data.coverImage} tags={post.data.tags} title={post.data.title} />
 
-    <div class="prose-content">
-      <Content components={mdxComponents} />
+    <div class="mx-auto max-w-6xl px-6 pb-16 pt-12 md:pt-16 lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-16">
+      <div class="min-w-0 max-w-[46rem]">
+        {post.data.tldr && post.data.tldr.length > 0 && <TLDR items={post.data.tldr} title={labels.tldrTitle} />}
+
+        <div class="prose-content">
+          <Content components={mdxComponents} />
+        </div>
+
+        <div class="mt-14 border-t border-[var(--color-border)] pt-6" data-pagefind-ignore>
+          <ArticleShare url={canonicalURL} title={post.data.title} label={labels.shareArticle} copyLabel={labels.copyLink} copiedLabel={labels.linkCopied} />
+        </div>
+      </div>
+
+      <aside class="hidden lg:block" data-pagefind-ignore>
+        <div class="sticky top-28">
+          <ArticleToc headings={headings} label={labels.onThisPage} />
+        </div>
+      </aside>
     </div>
   </article>
 
-  <section class="mx-auto max-w-3xl px-6 pb-16" data-pagefind-ignore>
-    <div class="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] p-6">
+  <section class="mx-auto max-w-6xl px-6 pb-16" data-pagefind-ignore>
+    <div class="max-w-[46rem] rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] p-6">
       <p class="t-label mb-3 text-[var(--color-accent)]">{labels.authorLabel}</p>
       <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
         <img
@@ -288,13 +308,20 @@ const schema = [
 
   {related && related.length > 0 && (
     <section class="border-t border-[var(--color-border)] py-12" data-pagefind-ignore>
-      <div class="mx-auto max-w-3xl px-6">
+      <div class="mx-auto max-w-6xl px-6">
         <p class="t-label mb-6 text-[var(--color-text-dim)]">{labels.moreFromInsights}</p>
-        <div class="grid gap-3 sm:grid-cols-3">
+        <div class="grid gap-6 sm:grid-cols-3">
           {related.map((rel) => (
-            <a href={`/${locale}/insights/${insightSlug(rel)}/`} class="group flex flex-col gap-2 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 card-hover">
-              <p class="t-small font-semibold text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">{rel.data.title}</p>
-              <p class="t-caption mt-auto text-[var(--color-text-dim)]">{formatDate(rel.data.publishedAt)}</p>
+            <a href={`/${locale}/insights/${insightSlug(rel)}/`} class="group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] card-hover">
+              {rel.data.coverImage && (
+                <div class="aspect-[1200/630] overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-surface-2)]">
+                  <img src={rel.data.coverImage} alt="" width="1200" height="630" loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                </div>
+              )}
+              <div class="flex flex-1 flex-col gap-2 p-4">
+                <p class="t-small font-semibold text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">{rel.data.title}</p>
+                <p class="t-caption mt-auto text-[var(--color-text-dim)]">{formatDate(rel.data.publishedAt)}</p>
+              </div>
             </a>
           ))}
         </div>
@@ -304,7 +331,7 @@ const schema = [
 
   {(prevPost || nextPost) && (
     <nav class="border-t border-[var(--color-border)]" aria-label="Article navigation" data-pagefind-ignore>
-      <div class="mx-auto grid max-w-3xl grid-cols-2 gap-4 px-6 py-8">
+      <div class="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-6 py-8">
         {prevPost ? (
           <a href={`/${locale}/insights/${insightSlug(prevPost)}/`} class="group flex flex-col gap-1 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-4 card-hover">
             <span class="t-label flex items-center gap-1.5 text-[var(--color-text-dim)]">{labels.previous}</span>
@@ -322,7 +349,7 @@ const schema = [
   )}
 
   <section class="border-t border-[var(--color-border)] py-16" data-pagefind-ignore>
-    <div class="mx-auto max-w-3xl px-6">
+    <div class="mx-auto max-w-6xl px-6">
       <div class="rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] p-8 md:p-10">
         <p class="t-label mb-3 text-[var(--color-accent)]">{labels.newsletter}</p>
         <h2 class="t-h2 mb-3 text-[var(--color-text)]">{labels.newsletterHeading}</h2>

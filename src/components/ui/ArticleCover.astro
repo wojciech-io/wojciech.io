@@ -1,4 +1,6 @@
 ---
+import { existsSync } from 'node:fs';
+
 interface Props {
   coverType?: 'terminal' | 'builder' | 'chart' | 'product' | 'system' | 'launch' | 'default';
   coverImage?: string;
@@ -7,6 +9,11 @@ interface Props {
 }
 
 const { coverType = 'default', coverImage, tags = [], title } = Astro.props;
+
+// A 2400 px twin (`<name>-2400.webp` next to the 1200 px cover) sharpens the
+// cover on retina screens; covers without one fall back to the single file.
+const coverHi = coverImage?.replace(/\.webp$/, '-2400.webp');
+const hasHi = Boolean(coverHi && coverHi !== coverImage && existsSync(`${process.cwd()}/public${coverHi}`));
 
 const captions: Record<string, string> = {
   terminal: 'GTM agent · Claude Code · outbound at operator cost',
@@ -29,26 +36,28 @@ const svgVariant: 'terminal' | 'builder' | 'product' | 'launch' | 'default' =
 ---
 
 {coverImage ? (
-  /* ── Custom cover image ── */
-  <div
-    class="article-cover w-full relative overflow-hidden bg-[#0c0c0c] h-[260px] md:h-[300px]"
-    aria-hidden="true"
-  >
-    <img
-      src={coverImage}
-      alt={title ? `Cover: ${title}` : ''}
-      width="1200"
-      height="630"
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-      class="absolute inset-0 w-full h-full object-cover object-[center_30%] block"
-    />
-  </div>
+  /* ── Custom cover image: on the content grid, full 1200:630 frame, no crop ── */
+  <figure class="article-cover mx-auto max-w-6xl px-6" aria-hidden="true">
+    <div class="overflow-hidden rounded-[calc(var(--radius-card)*1.5)] border border-[var(--color-border)] bg-[var(--color-surface-2)] aspect-[1200/630]">
+      <img
+        src={coverImage}
+        srcset={hasHi ? `${coverImage} 1200w, ${coverHi} 2400w` : undefined}
+        sizes={hasHi ? '(min-width: 1200px) 1104px, calc(100vw - 48px)' : undefined}
+        alt=""
+        width="1200"
+        height="630"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="block h-full w-full object-cover"
+      />
+    </div>
+  </figure>
 ) : (
   /* ── Fallback: SVG illustration ── */
+  <div class="mx-auto max-w-6xl px-6">
   <div
-    class="article-cover w-full relative overflow-hidden flex items-center justify-center bg-[#0c0c0c] min-h-[320px]"
+    class="article-cover article-cover--svg relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-[calc(var(--radius-card)*1.5)] bg-[#0c0c0c]"
     aria-hidden="true"
   >
     <!-- Dot grid -->
@@ -251,11 +260,12 @@ const svgVariant: 'terminal' | 'builder' | 'product' | 'launch' | 'default' =
       </span>
     </div>
   </div>
+  </div>
 )}
 
 <style>
   @media (max-width: 767px) {
-    .article-cover {
+    .article-cover--svg {
       min-height: 220px !important;
     }
   }

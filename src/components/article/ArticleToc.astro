@@ -1,0 +1,58 @@
+---
+/* "On this page" list for the article side rail, built from the rendered MDX
+   headings (h2 only). The current section is highlighted while reading. */
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+  label?: string;
+}
+
+const { headings, label = 'On this page' } = Astro.props;
+const items = headings.filter((h) => h.depth === 2);
+---
+
+{items.length >= 2 && (
+  <nav class="article-toc" aria-label={label}>
+    <p class="t-label mb-3 text-[var(--color-text-dim)]">{label}</p>
+    <ol class="flex flex-col border-l border-[var(--color-border)]">
+      {items.map((h) => (
+        <li>
+          <a
+            href={`#${h.slug}`}
+            data-toc-link={h.slug}
+            class="t-small -ml-px block border-l-2 border-transparent py-1.5 pl-4 text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
+          >{h.text}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<script>
+  const watchToc = () => {
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+    if (!links.length) return;
+    const targets = links
+      .map((a) => document.getElementById(a.dataset.tocLink ?? ''))
+      .filter((el): el is HTMLElement => Boolean(el));
+    const setActive = (id: string) => {
+      links.forEach((a) => a.classList.toggle('is-active', a.dataset.tocLink === id));
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: '0px 0px -70% 0px', threshold: 0 },
+    );
+    targets.forEach((t) => io.observe(t));
+  };
+  watchToc();
+  document.addEventListener('astro:page-load', watchToc);
+</script>
+
+<style>
+  .article-toc :global(.is-active) {
+    border-left-color: var(--color-accent-cta);
+    color: var(--color-text);
+  }
+</style>
