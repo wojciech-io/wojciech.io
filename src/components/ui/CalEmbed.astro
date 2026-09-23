@@ -46,7 +46,10 @@ const CAL_ORIGIN = 'https://app.cal.com';
       window.Cal('inline', {
         elementOrSelector: '[data-cal-mounted]',
         calLink: el.getAttribute('data-cal-inline'),
-        config: { theme: theme() },
+        // Layout belongs on the inline call too: the global `ui` default does
+        // not reach an instance mounted after it, which left the booking page
+        // on whatever Cal picked for itself.
+        config: { theme: theme(), layout: 'month_view' },
       });
     };
 
