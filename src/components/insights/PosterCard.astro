@@ -4,6 +4,7 @@
 // English category value so filter logic and the theme map keep working; the
 // visible label (`categoryLabel`) can be localised.
 import { getPoster } from '../../lib/insightsPoster';
+import { versioned } from '../../lib/assetVersion';
 
 interface Props {
   href: string;
@@ -20,6 +21,8 @@ interface Props {
 
 const { href, title, categoryLabel, categoryKey = '', date, read, index, arrowFlip = false, cover } = Astro.props;
 const t = getPoster(categoryKey);
+// Content-hashed URL: a replaced cover cannot be served from a stale cache.
+const coverSrc = versioned(cover);
 ---
 
 <a
@@ -36,7 +39,7 @@ const t = getPoster(categoryKey);
        readable rather than a nicety. */
     <>
       <img
-        src={cover}
+        src={coverSrc}
         alt=""
         loading="lazy"
         decoding="async"
