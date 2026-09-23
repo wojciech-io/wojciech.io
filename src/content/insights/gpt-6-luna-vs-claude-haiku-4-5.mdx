@@ -1,0 +1,179 @@
+---
+title: "Claude Haiku 4.5 costs ten times GPT-6 Luna and scores less than half"
+seoTitle: "GPT-6 Luna vs Claude Haiku 4.5: 10x price, half the score"
+description: "Luna lists at $0.10 / $0.50 against Haiku 4.5's $1 / $5, scores 37 to 17, and carries 1M context to Haiku's 200K. Anthropic's small tier is a year old."
+publishedAt: "2026-09-23"
+updatedAt: "2026-09-23"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://developers.openai.com/api/docs/models/gpt-6-luna"
+    quote: "GPT-6 Luna is our most efficient model for focused, high-volume tasks."
+    claim: "Luna lists at $0.10 input, $0.01 cached and $0.50 output per million tokens, with a 1,050,000 context window, 128,000 max output and a May 2026 knowledge cutoff"
+    checkedAt: "2026-09-23"
+  - url: "https://developers.openai.com/api/docs/changelog"
+    quote: "GPT-6 Luna: $0.10 input, $0.01 cached input, and $0.50 output."
+    claim: "OpenAI released GPT-6 Luna to the API on 22 September 2026 at those rates"
+    checkedAt: "2026-09-23"
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview"
+    quote: "The fastest model with near-frontier intelligence"
+    claim: "Anthropic positions Haiku 4.5 as its fastest model, at $1 input and $5 output per million tokens with a 200K context window and 64K max output"
+    checkedAt: "2026-09-23"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "All other models use the standard 0.1x multiplier."
+    claim: "Haiku 4.5 lists at $1 input and $5 output per million tokens, with cache hits at the standard 0.1x, or $0.10"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/models/gpt-6-luna"
+    quote: "it costs $0.07 per task to evaluate GPT-6 Luna (max) on the Intelligence Index"
+    claim: "Luna scores 37 on Intelligence Index v4.3.2 and runs at about 154 output tokens per second"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/models/claude-4-5-haiku-reasoning"
+    quote: "it costs $0.21 per task to evaluate Claude 4.5 Haiku (Reasoning) on the Intelligence Index"
+    claim: "Haiku 4.5 with reasoning scores 17 on the same index and runs at about 109 output tokens per second"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-codex"
+    quote: "Codex has a lower cost per task than Claude Code"
+    claim: "Coding Agent Index v1.5: Codex with GPT-6 Luna scores 41 at $0.18 per task. Haiku 4.5 has no entry in that table"
+    checkedAt: "2026-09-23"
+tldr:
+  - "GPT-6 Luna lists at $0.10 / $0.50 per million tokens. Claude Haiku 4.5 lists at $1 / $5. Ten times, on the tier where price is the entire point."
+  - "Artificial Analysis scores Luna at 37 and Haiku 4.5 with reasoning at 17 on Intelligence Index v4.3.2, and measures $0.07 per task against $0.21."
+  - "Luna carries a 1,050,000 token context window against Haiku's 200K, and a May 2026 knowledge cutoff against Anthropic's stated February 2025."
+  - "Anthropic still calls Haiku 4.5 its fastest model. Artificial Analysis measures Luna at about 154 output tokens per second and Haiku at about 109, so that claim now holds only inside Anthropic's own lineup."
+faq:
+  - q: "Is GPT-6 Luna better than Claude Haiku 4.5?"
+    a: "On every published measurement, yes. Artificial Analysis scores GPT-6 Luna at 37 and Claude 4.5 Haiku with reasoning at 17 on Intelligence Index v4.3.2. Luna is also cheaper per token by a factor of ten, faster at about 154 output tokens per second against 109, and carries a 1,050,000 token context window against Haiku's 200K. The fair caveat is age: Haiku 4.5 shipped in October 2025 and Luna in September 2026."
+  - q: "How much cheaper is GPT-6 Luna than Claude Haiku 4.5?"
+    a: "Ten times per token and three times per task. Luna lists at $0.10 per million input tokens and $0.50 output against Haiku 4.5's $1 and $5, and cached input is $0.01 against $0.10. Artificial Analysis measured $0.07 per index task on Luna and $0.21 on Haiku with reasoning; Luna is more verbose, which is why the per-task gap is narrower than the price gap."
+  - q: "Does Claude Haiku 4.5 still make sense in 2026?"
+    a: "Inside the Claude stack, for short tasks, yes. It is the cheapest Anthropic model, it fits work that never approaches 200K tokens, and it keeps you on one vendor's billing, safety settings and tooling. Outside that constraint the case is thin: it is a year older than Luna and loses on price, index score, speed and context window."
+  - q: "Should I use GPT-6 Luna or Claude Haiku 4.5 for high-volume work?"
+    a: "Luna, unless something else pins you to Anthropic. Classification, extraction, routing, first-pass drafting and retrieval checks are exactly the work Luna is priced for, and at $0.01 per million cached input tokens a cache-heavy loop costs almost nothing on the input side. Keep Haiku 4.5 where the workload already sits in Claude and the volume does not justify a second vendor."
+coverImage: "/images/insights/gpt-6-luna-vs-claude-haiku-4-5.webp"
+---
+
+The cheap tier is where model choice stops being a preference and becomes arithmetic. You run these models a million times, not a hundred, and a 10x price difference is the whole budget.
+
+GPT-6 Luna lists at a tenth of Claude Haiku 4.5 and scores more than double on the independent index. That is not a close comparison, and pretending otherwise would waste your time.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "luna", label: "GPT-6 Luna", align: "center", mono: true },
+    { key: "haiku", label: "Claude Haiku 4.5", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", luna: "$0.10 / $0.50", haiku: "$1 / $5" },
+    { row: "Cached input per 1M", luna: "$0.01", haiku: "$0.10" },
+    { row: "Intelligence Index v4.3.2", luna: "37", haiku: "17" },
+    { row: "Cost per index task", luna: "$0.07", haiku: "$0.21" },
+    { row: "Output speed, tokens/s", luna: "about 154", haiku: "about 109" },
+    { row: "Context window", luna: "1,050,000", haiku: "200K" },
+    { row: "Max output", luna: "128,000", haiku: "64K" },
+    { row: "Knowledge cutoff", luna: "18 May 2026", haiku: "Feb 2025" },
+    { row: "Released", luna: "Sep 2026", haiku: "Oct 2025" }
+  ]}
+  highlight={[0, 2, 5]}
+  caption="Prices and limits from OpenAI's GPT-6 Luna model page and Anthropic's pricing and models pages. Index score, cost per task and speed from Artificial Analysis's model pages, Haiku measured with reasoning on. Read on 23 September 2026."
+/>
+
+## Twenty points on a tier that is meant to be interchangeable
+
+Artificial Analysis scores Luna at **37** and Haiku 4.5 with reasoning at **17** on Intelligence Index v4.3.2. Luna sits sixth of the 183 models in its class. Haiku sits one hundred and fifty-fourth of 212.
+
+Small models are usually bought on price and assumed to be roughly equivalent on quality. Twenty points breaks that assumption. Luna is close to the quality of models that cost twenty times as much, and Haiku 4.5 is now below the median of the class it competes in.
+
+## Per task the gap narrows, and that is worth knowing
+
+Ten times on the price list becomes three times on the invoice: **$0.07 per index task against $0.21**.
+
+The reason is verbosity. Luna generated 150M tokens across the index run against Haiku's 78M. Luna thinks nearly twice as long, which eats into a tenfold price advantage and still leaves a threefold one.
+
+<KeyPoint>
+  This is the same pattern as the frontier tier and it runs in the opposite direction here. Price lists understate Opus 5.5 against Sol and overstate Luna against Haiku. Neither vendor's price list predicts a bill; only a measured run does.
+</KeyPoint>
+
+## The context window is the harder constraint
+
+Luna carries a 1,050,000 token context window and 128,000 max output. Haiku 4.5 carries 200K and 64K.
+
+For classification and extraction that difference is theoretical. For anything that reads a long document, a transcript, a codebase slice or a day of logs, it is the difference between one call and an orchestration problem. A cheap model with a small window often costs more in engineering than it saves in tokens, and that cost never appears on a pricing page.
+
+Knowledge cutoff points the same way. Anthropic lists Haiku 4.5's reliable knowledge cutoff as February 2025. Luna's is 18 May 2026. Fifteen months of the world, on the tier most likely to be answering questions without retrieval attached.
+
+## The fastest model claim needs an asterisk now
+
+Anthropic's models overview still describes Haiku 4.5 as the fastest model with near-frontier intelligence. Inside Anthropic's lineup that is true.
+
+Against Luna it is not. Artificial Analysis measures Luna at about 154 output tokens per second and Haiku 4.5 with reasoning at about 109. Luna is faster, cheaper and scores higher, which leaves speed as a reason to stay only if you were comparing Haiku to Sonnet.
+
+## Coding: Luna is measured, Haiku is not
+
+On Artificial Analysis's Coding Agent Index v1.5, Codex running GPT-6 Luna scores 41 at **$0.18 per task**, with 64% on DeepSWE v1.1 and 15% on Terminal-Bench 4.0.
+
+Haiku 4.5 has no entry in that table. Read Luna's numbers carefully before you deploy either as a coding agent: 15% on Terminal-Bench is not a model you let near a shell unsupervised, however cheap the task is. The cheap tier is for classification, extraction, routing and first drafts, not for autonomous environment work.
+
+## What Haiku 4.5 still has
+
+- **The Claude stack.** One vendor, one bill, one set of safety settings, and whatever agreements already cover Anthropic.
+- **Concision.** Half the output tokens per task, which matters if your constraint is latency on short answers rather than cost.
+- **A year of production hardening.** It shipped in October 2025 and people know how it behaves.
+- **Nothing on price, score, speed, context or recency.** That is the honest list.
+
+The real story is not that Anthropic lost a comparison. It is that Anthropic has not refreshed its small tier in eleven months while OpenAI shipped twice into that bracket. Haiku 4.5 is due a successor, and this comparison is what the gap looks like from outside.
+
+## Which one I would use
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "Classification, extraction, routing at volume", pick: "GPT-6 Luna", why: "$0.07 per task against $0.21, and twenty index points." },
+    { work: "Anything reading a long document", pick: "GPT-6 Luna", why: "1,050,000 tokens against 200K. The alternative is chunking you do not have to build." },
+    { work: "Cache-heavy loops", pick: "GPT-6 Luna", why: "$0.01 per million cached input tokens. The input side of the bill rounds to zero." },
+    { work: "Already all-in on Claude, short tasks only", pick: "Claude Haiku 4.5", why: "One vendor beats a 3x saving on work that is already cheap in absolute terms." },
+    { work: "Autonomous terminal work", pick: "Neither", why: "Luna scores 15% on Terminal-Bench 4.0. Move up a tier and keep the cheap model for the parts you can check." }
+  ]}
+  caption="Luna wins the volume tier outright. The case for Haiku 4.5 is vendor consolidation, not capability."
+/>
+
+For the previous generation of this fight, [Haiku 4.5 against GPT-5.6 Luna](/insights/claude-haiku-4-5-vs-gpt-5-6-luna/) shows how much closer it used to be. Moving up a tier, [Sol against Opus 5.5](/insights/gpt-6-sol-vs-claude-opus-5-5/) is the same decision with two more zeros.
+
+## What would change my mind
+
+A Haiku 5. Anthropic's small tier is eleven months old and one release would reset this entire comparison.
+
+A Terminal-Bench result for Haiku 4.5. Luna's 15% is bad enough that a measured Anthropic number could matter, whichever way it lands.
+
+Luna at a lower effort. Its per-task cost is inflated by verbosity at max effort, and a medium sweep would likely widen the gap in Luna's favour.
+
+## Questions people asked
+
+### Is GPT-6 Luna better than Claude Haiku 4.5?
+
+On every published measurement, yes. Artificial Analysis scores GPT-6 Luna at 37 and Claude 4.5 Haiku with reasoning at 17 on Intelligence Index v4.3.2. Luna is also cheaper per token by a factor of ten, faster at about 154 output tokens per second against 109, and carries a 1,050,000 token context window against Haiku's 200K. The fair caveat is age: Haiku 4.5 shipped in October 2025 and Luna in September 2026.
+
+### How much cheaper is GPT-6 Luna than Claude Haiku 4.5?
+
+Ten times per token and three times per task. Luna lists at $0.10 per million input tokens and $0.50 output against Haiku 4.5's $1 and $5, and cached input is $0.01 against $0.10. Artificial Analysis measured $0.07 per index task on Luna and $0.21 on Haiku with reasoning; Luna is more verbose, which is why the per-task gap is narrower than the price gap.
+
+### Does Claude Haiku 4.5 still make sense in 2026?
+
+Inside the Claude stack, for short tasks, yes. It is the cheapest Anthropic model, it fits work that never approaches 200K tokens, and it keeps you on one vendor's billing, safety settings and tooling. Outside that constraint the case is thin: it is a year older than Luna and loses on price, index score, speed and context window.
+
+### Should I use GPT-6 Luna or Claude Haiku 4.5 for high-volume work?
+
+Luna, unless something else pins you to Anthropic. Classification, extraction, routing, first-pass drafting and retrieval checks are exactly the work Luna is priced for, and at $0.01 per million cached input tokens a cache-heavy loop costs almost nothing on the input side. Keep Haiku 4.5 where the workload already sits in Claude and the volume does not justify a second vendor.
+
+If you are sizing a high-volume tier and want the routing and fallback rules written down, [the contact page](/contact/) is the fastest route to me.

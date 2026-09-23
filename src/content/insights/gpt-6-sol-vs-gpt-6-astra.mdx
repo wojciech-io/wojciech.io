@@ -1,0 +1,174 @@
+---
+title: "GPT-6 Sol beats Astra on the SWE benchmark and loses terminal work by thirteen points"
+seoTitle: "GPT-6 Sol vs GPT-6 Astra: 5x cheaper, five points back"
+description: "Sol lists at a fifth of Astra's price and scores 48 to 53. In the same Codex harness it wins DeepSWE and loses Terminal-Bench. Route by task, not tier."
+publishedAt: "2026-09-23"
+updatedAt: "2026-09-23"
+tags:
+  - AI
+  - OpenAI
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://developers.openai.com/api/docs/models/gpt-6-sol"
+    quote: "GPT-6 Sol is built for complex coding and agentic workflows."
+    claim: "Sol lists at $2 input, $0.20 cached and $10 output per million tokens, with a 1,050,000 context window and an April 2026 knowledge cutoff"
+    checkedAt: "2026-09-23"
+  - url: "https://developers.openai.com/api/docs/models/gpt-6-astra"
+    quote: "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request."
+    claim: "Astra lists at $10 input, $1 cached and $50 output, and both models reprice the whole request above 272K input tokens"
+    checkedAt: "2026-09-23"
+  - url: "https://developers.openai.com/api/docs/changelog"
+    quote: "GPT-6 Sol: $2 input, $0.20 cached input, and $10 output."
+    claim: "OpenAI released GPT-6 Sol and GPT-6 Luna to the API on 22 September 2026"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/models/gpt-6-sol"
+    quote: "it costs $1.06 per task to evaluate GPT-6 Sol (max) on the Intelligence Index"
+    claim: "Sol scores 48 on Intelligence Index v4.3.2, runs at about 125 output tokens per second and generated 77M tokens on the run"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/models/gpt-6-astra"
+    quote: "it costs $3.26 per task to evaluate GPT-6 Astra (max) on the Intelligence Index"
+    claim: "Astra scores 53, runs at about 53 output tokens per second and generated 60M tokens on the run"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-codex"
+    quote: "Codex has a lower cost per task than Claude Code"
+    claim: "Coding Agent Index v1.5 in the Codex harness: Sol 57 at $2.99 per task, Astra 62 at $7.47. Sol leads DeepSWE v1.1 69% to 68% and trails Terminal-Bench 4.0 43% to 56%"
+    checkedAt: "2026-09-23"
+tldr:
+  - "GPT-6 Sol lists at $2 / $10 per million tokens and GPT-6 Astra at $10 / $50. Five times the price for five points on Artificial Analysis's index, 48 against 53."
+  - "Per task the gap narrows to about three times: $1.06 against $3.26, because Astra is the more concise of the two at 60M tokens across the run against Sol's 77M."
+  - "In the same Codex harness Sol scores 69% on DeepSWE v1.1 against Astra's 68%, then loses Terminal-Bench 4.0 by thirteen points, 43% to 56%. One model, two opposite answers."
+  - "Sol generates at about 125 output tokens per second against Astra's 53, and finished the coding benchmark in 22.3 minutes per task against 29.4."
+faq:
+  - q: "Is GPT-6 Astra better than GPT-6 Sol?"
+    a: "By five points on the general index and not uniformly on coding. Artificial Analysis scores Astra at 53 and Sol at 48 on Intelligence Index v4.3.2. In its Codex-harness coding measurements Astra leads on the index, 62 to 57, and on Terminal-Bench 4.0 by thirteen points, but Sol edges it on DeepSWE v1.1, 69% to 68%. The tier ordering holds on average and breaks on specific task shapes."
+  - q: "How much cheaper is GPT-6 Sol than GPT-6 Astra?"
+    a: "Five times per token and about three times per task. Sol lists at $2 per million input tokens and $10 output against Astra's $10 and $50, and cached input is $0.20 against $1. Artificial Analysis measured $1.06 per index task on Sol and $3.26 on Astra; on coding tasks in the Codex harness the figures were $2.99 and $7.47."
+  - q: "Which is faster, GPT-6 Sol or GPT-6 Astra?"
+    a: "Sol, by more than double. Artificial Analysis measures about 125 output tokens per second for Sol and about 53 for Astra, which it calls notably slow. On coding tasks Sol averaged 22.3 minutes against Astra's 29.4."
+  - q: "Should I use GPT-6 Sol or GPT-6 Astra?"
+    a: "Sol as the default for volume: agentic coding, retrieval, anything you run thousands of times or can verify and re-run. Astra for terminal and environment work, where it leads by thirteen points, and for the hard steps where five index points change the outcome. Both reprice above 272K input tokens, so long-context work is expensive on either."
+coverImage: "/images/insights/gpt-6-sol-vs-gpt-6-astra.webp"
+---
+
+OpenAI now sells two models for the same job at a five-fold price difference. The tier chart says pick Astra when the work is hard. The benchmark table says that advice is too coarse to use.
+
+In the same harness, on the same day, Sol wins one coding benchmark and loses another by thirteen points. That is a routing rule, not a tier.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "sol", label: "GPT-6 Sol", align: "center", mono: true },
+    { key: "astra", label: "GPT-6 Astra", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", sol: "$2 / $10", astra: "$10 / $50" },
+    { row: "Cached input per 1M", sol: "$0.20", astra: "$1.00" },
+    { row: "Above 272K input tokens, in / out", sol: "$4 / $15", astra: "$20 / $75" },
+    { row: "Intelligence Index v4.3.2", sol: "48", astra: "53" },
+    { row: "Cost per index task", sol: "$1.06", astra: "$3.26" },
+    { row: "Tokens generated on the index", sol: "77M", astra: "60M" },
+    { row: "Output speed, tokens/s", sol: "about 125", astra: "about 53" },
+    { row: "Coding Agent Index, Codex harness", sol: "57", astra: "62" },
+    { row: "Cost per coding task", sol: "$2.99", astra: "$7.47" },
+    { row: "Time per coding task", sol: "22.3m", astra: "29.4m" }
+  ]}
+  highlight={[4, 6, 8]}
+  caption="Prices and the 272K rule from OpenAI's model pages. Index score, cost per task, tokens and speed from Artificial Analysis's model pages; coding figures from its Coding Agent Index v1.5. Read on 23 September 2026."
+/>
+
+## Five points, five times the price
+
+Artificial Analysis scores Astra at **53** and Sol at **48** on Intelligence Index v4.3.2. Astra sits sixth of 212 models, Sol eighteenth.
+
+On the price list that difference costs five times as much per token. On a finished task it costs about three times, $3.26 against $1.06, and the reason is that Astra is the more concise of the two: 60M tokens across the index run against Sol's 77M, which claws back some of what the rate card takes away. Astra thinks less. It charges more for every word of it.
+
+## The benchmark split is the useful part
+
+Both models were measured in the Codex harness on the same three coding benchmarks. The result does not line up in a single order.
+
+<DataTable
+  columns={[
+    { key: "bench", label: "Benchmark" },
+    { key: "sol", label: "GPT-6 Sol", align: "center", mono: true },
+    { key: "astra", label: "GPT-6 Astra", align: "center", mono: true },
+    { key: "read", label: "What it means" }
+  ]}
+  rows={[
+    { bench: "DeepSWE v1.1", sol: "69%", astra: "68%", read: "Repository-scale software engineering. Sol is level with a model costing five times as much." },
+    { bench: "Terminal-Bench 4.0", sol: "43%", astra: "56%", read: "Agentic terminal and environment work. Thirteen points, the widest gap in the set." },
+    { bench: "SWE-Atlas-QnA", sol: "58%", astra: "62%", read: "Codebase question answering. Four points to Astra." },
+    { bench: "Coding Agent Index", sol: "57", astra: "62", read: "The composite. Astra's terminal lead carries most of it." },
+    { bench: "Tokens per task", sol: "9.8M", astra: "3.3M", read: "Sol writes three times as much to get there, and still bills less." }
+  ]}
+  highlight={[0, 1]}
+  caption="Both models measured inside Codex, so the harness is held constant. The composite hides a split that matters more than the composite does."
+/>
+
+<KeyPoint>
+  Sol matches Astra on writing and fixing code, and falls apart on driving a terminal. If your agent's hard part is the environment rather than the diff, the cheaper model is not the one to route to.
+</KeyPoint>
+
+## Speed is the other five-fold difference
+
+Sol generates at about 125 output tokens per second. Astra manages about 53, which Artificial Analysis flags as notably slow among the models it tracks.
+
+On coding tasks that came out as 22.3 minutes against 29.4. The gap is smaller than the raw rate suggests, because Sol writes three times as many tokens to get to the same place. Still, if a person is watching a progress indicator, Sol is the model that keeps the loop feeling alive.
+
+## The 272K rule catches both
+
+Any prompt over 272K input tokens is repriced for the whole request on both models: 2x input and cache rates, 1.5x output. Sol goes to $4 / $15, Astra to $20 / $75.
+
+The ratio between them does not move. So this is not a reason to pick one over the other: it is a reason to keep prompts under the line on either, and the arithmetic is in [the 272K pricing cliff](/insights/openai-272k-long-context-pricing-vs-claude/).
+
+## Which one I would use
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "Writing and fixing code in a repo", pick: "GPT-6 Sol", why: "Level on DeepSWE v1.1, 69% to 68%, at 40% of the cost per task." },
+    { work: "Terminal, shell and environment agents", pick: "GPT-6 Astra", why: "Thirteen points ahead on Terminal-Bench 4.0. The one place the price gap is earned." },
+    { work: "Anything a person waits on", pick: "GPT-6 Sol", why: "About 125 output tokens per second against 53." },
+    { work: "High-volume runs with a verifier", pick: "GPT-6 Sol", why: "Run everything at the cheap tier, re-run the failures on Astra. The split pays for itself below a 30% failure rate." },
+    { work: "The hardest single reasoning step", pick: "GPT-6 Astra", why: "Five index points, and it gets there on a third fewer tokens." }
+  ]}
+  caption="Sol is the default and Astra is the exception, with terminal work as the exception that is easy to name in advance."
+/>
+
+For the previous generation of this decision, [Astra against GPT-5.6 Sol](/insights/gpt-6-astra-vs-gpt-5-6-sol/) still holds on the Astra side. Across vendors, [Sol against Claude Opus 5.5](/insights/gpt-6-sol-vs-claude-opus-5-5/) is the same question with a different price ladder.
+
+## What would change my mind
+
+A Terminal-Bench result that closes. Thirteen points is the only gap here that changes an architecture, and one point release could halve it.
+
+Sol at a lower effort level. Every figure here is max effort. Sol's advantage is cost, and most of its cost is thinking it may not need.
+
+A harness other than Codex. Both models were measured inside the same harness, which is the right control, but it is one harness.
+
+## Questions people asked
+
+### Is GPT-6 Astra better than GPT-6 Sol?
+
+By five points on the general index and not uniformly on coding. Artificial Analysis scores Astra at 53 and Sol at 48 on Intelligence Index v4.3.2. In its Codex-harness coding measurements Astra leads on the index, 62 to 57, and on Terminal-Bench 4.0 by thirteen points, but Sol edges it on DeepSWE v1.1, 69% to 68%. The tier ordering holds on average and breaks on specific task shapes.
+
+### How much cheaper is GPT-6 Sol than GPT-6 Astra?
+
+Five times per token and about three times per task. Sol lists at $2 per million input tokens and $10 output against Astra's $10 and $50, and cached input is $0.20 against $1. Artificial Analysis measured $1.06 per index task on Sol and $3.26 on Astra; on coding tasks in the Codex harness the figures were $2.99 and $7.47.
+
+### Which is faster, GPT-6 Sol or GPT-6 Astra?
+
+Sol, by more than double. Artificial Analysis measures about 125 output tokens per second for Sol and about 53 for Astra, which it calls notably slow. On coding tasks Sol averaged 22.3 minutes against Astra's 29.4.
+
+### Should I use GPT-6 Sol or GPT-6 Astra?
+
+Sol as the default for volume: agentic coding, retrieval, anything you run thousands of times or can verify and re-run. Astra for terminal and environment work, where it leads by thirteen points, and for the hard steps where five index points change the outcome. Both reprice above 272K input tokens, so long-context work is expensive on either.
+
+If you want the routing rule between these two written into a working agent stack, [the contact page](/contact/) is the fastest route to me.
