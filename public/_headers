@@ -34,6 +34,13 @@
 /images/*
   Cache-Control: public, max-age=2592000, s-maxage=2592000, stale-while-revalidate=86400
 
+# Article covers are replaced at the same path whenever a cover is regenerated,
+# so neither the edge nor the browser may hold a month-old copy: one day in the
+# browser, one hour at the edge, a week of stale-while-revalidate. Written after
+# 42 replaced covers kept serving the old file until a manual purge.
+/images/insights/*
+  Cache-Control: public, max-age=86400, s-maxage=3600, stale-while-revalidate=604800
+
 # Pagefind search index (served from /search/, relocated from /pagefind/ to escape a
 # stale CF edge-cached worker that pinned an outdated CSP). Short edge TTL so header
 # changes (e.g. CSP) can never get stuck on the stable-named entry files again.
