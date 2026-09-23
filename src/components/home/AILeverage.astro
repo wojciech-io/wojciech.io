@@ -24,14 +24,33 @@ const t = {
   allSystemsLink: i18n?.allSystemsLink ?? 'See all AI systems →',
 };
 
-/* Three systems that actually run, each behind its own page. Names, numbers and
-   product words carry the meaning, so every locale gets the same three cards
-   without a sentence that would need translating (and without falling back to
-   English copy inside a localized page). */
-const systems = [
-  { name: 'GTM agent',  fact: '$2 / run',       meta: 'Claude Code · MCP · HubSpot', href: `${insightsBase}/how-to-build-gtm-ai-agent-outbound-crm/` },
-  { name: 'GrowthHub',  fact: 'live demo',      meta: 'Pipedrive · Cloudflare',      href: 'https://gh.wojciech.io/demo/', external: true },
-  { name: 'NotchCue',   fact: 'macOS · Swift',  meta: 'Codex · Xcode',               href: '/apps/notch/' },
+/* This section used to list product names next to a big coloured number, which
+ * repeated the projects grid above it (NotchCue appeared in both) and said
+ * nothing about what the work changes. It is now three jobs inside the revenue
+ * motion: the task, what actually happens now, and the one piece of evidence
+ * that can be opened and checked. Every claim here is published elsewhere on
+ * the site; nothing is asserted that a visitor cannot go and verify.
+ */
+const jobs = [
+  {
+    job: 'Prospecting and enrichment',
+    what: 'An agent researches the account, drafts the angle and files it in the CRM. One full run costs about two dollars.',
+    proof: 'Read the build →',
+    href: `${insightsBase}/how-to-build-gtm-ai-agent-outbound-crm/`,
+  },
+  {
+    job: 'Pipeline reporting',
+    what: 'Funnel metrics, pipeline snapshots and ICP segments sync nightly from Pipedrive into one dashboard the team opens instead of asking.',
+    proof: 'Open the live demo →',
+    href: 'https://gh.wojciech.io/demo/',
+    external: true,
+  },
+  {
+    job: 'The tool that does not exist yet',
+    what: 'When a workflow needs software nobody sells, it gets built rather than worked around. NotchCue, a macOS teleprompter, came out of that rule.',
+    proof: 'See what shipped →',
+    href: '/apps/notch/',
+  },
 ];
 
 // The stack reads as one quiet line: product names, nothing else.
@@ -59,19 +78,21 @@ const stack = ['Claude Code', 'MCP', 'HubSpot', 'Google Ads', 'Cloudflare', 'Ast
       </div>
     </div>
 
-    <!-- Three systems, each behind its own page -->
-    <div class="mt-12 grid gap-4 sm:grid-cols-3">
-      {systems.map(({ name, fact, meta, href, external }) => (
-        <a
-          href={href}
-          target={external ? '_blank' : undefined}
-          rel={external ? 'noopener noreferrer' : undefined}
-          class="group flex flex-col gap-3 rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6 card-hover no-underline"
-        >
-          <span class="t-body font-semibold text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">{name}</span>
-          <span class="t-h3 text-[var(--color-accent-hi)]">{fact}</span>
-          <span class="t-data mt-auto text-[var(--color-text-dim)]">{meta}</span>
-        </a>
+    <!-- Three jobs, one type scale: label, sentence, link. -->
+    <div class="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-border)] md:grid-cols-3">
+      {jobs.map(({ job, what, proof, href, external }) => (
+        <div class="flex flex-col gap-3 bg-[var(--color-surface)] p-6">
+          <p class="obs-label text-[var(--color-text-dim)]">{job}</p>
+          <p class="t-small text-[var(--color-text)]">{what}</p>
+          <a
+            href={href}
+            target={external ? '_blank' : undefined}
+            rel={external ? 'noopener noreferrer' : undefined}
+            class="t-small mt-auto inline-block text-[var(--color-accent-hi)] no-underline transition-colors hover:text-[var(--color-text)]"
+          >
+            {proof}
+          </a>
+        </div>
       ))}
     </div>
 

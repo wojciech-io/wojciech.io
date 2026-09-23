@@ -1,5 +1,6 @@
 ---
 import { existsSync } from 'node:fs';
+import { versioned } from '../../lib/assetVersion';
 
 interface Props {
   coverType?: 'terminal' | 'builder' | 'chart' | 'product' | 'system' | 'launch' | 'default';
@@ -14,6 +15,11 @@ const { coverType = 'default', coverImage, tags = [], title } = Astro.props;
 // cover on retina screens; covers without one fall back to the single file.
 const coverHi = coverImage?.replace(/\.webp$/, '-2400.webp');
 const hasHi = Boolean(coverHi && coverHi !== coverImage && existsSync(`${process.cwd()}/public${coverHi}`));
+
+// Content-hashed URLs: a replaced cover is a new address, so no cache can
+// keep serving the old art. See src/lib/assetVersion.ts.
+const coverSrc = versioned(coverImage);
+const coverHiSrc = versioned(coverHi);
 
 const captions: Record<string, string> = {
   terminal: 'GTM agent · Claude Code · outbound at operator cost',
@@ -40,8 +46,8 @@ const svgVariant: 'terminal' | 'builder' | 'product' | 'launch' | 'default' =
   <figure class="article-cover mx-auto max-w-6xl px-6" aria-hidden="true">
     <div class="overflow-hidden rounded-[calc(var(--radius-card)*1.5)] border border-[var(--color-border)] bg-[var(--color-surface-2)] aspect-[1200/630]">
       <img
-        src={coverImage}
-        srcset={hasHi ? `${coverImage} 1200w, ${coverHi} 2400w` : undefined}
+        src={coverSrc}
+        srcset={hasHi ? `${coverSrc} 1200w, ${coverHiSrc} 2400w` : undefined}
         sizes={hasHi ? '(min-width: 1200px) 1104px, calc(100vw - 48px)' : undefined}
         alt=""
         width="1200"

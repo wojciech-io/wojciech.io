@@ -150,15 +150,12 @@ const connect = [
 ---
 
 <footer class="site-footer relative mt-auto w-full overflow-hidden bg-[var(--color-ink)] text-[var(--color-ink-text)]">
-  <div class="footer-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
-  <div class="footer-glow pointer-events-none absolute -top-48 left-1/2 h-96 w-[48rem] -translate-x-1/2 rounded-full" aria-hidden="true"></div>
-
   <div class="relative mx-auto w-full max-w-6xl px-6">
 
     {showNewsletter && <FooterNewsletter />}
 
     <!-- Closing statement and the one ask -->
-    <div class="flex flex-col gap-8 border-b border-[var(--color-ink-border)] py-14 md:flex-row md:items-end md:justify-between md:py-20">
+    <div class="footer-closer flex flex-col gap-8 border-b border-[var(--color-ink-border)] py-14 md:flex-row md:items-end md:justify-between md:py-20">
       <p class="t-h2 max-w-2xl text-[var(--color-ink-text)]">{t.footer.brandTagline}</p>
       <div class="flex flex-wrap gap-3 md:shrink-0">
         <a
@@ -220,37 +217,14 @@ const connect = [
         </nav>
       </div>
     </div>
-
-    <!-- Oversized wordmark as the last thing on the page: identity, not links. -->
-    <p class="footer-mark pointer-events-none select-none" dir="ltr" aria-hidden="true">wojciech.io</p>
   </div>
 
   <script type="application/ld+json" set:html={JSON.stringify(espressoSchema)} />
 </footer>
 
 <style>
-  /* Generated ink texture (paper grain + faint lime blueprint lines), 20 KB. */
-  .footer-grid {
-    background-image: url('/images/textures/ink-blueprint.webp');
-    background-size: cover;
-    background-position: center;
-    opacity: 1;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-    mask-image: linear-gradient(to bottom, #000 0%, transparent 80%);
-  }
-  .footer-glow {
-    background: radial-gradient(closest-side, color-mix(in srgb, var(--color-accent-cta) 12%, transparent), transparent 70%);
-  }
-  .footer-mark {
-    font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: clamp(3.5rem, 15vw, 12rem);
-    line-height: 0.8;
-    letter-spacing: -0.04em;
-    white-space: nowrap;
-    margin: 0 0 -0.12em;
-    color: transparent;
-    -webkit-text-stroke: 1px var(--color-ink-border);
-    text-align: center;
-  }
+  /* A page that already closes with a CTA band has made its ask. Repeating the
+     tagline and a second Get in touch below it stacked three calls to action
+     on top of each other at the end of every page. */
+  :global(body:has(.cta-band)) .footer-closer { display: none; }
 </style>

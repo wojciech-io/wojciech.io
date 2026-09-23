@@ -95,24 +95,34 @@ const impact = [
     detail: 'through lifecycle experiments and funnel governance',
   },
   {
-    value: '+60% / +50%',
-    label: 'brand recognition · organic traffic',
-    detail: 'via SEO systems, category content and AEO',
+    value: '+60%',
+    label: 'brand recognition',
+    detail: 'via category content and SEO systems',
   },
   {
-    value: '+30% / +25%',
-    label: 'Symfonia leads · Tekhuset conversion',
-    detail: 'through CRO, analytics and checkout work',
+    value: '+50%',
+    label: 'organic traffic',
+    detail: 'via SEO systems and AEO',
+  },
+  {
+    value: '+30%',
+    label: 'leads · Symfonia',
+    detail: 'through CRO and analytics',
+  },
+  {
+    value: '+25%',
+    label: 'conversion · Tekhuset',
+    detail: 'through checkout work',
   },
 ];
 
 const engagements = [
-  { en: 'Revenue architecture audit and redesign' },
-  { en: 'GTM system build or rebuild' },
-  { en: 'AI workflow design and implementation' },
-  { en: 'CRM, SEO, CRO and outbound operating models' },
-  { en: 'Missing product layer, built and shipped' },
-  { en: 'Growth team operating cadence and dashboards' },
+  { problem: 'Pipeline is flat and nobody owns the reason',  outcome: 'A revenue architecture audit that names the broken step' },
+  { problem: 'Leads arrive and go nowhere',                  outcome: 'One GTM operating model, rebuilt end to end' },
+  { problem: 'AI pilots that never reached production',      outcome: 'Workflows shipped, instrumented, priced per run' },
+  { problem: 'A CRM nobody trusts',                          outcome: 'Data layer fixed first, then routing, scoring, reporting' },
+  { problem: 'A product gap blocking the motion',            outcome: 'The missing layer built and shipped' },
+  { problem: 'A growth team without a cadence',              outcome: 'A weekly rhythm and dashboards they run without me' },
 ];
 
 const faq = [
@@ -158,7 +168,7 @@ const faq = [
             {personName(getLocaleFromPath(Astro.url.pathname))}
           </h1>
           <p class="t-lead text-[var(--color-text)] mb-3">
-            I build revenue systems and run them. Barcelona-based operator for B2B SaaS and technology companies.
+            I build revenue systems and run them, for B2B SaaS and technology companies across Europe.
           </p>
           <p class="text-[var(--color-text-muted)] leading-relaxed max-w-2xl">
             I connect GTM strategy, positioning, SEO, content, paid acquisition, CRM,
@@ -170,7 +180,7 @@ const faq = [
 
       {/* Numbers first, and each one names where it happened. A number with a
           company on it is checkable; "built and shipped" is not. */}
-      <div class="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-2 lg:grid-cols-4">
+      <div class="grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-2 lg:grid-cols-3">
         {impact.map(({ label, value, detail }) => (
           <div class="bg-[rgb(var(--color-surface-rgb)/0.86)] px-5 py-6 backdrop-blur-sm">
             <p class="t-h2 tabular-nums text-[var(--color-text)]">{value}</p>
@@ -348,10 +358,10 @@ const faq = [
             class="mb-8"
           />
           <div class="space-y-3">
-            {engagements.map(({ en }) => (
-              <div class="flex items-start gap-3 group">
-                <span class="text-[var(--color-accent)] mt-0.5 shrink-0 group-hover:translate-x-0.5 transition-transform duration-150">→</span>
-                <p class="t-small text-[var(--color-text-muted)] group-hover:text-[var(--color-text)] transition-colors duration-150">{en}</p>
+            {engagements.map(({ problem, outcome }) => (
+              <div class="border-t border-[var(--color-border)] py-4">
+                <p class="t-small text-[var(--color-text)]">{problem}</p>
+                <p class="t-small mt-1 text-[var(--color-text-muted)]">{outcome}</p>
               </div>
             ))}
           </div>
