@@ -639,61 +639,69 @@ if (diffIdx !== -1 && argv[diffIdx + 1] && argv[diffIdx + 2]) {
 
 const results = files.map((f) => analyse(f, readFileSync(f, 'utf8')));
 
-if (asJson) {
-  console.log(JSON.stringify(results, null, 2));
-  process.exit(0);
-}
-
-if (results.length === 0) {
-  console.log('### Structural copy check\n\nNo article content in this change. Nothing to report.');
-  process.exit(0);
-}
-
-console.log('### Structural copy check');
-console.log('');
-console.log(`Scope: ${mode}. These tells survive translation, so every locale is measured.`);
-console.log('');
-console.log('| file | lang | words | sent. | mean | cv | 1st/2nd person per 1k | circular | mic | tricolon | not-but | em dash |');
-console.log('|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|');
-
-const baselines = localeBaselines(results);
-const flagged = [];
-for (const r of [...results].sort((a, b) => a.cv - b.cv)) {
-  const f = verdict(r, baselines);
-  if (f.length) flagged.push([r, f]);
-  const mark = f.length ? ' ⚠️' : '';
-  console.log(
-    `| \`${r.file.replace('src/content/insights/', '')}\` | ${r.locale} | ${r.words} | ${r.sentences} | ` +
-      `${r.meanSentence.toFixed(1)} | ${r.cv.toFixed(2)}${mark} | ${r.personPer1k.toFixed(1)} | ` +
-      `${r.circularParagraphs} | ${r.micDrops} | ${r.tricolons} | ${r.antitheses} | ${r.emDashes} |`
-  );
-}
-
-console.log('');
-if (flagged.length) {
-  console.log('Worth reading before it ships:');
-  console.log('');
-  for (const [r, f] of flagged) {
-    console.log(`- \`${r.file.replace('src/content/insights/', '')}\` — ${f.join('; ')}`);
-    for (const h of r.promiseHeadingText) console.log(`  - heading: "${h}"`);
-    for (const t of r.untranslatedText) console.log(`  - English: "${t}..."`);
+// Exit by setting process.exitCode instead of calling process.exit(). When
+// stdout is a pipe, Node writes asynchronously, and process.exit() right after
+// a large write drops everything past the first 64 KB. The JSON report crossed
+// that size once the collection grew, and the unit test that parses it failed
+// on truncated output rather than on anything in the content.
+function printReport() {
+  if (results.length === 0) {
+    console.log('### Structural copy check\n\nNo article content in this change. Nothing to report.');
+    return 0;
   }
+
+  console.log('### Structural copy check');
   console.log('');
-  console.log(
-    'None of these is an error on its own. A tricolon can be a quotation and a one-line ' +
-      'paragraph can be the right call. The signal is several of them landing in one file.'
-  );
+  console.log(`Scope: ${mode}. These tells survive translation, so every locale is measured.`);
+  console.log('');
+  console.log('| file | lang | words | sent. | mean | cv | 1st/2nd person per 1k | circular | mic | tricolon | not-but | em dash |');
+  console.log('|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|');
+
+  const baselines = localeBaselines(results);
+  const flagged = [];
+  for (const r of [...results].sort((a, b) => a.cv - b.cv)) {
+    const f = verdict(r, baselines);
+    if (f.length) flagged.push([r, f]);
+    const mark = f.length ? ' ⚠️' : '';
+    console.log(
+      `| \`${r.file.replace('src/content/insights/', '')}\` | ${r.locale} | ${r.words} | ${r.sentences} | ` +
+        `${r.meanSentence.toFixed(1)} | ${r.cv.toFixed(2)}${mark} | ${r.personPer1k.toFixed(1)} | ` +
+        `${r.circularParagraphs} | ${r.micDrops} | ${r.tricolons} | ${r.antitheses} | ${r.emDashes} |`
+    );
+  }
+
+  console.log('');
+  if (flagged.length) {
+    console.log('Worth reading before it ships:');
+    console.log('');
+    for (const [r, f] of flagged) {
+      console.log(`- \`${r.file.replace('src/content/insights/', '')}\` — ${f.join('; ')}`);
+      for (const h of r.promiseHeadingText) console.log(`  - heading: "${h}"`);
+      for (const t of r.untranslatedText) console.log(`  - English: "${t}..."`);
+    }
+    console.log('');
+    console.log(
+      'None of these is an error on its own. A tricolon can be a quotation and a one-line ' +
+        'paragraph can be the right call. The signal is several of them landing in one file.'
+    );
+  } else {
+    console.log('Nothing flagged. Every file in scope varies its sentence length like prose somebody wrote.');
+  }
+
+  const worst = [...results].filter((r) => r.sentences >= 20).sort((a, b) => a.cv - b.cv)[0];
+  if (worst) {
+    console.log('');
+    console.log(
+      `Flattest rhythm in scope: \`${worst.file.replace('src/content/insights/', '')}\` at cv ${worst.cv.toFixed(2)}.`
+    );
+  }
+
+  return strict && flagged.length ? 1 : 0;
+}
+
+if (asJson) {
+  process.stdout.write(`${JSON.stringify(results, null, 2)}\n`);
+  process.exitCode = 0;
 } else {
-  console.log('Nothing flagged. Every file in scope varies its sentence length like prose somebody wrote.');
+  process.exitCode = printReport();
 }
-
-const worst = [...results].filter((r) => r.sentences >= 20).sort((a, b) => a.cv - b.cv)[0];
-if (worst) {
-  console.log('');
-  console.log(
-    `Flattest rhythm in scope: \`${worst.file.replace('src/content/insights/', '')}\` at cv ${worst.cv.toFixed(2)}.`
-  );
-}
-
-if (strict && flagged.length) process.exit(1);
-process.exit(0);
