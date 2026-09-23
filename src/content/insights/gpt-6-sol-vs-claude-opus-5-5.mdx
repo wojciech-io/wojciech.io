@@ -1,0 +1,193 @@
+---
+title: "Claude Opus 5.5 is ten points ahead of GPT-6 Sol. It costs 5.6x more per task."
+seoTitle: "GPT-6 Sol vs Claude Opus 5.5: ten points, 5.6x the bill"
+description: "Opus 5.5 scores 58 to Sol's 48 and costs $5.98 per task against $1.06. Both read cache at $0.20. Where the gap is real and where it disappears."
+publishedAt: "2026-09-23"
+updatedAt: "2026-09-23"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://developers.openai.com/api/docs/models/gpt-6-sol"
+    quote: "GPT-6 Sol is built for complex coding and agentic workflows."
+    claim: "Sol lists at $2 input, $0.20 cached and $10 output per million tokens, with a 1,050,000 context window and 128,000 max output"
+    checkedAt: "2026-09-23"
+  - url: "https://developers.openai.com/api/docs/changelog"
+    quote: "GPT-6 Sol: $2 input, $0.20 cached input, and $10 output."
+    claim: "OpenAI released GPT-6 Sol and GPT-6 Luna on 22 September 2026 at those rates"
+    checkedAt: "2026-09-23"
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview"
+    quote: "If you're unsure which model to use, start with Claude Opus 5.5 for most workloads."
+    claim: "Opus 5.5 is Anthropic's own recommended default, at $4 input and $20 output per million tokens"
+    checkedAt: "2026-09-23"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "Cache hits and refreshes on Claude Opus 5.5 are priced at 0.05x the base input price."
+    claim: "Opus 5.5 reads cache at $0.20 per million tokens, the same rate as GPT-6 Sol, while Opus 5 read at $0.50"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/models/gpt-6-sol"
+    quote: "it costs $1.06 per task to evaluate GPT-6 Sol (max) on the Intelligence Index"
+    claim: "Sol scores 48 on Intelligence Index v4.3.2, generated 77M tokens across the run and runs at about 125 output tokens per second"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/models/claude-opus-5-5"
+    quote: "it costs $5.98 per task to evaluate Claude Opus 5.5 (Adaptive Reasoning, Max Effort, Default Fallback) on the Intelligence Index"
+    claim: "Opus 5.5 scores 58 at max effort, first of 212 models, and generated 260M tokens across the run"
+    checkedAt: "2026-09-23"
+  - url: "https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5.md"
+    quote: "controls thinking depth; its default on this model is"
+    claim: "The Artificial Analysis figure is measured at max effort, while the API default for Opus 5.5 is medium"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-codex"
+    quote: "Codex has a lower cost per task than Claude Code"
+    claim: "Coding Agent Index v1.5: Codex with GPT-6 Sol scores 57 at $2.99 per task; Claude Code with Opus 5 scores 60 at $10.79. Opus 5.5 is not yet measured in a harness"
+    checkedAt: "2026-09-23"
+tldr:
+  - "Artificial Analysis scores Claude Opus 5.5 at 58 and GPT-6 Sol at 48 on Intelligence Index v4.3.2. Opus 5.5 is first of 212 models. Sol is eighteenth."
+  - "Per token Opus 5.5 is exactly twice Sol: $4 / $20 against $2 / $10. Per task on the index it is 5.6 times, $5.98 against $1.06, because at max effort it wrote 260M tokens to Sol's 77M."
+  - "Both models read cache at $0.20 per million tokens. In an agent loop that reads most of its input from cache, the input side of the bill is a tie and the whole gap sits in output."
+  - "The $5.98 is Opus 5.5 at max effort. Its API default is medium, so that number is the ceiling of the model, not the price of using it."
+faq:
+  - q: "Is Claude Opus 5.5 better than GPT-6 Sol?"
+    a: "On the independent index, clearly. Artificial Analysis scores Claude Opus 5.5 at 58 and GPT-6 Sol at 48 on Intelligence Index v4.3.2, which puts Opus 5.5 first of 212 models and Sol eighteenth. The two are not aimed at the same job: OpenAI describes Sol as built for complex coding and agentic workflows at $2 / $10, and Anthropic recommends Opus 5.5 as the default for most workloads at $4 / $20."
+  - q: "How much more does Claude Opus 5.5 cost than GPT-6 Sol?"
+    a: "Twice per token and 5.6 times per task. Opus 5.5 lists at $4 per million input tokens and $20 output against Sol's $2 and $10. Artificial Analysis measured $5.98 per task to run its index on Opus 5.5 at max effort and $1.06 on Sol, because Opus 5.5 generated 260M tokens across the run to Sol's 77M. Cached input is $0.20 per million on both."
+  - q: "Which is faster, GPT-6 Sol or Claude Opus 5.5?"
+    a: "Sol, by a wide margin on what is measured. Artificial Analysis puts Sol at about 125 output tokens per second, thirty-second of 212 models, and has no speed figure published for Opus 5.5 at max effort. Sol also writes about a third as many tokens per task, so it finishes sooner for two separate reasons."
+  - q: "Should I use GPT-6 Sol or Claude Opus 5.5?"
+    a: "Sol for high-volume agentic coding where you can check the output, and for anything where cost per finished task decides the architecture. Opus 5.5 for the hardest reasoning in the loop, for teams already on Anthropic's platform, and as the advisor model a cheaper executor calls when it stalls. Route between them rather than picking one default."
+coverImage: "/images/insights/gpt-6-sol-vs-claude-opus-5-5.webp"
+---
+
+Two vendors shipped a new default on the same day. OpenAI put GPT-6 Sol in the API at $2 / $10. Anthropic put Claude Opus 5.5 at the top of its lineup at $4 / $20 and told everyone to start there.
+
+The price list says one is twice the other. The independent index says ten points. The invoice says 5.6 times. All three are correct, and the difference between them is where the operating decision lives.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "sol", label: "GPT-6 Sol", align: "center", mono: true },
+    { key: "opus", label: "Claude Opus 5.5", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", sol: "$2 / $10", opus: "$4 / $20" },
+    { row: "Cached input per 1M", sol: "$0.20", opus: "$0.20" },
+    { row: "Intelligence Index v4.3.2", sol: "48", opus: "58" },
+    { row: "Rank among 212 models", sol: "18th", opus: "1st" },
+    { row: "Cost per index task", sol: "$1.06", opus: "$5.98" },
+    { row: "Tokens generated on the index", sol: "77M", opus: "260M" },
+    { row: "Output speed, tokens/s", sol: "about 125", opus: "not published" },
+    { row: "Context / max output", sol: "1,050,000 / 128,000", opus: "1M / 128K" },
+    { row: "Knowledge cutoff", sol: "20 Apr 2026", opus: "Jun 2026" },
+    { row: "Default reasoning effort", sol: "medium", opus: "medium" }
+  ]}
+  highlight={[1, 4, 5]}
+  caption="Prices and limits from OpenAI's GPT-6 Sol model page and Anthropic's pricing and models pages. Index score, cost per task, token count and speed from Artificial Analysis's model pages, measured at max effort. Read on 23 September 2026."
+/>
+
+## Ten points, and they are real
+
+Artificial Analysis scores Opus 5.5 at **58** and Sol at **48** on Intelligence Index v4.3.2. That is not a rounding gap. Opus 5.5 sits first of the 212 models in its class. Sol sits eighteenth.
+
+Ten points buys something. It does not buy it cheaply, and the two models are not competing for the same slot. OpenAI describes Sol as built for complex coding and agentic workflows, priced to run a lot of them. Anthropic tells you to start with Opus 5.5 for most workloads and move up to Fable 5.1 only when Opus 5.5 at higher effort still falls short.
+
+## The per-task number is 5.6x, and verbosity is why
+
+Per token the gap is exactly two. Per task on the same index it is **$5.98 against $1.06**.
+
+The multiplier comes from output volume. Running the index, Opus 5.5 generated 260M tokens and Sol generated 77M. Artificial Analysis calls Opus 5.5 very verbose against a median of 88M, and calls Sol fairly concise. A model that thinks at length pays for that thinking twice: once in tokens, once in the output rate.
+
+<KeyPoint>
+  Price per token understates this gap by a factor of three. If you are budgeting from a price list rather than from a measured run, you will be wrong in the expensive direction.
+</KeyPoint>
+
+## The line nobody put in a launch post: cache reads tie
+
+Sol reads cached input at $0.20 per million, which is 10% of its $2 input rate. Opus 5.5 reads cached input at $0.20 per million, which is 5% of its $4 rate. Anthropic changed the multiplier for this model specifically: cache hits on Opus 5.5 are priced at 0.05x base input, where the rest of the lineup uses 0.1x. Opus 5 read cache at $0.50.
+
+So the two models charge the same price to re-read a prompt.
+
+That matters more than it sounds, because agent loops are mostly cache reads. Anthropic's own cost guide reports that over a full day of real traffic, agent loops read a median 84% of their input from cache, and the top tenth of harnesses read 94% or more. In a loop like that, the input side of the bill is a tie and every dollar of the difference is output tokens.
+
+<DataTable
+  columns={[
+    { key: "part", label: "Where the money goes" },
+    { key: "sol", label: "GPT-6 Sol", align: "center", mono: true },
+    { key: "opus", label: "Claude Opus 5.5", align: "center", mono: true },
+    { key: "gap", label: "Gap", align: "center", mono: true }
+  ]}
+  rows={[
+    { part: "Cached input, the bulk of an agent loop", sol: "$0.20", opus: "$0.20", gap: "none" },
+    { part: "Fresh input", sol: "$2", opus: "$4", gap: "2x" },
+    { part: "Output", sol: "$10", opus: "$20", gap: "2x" },
+    { part: "Output tokens actually written", sol: "77M", opus: "260M", gap: "3.4x" }
+  ]}
+  caption="Per million tokens. The compounding of the last two rows is what turns a 2x price list into a 5.6x bill."
+/>
+
+## $5.98 is the ceiling, not the price
+
+The Artificial Analysis figure is Opus 5.5 at max effort with default fallback. The API default for the model is medium.
+
+Anthropic made adaptive thinking always on for Opus 5.5 and moved thinking control to the effort parameter, whose default on this model is medium rather than the high used on most of the lineup. Every published comparison you will read this week quotes the max-effort number, because that is the number Artificial Analysis publishes. Your loop will not run there unless you put it there.
+
+Treat $5.98 as what the model costs when you ask it for everything it has, and sweep effort down before you conclude it is too expensive.
+
+## Coding agents: the measurement is incomplete, and that matters
+
+On Artificial Analysis's Coding Agent Index v1.5, Codex running GPT-6 Sol scores 57 at $2.99 per task and 22.3 minutes. The nearest Anthropic entry is Claude Code running Opus 5, at 60 and $10.79 per task over 41.9 minutes.
+
+Opus 5.5 is not in that table yet. Anyone telling you how Opus 5.5 performs as a coding agent this week is extrapolating from an index score, and the harness moves results as much as the model does. Sol's own numbers show why: it beats Astra on DeepSWE v1.1, 69% against 68%, and loses Terminal-Bench 4.0 by thirteen points. One model, two very different answers depending on the benchmark.
+
+## Which one I would use
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "High-volume agentic coding with tests or a verifier", pick: "GPT-6 Sol", why: "$1.06 against $5.98 per task. Re-run the failures at a higher tier instead of paying for depth on every run." },
+    { work: "The hardest reasoning step in a loop", pick: "Claude Opus 5.5", why: "First of 212 on the index. Ten points is worth buying on the step that decides the outcome." },
+    { work: "Executor plus advisor split", pick: "Both", why: "Sol holds the loop, Opus 5.5 gets consulted when it stalls. Price the advisor alone first and measure the consult rate." },
+    { work: "Cache-heavy long-running agents", pick: "Closer than it looks", why: "Both read cache at $0.20. Compare on output tokens, not on the input line." },
+    { work: "Team already on Anthropic's platform", pick: "Claude Opus 5.5", why: "Anthropic's own recommended default, and 20% cheaper per token than the Opus 5 you are on." }
+  ]}
+  caption="Sol wins volume. Opus 5.5 wins the hard step. Most production loops want a rule that picks between them per request."
+/>
+
+For the Anthropic side of the upgrade, [Opus 5.5 against Opus 5](/insights/claude-opus-5-5-vs-claude-opus-5/) covers the four breaking changes that will break a naive port. For the OpenAI side, [Sol against Astra](/insights/gpt-6-sol-vs-gpt-6-astra/) is the routing decision inside one vendor.
+
+## What would change my mind
+
+Opus 5.5 in a measured harness. A Claude Code figure on the Coding Agent Index would settle the part of this comparison that is currently an inference.
+
+A published speed number for Opus 5.5 at max effort. Right now half the latency question has no answer.
+
+An effort sweep at medium. Every per-task figure here is max effort. The model's default is medium, and the gap at default could be half what it looks.
+
+## Questions people asked
+
+### Is Claude Opus 5.5 better than GPT-6 Sol?
+
+On the independent index, clearly. Artificial Analysis scores Claude Opus 5.5 at 58 and GPT-6 Sol at 48 on Intelligence Index v4.3.2, which puts Opus 5.5 first of 212 models and Sol eighteenth. The two are not aimed at the same job: OpenAI describes Sol as built for complex coding and agentic workflows at $2 / $10, and Anthropic recommends Opus 5.5 as the default for most workloads at $4 / $20.
+
+### How much more does Claude Opus 5.5 cost than GPT-6 Sol?
+
+Twice per token and 5.6 times per task. Opus 5.5 lists at $4 per million input tokens and $20 output against Sol's $2 and $10. Artificial Analysis measured $5.98 per task to run its index on Opus 5.5 at max effort and $1.06 on Sol, because Opus 5.5 generated 260M tokens across the run to Sol's 77M. Cached input is $0.20 per million on both.
+
+### Which is faster, GPT-6 Sol or Claude Opus 5.5?
+
+Sol, by a wide margin on what is measured. Artificial Analysis puts Sol at about 125 output tokens per second, thirty-second of 212 models, and has no speed figure published for Opus 5.5 at max effort. Sol also writes about a third as many tokens per task, so it finishes sooner for two separate reasons.
+
+### Should I use GPT-6 Sol or Claude Opus 5.5?
+
+Sol for high-volume agentic coding where you can check the output, and for anything where cost per finished task decides the architecture. Opus 5.5 for the hardest reasoning in the loop, for teams already on Anthropic's platform, and as the advisor model a cheaper executor calls when it stalls. Route between them rather than picking one default.
+
+If you are choosing a model tier for an agentic product and want the routing rule written down, [the contact page](/contact/) is the fastest route to me.

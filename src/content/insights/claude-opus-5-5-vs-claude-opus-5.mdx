@@ -1,0 +1,193 @@
+---
+title: "Every line on Opus 5.5's price list went down. The measured bill went up 2%."
+seoTitle: "Claude Opus 5.5 vs Opus 5: 20% cheaper, 7 points better"
+description: "Opus 5.5 cuts tokens 20% and cache reads 60%, and scores 58 to Opus 5's 51. Cost per index task still rose to $5.98. Plus four breaking changes."
+publishedAt: "2026-09-23"
+updatedAt: "2026-09-23"
+tags:
+  - AI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "Cache hits and refreshes on Claude Opus 5.5 are priced at 0.05x the base input price."
+    claim: "Opus 5.5 lists at $4 / $20 with $0.20 cache reads; Opus 5 lists at $5 / $25 with $0.50 cache reads"
+    checkedAt: "2026-09-23"
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview"
+    quote: "If you're unsure which model to use, start with Claude Opus 5.5 for most workloads."
+    claim: "Opus 5.5 has replaced Opus 5 as Anthropic's recommended starting model"
+    checkedAt: "2026-09-23"
+  - url: "https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5.md"
+    quote: "Four breaking changes affect code already running on Claude Opus 5:"
+    claim: "Anthropic documents four breaking changes plus one response-shape change between Opus 5 and Opus 5.5"
+    checkedAt: "2026-09-23"
+  - url: "https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5.md"
+    quote: "controls thinking depth; its default on this model is"
+    claim: "The default effort level drops from high on Opus 5 to medium on Opus 5.5"
+    checkedAt: "2026-09-23"
+  - url: "https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence"
+    quote: "the current model solves more tasks, at a cost per solved task from about 40% lower to about 20% higher"
+    claim: "Anthropic's own range for upgrading to the current model spans a 40% saving to a 20% increase per solved task"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/models/claude-opus-5-5"
+    quote: "it costs $5.98 per task to evaluate Claude Opus 5.5 (Adaptive Reasoning, Max Effort, Default Fallback) on the Intelligence Index"
+    claim: "Opus 5.5 scores 58 on Intelligence Index v4.3.2, first of 212 models, and generated 260M tokens on the run"
+    checkedAt: "2026-09-23"
+  - url: "https://artificialanalysis.ai/models/claude-opus-5"
+    quote: "Anthropic has launched a newer model, Claude Opus 5.5 (max with fallback). We suggest considering it instead."
+    claim: "Opus 5 scores 51 at $5.86 per index task with 140M tokens generated, and is now marked deprecated"
+    checkedAt: "2026-09-23"
+tldr:
+  - "Opus 5.5 lists at $4 / $20 against Opus 5's $5 / $25, and cache reads drop from $0.50 to $0.20 because Anthropic moved this model to a 0.05x cache multiplier instead of the usual 0.1x."
+  - "Artificial Analysis scores Opus 5.5 at 58 and Opus 5 at 51, first of 212 models against eleventh. Cost per index task barely moved: $5.98 against $5.86, because Opus 5.5 wrote 260M tokens to Opus 5's 140M."
+  - "Anthropic's own upgrade guidance puts the range at about 40% lower to about 20% higher per solved task. The independent measurement landed near the top of that range, not the bottom."
+  - "Four breaking changes hit code already running on Opus 5: thinking cannot be disabled, forced tool use returns a 400, thinking blocks are tied to the model, and the older computer use tool is rejected."
+faq:
+  - q: "Is Claude Opus 5.5 cheaper than Claude Opus 5?"
+    a: "Per token, yes, by 20%: $4 per million input tokens and $20 output against $5 and $25. Cache reads fall further, from $0.50 to $0.20, because Anthropic prices cache hits on Opus 5.5 at 0.05x base input instead of the usual 0.1x. Per finished task it is not automatic. Artificial Analysis measured $5.98 per index task on Opus 5.5 and $5.86 on Opus 5, because the newer model wrote 260M tokens to the older one's 140M at max effort."
+  - q: "Is Claude Opus 5.5 better than Claude Opus 5?"
+    a: "Yes, by seven points on the independent index. Artificial Analysis scores Opus 5.5 at 58 and Opus 5 at 51 on Intelligence Index v4.3.2, which makes Opus 5.5 first of 212 models where Opus 5 sat eleventh. Anthropic has also moved its own default recommendation to Opus 5.5 and Artificial Analysis now marks Opus 5 deprecated."
+  - q: "What breaks when I upgrade from Claude Opus 5 to Opus 5.5?"
+    a: "Four things, per Anthropic's own migration notes. Thinking cannot be disabled, so a request sending thinking type disabled or a manual token budget returns a 400. Forced tool use is gone, so tool_choice set to any or to a named tool returns a 400. Thinking blocks are tied to the model that produced them, so conversations moved between model families need care. And on the Claude API and Google Cloud the earlier computer_20251124 computer use tool is not accepted. A fifth change is quieter: text between tool calls now arrives in thinking blocks that are empty at the default display setting, so progress streams go silent until you change that setting."
+  - q: "Should I upgrade from Claude Opus 5 to Opus 5.5?"
+    a: "Yes, but measure rather than assume the saving. The per-token price is 20% lower, cache reads are 60% lower, and the model solves more. Anthropic's own range for upgrading spans about 40% lower to about 20% higher per solved task, and the independent index run came out 2% higher. Sweep effort down after the port, since the default moved from high to medium and the published comparisons are all measured at max."
+coverImage: "/images/insights/claude-opus-5-5-vs-claude-opus-5.webp"
+---
+
+Anthropic cut every price on the Opus line and shipped a better model. Input down 20%, output down 20%, cache reads down 60%, seven points higher on the independent index.
+
+Then Artificial Analysis ran its benchmark on both and the newer model cost more. Not much more, 2%, but more. That number is the whole article, because it is the one your finance team will see and your launch-post summary will not.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "n55", label: "Claude Opus 5.5", align: "center", mono: true },
+    { key: "n5", label: "Claude Opus 5", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", n55: "$4 / $20", n5: "$5 / $25" },
+    { row: "Cache hits and refreshes", n55: "$0.20", n5: "$0.50" },
+    { row: "5m / 1h cache writes", n55: "$5 / $8", n5: "$6.25 / $10" },
+    { row: "Intelligence Index v4.3.2", n55: "58", n5: "51" },
+    { row: "Rank among 212 models", n55: "1st", n5: "11th" },
+    { row: "Cost per index task", n55: "$5.98", n5: "$5.86" },
+    { row: "Tokens generated on the index", n55: "260M", n5: "140M" },
+    { row: "Output speed, tokens/s", n55: "not published", n5: "about 54" },
+    { row: "Default reasoning effort", n55: "medium", n5: "high" },
+    { row: "Context / max output", n55: "1M / 128K", n5: "1M / 128K" }
+  ]}
+  highlight={[1, 5, 6]}
+  caption="Prices from Anthropic's pricing page. Index score, cost per task, tokens and speed from Artificial Analysis's model pages, both measured at max effort. Read on 23 September 2026."
+/>
+
+## The cache line is the real price cut
+
+Everyone will quote $5 to $4. That is not the line that moves an agent bill.
+
+Anthropic prices cache hits and refreshes on Opus 5.5 at 0.05x the base input price, where every other model in the lineup uses 0.1x. That takes a cache read from $0.50 to $0.20 per million tokens, a 60% cut, on the component that dominates long-running loops.
+
+Anthropic's own cost guide says agent loops read a median 84% of their input from cache over a full day of real traffic. If that describes your workload, the input side of your bill just fell by more than half. The headline 20% is the smaller half of the story.
+
+<KeyPoint>
+  Opus 5.5 now reads cache at $0.20 per million, the same rate GPT-6 Sol charges, on a model that lists at twice Sol's input price. Compare vendors on the line your traffic actually hits.
+</KeyPoint>
+
+## Seven points up, and now first
+
+Artificial Analysis scores Opus 5.5 at **58** and Opus 5 at **51** on Intelligence Index v4.3.2. Opus 5.5 is first of the 212 models in that class. Opus 5 was eleventh.
+
+The same site has already put a deprecation banner on the Opus 5 page telling readers Anthropic launched a newer model and suggesting they consider it instead. Anthropic's models overview moved too: the line that used to send unsure readers to Opus 5 now sends them to Opus 5.5.
+
+## Why the per-task figure went the wrong way
+
+Opus 5.5 generated **260M tokens** running the index. Opus 5 generated 140M. At max effort the newer model thinks nearly twice as long, and a 20% rate cut does not cover an 86% increase in tokens written.
+
+Anthropic is straight about this in its own cost guidance. Its upgrade row reads that the current model solves more tasks, at a cost per solved task from about 40% lower to about 20% higher. That is a range with a bad end, not a promise of a saving, and the independent run landed near the bad end.
+
+So: better per task, roughly level per dollar, at max effort. You capture the saving by turning effort down. Swapping the model ID and waiting for the invoice to improve will not do it, and if you have already budgeted the 20% as a saving you should move that line back until a run on your own workload says otherwise.
+
+## Four things that will break your port
+
+This is the part missing from every summary I have read this week. Anthropic documents four breaking changes against code already running on Opus 5.
+
+<DataTable
+  columns={[
+    { key: "change", label: "Change" },
+    { key: "what", label: "What happens" },
+    { key: "fix", label: "The fix" }
+  ]}
+  rows={[
+    { change: "Thinking cannot be disabled", what: "A request with thinking type disabled, or a manual budget_tokens, returns a 400 invalid_request_error.", fix: "Omit the thinking field or send adaptive, then use effort to control depth." },
+    { change: "Forced tool use is gone", what: "tool_choice set to any, or to a named tool, returns a 400. Token counting validates the same way.", fix: "Keep tool_choice auto with strict tool use, or move the schema to structured outputs." },
+    { change: "Thinking blocks are model-bound", what: "Opus 5.5 reads blocks from Opus 5 and earlier Opus, Sonnet and Haiku, but not from Fable or Mythos.", fix: "Select content blocks by type rather than position, and pass thinking blocks back unmodified." },
+    { change: "Older computer use tool rejected", what: "On the Claude API and Google Cloud, computer_20251124 is not accepted.", fix: "Move to the current computer use toolset before switching the model ID." },
+    { change: "Text between tool calls (not breaking)", what: "It now arrives inside thinking blocks that are empty at the default display setting, so progress streams go quiet.", fix: "Set a display value that returns the text if users watch that stream." }
+  ]}
+  highlight={[0, 1]}
+  caption="From Anthropic's own what's-new page for Opus 5.5. The first three also apply to Claude Fable 5.1."
+/>
+
+The fifth row is the one that will reach your users instead of your logs. An application that streams inter-tool text as progress updates does not error. It just goes silent between tool calls, and silence looks like a hang.
+
+## The default moved, so your behaviour moved
+
+On Opus 5.5 adaptive thinking is always on and effort controls depth, and the default on this model is medium where most of the lineup defaults to high.
+
+Two consequences. First, a straight port of an Opus 5 call that relied on the default gets a shallower model than it had, which looks like a quality regression that is actually a config change. Second, every published benchmark for Opus 5.5, including the $5.98 in this article, is measured at max effort. Neither number describes the default.
+
+If quality drops after the port, raise effort before you blame the model. If cost rises, lower it.
+
+## Which one I would use
+
+Opus 5, honestly, has no remaining case. It is more expensive on every line, seven points behind, and Artificial Analysis has marked it deprecated. The decision is not whether to move but how.
+
+<DataTable
+  columns={[
+    { key: "work", label: "The situation" },
+    { key: "pick", label: "Do this", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "Cache-heavy agent loops on Opus 5", pick: "Move now", why: "Cache reads fall 60%. This is the largest single line in that bill." },
+    { work: "Code using forced tool use or disabled thinking", pick: "Fix first, then move", why: "Both return a 400 on Opus 5.5. The port fails loudly on the first call." },
+    { work: "A UI that streams progress between tool calls", pick: "Set display, then move", why: "No error, just silence. Worse than a failure because nothing pages you." },
+    { work: "Cost is already the constraint", pick: "Move and sweep effort", why: "The saving comes from medium effort, not from the model ID. Max effort measured 2% more per task." },
+    { work: "Conversations that hop to Fable or Mythos", pick: "Check the thinking blocks", why: "Opus 5.5 does not read Fable or Mythos thinking blocks." }
+  ]}
+  caption="The upgrade is worth doing. Budget an afternoon for the four breaking changes rather than treating it as a string swap."
+/>
+
+For the cross-vendor version of this decision, [GPT-6 Sol against Opus 5.5](/insights/gpt-6-sol-vs-claude-opus-5-5/) has the per-task arithmetic. For the tier above, [Opus 5 against Fable 5.1](/insights/claude-opus-5-vs-fable-5-1/) still holds on the Fable side.
+
+## What would change my mind
+
+A medium-effort measurement. Every per-task number here is max effort on a model that defaults to medium, and the gap could invert at the default.
+
+A published speed figure for Opus 5.5. Opus 5 ran at about 54 output tokens per second and was called notably slow. Whether 5.5 improved on that is currently unanswered.
+
+Opus 5.5 in a coding harness. The Coding Agent Index still lists Opus 5 at 60 and $10.79 per task with no 5.5 entry.
+
+## Questions people asked
+
+### Is Claude Opus 5.5 cheaper than Claude Opus 5?
+
+Per token, yes, by 20%: $4 per million input tokens and $20 output against $5 and $25. Cache reads fall further, from $0.50 to $0.20, because Anthropic prices cache hits on Opus 5.5 at 0.05x base input instead of the usual 0.1x. Per finished task it is not automatic. Artificial Analysis measured $5.98 per index task on Opus 5.5 and $5.86 on Opus 5, because the newer model wrote 260M tokens to the older one's 140M at max effort.
+
+### Is Claude Opus 5.5 better than Claude Opus 5?
+
+Yes, by seven points on the independent index. Artificial Analysis scores Opus 5.5 at 58 and Opus 5 at 51 on Intelligence Index v4.3.2, which makes Opus 5.5 first of 212 models where Opus 5 sat eleventh. Anthropic has also moved its own default recommendation to Opus 5.5 and Artificial Analysis now marks Opus 5 deprecated.
+
+### What breaks when I upgrade from Claude Opus 5 to Opus 5.5?
+
+Four things, per Anthropic's own migration notes. Thinking cannot be disabled, so a request sending thinking type disabled or a manual token budget returns a 400. Forced tool use is gone, so tool_choice set to any or to a named tool returns a 400. Thinking blocks are tied to the model that produced them, so conversations moved between model families need care. And on the Claude API and Google Cloud the earlier computer_20251124 computer use tool is not accepted. A fifth change is quieter: text between tool calls now arrives in thinking blocks that are empty at the default display setting, so progress streams go silent until you change that setting.
+
+### Should I upgrade from Claude Opus 5 to Opus 5.5?
+
+Yes, but measure rather than assume the saving. The per-token price is 20% lower, cache reads are 60% lower, and the model solves more. Anthropic's own range for upgrading spans about 40% lower to about 20% higher per solved task, and the independent index run came out 2% higher. Sweep effort down after the port, since the default moved from high to medium and the published comparisons are all measured at max.
+
+If you are planning this migration across a production agent stack, [the contact page](/contact/) is the fastest route to me.

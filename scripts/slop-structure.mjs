@@ -27,7 +27,7 @@
 // tricolon can be a genuine quotation and a one-line paragraph can be the
 // right call. Pass --strict to exit non-zero when a file crosses a line.
 
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, writeSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -639,8 +639,34 @@ if (diffIdx !== -1 && argv[diffIdx + 1] && argv[diffIdx + 2]) {
 
 const results = files.map((f) => analyse(f, readFileSync(f, 'utf8')));
 
+/**
+ * Write to fd 1 rather than console.log, because the next line exits.
+ *
+ * `console.log` on a pipe is asynchronous, and `process.exit` does not wait
+ * for the queued write. Once the corpus crossed a pipe buffer's worth of JSON
+ * the report started arriving cut off at exactly 65536 bytes, which read as a
+ * syntax error in the caller rather than as truncation. A short report had
+ * always fit, so nothing failed until the corpus grew.
+ *
+ * A partial write is possible on a pipe, so this loops until the buffer is
+ * drained rather than trusting one call.
+ */
+function writeStdout(text) {
+  const buf = Buffer.from(text, 'utf8');
+  let written = 0;
+  while (written < buf.length) {
+    try {
+      written += writeSync(1, buf, written, buf.length - written);
+    } catch (err) {
+      // A non-blocking pipe that is momentarily full: retry rather than lose
+      // the tail. Anything else is a real failure.
+      if (err.code !== 'EAGAIN') throw err;
+    }
+  }
+}
+
 if (asJson) {
-  console.log(JSON.stringify(results, null, 2));
+  writeStdout(JSON.stringify(results, null, 2) + '\n');
   process.exit(0);
 }
 
