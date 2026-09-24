@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PosterFeatured from '../../components/insights/PosterFeatured.astro';
 import PosterCard from '../../components/insights/PosterCard.astro';
+import ComparisonRow from '../../components/insights/ComparisonRow.astro';
 import { SITE } from '../../data/site';
 import {
   insightSlug,
@@ -16,6 +17,32 @@ const allPosts = (await getCollection('insights', isLocalePost('en'))).sort(sort
 
 const featuredPost = allPosts.find(p => p.data.featured);
 const restPosts = allPosts.filter(p => p !== featuredPost);
+
+// Split the index by what the article is, not by when it was published.
+//
+// Most of this corpus is model comparisons, and a comparison is something you
+// look up, not something you browse. As poster cards they were 4:5 images
+// stacked ten screens deep on a phone, each carrying cover art that answered
+// nothing. As rows they answer "which of these two, and why" on one line.
+//
+// The test is the article's own seoTitle, which already reads "A vs B: the
+// angle" for every comparison in the set. No new frontmatter, and anything
+// that does not match keeps its poster card.
+const COMPARISON_TITLE = /^(.+?)\s+vs\.?\s+(.+?):\s*(.+)$/;
+type Comparison = { post: (typeof restPosts)[number]; left: string; right: string; angle: string };
+
+const comparisons: Comparison[] = [];
+const essays: typeof restPosts = [];
+for (const post of restPosts) {
+  const m = post.data.seoTitle?.match(COMPARISON_TITLE);
+  if (m) comparisons.push({ post, left: m[1], right: m[2], angle: m[3] });
+  else essays.push(post);
+}
+// Newest first, ignoring `featured`. The shared sort floats featured articles
+// to the top, which is right for a card wall and wrong for a lookup table: two
+// articles from June and July sat above this week's releases and read as a
+// broken sort.
+comparisons.sort((a, b) => b.post.data.publishedAt.getTime() - a.post.data.publishedAt.getTime());
 
 // Only show categories that have at least one article
 const usedCategories = [...new Set(allPosts.map(p => p.data.category).filter(Boolean))] as string[];
@@ -131,10 +158,39 @@ const formatDate = (date: Date) =>
 
     <p class="t-small mb-2 mt-3 text-[var(--color-text-dim)]" id="article-count">{allPosts.length} <span>articles</span></p>
 
-    <!-- Poster grid: every card is a designed poster (deep per-topic colour,
-         headline set in, index number). One system, no ragged thumbnails. -->
+    <!-- Model comparisons as a table. Dense on purpose: this is the part of
+         the corpus people look things up in, and a row answers the question a
+         4:5 poster card made them scroll past. -->
+    {comparisons.length > 0 && (
+      <section class="mb-14" aria-labelledby="comparisons-heading" id="comparison-list">
+        <div class="mb-3 flex items-baseline justify-between gap-4 border-b border-[var(--color-border-2)] pb-2">
+          {/* An eyebrow label, not a step in the type hierarchy, so it is a
+              span like the one above the h1 rather than an h2 carrying a type
+              role it would immediately override. aria-labelledby still gives
+              the section its accessible name. */}
+          <span id="comparisons-heading" class="obs-label-accent">Model comparisons</span>
+          <p class="t-caption text-[var(--color-text-dim)]">Price, scores, and which one to run</p>
+        </div>
+        <div class="-mx-3">
+          {comparisons.map(({ post, left, right, angle }) => (
+            <ComparisonRow
+              href={`/insights/${insightSlug(post)}/`}
+              left={left}
+              right={right}
+              angle={angle}
+              categoryKey={post.data.category ?? ''}
+              date={formatDate(post.data.publishedAt)}
+              read={readTime(post.body, 'en')}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Poster grid: everything that is not a comparison, where the cover art
+         is doing a job. -->
     <div class="mb-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" id="article-list">
-      {restPosts.map((post, i) => (
+      {essays.map((post, i) => (
         <PosterCard
           href={`/insights/${insightSlug(post)}/`}
           title={post.data.title}

@@ -1,0 +1,52 @@
+---
+// One line in the /insights comparison table.
+//
+// Model comparisons are a reference set, not a reading list. Thirty of them as
+// 4:5 poster cards is ten screens of scrolling on a phone to answer "which of
+// these two is cheaper", and thirty cover images nobody looks at. A row answers
+// it in one line and costs no image at all.
+//
+// `left`/`right`/`angle` are parsed from the article's own seoTitle in the page,
+// which already reads "A vs B: the angle" for every comparison. Nothing new to
+// author, and an article whose seoTitle does not have that shape simply stays
+// in the poster grid.
+//
+// Keeps `js-article` and `data-category` so the existing category filter picks
+// these up with no change to its script.
+interface Props {
+  href: string;
+  left: string;
+  right: string;
+  angle: string;
+  categoryKey?: string;
+  date: string;
+  read: string;
+}
+
+const { href, left, right, angle, categoryKey = '', date, read } = Astro.props;
+---
+
+<a
+  href={href}
+  class="js-article group relative grid grid-cols-1 gap-x-6 gap-y-1 border-b border-[var(--color-border)] px-3 py-4 transition-colors duration-150 hover:bg-[var(--color-surface-2)] focus-visible:bg-[var(--color-surface-2)] focus-visible:outline-none md:grid-cols-[minmax(0,21rem)_1fr_auto] md:items-baseline"
+  data-category={categoryKey}
+>
+  {/* Lime edge on hover, the same accent the cards use, without a border shift
+      that would move the row. */}
+  <span
+    class="absolute inset-y-0 left-0 w-px scale-y-0 bg-[var(--color-accent-cta)] transition-transform duration-150 group-hover:scale-y-100 group-focus-visible:scale-y-100"
+    aria-hidden="true"
+  ></span>
+
+  <span class="t-small font-semibold text-[var(--color-text)]">
+    {left}
+    <span class="px-1.5 font-normal text-[var(--color-text-dim)]">vs</span>
+    {right}
+  </span>
+
+  <span class="t-small text-[var(--color-text-muted)]">{angle}</span>
+
+  <span class="t-caption whitespace-nowrap tabular-nums text-[var(--color-text-dim)]">
+    {date}<span class="px-1.5" aria-hidden="true">·</span>{read}
+  </span>
+</a>
