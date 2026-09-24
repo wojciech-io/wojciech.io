@@ -16,7 +16,13 @@ import {
 const allPosts = (await getCollection('insights', isLocalePost('en'))).sort(sortInsights);
 
 const featuredPost = allPosts.find(p => p.data.featured);
-const restPosts = allPosts.filter(p => p !== featuredPost);
+// Date order below the hero, not sortInsights order. That sort floats every
+// `featured` post to the top, which is right when one post is the hero and
+// wrong for the lists under it: six flagged posts once pushed articles from
+// June above the current week and read as a broken sort.
+const restPosts = allPosts
+  .filter(p => p !== featuredPost)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
 // Split the index by what the article is, not by when it was published.
 //
