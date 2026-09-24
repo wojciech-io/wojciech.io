@@ -21,14 +21,19 @@ interface Props {
   categoryKey?: string;
   date: string;
   read: string;
+  /** Rendered but hidden until the page's reveal button lifts the cap. */
+  extra?: boolean;
 }
 
-const { href, left, right, angle, categoryKey = '', date, read } = Astro.props;
+const { href, left, right, angle, categoryKey = '', date, read, extra = false } = Astro.props;
 ---
 
 <a
   href={href}
-  class="js-article group relative grid grid-cols-1 gap-x-6 gap-y-1 border-b border-[var(--color-border)] px-3 py-4 transition-colors duration-150 hover:bg-[var(--color-surface-2)] focus-visible:bg-[var(--color-surface-2)] focus-visible:outline-none md:grid-cols-[minmax(0,21rem)_1fr_auto] md:items-baseline"
+  class:list={[
+    'js-article group relative grid grid-cols-1 gap-x-6 gap-y-1 border-b border-[var(--color-border)] px-3 py-4 transition-colors duration-150 hover:bg-[var(--color-surface-2)] focus-visible:bg-[var(--color-surface-2)] focus-visible:outline-none md:grid-cols-[minmax(0,21rem)_1fr_auto] md:items-baseline',
+    extra && 'comparison-extra hidden',
+  ]}
   data-category={categoryKey}
 >
   {/* Lime edge on hover, the same accent the cards use, without a border shift

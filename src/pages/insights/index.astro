@@ -5,6 +5,7 @@ import PosterFeatured from '../../components/insights/PosterFeatured.astro';
 import PosterCard from '../../components/insights/PosterCard.astro';
 import ComparisonRow from '../../components/insights/ComparisonRow.astro';
 import { SITE } from '../../data/site';
+import { versioned } from '../../lib/assetVersion';
 import {
   insightSlug,
   isLocalePost,
@@ -44,11 +45,32 @@ for (const post of restPosts) {
   if (m) comparisons.push({ post, left: m[1], right: m[2], angle: m[3] });
   else essays.push(post);
 }
+
+// A front page, not an archive. The three newest after the lead get real
+// weight and their cover art; everything behind them is a named band with its
+// own rhythm. Fifty-two equal cards was the thing that read as a dump.
+const secondary = restPosts.slice(0, 3);
+const secondarySet = new Set(secondary);
 // Newest first, ignoring `featured`. The shared sort floats featured articles
 // to the top, which is right for a card wall and wrong for a lookup table: two
 // articles from June and July sat above this week's releases and read as a
 // broken sort.
 comparisons.sort((a, b) => b.post.data.publishedAt.getTime() - a.post.data.publishedAt.getTime());
+
+// Nothing appears twice on the page: the trio above owns those three.
+const tableRows = comparisons.filter((c) => !secondarySet.has(c.post));
+const playbooks = essays.filter((e) => !secondarySet.has(e));
+// Six visible, the rest rendered and hidden behind a button. Slicing the
+// array instead would have cut seventeen articles off their only link from
+// this index, which costs more than a long page does.
+const PLAYBOOKS_VISIBLE = 6;
+// Same cap on the table. Twenty-five rows under one heading is the thing that
+// read as an endless list however well each row is set.
+const COMPARISONS_VISIBLE = 8;
+
+// What the page actually renders, so the count under the filter is not a
+// different number from what a reader can see.
+const onPage = 1 + secondary.length + tableRows.length + playbooks.length;
 
 // Only show categories that have at least one article
 const usedCategories = [...new Set(allPosts.map(p => p.data.category).filter(Boolean))] as string[];
@@ -124,23 +146,83 @@ const formatDate = (date: Date) =>
       </div>
     </div>
 
-    <!-- Featured poster -->
+    <!-- Lead. One story with real weight, its own cover, and room to
+         breathe. Every blog front page worth copying does this before it
+         shows an archive; this page used to go straight to the archive. -->
     {featuredPost && (
-      <PosterFeatured
+      <a
         href={`/insights/${insightSlug(featuredPost)}/`}
-        title={featuredPost.data.title}
-        description={featuredPost.data.description}
-        categoryLabel={featuredPost.data.category ?? 'Insight'}
-        categoryKey={featuredPost.data.category ?? ''}
-        date={formatDate(featuredPost.data.publishedAt)}
-        read={readTime(featuredPost.body, 'en')}
-        featuredLabel="Featured"
-        readLabel="Read"
-      />
+        class="group mb-14 grid items-center gap-8 md:grid-cols-12 md:gap-10"
+        data-featured-article
+        data-category={featuredPost.data.category ?? ''}
+      >
+        <div class="flex flex-col gap-4 md:col-span-7">
+          <div class="flex items-center gap-2.5">
+            <span class="t-label rounded bg-[var(--color-accent-cta)] px-2 py-1 font-semibold text-[var(--color-accent-text)]">New</span>
+            <span class="t-caption text-[var(--color-text-dim)]">
+              {formatDate(featuredPost.data.publishedAt)} · {readTime(featuredPost.body, 'en')}
+            </span>
+          </div>
+          <h2 class="t-h2 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)] md:t-h1">
+            {featuredPost.data.title}
+          </h2>
+          <p class="t-lead max-w-[34rem] text-[var(--color-text-muted)]">{featuredPost.data.description}</p>
+          <span class="t-caption text-[var(--color-accent-hi)]">Read the comparison →</span>
+        </div>
+        {featuredPost.data.coverImage && (
+          <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] md:col-span-5">
+            <img
+              src={versioned(featuredPost.data.coverImage)}
+              alt=""
+              width="1200"
+              height="630"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              class="aspect-[1200/630] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            />
+          </div>
+        )}
+      </a>
     )}
 
-    <!-- Category filter: single clean row -->
-    <div class="mb-2 flex flex-wrap gap-2" id="cat-nav" role="tablist" aria-label="Filter by category">
+    <!-- Second tier: visibly smaller than the lead, still with art. -->
+    {secondary.length > 0 && (
+      <div class="mb-14 grid gap-7 border-t border-[var(--color-border)] pt-8 sm:grid-cols-3">
+        {secondary.map((post) => (
+          <a
+            href={`/insights/${insightSlug(post)}/`}
+            class="js-article group flex flex-col gap-3"
+            data-category={post.data.category ?? ''}
+          >
+            {post.data.coverImage && (
+              <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
+                <img
+                  src={versioned(post.data.coverImage)}
+                  alt=""
+                  width="1200"
+                  height="630"
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </div>
+            )}
+            <span class="t-caption text-[var(--color-text-dim)]">
+              {formatDate(post.data.publishedAt)} · {readTime(post.body, 'en')}
+            </span>
+            <h3 class="t-h3 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">
+              {post.data.title}
+            </h3>
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- Category filter. It drives the lead, the trio, the table rows and the
+         playbook cards through the data-category hooks they all carry. It sat
+         above the old card wall; here it belongs with the bands it filters. -->
+    <div class="mb-3 flex flex-wrap items-center gap-2 border-t border-[var(--color-border)] pt-8" id="cat-nav" role="tablist" aria-label="Filter by category">
       {categories.map((cat, i) => {
         const count = categoryCounts[cat] ?? 0;
         return (
@@ -162,24 +244,32 @@ const formatDate = (date: Date) =>
       })}
     </div>
 
-    <p class="t-small mb-2 mt-3 text-[var(--color-text-dim)]" id="article-count">{allPosts.length} <span>articles</span></p>
+    <p class="t-small mb-10 mt-3 text-[var(--color-text-dim)]" id="article-count">{onPage} <span>articles</span></p>
 
-    <!-- Model comparisons as a table. Dense on purpose: this is the part of
-         the corpus people look things up in, and a row answers the question a
-         4:5 poster card made them scroll past. -->
-    {comparisons.length > 0 && (
+    <div id="no-results" class="hidden mb-16 py-20 text-center">
+      <p class="t-lead font-semibold text-[var(--color-text)] mb-1">No articles in this category yet.</p>
+      <p class="t-small text-[var(--color-text-muted)]">Try a different filter.</p>
+    </div>
+
+    <!-- Band: every comparison, as a table with headers rather than a list. -->
+    {tableRows.length > 0 && (
       <section class="mb-14" aria-labelledby="comparisons-heading" id="comparison-list">
-        <div class="mb-3 flex items-baseline justify-between gap-4 border-b border-[var(--color-border-2)] pb-2">
-          {/* An eyebrow label, not a step in the type hierarchy, so it is a
-              span like the one above the h1 rather than an h2 carrying a type
-              role it would immediately override. aria-labelledby still gives
-              the section its accessible name. */}
-          <span id="comparisons-heading" class="obs-label-accent">Model comparisons</span>
-          <p class="t-caption text-[var(--color-text-dim)]">Price, scores, and which one to run</p>
+        <div class="mb-4 flex items-end justify-between gap-6">
+          <div>
+            <h2 id="comparisons-heading" class="t-h3 mb-1 text-[var(--color-text)]">Every comparison I have run</h2>
+            <p class="t-small text-[var(--color-text-dim)]">Price, independent score, and which one I would put in the loop.</p>
+          </div>
+          <span class="t-caption shrink-0 text-[var(--color-text-dim)]">{tableRows.length} comparisons</span>
         </div>
-        <div class="-mx-3">
-          {comparisons.map(({ post, left, right, angle }) => (
+        <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
+          <div class="hidden grid-cols-[minmax(0,19rem)_1fr_5rem] gap-6 border-b border-[var(--color-border-2)] bg-[var(--color-surface-2)] px-5 py-3 md:grid">
+            <span class="t-label text-[var(--color-text-dim)]">Pair</span>
+            <span class="t-label text-[var(--color-text-dim)]">What it comes down to</span>
+            <span class="t-label text-right text-[var(--color-text-dim)]">Date</span>
+          </div>
+          {tableRows.map(({ post, left, right, angle }, i) => (
             <ComparisonRow
+              extra={i >= COMPARISONS_VISIBLE}
               href={`/insights/${insightSlug(post)}/`}
               left={left}
               right={right}
@@ -190,31 +280,60 @@ const formatDate = (date: Date) =>
             />
           ))}
         </div>
+        {tableRows.length > COMPARISONS_VISIBLE && (
+          <button
+            type="button"
+            id="comparisons-more"
+            class="t-button mt-6 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+          >
+            Show {tableRows.length - COMPARISONS_VISIBLE} more
+          </button>
+        )}
       </section>
     )}
 
-    <!-- Poster grid: everything that is not a comparison, where the cover art
-         is doing a job. -->
-    <div class="mb-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" id="article-list">
-      {essays.map((post, i) => (
-        <PosterCard
-          href={`/insights/${insightSlug(post)}/`}
-          title={post.data.title}
-          categoryLabel={post.data.category ?? 'Insight'}
-          categoryKey={post.data.category ?? ''}
-          date={formatDate(post.data.publishedAt)}
-          read={readTime(post.body, 'en')}
-          index={i + 1}
-          cover={post.data.coverImage}
-        />
-      ))}
-    </div>
-
-    <!-- Empty state -->
-    <div id="no-results" class="hidden mb-16 py-20 text-center">
-      <p class="t-lead font-semibold text-[var(--color-text)] mb-1">No articles in this category yet.</p>
-      <p class="t-small text-[var(--color-text-muted)]">Try a different filter.</p>
-    </div>
+    <!-- Band: the longer pieces, three up on rules. No cover art here: at this
+         size it would be a thumbnail nobody looks at. -->
+    {playbooks.length > 0 && (
+      <section class="mb-16" aria-labelledby="playbooks-heading">
+        <div class="mb-5 flex items-end justify-between gap-6 border-t border-[var(--color-border-2)] pt-8">
+          <div>
+            <h2 id="playbooks-heading" class="t-h3 mb-1 text-[var(--color-text)]">Playbooks</h2>
+            <p class="t-small text-[var(--color-text-dim)]">Longer pieces about systems rather than models.</p>
+          </div>
+          <span class="t-caption shrink-0 text-[var(--color-text-dim)]">{playbooks.length} pieces</span>
+        </div>
+        <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          {playbooks.map((post, i) => (
+            <a
+              href={`/insights/${insightSlug(post)}/`}
+              class:list={[
+                'js-article group flex flex-col gap-2.5 border-l border-[var(--color-border-2)] pl-5 transition-colors hover:border-[var(--color-accent-cta)]',
+                i >= PLAYBOOKS_VISIBLE && 'playbook-extra hidden',
+              ]}
+              data-category={post.data.category ?? ''}
+            >
+              <span class="t-caption text-[var(--color-text-dim)]">
+                {post.data.category ?? 'Insight'} · {readTime(post.body, 'en')}
+              </span>
+              <h3 class="t-h3 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">
+                {post.data.title}
+              </h3>
+              <p class="t-small line-clamp-2 text-[var(--color-text-muted)]">{post.data.description}</p>
+            </a>
+          ))}
+        </div>
+        {playbooks.length > PLAYBOOKS_VISIBLE && (
+          <button
+            type="button"
+            id="playbooks-more"
+            class="t-button mt-7 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+          >
+            Show {playbooks.length - PLAYBOOKS_VISIBLE} more
+          </button>
+        )}
+      </section>
+    )}
 
     <!-- Newsletter CTA. `page-ask` tells the footer this page already asks,
          so its closing block and the espresso band drop out. -->
@@ -312,6 +431,17 @@ const formatDate = (date: Date) =>
     e.preventDefault();
     activateChip(chip);
   });
+
+  // Reveal the rest of the playbooks. They are in the DOM either way, so a
+  // crawler and a filter both see all of them; this only lifts the visual cap.
+  const liftCap = (buttonId: string, itemClass: string) => {
+    document.getElementById(buttonId)?.addEventListener('click', (e) => {
+      document.querySelectorAll(itemClass).forEach((el) => el.classList.remove('hidden'));
+      (e.currentTarget as HTMLElement).remove();
+    });
+  };
+  liftCap('playbooks-more', '.playbook-extra');
+  liftCap('comparisons-more', '.comparison-extra');
 
   document.addEventListener('click', (e) => {
     const chip = (e.target as Element).closest<HTMLElement>('[data-filter-cat]');
