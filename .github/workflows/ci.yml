@@ -117,6 +117,17 @@ jobs:
           CI: "true"
           PW_SKIP_BUILD: "1"
 
+      # The rendered pages themselves, so a reviewer can look at a pull request
+      # instead of trusting its description. Captured by screenshots.spec.ts,
+      # which asserts nothing and therefore cannot fail the build.
+      - name: Upload page screenshots
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: page-screenshots
+          path: page-screenshots/
+          if-no-files-found: warn
+
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
