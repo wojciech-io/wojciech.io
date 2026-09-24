@@ -29,6 +29,16 @@ export const insightLocaleLabels: Record<InsightLocale, {
   copyLink: string;
   linkCopied: string;
   onThisPage: string;
+  comparisonsHeading: string;
+  comparisonsLead: string;
+  comparisonsUnit: string;
+  playbooksHeading: string;
+  playbooksLead: string;
+  playbooksUnit: string;
+  colPair: string;
+  colVerdict: string;
+  colDate: string;
+  showMore: string;
 }> = {
   en: {
     allInsights: 'All insights',
@@ -53,6 +63,16 @@ export const insightLocaleLabels: Record<InsightLocale, {
     copyLink: 'Copy link',
     linkCopied: 'Link copied',
     onThisPage: 'On this page',
+    comparisonsHeading: 'Every comparison I have run',
+    comparisonsLead: 'Price, independent score, and which one I would put in the loop.',
+    comparisonsUnit: 'comparisons',
+    playbooksHeading: 'Playbooks',
+    playbooksLead: 'Longer pieces about systems rather than models.',
+    playbooksUnit: 'pieces',
+    colPair: 'Pair',
+    colVerdict: 'What it comes down to',
+    colDate: 'Date',
+    showMore: 'Show more',
   },
   pl: {
     allInsights: 'Wszystkie spostrzeżenia',
@@ -77,6 +97,16 @@ export const insightLocaleLabels: Record<InsightLocale, {
     copyLink: 'Kopiuj link',
     linkCopied: 'Link skopiowany',
     onThisPage: 'W tym artykule',
+    comparisonsHeading: 'Wszystkie porównania, które przeprowadziłem',
+    comparisonsLead: 'Cena, niezależny wynik i to, który wziąłbym do pętli.',
+    comparisonsUnit: 'porównań',
+    playbooksHeading: 'Playbooki',
+    playbooksLead: 'Dłuższe teksty o systemach, nie o modelach.',
+    playbooksUnit: 'tekstów',
+    colPair: 'Para',
+    colVerdict: 'Do czego się to sprowadza',
+    colDate: 'Data',
+    showMore: 'Pokaż więcej',
   },
   de: {
     allInsights: 'Alle Beiträge',
@@ -101,6 +131,16 @@ export const insightLocaleLabels: Record<InsightLocale, {
     copyLink: 'Link kopieren',
     linkCopied: 'Link kopiert',
     onThisPage: 'Auf dieser Seite',
+    comparisonsHeading: 'Jeder Vergleich, den ich gefahren habe',
+    comparisonsLead: 'Preis, unabhängiger Score und welches Modell ich einsetzen würde.',
+    comparisonsUnit: 'Vergleiche',
+    playbooksHeading: 'Playbooks',
+    playbooksLead: 'Längere Texte über Systeme statt über Modelle.',
+    playbooksUnit: 'Texte',
+    colPair: 'Paar',
+    colVerdict: 'Worauf es hinausläuft',
+    colDate: 'Datum',
+    showMore: 'Mehr anzeigen',
   },
   es: {
     allInsights: 'Todos los artículos',
@@ -125,6 +165,16 @@ export const insightLocaleLabels: Record<InsightLocale, {
     copyLink: 'Copiar enlace',
     linkCopied: 'Enlace copiado',
     onThisPage: 'En esta página',
+    comparisonsHeading: 'Todas las comparativas que he hecho',
+    comparisonsLead: 'Precio, puntuación independiente y cuál pondría en el bucle.',
+    comparisonsUnit: 'comparativas',
+    playbooksHeading: 'Playbooks',
+    playbooksLead: 'Piezas más largas sobre sistemas, no sobre modelos.',
+    playbooksUnit: 'piezas',
+    colPair: 'Par',
+    colVerdict: 'En qué se resume',
+    colDate: 'Fecha',
+    showMore: 'Ver más',
   },
   it: {
     allInsights: 'Tutti gli articoli',
@@ -149,6 +199,16 @@ export const insightLocaleLabels: Record<InsightLocale, {
     copyLink: 'Copia link',
     linkCopied: 'Link copiato',
     onThisPage: 'In questa pagina',
+    comparisonsHeading: 'Tutti i confronti che ho fatto',
+    comparisonsLead: 'Prezzo, punteggio indipendente e quale metterei nel ciclo.',
+    comparisonsUnit: 'confronti',
+    playbooksHeading: 'Playbook',
+    playbooksLead: 'Testi più lunghi sui sistemi, non sui modelli.',
+    playbooksUnit: 'testi',
+    colPair: 'Coppia',
+    colVerdict: 'A cosa si riduce',
+    colDate: 'Data',
+    showMore: 'Mostra altri',
   },
 };
 

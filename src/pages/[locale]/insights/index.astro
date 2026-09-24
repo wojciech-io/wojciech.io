@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import Layout from '../../../layouts/Layout.astro';
 import PosterFeatured from '../../../components/insights/PosterFeatured.astro';
 import PosterCard from '../../../components/insights/PosterCard.astro';
+import ComparisonRow from '../../../components/insights/ComparisonRow.astro';
+import { versioned } from '../../../lib/assetVersion';
 import { getLocalizedPage } from '../../../data/localizedPages';
 import { localizedHome, type LocaleKey } from '../../../data/locales';
 import { SITE } from '../../../data/site';
@@ -33,6 +35,28 @@ const featuredPost = allPosts.find((post) => post.data.featured);
 const restPosts = allPosts
   .filter((post) => post !== featuredPost)
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+// Same front-page shape as the canonical index: a lead with weight, a
+// visibly smaller trio, then named bands. Polish is the locale that converts,
+// so it gets the layout rather than inheriting the old card wall.
+const COMPARISON_TITLE = /^(.+?)\s+vs\.?\s+(.+?):\s*(.+)$/;
+type Comparison = { post: (typeof restPosts)[number]; left: string; right: string; angle: string };
+
+const comparisons: Comparison[] = [];
+const essays: typeof restPosts = [];
+for (const post of restPosts) {
+  const m = post.data.seoTitle?.match(COMPARISON_TITLE);
+  if (m) comparisons.push({ post, left: m[1], right: m[2], angle: m[3] });
+  else essays.push(post);
+}
+comparisons.sort((a, b) => b.post.data.publishedAt.getTime() - a.post.data.publishedAt.getTime());
+
+const secondary = restPosts.slice(0, 3);
+const secondarySet = new Set(secondary);
+const tableRows = comparisons.filter((c) => !secondarySet.has(c.post));
+const playbooks = essays.filter((e) => !secondarySet.has(e));
+const COMPARISONS_VISIBLE = 8;
+const PLAYBOOKS_VISIBLE = 6;
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString(localeCopy.htmlLang, { day: '2-digit', month: 'short', year: 'numeric' });
@@ -75,34 +99,157 @@ const breadcrumbSchema = {
     </div>
 
     {featuredPost && (
-      <PosterFeatured
+      <a
         href={`/${locale}/insights/${insightSlug(featuredPost)}/`}
-        title={featuredPost.data.title}
-        description={featuredPost.data.description}
-        categoryLabel={featuredPost.data.category ?? 'Wpis'}
-        categoryKey={featuredPost.data.category ?? ''}
-        date={formatDate(featuredPost.data.publishedAt)}
-        read={readTime(featuredPost.body, locale)}
-        featuredLabel={labels.featured}
-        readLabel={labels.readArticle}
-      />
+        class="group mb-14 grid items-center gap-8 md:grid-cols-12 md:gap-10"
+      >
+        <div class="flex flex-col gap-4 md:col-span-7">
+          <span class="t-caption text-[var(--color-text-dim)]">
+            {formatDate(featuredPost.data.publishedAt)} · {readTime(featuredPost.body, locale)}
+          </span>
+          <h2 class="t-h2 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)] md:t-h1">
+            {featuredPost.data.title}
+          </h2>
+          <p class="t-lead max-w-[34rem] text-[var(--color-text-muted)]">{featuredPost.data.description}</p>
+          <span class="t-caption text-[var(--color-accent-hi)]">{labels.readArticle} →</span>
+        </div>
+        {featuredPost.data.coverImage && (
+          <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] md:col-span-5">
+            <img
+              src={versioned(featuredPost.data.coverImage)}
+              alt=""
+              width="1200"
+              height="630"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              class="aspect-[1200/630] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            />
+          </div>
+        )}
+      </a>
     )}
 
-    <p class="t-small mb-5 text-[var(--color-text-dim)]">{allPosts.length} {labels.articles}</p>
+    {secondary.length > 0 && (
+      <div class="mb-14 grid gap-7 border-t border-[var(--color-border)] pt-8 sm:grid-cols-3">
+        {secondary.map((post) => (
+          <a href={`/${locale}/insights/${insightSlug(post)}/`} class="group flex flex-col gap-3">
+            {post.data.coverImage && (
+              <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
+                <img
+                  src={versioned(post.data.coverImage)}
+                  alt=""
+                  width="1200"
+                  height="630"
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </div>
+            )}
+            <span class="t-caption text-[var(--color-text-dim)]">
+              {formatDate(post.data.publishedAt)} · {readTime(post.body, locale)}
+            </span>
+            <h3 class="t-h3 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">
+              {post.data.title}
+            </h3>
+          </a>
+        ))}
+      </div>
+    )}
 
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {restPosts.map((post, i) => (
-        <PosterCard
-          href={`/${locale}/insights/${insightSlug(post)}/`}
-          title={post.data.title}
-          categoryLabel={post.data.category ?? 'Wpis'}
-          categoryKey={post.data.category ?? ''}
-          date={formatDate(post.data.publishedAt)}
-          read={readTime(post.body, locale)}
-          index={i + 1}
-          cover={post.data.coverImage}
-        />
-      ))}
-    </div>
+    {tableRows.length > 0 && (
+      <section class="mb-14" aria-labelledby="comparisons-heading">
+        <div class="mb-4 flex items-end justify-between gap-6">
+          <div>
+            <h2 id="comparisons-heading" class="t-h3 mb-1 text-[var(--color-text)]">{labels.comparisonsHeading}</h2>
+            <p class="t-small text-[var(--color-text-dim)]">{labels.comparisonsLead}</p>
+          </div>
+          <span class="t-caption shrink-0 text-[var(--color-text-dim)]">{tableRows.length} {labels.comparisonsUnit}</span>
+        </div>
+        <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
+          <div class="hidden grid-cols-[minmax(0,21rem)_1fr_auto] gap-6 border-b border-[var(--color-border-2)] bg-[var(--color-surface-2)] px-5 py-3 md:grid">
+            <span class="t-label text-[var(--color-text-dim)]">{labels.colPair}</span>
+            <span class="t-label text-[var(--color-text-dim)]">{labels.colVerdict}</span>
+            <span class="t-label text-right text-[var(--color-text-dim)]">{labels.colDate}</span>
+          </div>
+          {tableRows.map(({ post, left, right, angle }, i) => (
+            <ComparisonRow
+              extra={i >= COMPARISONS_VISIBLE}
+              href={`/${locale}/insights/${insightSlug(post)}/`}
+              left={left}
+              right={right}
+              angle={angle}
+              categoryKey={post.data.category ?? ''}
+              date={formatDate(post.data.publishedAt)}
+              read={readTime(post.body, locale)}
+            />
+          ))}
+        </div>
+        {tableRows.length > COMPARISONS_VISIBLE && (
+          <button
+            type="button"
+            id="comparisons-more"
+            class="t-button mt-6 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+          >
+            {labels.showMore}
+          </button>
+        )}
+      </section>
+    )}
+
+    {playbooks.length > 0 && (
+      <section class="mb-16" aria-labelledby="playbooks-heading">
+        <div class="mb-5 flex items-end justify-between gap-6 border-t border-[var(--color-border-2)] pt-8">
+          <div>
+            <h2 id="playbooks-heading" class="t-h3 mb-1 text-[var(--color-text)]">{labels.playbooksHeading}</h2>
+            <p class="t-small text-[var(--color-text-dim)]">{labels.playbooksLead}</p>
+          </div>
+          <span class="t-caption shrink-0 text-[var(--color-text-dim)]">{playbooks.length} {labels.playbooksUnit}</span>
+        </div>
+        <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          {playbooks.map((post, i) => (
+            <a
+              href={`/${locale}/insights/${insightSlug(post)}/`}
+              class:list={[
+                'group flex flex-col gap-2.5 border-l border-[var(--color-border-2)] pl-5 transition-colors hover:border-[var(--color-accent-cta)]',
+                i >= PLAYBOOKS_VISIBLE && 'playbook-extra hidden',
+              ]}
+            >
+              <span class="t-caption text-[var(--color-text-dim)]">
+                {post.data.category ?? labels.article} · {readTime(post.body, locale)}
+              </span>
+              <h3 class="t-h3 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">
+                {post.data.title}
+              </h3>
+              <p class="t-small line-clamp-2 text-[var(--color-text-muted)]">{post.data.description}</p>
+            </a>
+          ))}
+        </div>
+        {playbooks.length > PLAYBOOKS_VISIBLE && (
+          <button
+            type="button"
+            id="playbooks-more"
+            class="t-button mt-7 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+          >
+            {labels.showMore}
+          </button>
+        )}
+      </section>
+    )}
+
   </div>
 </Layout>
+
+<script>
+  // Both bands cap what they show and keep the rest in the DOM, so a crawler
+  // still reaches every article. Nothing here asserts an element exists.
+  const liftCap = (buttonId: string, itemClass: string) => {
+    document.getElementById(buttonId)?.addEventListener('click', (e) => {
+      document.querySelectorAll(itemClass).forEach((el) => el.classList.remove('hidden'));
+      (e.currentTarget as HTMLElement).remove();
+    });
+  };
+  liftCap('playbooks-more', '.playbook-extra');
+  liftCap('comparisons-more', '.comparison-extra');
+</script>
