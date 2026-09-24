@@ -7,11 +7,33 @@ Use with Codex image generation, DALL-E, or Midjourney.
 
 Every cover must feel like the same visual system. Not a stock photo library. Not generic AI art. A cohesive editorial series.
 
-**Format**: 1200x630px (OG ratio), landscape
-**Palette**: dark background (#0c0c0c to #111111), lime accent (#EBFF00), muted grays (#2a2a2a, #4b5563, #6b7280, #9ca3af), occasional green (#22c55e) for "live/active" signals
-**Feel**: technical editorial. Think Stripe blog covers meets Vercel dark mode meets Bloomberg Businessweek layouts. Clean geometry, purposeful negative space, subtle glow effects.
-**Typography in image**: monospace only (if any text). Short labels, not sentences. Preferably no text at all so images work across languages.
-**What to avoid**: stock photo vibes, people's faces, hands on keyboards, generic "AI brain" imagery, neon cyberpunk, busy/cluttered compositions, gradients that look like PowerPoint
+> **This section was rewritten on 24 September 2026, and the per-article
+> prompts below it were not.** It used to specify a near-black background and
+> a flat schematic look. Nothing shipped in that style, three batches ran past
+> it, and the covers on the site are light interiors. The dark spec was the
+> document being wrong rather than the covers, so the spec moved. The prompts
+> further down still describe dark schematics: read them for the **concept**
+> of each article and re-stage that concept in the light system below.
+
+**Format**: 1200x630px (OG ratio), landscape. Render at 2048x1152, crop to
+2048x1075, then scale. Ship `<slug>.webp` and `<slug>-2400.webp` for srcset.
+**Palette**: bright and warm. Cream plaster walls, pale oak, off-white linen,
+soft neutral ceramics. Exactly one lime-yellow (#EBFF00) object per frame and
+nothing else coloured.
+**Feel**: editorial still life in a calm loft. Strong soft morning light
+through sheer linen curtains, long gentle shadows, shallow depth of field,
+generous empty space. Premium and quiet, not busy.
+**The subject is an object, and the object means something.** Each cover
+stages the article's own idea with real things in the room: stacked boards
+for layers, scattered pebbles against a neat grid for scatter against
+structure, a small cup above a heavy stack for what shows against what
+carries it. A beautiful room with nothing being said in it is a miss.
+**Typography in image**: none. The card overlays the title in HTML, and no
+text in the image means one file works across nine locales.
+**What to avoid**: people, faces and hands; the same room repeated with no
+idea in it; screens, interfaces and dashboards; charts, diagrams and bar
+graphs; holograms and glowing overlays; laptops shot from behind the lid;
+generic "AI brain" imagery; busy or cluttered compositions.
 
 ## Per-article prompts
 
