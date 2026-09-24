@@ -4,6 +4,7 @@ import { personName } from '../../data/site';
 import CTABand from '../ui/CTABand.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import PageBackdrop from '../ui/PageBackdrop.astro';
+import VideoLoop from '../ui/VideoLoop.astro';
 import FAQ from '../ui/FAQ.astro';
 import Icon from '../ui/Icon.astro';
 import { cvData } from '../../data/cv';
@@ -177,6 +178,21 @@ const faq = [
             under wojciech.io is original work: written, built, shipped, and operated by me.
           </p>
         </div>
+      </div>
+
+      {/* A five-second loop between the claim and the proof. Muted, no
+          controls, and VideoLoop's IntersectionObserver keeps it from
+          decoding while it is off-screen; the poster carries the frame for
+          anyone on reduced motion or a cold cache. */}
+      <div class="animate-fade-up mb-12 md:mb-14">
+        <VideoLoop
+          src="/media/wojciech-loft-loop"
+          poster="/media/wojciech-loft-loop-poster.webp"
+          width={1200}
+          height={750}
+          alt="Wojciech working, five-second loop"
+          class="w-full rounded-[var(--radius-card)] border border-[var(--color-border)] shadow-[var(--shadow-card)]"
+        />
       </div>
 
       {/* Numbers first, and each one names where it happened. A number with a
