@@ -91,11 +91,12 @@ const layers: { title: string; body: string; tools: Tool[] }[] = [
   },
   {
     title: 'Analytics',
-    body: 'Nothing loads before consent, not one tag. PostHog on EU residency carries product analytics, GA4 sends pageviews only, Sentry catches errors. Cloudflare Web Analytics is wired but dormant: its token is unset, so no beacon is emitted.',
+    body: 'Nothing loads before consent, not one tag. PostHog on EU residency carries product analytics, GA4 sends pageviews only, Sentry catches errors. Cloudflare Web Analytics runs alongside them without a tag of its own: the edge injects the beacon, so it needs no key in the build.',
     tools: [
       { name: 'PostHog', slug: 'posthog' },
       { name: 'GA4', slug: 'googleanalytics' },
       { name: 'Sentry', slug: 'sentry' },
+      { name: 'Cloudflare Web Analytics', slug: 'cloudflare' },
     ],
   },
   {
