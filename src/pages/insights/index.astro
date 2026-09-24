@@ -64,6 +64,9 @@ const playbooks = essays.filter((e) => !secondarySet.has(e));
 // array instead would have cut seventeen articles off their only link from
 // this index, which costs more than a long page does.
 const PLAYBOOKS_VISIBLE = 6;
+// Same cap on the table. Twenty-five rows under one heading is the thing that
+// read as an endless list however well each row is set.
+const COMPARISONS_VISIBLE = 8;
 
 // What the page actually renders, so the count under the filter is not a
 // different number from what a reader can see.
@@ -264,8 +267,9 @@ const formatDate = (date: Date) =>
             <span class="t-label text-[var(--color-text-dim)]">What it comes down to</span>
             <span class="t-label text-right text-[var(--color-text-dim)]">Date</span>
           </div>
-          {tableRows.map(({ post, left, right, angle }) => (
+          {tableRows.map(({ post, left, right, angle }, i) => (
             <ComparisonRow
+              extra={i >= COMPARISONS_VISIBLE}
               href={`/insights/${insightSlug(post)}/`}
               left={left}
               right={right}
@@ -276,6 +280,15 @@ const formatDate = (date: Date) =>
             />
           ))}
         </div>
+        {tableRows.length > COMPARISONS_VISIBLE && (
+          <button
+            type="button"
+            id="comparisons-more"
+            class="t-button mt-6 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+          >
+            Show {tableRows.length - COMPARISONS_VISIBLE} more
+          </button>
+        )}
       </section>
     )}
 
@@ -421,10 +434,14 @@ const formatDate = (date: Date) =>
 
   // Reveal the rest of the playbooks. They are in the DOM either way, so a
   // crawler and a filter both see all of them; this only lifts the visual cap.
-  document.getElementById('playbooks-more')?.addEventListener('click', (e) => {
-    document.querySelectorAll('.playbook-extra').forEach((el) => el.classList.remove('hidden'));
-    (e.currentTarget as HTMLElement).remove();
-  });
+  const liftCap = (buttonId: string, itemClass: string) => {
+    document.getElementById(buttonId)?.addEventListener('click', (e) => {
+      document.querySelectorAll(itemClass).forEach((el) => el.classList.remove('hidden'));
+      (e.currentTarget as HTMLElement).remove();
+    });
+  };
+  liftCap('playbooks-more', '.playbook-extra');
+  liftCap('comparisons-more', '.comparison-extra');
 
   document.addEventListener('click', (e) => {
     const chip = (e.target as Element).closest<HTMLElement>('[data-filter-cat]');
