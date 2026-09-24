@@ -26,7 +26,13 @@ const pageCopy = getLocalizedPage(locale, 'insights');
 const labels = insightLocaleLabels[locale];
 const allPosts = (await getCollection('insights', isLocalePost(locale))).sort(sortInsights);
 const featuredPost = allPosts.find((post) => post.data.featured);
-const restPosts = allPosts.filter((post) => post !== featuredPost);
+// Date order below the hero, not sortInsights order. That sort floats every
+// `featured` post to the top, which is right when one post is the hero and
+// wrong for the list under it: six flagged posts once pushed articles from
+// June above the current week and read as a broken sort.
+const restPosts = allPosts
+  .filter((post) => post !== featuredPost)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString(localeCopy.htmlLang, { day: '2-digit', month: 'short', year: 'numeric' });
