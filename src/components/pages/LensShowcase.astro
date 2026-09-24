@@ -29,6 +29,14 @@ interface Props {
   /** Desktop-only hero image, greyed into the right side behind the copy.
       Per-lens; falls back to no image (text-only hero) when omitted. */
   heroImage?: string;
+  /** Optional hero loop, path without extension, resolving .webm + .mp4 in
+      /public/media. Replaces the desktop backdrop image only: mobile keeps
+      the still, because a hero video is the wrong thing to autoplay on a
+      phone connection and the poster is already the same frame. */
+  heroVideo?: string;
+  /** Poster for the loop. The lens hero image is a different scene, so using
+      it here would flash the wrong picture before the first frame paints. */
+  heroVideoPoster?: string;
   pov: string;
   ctaHeading: string;
   ctaSubtext: string;
@@ -63,6 +71,8 @@ const {
   buildEyebrow = 'What I build',
   buildHeading = 'Built and run, not advised.',
   heroImage,
+  heroVideo,
+  heroVideoPoster,
   pov,
   ctaHeading,
   ctaSubtext,
@@ -102,6 +112,14 @@ const bh = accentHeading(buildHeading);
 // no empty placeholder rectangle in the meantime.
 const heroImageReady =
   !!heroImage && fs.existsSync(path.join(process.cwd(), 'public', heroImage));
+// Both encodings have to be on disk. A half-present pair would render a video
+// element that plays in one browser and shows a blank box in another, which is
+// worse than the still it replaced.
+const heroVideoReady =
+  !!heroVideo &&
+  ['webm', 'mp4'].every((ext) =>
+    fs.existsSync(path.join(process.cwd(), 'public', `${heroVideo}.${ext}`)),
+  );
 ---
 
 <Layout
@@ -124,7 +142,34 @@ const heroImageReady =
         reads as a rectangle over the page. Decorative. */}
     {heroImageReady && (
       <div class="lens-hero-photo hidden lg:block absolute right-0 top-0 bottom-0 w-[56%] overflow-hidden" aria-hidden="true">
-        <div class="lens-hero-img absolute inset-0 bg-cover bg-no-repeat bg-center" style={`background-image: url('${heroImage}')`}></div>
+        {heroVideoReady ? (
+          /* Same deferral the home hero uses: no source until a script has
+             checked the breakpoint, reduced motion and the connection. The
+             first version of this shipped an autoplaying element inside a
+             `hidden lg:block` wrapper, and a phone still pulled 148KB of webm
+             for a video it never displayed. `preload="none"` does not save
+             you there, because autoplay overrides it.
+
+             No opacity-0 here, unlike the home hero: that one fades a loop in
+             over a photo layer underneath, and this element has nothing
+             behind it. The poster is the loop's own first frame, so a viewer
+             whose link or motion settings suppress the video sees that frame
+             instead of an empty right half. */
+          <video
+            class="lens-loop lens-hero-img absolute inset-0 h-full w-full object-cover object-center"
+            data-src-webm={`${heroVideo}.webm`}
+            data-src={`${heroVideo}.mp4`}
+            muted
+            loop
+            playsinline
+            preload="none"
+            disablepictureinpicture
+            tabindex="-1"
+            poster={heroVideoPoster ?? heroImage}
+          ></video>
+        ) : (
+          <div class="lens-hero-img absolute inset-0 bg-cover bg-no-repeat bg-center" style={`background-image: url('${heroImage}')`}></div>
+        )}
         <div class="lens-hero-scrim absolute inset-0 pointer-events-none"></div>
         <div class="lens-hero-fade absolute inset-y-0 left-0 w-[62%] pointer-events-none"></div>
         <div class="absolute inset-x-0 bottom-0 h-[20%] pointer-events-none [background:linear-gradient(to_top,var(--color-bg)_0%,transparent_100%)]"></div>
@@ -256,3 +301,30 @@ const heroImageReady =
     opacity: 1;
   }
 </style>
+
+<script>
+  const startLensLoop = () => {
+    const video = document.querySelector<HTMLVideoElement>('.lens-loop');
+    if (!video?.dataset.src || video.src) return;
+    const desktop = window.matchMedia('(min-width: 1024px)').matches;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const conn = (navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string; downlink?: number };
+    }).connection;
+    const slowLink = Boolean(
+      conn?.saveData ||
+        (conn?.effectiveType && conn.effectiveType !== '4g') ||
+        (typeof conn?.downlink === 'number' && conn.downlink > 0 && conn.downlink < 5),
+    );
+    if (!desktop || calm || slowLink) return;
+    const webm = video.dataset.srcWebm && video.canPlayType('video/webm') === 'probably';
+    video.src = webm ? video.dataset.srcWebm! : video.dataset.src;
+    video.play().catch(() => {});
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && video.paused) video.play().catch(() => {});
+    });
+  };
+  if (document.readyState === 'complete') startLensLoop();
+  else window.addEventListener('load', startLensLoop, { once: true });
+  document.addEventListener('astro:page-load', startLensLoop);
+</script>
