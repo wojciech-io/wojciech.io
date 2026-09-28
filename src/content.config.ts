@@ -20,6 +20,11 @@ const insights = defineCollection({
     ogImage: z.string().optional(),
     coverImage: z.string().optional(),
     coverType: z.enum(['terminal', 'builder', 'chart', 'product', 'system', 'launch', 'default']).default('default'),
+    // Models this comparison weighs, in canonical English spelling, so the
+    // hub at /compare/ can group by model instead of parsing seoTitle. The
+    // parse worked for the index's own table and breaks the moment a title
+    // reads "Claude Fable 5 vs Opus 4.8 vs Sonnet 4.6" or just "Claude".
+    models: z.array(z.string()).optional(),
     category: z.enum(['AI Systems', 'AI Marketing', 'GTM Architecture', 'Operator Playbooks', 'Products']).optional(),
     locale: z.enum(ALL_LOCALES).default('en'),
     translationOf: z.string().optional(),

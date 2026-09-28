@@ -1,0 +1,276 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ComparisonRow from '../../components/insights/ComparisonRow.astro';
+import { SITE } from '../../data/site';
+import { versioned } from '../../lib/assetVersion';
+import { insightSlug, isLocalePost, readTime } from '../../lib/insights';
+import { comparisonPosts, groupEntries, modelGroups, VENDOR_ORDER } from '../../lib/compare';
+
+const all = await getCollection('insights', isLocalePost('en'));
+const posts = comparisonPosts(all);
+const groups = modelGroups(all);
+const latest = posts.slice(0, 3);
+
+// The chronological table is the second way in, for anyone who wants the run
+// order rather than a model. Same component as the insights index so a row
+// reads identically on both pages.
+const COMPARISON_TITLE = /^(.+?)\s+vs\.?\s+(.+?):\s*(.+)$/;
+const rows = posts
+  .map((post) => {
+    const m = post.data.seoTitle?.match(COMPARISON_TITLE);
+    const models = post.data.models ?? [];
+    return {
+      post,
+      left: m?.[1] ?? models[0] ?? post.data.title,
+      right: m?.[2] ?? models.slice(1).join(', '),
+      angle: m?.[3] ?? post.data.description,
+    };
+  })
+  .filter((r) => r.right);
+const ROWS_VISIBLE = 10;
+
+const currentGroups = groups.filter((g) => g.current);
+const pastGroups = groups.filter((g) => !g.current);
+
+const vendorRank = (v: string) => {
+  const i = VENDOR_ORDER.indexOf(v as (typeof VENDOR_ORDER)[number]);
+  return i === -1 ? VENDOR_ORDER.length : i;
+};
+const currentByVendor = [...currentGroups].sort(
+  (a, b) => vendorRank(a.vendor) - vendorRank(b.vendor) || b.posts.length - a.posts.length
+);
+
+const shortDate = (d: Date) =>
+  d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+const title = 'AI model comparisons · price, score, and cost per finished task';
+const description =
+  'Every model comparison I have run, indexed by model. Published price, the independent Artificial Analysis score, and what a finished task actually cost.';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Model comparisons', item: SITE.url + '/compare/' },
+  ],
+};
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: title,
+  description,
+  url: SITE.url + '/compare/',
+  inLanguage: 'en',
+  isPartOf: { '@type': 'WebSite', name: 'wojciech.io', url: SITE.url + '/' },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: posts.length,
+    itemListElement: posts.map((post, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${SITE.url}/insights/${insightSlug(post)}/`,
+      name: post.data.seoTitle ?? post.data.title,
+    })),
+  },
+};
+---
+
+<Layout
+  title={title}
+  description={description}
+  canonical="/compare/"
+  ogImage="/og/pages/insights.png"
+  schema={[breadcrumbSchema, listSchema]}
+>
+  <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
+
+    <div class="mb-12 max-w-3xl">
+      <div class="mb-4 flex items-center gap-3">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">Model comparisons</span>
+      </div>
+      <h1 class="t-h1 mb-4 text-[var(--color-text)]">
+        Which model, and what it costs<br class="hidden md:block" /> to finish the job.
+      </h1>
+      <p class="t-lead text-[var(--color-text-muted)]">
+        Every pair I have run, indexed by model. Published price, the independent score, and the
+        number that decides it in practice: what one finished task cost, not what a million tokens
+        list for.
+      </p>
+      <p class="t-small mt-4 text-[var(--color-text-dim)]">
+        {posts.length} comparisons across {groups.length} models. Each one is rewritten when the
+        numbers move, not left to rot.
+      </p>
+    </div>
+
+    <!-- Newest three, with their art. The rest of this page is dense on
+         purpose; this band gives the eye somewhere to land first. -->
+    {latest.length > 0 && (
+      <div class="mb-16 grid gap-7 border-t border-[var(--color-border)] pt-8 sm:grid-cols-3">
+        {latest.map((post) => (
+          <a href={`/insights/${insightSlug(post)}/`} class="group flex flex-col gap-3">
+            {post.data.coverImage && (
+              <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
+                <img
+                  src={versioned(post.data.coverImage)}
+                  alt=""
+                  width="1200"
+                  height="630"
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </div>
+            )}
+            <span class="t-caption text-[var(--color-text-dim)]">
+              {formatDate(post.data.publishedAt)} · {readTime(post.body, 'en')}
+            </span>
+            <h2 class="t-h3 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">
+              {post.data.title}
+            </h2>
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- The hub proper: one block per model, so an article about two models is
+         reachable from both. This is the part the insights index could never
+         do, where every comparison had exactly one link in. -->
+    <section class="mb-16" aria-labelledby="by-model-heading">
+      <div class="mb-6 border-t border-[var(--color-border)] pt-8">
+        <h2 id="by-model-heading" class="t-h3 mb-1 text-[var(--color-text)]">Pick the model you run</h2>
+        <p class="t-small text-[var(--color-text-dim)]">
+          Models you can buy today. Each one lists what I have measured it against.
+        </p>
+      </div>
+      <div class="grid gap-x-8 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+        {currentByVendor.map((group) => (
+          <div class="border-l border-[var(--color-border-2)] pl-5">
+            <div class="mb-3">
+              <h3 class="t-h3 text-[var(--color-text)]">{group.model}</h3>
+              <span class="t-caption text-[var(--color-text-dim)]">
+                {group.vendor} · {group.posts.length} {group.posts.length === 1 ? 'comparison' : 'comparisons'}
+              </span>
+            </div>
+            <ul class="flex flex-col gap-2">
+              {groupEntries(group, shortDate).map(({ post, label, note }) => (
+                <li>
+                  <a
+                    href={`/insights/${insightSlug(post)}/`}
+                    class="t-small group inline-flex items-baseline gap-2 text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-accent-hi)]"
+                  >
+                    <span aria-hidden="true" class="text-[var(--color-text-dim)]">vs</span>
+                    <span>{label}</span>
+                    {note && <span class="t-caption text-[var(--color-text-dim)]">{note}</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {pastGroups.length > 0 && (
+      <section class="mb-16" aria-labelledby="past-models-heading">
+        <div class="mb-6 border-t border-[var(--color-border-2)] pt-8">
+          <h2 id="past-models-heading" class="t-h3 mb-1 text-[var(--color-text)]">Models that have been replaced</h2>
+          <p class="t-small text-[var(--color-text-dim)]">
+            Still here, because people run what they already bought. Each article says what took
+            its place.
+          </p>
+        </div>
+        <div class="grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
+          {pastGroups.map((group) => (
+            <div>
+              <h3 class="t-small mb-2 font-semibold text-[var(--color-text)]">{group.model}</h3>
+              <ul class="flex flex-col gap-1.5">
+                {groupEntries(group, shortDate).map(({ post, label, note }) => (
+                  <li>
+                    <a
+                      href={`/insights/${insightSlug(post)}/`}
+                      class="t-caption text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-accent-hi)]"
+                    >
+                      vs {label}{note ? ` · ${note}` : ''}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {rows.length > 0 && (
+      <section class="mb-16" aria-labelledby="all-comparisons-heading">
+        <div class="mb-4 flex items-end justify-between gap-6 border-t border-[var(--color-border-2)] pt-8">
+          <div>
+            <h2 id="all-comparisons-heading" class="t-h3 mb-1 text-[var(--color-text)]">In the order I ran them</h2>
+            <p class="t-small text-[var(--color-text-dim)]">Newest first, with the verdict on one line.</p>
+          </div>
+          <span class="t-caption shrink-0 text-[var(--color-text-dim)]">{rows.length} comparisons</span>
+        </div>
+        <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
+          <div class="hidden grid-cols-[minmax(0,19rem)_1fr_5rem] gap-6 border-b border-[var(--color-border-2)] bg-[var(--color-surface-2)] px-5 py-3 md:grid">
+            <span class="t-label text-[var(--color-text-dim)]">Pair</span>
+            <span class="t-label text-[var(--color-text-dim)]">What it comes down to</span>
+            <span class="t-label text-right text-[var(--color-text-dim)]">Date</span>
+          </div>
+          {rows.map(({ post, left, right, angle }, i) => (
+            <ComparisonRow
+              extra={i >= ROWS_VISIBLE}
+              href={`/insights/${insightSlug(post)}/`}
+              left={left}
+              right={right}
+              angle={angle}
+              categoryKey={post.data.category ?? ''}
+              date={formatDate(post.data.publishedAt)}
+              read={readTime(post.body, 'en')}
+            />
+          ))}
+        </div>
+        {rows.length > ROWS_VISIBLE && (
+          <button
+            type="button"
+            id="compare-more"
+            class="t-button mt-6 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+          >
+            Show {rows.length - ROWS_VISIBLE} more
+          </button>
+        )}
+      </section>
+    )}
+
+    <div class="page-ask border-t border-[var(--color-border)] pt-10">
+      <p class="t-lead mb-2 text-[var(--color-text)]">
+        The systems behind these numbers are the actual work.
+      </p>
+      <p class="t-small mb-5 max-w-2xl text-[var(--color-text-muted)]">
+        Model choice is one decision inside a revenue system. The rest of what I build and run is
+        in the field notes.
+      </p>
+      <a
+        href="/insights/"
+        class="t-button inline-flex rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+      >
+        Read the field notes →
+      </a>
+    </div>
+
+  </div>
+</Layout>
+
+<script>
+  // Lifts the visual cap. Every row is already in the DOM, so a crawler and a
+  // reader with JavaScript off both reach all of them.
+  document.getElementById('compare-more')?.addEventListener('click', (e) => {
+    document.querySelectorAll('.comparison-extra').forEach((el) => el.classList.remove('hidden'));
+    (e.currentTarget as HTMLElement).remove();
+  });
+</script>
