@@ -152,7 +152,7 @@ const languageOptions = [
   <!-- Nav links: large, full-height -->
   <nav class="flex-1 flex flex-col px-8 overflow-y-auto overscroll-contain" aria-label={uiLocale === 'ar' ? 'التنقّل على الجوال' : 'Mobile navigation'}>
     <ul class="list-none m-auto w-full p-0 space-y-1">
-      {links.map(({ label, href }) => (
+      {links.map(({ label, href, children }) => (
         <li>
           <a
             href={href}
@@ -161,6 +161,25 @@ const languageOptions = [
             {label}
             <Icon name="arrow-right" class="w-4 h-4 text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors rtl-flip-x" />
           </a>
+          {/* No hover on a phone, so the submenu is laid out rather than
+              revealed: the parent link above, its pages indented under it.
+              The first child repeats the parent's destination on desktop and
+              would be dead weight here, so only the extra ones are shown. */}
+          {children && children.length > 1 && (
+            <ul class="list-none m-0 p-0">
+              {children.slice(1).map((child) => (
+                <li>
+                  <a
+                    href={child.href}
+                    class="mobile-nav-link t-lead group flex items-center justify-between py-3 pl-5 border-b border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-accent-hi)] transition-colors"
+                  >
+                    {child.label}
+                    <Icon name="arrow-right" class="w-3.5 h-3.5 text-[var(--color-text-dim)] group-hover:text-[var(--color-accent)] transition-colors rtl-flip-x" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </li>
       ))}
     </ul>

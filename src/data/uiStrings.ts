@@ -19,6 +19,9 @@ export interface UiStrings {
     work: string;
     aiSystems: string;
     insights: string;
+    /** Submenu entries under Insights: the index itself, and the hub. */
+    allInsights: string;
+    compare: string;
     tools: string;
     stack: string;
     about: string;
@@ -50,6 +53,8 @@ const en: UiStrings = {
     work: 'Work',
     aiSystems: 'AI Systems',
     insights: 'Insights',
+    allInsights: 'All insights',
+    compare: 'Model comparisons',
     tools: 'Tools',
     stack: 'Stack',
     about: 'About',
@@ -79,6 +84,8 @@ const pl: UiStrings = {
     work: 'Praca',
     aiSystems: 'Systemy AI',
     insights: 'Insights',
+    allInsights: 'Wszystkie teksty',
+    compare: 'Porównania modeli',
     tools: 'Narzędzia',
     stack: 'Stack',
     about: 'O mnie',
@@ -108,6 +115,8 @@ const de: UiStrings = {
     work: 'Arbeit',
     aiSystems: 'AI-Systeme',
     insights: 'Insights',
+    allInsights: 'Alle Insights',
+    compare: 'Modellvergleiche',
     tools: 'Tools',
     stack: 'Stack',
     about: 'Über mich',
@@ -137,6 +146,8 @@ const dk: UiStrings = {
     work: 'Arbejde',
     aiSystems: 'AI-systemer',
     insights: 'Insights',
+    allInsights: 'Alle indlæg',
+    compare: 'Modelsammenligninger',
     tools: 'Værktøjer',
     stack: 'Stack',
     about: 'Om mig',
@@ -166,6 +177,8 @@ const no: UiStrings = {
     work: 'Arbeid',
     aiSystems: 'AI-systemer',
     insights: 'Insights',
+    allInsights: 'Alle innlegg',
+    compare: 'Modellsammenligninger',
     tools: 'Verktøy',
     stack: 'Stack',
     about: 'Om meg',
@@ -195,6 +208,8 @@ const jp: UiStrings = {
     work: '実績',
     aiSystems: 'AIシステム',
     insights: 'インサイト',
+    allInsights: 'すべての記事',
+    compare: 'モデル比較',
     tools: 'ツール',
     stack: 'スタック',
     about: 'プロフィール',
@@ -224,6 +239,8 @@ const it: UiStrings = {
     work: 'Lavoro',
     aiSystems: 'Sistemi AI',
     insights: 'Insights',
+    allInsights: 'Tutti gli articoli',
+    compare: 'Confronti tra modelli',
     tools: 'Strumenti',
     stack: 'Stack',
     about: 'Chi sono',
@@ -253,6 +270,8 @@ const es: UiStrings = {
     work: 'Trabajo',
     aiSystems: 'Sistemas IA',
     insights: 'Insights',
+    allInsights: 'Todos los artículos',
+    compare: 'Comparativas de modelos',
     tools: 'Herramientas',
     stack: 'Stack',
     about: 'Sobre mí',
@@ -282,6 +301,8 @@ const ar: UiStrings = {
     work: 'الأعمال',
     aiSystems: 'أنظمة الذكاء الاصطناعي',
     insights: 'رؤى',
+    allInsights: 'كل الرؤى',
+    compare: 'مقارنات النماذج',
     tools: 'أدوات',
     stack: 'التقنية',
     about: 'عنّي',
@@ -349,7 +370,22 @@ export function getPrimaryNavLinks(pathname: string) {
   // Only EN, PL and AR have an insights index; every other locale falls back to
   // the English page (a localized /<locale>/insights/ would 404).
   const insightsHref = locale === 'pl' ? '/pl/insights/' : locale === 'ar' ? '/ar/insights/' : '/insights/';
-  const insights = { label: t.nav.insights, href: insightsHref,                                                minWidth: '4rem' };
+  // The comparison hub is built for the locales that actually carry articles.
+  // Everywhere else the submenu would point at a page that does not exist, so
+  // Insights stays a plain link there.
+  const COMPARE_LOCALES = new Set(['en', 'pl', 'de', 'es', 'it']);
+  const compareHref = locale === 'en' ? '/compare/' : `/${locale}/compare/`;
+  const insights = {
+    label: t.nav.insights,
+    href: insightsHref,
+    minWidth: '4rem',
+    children: COMPARE_LOCALES.has(locale)
+      ? [
+          { label: t.nav.allInsights, href: insightsHref },
+          { label: t.nav.compare, href: compareHref },
+        ]
+      : undefined,
+  };
   const about    = { label: t.nav.about,    href: localizeHref('/about/', locale),                             minWidth: '4rem' };
   const contact  = { label: t.nav.contact,  href: localizeHref('/contact/', locale),                           minWidth: '4rem' };
 
