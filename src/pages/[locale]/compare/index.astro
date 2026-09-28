@@ -1,0 +1,261 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import ComparisonRow from '../../../components/insights/ComparisonRow.astro';
+import { SITE } from '../../../data/site';
+import { versioned } from '../../../lib/assetVersion';
+import { localizedHome, type LocaleKey } from '../../../data/locales';
+import {
+  insightLocaleLabels,
+  insightSlug,
+  isLocalePost,
+  localizedInsightLocales,
+  readTime,
+} from '../../../lib/insights';
+import { compareLabels, comparisonPosts, groupEntries, modelGroups, VENDOR_ORDER } from '../../../lib/compare';
+
+export async function getStaticPaths() {
+  return localizedInsightLocales.map((locale) => ({ params: { locale } }));
+}
+
+const locale = Astro.params.locale as LocaleKey;
+const localeCopy = localizedHome[locale];
+const labels = insightLocaleLabels[locale];
+const t = compareLabels[locale as keyof typeof compareLabels] ?? compareLabels.en;
+
+const all = await getCollection('insights', isLocalePost(locale));
+const posts = comparisonPosts(all);
+const groups = modelGroups(all);
+const latest = posts.slice(0, 3);
+
+const COMPARISON_TITLE = /^(.+?)\s+vs\.?\s+(.+?):\s*(.+)$/;
+const rows = posts
+  .map((post) => {
+    const m = post.data.seoTitle?.match(COMPARISON_TITLE);
+    const models = post.data.models ?? [];
+    return {
+      post,
+      left: m?.[1] ?? models[0] ?? post.data.title,
+      right: m?.[2] ?? models.slice(1).join(', '),
+      angle: m?.[3] ?? post.data.description,
+    };
+  })
+  .filter((r) => r.right);
+const ROWS_VISIBLE = 10;
+
+const vendorRank = (v: string) => {
+  const i = VENDOR_ORDER.indexOf(v as (typeof VENDOR_ORDER)[number]);
+  return i === -1 ? VENDOR_ORDER.length : i;
+};
+const currentByVendor = groups
+  .filter((g) => g.current)
+  .sort((a, b) => vendorRank(a.vendor) - vendorRank(b.vendor) || b.posts.length - a.posts.length);
+const pastGroups = groups.filter((g) => !g.current);
+
+const shortDate = (d: Date) =>
+  d.toLocaleDateString(localeCopy.htmlLang, { day: '2-digit', month: 'short', year: 'numeric' });
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString(localeCopy.htmlLang, { day: '2-digit', month: 'short', year: 'numeric' });
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.url}/${locale}/` },
+    { '@type': 'ListItem', position: 2, name: t.eyebrow, item: `${SITE.url}/${locale}/compare/` },
+  ],
+};
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: t.title,
+  description: t.description,
+  url: `${SITE.url}/${locale}/compare/`,
+  inLanguage: localeCopy.htmlLang,
+  isPartOf: { '@type': 'WebSite', name: 'wojciech.io', url: SITE.url + '/' },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: posts.length,
+    itemListElement: posts.map((post, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${SITE.url}/${locale}/insights/${insightSlug(post)}/`,
+      name: post.data.seoTitle ?? post.data.title,
+    })),
+  },
+};
+---
+
+<Layout
+  htmlLang={localeCopy.htmlLang}
+  ogLocale={localeCopy.ogLocale}
+  title={t.title}
+  description={t.description}
+  canonical={`/${locale}/compare/`}
+  ogImage="/og/pages/insights.png"
+  schema={[breadcrumbSchema, listSchema]}
+>
+  <div class="mx-auto max-w-6xl px-6 py-[var(--space-section)]">
+
+    <div class="mb-12 max-w-3xl">
+      <div class="mb-4 flex items-center gap-3">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <span class="obs-label-accent">{t.eyebrow}</span>
+      </div>
+      <h1 class="t-h1 mb-4 text-[var(--color-text)]">
+        {t.h1a}<br class="hidden md:block" /> {t.h1b}
+      </h1>
+      <p class="t-lead text-[var(--color-text-muted)]">{t.lead}</p>
+      <p class="t-small mt-4 text-[var(--color-text-dim)]">{t.count(posts.length, groups.length)}</p>
+    </div>
+
+    {latest.length > 0 && (
+      <div class="mb-16 grid gap-7 border-t border-[var(--color-border)] pt-8 sm:grid-cols-3">
+        {latest.map((post) => (
+          <a href={`/${locale}/insights/${insightSlug(post)}/`} class="group flex flex-col gap-3">
+            {post.data.coverImage && (
+              <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
+                <img
+                  src={versioned(post.data.coverImage)}
+                  alt=""
+                  width="1200"
+                  height="630"
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </div>
+            )}
+            <span class="t-caption text-[var(--color-text-dim)]">
+              {formatDate(post.data.publishedAt)} · {readTime(post.body, locale)}
+            </span>
+            <h2 class="t-h3 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">
+              {post.data.title}
+            </h2>
+          </a>
+        ))}
+      </div>
+    )}
+
+    <section class="mb-16" aria-labelledby="by-model-heading">
+      <div class="mb-6 border-t border-[var(--color-border)] pt-8">
+        <h2 id="by-model-heading" class="t-h3 mb-1 text-[var(--color-text)]">{t.byModel}</h2>
+        <p class="t-small text-[var(--color-text-dim)]">{t.byModelLead}</p>
+      </div>
+      <div class="grid gap-x-8 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+        {currentByVendor.map((group) => (
+          <div class="border-l border-[var(--color-border-2)] pl-5">
+            <div class="mb-3">
+              <h3 class="t-h3 text-[var(--color-text)]">{group.model}</h3>
+              <span class="t-caption text-[var(--color-text-dim)]">
+                {group.vendor} · {group.posts.length} {group.posts.length === 1 ? t.unitOne : t.unit}
+              </span>
+            </div>
+            <ul class="flex flex-col gap-2">
+              {groupEntries(group, shortDate).map(({ post, label, note }) => (
+                <li>
+                  <a
+                    href={`/${locale}/insights/${insightSlug(post)}/`}
+                    class="t-small inline-flex items-baseline gap-2 text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-accent-hi)]"
+                  >
+                    <span aria-hidden="true" class="text-[var(--color-text-dim)]">vs</span>
+                    <span>{label}</span>
+                    {note && <span class="t-caption text-[var(--color-text-dim)]">{note}</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {pastGroups.length > 0 && (
+      <section class="mb-16" aria-labelledby="past-models-heading">
+        <div class="mb-6 border-t border-[var(--color-border-2)] pt-8">
+          <h2 id="past-models-heading" class="t-h3 mb-1 text-[var(--color-text)]">{t.past}</h2>
+          <p class="t-small text-[var(--color-text-dim)]">{t.pastLead}</p>
+        </div>
+        <div class="grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
+          {pastGroups.map((group) => (
+            <div>
+              <h3 class="t-small mb-2 font-semibold text-[var(--color-text)]">{group.model}</h3>
+              <ul class="flex flex-col gap-1.5">
+                {groupEntries(group, shortDate).map(({ post, label, note }) => (
+                  <li>
+                    <a
+                      href={`/${locale}/insights/${insightSlug(post)}/`}
+                      class="t-caption text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-accent-hi)]"
+                    >
+                      vs {label}{note ? ` · ${note}` : ''}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {rows.length > 0 && (
+      <section class="mb-16" aria-labelledby="all-comparisons-heading">
+        <div class="mb-4 flex items-end justify-between gap-6 border-t border-[var(--color-border-2)] pt-8">
+          <div>
+            <h2 id="all-comparisons-heading" class="t-h3 mb-1 text-[var(--color-text)]">{t.all}</h2>
+            <p class="t-small text-[var(--color-text-dim)]">{t.allLead}</p>
+          </div>
+          <span class="t-caption shrink-0 text-[var(--color-text-dim)]">{rows.length} {t.unit}</span>
+        </div>
+        <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
+          <div class="hidden grid-cols-[minmax(0,21rem)_1fr_auto] gap-6 border-b border-[var(--color-border-2)] bg-[var(--color-surface-2)] px-5 py-3 md:grid">
+            <span class="t-label text-[var(--color-text-dim)]">{labels.colPair}</span>
+            <span class="t-label text-[var(--color-text-dim)]">{labels.colVerdict}</span>
+            <span class="t-label text-right text-[var(--color-text-dim)]">{labels.colDate}</span>
+          </div>
+          {rows.map(({ post, left, right, angle }, i) => (
+            <ComparisonRow
+              extra={i >= ROWS_VISIBLE}
+              href={`/${locale}/insights/${insightSlug(post)}/`}
+              left={left}
+              right={right}
+              angle={angle}
+              categoryKey={post.data.category ?? ''}
+              date={formatDate(post.data.publishedAt)}
+              read={readTime(post.body, locale)}
+            />
+          ))}
+        </div>
+        {rows.length > ROWS_VISIBLE && (
+          <button
+            type="button"
+            id="compare-more"
+            class="t-button mt-6 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+          >
+            {labels.showMore}
+          </button>
+        )}
+      </section>
+    )}
+
+    <div class="page-ask border-t border-[var(--color-border)] pt-10">
+      <p class="t-lead mb-2 text-[var(--color-text)]">{t.ctaLead}</p>
+      <p class="t-small mb-5 max-w-2xl text-[var(--color-text-muted)]">{t.ctaBody}</p>
+      <a
+        href={`/${locale}/insights/`}
+        class="t-button inline-flex rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+      >
+        {t.ctaLink} →
+      </a>
+    </div>
+
+  </div>
+</Layout>
+
+<script>
+  document.getElementById('compare-more')?.addEventListener('click', (e) => {
+    document.querySelectorAll('.comparison-extra').forEach((el) => el.classList.remove('hidden'));
+    (e.currentTarget as HTMLElement).remove();
+  });
+</script>

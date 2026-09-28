@@ -191,6 +191,11 @@ const faqSchema = post.data.faq?.length
   : null;
 const insightsSchema = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [])];
 
+
+// A comparison belongs to the hub at /compare/, so its way back up is that
+// page rather than the general index. Every comparison article then links
+// to the hub, which is what makes it one.
+const isComparison = (post.data.models?.length ?? 0) > 0;
 ---
 
 <Layout
@@ -227,11 +232,11 @@ const insightsSchema = [articleSchema, breadcrumbSchema, ...(faqSchema ? [faqSch
   >
     <!-- Header on the content grid; the cover follows at its full 1200:630 frame -->
     <header class="mx-auto max-w-6xl px-6 pb-10 pt-10 md:pt-16">
-      <a href="/insights/" class="t-caption inline-flex items-center gap-1.5 text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors mb-6">
+      <a href={isComparison ? "/compare/" : "/insights/"} class="t-caption inline-flex items-center gap-1.5 text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors mb-6">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
           <path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        All insights
+        {isComparison ? "All model comparisons" : "All insights"}
       </a>
       <div class="flex flex-wrap items-center gap-3 mb-5">
         {post.data.category ? (

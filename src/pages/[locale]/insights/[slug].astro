@@ -63,6 +63,7 @@ import ThreadBlock from '../../../../packages/mdx-components/components/ThreadBl
 import StackLayer from '../../../../packages/mdx-components/components/StackLayer.astro';
 import { SITE } from '../../../data/site';
 import { localizedHome, type LocaleKey } from '../../../data/locales';
+import { compareLabels } from '../../../lib/compare';
 import {
   insightLocaleLabels,
   insightSlug,
@@ -185,6 +186,9 @@ const schema = [
       }]
     : []),
 ];
+
+const isComparison = (post.data.models?.length ?? 0) > 0;
+const hub = compareLabels[locale as keyof typeof compareLabels] ?? compareLabels.en;
 ---
 
 <Layout
@@ -214,11 +218,11 @@ const schema = [
     data-pagefind-meta={`date:${post.data.publishedAt.toISOString().split('T')[0]},category:${post.data.category ?? 'Insights'},locale:${locale}`}
   >
     <header class="mx-auto max-w-6xl px-6 pb-10 pt-10 md:pt-16">
-      <a href={`/${locale}/insights/`} class="t-caption mb-6 inline-flex items-center gap-1.5 text-[var(--color-text-dim)] transition-colors hover:text-[var(--color-accent)]">
+      <a href={isComparison ? `/${locale}/compare/` : `/${locale}/insights/`} class="t-caption mb-6 inline-flex items-center gap-1.5 text-[var(--color-text-dim)] transition-colors hover:text-[var(--color-accent)]">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
           <path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        {labels.allInsights}
+        {isComparison ? hub.eyebrow : labels.allInsights}
       </a>
       <div class="mb-5 flex flex-wrap items-center gap-3">
         <span class="t-label text-[var(--color-accent)]">{post.data.category ?? labels.article}</span>
