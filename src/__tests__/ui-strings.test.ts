@@ -52,7 +52,7 @@ describe('localizeHref', () => {
 describe('getUiStrings', () => {
   it('returns a full strings bundle for every locale (no missing keys)', () => {
     const REQUIRED = [
-      'nav.work', 'nav.aiSystems', 'nav.insights', 'nav.tools', 'nav.stack', 'nav.about', 'nav.contact',
+      'nav.work', 'nav.aiSystems', 'nav.insights', 'nav.allInsights', 'nav.compare', 'nav.tools', 'nav.stack', 'nav.about', 'nav.contact',
       'cta.bookCall', 'cta.nextStep',
       'cookie.bannerText', 'cookie.privacyPolicy', 'cookie.accept', 'cookie.reject',
       'footer.getInTouch', 'footer.allWriting', 'footer.brandTagline', 'footer.bottomTagline',

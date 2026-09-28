@@ -4,27 +4,85 @@ import { getPrimaryNavLinks, getLocaleFromPath } from '../../data/uiStrings';
 const current = Astro.url.pathname;
 const links = getPrimaryNavLinks(current);
 const isAr = getLocaleFromPath(current) === 'ar';
+
+/**
+ * The Insights item carries a submenu for the comparison hub. It opens on
+ * hover and on keyboard focus through `group-hover` and `group-focus-within`,
+ * with no script at all: the panel is in the DOM either way, the parent stays
+ * a real link to the index, and a reader with JavaScript off loses nothing.
+ *
+ * The panel sits flush under the header with `pt-3` rather than `top-full
+ * mt-3`, so the gap between the link and the panel is inside the hover target.
+ * With a margin there, the menu closed as the pointer crossed the gap.
+ */
+const isCurrent = (href: string) => (href === '/' ? current === href : current.startsWith(href));
 ---
 
 <nav aria-label={isAr ? 'التنقّل الرئيسي' : 'Primary navigation'}>
   <ul class="flex items-center gap-6 list-none m-0 p-0">
-    {links.map(({ label, href, minWidth }) => {
-      const isActive = href === '/' ? current === href : current.startsWith(href);
+    {links.map(({ label, href, minWidth, children }) => {
+      // A parent counts as active when any of its own pages is open, so
+      // /compare/ still lights up Insights in the bar.
+      const isActive = isCurrent(href) || (children ?? []).some((c) => isCurrent(c.href));
+      const linkClass = [
+        'nav-link t-data inline-block transition-colors duration-150 pb-0.5',
+        isActive
+          ? 'text-[var(--color-text)]'
+          : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
+      ];
+
+      if (!children?.length) {
+        return (
+          <li>
+            <a
+              href={href}
+              aria-current={isActive ? 'page' : undefined}
+              style={`min-width:${minWidth};text-align:center`}
+              class:list={linkClass}
+            >
+              {label}
+            </a>
+          </li>
+        );
+      }
+
       return (
-        <li>
+        <li class="group relative">
           <a
             href={href}
             aria-current={isActive ? 'page' : undefined}
-            style={`min-width:${minWidth};text-align:center`}
-            class:list={[
-              'nav-link t-data inline-block transition-colors duration-150 pb-0.5',
-              isActive
-                ? 'text-[var(--color-text)]'
-                : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
-            ]}
+            class:list={[...linkClass, 'inline-flex items-center gap-1']}
           >
             {label}
+            <svg
+              class="h-3 w-3 shrink-0 text-[var(--color-text-dim)] transition-transform duration-150 group-hover:translate-y-px group-focus-within:translate-y-px"
+              viewBox="0 0 12 12"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path d="M3 4.5 6 7.5 9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
           </a>
+          <div class="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 opacity-0 transition-[opacity,visibility] duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+            <ul class="list-none m-0 min-w-[13rem] rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] p-1.5 shadow-[0_8px_24px_rgb(0_0_0/0.10)]">
+              {children.map((child) => (
+                <li>
+                  <a
+                    href={child.href}
+                    aria-current={isCurrent(child.href) ? 'page' : undefined}
+                    class:list={[
+                      't-data block whitespace-nowrap rounded-[var(--radius-btn)] px-3 py-2 transition-colors duration-150',
+                      isCurrent(child.href)
+                        ? 'bg-[var(--color-surface-2)] text-[var(--color-text)]'
+                        : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]',
+                    ]}
+                  >
+                    {child.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </li>
       );
     })}
