@@ -1,0 +1,191 @@
+---
+title: "Claude Opus 5.5 beats GPT-6 Astra on every score and still costs more to finish the job"
+seoTitle: "GPT-6 Astra vs Claude Opus 5.5: better and dearer per task"
+description: "Opus 5.5 scores 58 to Astra's 53, costs 60% less per token, and still bills $5.98 a task against $3.26. It writes 260M tokens to Astra's 60M."
+publishedAt: "2026-09-28"
+updatedAt: "2026-09-28"
+tags:
+  - AI
+  - OpenAI
+  - Claude
+  - AI Systems
+category: "AI Systems"
+coverType: "chart"
+featured: false
+draft: false
+locale: "en"
+sources:
+  - url: "https://artificialanalysis.ai/models/claude-opus-5-5"
+    quote: "it costs $5.98 per task to evaluate Claude Opus 5.5 (Adaptive Reasoning, Max Effort, Default Fallback) on the Intelligence Index"
+    claim: "Opus 5.5 scores 58 on Intelligence Index v4.3.2, first of 211 models, runs at about 95 output tokens per second and generated 260M tokens on the run"
+    checkedAt: "2026-09-28"
+  - url: "https://artificialanalysis.ai/models/gpt-6-astra"
+    quote: "it costs $3.26 per task to evaluate GPT-6 Astra (max) on the Intelligence Index"
+    claim: "Astra scores 53, sixth of 211, runs at about 64 output tokens per second and generated 60M tokens on the run"
+    checkedAt: "2026-09-28"
+  - url: "https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-codex"
+    quote: "Codex has a lower cost per task than Claude Code"
+    claim: "Coding Agent Index v1.5: Claude Code with Opus 5.5 scores 66 at $13.04 per task over 1.1 hours; Codex with Astra scores 62 at $7.47 over 29.4 minutes"
+    checkedAt: "2026-09-28"
+  - url: "https://developers.openai.com/api/docs/models/gpt-6-astra"
+    quote: "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request."
+    claim: "Astra lists at $10 input, $1 cached and $50 output, and the whole request is repriced above 272K input tokens"
+    checkedAt: "2026-09-28"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "Cache hits and refreshes on Claude Opus 5.5 are priced at 0.05x the base input price."
+    claim: "Opus 5.5 lists at $4 / $20 and reads cache at $0.20, a fifth of Astra's $1, at one rate across its 1M window"
+    checkedAt: "2026-09-28"
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview"
+    quote: "If you're unsure which model to use, start with Claude Opus 5.5 for most workloads."
+    claim: "Opus 5.5 is Anthropic's own recommended default and carries a June 2026 knowledge cutoff against Astra's April"
+    checkedAt: "2026-09-28"
+tldr:
+  - "Artificial Analysis scores Claude Opus 5.5 at 58 and GPT-6 Astra at 53. Opus 5.5 is first of 211 models; Astra is sixth. Opus 5.5 also lists at 60% less per token, $4 / $20 against $10 / $50."
+  - "Despite both of those, Astra is the cheaper model per finished task: $3.26 against $5.98. Opus 5.5 wrote 260M tokens across the index run and Astra wrote 60M."
+  - "Opus 5.5 generates faster, about 95 output tokens per second against 64, and still takes far longer end to end, because speed per token loses to four times the tokens."
+  - "As a coding agent the same shape repeats. Claude Code with Opus 5.5 tops the Coding Agent Index at 66 against Codex with Astra at 62, and costs $13.04 per task over 1.1 hours against $7.47 over 29.4 minutes."
+faq:
+  - q: "Is Claude Opus 5.5 better than GPT-6 Astra?"
+    a: "On every published score, yes. Artificial Analysis puts Opus 5.5 at 58 on Intelligence Index v4.3.2 and Astra at 53, which makes Opus 5.5 first of 211 models and Astra sixth. In the coding harness the same order holds: Claude Code with Opus 5.5 scores 66 and Codex with Astra scores 62, and Opus 5.5 leads Terminal-Bench 4.0 by seven points and SWE-Atlas-QnA by four, with DeepSWE v1.1 level at 68%."
+  - q: "Which is cheaper, GPT-6 Astra or Claude Opus 5.5?"
+    a: "It depends which number you mean, and the two disagree. Per token Opus 5.5 is 60% cheaper: $4 input and $20 output per million against Astra's $10 and $50, and $0.20 against $1 for cached input. Per finished task Astra is 45% cheaper: Artificial Analysis measured $3.26 against $5.98, because Opus 5.5 generated 260M tokens across the index run and Astra generated 60M. On coding tasks the gap widens to $7.47 against $13.04."
+  - q: "Which is faster, GPT-6 Astra or Claude Opus 5.5?"
+    a: "Opus 5.5 generates faster and finishes later. Artificial Analysis measures about 95 output tokens per second for Opus 5.5 and about 64 for Astra, but Opus 5.5 writes roughly four times as many tokens, so it spends far longer on the same work. On the coding benchmark that shows up as 1.1 hours per task against 29.4 minutes."
+  - q: "Should I use GPT-6 Astra or Claude Opus 5.5?"
+    a: "Opus 5.5 when the answer's quality decides the outcome, when prompts run long, or when the work already lives in Claude Code: it scores higher everywhere, costs a fifth of Astra on cached input, and keeps one rate across its 1M window. Astra when you are paying by the finished task and the volume is high, or when a person is waiting, since it costs about half as much per task and turns work around in a fraction of the time."
+coverImage: "/images/insights/gpt-6-astra-vs-claude-opus-5-5.webp"
+---
+
+Two flagships, and the scoreboard says one thing while the invoice says the other.
+
+Claude Opus 5.5 is first of 211 models on the independent index. It is also 60% cheaper per token than GPT-6 Astra. Both of those are true, and Astra still costs less to get a job done.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "astra", label: "GPT-6 Astra", align: "center", mono: true },
+    { key: "opus", label: "Claude Opus 5.5", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Input / output per 1M", astra: "$10 / $50", opus: "$4 / $20" },
+    { row: "Cached input per 1M", astra: "$1.00", opus: "$0.20" },
+    { row: "Intelligence Index v4.3.2", astra: "53", opus: "58" },
+    { row: "Rank among 211 models", astra: "6th", opus: "1st" },
+    { row: "Cost per index task", astra: "$3.26", opus: "$5.98" },
+    { row: "Tokens generated on the index", astra: "60M", opus: "260M" },
+    { row: "Output speed, tokens/s", astra: "about 64", opus: "about 95" },
+    { row: "Above 272K input tokens, in / out", astra: "$20 / $75", opus: "$4 / $20" },
+    { row: "Context / max output", astra: "1M / 128K", opus: "1M / 128K" },
+    { row: "Knowledge cutoff", astra: "Apr 2026", opus: "Jun 2026" }
+  ]}
+  highlight={[2, 4, 5, 7]}
+  caption="Prices and the 272K rule from OpenAI's GPT-6 Astra model page and Anthropic's pricing and models pages. Index score, cost per task, tokens and speed from Artificial Analysis's model pages, both at max effort. Read on 28 September 2026."
+/>
+
+## Opus 5.5 wins the scoreboard outright
+
+Five points on the index, **58 against 53**, and the ranks make that concrete: first of 211 against sixth. Anthropic's own models page now sends unsure readers to Opus 5.5 for most workloads.
+
+It also has the fresher training data, June 2026 against April, which matters more than usual in a year when the models being compared shipped in September.
+
+## And loses the invoice
+
+Per token Opus 5.5 is the cheap one by a wide margin. $4 and $20 against $10 and $50. Cached input is $0.20 against $1, because Anthropic prices cache hits on this model at 0.05x base input where the rest of the lineup uses 0.1x.
+
+Then the measured run comes in at **$5.98 per task against $3.26**.
+
+The whole inversion sits in one row of the table. Opus 5.5 wrote **260M tokens** across the index and Astra wrote 60M. Four and a third times the output, at 40% of the price per token, nets out as roughly 80% more on the bill.
+
+<KeyPoint>
+  Two models, and the cheaper price list belongs to the dearer model. If you are budgeting from a rate card rather than a measured run, this is the pair that will catch you out.
+</KeyPoint>
+
+## The speed number is a trap on its own
+
+Artificial Analysis measures Opus 5.5 at about **95 output tokens per second** and Astra at about **64**. Opus 5.5 is the faster model, and Artificial Analysis calls Astra slower than average.
+
+It still finishes much later. Tokens per second is a rate, and Opus 5.5 has four times as far to go. On the coding benchmark, where wall time is measured directly, that reads as **1.1 hours per task against 29.4 minutes**.
+
+A faster model that finishes in twice the time is not a contradiction. It is the difference between a speedometer and an arrival time, and only one of those is on your calendar.
+
+## Coding agents: the same shape, louder
+
+Opus 5.5 is now in Artificial Analysis's Coding Agent Index, which it was not when these models shipped.
+
+<DataTable
+  columns={[
+    { key: "row", label: "" },
+    { key: "astra", label: "Codex + Astra", align: "center", mono: true },
+    { key: "opus", label: "Claude Code + Opus 5.5", align: "center", mono: true }
+  ]}
+  rows={[
+    { row: "Coding Agent Index v1.5", astra: "62", opus: "66" },
+    { row: "DeepSWE v1.1", astra: "68%", opus: "68%" },
+    { row: "Terminal-Bench 4.0", astra: "56%", opus: "63%" },
+    { row: "SWE-Atlas-QnA", astra: "62%", opus: "66%" },
+    { row: "Cost per task", astra: "$7.47", opus: "$13.04" },
+    { row: "Time per task", astra: "29.4m", opus: "1.1h" },
+    { row: "Tokens per task", astra: "3.3M", opus: "15.6M" }
+  ]}
+  highlight={[0, 4, 5]}
+  caption="Coding Agent Index v1.5, each model in its own harness. Opus 5.5 leads on every benchmark except DeepSWE, where they tie."
+/>
+
+Opus 5.5 takes the top of that table and leads Terminal-Bench by seven points, which is the benchmark that separates a model that writes code from one that can drive an environment. It bills 75% more per task and takes more than twice the wall time to do it.
+
+Note the harness caveat that applies to every row here: Astra's numbers come from Codex and Opus 5.5's from Claude Code, and the harness moves results as much as the model does.
+
+## The 272K line still belongs to Anthropic
+
+OpenAI reprices an Astra prompt above 272K input tokens for the whole request: 2x input and cache, 1.5x output, so $20 / $75. Anthropic bills Opus 5.5's full 1M window at one rate.
+
+Past that line Opus 5.5 costs a fifth of Astra on input and under a third on output, on top of already being cheaper per token. For long documents, large codebases held in context, or any loop whose conversation grows past 272K, the per-task inversion above stops protecting Astra. The arithmetic is in [the 272K pricing cliff](/insights/openai-272k-long-context-pricing-vs-claude/).
+
+## Which one I would use
+
+<DataTable
+  columns={[
+    { key: "work", label: "The work" },
+    { key: "pick", label: "Model", mono: true },
+    { key: "why", label: "Why" }
+  ]}
+  rows={[
+    { work: "The answer decides the outcome", pick: "Claude Opus 5.5", why: "First of 211, and it leads every coding benchmark except the one they tie on." },
+    { work: "High volume, paying per finished task", pick: "GPT-6 Astra", why: "$3.26 against $5.98 on the index, $7.47 against $13.04 on coding." },
+    { work: "Someone is waiting for it", pick: "GPT-6 Astra", why: "29.4 minutes against 1.1 hours, despite being the slower model per token." },
+    { work: "Prompts that cross 272K tokens", pick: "Claude Opus 5.5", why: "One rate across 1M, while Astra's whole request doubles on input." },
+    { work: "Cache-heavy agent loops", pick: "Claude Opus 5.5", why: "$0.20 against $1 on the line that dominates a long loop's bill." },
+    { work: "Driving a terminal", pick: "Claude Opus 5.5", why: "Seven points on Terminal-Bench 4.0, the benchmark that separates writing code from running it." }
+  ]}
+  caption="Opus 5.5 for quality, long prompts and cache-heavy loops. Astra for throughput and for anything a person waits on."
+/>
+
+Inside OpenAI's lineup, [Sol against Astra](/insights/gpt-6-sol-vs-gpt-6-astra/) is the cheaper version of this decision. Against Anthropic's own step up, [Opus 5.5 against Opus 5](/insights/claude-opus-5-5-vs-claude-opus-5/) covers the four breaking changes in the upgrade.
+
+## What would change my mind
+
+Both models in one harness. Every coding number here is Astra in Codex against Opus 5.5 in Claude Code, and that is two variables moving at once.
+
+An effort sweep. Opus 5.5 defaults to medium and every figure above is max effort, which is where its 260M tokens come from. The per-task gap could close or invert at the default.
+
+A change to the 272K rule. It is the single line that makes Opus 5.5 several times cheaper on long prompts.
+
+## Questions people asked
+
+### Is Claude Opus 5.5 better than GPT-6 Astra?
+
+On every published score, yes. Artificial Analysis puts Opus 5.5 at 58 on Intelligence Index v4.3.2 and Astra at 53, which makes Opus 5.5 first of 211 models and Astra sixth. In the coding harness the same order holds: Claude Code with Opus 5.5 scores 66 and Codex with Astra scores 62, and Opus 5.5 leads Terminal-Bench 4.0 by seven points and SWE-Atlas-QnA by four, with DeepSWE v1.1 level at 68%.
+
+### Which is cheaper, GPT-6 Astra or Claude Opus 5.5?
+
+It depends which number you mean, and the two disagree. Per token Opus 5.5 is 60% cheaper: $4 input and $20 output per million against Astra's $10 and $50, and $0.20 against $1 for cached input. Per finished task Astra is 45% cheaper: Artificial Analysis measured $3.26 against $5.98, because Opus 5.5 generated 260M tokens across the index run and Astra generated 60M. On coding tasks the gap widens to $7.47 against $13.04.
+
+### Which is faster, GPT-6 Astra or Claude Opus 5.5?
+
+Opus 5.5 generates faster and finishes later. Artificial Analysis measures about 95 output tokens per second for Opus 5.5 and about 64 for Astra, but Opus 5.5 writes roughly four times as many tokens, so it spends far longer on the same work. On the coding benchmark that shows up as 1.1 hours per task against 29.4 minutes.
+
+### Should I use GPT-6 Astra or Claude Opus 5.5?
+
+Opus 5.5 when the answer's quality decides the outcome, when prompts run long, or when the work already lives in Claude Code: it scores higher everywhere, costs a fifth of Astra on cached input, and keeps one rate across its 1M window. Astra when you are paying by the finished task and the volume is high, or when a person is waiting, since it costs about half as much per task and turns work around in a fraction of the time.
+
+If you are picking a flagship for an agentic product and want the routing rule written down, [the contact page](/contact/) is the fastest route to me.
