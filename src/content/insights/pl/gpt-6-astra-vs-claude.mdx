@@ -3,7 +3,7 @@ title: "GPT-6 Astra była czwarta we własnej tabeli z premiery. Tydzień późn
 seoTitle: "GPT-6 Astra kontra Claude Fable 5.1 i Opus 5: wyniki i cena"
 description: "W tabeli OpenAI z premiery GPT-6 Astra była czwarta. W niezależnym indeksie v4.3 remisuje z Claude Fable 5.1, a jej test kosztował o 59% mniej."
 publishedAt: "2026-09-04"
-updatedAt: "2026-09-23"
+updatedAt: "2026-09-29"
 tags:
   - AI
   - OpenAI
@@ -75,6 +75,18 @@ sources:
     quote: "Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request."
     claim: "Zasada cenowa GPT-6 Astra dla długiego kontekstu"
     checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "a cache hit costs 2.5% of the standard input price"
+    claim: "Fable 5.1 kosztuje $10 za wejście i $50 za wyjście, a odczyt cache $0,25 za milion"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/pricing"
+    quote: "A 900k-token request is billed at the same per-token rate as a 9k-token request."
+    claim: "Fable 5.1 trzyma jedną stawkę w całym oknie 1 mln tokenów"
+    checkedAt: "2026-09-16"
+  - url: "https://platform.claude.com/docs/en/about-claude/models/overview.md"
+    quote: "Reliable knowledge cutoff"
+    claim: "Anthropic podaje wiarygodną granicę wiedzy Fable 5.1 jako czerwiec 2026"
+    checkedAt: "2026-09-16"
 tldr:
   - "Aktualizacja 16 września 2026: własny przebieg Artificial Analysis na Intelligence Index v4.3 daje GPT-6 Astra 52,81, a Claude Fable 5.1 53,37, i nazywa to remisem na prowadzeniu. Claude Opus 5 jest dalej, z 50,70."
   - "Astra jest też najtańsza z tej trójki w przebiegu. Cały indeks kosztował $5 324 na Astrze, $7 275 na Opusie 5 i $13 129 na Fable 5.1, bo Astra wypisała 60 mln tokenów wobec 140 i 190 mln."
@@ -91,6 +103,14 @@ faq:
     a: "Możliwe, że jeszcze nie, nawet jeśli firma za to płaci. Model trafia najpierw do ograniczonej grupy organizacji, a do wszystkich użytkowników Plus, Pro, Business i Enterprise dociera przez kolejne dni. W przestrzeniach Enterprise dostęp jest domyślnie wyłączony na starcie i musi go włączyć administrator. W API występuje jako gpt-6-astra, jest też przez Microsoft Azure i AWS Bedrock."
   - q: "Gdzie jest haczyk?"
     a: "W dwóch miejscach, oba wskazane przez OpenAI. To pierwszy model, który spełnia próg Critical dla cyberbezpieczeństwa w ich Preparedness Framework, dlatego na starcie odmawia pracy nad exploitami proof-of-concept, a dodatkowe kontrole bezpieczeństwa potrafią wstrzymać legalne zadanie. Do tego jego zapisane rozumowanie jest trudniejsze do monitorowania niż w GPT-5.6 Sol, co OpenAI tłumaczy tym, że rozwiązuje problemy w mniejszej liczbie zapisanych kroków. Nazywają ten regres poważnym. To najuczciwsze zdanie w całym ogłoszeniu."
+  - q: "Czy GPT-6 Astra jest lepsza od Claude Fable 5.1?"
+    a: "Są na równi. Artificial Analysis Intelligence Index v4.3 daje Claude Fable 5.1 53,37, a GPT-6 Astra 52,81, co Artificial Analysis opisuje jako remis na prowadzeniu, a w Coding Agent Index oba mają 62. W ramach tego remisu Claude Code z Fable 5.1 wygrywa Terminal-Bench 4.0 i SWE-Atlas-QnA, a Codex z Astrą wygrywa DeepSWE, czyli długie zadania na repozytoriach."
+  - q: "Co jest tańsze, GPT-6 Astra czy Claude Fable 5.1?"
+    a: "W cenniku kosztują tyle samo, $10 za milion tokenów wejściowych i $50 za wyjście. Na pełnym obciążeniu tańsza jest Astra: Artificial Analysis wydało $5 324 na przebieg indeksu na Astrze wobec $13 129 na Fable 5.1 i zmierzyło $7,47 na zadanie programistyczne wobec $12,39. Fable 5.1 jest tańszy na cache, $0,25 wobec $1, i na promptach powyżej 272 tys. tokenów wejścia, gdzie całe zapytanie do Astry kosztuje $20 za wejście i $75 za wyjście."
+  - q: "Co jest szybsze, GPT-6 Astra czy Claude Fable 5.1?"
+    a: "Fable 5.1 generuje szybciej, ok. 65 tokenów wyjściowych na sekundę wobec 53 Astry w pomiarach Artificial Analysis. Astra zwykle kończy pierwsza, bo pisze dużo mniej: na agentach kodujących Codex z Astrą potrzebował średnio 29,4 minuty na zadanie wobec 34,8 w Claude Code z Fable 5.1."
+  - q: "Wybrać GPT-6 Astra czy Claude Fable 5.1?"
+    a: "GPT-6 Astra do długich przebiegów agentowych z promptami poniżej 272 tys. tokenów, gdzie dorównuje Fable 5.1 wynikiem za mniej niż połowę kosztu pełnego przebiegu. Claude Fable 5.1 do promptów powyżej 272 tys. tokenów, do pętli mocno opartych na cache z krótkimi odpowiedziami i dla zespołów pracujących w Claude Code."
 ---
 
 <Callout type="note" title="Trzy modele z tego tekstu zostały zastąpione">
@@ -124,7 +144,7 @@ Artificial Analysis opisuje szczyt v4.3 jako remis Astry z Fable 5.1 na prowadze
 
 Większa zmiana jest w kolumnie kosztów. Astra ma w cenniku te same $10 / $50 co Fable 5.1, a przebieg indeksu na niej kosztował o 59% mniej, bo wypisała mniej więcej jedną trzecią tokenów. Artificial Analysis pisze, że każdy poziom rozumowania Astry ma najniższy koszt zadania przy swoim poziomie inteligencji. OpenAI twierdziło to na premierę. Teraz pokazuje to niezależny przebieg.
 
-Pojedynki jeden na jeden rozpisałem w [Astra kontra Opus 5](/pl/insights/gpt-6-astra-vs-claude-opus-5/) i [Astra kontra Fable 5.1](/pl/insights/gpt-6-astra-vs-claude-fable-5-1/).
+Pojedynki jeden na jeden rozpisałem w [Astra kontra Opus 5](/pl/insights/gpt-6-astra-vs-claude-opus-5/) i [Astra kontra Fable 5.1](/pl/insights/gpt-6-astra-vs-claude/).
 
 ## Analiza z premiery, 4 września 2026
 
@@ -258,6 +278,26 @@ Po ludzku: model stał się lepszy w pracy i gorszy w pokazywaniu tej pracy. Mo�
 Do tego Astra jest pierwszym modelem spełniającym próg **Critical** dla cyberbezpieczeństwa w Preparedness Framework OpenAI. Podczas ewaluacji znalazła i wykorzystała dwie wcześniej nieznane podatności zero-day, zgłoszone już opiekunom projektów. Na starcie robi bezpieczne przeglądy i łatanie kodu, ale odmawia pracy nad exploitami proof-of-concept, a OpenAI ostrzega, że dodatkowe kontrole potrafią wstrzymać albo zatrzymać legalne zadanie. W ChatGPT i Codeksie dostaniesz prośbę o przejrzenie akcji. W API zadanie po prostu staje.
 
 Zaplanuj to, jeśli na tym budujesz. Pipeline zakładający, że każde wywołanie wraca, potrzebuje ścieżki dla wywołania, które nie wróci.
+
+## Ten sam cennik, bardzo różne rachunki
+
+Oba biorą $10 za milion tokenów wejściowych i $50 za wyjście. Różni je to, ile każdy z nich pisze.
+
+Artificial Analysis naliczyło w całym indeksie 190 mln tokenów od Fable 5.1 i 60 mln od Astry, a przebiegi kosztowały **$13 129 i $5 324**. Na agentach kodujących Codex z Astrą kosztował **$7,47 za zadanie**, a Claude Code z Fable 5.1 **$12,39**, i Astra skończyła przy tym szybciej, 29,4 minuty wobec 34,8.
+
+To czyni Astrę tańszym modelem przy typowej pracy agentowej, choć żaden wiersz w jej cenniku nie jest niższy.
+
+<KeyPoint>
+  Remis w wynikach i remis w cenie za token i tak zostawiły dwuipółkrotną różnicę w koszcie pełnego przebiegu. Między tymi dwoma modelami rozstrzyga objętość tego, co piszą.
+</KeyPoint>
+
+## Gdzie tańszy jest Fable 5.1
+
+Dwa wiersze w cennikach przemawiają za Fable 5.1.
+
+**Cache.** Fable 5.1 czyta cache po $0,25 za milion, jedną czwartą stawki Astry. Załóżmy, że na twoim zadaniu Fable 5.1 pisze trzy razy więcej niż Astra, tak jak w całym indeksie. Wtedy jego zniżka na cache wygrywa dopiero, gdy wejście z cache przekracza mniej więcej 130-krotność wyjścia Astry, czyli przy pętli bardzo mocno opartej na cache i z krótkimi odpowiedziami.
+
+**Prompty powyżej 272 tys. tokenów.** Gdy prompt przekroczy 272 tys., OpenAI liczy całe zapytanie do Astry po $20 za wejście, $2 za cache i $75 za wyjście. Anthropic trzyma Fable 5.1 na jednej stawce w całym oknie 1 mln. Przykład: prompt na 300 tys. tokenów z odpowiedzią na 5 tys. Na Astrze kosztuje $6,38, na Fable 5.1 $3,25.
 
 ## Jak bym teraz rozkładał pracę między te modele
 
