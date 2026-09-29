@@ -1,9 +1,13 @@
 ---
+import { getCollection } from 'astro:content';
 import { getPrimaryNavLinks, getLocaleFromPath } from '../../data/uiStrings';
+import { compareLabels } from '../../lib/compare';
 
 const current = Astro.url.pathname;
 const links = getPrimaryNavLinks(current);
-const isAr = getLocaleFromPath(current) === 'ar';
+const locale = getLocaleFromPath(current);
+const isAr = locale === 'ar';
+const hub = compareLabels[locale as keyof typeof compareLabels] ?? compareLabels.en;
 
 /**
  * The Insights item carries a submenu for the comparison hub. It opens on
@@ -14,7 +18,24 @@ const isAr = getLocaleFromPath(current) === 'ar';
  * The panel sits flush under the header with `pt-3` rather than `top-full
  * mt-3`, so the gap between the link and the panel is inside the hover target.
  * With a margin there, the menu closed as the pointer crossed the gap.
+ *
+ * Each row carries a line of copy and a count. Two bare links read as an
+ * afterthought, and the counts are the part that actually sells the hub:
+ * "26 comparisons" says what is behind the link in a way the label cannot.
+ * They are counted from the collection so they cannot drift from what is
+ * published.
  */
+const postsForLocale = await getCollection(
+  'insights',
+  ({ data, id }) =>
+    !data.draft && (locale === 'en' ? !/^[a-z]{2}\//.test(id) : id.startsWith(`${locale}/`))
+);
+const counts = [
+  postsForLocale.length,
+  postsForLocale.filter((p) => (p.data.models?.length ?? 0) > 0).length,
+];
+const notes = [hub.menuInsights, hub.menuCompare];
+
 const isCurrent = (href: string) => (href === '/' ? current === href : current.startsWith(href));
 ---
 
@@ -56,31 +77,61 @@ const isCurrent = (href: string) => (href === '/' ? current === href : current.s
             {label}
             <svg
               class="h-3 w-3 shrink-0 text-[var(--color-text-dim)] transition-transform duration-150 group-hover:translate-y-px group-focus-within:translate-y-px"
-              viewBox="0 0 12 12"
+              viewBox="0 0 24 24"
               fill="none"
               aria-hidden="true"
             >
-              <path d="M3 4.5 6 7.5 9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </a>
           <div class="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 opacity-0 transition-[opacity,visibility] duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-            <ul class="list-none m-0 min-w-[13rem] rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] p-1.5 shadow-[0_8px_24px_rgb(0_0_0/0.10)]">
-              {children.map((child) => (
-                <li>
-                  <a
-                    href={child.href}
-                    aria-current={isCurrent(child.href) ? 'page' : undefined}
-                    class:list={[
-                      't-data block whitespace-nowrap rounded-[var(--radius-btn)] px-3 py-2 transition-colors duration-150',
-                      isCurrent(child.href)
-                        ? 'bg-[var(--color-surface-2)] text-[var(--color-text)]'
-                        : 'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]',
-                    ]}
-                  >
-                    {child.label}
-                  </a>
-                </li>
-              ))}
+            <ul class="list-none m-0 w-[21rem] rounded-[var(--radius-card)] border border-[var(--color-border-2)] bg-[var(--color-surface)] p-1.5 shadow-[0_8px_24px_rgb(0_0_0/0.10)]">
+              {children.map((child, i) => {
+                const active = isCurrent(child.href);
+                // The hub is the reason this menu exists, so it reads as the
+                // offer rather than the second row of a list.
+                const featured = i === 1;
+                return (
+                  <li>
+                    <a
+                      href={child.href}
+                      aria-current={active ? 'page' : undefined}
+                      class:list={[
+                        'group/row block rounded-[var(--radius-btn)] px-3 py-2.5 transition-colors duration-150',
+                        active
+                          ? 'bg-[var(--color-surface-2)]'
+                          : 'hover:bg-[var(--color-surface-2)]',
+                      ]}
+                    >
+                      <span class="flex items-baseline justify-between gap-3">
+                        <span
+                          class:list={[
+                            't-data',
+                            active || featured
+                              ? 'text-[var(--color-text)]'
+                              : 'text-[var(--color-text-muted)] group-hover/row:text-[var(--color-text)]',
+                          ]}
+                        >
+                          {child.label}
+                        </span>
+                        <span
+                          class:list={[
+                            't-caption shrink-0 tabular-nums',
+                            featured
+                              ? 'rounded bg-[var(--color-accent-cta)] px-1.5 py-0.5 font-semibold text-[var(--color-accent-text)]'
+                              : 'text-[var(--color-text-dim)]',
+                          ]}
+                        >
+                          {counts[i]}
+                        </span>
+                      </span>
+                      <span class="t-caption mt-0.5 block text-[var(--color-text-dim)]">
+                        {notes[i]}
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </li>

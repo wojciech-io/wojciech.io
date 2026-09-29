@@ -3,6 +3,7 @@ import { personName } from '../../data/site';
 import { SITE } from '../../data/site';
 import { getUiStringsForPath, getLocaleFromPath, localizeHref } from '../../data/uiStrings';
 import FooterNewsletter from './FooterNewsletter.astro';
+import Icon from '../ui/Icon.astro';
 
 const year = new Date().getFullYear();
 
@@ -144,7 +145,9 @@ const connect = [
   {
     label: 'RSS',
     href: '/rss.xml',
-    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="6.75" cy="17.25" r="1.65" fill="currentColor"/><path d="M5.25 11.15C9.45 11.15 12.85 14.55 12.85 18.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.25 5.25C12.7 5.25 18.75 11.3 18.75 18.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.25 8.25C11.05 8.25 15.75 12.95 15.75 18.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".32"/></svg>`,
+    // Brand marks above are filled logos and stay inline. RSS is part of
+    // the line set, so it comes from there and cannot drift from it.
+    name: 'rss',
   },
 ];
 ---
@@ -172,10 +175,10 @@ const connect = [
       <div class="col-span-2 md:col-span-1 flex flex-col gap-5">
         <a href="/" dir="ltr" class="wordmark-brand inline-flex items-center gap-0 self-start no-underline group">
           <span class="t-data font-semibold text-[var(--color-ink-text)]">wojciech</span>
-          <span class="obs-mono ml-0.5 inline-flex h-5 w-5 items-center justify-center rounded-[6px] bg-[var(--color-accent-cta)] text-[8px] font-bold leading-none text-[var(--color-accent-text)]">.io</span>
+          <span class="obs-mono ml-0.5 inline-flex h-5 w-5 items-center justify-center rounded-[6px] bg-[var(--color-accent-cta)] text-[8px] font-semibold leading-none text-[var(--color-accent-text)]">.io</span>
         </a>
         <div class="-ml-2 flex items-center gap-1">
-          {connect.map(({ label, href, icon }) => (
+          {connect.map(({ label, href, icon, name }) => (
             <a
               href={href}
               target={href.startsWith('http') ? '_blank' : undefined}
@@ -183,7 +186,9 @@ const connect = [
               aria-label={label}
               class="inline-flex h-9 w-9 items-center justify-center rounded-md text-[var(--color-ink-muted)] no-underline transition-colors hover:bg-[var(--color-ink-2)] hover:text-[var(--color-ink-text)]"
             >
-              <span class="inline-flex items-center" set:html={icon} />
+              {icon
+                ? <span class="inline-flex items-center" set:html={icon} />
+                : <Icon name={name!} class="h-4 w-4" />}
             </a>
           ))}
         </div>

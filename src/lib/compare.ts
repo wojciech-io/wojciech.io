@@ -167,6 +167,8 @@ export const compareLabels = {
     ctaLead: 'The systems behind these numbers are the actual work.',
     ctaBody:
       'Model choice is one decision inside a revenue system. The rest of what I build and run is in the field notes.',
+    menuInsights: "Field notes on AI systems, GTM and revenue architecture.",
+    menuCompare: "Price, independent score, and cost per finished task.",
     ctaLink: 'Read the field notes',
   },
   pl: {
@@ -191,6 +193,8 @@ export const compareLabels = {
     ctaLead: 'Systemy stojące za tymi liczbami to jest właściwa robota.',
     ctaBody:
       'Wybór modelu to jedna decyzja wewnątrz systemu przychodowego. Reszta tego, co buduję i utrzymuję, jest w notatkach operatora.',
+    menuInsights: "Notatki operatora o AI, GTM i architekturze przychodów.",
+    menuCompare: "Cena, niezależny wynik i koszt ukończonego zadania.",
     ctaLink: 'Przeczytaj notatki operatora',
   },
   de: {
@@ -215,6 +219,8 @@ export const compareLabels = {
     ctaLead: 'Die Systeme hinter diesen Zahlen sind die eigentliche Arbeit.',
     ctaBody:
       'Die Modellwahl ist eine Entscheidung innerhalb eines Revenue-Systems. Der Rest steht in den Feldnotizen.',
+    menuInsights: "Feldnotizen zu AI-Systemen, GTM und Revenue-Architektur.",
+    menuCompare: "Preis, unabhängiger Score und Kosten pro erledigter Aufgabe.",
     ctaLink: 'Feldnotizen lesen',
   },
   es: {
@@ -239,6 +245,8 @@ export const compareLabels = {
     ctaLead: 'Los sistemas detrás de estos números son el trabajo de verdad.',
     ctaBody:
       'Elegir modelo es una decisión dentro de un sistema de ingresos. El resto está en las notas de campo.',
+    menuInsights: "Notas de campo sobre sistemas de IA, GTM e ingresos.",
+    menuCompare: "Precio, puntuación independiente y coste por tarea terminada.",
     ctaLink: 'Leer las notas de campo',
   },
   it: {
@@ -263,6 +271,8 @@ export const compareLabels = {
     ctaLead: 'I sistemi dietro questi numeri sono il lavoro vero.',
     ctaBody:
       'Scegliere il modello è una decisione dentro un sistema di ricavi. Il resto è nelle note operative.',
+    menuInsights: "Note operative su sistemi AI, GTM e architettura dei ricavi.",
+    menuCompare: "Prezzo, punteggio indipendente e costo per attività completata.",
     ctaLink: 'Leggi le note operative',
   },
 } as const;
