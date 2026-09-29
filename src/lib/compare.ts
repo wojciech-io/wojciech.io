@@ -146,7 +146,7 @@ export function comparePath(post: Post, locale: string): string {
  */
 export const compareLabels = {
   en: {
-    title: 'AI model comparisons · price, score, and cost per finished task',
+    title: 'AI model comparisons: price, score, cost per finished task',
     description:
       'Every model comparison I have run, indexed by model. Published price, the independent Artificial Analysis score, and what a finished task actually cost.',
     eyebrow: 'Model comparisons',
@@ -172,7 +172,7 @@ export const compareLabels = {
     ctaLink: 'Read the field notes',
   },
   pl: {
-    title: 'Porównania modeli AI · cena, wynik i koszt ukończonego zadania',
+    title: 'Porównania modeli AI: cena, wynik, koszt zadania',
     description:
       'Wszystkie porównania modeli, które przeprowadziłem, ułożone według modelu. Cena z cennika, niezależny wynik Artificial Analysis i to, ile realnie kosztowało ukończone zadanie.',
     eyebrow: 'Porównania modeli',
@@ -198,7 +198,7 @@ export const compareLabels = {
     ctaLink: 'Przeczytaj notatki operatora',
   },
   de: {
-    title: 'KI-Modellvergleiche · Preis, Score und Kosten pro erledigter Aufgabe',
+    title: 'KI-Modellvergleiche: Preis, Score, Kosten pro Aufgabe',
     description:
       'Alle Modellvergleiche, die ich gerechnet habe, nach Modell sortiert. Listenpreis, der unabhängige Artificial-Analysis-Score und was eine erledigte Aufgabe tatsächlich gekostet hat.',
     eyebrow: 'Modellvergleiche',
@@ -224,7 +224,7 @@ export const compareLabels = {
     ctaLink: 'Feldnotizen lesen',
   },
   es: {
-    title: 'Comparativas de modelos de IA · precio, puntuación y coste por tarea terminada',
+    title: 'Comparativas de modelos de IA: precio, puntuación, coste',
     description:
       'Todas las comparativas de modelos que he hecho, ordenadas por modelo. Precio de lista, la puntuación independiente de Artificial Analysis y lo que costó de verdad una tarea terminada.',
     eyebrow: 'Comparativas de modelos',
@@ -250,7 +250,7 @@ export const compareLabels = {
     ctaLink: 'Leer las notas de campo',
   },
   it: {
-    title: 'Confronti tra modelli AI · prezzo, punteggio e costo per attività completata',
+    title: 'Confronti tra modelli AI: prezzo, punteggio, costo',
     description:
       'Tutti i confronti tra modelli che ho fatto, ordinati per modello. Prezzo di listino, il punteggio indipendente di Artificial Analysis e quanto è costata davvero un attività completata.',
     eyebrow: 'Confronti tra modelli',
