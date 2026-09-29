@@ -5,7 +5,7 @@ import ComparisonRow from '../../components/insights/ComparisonRow.astro';
 import { SITE } from '../../data/site';
 import { versioned } from '../../lib/assetVersion';
 import { insightSlug, isLocalePost, readTime } from '../../lib/insights';
-import { comparisonPosts, groupEntries, modelGroups, VENDOR_ORDER } from '../../lib/compare';
+import { compareLabels, comparisonPosts, groupEntries, modelGroups, VENDOR_ORDER } from '../../lib/compare';
 
 const all = await getCollection('insights', isLocalePost('en'));
 const posts = comparisonPosts(all);
@@ -47,7 +47,10 @@ const shortDate = (d: Date) =>
 const formatDate = (date: Date) =>
   date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-const title = 'AI model comparisons · price, score, and cost per finished task';
+// The localized hubs read this from compareLabels; the English page had its
+// own copy, which is how it kept a 63-character title after the others were
+// trimmed. One source now, so the next trim cannot miss a locale.
+const title = compareLabels.en.title;
 const description =
   'Every model comparison I have run, indexed by model. Published price, the independent Artificial Analysis score, and what a finished task actually cost.';
 
