@@ -70,7 +70,11 @@ const latestLabel = locale === 'pl' ? 'Najnowszy' : 'Latest';
       {posts.slice(1).map((post, i) => (
         <PosterCard
           href={`${insightsBase}/${insightSlug(post)}/`}
-          title={post.data.title}
+          {/* The editorial title runs to ninety characters and the card
+              gives it four lines, so every card cut mid-sentence and took
+              the verdict with it. seoTitle is written to sixty and carries
+              the same finding. */}
+          title={post.data.seoTitle ?? post.data.title}
           categoryLabel={post.data.category ?? 'Insight'}
           categoryKey={post.data.category ?? ''}
           date={formatDate(post.data.publishedAt)}
