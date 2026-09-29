@@ -24,8 +24,19 @@ import { join, resolve } from 'node:path';
 
 const ROOT = resolve('./src/content/insights');
 
+/**
+ * Reads one frontmatter value. Built by walking lines rather than by
+ * assembling a regex from the key: a constructed pattern is a ReDoS smell even
+ * when every caller passes a literal, and semgrep is right to stop it.
+ */
 function field(frontmatter: string, key: string): string {
-  return frontmatter.match(new RegExp(`^${key}:\\s*"?(.*?)"?\\s*$`, 'm'))?.[1] ?? '';
+  const prefix = `${key}:`;
+  for (const line of frontmatter.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith(prefix)) continue;
+    return trimmed.slice(prefix.length).trim().replace(/^"|"$/g, '');
+  }
+  return '';
 }
 
 interface Article {
