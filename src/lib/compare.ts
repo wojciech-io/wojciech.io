@@ -146,7 +146,7 @@ export function comparePath(post: Post, locale: string): string {
  */
 export const compareLabels = {
   en: {
-    title: 'AI model comparisons · price, score, and cost per finished task',
+    title: 'AI model comparisons: price, score, cost per finished task',
     description:
       'Every model comparison I have run, indexed by model. Published price, the independent Artificial Analysis score, and what a finished task actually cost.',
     eyebrow: 'Model comparisons',
@@ -167,10 +167,12 @@ export const compareLabels = {
     ctaLead: 'The systems behind these numbers are the actual work.',
     ctaBody:
       'Model choice is one decision inside a revenue system. The rest of what I build and run is in the field notes.',
+    menuInsights: "Field notes on AI systems, GTM and revenue architecture.",
+    menuCompare: "Price, independent score, and cost per finished task.",
     ctaLink: 'Read the field notes',
   },
   pl: {
-    title: 'Porównania modeli AI · cena, wynik i koszt ukończonego zadania',
+    title: 'Porównania modeli AI: cena, wynik, koszt zadania',
     description:
       'Wszystkie porównania modeli, które przeprowadziłem, ułożone według modelu. Cena z cennika, niezależny wynik Artificial Analysis i to, ile realnie kosztowało ukończone zadanie.',
     eyebrow: 'Porównania modeli',
@@ -191,10 +193,12 @@ export const compareLabels = {
     ctaLead: 'Systemy stojące za tymi liczbami to jest właściwa robota.',
     ctaBody:
       'Wybór modelu to jedna decyzja wewnątrz systemu przychodowego. Reszta tego, co buduję i utrzymuję, jest w notatkach operatora.',
+    menuInsights: "Notatki operatora o AI, GTM i architekturze przychodów.",
+    menuCompare: "Cena, niezależny wynik i koszt ukończonego zadania.",
     ctaLink: 'Przeczytaj notatki operatora',
   },
   de: {
-    title: 'KI-Modellvergleiche · Preis, Score und Kosten pro erledigter Aufgabe',
+    title: 'KI-Modellvergleiche: Preis, Score, Kosten pro Aufgabe',
     description:
       'Alle Modellvergleiche, die ich gerechnet habe, nach Modell sortiert. Listenpreis, der unabhängige Artificial-Analysis-Score und was eine erledigte Aufgabe tatsächlich gekostet hat.',
     eyebrow: 'Modellvergleiche',
@@ -215,10 +219,12 @@ export const compareLabels = {
     ctaLead: 'Die Systeme hinter diesen Zahlen sind die eigentliche Arbeit.',
     ctaBody:
       'Die Modellwahl ist eine Entscheidung innerhalb eines Revenue-Systems. Der Rest steht in den Feldnotizen.',
+    menuInsights: "Feldnotizen zu AI-Systemen, GTM und Revenue-Architektur.",
+    menuCompare: "Preis, unabhängiger Score und Kosten pro erledigter Aufgabe.",
     ctaLink: 'Feldnotizen lesen',
   },
   es: {
-    title: 'Comparativas de modelos de IA · precio, puntuación y coste por tarea terminada',
+    title: 'Comparativas de modelos de IA: precio, puntuación, coste',
     description:
       'Todas las comparativas de modelos que he hecho, ordenadas por modelo. Precio de lista, la puntuación independiente de Artificial Analysis y lo que costó de verdad una tarea terminada.',
     eyebrow: 'Comparativas de modelos',
@@ -239,10 +245,12 @@ export const compareLabels = {
     ctaLead: 'Los sistemas detrás de estos números son el trabajo de verdad.',
     ctaBody:
       'Elegir modelo es una decisión dentro de un sistema de ingresos. El resto está en las notas de campo.',
+    menuInsights: "Notas de campo sobre sistemas de IA, GTM e ingresos.",
+    menuCompare: "Precio, puntuación independiente y coste por tarea terminada.",
     ctaLink: 'Leer las notas de campo',
   },
   it: {
-    title: 'Confronti tra modelli AI · prezzo, punteggio e costo per attività completata',
+    title: 'Confronti tra modelli AI: prezzo, punteggio, costo',
     description:
       'Tutti i confronti tra modelli che ho fatto, ordinati per modello. Prezzo di listino, il punteggio indipendente di Artificial Analysis e quanto è costata davvero un attività completata.',
     eyebrow: 'Confronti tra modelli',
@@ -263,6 +271,8 @@ export const compareLabels = {
     ctaLead: 'I sistemi dietro questi numeri sono il lavoro vero.',
     ctaBody:
       'Scegliere il modello è una decisione dentro un sistema di ricavi. Il resto è nelle note operative.',
+    menuInsights: "Note operative su sistemi AI, GTM e architettura dei ricavi.",
+    menuCompare: "Prezzo, punteggio indipendente e costo per attività completata.",
     ctaLink: 'Leggi le note operative',
   },
 } as const;
