@@ -39,6 +39,32 @@ export const GET: APIRoute = async ({ site }) => {
     ? `Articles are written in English first. Translations are published in ${translations.join(', ')}.`
     : 'Articles are written in English.';
 
+  // An answer engine asked "which is better, X or Y" should be able to find
+  // the one article that answers that exact pair. Listing the corpus by model
+  // is the only form of this list that survives the question being asked from
+  // either side, and it is generated so it cannot drift from what is published.
+  const byModel = new Map<string, { title: string; slug: string; others: string[] }[]>();
+  for (const post of posts) {
+    const models = post.data.models ?? [];
+    if (models.length < 2) continue;
+    const slug = post.id.replace(/\.mdx?$/, '');
+    for (const model of models) {
+      const entry = { title: post.data.title, slug, others: models.filter((m) => m !== model) };
+      const list = byModel.get(model);
+      if (list) list.push(entry);
+      else byModel.set(model, [entry]);
+    }
+  }
+  const comparisonIndex = [...byModel.entries()]
+    .sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]))
+    .map(([model, entries]) => {
+      const lines = entries
+        .map((e) => `  - against ${e.others.join(' and ')}: ${origin}/insights/${e.slug}/`)
+        .join('\n');
+      return `- **${model}**\n${lines}`;
+    })
+    .join('\n');
+
   const latest = posts.slice(0, 8);
   const articleList = latest
     .map((post) => {
@@ -62,8 +88,15 @@ export const GET: APIRoute = async ({ site }) => {
 - [Work](${origin}/work/): case studies and systems built and still running in production.
 - [About](${origin}/about/): background, 20 years of experience, and the operating model.
 - [Insights](${origin}/insights/): original articles on AI-native GTM and growth systems.
+- [Model comparisons](${origin}/compare/): every AI model comparison on this site, indexed by model. Published price, the independent Artificial Analysis score, and measured cost per finished task rather than price per million tokens.
 - [Contact](${origin}/contact/): book a 30-minute call directly on the live calendar (timezone auto-detected), or reach him on LinkedIn.
 - [AI Espresso newsletter](https://subscribe.wojciech.io/): a day of AI, in one sip.
+
+## Model comparisons, by model
+
+Every comparison below is a first-party measurement write-up: published list price, the independent Artificial Analysis Intelligence Index score, and what one finished task actually cost, which is the figure that decides an agent bill and is not on any price list. Each article is rewritten when the numbers move rather than left to age. Index: ${origin}/compare/
+
+${comparisonIndex}
 
 ## Who is Wojciech Luszczynski?
 

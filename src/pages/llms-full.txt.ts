@@ -66,6 +66,9 @@ export const GET: APIRoute = async ({ site }) => {
         `Published: ${published}${updated ? ` · Updated: ${updated}` : ''}`,
         post.data.category ? `Category: ${post.data.category}` : null,
         post.data.tags.length ? `Tags: ${post.data.tags.join(', ')}` : null,
+        // Which models the piece weighs, so an engine answering "X or Y"
+        // can match the pair without parsing the prose for names.
+        post.data.models?.length ? `Models compared: ${post.data.models.join(', ')}` : null,
         '',
         `> ${post.data.description}`,
       ]
