@@ -47,6 +47,12 @@ const coverSrc = versioned(cover);
         class="pointer-events-none absolute inset-0 h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
       />
       <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/10"></div>
+      {/* The gradient above fades to 10% at the top, which is where the
+          category and the index sit. On a bright cover the index measured
+          1.28:1 against the image, before its own 25% opacity: rendered,
+          and not readable by anyone. This band backs the top row only, so
+          the picture keeps its light. */}
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/55 to-transparent"></div>
     </>
   ) : (
     <div class="pointer-events-none absolute inset-0" style="background-image:linear-gradient(var(--color-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--color-grid-line) 1px,transparent 1px);background-size:32px 32px;opacity:0.3"></div>
@@ -63,11 +69,11 @@ const coverSrc = versioned(cover);
     >
       <span class="h-1.5 w-1.5 rounded-full" style={`background:${t.accent}`}></span>{categoryLabel}
     </span>
-    <span class="t-data tabular-nums text-white/25">{String(index).padStart(2, '0')}</span>
+    <span class="t-data tabular-nums text-white/70">{String(index).padStart(2, '0')}</span>
   </div>
 
   <div class="relative">
-    <h3 dir="auto" class="t-h3 text-balance text-white line-clamp-4">
+    <h3 dir="auto" class="t-h3 text-balance text-white line-clamp-5">
       {title}
     </h3>
     <div class="mt-4 flex items-center justify-between">
