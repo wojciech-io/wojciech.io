@@ -45,10 +45,12 @@ describe('in-article image rungs', () => {
   it('never offers a rung as wide as or wider than the source', () => {
     for (const src of images) {
       const real = webpWidth(`${process.cwd()}/public${src}`)!;
+      // Addresses carry a content hash, so the base entry is found by its path.
       const rungs = imageRungs(src)
         .srcset!.split(', ')
-        .filter((e) => !e.startsWith(`${src} `))
-        .map((e) => Number(e.split(' ')[1].replace('w', '')));
+        .map((entry) => ({ path: entry.split('?')[0], w: Number(entry.split(' ')[1].replace('w', '')) }))
+        .filter((entry) => entry.path !== src)
+        .map((entry) => entry.w);
       for (const w of rungs) expect(w, `${src} offers ${w}w from a ${real}px source`).toBeLessThan(real);
     }
   });
@@ -69,7 +71,9 @@ describe('in-article image rungs', () => {
   });
 
   it('leaves both attributes off when there is nothing to choose between', () => {
-    expect(imageRungs('/images/insights/does-not-exist.webp')).toEqual({ srcset: undefined, sizes: undefined });
+    const missing = imageRungs('/images/insights/does-not-exist.webp');
+    expect(missing.srcset).toBeUndefined();
+    expect(missing.sizes).toBeUndefined();
     expect(imageRungs(undefined).sizes).toBeUndefined();
     expect(imageRungs('/images/logos/codilime.svg').srcset).toBeUndefined();
   });
@@ -77,5 +81,13 @@ describe('in-article image rungs', () => {
   it('pairs sizes with srcset and never on its own', () => {
     const withSet = imageRungs(bodyImages()[0]);
     expect(withSet.sizes).toBe(PROSE_SIZES);
+  });
+
+  it('hashes every address, so a replaced picture is a new one', () => {
+    for (const src of images) {
+      const { src: hashed, srcset } = imageRungs(src);
+      expect(hashed, src).toMatch(/\?v=[0-9a-f]{8}$/);
+      for (const entry of srcset!.split(', ')) expect(entry, src).toMatch(/\?v=[0-9a-f]{8} \d+w$/);
+    }
   });
 });
