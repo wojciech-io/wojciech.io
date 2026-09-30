@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ComparisonRow from '../../components/insights/ComparisonRow.astro';
 import { SITE } from '../../data/site';
-import { versioned } from '../../lib/assetVersion';
+import { CARD_SIZES, coverImg } from '../../lib/coverSources';
 import { insightSlug, isLocalePost, readTime } from '../../lib/insights';
 import { compareLabels, comparisonPosts, groupEntries, modelGroups, VENDOR_ORDER } from '../../lib/compare';
 
@@ -123,7 +123,7 @@ const listSchema = {
             {post.data.coverImage && (
               <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
                 <img
-                  src={versioned(post.data.coverImage)}
+                  {...coverImg(post.data.coverImage, CARD_SIZES)}
                   alt=""
                   width="1200"
                   height="630"
