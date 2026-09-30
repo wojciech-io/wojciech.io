@@ -13,7 +13,13 @@ import { readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 
-const DIRS = ['public/images/insights', 'public/images/portfolio'];
+const DIRS = [
+  'public/images/insights',
+  'public/images/portfolio',
+  'public/images/bites',
+  'public/images/press',
+  'public/images/lens',
+];
 
 /* 800px is the card rung. A second rung at 1500px exists only for sources wide
  * enough to need one: the in-article screenshots are 2360px, and the prose

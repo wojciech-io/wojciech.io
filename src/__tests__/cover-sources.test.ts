@@ -71,6 +71,28 @@ describe('portfolio screenshots', () => {
   });
 });
 
+describe('every image directory the generator covers', () => {
+  // Mirrors DIRS in scripts/gen-cover-variants.mjs. A directory added there and
+  // forgotten here would ship full-size files to a card slot in silence.
+  const DIRS = ['insights', 'portfolio', 'bites', 'press', 'lens'];
+
+  it.each(DIRS)('%s has an 800px twin for every source', (name) => {
+    const dir = resolve(process.cwd(), `public/images/${name}`);
+    const sources = readdirSync(dir).filter(isSource);
+    expect(sources.length, `${name} is empty`).toBeGreaterThan(0);
+    const missing = sources.filter((f) => !existsSync(resolve(dir, f.replace(/\.webp$/, '-800.webp'))));
+    expect(missing, 'run node scripts/gen-cover-variants.mjs').toEqual([]);
+  });
+
+  it.each(DIRS)('%s resolves to a hashed srcset', (name) => {
+    for (const file of readdirSync(resolve(process.cwd(), `public/images/${name}`)).filter(isSource)) {
+      const { src, srcset } = coverSources(`/images/${name}/${file}`);
+      expect(src, file).toMatch(/\?v=[0-9a-f]{8}$/);
+      expect(srcset, file).toBeTruthy();
+    }
+  });
+});
+
 describe('coverImg', () => {
   it('drops sizes when there is no srcset, because sizes alone does nothing', () => {
     expect(coverImg('/images/insights/does-not-exist.webp', CARD_SIZES).sizes).toBeUndefined();

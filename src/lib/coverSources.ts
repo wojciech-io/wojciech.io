@@ -22,8 +22,12 @@ import { versioned } from './assetVersion';
 export const CARD_SIZES = '(min-width: 1152px) 352px, (min-width: 640px) calc((100vw - 96px) / 3), calc(100vw - 48px)';
 /** The lead article on /insights: five of twelve columns. */
 export const FEATURED_SIZES = '(min-width: 1152px) 440px, (min-width: 768px) 40vw, calc(100vw - 48px)';
+/** A card in the two-column grids, such as the press band on /about. */
+export const WIDE_CARD_SIZES = '(min-width: 1152px) 544px, (min-width: 640px) calc((100vw - 64px) / 2), calc(100vw - 48px)';
 /** A cover running the full width of the content grid. */
 export const HERO_SIZES = '(min-width: 1152px) 1104px, calc(100vw - 48px)';
+/** The lens hero on a phone: one column, capped by max-w-2xl. Hidden from lg up. */
+export const LENS_MOBILE_SIZES = '(min-width: 720px) 672px, calc(100vw - 48px)';
 
 export interface CoverSources {
   /** The original, content-hashed. Always the `src` fallback. */

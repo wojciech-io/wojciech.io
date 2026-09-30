@@ -9,6 +9,7 @@ import Layout from '../../layouts/Layout.astro';
 import CTABand from '../ui/CTABand.astro';
 import FAQ from '../ui/FAQ.astro';
 import { accentHeading } from '../../lib/editorial';
+import { coverImg, LENS_MOBILE_SIZES } from '../../lib/coverSources';
 
 interface BuildItem {
   title: string;
@@ -112,6 +113,15 @@ const bh = accentHeading(buildHeading);
 // no empty placeholder rectangle in the meantime.
 const heroImageReady =
   !!heroImage && fs.existsSync(path.join(process.cwd(), 'public', heroImage));
+
+/* The same file serves three ways: a desktop backdrop painted in CSS, a video
+ * poster, and a mobile <img>. They have to agree on one address, because a
+ * desktop browser downloads the hidden <img> as well as the backdrop and two
+ * spellings of the same picture would mean two requests. The <img> is the only
+ * one that can offer narrower copies: it renders about 327px wide on a phone
+ * from a 1512px source. */
+const heroArt = heroImageReady ? coverImg(heroImage, LENS_MOBILE_SIZES) : undefined;
+const heroUrl = heroArt?.src ?? heroImage;
 // Both encodings have to be on disk. A half-present pair would render a video
 // element that plays in one browser and shows a blank box in another, which is
 // worse than the still it replaced.
@@ -165,10 +175,10 @@ const heroVideoReady =
             preload="none"
             disablepictureinpicture
             tabindex="-1"
-            poster={heroVideoPoster ?? heroImage}
+            poster={heroVideoPoster ?? heroUrl}
           ></video>
         ) : (
-          <div class="lens-hero-img absolute inset-0 bg-cover bg-no-repeat bg-center" style={`background-image: url('${heroImage}')`}></div>
+          <div class="lens-hero-img absolute inset-0 bg-cover bg-no-repeat bg-center" style={`background-image: url('${heroUrl}')`}></div>
         )}
         <div class="lens-hero-scrim absolute inset-0 pointer-events-none"></div>
         <div class="lens-hero-fade absolute inset-y-0 left-0 w-[62%] pointer-events-none"></div>
@@ -184,7 +194,7 @@ const heroVideoReady =
         {heroImageReady && (
           <div class="lg:hidden relative mb-7">
             <img
-              src={heroImage}
+              {...heroArt}
               alt=""
               width="1200"
               height="750"
