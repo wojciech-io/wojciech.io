@@ -1,6 +1,5 @@
 ---
-import { existsSync } from 'node:fs';
-import { versioned } from '../../lib/assetVersion';
+import { coverImg, HERO_SIZES } from '../../lib/coverSources';
 
 interface Props {
   coverType?: 'terminal' | 'builder' | 'chart' | 'product' | 'system' | 'launch' | 'default';
@@ -11,15 +10,9 @@ interface Props {
 
 const { coverType = 'default', coverImage, tags = [], title } = Astro.props;
 
-// A 2400 px twin (`<name>-2400.webp` next to the 1200 px cover) sharpens the
-// cover on retina screens; covers without one fall back to the single file.
-const coverHi = coverImage?.replace(/\.webp$/, '-2400.webp');
-const hasHi = Boolean(coverHi && coverHi !== coverImage && existsSync(`${process.cwd()}/public${coverHi}`));
-
-// Content-hashed URLs: a replaced cover is a new address, so no cache can
-// keep serving the old art. See src/lib/assetVersion.ts.
-const coverSrc = versioned(coverImage);
-const coverHiSrc = versioned(coverHi);
+// Every size the cover exists in, content-hashed so a replaced cover is a new
+// address and no cache can keep serving the old art. See src/lib/coverSources.ts.
+const coverArt = coverImg(coverImage, HERO_SIZES);
 
 const captions: Record<string, string> = {
   terminal: 'GTM agent · Claude Code · outbound at operator cost',
@@ -46,9 +39,7 @@ const svgVariant: 'terminal' | 'builder' | 'product' | 'launch' | 'default' =
   <figure class="article-cover mx-auto max-w-6xl px-6" aria-hidden="true">
     <div class="overflow-hidden rounded-[calc(var(--radius-card)*1.5)] border border-[var(--color-border)] bg-[var(--color-surface-2)] aspect-[1200/630]">
       <img
-        src={coverSrc}
-        srcset={hasHi ? `${coverSrc} 1200w, ${coverHiSrc} 2400w` : undefined}
-        sizes={hasHi ? '(min-width: 1200px) 1104px, calc(100vw - 48px)' : undefined}
+        {...coverArt}
         alt=""
         width="1200"
         height="630"

@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ComparisonRow from '../../components/insights/ComparisonRow.astro';
 import { SITE } from '../../data/site';
-import { versioned } from '../../lib/assetVersion';
+import { CARD_SIZES, coverImg, FEATURED_SIZES } from '../../lib/coverSources';
 import {
   insightSlug,
   isLocalePost,
@@ -174,7 +174,7 @@ const formatDate = (date: Date) =>
         {featuredPost.data.coverImage && (
           <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] md:col-span-5">
             <img
-              src={versioned(featuredPost.data.coverImage)}
+              {...coverImg(featuredPost.data.coverImage, FEATURED_SIZES)}
               alt=""
               width="1200"
               height="630"
@@ -200,7 +200,7 @@ const formatDate = (date: Date) =>
             {post.data.coverImage && (
               <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
                 <img
-                  src={versioned(post.data.coverImage)}
+                  {...coverImg(post.data.coverImage, CARD_SIZES)}
                   alt=""
                   width="1200"
                   height="630"

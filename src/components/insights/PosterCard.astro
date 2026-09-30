@@ -4,7 +4,7 @@
 // English category value so filter logic and the theme map keep working; the
 // visible label (`categoryLabel`) can be localised.
 import { getPoster } from '../../lib/insightsPoster';
-import { versioned } from '../../lib/assetVersion';
+import { CARD_SIZES, coverImg } from '../../lib/coverSources';
 import Icon from '../ui/Icon.astro';
 
 interface Props {
@@ -22,8 +22,9 @@ interface Props {
 
 const { href, title, categoryLabel, categoryKey = '', date, read, index, arrowFlip = false, cover } = Astro.props;
 const t = getPoster(categoryKey);
-// Content-hashed URL: a replaced cover cannot be served from a stale cache.
-const coverSrc = versioned(cover);
+// Content-hashed URLs, plus the 800px twin: this card is about 352px wide,
+// so the full-size cover was always more file than the slot could show.
+const coverArt = coverImg(cover, CARD_SIZES);
 ---
 
 <a
@@ -40,7 +41,7 @@ const coverSrc = versioned(cover);
        readable rather than a nicety. */
     <>
       <img
-        src={coverSrc}
+        {...coverArt}
         alt=""
         loading="lazy"
         decoding="async"
