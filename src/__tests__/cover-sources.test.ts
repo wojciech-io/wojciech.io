@@ -49,6 +49,28 @@ describe('cover sources', () => {
   });
 });
 
+describe('portfolio screenshots', () => {
+  const DIR = resolve(process.cwd(), 'public/images/portfolio');
+  const sources = readdirSync(DIR).filter(isSource).sort();
+
+  it('finds the screenshots', () => {
+    expect(sources.length).toBeGreaterThan(0);
+  });
+
+  it('sits in the same three-column grid, so it gets the same 800px twin', () => {
+    const missing = sources.filter((f) => !existsSync(resolve(DIR, f.replace(/\.webp$/, '-800.webp'))));
+    expect(missing, 'run node scripts/gen-cover-variants.mjs').toEqual([]);
+  });
+
+  it('carries the content hash it did not have before', () => {
+    for (const file of sources) {
+      const { src, srcset } = coverSources(`/images/portfolio/${file}`);
+      expect(src, file).toMatch(/\?v=[0-9a-f]{8}$/);
+      expect(srcset, file).toBeTruthy();
+    }
+  });
+});
+
 describe('coverImg', () => {
   it('drops sizes when there is no srcset, because sizes alone does nothing', () => {
     expect(coverImg('/images/insights/does-not-exist.webp', CARD_SIZES).sizes).toBeUndefined();

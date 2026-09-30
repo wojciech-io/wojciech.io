@@ -1,8 +1,9 @@
 /**
  * Cover art ships at 1200px (and 2400px for retina). A card in a three column
- * grid is about 360px wide, so every listing page was downloading a full-width
+ * grid is about 352px wide, so every listing page was downloading a full-width
  * hero to paint a thumbnail. This adds the missing low rung: an 800px twin,
- * which covers a card on a phone and on a retina desktop alike.
+ * which covers a card on a phone and on a retina desktop alike. The portfolio
+ * screenshots on /marketing sit in the same three column grid.
  *
  * Idempotent: a variant that already matches the source is left alone.
  *
@@ -12,7 +13,7 @@ import { readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 
-const DIRS = ['public/images/insights'];
+const DIRS = ['public/images/insights', 'public/images/portfolio'];
 
 /* 800px is the card rung. A second rung at 1500px exists only for sources wide
  * enough to need one: the in-article screenshots are 2360px, and the prose
