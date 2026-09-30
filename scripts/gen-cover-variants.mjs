@@ -1,0 +1,56 @@
+/**
+ * Cover art ships at 1200px (and 2400px for retina). A card in a three column
+ * grid is about 360px wide, so every listing page was downloading a full-width
+ * hero to paint a thumbnail. This adds the missing low rung: an 800px twin,
+ * which covers a card on a phone and on a retina desktop alike.
+ *
+ * Idempotent: a variant that already matches the source is left alone.
+ *
+ *   node scripts/gen-cover-variants.mjs [--force]
+ */
+import { readdirSync, statSync } from 'node:fs';
+import { resolve } from 'node:path';
+import sharp from 'sharp';
+
+const DIRS = ['public/images/insights'];
+const WIDTH = 800;
+const SUFFIX = `-${WIDTH}.webp`;
+const force = process.argv.includes('--force');
+
+/** A source cover, as opposed to a generated twin. */
+const isSource = (f) => f.endsWith('.webp') && !/-\d{3,4}\.webp$/.test(f);
+
+let made = 0;
+let skipped = 0;
+let saved = 0;
+
+for (const dir of DIRS) {
+  const root = resolve(process.cwd(), dir);
+  for (const file of readdirSync(root).filter(isSource).sort()) {
+    const src = resolve(root, file);
+    const out = resolve(root, file.replace(/\.webp$/, SUFFIX));
+
+    const { width } = await sharp(src).metadata();
+    if (!width || width <= WIDTH) {
+      skipped += 1;
+      continue;
+    }
+
+    let exists = false;
+    try {
+      exists = statSync(out).isFile();
+    } catch {
+      /* not there yet */
+    }
+    if (exists && !force) {
+      skipped += 1;
+      continue;
+    }
+
+    await sharp(src).resize({ width: WIDTH, withoutEnlargement: true }).webp({ quality: 80, effort: 6 }).toFile(out);
+    made += 1;
+    saved += statSync(src).size - statSync(out).size;
+  }
+}
+
+console.log(`${made} written, ${skipped} left alone, ${(saved / 1024).toFixed(0)} KB lighter per full page of cards`);
