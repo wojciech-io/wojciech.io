@@ -1,4 +1,6 @@
 ---
+import { imageRungs } from '../lib/imageRungs';
+
 interface Props {
   src: string;
   alt: string;
@@ -9,6 +11,11 @@ interface Props {
 }
 
 const { src, alt, url, caption, width, height } = Astro.props;
+
+/* The sources run up to 2360px and the prose column caps at 736px, so the
+ * widest case needs about a third of the file. Rungs are read from disk rather
+ * than from `width`, because not every screenshot on the site declares one. */
+const { srcset, sizes } = imageRungs(src);
 ---
 
 <figure class="shot">
@@ -19,7 +26,16 @@ const { src, alt, url, caption, width, height } = Astro.props;
       </span>
       {url && <span class="shot__url">{url}</span>}
     </div>
-    <img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+    <img
+      src={src}
+      srcset={srcset}
+      sizes={sizes}
+      alt={alt}
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+    />
   </div>
   {caption && <figcaption>{caption}</figcaption>}
 </figure>

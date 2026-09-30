@@ -13,8 +13,16 @@ import { resolve } from 'node:path';
 import sharp from 'sharp';
 
 const DIRS = ['public/images/insights'];
-const WIDTH = 800;
-const SUFFIX = `-${WIDTH}.webp`;
+
+/* 800px is the card rung. A second rung at 1500px exists only for sources wide
+ * enough to need one: the in-article screenshots are 2360px, and the prose
+ * column caps at 736px, so a retina reader needs about 1472px and nothing
+ * near 2360. Ordinary covers are 1200 to 1536px and get no mid rung, because
+ * there is nothing useful between 800 and their own width. */
+const RUNGS = [
+  { width: 800, minSource: 800 },
+  { width: 1500, minSource: 1800 },
+];
 const force = process.argv.includes('--force');
 
 /** A source cover, as opposed to a generated twin. */
@@ -28,29 +36,36 @@ for (const dir of DIRS) {
   const root = resolve(process.cwd(), dir);
   for (const file of readdirSync(root).filter(isSource).sort()) {
     const src = resolve(root, file);
-    const out = resolve(root, file.replace(/\.webp$/, SUFFIX));
 
     const { width } = await sharp(src).metadata();
-    if (!width || width <= WIDTH) {
+    if (!width) {
       skipped += 1;
       continue;
     }
 
-    let exists = false;
-    try {
-      exists = statSync(out).isFile();
-    } catch {
-      /* not there yet */
-    }
-    if (exists && !force) {
-      skipped += 1;
-      continue;
-    }
+    for (const rung of RUNGS) {
+      if (width <= rung.width || width < rung.minSource) {
+        skipped += 1;
+        continue;
+      }
+      const out = resolve(root, file.replace(/\.webp$/, `-${rung.width}.webp`));
 
-    await sharp(src).resize({ width: WIDTH, withoutEnlargement: true }).webp({ quality: 80, effort: 6 }).toFile(out);
-    made += 1;
-    saved += statSync(src).size - statSync(out).size;
+      let exists = false;
+      try {
+        exists = statSync(out).isFile();
+      } catch {
+        /* not there yet */
+      }
+      if (exists && !force) {
+        skipped += 1;
+        continue;
+      }
+
+      await sharp(src).resize({ width: rung.width, withoutEnlargement: true }).webp({ quality: 80, effort: 6 }).toFile(out);
+      made += 1;
+      saved += statSync(src).size - statSync(out).size;
+    }
   }
 }
 
-console.log(`${made} written, ${skipped} left alone, ${(saved / 1024).toFixed(0)} KB lighter per full page of cards`);
+console.log(`${made} written, ${skipped} left alone, ${(saved / 1024).toFixed(0)} KB of headroom created`);

@@ -1,4 +1,6 @@
 ---
+import { imageRungs } from '../lib/imageRungs';
+
 interface Annotation {
   x: number;
   y: number;
@@ -14,12 +16,17 @@ interface Props {
 }
 
 const { src, alt, annotations = [], caption } = Astro.props;
+
+// This component takes no dimensions, so the rungs come from the file itself.
+const { srcset, sizes } = imageRungs(src);
 ---
 
 <figure class="annotated-img">
   <div class="annotated-img__canvas">
     <img
       src={src}
+      srcset={srcset}
+      sizes={sizes}
       alt={alt}
       class="annotated-img__img"
       loading="lazy"
