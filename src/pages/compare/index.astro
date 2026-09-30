@@ -115,7 +115,10 @@ const listSchema = {
          purpose; this band gives the eye somewhere to land first. -->
     {latest.length > 0 && (
       <div class="mb-16 grid gap-7 border-t border-[var(--color-border)] pt-8 sm:grid-cols-3">
-        {latest.map((post) => (
+        {/* The first of these is the LCP element on a phone, and it was lazy:
+            the browser could not start fetching it until layout had run, which
+            measured 3.3s. Lighthouse flags exactly this as prioritise-lcp-image. */}
+        {latest.map((post, i) => (
           <a href={`/insights/${insightSlug(post)}/`} class="group flex flex-col gap-3">
             {post.data.coverImage && (
               <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)]">
@@ -124,7 +127,8 @@ const listSchema = {
                   alt=""
                   width="1200"
                   height="630"
-                  loading="lazy"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={i === 0 ? 'high' : undefined}
                   decoding="async"
                   class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 />
