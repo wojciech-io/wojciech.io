@@ -10,6 +10,7 @@ import ArticleToc from '../../../components/article/ArticleToc.astro';
 import Callout from '@wojciech/mdx-components/components/Callout.astro';
 import VideoEmbed from '@wojciech/mdx-components/components/VideoEmbed.astro';
 import Screenshot from '@wojciech/mdx-components/components/Screenshot.astro';
+import ContentImage from '@wojciech/mdx-components/components/ContentImage.astro';
 import Compare from '@wojciech/mdx-components/components/Compare.astro';
 import Flow from '@wojciech/mdx-components/components/Flow.astro';
 import Stat from '@wojciech/mdx-components/components/Stat.astro';
@@ -76,6 +77,10 @@ import {
 import Icon from '../../../components/ui/Icon.astro';
 
 const mdxComponents = {
+  // An article image written as plain HTML goes through this rather than a bare
+  // <img>: MDX passes raw HTML straight to the renderer without consulting this
+  // map, so the tag has to name the component for the narrower copies to attach.
+  ContentImage,
   Callout, VideoEmbed, Screenshot, Compare, Flow,
   Video: VideoEmbed,
   Stat, StatCallout, StatRow, StatGrid, DoDont, TLDR, Steps, PullQuote, TechStack, TOC,

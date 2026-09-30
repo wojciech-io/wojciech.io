@@ -1,0 +1,18 @@
+---
+import { imageRungs } from '../lib/imageRungs';
+
+/* Registered as `img` in the MDX component map, so an image written as plain
+ * HTML in an article picks up its narrower copies without the author doing
+ * anything. Every other attribute is passed straight through: this exists to
+ * add two attributes, not to take over how article images are written.
+ */
+interface Props {
+  src?: string;
+  [key: string]: unknown;
+}
+
+const { src, ...rest } = Astro.props;
+const { srcset, sizes } = imageRungs(src);
+---
+
+<img src={src} srcset={srcset} sizes={sizes} {...rest} />
