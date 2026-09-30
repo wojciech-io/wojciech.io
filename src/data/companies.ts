@@ -16,19 +16,19 @@ export const companyLogos: CompanyLogo[] = [
   // B2B SaaS & tech
   { name: 'CodiLime', category: 'SaaS & tech', src: '/images/logos/codilime.svg' },
   { name: 'GetResponse', category: 'SaaS & tech', src: '/images/logos/getresponse.svg?v=2' },
-  { name: 'SentiOne', category: 'SaaS & tech', src: '/images/logos/sentione.png' },
+  { name: 'SentiOne', category: 'SaaS & tech', src: '/images/logos/sentione.webp' },
   { name: 'Symfonia', category: 'SaaS & tech', src: '/images/logos/symfonia.webp' },
   { name: 'WebWave', category: 'SaaS & tech', src: '/images/logos/webwave.svg' },
 
   // Commerce & consumer
-  { name: 'Gi Group', category: 'Commerce & consumer', src: '/images/logos/gigroup.png' },
-  { name: 'iviSkin', category: 'Commerce & consumer', src: '/images/logos/iviskin.png' },
-  { name: 'Neatsvor', category: 'Commerce & consumer', src: '/images/logos/neatsvor.png' },
+  { name: 'Gi Group', category: 'Commerce & consumer', src: '/images/logos/gigroup.webp' },
+  { name: 'iviSkin', category: 'Commerce & consumer', src: '/images/logos/iviskin.webp' },
+  { name: 'Neatsvor', category: 'Commerce & consumer', src: '/images/logos/neatsvor.webp' },
 
   // Media & publishing
   { name: 'Cosmopolitan', category: 'Media & publishing', src: '/images/logos/cosmopolitan.svg' },
   { name: 'Esquire', category: 'Media & publishing', src: '/images/logos/esquire.svg' },
   { name: "Harper's Bazaar", category: 'Media & publishing', src: '/images/logos/harpersbazaar.svg' },
-  { name: 'Joy', category: 'Media & publishing', src: '/images/logos/joy.png' },
+  { name: 'Joy', category: 'Media & publishing', src: '/images/logos/joy.webp' },
   { name: 'Playboy', category: 'Media & publishing', src: '/images/logos/playboy.svg' },
 ];
