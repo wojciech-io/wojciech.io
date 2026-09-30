@@ -62,6 +62,16 @@ const proof = [
 ].filter((item) => item.value);
 
 const ctaLabel = external ? (labels.viewProject ?? 'View project') : (labels.explore ?? 'Explore');
+
+/* Measured on production rather than derived from the classes, because the
+ * declared values were not what the page renders. At 375px the card is 297px
+ * wide, which is 79vw and not the 92vw this used to claim: the difference is
+ * exactly enough to push a phone from the 640px file up to the 960px one.
+ * Above 1280px the grid produces two card widths, 322px and 510px, so the
+ * larger is declared. The smaller cards then take one rung more than they
+ * need, which is the safe direction: a browser picking a file up is invisible,
+ * one picking a file down renders the card soft. */
+const PROJECT_CARD_SIZES = '(max-width: 767px) 79vw, (max-width: 1279px) 46vw, 510px';
 ---
 
 <a
@@ -76,7 +86,7 @@ const ctaLabel = external ? (labels.viewProject ?? 'View project') : (labels.exp
   <div class="artifact-stage relative aspect-[16/9] overflow-hidden p-3.5">
     <div class="absolute inset-3.5 overflow-hidden rounded-[14px] transition-transform duration-500 group-hover:scale-[1.012]">
       {screenshot
-        ? <img src={screenshot} srcset={screenshot?.startsWith("/images/work/") ? `${screenshot.replace(/\.webp$/, "")}-640w.webp 640w, ${screenshot.replace(/\.webp$/, "")}-960w.webp 960w, ${screenshot} 1456w` : undefined} sizes="(max-width: 767px) 92vw, (max-width: 1279px) 46vw, 700px" alt="" width="1456" height="1088" loading={priority ? "eager" : "lazy"} fetchpriority={priority ? "high" : undefined} decoding="async" class:list={['h-full w-full object-cover', screenshotPosition]} />
+        ? <img src={screenshot} srcset={screenshot?.startsWith("/images/work/") ? `${screenshot.replace(/\.webp$/, "")}-640w.webp 640w, ${screenshot.replace(/\.webp$/, "")}-960w.webp 960w, ${screenshot} 1456w` : undefined} sizes={PROJECT_CARD_SIZES} alt="" width="1456" height="1088" loading={priority ? "eager" : "lazy"} fetchpriority={priority ? "high" : undefined} decoding="async" class:list={['h-full w-full object-cover', screenshotPosition]} />
         : <ProjectCover cover={cover} />}
     </div>
     {!screenshot && <div class="artifact-fade absolute inset-x-0 bottom-0 h-2/5" aria-hidden="true"></div>}
