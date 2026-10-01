@@ -1,6 +1,5 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
-import { SITE } from '../data/site';
 
 export const GET: APIRoute = async ({ site }) => {
   const posts = (await getCollection('insights', ({ data }) => !data.draft)).sort(
