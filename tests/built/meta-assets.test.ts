@@ -29,8 +29,51 @@ interface Manifest {
 
 const manifest = (): Manifest => JSON.parse(text('/site.webmanifest')) as Manifest;
 
+/* The Arabic site runs on gold, not lime, and a favicon is an external file
+ * that no token remap can recolour. These assertions exist because /ar/ shipped
+ * the lime mark against a gold page until it was caught by eye. */
+const AR_FAVICON_ASSETS = [
+  '/favicon-ar.svg',
+  '/favicon-ar.ico',
+  '/favicon-ar-16x16.png',
+  '/favicon-ar-32x32.png',
+  '/favicon-ar-64x64.png',
+  '/favicon-ar-192x192.png',
+  '/favicon-ar-512x512.png',
+  '/apple-touch-icon-ar.png',
+] as const;
+
 describe('favicons, manifest and feed autodiscovery', () => {
   beforeAll(requireDist);
+
+  it('the Arabic gold favicon set is built', () => {
+    const missing = AR_FAVICON_ASSETS.filter((p) => !assetExists(p));
+    expect(missing, 'run node scripts/gen-brand-icons.mjs').toEqual([]);
+  });
+
+  it('Arabic pages point at the gold set, every other locale at the lime one', () => {
+    const ar = html('/ar/');
+    expect(ar, '/ar/ must use the gold mark').toContain('/favicon-ar.svg');
+    expect(ar, '/ar/ must use the Arabic manifest').toContain('/site-ar.webmanifest');
+
+    for (const page of ['/', '/pl/', '/de/']) {
+      const doc = html(page);
+      expect(doc, `${page} must keep the lime mark`).not.toContain('/favicon-ar');
+      expect(doc, `${page} must keep the default manifest`).not.toContain('/site-ar.webmanifest');
+    }
+  });
+
+  it('site-ar.webmanifest is valid and starts inside /ar/', () => {
+    const m = JSON.parse(text('/site-ar.webmanifest')) as Manifest & { lang?: string; dir?: string };
+    expect(m.name, 'missing name').toBeTruthy();
+    expect(m.start_url, 'Arabic manifest must start in /ar/').toBe('/ar/');
+    expect(m.lang).toBe('ar');
+    expect(m.dir).toBe('rtl');
+    for (const icon of m.icons ?? []) {
+      expect(icon.src, 'Arabic manifest must reference the gold icons').toContain('favicon-ar');
+      expect(assetExists(icon.src), `missing ${icon.src}`).toBe(true);
+    }
+  });
 
   it('all favicon assets are built', () => {
     const missing = FAVICON_ASSETS.filter((p) => !assetExists(p));

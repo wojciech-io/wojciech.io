@@ -40,6 +40,13 @@ const siteTitle = authorName;
 // truncation point; the full author name still lives in og:site_name and
 // the Person JSON-LD, so brand signal isn't lost.
 const fullTitle = title ? `${title} · wojciech.io` : siteTitle;
+
+/* The Arabic site runs on gold, not lime. A favicon is an external file, so the
+ * token remap under lang="ar" cannot reach it, and /ar/ was serving the lime
+ * mark against a gold page. Keyed on the path because every Arabic page lives
+ * under /ar/, which needs no new prop threaded through the layout. */
+const isArabic = Astro.url.pathname === '/ar' || Astro.url.pathname.startsWith('/ar/');
+const iconSuffix = isArabic ? '-ar' : '';
 const canonicalURL = new URL(canonical ?? Astro.url.pathname, Astro.site).href;
 const ogImageURL = new URL(ogImage, Astro.site).href;
 const resolvedOgImageAlt = ogImageAlt ?? fullTitle;
@@ -173,13 +180,13 @@ const schemaItems = [...baseSchema, ...pageSchema];
 <link rel="alternate" type="application/rss+xml" title={`${authorName} · Changelog`} href="/changelog.rss" />
 
 <!-- Favicon -->
-<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=10" />
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=10" />
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=10" />
-<link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png?v=10" />
-<link rel="icon" type="image/x-icon" href="/favicon.ico?v=10" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=10" />
-<link rel="manifest" href="/site.webmanifest" />
+<link rel="icon" type="image/svg+xml" href={`/favicon${iconSuffix}.svg?v=11`} />
+<link rel="icon" type="image/png" sizes="16x16" href={`/favicon${iconSuffix}-16x16.png?v=11`} />
+<link rel="icon" type="image/png" sizes="32x32" href={`/favicon${iconSuffix}-32x32.png?v=11`} />
+<link rel="icon" type="image/png" sizes="64x64" href={`/favicon${iconSuffix}-64x64.png?v=11`} />
+<link rel="icon" type="image/x-icon" href={`/favicon${iconSuffix}.ico?v=11`} />
+<link rel="apple-touch-icon" sizes="180x180" href={`/apple-touch-icon${iconSuffix}.png?v=11`} />
+<link rel="manifest" href={isArabic ? "/site-ar.webmanifest" : "/site.webmanifest"} />
 <!-- Home-screen web app: iOS reads these to open the icon full-screen (no Safari
      chrome) instead of a browser tab. Pairs with "display": "standalone" in the
      manifest. mobile-web-app-capable is the standard name; the apple- one is the

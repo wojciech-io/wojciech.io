@@ -19,6 +19,11 @@ const PUBLIC = resolve(process.cwd(), 'public');
  * cannot read a custom property. */
 const INK = '#0d0d0b';
 const LIME = '#eaff00';
+/* The Arabic site runs on gold, not lime: tokens.css remaps the accent under
+ * lang="ar". A favicon is an external file, so no CSS rule can recolour it,
+ * and /ar/ was serving the lime mark against a gold page. This is the same
+ * gold the Arabic social cards already use. */
+const GOLD = '#d4af37';
 
 /* --- geometry, 32 unit grid -------------------------------------------- */
 
@@ -74,17 +79,17 @@ function glyphs(fill, scale = 1) {
 /** Rounded tile, transparent outside. Browser tabs and the favicon.
  *  On a light surface the tile is ink; on a dark one it inverts, because an
  *  ink tile on a dark page is a square you cannot see. */
-const tile = (inverse = false) =>
+const tile = (inverse = false, accent = LIME) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${G} ${G}" role="img" aria-label="wojciech.io">`
-  + `<rect width="${G}" height="${G}" rx="${RADIUS}" fill="${inverse ? LIME : INK}"/>`
-  + glyphs(inverse ? INK : LIME)
+  + `<rect width="${G}" height="${G}" rx="${RADIUS}" fill="${inverse ? accent : INK}"/>`
+  + glyphs(inverse ? INK : accent)
   + `</svg>`;
 
 /** Square to the edges, glyphs inside the mask safe area. Home screens crop. */
-const fullBleed = () =>
+const fullBleed = (accent = LIME) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${G} ${G}" role="img" aria-label="wojciech.io">`
   + `<rect width="${G}" height="${G}" fill="${INK}"/>`
-  + glyphs(LIME, 0.84)
+  + glyphs(accent, 0.84)
   + `</svg>`;
 
 /** Glyphs only, for the wordmark lockup and anywhere the tile is already there. */
@@ -154,6 +159,20 @@ async function main() {
   for (const size of sizes) entries.push({ size, data: await png(tile(), size) });
   out('favicon.ico', ico(entries));
   written.push(...sizes);
+
+  console.log('signet, Arabic gold:');
+  out('favicon-ar.svg', `${tile(false, GOLD)}\n`);
+  out('brand/signet-ar.svg', `${tile(false, GOLD)}\n`);
+  out('brand/signet-ar-inverse.svg', `${tile(true, GOLD)}\n`);
+  for (const size of [16, 32, 64, 192, 512]) {
+    out(`favicon-ar-${size}x${size}.png`, await png(tile(false, GOLD), size));
+  }
+  out('apple-touch-icon-ar.png', await png(fullBleed(GOLD), 180));
+  out('favicon-ar-maskable-512x512.png', await png(fullBleed(GOLD), 512));
+
+  const arEntries = [];
+  for (const size of sizes) arEntries.push({ size, data: await png(tile(false, GOLD), size) });
+  out('favicon-ar.ico', ico(arEntries));
 }
 
 main().catch((err) => {
