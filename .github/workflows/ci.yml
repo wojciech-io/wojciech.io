@@ -22,6 +22,22 @@ jobs:
 
       - run: npm run build
 
+      # The job has been called "Build & type-check" since it was written and
+      # never type-checked anything.
+      #
+      # Scope, measured rather than assumed: this covers .ts and .astro. It does
+      # NOT catch a bad option in astro.config.mjs, which is how the Sentry
+      # sourceMapsUploadOptions regression got in. I reintroduced that bug and
+      # this step still exited 0. Checking .mjs config needs checkJs and is a
+      # separate change.
+      #
+      # Two projects, because the Workers globals shadow Node's Buffer: the
+      # site and its build scripts are Node, the Pages Functions and the
+      # growthhub apps are Workers. Runs after the build, which is what
+      # generates .astro/types.d.ts.
+      - name: Type-check
+        run: npm run type-check
+
       # Static checks on the built output: canonical, OG/Twitter, hreflang,
       # lang attributes, favicons, manifest, robots, sitemap. These used to run
       # in Playwright, which meant booting two browsers to read markup.

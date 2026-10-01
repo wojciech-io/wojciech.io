@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { PUBLIC_SECURITY_HEADERS } from '../../functions/_middleware';
+import { PUBLIC_SECURITY_HEADERS } from '../lib/securityHeaders';
 
 /**
  * The security headers exist twice: as PUBLIC_SECURITY_HEADERS in the Pages
