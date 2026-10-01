@@ -30,6 +30,7 @@ const VENDOR_OF: Record<string, Vendor> = {
   'Claude Opus 5.5': 'Anthropic',
   'Claude Opus 5': 'Anthropic',
   'Claude Opus 4.8': 'Anthropic',
+  'Claude Sonnet 5.5': 'Anthropic',
   'Claude Sonnet 5': 'Anthropic',
   'Claude Sonnet 4.6': 'Anthropic',
   'Claude Haiku 4.5': 'Anthropic',
@@ -58,7 +59,7 @@ const VENDOR_OF: Record<string, Vendor> = {
  */
 const CURRENT = new Set([
   'Claude Opus 5.5',
-  'Claude Sonnet 5',
+  'Claude Sonnet 5.5',
   'Claude Haiku 4.5',
   'Claude Fable 5.1',
   'Claude Mythos 5.1',
