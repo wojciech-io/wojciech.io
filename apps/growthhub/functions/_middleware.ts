@@ -12,10 +12,12 @@ interface Env {
   ASSETS: Fetcher;
 }
 
-const COOKIE_NAME = 'wapp_auth';
-
-// Literal regex on a hard-coded cookie name. If COOKIE_NAME changes, update
-// the literal below too.
+// The cookie name lives in three places and only two of them can share a
+// symbol: functions/api/auth.ts sets and clears it by constant, and this file
+// reads it with a literal regex, because a pattern built from a variable is
+// rejected by the security lint. There used to be an unread COOKIE_NAME here
+// as well, which only looked like it kept the two in step. Renaming the cookie
+// means editing api/auth.ts and the literal below.
 const COOKIE_RX = /(?:^|;\s*)wapp_auth=([^;]+)/;
 
 function isGatedHost(hostname: string): boolean {

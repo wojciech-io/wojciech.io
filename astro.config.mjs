@@ -107,9 +107,15 @@ export default defineConfig({
       bundleSizeOptimizations: {
         excludeTracing: true,
       },
-      sourceMapsUploadOptions: sentryAuthToken
+      // Sentry 11 flattened these. org, project and authToken are top-level
+      // options now and `sourceMapsUploadOptions` no longer exists, so the old
+      // nested shape was accepted silently and ignored: the build kept passing
+      // and the source maps stopped reaching Sentry. Without a token the plugin
+      // skips the upload by itself; the explicit disable keeps local builds from
+      // writing maps they have nowhere to send.
+      ...(sentryAuthToken
         ? { org: 'wojciechio', project: 'javascript-astro', authToken: sentryAuthToken }
-        : { enabled: false },
+        : { sourcemaps: { disable: true } }),
     }),
   ],
   vite: {

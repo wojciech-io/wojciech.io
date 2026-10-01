@@ -27,7 +27,6 @@ export async function renderOgImage({ title, eyebrow, description, meta, lang }:
   const isAr = lang === 'ar';
   // /ar/ brand is metallic gold; everything else keeps the lime accent.
   const accent = isAr ? '#d4af37' : '#ebff00';
-  const accentGlow = isAr ? 'rgba(212,175,55,0.20)' : 'rgba(235,255,0,0.20)';
   const fontFamily = isAr ? 'PlexAr' : 'Geist';
   const dir = isAr ? 'rtl' : 'ltr';
   const tagline = isAr ? 'مهندس GTM · باني أنظمة قائمة على الذكاء الاصطناعي' : 'GTM ARCHITECT · AI-NATIVE BUILDER';

@@ -23,7 +23,6 @@ const IS_CI = !!process.env.CI;
 // BASE_URL now means "a server is already there, do not manage one" rather
 // than only meaning production. CI passes no BASE_URL and is unaffected.
 const HAS_EXTERNAL_SERVER = Boolean(process.env.BASE_URL);
-const IS_PROD_SMOKE = BASE_URL.startsWith('https://');
 
 export default defineConfig({
   testDir: './tests',
