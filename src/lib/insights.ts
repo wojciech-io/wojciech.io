@@ -216,8 +216,15 @@ export function insightSlug(post: InsightPost) {
   return post.id.split('/').pop()?.replace(/\.mdx?$/, '') ?? post.id.replace(/\.mdx?$/, '');
 }
 
+/* The content schema accepts every site locale, but only these five have
+ * articles and every caller here switches on the narrower union. Returning a
+ * locale the callers do not handle would be a lie the type system used to
+ * accept: an article in another locale reads as English instead. */
+const INSIGHT_LOCALES: ReadonlySet<string> = new Set<InsightLocale>(['en', 'pl', 'de', 'es', 'it']);
+
 export function insightLocale(post: InsightPost): InsightLocale {
-  return post.data.locale ?? 'en';
+  const locale = post.data.locale;
+  return locale && INSIGHT_LOCALES.has(locale) ? (locale as InsightLocale) : 'en';
 }
 
 export function isLocalePost(locale: InsightLocale) {

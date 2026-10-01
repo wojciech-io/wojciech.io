@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PUBLIC_SECURITY_HEADERS } from '../../functions/_middleware';
+import { PUBLIC_SECURITY_HEADERS } from '../lib/securityHeaders';
 
 describe('public middleware CSP', () => {
   const csp = PUBLIC_SECURITY_HEADERS['content-security-policy'];

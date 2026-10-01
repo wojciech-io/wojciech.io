@@ -17,7 +17,7 @@ export interface AppEntry {
   // Caption on the designed tile, for entries with no screenshot to show.
   tileNote?: string;
   // Color palette — drives card-screen gradients, icon box, app-icon chip
-  palette: BRAND_PALETTE;
+  palette: typeof BRAND_PALETTE;
   icon: string; // inner SVG markup (no outer <svg>)
 }
 
