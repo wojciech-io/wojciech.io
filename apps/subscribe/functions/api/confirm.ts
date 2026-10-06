@@ -1,9 +1,9 @@
 import { welcomeEmail } from '../../src/email/welcome';
+import type { KVNamespace } from '@cloudflare/workers-types';
 
 interface Env {
   SUBSCRIBE_KV: KVNamespace;
   RESEND_API_KEY: string;
-  RESEND_AUDIENCE_ID?: string;
   RESEND_FROM?: string;
 }
 
@@ -17,20 +17,65 @@ interface PagesFunctionContext {
 // lives on subscribe.wojciech.io, only the post-confirm landing spot moved.
 const SITE_URL = 'https://wojciech.io/subscribe';
 const FROM = 'Wojciech from AI Espresso <hello@wojciech.io>';
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function confirmationError(message: string, status: number, token?: string) {
+  const retryUrl = token
+    ? `https://subscribe.wojciech.io/api/confirm?token=${encodeURIComponent(token)}`
+    : `${SITE_URL}/`;
+  return new Response(
+    `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AI Espresso subscription</title><body style="font-family:Arial,sans-serif;max-width:480px;margin:64px auto;padding:24px;line-height:1.5"><h1 style="font-size:24px">Subscription not confirmed</h1><p>${message}</p><a href="${retryUrl}">${token ? 'Try again' : 'Request a new confirmation link'}</a></body></html>`,
+    { status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } }
+  );
+}
+
+async function saveContact(apiKey: string, email: string): Promise<string> {
+  const headers = { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'User-Agent': 'AI-Espresso-Subscribe/1.0' };
+  const contactUrl = `https://api.resend.com/contacts/${encodeURIComponent(email)}`;
+  const existing = await fetch(contactUrl, { headers, signal: AbortSignal.timeout(10000) });
+  if (existing.status !== 404) {
+    if (!existing.ok) throw new Error(`contact_lookup_${existing.status}`);
+    const contact = await existing.json() as { id?: string; unsubscribed?: boolean };
+    if (!contact.id) throw new Error('contact_lookup_invalid');
+    if (contact.unsubscribed) {
+      // A new confirmation click is an explicit request to subscribe again.
+      const updated = await fetch(contactUrl, {
+        method: 'PATCH', headers, body: JSON.stringify({ unsubscribed: false }),
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!updated.ok) throw new Error(`contact_update_${updated.status}`);
+    }
+    return contact.id;
+  }
+  const created = await fetch('https://api.resend.com/contacts', {
+    method: 'POST', headers, body: JSON.stringify({ email, unsubscribed: false }),
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!created.ok) throw new Error(`contact_create_${created.status}`);
+  const contact = await created.json() as { id?: string };
+  if (!contact.id) throw new Error('contact_create_invalid');
+  return contact.id;
+}
 
 export async function onRequestGet({ request, env }: PagesFunctionContext) {
   const url = new URL(request.url);
   const token = url.searchParams.get('token');
 
   if (!token) {
-    return Response.redirect(`${SITE_URL}/?error=missing_token`, 302);
+    return confirmationError('This confirmation link is incomplete.', 400);
   }
 
   const stored = await env.SUBSCRIBE_KV.get(`pending:${token}`);
 
   if (!stored) {
-    // Token expired or already used — redirect to home (graceful)
-    return Response.redirect(`${SITE_URL}/?confirmed=1`, 302);
+    if (await env.SUBSCRIBE_KV.get(`confirmed:${token}`)) {
+      return Response.redirect(`${SITE_URL}/?confirmed=1`, 302);
+    }
+    return confirmationError('This confirmation link has expired or is invalid.', 410);
+  }
+
+  if (!env.RESEND_API_KEY) {
+    return confirmationError('We could not save your subscription. Please try again in a moment.', 503, token);
   }
 
   // New tokens store JSON with the consent timestamp; older ones stored the
@@ -47,30 +92,35 @@ export async function onRequestGet({ request, env }: PagesFunctionContext) {
     // legacy plain-string value
   }
 
-  // Delete token from KV (one-time use)
-  await env.SUBSCRIBE_KV.delete(`pending:${token}`);
+  if (typeof email !== 'string' || email.length > 254 || !emailPattern.test(email)) {
+    return confirmationError('This confirmation link is invalid.', 410);
+  }
+  email = email.trim().toLowerCase();
 
-  // Consent trail: signup consent + confirmation click, both timestamped.
-  await env.SUBSCRIBE_KV.put(
-    `consent:${email}`,
-    JSON.stringify({ consentAt: consentAt || null, confirmedAt: new Date().toISOString() })
-  );
-
-  // Add to Resend Audience if configured
-  if (env.RESEND_API_KEY && env.RESEND_AUDIENCE_ID) {
-    await fetch(`https://api.resend.com/audiences/${env.RESEND_AUDIENCE_ID}/contacts`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, unsubscribed: false }),
-    });
+  let newlyConfirmed = false;
+  try {
+    const contactId = await saveContact(env.RESEND_API_KEY, email);
+    const previous = await env.SUBSCRIBE_KV.get(`consent:${email}`);
+    const previousConsent = previous ? JSON.parse(previous) as { consentAt?: string; confirmedAt?: string } : null;
+    const now = new Date().toISOString();
+    newlyConfirmed = !previousConsent?.confirmedAt;
+    await env.SUBSCRIBE_KV.put(
+      `consent:${email}`,
+      JSON.stringify({ consentAt: consentAt || previousConsent?.consentAt || null, confirmedAt: previousConsent?.confirmedAt || now, contactId, syncedAt: now })
+    );
+    await env.SUBSCRIBE_KV.put(`confirmed:${token}`, contactId, { expirationTtl: 86400 });
+    // Keep the pending token until the contact and durable consent record exist.
+    await env.SUBSCRIBE_KV.delete(`pending:${token}`);
+    console.log(JSON.stringify({ event: 'subscription_confirmed', contactId }));
+  } catch (error) {
+    const reason = error instanceof Error && /^contact_/.test(error.message) ? error.message : 'subscription_storage_or_network_error';
+    console.error(JSON.stringify({ event: 'subscription_confirmation_failed', reason }));
+    return confirmationError('We could not save your subscription. Please try again in a moment.', 503, token);
   }
 
   // Thank-you note, styled like the newsletter. Best-effort: a failed welcome
   // email must not block the confirmation itself.
-  if (env.RESEND_API_KEY) {
+  if (newlyConfirmed) {
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
