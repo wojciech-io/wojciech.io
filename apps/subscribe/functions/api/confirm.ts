@@ -121,11 +121,12 @@ export async function onRequestGet({ request, env }: PagesFunctionContext) {
   // Thank-you note, styled like the newsletter. Best-effort: a failed welcome
   // email must not block the confirmation itself.
   if (newlyConfirmed) {
-    await fetch('https://api.resend.com/emails', {
+    const options = {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${env.RESEND_API_KEY}`,
         'Content-Type': 'application/json',
+        'Idempotency-Key': `subscription-welcome/${encodeURIComponent(token)}`,
       },
       body: JSON.stringify({
         from: env.RESEND_FROM || FROM,
@@ -133,7 +134,19 @@ export async function onRequestGet({ request, env }: PagesFunctionContext) {
         subject: "You're in. Thanks for confirming.",
         html: welcomeEmail({ email }),
       }),
-    }).catch(() => null);
+    };
+    // Contact lookup + creation can exhaust the provider's per-second limit.
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const sent = await fetch('https://api.resend.com/emails', {
+          ...options, signal: AbortSignal.timeout(10000),
+        });
+        if (sent.ok || (sent.status !== 429 && sent.status < 500)) break;
+      } catch {
+        // The same idempotency key makes a retry safe after an uncertain result.
+      }
+      if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
 
   return Response.redirect(`${SITE_URL}/?confirmed=1`, 302);

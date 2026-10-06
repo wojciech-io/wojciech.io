@@ -21,7 +21,7 @@ describe('subscription confirmation', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
-  afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); });
+  afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
   function confirm(apiKey = 'test-key', query = `?token=${token}`) {
     return onRequestGet({
@@ -118,5 +118,20 @@ describe('subscription confirmation', () => {
     records.set(`pending:${token}`, JSON.stringify({ email: 42 }));
     expect((await confirm()).status).toBe(410);
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('retries a rate-limited welcome with the same idempotency key without rewriting the contact', async () => {
+    vi.useFakeTimers();
+    lookup(null);
+    fetchMock.mockResolvedValueOnce(Response.json({ id: 'contact-id' }));
+    fetchMock.mockResolvedValueOnce(Response.json({}, { status: 429 }));
+    fetchMock.mockResolvedValueOnce(Response.json({ id: 'welcome-id' }));
+    const confirmation = confirm();
+    await vi.runAllTimersAsync();
+    expect((await confirmation).status).toBe(302);
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+    expect(fetchMock.mock.calls[2][1].headers['Idempotency-Key']).toBe('subscription-welcome/confirmation-token');
+    expect(fetchMock.mock.calls[3][1].headers['Idempotency-Key']).toBe(fetchMock.mock.calls[2][1].headers['Idempotency-Key']);
+    expect(records.has(`pending:${token}`)).toBe(false);
   });
 });
