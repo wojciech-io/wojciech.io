@@ -1,4 +1,6 @@
 ---
+import '../styles/widgets.css';
+
 interface Column {
   key: string;
   label: string;
@@ -14,109 +16,38 @@ interface Props {
 }
 
 const { columns, rows, caption, highlight = [] } = Astro.props;
+const align = (c: Column) => (c.align && c.align !== 'left' ? `text-align:${c.align}` : undefined);
 ---
 
-<div class="data-table-wrap">
-  <table class="data-table">
-    <thead>
-      <tr>
-        {columns.map((col) => (
-          <th
-            scope="col"
-            style={`text-align: ${col.align ?? 'left'}`}
-          >
-            {col.label || <span class="sr-only">Info</span>}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {rows.map((row, i) => (
-        <tr class:list={[highlight.includes(i) && 'data-table__row--highlight']}>
+<figure class="w w-table">
+  <div class="w-table__scroll" tabindex="0" role="region" aria-label={caption ?? 'Table'}>
+    <table>
+      <thead>
+        <tr>
           {columns.map((col) => (
-            <td
-              style={`text-align: ${col.align ?? 'left'}`}
-              class:list={[col.mono && 'data-table__cell--mono']}
-            >
-              {row[col.key] ?? ''}
-            </td>
+            <th scope="col" style={align(col)}>
+              {col.label || <span class="sr-only">Info</span>}
+            </th>
           ))}
         </tr>
-      ))}
-    </tbody>
-  </table>
-  {caption && <p class="data-table__caption">{caption}</p>}
-</div>
+      </thead>
+      <tbody>
+        {rows.map((row, i) => (
+          <tr data-hl={highlight.includes(i) ? '' : undefined}>
+            {columns.map((col) => (
+              <td data-label={col.label || undefined} data-mono={col.mono ? '' : undefined} style={align(col)}>
+                {row[col.key] ?? ''}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  {caption && <figcaption class="w-cap">{caption}</figcaption>}
+</figure>
 
 <style>
-  .data-table-wrap {
-    margin-block: 2rem;
-    overflow-x: auto;
-    border-radius: var(--radius-card);
-    border: 1px solid var(--color-border);
-  }
-
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    line-height: 1.5;
-  }
-
-  .data-table thead tr {
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface-2);
-  }
-
-  .data-table th {
-    padding: 0.625rem 1rem;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-text-dim);
-    white-space: nowrap;
-  }
-
-  .data-table td {
-    padding: 0.625rem 1rem;
-    color: var(--color-text-muted);
-    border-bottom: 1px solid var(--color-border);
-    vertical-align: top;
-  }
-
-  .data-table tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  .data-table tbody tr:hover td {
-    background: var(--color-surface-2);
-  }
-
-  .data-table__row--highlight td {
-    background: color-mix(in srgb, var(--color-accent) 6%, transparent);
-    color: var(--color-text);
-    font-weight: 400;
-  }
-
-  .data-table__row--highlight:hover td {
-    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  }
-
-  .data-table__cell--mono {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-  }
-
-  .data-table__caption {
-    padding: 0.5rem 1rem 0.625rem;
-    font-size: 0.75rem;
-    color: var(--color-text-dim);
-    border-top: 1px solid var(--color-border);
-    background: var(--color-surface-2);
-    text-align: center;
-  }
-
   .sr-only {
     position: absolute;
     width: 1px;

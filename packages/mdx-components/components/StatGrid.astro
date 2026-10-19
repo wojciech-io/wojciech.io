@@ -1,4 +1,6 @@
 ---
+import Figures from './Figures.astro';
+
 interface Stat {
   value: string;
   label: string;
@@ -11,102 +13,15 @@ interface Props {
   columns?: 2 | 3 | 4;
   caption?: string;
 }
-const { stats, columns = 4, caption } = Astro.props;
+const { stats, columns, caption } = Astro.props;
 
-const colClass = {
-  2: 'sg-cols-2',
-  3: 'sg-cols-3',
-  4: 'sg-cols-4',
-}[columns];
+const items = stats.map(({ value, label, delta, good, sub }) => ({
+  value,
+  label,
+  delta,
+  sub,
+  tone: good === true ? ('good' as const) : good === false ? ('bad' as const) : undefined,
+}));
 ---
 
-<figure class="sg-wrap">
-  <div class:list={['sg-grid', colClass]}>
-    {stats.map(({ value, label, delta, good, sub }) => (
-      <div class="sg-card">
-        <p class="sg-label">{label}</p>
-        <p class="sg-value">{value}</p>
-        {delta && (
-          <p class:list={['sg-delta', good === true && 'sg-good', good === false && 'sg-bad']}>
-            {delta}
-          </p>
-        )}
-        {sub && <p class="sg-sub">{sub}</p>}
-      </div>
-    ))}
-  </div>
-  {caption && <figcaption class="sg-caption">{caption}</figcaption>}
-</figure>
-
-<style>
-  .sg-wrap { margin: 2rem 0; }
-
-  .sg-grid {
-    display: grid;
-    gap: 0.75rem;
-  }
-  .sg-cols-2 { grid-template-columns: repeat(2, 1fr); }
-  .sg-cols-3 { grid-template-columns: repeat(3, 1fr); }
-  .sg-cols-4 { grid-template-columns: repeat(4, 1fr); }
-
-  @media (max-width: 720px) {
-    .sg-cols-3, .sg-cols-4 { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 420px) {
-    .sg-grid { grid-template-columns: 1fr; }
-  }
-
-  .sg-card {
-    position: relative;
-    overflow: hidden;
-    padding: 1.25rem 1.375rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-surface);
-    transition: border-color 0.15s;
-  }
-  .sg-card:hover { border-color: var(--color-border-2); }
-
-  .sg-label {
-    margin: 0 0 0.5rem;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-text-dim);
-  }
-
-  .sg-value {
-    margin: 0;
-    font-size: var(--text-h2);
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--color-text);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .sg-delta {
-    margin: 0.375rem 0 0;
-    font-size: 0.875rem;
-    font-weight: 400;
-    color: var(--color-text-dim);
-    font-variant-numeric: tabular-nums;
-  }
-  .sg-delta.sg-good { color: var(--color-accent); }
-  .sg-delta.sg-bad  { color: #f87171; }
-
-  .sg-sub {
-    margin: 0.375rem 0 0;
-    font-size: 0.75rem;
-    color: var(--color-text-dim);
-  }
-
-  .sg-caption {
-    display: block;
-    margin-top: 0.75rem;
-    text-align: center;
-    font-size: 0.75rem;
-    color: var(--color-text-dim);
-  }
-</style>
+<Figures items={items} cols={columns} caption={caption} />

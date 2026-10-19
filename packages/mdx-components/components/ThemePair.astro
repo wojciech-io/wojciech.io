@@ -1,0 +1,60 @@
+---
+/**
+ * ThemePair: one screenshot taken in the light and the dark theme, in a browser frame with a
+ * Light / Dark switch. It opens on the theme the reader is already using and lets them flip.
+ * Without script the light picture shows.
+ *
+ *   <ThemePair
+ *     light="/images/insights/x-light.webp"
+ *     dark="/images/insights/x-dark.webp"
+ *     alt="What the screen shows"
+ *     url="studio.example/page"
+ *     caption="One line under the picture."
+ *   />
+ */
+import '../styles/widgets.css';
+import { imageRungs } from '../lib/imageRungs';
+
+interface Props {
+  light: string;
+  dark: string;
+  alt: string;
+  url?: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+}
+
+const { light, dark, alt, url, caption, width, height } = Astro.props;
+const id = `pair-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<figure class="w w-shot w-pair" data-pair data-show="light">
+  <div class="w-shot__window">
+    <div class="w-shot__bar">
+      <span class="w-shot__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+      {url && <span class="w-shot__url">{url}</span>}
+      <span class="w-pair__switch" role="group" aria-label="Theme of the screenshot">
+        <button type="button" class="w-pair__btn" data-mode="light" aria-pressed="true" aria-controls={`${id}-light ${id}-dark`}>Light</button>
+        <button type="button" class="w-pair__btn" data-mode="dark" aria-pressed="false" aria-controls={`${id}-light ${id}-dark`}>Dark</button>
+      </span>
+    </div>
+    <div class="w-pair__stack">
+      <img id={`${id}-light`} class="w-pair__img" data-for="light" {...imageRungs(light)} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+      <img id={`${id}-dark`} class="w-pair__img" data-for="dark" {...imageRungs(dark)} alt={`${alt} (dark theme)`} width={width} height={height} loading="lazy" decoding="async" />
+    </div>
+  </div>
+  {caption && <figcaption class="w-cap">{caption}</figcaption>}
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-pair]').forEach((fig) => {
+    const buttons = fig.querySelectorAll<HTMLButtonElement>('[data-mode]');
+    const set = (mode: 'light' | 'dark') => {
+      fig.dataset.show = mode;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+    };
+    buttons.forEach((b) => b.addEventListener('click', () => set(b.dataset.mode === 'dark' ? 'dark' : 'light')));
+    set(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  });
+</script>

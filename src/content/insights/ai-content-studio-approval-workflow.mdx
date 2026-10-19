@@ -1,7 +1,7 @@
 ---
-title: "An AI content studio with an approval step: the first version took 3 hours"
-seoTitle: "AI content studio with approvals: built in about 3 hours"
-description: "How an AI content studio works: one prompt, two voices, SEO and GEO scores, a named approver and a calendar. First working version in about 3 hours."
+title: "I built a custom AI content studio in 3 hours. Then I tried to break it"
+seoTitle: "Custom AI content studio with approvals in 3 hours"
+description: "A custom AI content studio for a small team: one sentence in, two voices, SEO and GEO scores, a named approver. Built in about 3 hours, then attacked."
 publishedAt: "2026-10-18"
 updatedAt: "2026-10-19"
 tags:
@@ -16,9 +16,9 @@ coverImage: "/images/insights/ai-content-studio-approval-workflow.webp"
 featured: false
 draft: false
 tldr:
-  - "One prompt in, texts in two voices out, and a named person approves one exact version before anything reaches the calendar"
-  - "The first working, tested version took about 3 hours of hands-on time. Everything after that was extras on an app that already worked"
-  - "It is not live yet, the real model has only run against a fake, and I have no business numbers"
+  - "One sentence in, texts in two voices out, and a named person approves one exact version before anything reaches the calendar"
+  - "About 3 hours of hands-on time to a tested first version. The days after were extras on an app that already worked"
+  - "It isn't live, the real model has only run against a fake, and I have no business numbers. 15 safeguards broken on purpose, all caught"
 faq:
   - q: "What is an AI content studio?"
     a: "An internal tool that turns one request into drafts in your own voices, checks them, and sends them to the right person for approval. Mine writes with Claude and scores every draft for SEO and GEO."
@@ -27,65 +27,77 @@ faq:
   - q: "How long did it take to build?"
     a: "About 3 hours of hands-on time to a working, tested first version, counted from my session logs. The one-field Studio, live notifications, the calendar feed, attachments and the second voice view came over the following days."
   - q: "Is it live?"
-    a: "It isn't live yet. It is ready to deploy and needs a server, a DNS record and an API key. The real model has only run against a fake so far."
+    a: "Not yet. It is ready to deploy and needs a server, a DNS record and an API key. The real model has only run against a fake so far."
   - q: "Which model does it use?"
     a: "Claude, Sonnet 5.5 by default, behind a provider interface so the model can be swapped."
 ---
 
-A small software team I work with publishes in two voices: the company's and the founder's. Drafts lived in documents and style lived in people's heads. When a text came back for comments, nobody could tell me which sources it was based on or who had signed it off.
+A small software team I work with publishes under two names: the company's and the founder's. Drafts lived in Google Docs. The style lived in the founder's head. When a text came back with comments, nobody could tell me which sources it had used or who had signed it off.
 
-So I built an AI content studio for it. The first working, tested version took about 3 hours of hands-on time. After that came a few days of extras and a lot of trying to break it, because a tool that writes in a founder's name has to refuse things as reliably as it writes them.
+So I built them a studio. You type one sentence. The app writes the text in the right voice and scores it, then hands it to the one person who may approve that voice. The first tested version took about three hours of my time. After that came a few days of extras, and a lot of effort spent making it do things it should refuse, because a tool that writes in a founder's name has to say no as reliably as it writes.
 
 <StatRow cols={4}>
-  <Stat value="~3 h" label="to a working, tested first version" sub="hands-on time, from session logs" />
+  <Stat value="~3 h" label="to a tested first version" sub="hands-on time, from session logs" />
   <Stat value="378" label="automated tests" sub="338 integration, 40 browser" />
   <Stat value="15" label="safeguards broken on purpose" sub="every one caught" />
   <Stat value="0" label="axe violations" sub="WCAG 2 A and AA" />
 </StatRow>
 
-## How the AI content studio works
+## One sentence is the whole input
 
-You type what you want, like "a LinkedIn post about getting clients to send documents on time". The rest is the app's job.
+You type something like "a LinkedIn post about getting clients to send documents on time". From that it proposes a format, a voice, a keyphrase and sources. You can change any of them, and you can attach your own file or a link for a single text.
+
+<ThemePair
+  light="/images/insights/content-studio-studio-light.webp"
+  dark="/images/insights/content-studio-studio-dark.webp"
+  width={1600}
+  height={1000}
+  alt="The Studio screen: one prompt field with voice and format controls, a keyphrase picked from the request, and the latest content with SEO and GEO scores on the right"
+  url="studio.fennel.example"
+  caption="The Studio. One field, with voice, formats and keyphrase proposed from what you typed."
+/>
+
+Behind that field the app runs four steps.
 
 <ProcessFlow
   steps={[
     { label: "Request", body: "One sentence in one field." },
-    { label: "Draft and score", body: "The app picks format, voice, keyphrase and sources, and Claude writes. SEO, GEO, voice match and channel fit are scored, with up to two fix rounds." },
-    { label: "Approve", body: "A person approves one exact version, or sends it back with a comment." },
+    { label: "Draft and score", body: "Claude writes in the chosen voice. Plain code scores SEO, GEO, voice match and channel fit, and the model gets up to two rounds to fix what failed." },
+    { label: "Approve", body: "One person approves one exact version, or sends it back with a comment." },
     { label: "Schedule", body: "Approved texts get a day in the calendar and can be exported." },
   ]}
 />
 
-<Tabs labels={['Studio', 'Draft and preview', 'Approvals', 'Calendar', 'Sources', 'Team']}>
-<div data-tab="0">
+## The draft opens next to a verdict
 
-<Screenshot
-  src="/images/insights/content-studio-studio.webp"
-  width={2360}
-  height={1475}
-  alt="The Studio screen: one prompt field with voice and format controls, a keyphrase picked from the request, and the latest content with SEO and GEO scores on the right"
-  url="studio.fennel.example"
-  caption="The whole input is one field. The brand, the people and the texts in these pictures are a rebuilt demo."
-/>
+A text opens in an editor with a preview of the post as a reader will see it. On the right are the meters: SEO, GEO, how closely it matches the voice, how well it fits the channel.
 
-Voice, formats and keyphrase are proposed from the request, and you can change any of them. You can also add your own file or link for one text.
-
-</div>
-<div data-tab="1">
-
-<Screenshot
-  src="/images/insights/content-studio-editor-preview.webp"
-  width={2360}
-  height={1475}
-  alt="The content page: a LinkedIn text waiting for approval, a phone preview of the post, and the quality tab showing voice match and channel fit at 100 percent"
+<ThemePair
+  light="/images/insights/content-studio-draft-light.webp"
+  dark="/images/insights/content-studio-draft-dark.webp"
+  width={1600}
+  height={1000}
+  alt="A LinkedIn text waiting for approval from the founder, with the editor on the left and the quality panel on the right showing SEO 100, GEO 100, voice match 100 percent and channel fit 100 percent"
   url="studio.fennel.example/content"
-  caption="A text waiting for approval, with the approver's name, a preview in the medium and two meters."
+  caption="A LinkedIn text in the founder's voice, waiting for the founder's approval. Everything reads 100 because the demo text was written to pass."
 />
 
-An editor, a preview the way a reader will see it, and two meters: voice match and channel fit. The SEO and GEO checks have their own tab.
+On a real draft I expect lower numbers. I can't tell you how much lower, because the real model hasn't written one yet. What I can say is that the scoring is plain code running the same rules in the browser and on the server, so the editor and the approval gate can't disagree.
 
-</div>
-<div data-tab="2">
+SEO and GEO have their own tab. The system fills in the main keyphrase, the extra ones and the search intent, and you can overwrite any of it.
+
+<Screenshot
+  src="/images/insights/content-studio-seo.webp"
+  width={2360}
+  height={1475}
+  alt="An approved blog text with its status bar from Written to Published, a preview of the post on the website and the SEO tab filled in with a main keyphrase, additional keyphrases and the search intent"
+  url="studio.fennel.example/content"
+  caption="The SEO tab on an approved blog text. The bar at the top is the life of every text: written, awaiting approval, approved, published."
+/>
+
+## Nothing moves without a name on it
+
+Every text names the person who has to approve it. That person approves that exact version, or sends it back with a comment. If anyone edits afterwards, it becomes a new version, and the old one keeps the decisions it already has. The author sees the answer live, without refreshing.
 
 <Screenshot
   src="/images/insights/content-studio-approvals.webp"
@@ -93,41 +105,10 @@ An editor, a preview the way a reader will see it, and two meters: voice match a
   height={1475}
   alt="The Approvals page listing five texts waiting for approval, each with its cover, its format and the name of the person who has to approve it"
   url="studio.fennel.example/approvals"
-  caption="The approver's queue: who wrote it, in which voice, and who it is waiting for."
+  caption="The approver's queue. Each text shows who wrote it, in which voice, and who it is waiting for."
 />
 
-The approver approves that exact version or sends it back with a comment. An edit afterwards creates a new version, and the old one keeps its decisions. The author sees the answer live, without refreshing.
-
-</div>
-<div data-tab="3">
-
-<Screenshot
-  src="/images/insights/content-studio-calendar.webp"
-  width={2360}
-  height={1475}
-  alt="The calendar in month view with approved newsletter, FAQ, blog and Facebook items on their planned days and one LinkedIn text still waiting for approval on the right"
-  url="studio.fennel.example/calendar"
-  caption="Only approved content gets a day. What is still waiting sits on the side."
-/>
-
-Week, month, quarter and year views, a feed for Google Calendar, and exports as HTML for the website editor, a Google Doc or Markdown.
-
-</div>
-<div data-tab="4">
-
-<Screenshot
-  src="/images/insights/content-studio-sources.webp"
-  width={2360}
-  height={1475}
-  alt="The Sources page with two voice cards, each listing its base sources and the percentage share each one has in that voice"
-  url="studio.fennel.example/sources"
-  caption="Two voices, each with its base sources and their share."
-/>
-
-This is what the model gets. Each voice lists the sources that always go to it and how much of the voice each one makes up. If a source has no text, the app says it hasn't read it.
-
-</div>
-<div data-tab="5">
+One person approves the brand's voice and another approves the founder's. That is a setting per person, next to their access level.
 
 <Screenshot
   src="/images/insights/content-studio-team.webp"
@@ -138,37 +119,60 @@ This is what the model gets. Each voice lists the sources that always go to it a
   caption="Access, and who approves which voice, is set per person."
 />
 
-Sign-in is Google Workspace, limited to the company domain and to a list of people.
+The door is a Google sign-in, limited to the company's Workspace domain and to a list of people. I broke five parts of it on purpose: the domain check, the nonce, the state, the verified-email check and session expiry. Every break turned a test red.
 
-</div>
-</Tabs>
-
-## What it gives a team
-
-<Comparison
-  left="Before"
-  right="With the studio"
-  leftItems={[
-    "Drafts in documents, style in people's heads",
-    "Nobody can say which sources a text used",
-    "Approval by comment thread, version unclear",
-    "Every text starts from a blank page",
-  ]}
-  rightItems={[
-    "One request, with format and voice proposed",
-    "Every text lists its sources, and an unread source can't count",
-    "One person approves one exact version, and edits make a new one",
-    "SEO and GEO scored before a person sees the draft",
-  ]}
+<Screenshot
+  src="/images/insights/content-studio-login.webp"
+  width={2360}
+  height={1475}
+  alt="The sign-in screen with a single Sign in with Google button on the left and three sample content covers on a green panel on the right"
+  url="studio.fennel.example"
+  caption="The sign-in screen. One button."
 />
 
-I don't have business numbers for it yet, because it isn't live. What I can show is what the app does and what I tested.
+## Only approved texts get a day
 
-## How the skill works
+The calendar shows approved content on its planned day. Anything still waiting sits in a list on the side, and only approved content goes onto the calendar. There are week, month, quarter and year views, a feed for Google Calendar, and exports as HTML for the website editor, a Google Doc or Markdown.
 
-The writing rules live in a Claude skill: a `SKILL.md` of about 630 words and six reference files. They hold the context and sources, the two voice profiles, the founder's original style guide (about 4,400 words), the SEO and GEO rules, the output contract as a JSON Schema and a version stamp. A demo case comes with it.
+<ThemePair
+  light="/images/insights/content-studio-calendar-light.webp"
+  dark="/images/insights/content-studio-calendar-dark.webp"
+  width={1600}
+  height={1000}
+  alt="The calendar in month view with approved newsletter, FAQ, blog and Facebook items on their planned days and one LinkedIn text still waiting for approval in the panel on the right"
+  url="studio.fennel.example/calendar"
+  caption="Approved texts sit on their days. The LinkedIn one is still waiting, so it has no day."
+/>
 
-In its four modes (research, draft, edit and package) the skill makes the model separate fact, opinion, illustrative example and planned feature, give every number a source or an example label, and leave an unreadable source unread. Text inside a source is material, never an instruction.
+It also fits a phone. I checked the layout at 1440, 820, 390 and 320 pixels, under the full content security policy.
+
+<figure className="w w-phone">
+  <ContentImage
+    src="/images/insights/content-studio-phone.webp"
+    width={1780}
+    height={1828}
+    alt="Two phone screens of the app: the Studio with its prompt field, and the Content list with filters and SEO and GEO scores on each card"
+  />
+  <figcaption className="w-cap">The Studio and the content list at 390 pixels.</figcaption>
+</figure>
+
+## The model only reads what you show it
+
+The Sources page is the model's reading list. Each voice has base sources that always go to it, and each source has a share of that voice. If a source has no text, the app says it hasn't read it, and an unread source can't count as evidence.
+
+<ThemePair
+  light="/images/insights/content-studio-sources-light.webp"
+  dark="/images/insights/content-studio-sources-dark.webp"
+  width={1600}
+  height={1000}
+  alt="The Sources page with two voice cards, each listing its base sources and the percentage share each one has in that voice"
+  url="studio.fennel.example/sources"
+  caption="Two voices, each with its base sources and their share."
+/>
+
+The writing rules live in a Claude skill: a `SKILL.md` of about 630 words and six reference files. They hold the context and sources, the two voice profiles, the founder's original style guide (about 4,400 words), the SEO and GEO rules, the output contract as a JSON Schema and a version stamp. It runs in four modes: research, draft, edit and package.
+
+In every mode the skill makes the model keep fact, opinion, illustrative example and planned feature apart, and gives every number a source or an example label. Text inside a source is material, never an instruction.
 
 <KeyPoint
   type="warning"
@@ -182,28 +186,28 @@ In its four modes (research, draft, edit and package) the skill makes the model 
   ]}
 />
 
-The same files run in two places. In a chat, Claude uses the skill and hands back a package that the app can import. Inside the app, the server loads the same files as the rules for its own model calls, so the chat and the app can't drift apart.
+The same files run in two places. In a chat, Claude uses the skill and hands back a package the app can import. Inside the app, the server loads the same files as the rules for its own model calls, so the chat and the app can't drift apart.
 
-I checked the skill on seven cases, each run once: research with no posts, one thesis in two voices, numbers and example status, a feature with no confirmation, an unconfirmed story and news item, a newsletter for the founder with a teaser for the brand, an unreadable source with an instruction inside it, and a single chosen format. The checks are mechanical (schema, dashes, labels, markers). They don't replace the tone review by the two approvers, and that review hasn't happened yet.
+I checked the skill on seven cases, each run once. Among them: research with no posts, one thesis in two voices, a feature with no confirmation, and an unreadable source with an instruction inside it. The checks are mechanical (schema, dashes, labels, markers). They don't replace the two approvers' tone review, and that review hasn't happened yet.
 
-## Who does what
+## There was no swarm of agents
 
-There is no swarm of agents here. There is one engineer-agent working one session at a time, the model calls inside the product, and people.
+One engineer-agent worked one session at a time. Inside the product the model makes the calls, and people make the decisions.
 
 <DataTable
   columns={[
     { key: "who", label: "Who" },
-    { key: "does", label: "What they do" },
+    { key: "does", label: "What they did" },
   ]}
   rows={[
     { who: "Me", does: "Wrote the starting package, decided what the app must refuse, reviewed every screen and cut what didn't belong." },
     { who: "Claude Code", does: "Wrote the code and the tests, re-ran the whole suite after every change, opened the app in a real browser at four widths and produced the audits. Picked up each day from a written handoff note." },
-    { who: "The model inside the app", does: "One call per voice to write, then up to two fix rounds guided by the same checks the editor sees. Between the calls, plain code scores the draft. It never approves anything." },
+    { who: "The model inside the app", does: "One call per voice to write, then up to two fix rounds guided by the same checks the editor shows. It approves nothing." },
     { who: "The two approvers", does: "One per voice. They decide on tone and facts, and no test replaces them." },
   ]}
 />
 
-## The first version, in about 3 hours
+## The first version took about three hours
 
 <ArticleTimeline
   items={[
@@ -235,19 +239,19 @@ There is no swarm of agents here. There is one engineer-agent working one sessio
   ]}
 />
 
-What made it fast was a few decisions taken before there was a screen.
+What made it fast was five decisions I took before there was a screen.
 
 <Accordion
   items={[
     { title: "A contract first", body: "JSON Schemas for the request and for what comes back. Whatever the model returns is checked against them, whether it arrives through the API or someone pastes what Claude wrote in a chat window." },
     { title: "A dull stack", body: "One Node process, Express, SQLite on one disk, React with Vite and Tailwind, and nothing else running next to them. With a few hundred records a backup is a copy of one volume, and the tests start a real server on a temporary database in about a second. It won't scale out, and for a team this size that doesn't matter." },
-    { title: "Shared logic, written once", body: "Scoring and the rules for links, channels and style sit in one folder that the browser and the server both import. The editor shows a live score, and the server runs the same code before a text can go to approval, so the two can't disagree." },
+    { title: "Shared logic, written once", body: "Scoring and the rules for links, channels and style sit in one folder that the browser and the server both import. The editor shows a live score, and the server runs the same code before a text can go to approval." },
     { title: "A fake for everything outside", body: "The model, Google Drive and Docs, and GitHub each have a fake in the tests. The suite needs no keys and no network. The price is that I haven't run the real model yet." },
     { title: "A written hand-off every day", body: "A note in the repo, a status file that marks every requirement as done, verified or open, and a list of traps that had already cost time." },
   ]}
 />
 
-## How I tested it
+## Then I tried to break it
 
 <DataTable
   columns={[
@@ -266,6 +270,8 @@ What made it fast was a few decisions taken before there was a screen.
   caption="Every run is saved with its date in the repo: test runs, Lighthouse reports, the log of deliberate breaks and screenshots."
 />
 
+The "deliberate breaks" row is the one I trust most. Passing tests prove little if you have never watched one fail, so I switched each safeguard off, one at a time, and checked that something went red.
+
 <MetricRow
   items={[
     { value: "85 + 15", label: "first evening" },
@@ -276,7 +282,7 @@ What made it fast was a few decisions taken before there was a screen.
   caption="Integration and browser tests at each recorded run."
 />
 
-## What broke along the way
+## What broke anyway
 
 <Accordion
   items={[
@@ -287,7 +293,7 @@ What made it fast was a few decisions taken before there was a screen.
   ]}
 />
 
-## What is not done
+## What isn't done
 
 <Callout type="warning" title="Open items">
   It isn't live. The app is ready to deploy, but it needs a server, a DNS record and an API key, and those aren't mine to create.
@@ -305,7 +311,7 @@ When it's live I'll add the first real numbers: how many texts go out per week, 
     { question: "What is an AI content studio?", answer: "An internal tool that turns one request into drafts in your own voices, checks them, and sends them to the right person for approval. Mine writes with Claude and scores every draft for SEO and GEO." },
     { question: "Can an AI content tool publish without a human?", answer: "Not this one. The model approves nothing. A signed-in person approves one exact version of a text, and only approved texts reach the calendar." },
     { question: "How long did it take to build?", answer: "About 3 hours of hands-on time to a working, tested first version, counted from my session logs. The one-field Studio, live notifications, the calendar feed, attachments and the second voice view came over the following days." },
-    { question: "Is it live?", answer: "It isn't live yet. It is ready to deploy and needs a server, a DNS record and an API key. The real model has only run against a fake so far." },
+    { question: "Is it live?", answer: "Not yet. It is ready to deploy and needs a server, a DNS record and an API key. The real model has only run against a fake so far." },
     { question: "Which model does it use?", answer: "Claude, Sonnet 5.5 by default, behind a provider interface so the model can be swapped." },
   ]}
 />

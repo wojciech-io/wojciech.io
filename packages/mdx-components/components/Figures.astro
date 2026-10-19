@@ -1,0 +1,48 @@
+---
+/**
+ * Figures: the one grid behind StatGrid, MetricRow and (through slots) StatRow.
+ * Internal building block, not registered for MDX.
+ */
+import '../styles/widgets.css';
+import { figLen, isLarge, isLong } from '../lib/figures';
+
+export interface Figure {
+  value: string;
+  unit?: string;
+  label: string;
+  sub?: string;
+  delta?: string;
+  tone?: 'good' | 'bad' | 'neutral';
+  source?: string;
+  accent?: boolean;
+}
+interface Props {
+  items: Figure[];
+  cols?: 2 | 3 | 4;
+  caption?: string;
+  title?: string;
+}
+
+const { items, cols, caption, title } = Astro.props;
+
+// One size for the whole grid, taken from its longest figure, so a row of numbers shares a baseline
+const gridLen = Math.max(3, ...items.filter((it) => !isLong(it.value)).map((it) => figLen(it.value + (it.unit ?? ''))));
+---
+
+<figure class="w">
+  {title && <p class="w-eyebrow">{title}</p>}
+  <div class="w-figs" data-cols={cols}>
+    <div class="w-figs__grid" data-size={isLarge(gridLen) ? 'l' : undefined}>
+      {items.map((it) => (
+        <div class="w-fig" data-accent={it.accent ? '' : undefined}>
+          <p class="w-fig__value" data-long={isLong(it.value) ? '' : undefined}>{it.value}{it.unit && <span class="w-fig__unit">{it.unit}</span>}</p>
+          <p class="w-fig__label">{it.label}</p>
+          {it.delta && <p class="w-fig__delta" data-tone={it.tone && it.tone !== 'neutral' ? it.tone : undefined}>{it.delta}</p>}
+          {it.sub && <p class="w-fig__sub">{it.sub}</p>}
+          {it.source && <p class="w-fig__src">{it.source}</p>}
+        </div>
+      ))}
+    </div>
+  </div>
+  {caption && <figcaption class="w-cap">{caption}</figcaption>}
+</figure>
