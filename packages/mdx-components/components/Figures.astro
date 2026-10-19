@@ -4,7 +4,7 @@
  * Internal building block, not registered for MDX.
  */
 import '../styles/widgets.css';
-import { figLen, isLong } from '../lib/figures';
+import { figLen, isLarge, isLong } from '../lib/figures';
 
 export interface Figure {
   value: string;
@@ -32,7 +32,7 @@ const gridLen = Math.max(3, ...items.filter((it) => !isLong(it.value)).map((it) 
 <figure class="w">
   {title && <p class="w-eyebrow">{title}</p>}
   <div class="w-figs" data-cols={cols}>
-    <div class="w-figs__grid" style={`--len:${gridLen}`}>
+    <div class="w-figs__grid" data-size={isLarge(gridLen) ? 'l' : undefined}>
       {items.map((it) => (
         <div class="w-fig" data-accent={it.accent ? '' : undefined}>
           <p class="w-fig__value" data-long={isLong(it.value) ? '' : undefined}>{it.value}{it.unit && <span class="w-fig__unit">{it.unit}</span>}</p>

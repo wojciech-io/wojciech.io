@@ -13,13 +13,15 @@ interface Props {
 
 const { value, label, body, eyebrow, delta, tone = 'accent' } = Astro.props;
 const toneAttr = tone === 'warning' ? 'warn' : undefined;
+const len = figLen(value);
+const size = len <= 4 ? 'l' : len <= 6 ? 'm' : undefined;
 ---
 
 <aside class="w" data-tone={toneAttr}>
   <div class="w-hero">
     <div class="w-hero__metric">
       {eyebrow && <p class="w-hero__eyebrow">{eyebrow}</p>}
-      <p class="w-hero__value" style={`--len:${figLen(value)}`}>{value}</p>
+      <p class="w-hero__value" data-size={size}>{value}</p>
       <p class="w-hero__label">{label}</p>
     </div>
     {(body || delta) && (

@@ -1,6 +1,6 @@
 ---
 import '../styles/widgets.css';
-import { figLen, isLong } from '../lib/figures';
+import { figLen, isLarge, isLong } from '../lib/figures';
 
 interface Props {
   value: string;
@@ -19,7 +19,7 @@ const arrow = { up: '↑', down: '↓', neutral: '' }[deltaDir];
 ---
 
 <div class="w-fig" data-accent={accent ? '' : undefined}>
-  <p class="w-fig__value" style={`--len:${figLen(value)}`} data-long={isLong(value) ? '' : undefined}>{value}</p>
+  <p class="w-fig__value" data-size={isLarge(figLen(value)) ? 'l' : undefined} data-long={isLong(value) ? '' : undefined}>{value}</p>
   <p class="w-fig__label">{label}</p>
   {delta && <p class="w-fig__delta" data-tone={tone}>{arrow ? `${arrow} ` : ''}{delta}</p>}
   {sub && <p class="w-fig__sub">{sub}</p>}

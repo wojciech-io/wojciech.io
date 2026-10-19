@@ -1,6 +1,6 @@
 ---
 import '../styles/widgets.css';
-import { figLen } from '../lib/figures';
+import { figLen, isLarge } from '../lib/figures';
 
 interface Props {
   before: string;
@@ -26,8 +26,8 @@ const toneAttr = { positive: 'good', warning: 'warn', neutral: undefined }[tone]
 const len = Math.max(figLen(before), figLen(after));
 ---
 
-<figure class="w" data-tone={toneAttr} style={`--len:${len}`}>
-  <div class="w-delta">
+<figure class="w" data-tone={toneAttr}>
+  <div class="w-delta" data-size={isLarge(len) ? 'l' : undefined}>
     <div class="w-delta__cell">
       <p class="w-delta__label">{beforeLabel}</p>
       <p class="w-delta__value">{before}</p>
