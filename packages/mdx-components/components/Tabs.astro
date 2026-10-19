@@ -28,8 +28,15 @@ interface Props {
 
 const { tabs = [], labels = [], defaultTab = 0 } = Astro.props;
 const tabLabels = tabs.length > 0 ? tabs.map((t) => t.label) : labels;
-const hasSlots = tabs.length === 0;
 const id = `tabs-${Math.random().toString(36).slice(2, 8)}`;
+
+// Three ways to supply panels: the `tabs` prop, named slots written <Fragment slot="0">, or
+// <div data-tab="0"> children in the default slot. The named form is the one most articles use,
+// and before it was handled here those tabs rendered with an empty body.
+const named = await Promise.all(
+  tabLabels.map(async (_, i) => (Astro.slots.has(String(i)) ? await Astro.slots.render(String(i)) : null)),
+);
+const mode: 'prop' | 'named' | 'children' = tabs.length > 0 ? 'prop' : named.some((n) => n !== null) ? 'named' : 'children';
 ---
 
 <div class="w w-tabs" data-tabs={id} data-default={defaultTab}>
@@ -40,7 +47,7 @@ const id = `tabs-${Math.random().toString(36).slice(2, 8)}`;
         role="tab"
         id={`${id}-tab-${i}`}
         aria-selected={i === defaultTab ? 'true' : 'false'}
-        aria-controls={hasSlots ? undefined : `${id}-panel-${i}`}
+        aria-controls={mode === 'children' ? undefined : `${id}-panel-${i}`}
         tabindex={i === defaultTab ? 0 : -1}
         data-tab-index={i}
         class="w-tabs__tab"
@@ -52,21 +59,30 @@ const id = `tabs-${Math.random().toString(36).slice(2, 8)}`;
   </div>
 
   <div class="w-tabs__content">
-    {tabs.length > 0
-      ? tabs.map((tab, i) => (
-          <div
-            id={`${id}-panel-${i}`}
-            role="tabpanel"
-            aria-labelledby={`${id}-tab-${i}`}
-            class="w-tabs__panel"
-            data-active={i === defaultTab ? '' : undefined}
-            data-panel-index={i}
-          >
-            <p>{tab.content}</p>
-          </div>
-        ))
-      : null}
-    {hasSlots && <slot />}
+    {mode === 'prop' && tabs.map((tab, i) => (
+      <div
+        id={`${id}-panel-${i}`}
+        role="tabpanel"
+        aria-labelledby={`${id}-tab-${i}`}
+        class="w-tabs__panel"
+        data-active={i === defaultTab ? '' : undefined}
+        data-panel-index={i}
+      >
+        <p>{tab.content}</p>
+      </div>
+    ))}
+    {mode === 'named' && named.map((html, i) => (
+      <div
+        id={`${id}-panel-${i}`}
+        role="tabpanel"
+        aria-labelledby={`${id}-tab-${i}`}
+        class="w-tabs__panel"
+        data-active={i === defaultTab ? '' : undefined}
+        data-panel-index={i}
+        set:html={html ?? ''}
+      />
+    ))}
+    {mode === 'children' && <slot />}
   </div>
 </div>
 
