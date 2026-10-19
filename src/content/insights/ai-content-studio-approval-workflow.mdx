@@ -3,6 +3,7 @@ title: "An AI content studio with an approval step: the first version took 3 hou
 seoTitle: "AI content studio with approvals: built in about 3 hours"
 description: "How an AI content studio works: one prompt, two voices, SEO and GEO scores, a named approver and a calendar. First working version in about 3 hours."
 publishedAt: "2026-10-18"
+updatedAt: "2026-10-19"
 tags:
   - AI content workflow
   - Content approval
@@ -31,17 +32,32 @@ faq:
     a: "Claude, Sonnet 5.5 by default, behind a provider interface so the model can be swapped."
 ---
 
-A small software team I work with publishes in two voices: the company's and the founder's. The drafts lived in documents and the style rules lived in people's heads. When a text came back for comments, nobody could tell me which sources it was based on or who had signed it off, and nobody knew if it still sounded like the founder.
+A small software team I work with publishes in two voices: the company's and the founder's. Drafts lived in documents and style lived in people's heads. When a text came back for comments, nobody could tell me which sources it was based on or who had signed it off.
 
-So I built an AI content studio for it. The first working, tested version took about 3 hours of hands-on time. Then I spent a few more days on extras and on trying to break it, because a tool that writes in a founder's name has to refuse things as reliably as it writes them.
+So I built an AI content studio for it. The first working, tested version took about 3 hours of hands-on time. After that came a few days of extras and a lot of trying to break it, because a tool that writes in a founder's name has to refuse things as reliably as it writes them.
 
-## From one prompt to a scheduled post
+<StatRow cols={4}>
+  <Stat value="~3 h" label="to a working, tested first version" sub="hands-on time, from session logs" />
+  <Stat value="378" label="automated tests" sub="338 integration, 40 browser" />
+  <Stat value="15" label="safeguards broken on purpose" sub="every one caught" />
+  <Stat value="0" label="axe violations" sub="WCAG 2 A and AA" />
+</StatRow>
 
-You type what you want, like "a LinkedIn post about getting clients to send documents on time". From that the app works out format, voice, length and a main keyphrase. It picks sources from a library and has Claude write the text (Sonnet 5.5 by default). It scores the draft for SEO and GEO and sends it back to the model up to twice for fixes. Then it lands with the person who approves that voice. Nothing reaches the calendar before they say yes.
+## How the AI content studio works
 
-Here is how that looks, one screen at a time.
+You type what you want, like "a LinkedIn post about getting clients to send documents on time". The rest is the app's job.
 
-### 1. You write one sentence
+<ProcessFlow
+  steps={[
+    { label: "Request", body: "One sentence in one field." },
+    { label: "Draft and score", body: "The app picks format, voice, keyphrase and sources, and Claude writes. SEO, GEO, voice match and channel fit are scored, with up to two fix rounds." },
+    { label: "Approve", body: "A person approves one exact version, or sends it back with a comment." },
+    { label: "Schedule", body: "Approved texts get a day in the calendar and can be exported." },
+  ]}
+/>
+
+<Tabs labels={['Studio', 'Draft and preview', 'Approvals', 'Calendar', 'Sources', 'Team']}>
+<div data-tab="0">
 
 <Screenshot
   src="/images/insights/content-studio-studio.webp"
@@ -52,9 +68,10 @@ Here is how that looks, one screen at a time.
   caption="The whole input is one field. The brand, the people and the texts in these pictures are a rebuilt demo."
 />
 
-Voice, formats and keyphrase are proposed from the request, and you can change any of them. Under the field the app says it picks the sources itself, and you can add your own file or link for this one text.
+Voice, formats and keyphrase are proposed from the request, and you can change any of them. You can also add your own file or link for one text.
 
-### 2. The app drafts, scores and fixes
+</div>
+<div data-tab="1">
 
 <Screenshot
   src="/images/insights/content-studio-editor-preview.webp"
@@ -62,12 +79,13 @@ Voice, formats and keyphrase are proposed from the request, and you can change a
   height={1475}
   alt="The content page: a LinkedIn text waiting for approval, a phone preview of the post, and the quality tab showing voice match and channel fit at 100 percent"
   url="studio.fennel.example/content"
-  caption="A text waiting for approval, with the approver's name, a preview in the medium and two meters: voice match and channel fit."
+  caption="A text waiting for approval, with the approver's name, a preview in the medium and two meters."
 />
 
-Every text gets an editor, a preview the way a reader will see it (a LinkedIn post, a blog page, a newsletter) and two meters: how well it matches the voice, and how well it fits the channel. The SEO and GEO checks have their own tab, and a button that pushes a text towards 100.
+An editor, a preview the way a reader will see it, and two meters: voice match and channel fit. The SEO and GEO checks have their own tab.
 
-### 3. One person approves one version
+</div>
+<div data-tab="2">
 
 <Screenshot
   src="/images/insights/content-studio-approvals.webp"
@@ -75,12 +93,13 @@ Every text gets an editor, a preview the way a reader will see it (a LinkedIn po
   height={1475}
   alt="The Approvals page listing five texts waiting for approval, each with its cover, its format and the name of the person who has to approve it"
   url="studio.fennel.example/approvals"
-  caption="The approver's queue. Each text shows who wrote it, in which voice and who it is waiting for."
+  caption="The approver's queue: who wrote it, in which voice, and who it is waiting for."
 />
 
-The approver either approves that exact version or sends it back with a comment. If someone edits the text afterwards, that creates a new version, and the old one keeps its decisions. Notifications arrive live, so the author sees the answer without refreshing.
+The approver approves that exact version or sends it back with a comment. An edit afterwards creates a new version, and the old one keeps its decisions. The author sees the answer live, without refreshing.
 
-### 4. Approved texts go to the calendar
+</div>
+<div data-tab="3">
 
 <Screenshot
   src="/images/insights/content-studio-calendar.webp"
@@ -91,9 +110,10 @@ The approver either approves that exact version or sends it back with a comment.
   caption="Only approved content gets a day. What is still waiting sits on the side."
 />
 
-Week, month, quarter and year views, and a feed you can add to Google Calendar. A finished text can go out as HTML for the website editor, as a Google Doc or as Markdown.
+Week, month, quarter and year views, a feed for Google Calendar, and exports as HTML for the website editor, a Google Doc or Markdown.
 
-### 5. Sources and voices are visible
+</div>
+<div data-tab="4">
 
 <Screenshot
   src="/images/insights/content-studio-sources.webp"
@@ -104,9 +124,10 @@ Week, month, quarter and year views, and a feed you can add to Google Calendar. 
   caption="Two voices, each with its base sources and their share."
 />
 
-The Sources page shows what the model gets. Each voice lists the sources that always go to it and how much of the voice each one makes up. Everything else is matched to the topic by a rule the page spells out. If a source has no text, the app says it hasn't read it.
+This is what the model gets. Each voice lists the sources that always go to it and how much of the voice each one makes up. If a source has no text, the app says it hasn't read it.
 
-### 6. Who approves what is a setting
+</div>
+<div data-tab="5">
 
 <Screenshot
   src="/images/insights/content-studio-team.webp"
@@ -117,76 +138,177 @@ The Sources page shows what the model gets. Each voice lists the sources that al
   caption="Access, and who approves which voice, is set per person."
 />
 
+Sign-in is Google Workspace, limited to the company domain and to a list of people.
+
+</div>
+</Tabs>
+
 ## What it gives a team
 
-- **One request instead of a blank page.** Format, voice and keyphrase are proposed for you.
-- **Texts that know where they came from.** Each one lists its sources, and a source with no text can't count as read.
-- **Voices that hold.** Each has its own rules and base sources, and every draft gets a voice-match score.
-- **Reviews about the content.** SEO and GEO checks run before a person sees the draft, so the approver isn't hunting for a missing meta description.
-- **A paper trail.** One person approved one exact version, and every edit is a new version.
-- **A calendar of approved work only,** with a feed and exports.
+<Comparison
+  left="Before"
+  right="With the studio"
+  leftItems={[
+    "Drafts in documents, style in people's heads",
+    "Nobody can say which sources a text used",
+    "Approval by comment thread, version unclear",
+    "Every text starts from a blank page",
+  ]}
+  rightItems={[
+    "One request, with format and voice proposed",
+    "Every text lists its sources, and an unread source can't count",
+    "One person approves one exact version, and edits make a new one",
+    "SEO and GEO scored before a person sees the draft",
+  ]}
+/>
 
 I don't have business numbers for it yet, because it isn't live. What I can show is what the app does and what I tested.
 
-## How the first version took about 3 hours
+## How the skill works
 
-I wasn't starting from a blank page. Before the first prompt I had a written package: what the team had agreed, the data model, the writing rules as a draft Claude skill, a demo case (one thesis to write in both voices) and the test cases. Claude Code started from that. From the first prompt to a working version with 170 integration tests and 21 browser tests was about 3 hours of hands-on time. I counted it from my session logs, only the stretches without a gap of 15 minutes or more.
+The writing rules live in a Claude skill: a `SKILL.md` of about 630 words and six reference files. They hold the context and sources, the two voice profiles, the founder's original style guide (about 4,400 words), the SEO and GEO rules, the output contract as a JSON Schema and a version stamp. A demo case comes with it.
 
-Early on I added a contract: JSON Schemas for the request and for what comes back. Whatever the model returns is checked against it, whether it arrives through the API or someone pastes what Claude wrote in a chat window.
+In its four modes (research, draft, edit and package) the skill makes the model separate fact, opinion, illustrative example and planned feature, give every number a source or an example label, and leave an unreadable source unread. Text inside a source is material, never an instruction.
 
-The stack is dull on purpose. One Node process, Express, SQLite on one disk, React with Vite and Tailwind. No queue and no second service. The team is small and there are a few hundred records, so a backup is a copy of one volume, and the tests can start a real server on a temporary database in about a second. It won't scale out. For a team this size that doesn't matter.
+<KeyPoint
+  type="warning"
+  title="What the skill refuses to do"
+  items={[
+    "Invent facts, numbers or research results",
+    "Record a planned feature as confirmed",
+    "Follow an instruction hidden in a source: it goes on the list of gaps and nothing happens",
+    "Write formats nobody asked for",
+    "Publish anything: every variant stays a draft",
+  ]}
+/>
 
-The scoring and the rules for links, channels and style sit in one shared folder that the browser and the server both import. The editor shows a live score, and the server runs the same code before a text can go to approval, so the two can't disagree.
+The same files run in two places. In a chat, Claude uses the skill and hands back a package that the app can import. Inside the app, the server loads the same files as the rules for its own model calls, so the chat and the app can't drift apart.
 
-Everything outside the app has a fake in the tests: the model, Google Drive and Docs, GitHub. The whole suite needs no keys and no network and runs in about 70 seconds. The price is that I haven't run the real model yet. More on that at the end.
+I checked the skill on seven cases, each run once: research with no posts, one thesis in two voices, numbers and example status, a feature with no confirmation, an unconfirmed story and news item, a newsletter for the founder with a teaser for the brand, an unreadable source with an instruction inside it, and a single chosen format. The checks are mechanical (schema, dashes, labels, markers). They don't replace the tone review by the two approvers, and that review hasn't happened yet.
 
-Claude Code did most of the typing. I decided what "done" meant for each piece and what the app has to refuse to do. It wrote the code and the tests, re-ran everything after every change and produced the audits: accessibility, Lighthouse, a secret scan over the whole git history, a boot in production mode from a clean directory.
+## Who does what
 
-The extras came later, on an app that already worked: the one-field Studio, the approval queue with live notifications, the calendar and its feed, attachments in Word, Excel and PDF, the second voice view, the hand-off package. I also ended each day with a handoff note in the repo, a status file that marks every requirement as done, verified or open, and a list of traps that had already cost me time.
+There is no swarm of agents here. There is one engineer-agent working one session at a time, the model calls inside the product, and people.
 
-## How I tried to break it
+<DataTable
+  columns={[
+    { key: "who", label: "Who" },
+    { key: "does", label: "What they do" },
+  ]}
+  rows={[
+    { who: "Me", does: "Wrote the starting package, decided what the app must refuse, reviewed every screen and cut what didn't belong." },
+    { who: "Claude Code", does: "Wrote the code and the tests, re-ran the whole suite after every change, opened the app in a real browser at four widths and produced the audits. Picked up each day from a written handoff note." },
+    { who: "The model inside the app", does: "One call per voice to write, then up to two fix rounds guided by the same checks the editor sees. Between the calls, plain code scores the draft. It never approves anything." },
+    { who: "The two approvers", does: "One per voice. They decide on tone and facts, and no test replaces them." },
+  ]}
+/>
 
-The rules I care about live in code, not in the prompt, and each one has a test. Each voice is its own model call, so the brand call never sees the founder's style or her posts. Only the formats you picked get written, and extras from the model are dropped. A source counts as read only if the app holds its text. The model approves nothing. A retry doesn't create a duplicate. There are smaller ones too. A test fails if a dash of any kind shows up in the code or the texts, and another fails if a font size doesn't come from the design tokens.
+## The first version, in about 3 hours
 
-I don't trust the model's text by default either. A few mechanical checks run on every draft: a number that is only an example has to be marked as one, and a planned feature can't be recorded as confirmed. After that a person decides.
+<ArticleTimeline
+  items={[
+    {
+      date: "Before the first prompt",
+      title: "A written package",
+      body: "What the team had agreed, the data model, the writing rules as a draft skill, a demo case and the test cases.",
+      tag: "Prep",
+    },
+    {
+      date: "First evening",
+      title: "A first working version",
+      body: "About 1.2 hours of hands-on time. It stored topics, sources and texts, kept every version, recorded who approved which one, imported and exported packages and saved to Google Docs against a fake. 85 integration tests and 15 browser tests, then 10 deliberate breaks.",
+      tag: "Build",
+    },
+    {
+      date: "Next morning",
+      title: "Studio, scoring and sign-in",
+      body: "About 1.6 hours more: the Studio workspace, SEO and GEO scoring, the design system, Google sign-in and the voice base. 170 integration tests and 21 browser tests.",
+      tag: "Build",
+      highlight: true,
+    },
+    {
+      date: "The days after",
+      title: "Extras on a working app",
+      body: "The one-field Studio, the approval queue with live notifications, the calendar and its feed, attachments in Word, Excel and PDF, the second voice view and the hand-off package.",
+      tag: "Extras",
+    },
+  ]}
+/>
 
-A green test proves very little if it can't go red. So I switched off 15 safeguards one at a time, 10 on the first evening and 5 in the Google sign-in the next day: domain, nonce, state, verified email and session expiry. Every time, something went red.
+What made it fast was a few decisions taken before there was a screen.
 
-The first full run had 85 integration tests and 15 browser tests. The next morning there were 170 and 21, and by that evening 325 and 33. It stands at 338 and 40 now, and they finish in about 70 seconds on a laptop. Lighthouse gives 100 for accessibility and for best practices on every page, axe finds no violations, the production dependencies have no known vulnerabilities, and a secret scan of the whole git history found nothing. I also replayed the Dockerfile steps in a clean directory and booted in production mode. Sign-in redirects to Google with PKCE and the security headers are set. API calls without a session get a 401.
+<Accordion
+  items={[
+    { title: "A contract first", body: "JSON Schemas for the request and for what comes back. Whatever the model returns is checked against them, whether it arrives through the API or someone pastes what Claude wrote in a chat window." },
+    { title: "A dull stack", body: "One Node process, Express, SQLite on one disk, React with Vite and Tailwind, and nothing else running next to them. With a few hundred records a backup is a copy of one volume, and the tests start a real server on a temporary database in about a second. It won't scale out, and for a team this size that doesn't matter." },
+    { title: "Shared logic, written once", body: "Scoring and the rules for links, channels and style sit in one folder that the browser and the server both import. The editor shows a live score, and the server runs the same code before a text can go to approval, so the two can't disagree." },
+    { title: "A fake for everything outside", body: "The model, Google Drive and Docs, and GitHub each have a fake in the tests. The suite needs no keys and no network. The price is that I haven't run the real model yet." },
+    { title: "A written hand-off every day", body: "A note in the repo, a status file that marks every requirement as done, verified or open, and a list of traps that had already cost time." },
+  ]}
+/>
+
+## How I tested it
+
+<DataTable
+  columns={[
+    { key: "layer", label: "Layer" },
+    { key: "checks", label: "What it checks" },
+    { key: "result", label: "Result" },
+  ]}
+  rows={[
+    { layer: "Acceptance cases", checks: "15 numbered cases from the starting package: persistence, versions, approvals, Google Docs on success and on error, missing Google or AI, import and export, keyboard use and four screen widths", result: "Each marked verified, for review or to connect" },
+    { layer: "Integration tests", checks: "A real server and database, with fakes for the model, Google and GitHub", result: "338 passing, about 18 seconds" },
+    { layer: "Browser tests", checks: "Layout at 1440, 820, 390 and 320 px under the full content security policy, keyboard use, accessibility", result: "40 passing, about 50 seconds" },
+    { layer: "Deliberate breaks", checks: "Safeguards switched off one at a time: 10 on the first day, 5 in Google sign-in (domain, nonce, state, verified email, session expiry)", result: "Every one turned a test red" },
+    { layer: "Audits", checks: "Lighthouse, axe in light and dark, npm audit, a secret scan of the whole git history, the bundle checked for source maps and secrets", result: "100 and 100 on every page, 0 violations, 0 findings" },
+    { layer: "Production dry run", checks: "The Dockerfile steps replayed in a clean directory, booted in production mode", result: "Sign-in redirects to Google with PKCE, security headers set, 401 without a session" },
+  ]}
+  caption="Every run is saved with its date in the repo: test runs, Lighthouse reports, the log of deliberate breaks and screenshots."
+/>
+
+<MetricRow
+  items={[
+    { value: "85 + 15", label: "first evening" },
+    { value: "170 + 21", label: "next morning" },
+    { value: "325 + 33", label: "that evening" },
+    { value: "338 + 40", label: "now" },
+  ]}
+  caption="Integration and browser tests at each recorded run."
+/>
 
 ## What broke along the way
 
-Quite a bit. Upgrading React Router fixed an open redirect and broke five browser tests, because version 7 wraps URL updates in a transition and the view updated one frame late. The fix is one prop, and a comment that says why it's there. The first Lighthouse run showed a layout shift of 0.52 on the Sources page on a phone, because the page painted as each query came back. It waits for all its data now and the shift is 0.02.
-
-The library loader skipped a file it should have read, which meant the founder's posts would have been missing on a fresh database. I only found it because I was verifying a fresh start. And I built a spend counter before I understood the problem. The team pays through plan credits, not per call, so what's useful is a clear message when the credits run out. The counter is gone and the message stayed.
+<Accordion
+  items={[
+    { title: "A security upgrade broke five browser tests", body: "React Router 7.18 fixes an open redirect and wraps URL updates in a transition, so the view updated one frame late. The fix is one prop, and a comment that says why it's there." },
+    { title: "A layout shift of 0.52 on a phone", body: "The first Lighthouse run caught it on the Sources page, which painted as each query came back. It waits for all its data now and the shift is 0.02." },
+    { title: "A file the loader skipped", body: "On a fresh database the founder's posts would have been missing, because the file was older than the empty record. I only found it while verifying a fresh start. Fixed, with a test." },
+    { title: "A spend counter nobody needed", body: "I built one before I understood the problem. The team pays through plan credits, not per call, so what's useful is a clear message when the credits run out. The counter is gone and the message stayed." },
+  ]}
+/>
 
 ## What is not done
 
-It isn't live. The app is ready to deploy, but it needs a server, a DNS record and an API key, and those aren't mine to create. The real model has only run against a fake, because the key comes with a plan that is still being set up. I have no business numbers, since no published text has gone through it yet. Mobile performance is the weak spot: 66 to 71 on Lighthouse with simulated slow 4G. Docker isn't installed on the machine I built on, so I replayed the image steps instead of building the image, and I haven't run the security scan against a running copy.
+<Callout type="warning" title="Open items">
+  It isn't live. The app is ready to deploy, but it needs a server, a DNS record and an API key, and those aren't mine to create.
+
+  The real model has only run against a fake, because the key comes with a plan that is still being set up. I have no business numbers, since no published text has gone through it yet. Mobile performance is the weak spot: 66 to 71 on Lighthouse with simulated slow 4G. Docker isn't installed on the machine I built on, so I replayed the image steps instead of building the image, and I haven't run the security scan against a running copy.
+</Callout>
 
 When it's live I'll add the first real numbers: how many texts go out per week, and how often an approver sends one back.
 
 ## Questions people ask
 
-### What is an AI content studio?
-
-An internal tool that turns one request into drafts in your own voices, checks them, and sends them to the right person for approval. Mine writes with Claude and scores every draft for SEO and GEO.
-
-### Can an AI content tool publish without a human?
-
-Not this one. The model approves nothing. A signed-in person approves one exact version of a text, and only approved texts reach the calendar.
-
-### How long did it take to build?
-
-About 3 hours of hands-on time to a working, tested first version, counted from my session logs. The one-field Studio, live notifications, the calendar feed, attachments and the second voice view came over the following days.
-
-### Is it live?
-
-It isn't live yet. It is ready to deploy and needs a server, a DNS record and an API key. The real model has only run against a fake so far.
-
-### Which model does it use?
-
-Claude, Sonnet 5.5 by default, behind a provider interface so the model can be swapped.
+<FAQ
+  schema={false}
+  items={[
+    { question: "What is an AI content studio?", answer: "An internal tool that turns one request into drafts in your own voices, checks them, and sends them to the right person for approval. Mine writes with Claude and scores every draft for SEO and GEO." },
+    { question: "Can an AI content tool publish without a human?", answer: "Not this one. The model approves nothing. A signed-in person approves one exact version of a text, and only approved texts reach the calendar." },
+    { question: "How long did it take to build?", answer: "About 3 hours of hands-on time to a working, tested first version, counted from my session logs. The one-field Studio, live notifications, the calendar feed, attachments and the second voice view came over the following days." },
+    { question: "Is it live?", answer: "It isn't live yet. It is ready to deploy and needs a server, a DNS record and an API key. The real model has only run against a fake so far." },
+    { question: "Which model does it use?", answer: "Claude, Sonnet 5.5 by default, behind a provider interface so the model can be swapped." },
+  ]}
+/>
 
 *The company, the people, the industry and the colours in the screenshots are fictional. I rebuilt the demo data for them. The product, the interface and the workflow are real.*
 
