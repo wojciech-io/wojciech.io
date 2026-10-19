@@ -581,8 +581,8 @@ Component docs list source path, public props, intended use, and a minimal examp
 
 #### TwoUp
 **Path:** `src/components/insights/TwoUp.astro`
-**Props:** left? (string), right? (string), ratio? ('1:1' | '2:1' | '1:2'), gap? ('sm' | 'md' | 'lg')
-**Use:** Two-column MDX layout with optional ratio control.
+**Props:** left? (string | { title?: string, items?: string[] }), right? (same), ratio? ('1:1' | '2:1' | '1:2'), gap? ('sm' | 'md' | 'lg')
+**Use:** Two-column MDX layout with optional ratio control. A column is an HTML string, a titled list, or a `left` / `right` slot. Stacks when its own column is narrower than 36rem.
 **Example:** `<TwoUp {...props} />`
 
 #### VideoEmbed
@@ -593,7 +593,7 @@ Component docs list source path, public props, intended use, and a minimal examp
 
 ### Widget system v2 (article blocks)
 
-Every article block (Callout, DataTable, Stat, StatRow, StatGrid, MetricRow, MetricBoard, MetricDelta, StatCallout, KeyPoint, KeyTakeaway, TLDR, Steps, ProcessFlow, ArticleTimeline, BeforeAfter, Compare, Comparison, DoDont, PullQuote, Accordion, Tabs, Benchmark, ToolCard, Screenshot, ThemePair and the Diagram set) draws from one stylesheet: `packages/mdx-components/styles/widgets.css`. Components import it and carry no styles of their own.
+Every article block (Callout, ProTip, DataTable, Stat, StatRow, StatGrid, MetricRow, MetricBoard, MetricDelta, StatCallout, ResultCard, NumberTicker, KeyPoint, KeyTakeaway, TLDR, Steps, ProcessFlow, Flow, AgentFlow, StackLayer, ArticleTimeline, BeforeAfter, Compare, Comparison, DoDont, TwoUp, Grid, PullQuote, ThreadBlock, CaseStudyBlock, Accordion, Tabs, EmbedDeck, Benchmark, ToolCard, TechStack, CodeBlock, Terminal, Screenshot, ThemePair, ImageSlider, AnnotatedImage and the Diagram set) draws from one stylesheet: `packages/mdx-components/styles/widgets.css`. Components import it and carry no styles of their own.
 
 Rules the stylesheet follows, and new widgets should too:
 
@@ -604,6 +604,9 @@ Rules the stylesheet follows, and new widgets should too:
 - Colours come from the site tokens; tones are mixed with `color-mix(in oklab, ...)`.
 - Inner selectors are written `.w .w-x` (0,2,0) so they beat the prose rules (`.prose-content :where(...)`) without `!important`.
 - Motion is optional: native `<details>` animation behind `@supports (interpolate-size)`, everything off under `prefers-reduced-motion`.
+- Shared parts: `.w-win` is the window frame (Screenshot, CodeBlock, Terminal), `.w-pill` the small fill-only label, `.w-head` the section header (ToolCard, TechStack, Grid). Reuse them before adding a class.
+- A block with a script (CodeBlock, ImageSlider, NumberTicker, EmbedDeck) starts it on `astro:page-load` and skips elements that already carry `data-ready`, so it also works after a client-side navigation. The markup has to read correctly before the script runs.
+- Text styles are budgeted: tests/e2e/typography-budget.spec.ts caps /insights/claude-code-vs-clay/ at 24 distinct styles. Take sizes from 11, 12, 14 and 16px, weights from 400 and 600, figures from 24, 40 and 48px at -0.02em, and mono at 13 and 14px.
 - Props and slots are a public contract: articles call them from MDX. Change the markup, not the props.
 
 `ThemePair` shows one screenshot in light and dark with a Light/Dark switch, opening on the reader's theme: `<ThemePair light="/images/x-light.webp" dark="/images/x-dark.webp" alt="..." url="app.example/page" caption="..." />`.
@@ -633,26 +636,26 @@ Client-side interactive components for rich article experiences. Each uses a sin
 
 #### ImageSlider
 **Path:** `packages/mdx-components/components/ImageSlider.astro`
-**Props:** before (string), after (string), beforeAlt? (string), afterAlt? (string), caption? (string), startPosition? (number)
-**Use:** Before/after image comparison with a draggable divider handle. Touch and mouse support. Keyboard accessible.
-**Example:** `<ImageSlider before="/images/before.webp" after="/images/after.webp" caption="Dashboard redesign" />`
+**Props:** before (string), after (string), beforeLabel? (string), afterLabel? (string), alt? (string), startPosition? (number)
+**Use:** Before/after image comparison with a draggable divider handle. Touch and mouse support. Keyboard accessible: arrow keys move the divider, Shift for bigger steps, Home and End for the ends.
+**Example:** `<ImageSlider before="/images/before.webp" after="/images/after.webp" alt="Dashboard redesign" />`
 
 #### NumberTicker
 **Path:** `packages/mdx-components/components/NumberTicker.astro`
-**Props:** value (number), prefix? (string), suffix? (string), duration? (number), label? (string)
-**Use:** Scroll-triggered animated counter. Uses IntersectionObserver to start the count-up animation when the element enters the viewport.
+**Props:** value (number), prefix? (string), suffix? (string), duration? (number), label? (string), decimals? (number)
+**Use:** Scroll-triggered animated counter. The page carries the final value; the script replays the count-up from zero when the element enters the viewport, and does nothing under reduced motion.
 **Example:** `<NumberTicker value={75} suffix="%" label="Pipeline growth" duration={1500} />`
 
 #### EmbedDeck
 **Path:** `packages/mdx-components/components/EmbedDeck.astro`
-**Props:** slides (Array<{title?: string, body: string}>), caption? (string), autoplay? (boolean), interval? (number)
-**Use:** Inline mini presentation deck inside articles. Arrow-key navigable, swipeable, with slide counter and optional autoplay.
+**Props:** slides (Array<{heading?: string, title?: string, body: string, tag?: string}>), title? (string)
+**Use:** Inline mini presentation deck inside articles. A slide's heading is `heading` or `title`. Previous and next buttons plus a dot per slide; the deck is as tall as its tallest slide. Without script it shows the first slide.
 **Example:**
 ```mdx
 <EmbedDeck slides={[
   {title: 'Step 1', body: 'Research phase...'},
   {title: 'Step 2', body: 'Design phase...'},
-]} caption="Project timeline" />
+]} title="Project timeline" />
 ```
 
 #### CodeBlock

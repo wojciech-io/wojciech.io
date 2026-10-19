@@ -1,11 +1,16 @@
 ---
 /**
  * NumberTicker — scroll-triggered animated counter with label.
+ * Renders the final value, so it reads correctly without script and under
+ * reduced motion; the script only replays the count-up from zero.
  * Usage:
  *   <NumberTicker value={3.2} suffix="x" label="Revenue growth" />
  *   <NumberTicker value={40} prefix="-" suffix="%" label="CAC reduction" />
  *   <NumberTicker value={524} label="Tests passing" />
  */
+import '../styles/widgets.css';
+import { figLen } from '../lib/figures';
+
 interface Props {
   value: number;
   prefix?: string;
@@ -23,77 +28,70 @@ const {
   duration = 1500,
   decimals = value % 1 !== 0 ? 1 : 0,
 } = Astro.props;
+
+const final = `${prefix}${value.toFixed(decimals)}${suffix}`;
+const len = figLen(final);
+const size = len <= 4 ? 'l' : len <= 6 ? 'm' : undefined;
 ---
 
-<span
-  class="number-ticker"
+<div
+  class="w w-ticker"
   data-ticker
   data-value={value}
   data-prefix={prefix}
   data-suffix={suffix}
   data-duration={duration}
   data-decimals={decimals}
-  aria-label={`${prefix}${value}${suffix}${label ? ` ${label}` : ''}`}
 >
-  <span class="number-ticker__value">{prefix}0{suffix}</span>
-  {label && <span class="number-ticker__label">{label}</span>}
-</span>
-
-<style>
-  .number-ticker {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  .number-ticker__value {
-    font-size: var(--text-h1);
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--color-text);
-    font-variant-numeric: tabular-nums;
-  }
-  .number-ticker__label {
-    font-size: 0.875rem;
-    font-weight: 400;
-    color: var(--color-text-dim);
-    text-align: center;
-  }
-</style>
+  <p class="w-ticker__value" data-size={size}>
+    <span data-ticker-value aria-hidden="true">{final}</span>
+    <span class="w-vh">{final}</span>
+  </p>
+  {label && <p class="w-ticker__label">{label}</p>}
+</div>
 
 <script>
-  const tickers = document.querySelectorAll<HTMLElement>('[data-ticker]');
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const el = entry.target as HTMLElement;
-        if (el.dataset.animated) return;
-        el.dataset.animated = 'true';
-        observer.unobserve(el);
+  let observer: IntersectionObserver | undefined;
 
-        const target = parseFloat(el.dataset.value || '0');
-        const prefix = el.dataset.prefix || '';
-        const suffix = el.dataset.suffix || '';
-        const duration = parseInt(el.dataset.duration || '1500', 10);
-        const decimals = parseInt(el.dataset.decimals || '0', 10);
-        const display = el.querySelector('.number-ticker__value')!;
+  function count(el: HTMLElement) {
+    const target = parseFloat(el.dataset.value || '0');
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const duration = parseInt(el.dataset.duration || '1500', 10);
+    const decimals = parseInt(el.dataset.decimals || '0', 10);
+    const display = el.querySelector('[data-ticker-value]')!;
 
-        const start = performance.now();
-        function tick(now: number) {
-          const elapsed = now - start;
-          const progress = Math.min(elapsed / duration, 1);
-          // Ease out cubic
-          const eased = 1 - Math.pow(1 - progress, 3);
-          const current = target * eased;
-          display.textContent = `${prefix}${current.toFixed(decimals)}${suffix}`;
-          if (progress < 1) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-      });
-    },
-    { threshold: 0.3 }
-  );
-  tickers.forEach((t) => observer.observe(t));
+    const start = performance.now();
+    function tick(now: number) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease out cubic
+      display.textContent = `${prefix}${(target * eased).toFixed(decimals)}${suffix}`;
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function wireTickers() {
+    const fresh = document.querySelectorAll<HTMLElement>('[data-ticker]:not([data-ready])');
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window);
+    observer ??= new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          observer!.unobserve(entry.target);
+          count(entry.target as HTMLElement);
+        });
+      },
+      { threshold: 0.3 },
+    );
+    fresh.forEach((el) => {
+      el.setAttribute('data-ready', '');
+      if (still) return; // the final value is already on the page
+      const display = el.querySelector('[data-ticker-value]')!;
+      display.textContent = `${el.dataset.prefix || ''}${(0).toFixed(parseInt(el.dataset.decimals || '0', 10))}${el.dataset.suffix || ''}`;
+      observer!.observe(el);
+    });
+  }
+  wireTickers();
+  document.addEventListener('astro:page-load', wireTickers);
 </script>
