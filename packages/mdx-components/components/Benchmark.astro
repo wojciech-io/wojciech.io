@@ -1,6 +1,6 @@
 ---
 /**
- * Benchmark — horizontal bar comparison: Your result vs. baseline.
+ * Benchmark: two horizontal bars on one scale, your result against a baseline.
  *
  * Usage:
  *   <Benchmark
@@ -13,6 +13,8 @@
  *     caption="Source: campaign data Q1 2025"
  *   />
  */
+import '../styles/widgets.css';
+
 interface Props {
   label: string;
   yours: number;
@@ -37,67 +39,35 @@ const {
 } = Astro.props;
 
 const max = Math.max(yours, baseline) * 1.25;
-const yoursWidth  = Math.min(100, (yours   / max) * 100);
-const baseWidth   = Math.min(100, (baseline / max) * 100);
-const yoursAhead  = lowerIsBetter ? yours < baseline : yours > baseline;
-const delta       = lowerIsBetter
-  ? ((baseline - yours) / baseline * 100).toFixed(0)
-  : ((yours - baseline) / baseline * 100).toFixed(0);
-const deltaSign   = Number(delta) > 0 ? '+' : '';
-// Accent is reserved for a better result. A worse result (e.g. a higher
-// price with lowerIsBetter) must not render in the positive colour.
-const yoursValueCls = yoursAhead ? 'text-[var(--color-accent)]' : 'text-red-400';
-const yoursBarCls   = yoursAhead ? 'bg-[var(--color-accent)]' : 'bg-red-400/80';
+const yoursWidth = Math.min(100, (yours / max) * 100);
+const baseWidth = Math.min(100, (baseline / max) * 100);
+const ahead = lowerIsBetter ? yours < baseline : yours > baseline;
+const delta = lowerIsBetter
+  ? ((baseline - yours) / baseline) * 100
+  : ((yours - baseline) / baseline) * 100;
+const deltaText = `${delta > 0 ? '+' : ''}${delta.toFixed(0)}% vs baseline`;
 ---
 
-<figure class="my-8 not-prose rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface-2)] overflow-hidden">
-  <div class="px-5 py-4 border-b border-[var(--color-border)] flex items-center justify-between gap-3 flex-wrap">
-    <p class="text-sm font-semibold text-[var(--color-text)]">{label}</p>
-    {yoursAhead && (
-      <span class="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--color-accent)] bg-[color-mix(in_srgb,var(--color-accent)_12%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_25%,transparent)] rounded-full px-2.5 py-0.5">
-        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 12l5-5 5 5" />
-        </svg>
-        {deltaSign}{delta}% vs baseline
-      </span>
-    )}
-  </div>
-
-  <div class="px-5 py-5 space-y-4">
-
-    <!-- Your result -->
-    <div>
-      <div class="flex items-center justify-between mb-1.5">
-        <span class="text-xs font-medium text-[var(--color-text)]">{yoursLabel}</span>
-        <span class:list={['text-xs font-bold tabular-nums', yoursValueCls]}>{yours}{unit}</span>
-      </div>
-      <div class="h-2.5 rounded-full bg-[var(--color-surface)] overflow-hidden">
-        <div
-          class:list={['h-full rounded-full transition-all', yoursBarCls]}
-          style={`width: ${yoursWidth}%`}
-          role="presentation"
-        />
-      </div>
+<figure class="w">
+  <div class="w-bench">
+    <div class="w-bench__head">
+      <p class="w-bench__title">{label}</p>
+      {ahead && <span class="w-bench__badge">{deltaText}</span>}
     </div>
-
-    <!-- Baseline -->
-    <div>
-      <div class="flex items-center justify-between mb-1.5">
-        <span class="text-xs font-medium text-[var(--color-text-muted)]">{baselineLabel}</span>
-        <span class="text-xs font-semibold tabular-nums text-[var(--color-text-dim)]">{baseline}{unit}</span>
+    <div class="w-bench__row" data-us data-behind={ahead ? undefined : ''}>
+      <div class="w-bench__meta">
+        <span>{yoursLabel}</span>
+        <span class="w-bench__num">{yours}{unit}</span>
       </div>
-      <div class="h-2.5 rounded-full bg-[var(--color-surface)] overflow-hidden">
-        <div
-          class="h-full rounded-full bg-[var(--color-border-2)]"
-          style={`width: ${baseWidth}%`}
-          role="presentation"
-        />
-      </div>
+      <div class="w-bench__track" role="presentation"><div class="w-bench__fill" style={`--w:${yoursWidth}%`}></div></div>
     </div>
-
+    <div class="w-bench__row">
+      <div class="w-bench__meta">
+        <span>{baselineLabel}</span>
+        <span class="w-bench__num">{baseline}{unit}</span>
+      </div>
+      <div class="w-bench__track" role="presentation"><div class="w-bench__fill" style={`--w:${baseWidth}%`}></div></div>
+    </div>
   </div>
-
-  {caption && (
-    <figcaption class="px-5 pb-4 text-[11px] text-[var(--color-text-dim)]">{caption}</figcaption>
-  )}
+  {caption && <figcaption class="w-cap">{caption}</figcaption>}
 </figure>

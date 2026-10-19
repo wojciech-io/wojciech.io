@@ -1,4 +1,6 @@
 ---
+import '../styles/widgets.css';
+
 interface ComparisonItem {
   label: string;
   body: string;
@@ -27,225 +29,37 @@ const {
 } = Astro.props;
 
 const useCards = items.length > 0;
+const cols = useCards ? Math.min(Math.max(items.length, 2), 3) : 2;
 ---
 
-<figure class={useCards ? 'comparison' : 'comp-block'}>
-  {useCards ? (
-    <div class="comparison__grid">
-      {items.map((item) => (
-        <section class:list={['comparison__item', `comparison__item--${item.tone ?? 'muted'}`]}>
-          <header class="comparison__header">
-            <p class="comparison__label">{item.label}</p>
-            {item.tag && <span class="comparison__tag">{item.tag}</span>}
-          </header>
-          <p class="comparison__body">{item.body}</p>
+<figure class="w">
+  <div class="w-versus" style={`--cols:${cols}`}>
+    {useCards ? (
+      items.map((item) => (
+        <section class="w-versus__side" data-emph={item.tone === 'accent' ? '' : undefined}>
+          <p class="w-versus__label">
+            <span>{item.label}</span>
+            {item.tag && <span class="w-versus__tag" data-tone={item.tone === 'warning' ? 'warn' : undefined}>{item.tag}</span>}
+          </p>
+          <p class="w-versus__body">{item.body}</p>
         </section>
-      ))}
-    </div>
-  ) : (
-    <div class="comp-grid">
-      <section class="comp-col comp-col--left" aria-label={left}>
-        <header class="comp-header">
-          <span class="comp-badge comp-badge--left" aria-hidden="true">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-              <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
-            </svg>
-          </span>
-          <span class="comp-heading">{left}</span>
-        </header>
-        <ul class="comp-list" role="list">
-          {leftItems.map((item) => (
-            <li class="comp-item comp-item--left">
-              <span class="comp-icon comp-icon--left" aria-hidden="true">
-                <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
-                  <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
-                </svg>
-              </span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section class="comp-col comp-col--right" aria-label={right}>
-        <header class="comp-header">
-          <span class="comp-badge comp-badge--right" aria-hidden="true">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-              <path d="M1.5 5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <span class="comp-heading">{right}</span>
-        </header>
-        <ul class="comp-list" role="list">
-          {rightItems.map((item) => (
-            <li class="comp-item comp-item--right">
-              <span class="comp-icon comp-icon--right" aria-hidden="true">
-                <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
-                  <path d="M1.5 5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
-  )}
-  {caption && <figcaption class={useCards ? 'comparison__caption' : 'comp-caption'}>{caption}</figcaption>}
+      ))
+    ) : (
+      <>
+        <section class="w-versus__side" aria-label={left}>
+          <p class="w-versus__label">{left}</p>
+          <ul class="w-list w-list--cross">
+            {leftItems.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+        <section class="w-versus__side" data-emph aria-label={right}>
+          <p class="w-versus__label">{right}</p>
+          <ul class="w-list">
+            {rightItems.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+      </>
+    )}
+  </div>
+  {caption && <figcaption class="w-cap">{caption}</figcaption>}
 </figure>
-
-<style>
-  .comparison,
-  .comp-block {
-    margin-block: 2rem;
-  }
-
-  .comparison__grid {
-    display: grid;
-    gap: 1rem;
-  }
-  @media (min-width: 680px) {
-    .comparison__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  .comparison__item {
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-surface-2);
-    overflow: hidden;
-  }
-  .comparison__item--accent {
-    border-color: color-mix(in srgb, var(--color-accent) 34%, var(--color-border));
-    background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 6%, var(--color-surface-2)), var(--color-surface-2));
-  }
-  .comparison__item--warning {
-    border-color: color-mix(in srgb, #f59e0b 38%, var(--color-border));
-    background: color-mix(in srgb, #f59e0b 7%, var(--color-surface-2));
-  }
-  .comparison__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface);
-    padding: 0.75rem 1rem;
-  }
-  .comparison__label {
-    margin: 0;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--color-text);
-  }
-  .comparison__tag {
-    flex: 0 0 auto;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-badge);
-    padding: 0.125rem 0.45rem;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-text-dim);
-  }
-  .comparison__body {
-    margin: 0;
-    padding: 1rem;
-    font-size: 1rem;
-    line-height: 1.65;
-    color: var(--color-text-muted);
-  }
-
-  .comp-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.875rem;
-  }
-  @media (max-width: 560px) {
-    .comp-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  .comp-col {
-    border-radius: var(--radius-card);
-    border: 1px solid var(--color-border);
-    background: var(--color-surface);
-    overflow: hidden;
-  }
-  .comp-col--right {
-    border-color: color-mix(in srgb, var(--color-accent) 28%, var(--color-border));
-    background: color-mix(in srgb, var(--color-accent) 4%, var(--color-surface));
-  }
-  .comp-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1rem;
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-surface-2);
-  }
-  .comp-col--right .comp-header {
-    border-bottom-color: color-mix(in srgb, var(--color-accent) 22%, var(--color-border));
-    background: color-mix(in srgb, var(--color-accent) 7%, var(--color-surface-2));
-  }
-  .comp-badge,
-  .comp-icon {
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .comp-badge {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-  .comp-badge--left,
-  .comp-icon--left {
-    background: color-mix(in srgb, var(--color-text-dim) 14%, transparent);
-    color: var(--color-text-dim);
-  }
-  .comp-badge--right,
-  .comp-icon--right {
-    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
-    color: var(--color-accent);
-  }
-  .comp-heading {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-  }
-  .comp-col--right .comp-heading {
-    color: var(--color-text);
-  }
-  .comp-list {
-    list-style: none;
-    margin: 0;
-    padding: 0.875rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.625rem;
-  }
-  .comp-item {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: var(--color-text-muted);
-  }
-  .comp-icon {
-    width: 1.125rem;
-    height: 1.125rem;
-    margin-top: 0.1rem;
-  }
-  .comparison__caption,
-  .comp-caption {
-    margin-top: 0.625rem;
-    text-align: center;
-    font-size: 0.75rem;
-    color: var(--color-text-dim);
-  }
-</style>

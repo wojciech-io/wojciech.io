@@ -1,6 +1,6 @@
 ---
 /**
- * Tabs — interactive tabbed content block.
+ * Tabs: interactive tabbed content block.
  * Usage:
  *   <Tabs tabs={[
  *     { label: "Before", content: "Old way of doing things." },
@@ -14,6 +14,8 @@
  *     <div data-tab="2">Deploy content...</div>
  *   </Tabs>
  */
+import '../styles/widgets.css';
+
 interface TabItem {
   label: string;
   content?: string;
@@ -30,29 +32,34 @@ const hasSlots = tabs.length === 0;
 const id = `tabs-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
-<div class="tabs-block" data-tabs={id}>
-  <div class="tabs-bar" role="tablist">
+<div class="w w-tabs" data-tabs={id} data-default={defaultTab}>
+  <div class="w-tabs__bar" role="tablist">
     {tabLabels.map((label, i) => (
       <button
+        type="button"
         role="tab"
+        id={`${id}-tab-${i}`}
         aria-selected={i === defaultTab ? 'true' : 'false'}
         aria-controls={hasSlots ? undefined : `${id}-panel-${i}`}
+        tabindex={i === defaultTab ? 0 : -1}
         data-tab-index={i}
-        class:list={['tabs-trigger', { active: i === defaultTab }]}
+        class="w-tabs__tab"
       >
         {label}
       </button>
     ))}
-    <div class="tabs-indicator" aria-hidden="true" />
+    <span class="w-tabs__ink" aria-hidden="true"></span>
   </div>
 
-  <div class="tabs-content">
+  <div class="w-tabs__content">
     {tabs.length > 0
       ? tabs.map((tab, i) => (
           <div
             id={`${id}-panel-${i}`}
             role="tabpanel"
-            class:list={['tabs-panel', { active: i === defaultTab }]}
+            aria-labelledby={`${id}-tab-${i}`}
+            class="w-tabs__panel"
+            data-active={i === defaultTab ? '' : undefined}
             data-panel-index={i}
           >
             <p>{tab.content}</p>
@@ -63,118 +70,66 @@ const id = `tabs-${Math.random().toString(36).slice(2, 8)}`;
   </div>
 </div>
 
-<style>
-  .tabs-block {
-    margin: 2rem 0;
-  }
-  .tabs-bar {
-    position: relative;
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--color-border);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .tabs-bar::-webkit-scrollbar { display: none; }
-
-  .tabs-trigger {
-    all: unset;
-    cursor: pointer;
-    padding: 0.625rem 1.25rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--color-text-dim);
-    white-space: nowrap;
-    transition: color 0.2s ease;
-    position: relative;
-    z-index: 1;
-  }
-  .tabs-trigger:hover { color: var(--color-text); }
-  .tabs-trigger.active { color: var(--color-text); }
-
-  .tabs-indicator {
-    position: absolute;
-    bottom: -1px;
-    height: 2px;
-    background: var(--color-accent);
-    border-radius: 1px;
-    transition: left 0.25s ease, width 0.25s ease;
-  }
-
-  .tabs-content {
-    padding-top: 1.25rem;
-  }
-  .tabs-panel {
-    display: none;
-    animation: tabFadeIn 0.25s ease;
-  }
-  .tabs-panel.active { display: block; }
-  .tabs-panel :global(p) {
-    font-size: 1rem;
-    line-height: 1.65;
-    color: var(--color-text);
-    margin: 0;
-  }
-
-  /* Slot-based panels */
-  .tabs-content > :global([data-tab]) {
-    display: none;
-    animation: tabFadeIn 0.25s ease;
-  }
-  .tabs-content > :global([data-tab].active) { display: block; }
-
-  @keyframes tabFadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-</style>
-
 <script>
   document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((block) => {
-    const triggers = block.querySelectorAll<HTMLButtonElement>('[data-tab-index]');
-    const panels = block.querySelectorAll<HTMLElement>('[data-panel-index]');
-    const slotPanels = block.querySelectorAll<HTMLElement>('[data-tab]');
-    const indicator = block.querySelector<HTMLElement>('.tabs-indicator');
+    const triggers = [...block.querySelectorAll<HTMLButtonElement>('[data-tab-index]')];
+    const panels = [...block.querySelectorAll<HTMLElement>('[data-panel-index]')];
+    const slotPanels = [...block.querySelectorAll<HTMLElement>('[data-tab]')];
+    const ink = block.querySelector<HTMLElement>('.w-tabs__ink');
+    const blockId = block.dataset.tabs;
 
     // Slot panels are author-supplied <div data-tab="i"> with no id/role, so the
     // buttons' aria-controls would dangle. Wire the tab<->panel relationship here:
     // give each panel a matching id + role=tabpanel and point its trigger at it.
-    const blockId = block.dataset.tabs;
     slotPanels.forEach((panel) => {
       const i = Number(panel.dataset.tab);
       const panelId = `${blockId}-panel-${i}`;
       panel.id = panelId;
       panel.setAttribute('role', 'tabpanel');
-      const trigger = triggers[i];
-      if (trigger) trigger.setAttribute('aria-controls', panelId);
+      panel.setAttribute('aria-labelledby', `${blockId}-tab-${i}`);
+      triggers[i]?.setAttribute('aria-controls', panelId);
     });
 
-    function activate(index: number) {
-      triggers.forEach((t, i) => {
-        const isActive = i === index;
-        t.classList.toggle('active', isActive);
-        t.setAttribute('aria-selected', String(isActive));
-      });
-      panels.forEach((p, i) => p.classList.toggle('active', i === index));
-      slotPanels.forEach((p) => {
-        p.classList.toggle('active', Number(p.dataset.tab) === index);
-      });
-      // Move indicator
-      const active = triggers[index];
-      if (indicator && active) {
-        indicator.style.left = `${active.offsetLeft}px`;
-        indicator.style.width = `${active.offsetWidth}px`;
-      }
+    function moveInk(index: number) {
+      const t = triggers[index];
+      if (!ink || !t) return;
+      ink.style.width = `${t.offsetWidth}px`;
+      ink.style.transform = `translateX(${t.offsetLeft}px)`;
     }
 
-    triggers.forEach((trigger) => {
-      trigger.addEventListener('click', () => {
-        activate(Number(trigger.dataset.tabIndex));
+    function activate(index: number, focus = false) {
+      triggers.forEach((t, i) => {
+        const on = i === index;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach((p, i) => p.toggleAttribute('data-active', i === index));
+      slotPanels.forEach((p) => p.toggleAttribute('data-active', Number(p.dataset.tab) === index));
+      moveInk(index);
+      if (focus) triggers[index]?.focus();
+    }
+
+    triggers.forEach((trigger, i) => {
+      trigger.addEventListener('click', () => activate(i));
+      trigger.addEventListener('keydown', (e) => {
+        const last = triggers.length - 1;
+        const next =
+          e.key === 'ArrowRight' ? (i === last ? 0 : i + 1)
+          : e.key === 'ArrowLeft' ? (i === 0 ? last : i - 1)
+          : e.key === 'Home' ? 0
+          : e.key === 'End' ? last
+          : -1;
+        if (next < 0) return;
+        e.preventDefault();
+        activate(next, true);
       });
     });
 
-    // Init indicator position
-    const defaultIndex = [...triggers].findIndex((t) => t.classList.contains('active'));
-    if (defaultIndex >= 0) activate(defaultIndex);
+    const start = Math.min(Number(block.dataset.default) || 0, triggers.length - 1);
+    block.setAttribute('data-ready', '');
+    activate(start);
+    // the font may swap in after first paint and change the tab widths
+    document.fonts?.ready.then(() => moveInk(triggers.findIndex((t) => t.getAttribute('aria-selected') === 'true')));
+    new ResizeObserver(() => moveInk(triggers.findIndex((t) => t.getAttribute('aria-selected') === 'true'))).observe(block);
   });
 </script>
