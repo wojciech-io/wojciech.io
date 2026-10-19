@@ -591,14 +591,31 @@ Component docs list source path, public props, intended use, and a minimal examp
 **Use:** Accessible video embed wrapper with provider or direct source support.
 **Example:** `<VideoEmbed provider="youtube" id="abc123" title="Demo" />`
 
+### Widget system v2 (article blocks)
+
+Every article block (Callout, DataTable, Stat, StatRow, StatGrid, MetricRow, MetricBoard, MetricDelta, StatCallout, KeyPoint, KeyTakeaway, TLDR, Steps, ProcessFlow, ArticleTimeline, BeforeAfter, Compare, Comparison, DoDont, PullQuote, Accordion, Tabs, Benchmark, ToolCard, Screenshot, ThemePair and the Diagram set) draws from one stylesheet: `packages/mdx-components/styles/widgets.css`. Components import it and carry no styles of their own.
+
+Rules the stylesheet follows, and new widgets should too:
+
+- A widget root is `.w` (a `figure`, `aside`, `section` or `div`). It is a container (`container-type: inline-size`), so layout changes use `@container w`, not viewport media queries.
+- Hairlines and surface, not nested boxes. One accent mark per widget (`--w-mark`: ink in light, lime in dark; `data-tone="warn|bad|good"` swaps it).
+- Labels are sentence case at 13px, semibold. No tracked uppercase, no mono kickers.
+- Numbers use tabular figures. Big numbers are sized from the cell width and character count (`--len`, `cqi`), so they never wrap.
+- Colours come from the site tokens; tones are mixed with `color-mix(in oklab, ...)`.
+- Inner selectors are written `.w .w-x` (0,2,0) so they beat the prose rules (`.prose-content :where(...)`) without `!important`.
+- Motion is optional: native `<details>` animation behind `@supports (interpolate-size)`, everything off under `prefers-reduced-motion`.
+- Props and slots are a public contract: articles call them from MDX. Change the markup, not the props.
+
+`ThemePair` shows one screenshot in light and dark with a Light/Dark switch, opening on the reader's theme: `<ThemePair light="/images/x-light.webp" dark="/images/x-dark.webp" alt="..." url="app.example/page" caption="..." />`.
+
 ### Interactive MDX components
 
 Client-side interactive components for rich article experiences. Each uses a single `<script>` tag that Astro deduplicates automatically (one load per page regardless of instance count). No framework dependencies.
 
 #### Tabs
 **Path:** `packages/mdx-components/components/Tabs.astro`
-**Props:** labels (string[]), variant? ('default' | 'pill' | 'underline')
-**Use:** Tabbed content switcher for comparisons, alternatives, or multi-view content. Each tab panel is a numbered slot.
+**Props:** labels (string[]) or tabs (Array<{label, content}>), defaultTab? (number)
+**Use:** Tabbed content switcher for comparisons, alternatives, or multi-view content. Each tab panel is a numbered slot (`<Fragment slot="0">`), or a `<div data-tab="0">` child for rich content. Arrow keys, Home and End move between tabs.
 **Example:**
 ```mdx
 <Tabs labels={['Claude Code', 'Clay', 'Manual']}>

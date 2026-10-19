@@ -24,15 +24,18 @@ interface Props {
 }
 
 const { items, cols, caption, title } = Astro.props;
+
+// One size for the whole grid, taken from its longest figure, so a row of numbers shares a baseline
+const gridLen = Math.max(3, ...items.filter((it) => !isLong(it.value)).map((it) => figLen(it.value + (it.unit ?? ''))));
 ---
 
 <figure class="w">
   {title && <p class="w-eyebrow">{title}</p>}
   <div class="w-figs" data-cols={cols}>
-    <div class="w-figs__grid">
+    <div class="w-figs__grid" style={`--len:${gridLen}`}>
       {items.map((it) => (
         <div class="w-fig" data-accent={it.accent ? '' : undefined}>
-          <p class="w-fig__value" style={`--len:${figLen(it.value + (it.unit ?? ''))}`} data-long={isLong(it.value) ? '' : undefined}>{it.value}{it.unit && <span class="w-fig__unit">{it.unit}</span>}</p>
+          <p class="w-fig__value" data-long={isLong(it.value) ? '' : undefined}>{it.value}{it.unit && <span class="w-fig__unit">{it.unit}</span>}</p>
           <p class="w-fig__label">{it.label}</p>
           {it.delta && <p class="w-fig__delta" data-tone={it.tone && it.tone !== 'neutral' ? it.tone : undefined}>{it.delta}</p>}
           {it.sub && <p class="w-fig__sub">{it.sub}</p>}
