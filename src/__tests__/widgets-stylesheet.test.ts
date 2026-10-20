@@ -47,7 +47,7 @@ describe('widgets.css', () => {
   });
 
   it('leaves no component with a style block of its own', () => {
-    expect(all.filter(({ text }) => /<style[\s>]/.test(text)).map(({ file }) => file)).toEqual([]);
+    expect(all.filter(({ text }) => /<style[\s>]/i.test(text)).map(({ file }) => file)).toEqual([]);
   });
 
   it('leaves no Tailwind arbitrary-value utility in a widget', () => {
@@ -60,22 +60,23 @@ describe('widgets.css', () => {
   it('starts every widget script on astro:page-load', () => {
     // A script that runs once at load goes dead after a client-side navigation to another article.
     const offenders = all
-      .filter(({ text }) => /<script[\s>]/.test(text) && !/astro:page-load/.test(text))
+      .filter(({ text }) => /<script[\s>]/i.test(text) && !/astro:page-load/.test(text))
       .map(({ file }) => file);
     expect(offenders).toEqual([]);
   });
 
   it('defines every w- class a component uses', () => {
-    const escape = (token: string) => token.replace(/[-_]/g, '\\$&');
+    // Class names the sheet defines, read once with a literal pattern; matching is plain string work after that.
+    const defined = new Set((CSS.match(/\.w-[a-z0-9_-]+/g) ?? []).map((c) => c.slice(1)));
     // a block root (w-shot) counts as defined when any of its parts (.w-shot__window) is
-    const defined = (token: string) =>
+    const isDefined = (token: string) =>
       STRUCTURAL.has(token) ||
-      new RegExp(`\\.${escape(token)}(?![\\w-])`).test(CSS) ||
-      new RegExp(`\\.${escape(token)}(?:__|--)`).test(CSS);
+      defined.has(token) ||
+      [...defined].some((d) => d.startsWith(`${token}__`) || d.startsWith(`${token}--`));
     const undefinedClasses: string[] = [];
     for (const { file, text } of all) {
       for (const token of new Set(text.match(/\bw-[a-z0-9]+(?:__[a-z0-9]+)?(?:--[a-z0-9]+)?\b/g) ?? [])) {
-        if (!defined(token)) undefinedClasses.push(`${file}: ${token}`);
+        if (!isDefined(token)) undefinedClasses.push(`${file}: ${token}`);
       }
     }
     expect(undefinedClasses).toEqual([]);
