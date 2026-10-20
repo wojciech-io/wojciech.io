@@ -46,6 +46,9 @@ technology companies.
 
 - All copy must follow the tone of voice spec in `docs/10-tone-of-voice.md`.
   Read it before writing or reviewing any visible text.
+- Read `DESIGN.md` before building or changing anything visible. It holds the
+  design rules, the list of things we do not do, the decision log and the
+  review rubric, and tests enforce part of it.
 - Design tokens, typography, spacing, and colour are documented in
   `docs/design-system.md`. Source of truth is `src/styles/tokens.css`.
 - Hard copy bans: no em dashes, no AI slop phrases, no boilerplate structures.

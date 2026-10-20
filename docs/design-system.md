@@ -2,6 +2,8 @@
 
 Reference for all design tokens, typography, spacing, colour, and component conventions across wojciech.io and its subdomains.
 
+> **Decisions, rules, the list of things we do not do, and the review rubric live in [`DESIGN.md`](../DESIGN.md).** This page is a reference for tokens and components. Where it disagrees with `src/styles/tokens.css` or `packages/mdx-components/styles/widgets.css`, the CSS wins. The article widgets were redesigned on 2026-10-20 (see "Widgets v3" in `DESIGN.md`); entries below that describe their old look are out of date.
+
 Source of truth: `src/styles/tokens.css`. All values below are extracted from that file; update this page when changing a token. The subdomain apps get the same file through `@wojciech/tokens` (`packages/tokens/index.css` only re-imports it), so there is no second copy to keep in sync.
 
 ---
@@ -623,7 +625,7 @@ Component docs list source path, public props, intended use, and a minimal examp
 
 #### TOC
 **Path:** `packages/mdx-components/components/TOC.astro`
-**Props:** title? (string), levels? ('h2' | 'h2,h3'), minItems? (number), sticky? (boolean)
+**Props:** title? (string), levels? ('h2' | 'h2,h3'), minItems? (number)
 **Use:** Generated table of contents for long MDX articles.
 **Example:** `<TOC {...props} />`
 

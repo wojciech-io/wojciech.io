@@ -292,9 +292,10 @@ const isComparison = (post.data.models?.length ?? 0) > 0;
 
     <ArticleCover coverType={post.data.coverType} coverImage={post.data.coverImage} tags={post.data.tags} title={post.data.title} />
 
-    <div class="mx-auto max-w-6xl px-6 pb-16 pt-12 md:pt-16 lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-16">
+    <div class="mx-auto max-w-6xl px-6 pb-16 pt-12 md:pt-16">
       <div class="min-w-0 max-w-[46rem]">
         {post.data.tldr && post.data.tldr.length > 0 && <TLDR items={post.data.tldr} />}
+        <ArticleToc headings={headings} />
 
         <div class="prose-content">
           <Content components={mdxComponents} />
@@ -304,12 +305,6 @@ const isComparison = (post.data.models?.length ?? 0) > 0;
           <ArticleShare url={canonicalURL} title={post.data.title} label="Share this article" />
         </div>
       </div>
-
-      <aside class="hidden lg:block" data-pagefind-ignore>
-        <div class="sticky top-28">
-          <ArticleToc headings={headings} />
-        </div>
-      </aside>
     </div>
   </article>
 

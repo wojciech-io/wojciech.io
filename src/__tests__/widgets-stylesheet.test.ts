@@ -83,9 +83,52 @@ describe('widgets.css', () => {
   });
 
   it('lays out with container queries, not viewport breakpoints', () => {
-    // The one exception places the sticky table of contents against the page margin.
+    // The one exception places an article's margin notes against the page margin, so it keys off the viewport.
     const mediaQueries = [...CSS.matchAll(/@media\s*([^{]+)\{/g)].map((m) => m[1].trim());
     const viewport = mediaQueries.filter((q) => !/prefers-reduced-motion/.test(q));
-    expect(viewport).toEqual(['(min-width: 1180px)']);
+    expect(viewport).toEqual(['(min-width: 1100px)']);
+  });
+});
+
+/**
+ * The visual rules in DESIGN.md that a stylesheet can break without any test noticing. Each one is a tell of a
+ * generated site: a filled rounded card, an accent bar down the left edge, a font weight that is not loaded
+ * (the browser fakes it), the serif creeping into body text.
+ */
+describe('widgets.css visual rules', () => {
+  // Every rule as { selector, body }. Nested at-rules are fine: the pattern only matches innermost blocks.
+  const rules = [...CSS.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({ selector: m[1].trim(), body: m[2] }));
+
+  it('has no radius above 8px except pills and circles', () => {
+    const offenders: string[] = [];
+    for (const { selector, body } of rules) {
+      for (const [, value] of body.matchAll(/border-radius:\s*([^;]+);/g)) {
+        const v = value.trim();
+        if (['0', 'inherit', '50%', '999px', '9999px'].includes(v)) continue;
+        const rem = /^([\d.]+)rem$/.exec(v);
+        const px = /^([\d.]+)px$/.exec(v);
+        const px8 = rem ? Number(rem[1]) * 16 : px ? Number(px[1]) : Infinity;
+        if (px8 > 8) offenders.push(`${selector} { border-radius: ${v} }`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('draws no accent bar down the left edge of a box', () => {
+    expect(CSS).not.toMatch(/inset\s+3px\s+0\s+0/);
+  });
+
+  it('uses only font weights that are loaded', () => {
+    const weights = new Set([...CSS.matchAll(/font-weight:\s*([^;]+);/g)].map((m) => m[1].trim()));
+    expect([...weights].filter((w) => !['400', '600', 'inherit', 'normal'].includes(w))).toEqual([]);
+  });
+
+  it('keeps the serif to figures, step numerals, side titles, quotes and deck headings', () => {
+    const allowed = ['w-fig__value', 'w-rail', 'w-versus', 'w-delta__value', 'w-hero__value', 'w-ticker__value', 'w-quote__text', 'w-deck__heading'];
+    const offenders = rules
+      .filter(({ body }) => /font-family:\s*var\(--w-serif\)/.test(body))
+      .map(({ selector }) => selector)
+      .filter((selector) => !allowed.some((stem) => selector.includes(stem)));
+    expect(offenders).toEqual([]);
   });
 });
