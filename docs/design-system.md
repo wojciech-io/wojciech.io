@@ -411,182 +411,242 @@ Component docs list source path, public props, intended use, and a minimal examp
 
 ### Insights MDX components
 
+#### AgentFlow
+**Path:** `packages/mdx-components/components/AgentFlow.astro`
+**Props:** agentLabel? (string), inputLabel? (string), outputLabel? (string), tools (string[]), caption? (string), title? (string)
+**Use:** Vertical diagram of one agent run: input, agent, a row of tool chips, output.
+**Example:** `<AgentFlow title="How the stack runs" inputLabel="Account list" agentLabel="Claude Code" tools={["/research", "/score"]} outputLabel="Sequences" />`
+
+#### AnnotatedImage
+**Path:** `packages/mdx-components/components/AnnotatedImage.astro`
+**Props:** src (string), alt (string), annotations? (Array<{ x: number, y: number, label: string, pos?: 'top' | 'bottom' | 'left' | 'right' }>), caption? (string)
+**Use:** Image with numbered pins. `x` and `y` are percentages of the image; the label shows on hover and on keyboard focus. Without annotations it is a plain captioned image.
+**Example:** `<AnnotatedImage src="/images/insights/x.webp" alt="..." annotations={[{ x: 30, y: 40, label: "The request" }]} />`
+
 #### ArticleTimeline
-**Path:** `src/components/insights/ArticleTimeline.astro`
+**Path:** `packages/mdx-components/components/ArticleTimeline.astro`
 **Props:** items (TimelineItem[]), caption? (string)
 **Use:** Vertical timeline for phase-based narratives and implementation histories.
 **Example:** `<ArticleTimeline {...props} />`
 
 #### BeforeAfter
-**Path:** `src/components/insights/BeforeAfter.astro`
+**Path:** `packages/mdx-components/components/BeforeAfter.astro`
 **Props:** before (Side), after (Side), label? (string)
 **Use:** Side-by-side before and after comparison for process or system changes.
 **Example:** `<BeforeAfter {...props} />`
 
+#### BeforeAfterDemo
+**Path:** `packages/mdx-components/components/BeforeAfterDemo.astro`
+**Props:** label? (string), caption? (string); slots `before` and `after`
+**Use:** Two live panes, divided by a hairline, for showing real UI before and after a fix.
+**Example:** `<BeforeAfterDemo label="Mobile drawer"><Fragment slot="before">...</Fragment><Fragment slot="after">...</Fragment></BeforeAfterDemo>`
+
 #### Benchmark
-**Path:** `src/components/insights/Benchmark.astro`
+**Path:** `packages/mdx-components/components/Benchmark.astro`
 **Props:** label (string), yours (number), baseline (number), yoursLabel? (string), baselineLabel? (string), unit? (string), caption? (string), lowerIsBetter? (boolean)
 **Use:** Visual metric comparison where a current value is compared against a baseline.
 **Example:** `<Benchmark {...props} />`
 
 #### Callout
-**Path:** `src/components/insights/Callout.astro`
+**Path:** `packages/mdx-components/components/Callout.astro`
 **Props:** type? ('note' | 'tip' | 'warning' | 'critical'), title? (string)
 **Use:** Highlighted note, tip, warning, or critical block inside long-form articles.
 **Example:** `<Callout {...props} />`
 
 #### CaseStudyBlock
-**Path:** `src/components/insights/CaseStudyBlock.astro`
+**Path:** `packages/mdx-components/components/CaseStudyBlock.astro`
 **Props:** tag? (string), client? (string), challenge (string), system (string), result (string), timeframe? (string)
 **Use:** Public-safe case study summary with challenge, system, and result fields.
 **Example:** `<CaseStudyBlock {...props} />`
 
 #### Compare
-**Path:** `src/components/insights/Compare.astro`
+**Path:** `packages/mdx-components/components/Compare.astro`
 **Props:** labelA (string), labelB (string), tagA? (string), tagB? (string), colorCode? (boolean), caption? (string)
 **Use:** Two-column comparison wrapper using slots for richer MDX content.
 **Example:** `<Compare {...props} />`
 
 #### Comparison
-**Path:** `src/components/insights/Comparison.astro`
+**Path:** `packages/mdx-components/components/Comparison.astro`
 **Props:** items? (ComparisonItem[]), left? (string), right? (string), leftItems? (string[]), rightItems? (string[]), caption? (string)
 **Use:** Compact comparison cards or classic left/right comparison lists.
 **Example:** `<Comparison left="Manual" right="System" leftItems={left} rightItems={right} />`
 
 #### DataTable
-**Path:** `src/components/insights/DataTable.astro`
+**Path:** `packages/mdx-components/components/DataTable.astro`
 **Props:** columns (Column[]), rows (Record<string, string | number>[]), caption? (string), highlight? (number[])
 **Use:** Token-aligned data table for compact comparisons and audits.
 **Example:** `<DataTable columns={columns} rows={rows} />`
 
 #### DoDont
-**Path:** `src/components/insights/DoDont.astro`
+**Path:** `packages/mdx-components/components/DoDont.astro`
 **Props:** do? (string[]), dont? (string[]), doLabel? (string), dontLabel? (string), caption? (string)
 **Use:** Paired do and do-not guidance for tactical articles.
 **Example:** `<DoDont {...props} />`
 
 #### Flow
-**Path:** `src/components/insights/Flow.astro`
+**Path:** `packages/mdx-components/components/Flow.astro`
 **Props:** steps (Step[]), caption? (string)
 **Use:** Linear process flow for operational sequences.
 **Example:** `<Flow {...props} />`
 
 #### Grid
-**Path:** `src/components/insights/Grid.astro`
+**Path:** `packages/mdx-components/components/Grid.astro`
 **Props:** cols? (2 | 3 | 4), gap? ('sm' | 'md' | 'lg'), title? (string), caption? (string)
 **Use:** Generic MDX grid wrapper for repeated blocks.
 **Example:** `<Grid {...props} />`
 
 #### KeyPoint
-**Path:** `src/components/insights/KeyPoint.astro`
+**Path:** `packages/mdx-components/components/KeyPoint.astro`
 **Props:** title? (string), items? (string[]), type? ('takeaway' | 'warning' | 'result')
 **Use:** Short key point list with tone variants for result, warning, or takeaway.
 **Example:** `<KeyPoint {...props} />`
 
 #### KeyTakeaway
-**Path:** `src/components/insights/KeyTakeaway.astro`
+**Path:** `packages/mdx-components/components/KeyTakeaway.astro`
 **Props:** icon? ('info' | 'warning' | 'tip' | 'check'), title? (string), body? (string), items? (string[]), tone? ('accent' | 'warning' | 'neutral')
 **Use:** Prominent takeaway block for article summaries and decision points.
 **Example:** `<KeyTakeaway icon="check" title="Decision" body="Use the system path." />`
 
+#### MetricBoard
+**Path:** `packages/mdx-components/components/MetricBoard.astro`
+**Props:** title? (string), metrics (Array<{ label: string, value: string, delta?: string, unit?: string }>)
+**Use:** Board of figures; a delta starting with `-` is shown as negative.
+**Example:** `<MetricBoard title="Operating board" metrics={[{ label: "Win rate", value: "24", unit: "%", delta: "-2%" }]} />`
+
+#### MetricDelta
+**Path:** `packages/mdx-components/components/MetricDelta.astro`
+**Props:** before (string), after (string), delta (string), label? (string), beforeLabel? (string), afterLabel? (string), tone? ('positive' | 'warning' | 'neutral')
+**Use:** One number, before and after, with the change between them.
+**Example:** `<MetricDelta before="4.2%" after="9.7%" delta="+5.5 pts" label="Reply rate" />`
+
 #### MetricRow
-**Path:** `src/components/insights/MetricRow.astro`
+**Path:** `packages/mdx-components/components/MetricRow.astro`
 **Props:** items (Metric[]), caption? (string)
 **Use:** Horizontal metric strip for article proof points.
 **Example:** `<MetricRow {...props} />`
 
 #### ProcessFlow
-**Path:** `src/components/insights/ProcessFlow.astro`
+**Path:** `packages/mdx-components/components/ProcessFlow.astro`
 **Props:** steps? (Step[]), title? (string), caption? (string), direction? ('horizontal' | 'vertical')
 **Use:** Process visualization with optional horizontal or vertical layout.
 **Example:** `<ProcessFlow {...props} />`
 
+#### ProTip
+**Path:** `packages/mdx-components/components/ProTip.astro`
+**Props:** label? (string, default "Pro tip")
+**Use:** A tip callout with its own label. Drawn with the Callout tip styles; the body is the slot.
+**Example:** `<ProTip label="Operator note"><p>Write the stop date first.</p></ProTip>`
+
 #### PullQuote
-**Path:** `src/components/insights/PullQuote.astro`
+**Path:** `packages/mdx-components/components/PullQuote.astro`
 **Props:** quote? (string), source? (string), role? (string), href? (string)
 **Use:** Large quoted excerpt with optional linked attribution.
 **Example:** `<PullQuote {...props} />`
 
 #### Quote
-**Path:** `src/components/insights/Quote.astro`
+**Path:** `packages/mdx-components/components/Quote.astro`
 **Props:** author? (string), role? (string), source? (string)
 **Use:** Standard inline quote block with attribution slot support.
 **Example:** `<Quote {...props} />`
 
 #### ResultCard
-**Path:** `src/components/insights/ResultCard.astro`
+**Path:** `packages/mdx-components/components/ResultCard.astro`
 **Props:** metric (string), label (string), context? (string), timeframe? (string), tag? (string), compact? (boolean)
 **Use:** Single quantified result card for case studies and proof moments.
 **Example:** `<ResultCard {...props} />`
 
 #### Screenshot
-**Path:** `src/components/insights/Screenshot.astro`
+**Path:** `packages/mdx-components/components/Screenshot.astro`
 **Props:** src (string), alt (string), url? (string), caption? (string)
 **Use:** Responsive screenshot with caption and optional linked source.
 **Example:** `<Screenshot src="/images/work/notch.png" alt="Notch interface" />`
 
+#### StackLayer
+**Path:** `packages/mdx-components/components/StackLayer.astro`
+**Props:** layers (Array<{ name: string, tech: string, badge?: string }>), title? (string)
+**Use:** Numbered rows for the layers of a system, each with a short description and an optional badge.
+**Example:** `<StackLayer title="Nine skills" layers={[{ name: "start", tech: "Walks the setup", badge: "setup" }]} />`
+
 #### Stat
-**Path:** `src/components/insights/Stat.astro`
+**Path:** `packages/mdx-components/components/Stat.astro`
 **Props:** value (string), label (string), sub? (string), delta? (string), deltaDir? ('up' | 'down' | 'neutral'), source? (string), accent? (boolean)
 **Use:** Single metric tile used inside StatGrid or custom MDX layouts.
 **Example:** `<Stat {...props} />`
 
 #### StatCallout
-**Path:** `src/components/insights/StatCallout.astro`
+**Path:** `packages/mdx-components/components/StatCallout.astro`
 **Props:** value (string), label (string), body? (string), eyebrow? (string), delta? (string), tone? ('neutral' | 'accent' | 'warning')
 **Use:** Large metric callout for article proof or warning moments.
 **Example:** `<StatCallout {...props} />`
 
 #### StatGrid
-**Path:** `src/components/insights/StatGrid.astro`
+**Path:** `packages/mdx-components/components/StatGrid.astro`
 **Props:** stats (Stat[]), columns? (2 | 3 | 4), caption? (string)
 **Use:** Responsive grid of metric tiles.
 **Example:** `<StatGrid {...props} />`
 
 #### StatRow
-**Path:** `src/components/insights/StatRow.astro`
+**Path:** `packages/mdx-components/components/StatRow.astro`
 **Props:** cols? (2 | 3 | 4), caption? (string)
 **Use:** Slot-based metric row when Stat components are authored manually in MDX.
 **Example:** `<StatRow {...props} />`
 
 #### Steps
-**Path:** `src/components/insights/Steps.astro`
+**Path:** `packages/mdx-components/components/Steps.astro`
 **Props:** items? (StepInput[]), title? (string), caption? (string), start? (number)
 **Use:** Ordered implementation steps for playbooks and migration guides.
 **Example:** `<Steps {...props} />`
 
+#### Terminal
+**Path:** `packages/mdx-components/components/Terminal.astro`
+**Props:** title? (string, default "Terminal"), commands (Array<{ cmd: string, output?: string }>)
+**Use:** Terminal window with prompt lines and optional output; the slot is appended after the commands.
+**Example:** `<Terminal title="Claude Code" commands={[{ cmd: "/operator-cmo:start", output: "Half an hour of questions." }]} />`
+
+#### ThemePair
+**Path:** `packages/mdx-components/components/ThemePair.astro`
+**Props:** light (string), dark (string), alt (string), url? (string), caption? (string), width? (number), height? (number)
+**Use:** One screenshot in light and dark with a Light/Dark switch; opens on the reader's theme.
+**Example:** `<ThemePair light="/images/x-light.webp" dark="/images/x-dark.webp" alt="..." url="app.example/page" />`
+
+#### ThreadBlock
+**Path:** `packages/mdx-components/components/ThreadBlock.astro`
+**Props:** messages (Array<{ role: 'user' | 'assistant' | 'system', content: string, label?: string }>), title? (string)
+**Use:** A conversation. `content` is HTML, so inline code and paragraphs work; `label` replaces the default role name.
+**Example:** `<ThreadBlock title="Briefing" messages={[{ role: "user", content: "<p>Score the list.</p>" }]} />`
+
 #### TLDR
-**Path:** `src/components/insights/TLDR.astro`
+**Path:** `packages/mdx-components/components/TLDR.astro`
 **Props:** items? (string[]), title? (string)
 **Use:** Short summary block near the top of insight articles.
 **Example:** `<TLDR items={frontmatter.tldr} title="TL;DR" />`
 
 #### TOC
-**Path:** `src/components/insights/TOC.astro`
+**Path:** `packages/mdx-components/components/TOC.astro`
 **Props:** title? (string), levels? ('h2' | 'h2,h3'), minItems? (number), sticky? (boolean)
 **Use:** Generated table of contents for long MDX articles.
 **Example:** `<TOC {...props} />`
 
 #### TechStack
-**Path:** `src/components/insights/TechStack.astro`
+**Path:** `packages/mdx-components/components/TechStack.astro`
 **Props:** title? (string), caption? (string), items? (StackItemInput[]), groups? (StackGroupInput[]), cols? (2 | 3)
 **Use:** Tool and platform stack display for implementation articles.
 **Example:** `<TechStack {...props} />`
 
 #### ToolCard
-**Path:** `src/components/insights/ToolCard.astro`
+**Path:** `packages/mdx-components/components/ToolCard.astro`
 **Props:** title? (string), caption? (string), items? (Tool[]), cols? (2 | 3)
 **Use:** Grid of tools with descriptions, links, and role context.
 **Example:** `<ToolCard {...props} />`
 
 #### TwoUp
-**Path:** `src/components/insights/TwoUp.astro`
+**Path:** `packages/mdx-components/components/TwoUp.astro`
 **Props:** left? (string | { title?: string, items?: string[] }), right? (same), ratio? ('1:1' | '2:1' | '1:2'), gap? ('sm' | 'md' | 'lg')
 **Use:** Two-column MDX layout with optional ratio control. A column is an HTML string, a titled list, or a `left` / `right` slot. Stacks when its own column is narrower than 36rem.
 **Example:** `<TwoUp {...props} />`
 
 #### VideoEmbed
-**Path:** `src/components/insights/VideoEmbed.astro`
+**Path:** `packages/mdx-components/components/VideoEmbed.astro`
 **Props:** id? (string), src? (string), provider? ('youtube' | 'loom' | 'vimeo'), title? (string), caption? (string), aspect? ('16:9' | '4:3' | '1:1' | '9:16')
 **Use:** Accessible video embed wrapper with provider or direct source support.
 **Example:** `<VideoEmbed provider="youtube" id="abc123" title="Demo" />`
@@ -667,25 +727,25 @@ Client-side interactive components for rich article experiences. Each uses a sin
 ### Insights diagram helpers
 
 #### Arrow
-**Path:** `src/components/insights/diagrams/Arrow.astro`
+**Path:** `packages/mdx-components/components/diagrams/Arrow.astro`
 **Props:** label? (string), dashed? (boolean), direction? ('right' | 'left' | 'both' | 'down')
 **Use:** Directional connector for custom MDX diagrams.
 **Example:** `<Arrow {...props} />`
 
 #### Box
-**Path:** `src/components/insights/diagrams/Box.astro`
+**Path:** `packages/mdx-components/components/diagrams/Box.astro`
 **Props:** variant? ('default' | 'accent' | 'muted' | 'outline'), label? (string), sub? (string)
 **Use:** Diagram node used inside custom MDX system diagrams.
 **Example:** `<Box {...props} />`
 
 #### Diagram
-**Path:** `src/components/insights/diagrams/Diagram.astro`
+**Path:** `packages/mdx-components/components/diagrams/Diagram.astro`
 **Props:** caption? (string), direction? ('row' | 'column'), align? ('start' | 'center' | 'stretch')
 **Use:** Diagram container for composed Box, Arrow, and Stack components.
 **Example:** `<Diagram {...props} />`
 
 #### Stack
-**Path:** `src/components/insights/diagrams/Stack.astro`
+**Path:** `packages/mdx-components/components/diagrams/Stack.astro`
 **Props:** direction? ('row' | 'column'), gap? ('sm' | 'md' | 'lg'), align? ('start' | 'center' | 'stretch')
 **Use:** Grouping component for diagram layers or grouped nodes.
 **Example:** `<Stack {...props} />`

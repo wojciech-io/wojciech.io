@@ -1,4 +1,6 @@
 ---
+import '../../styles/widgets.css';
+
 interface Props {
   label?: string;
   dashed?: boolean;
@@ -9,7 +11,7 @@ const { label, dashed = false, direction = 'right' } = Astro.props;
 const isVertical = direction === 'down';
 ---
 
-<div class={`diagram-arrow ${isVertical ? 'diagram-arrow-vertical' : ''}`} data-dashed={dashed}>
+<div class:list={['w-arrow', isVertical && 'w-arrow--down']} data-dashed={dashed}>
   <svg
     viewBox={isVertical ? '0 0 24 60' : '0 0 60 24'}
     width={isVertical ? '24' : '60'}
@@ -43,29 +45,5 @@ const isVertical = direction === 'down';
       </>
     )}
   </svg>
-  {label && <span class="diagram-arrow-label">{label}</span>}
+  {label && <span class="w-arrow__label">{label}</span>}
 </div>
-
-<style>
-  .diagram-arrow {
-    display: inline-flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 0.125rem;
-    color: var(--color-text-muted);
-    flex-shrink: 0;
-    min-width: 3.75rem;
-  }
-  .diagram-arrow-label {
-    font-size: 0.6875rem;
-    color: var(--color-text-dim);
-    text-transform: none;
-    letter-spacing: 0;
-    font-weight: 400;
-    margin-top: -0.25rem;
-  }
-  .diagram-arrow-vertical {
-    min-width: 1.5rem;
-    align-self: center;
-  }
-</style>

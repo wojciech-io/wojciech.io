@@ -1,4 +1,6 @@
 ---
+import '../styles/widgets.css';
+
 interface Props {
   title?: string;
   levels?: 'h2' | 'h2,h3';
@@ -9,10 +11,10 @@ interface Props {
 const { title = 'On this page', levels = 'h2,h3', minItems = 2, sticky = true } = Astro.props;
 ---
 
-<aside class:list={['toc', sticky && 'toc--sticky']} data-mdx-toc data-levels={levels} data-min-items={minItems}>
-  <p class="toc__title">{title}</p>
-  <nav class="toc__nav" aria-label={title}>
-    <ol class="toc__list"></ol>
+<aside class:list={['w', 'w-toc', sticky && 'w-toc--sticky']} data-mdx-toc data-levels={levels} data-min-items={minItems}>
+  <p class="w-eyebrow">{title}</p>
+  <nav class="w-toc__nav" aria-label={title}>
+    <ol class="w-toc__list"></ol>
   </nav>
 </aside>
 
@@ -73,7 +75,7 @@ const { title = 'On this page', levels = 'h2,h3', minItems = 2, sticky = true } 
         return slug;
       };
 
-      const list = toc.querySelector('.toc__list');
+      const list = toc.querySelector('.w-toc__list');
       if (!list) return;
 
       list.textContent = '';
@@ -85,7 +87,7 @@ const { title = 'On this page', levels = 'h2,h3', minItems = 2, sticky = true } 
         }
 
         const item = document.createElement('li');
-        item.className = `toc__item toc__item--${element.tagName.toLowerCase()}`;
+        item.dataset.level = element.tagName.toLowerCase();
 
         const link = document.createElement('a');
         link.href = `#${element.id}`;
@@ -98,6 +100,11 @@ const { title = 'On this page', levels = 'h2,h3', minItems = 2, sticky = true } 
       });
 
       const setActiveLink = () => {
+        // a soft navigation replaces the page, so a listener left behind retires itself
+        if (!toc.isConnected) {
+          window.removeEventListener('scroll', setActiveLink);
+          return;
+        }
         const current = headingLinks.reduce((active, item) => (
           item.heading.getBoundingClientRect().top <= 130 ? item : active
         ), headingLinks[0]);
@@ -120,84 +127,6 @@ const { title = 'On this page', levels = 'h2,h3', minItems = 2, sticky = true } 
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', buildMdxTocs, { once: true });
-  } else {
-    buildMdxTocs();
-  }
+  buildMdxTocs();
+  document.addEventListener('astro:page-load', buildMdxTocs);
 </script>
-
-<style>
-  .toc {
-    margin: 0 0 2rem;
-    padding: 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-surface-2);
-  }
-
-  .toc[hidden] {
-    display: none;
-  }
-
-  @media (min-width: 1180px) {
-    .toc--sticky {
-      float: right;
-      position: sticky;
-      top: 5rem;
-      z-index: 1;
-      width: 15rem;
-      max-height: calc(100vh - 7rem);
-      overflow: auto;
-      margin: 0 -17rem 1.5rem 1.5rem;
-    }
-  }
-
-  .toc__title {
-    margin: 0 0 0.75rem;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-  }
-
-  .toc__list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .toc :global(.toc__item) {
-    margin: 0;
-  }
-
-  .toc :global(.toc__item a) {
-    display: block;
-    padding: 0.25rem 0;
-    color: var(--color-text-muted);
-    font-size: 0.875rem;
-    line-height: 1.35;
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
-
-  .toc :global(.toc__item a:hover),
-  .toc :global(.toc__item a[aria-current='true']) {
-    color: var(--color-text);
-  }
-
-  .toc :global(.toc__item--h3 a) {
-    padding-left: 0.875rem;
-    color: var(--color-text-dim);
-    font-size: 0.75rem;
-  }
-
-  :global(.prose-content h2[id]),
-  :global(.prose-content h3[id]) {
-    scroll-margin-top: 5.5rem;
-  }
-</style>

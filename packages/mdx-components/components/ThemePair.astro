@@ -48,13 +48,18 @@ const id = `pair-${Math.random().toString(36).slice(2, 8)}`;
 </figure>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-pair]').forEach((fig) => {
-    const buttons = fig.querySelectorAll<HTMLButtonElement>('[data-mode]');
-    const set = (mode: 'light' | 'dark') => {
-      fig.dataset.show = mode;
-      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
-    };
-    buttons.forEach((b) => b.addEventListener('click', () => set(b.dataset.mode === 'dark' ? 'dark' : 'light')));
-    set(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
-  });
+  function wirePairs() {
+    document.querySelectorAll<HTMLElement>('[data-pair]:not([data-ready])').forEach((fig) => {
+      fig.setAttribute('data-ready', '');
+      const buttons = fig.querySelectorAll<HTMLButtonElement>('[data-mode]');
+      const set = (mode: 'light' | 'dark') => {
+        fig.dataset.show = mode;
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+      };
+      buttons.forEach((b) => b.addEventListener('click', () => set(b.dataset.mode === 'dark' ? 'dark' : 'light')));
+      set(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+    });
+  }
+  wirePairs();
+  document.addEventListener('astro:page-load', wirePairs);
 </script>
