@@ -39,15 +39,20 @@ const { items, title, multiple = false } = Astro.props;
 
 <script>
   // Single-open mode: opening one row closes its siblings
-  document.querySelectorAll<HTMLElement>('[data-accordion]:not([data-multiple])').forEach((block) => {
-    block.querySelectorAll('details').forEach((details) => {
-      details.addEventListener('toggle', () => {
-        if (details.open) {
-          block.querySelectorAll('details').forEach((other) => {
-            if (other !== details) other.removeAttribute('open');
-          });
-        }
+  function wireAccordions() {
+    document.querySelectorAll<HTMLElement>('[data-accordion]:not([data-multiple]):not([data-ready])').forEach((block) => {
+      block.setAttribute('data-ready', '');
+      block.querySelectorAll('details').forEach((details) => {
+        details.addEventListener('toggle', () => {
+          if (details.open) {
+            block.querySelectorAll('details').forEach((other) => {
+              if (other !== details) other.removeAttribute('open');
+            });
+          }
+        });
       });
     });
-  });
+  }
+  wireAccordions();
+  document.addEventListener('astro:page-load', wireAccordions);
 </script>

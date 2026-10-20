@@ -87,65 +87,69 @@ const mode: 'prop' | 'named' | 'children' = tabs.length > 0 ? 'prop' : named.som
 </div>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((block) => {
-    const triggers = [...block.querySelectorAll<HTMLButtonElement>('[data-tab-index]')];
-    const panels = [...block.querySelectorAll<HTMLElement>('[data-panel-index]')];
-    const slotPanels = [...block.querySelectorAll<HTMLElement>('[data-tab]')];
-    const ink = block.querySelector<HTMLElement>('.w-tabs__ink');
-    const blockId = block.dataset.tabs;
+  function wireTabs() {
+    document.querySelectorAll<HTMLElement>('[data-tabs]:not([data-ready])').forEach((block) => {
+      const triggers = [...block.querySelectorAll<HTMLButtonElement>('[data-tab-index]')];
+      const panels = [...block.querySelectorAll<HTMLElement>('[data-panel-index]')];
+      const slotPanels = [...block.querySelectorAll<HTMLElement>('[data-tab]')];
+      const ink = block.querySelector<HTMLElement>('.w-tabs__ink');
+      const blockId = block.dataset.tabs;
 
-    // Slot panels are author-supplied <div data-tab="i"> with no id/role, so the
-    // buttons' aria-controls would dangle. Wire the tab<->panel relationship here:
-    // give each panel a matching id + role=tabpanel and point its trigger at it.
-    slotPanels.forEach((panel) => {
-      const i = Number(panel.dataset.tab);
-      const panelId = `${blockId}-panel-${i}`;
-      panel.id = panelId;
-      panel.setAttribute('role', 'tabpanel');
-      panel.setAttribute('aria-labelledby', `${blockId}-tab-${i}`);
-      triggers[i]?.setAttribute('aria-controls', panelId);
-    });
-
-    function moveInk(index: number) {
-      const t = triggers[index];
-      if (!ink || !t) return;
-      ink.style.width = `${t.offsetWidth}px`;
-      ink.style.transform = `translateX(${t.offsetLeft}px)`;
-    }
-
-    function activate(index: number, focus = false) {
-      triggers.forEach((t, i) => {
-        const on = i === index;
-        t.setAttribute('aria-selected', String(on));
-        t.tabIndex = on ? 0 : -1;
+      // Slot panels are author-supplied <div data-tab="i"> with no id/role, so the
+      // buttons' aria-controls would dangle. Wire the tab<->panel relationship here:
+      // give each panel a matching id + role=tabpanel and point its trigger at it.
+      slotPanels.forEach((panel) => {
+        const i = Number(panel.dataset.tab);
+        const panelId = `${blockId}-panel-${i}`;
+        panel.id = panelId;
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', `${blockId}-tab-${i}`);
+        triggers[i]?.setAttribute('aria-controls', panelId);
       });
-      panels.forEach((p, i) => p.toggleAttribute('data-active', i === index));
-      slotPanels.forEach((p) => p.toggleAttribute('data-active', Number(p.dataset.tab) === index));
-      moveInk(index);
-      if (focus) triggers[index]?.focus();
-    }
 
-    triggers.forEach((trigger, i) => {
-      trigger.addEventListener('click', () => activate(i));
-      trigger.addEventListener('keydown', (e) => {
-        const last = triggers.length - 1;
-        const next =
-          e.key === 'ArrowRight' ? (i === last ? 0 : i + 1)
-          : e.key === 'ArrowLeft' ? (i === 0 ? last : i - 1)
-          : e.key === 'Home' ? 0
-          : e.key === 'End' ? last
-          : -1;
-        if (next < 0) return;
-        e.preventDefault();
-        activate(next, true);
+      function moveInk(index: number) {
+        const t = triggers[index];
+        if (!ink || !t) return;
+        ink.style.width = `${t.offsetWidth}px`;
+        ink.style.transform = `translateX(${t.offsetLeft}px)`;
+      }
+
+      function activate(index: number, focus = false) {
+        triggers.forEach((t, i) => {
+          const on = i === index;
+          t.setAttribute('aria-selected', String(on));
+          t.tabIndex = on ? 0 : -1;
+        });
+        panels.forEach((p, i) => p.toggleAttribute('data-active', i === index));
+        slotPanels.forEach((p) => p.toggleAttribute('data-active', Number(p.dataset.tab) === index));
+        moveInk(index);
+        if (focus) triggers[index]?.focus();
+      }
+
+      triggers.forEach((trigger, i) => {
+        trigger.addEventListener('click', () => activate(i));
+        trigger.addEventListener('keydown', (e) => {
+          const last = triggers.length - 1;
+          const next =
+            e.key === 'ArrowRight' ? (i === last ? 0 : i + 1)
+            : e.key === 'ArrowLeft' ? (i === 0 ? last : i - 1)
+            : e.key === 'Home' ? 0
+            : e.key === 'End' ? last
+            : -1;
+          if (next < 0) return;
+          e.preventDefault();
+          activate(next, true);
+        });
       });
-    });
 
-    const start = Math.min(Number(block.dataset.default) || 0, triggers.length - 1);
-    block.setAttribute('data-ready', '');
-    activate(start);
-    // the font may swap in after first paint and change the tab widths
-    document.fonts?.ready.then(() => moveInk(triggers.findIndex((t) => t.getAttribute('aria-selected') === 'true')));
-    new ResizeObserver(() => moveInk(triggers.findIndex((t) => t.getAttribute('aria-selected') === 'true'))).observe(block);
-  });
+      const start = Math.min(Number(block.dataset.default) || 0, triggers.length - 1);
+      block.setAttribute('data-ready', '');
+      activate(start);
+      // the font may swap in after first paint and change the tab widths
+      document.fonts?.ready.then(() => moveInk(triggers.findIndex((t) => t.getAttribute('aria-selected') === 'true')));
+      new ResizeObserver(() => moveInk(triggers.findIndex((t) => t.getAttribute('aria-selected') === 'true'))).observe(block);
+    });
+  }
+  wireTabs();
+  document.addEventListener('astro:page-load', wireTabs);
 </script>

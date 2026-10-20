@@ -1,4 +1,6 @@
 ---
+import '../../styles/widgets.css';
+
 interface Props {
   variant?: 'default' | 'accent' | 'muted' | 'outline';
   label?: string;
@@ -8,71 +10,13 @@ interface Props {
 const { variant = 'default', label, sub } = Astro.props;
 ---
 
-<div class="diagram-box" data-variant={variant}>
+<div class="w-box" data-variant={variant}>
   {label ? (
     <>
-      <span class="diagram-box-label">{label}</span>
-      {sub && <span class="diagram-box-sub">{sub}</span>}
+      <span class="w-box__label">{label}</span>
+      {sub && <span class="w-box__sub">{sub}</span>}
     </>
   ) : (
     <slot />
   )}
 </div>
-
-<style>
-  .diagram-box {
-    flex-shrink: 0;
-    min-width: 6.5rem;
-    padding: 0.625rem 0.9rem;
-    border-radius: 0.625rem;
-    text-align: center;
-    font-size: 0.875rem;
-    line-height: 1.3;
-    border: 0;
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text) 22%, transparent);
-    background: var(--color-bg);
-    color: var(--color-text);
-    font-weight: 400;
-    transition: background 120ms ease;
-  }
-  .diagram-box-label {
-    display: block;
-    font-weight: 600;
-  }
-  .diagram-box-sub {
-    display: block;
-    margin-top: 0.125rem;
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    font-weight: 400;
-    letter-spacing: 0;
-  }
-
-  /* accent: lime fill for highlighted node */
-  /* accent: tinted card with a solid lime edge, not a solid lime slab. The
-     filled version put muted grey sub-text on fluorescent yellow, which failed
-     to read at body size and shouted next to everything around it. */
-  .diagram-box[data-variant='accent'] {
-    background: color-mix(in oklab, var(--color-accent-cta) 22%, var(--color-bg));
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-accent-cta) 55%, var(--color-text) 15%);
-    color: var(--color-text);
-  }
-  .diagram-box[data-variant='accent'] .diagram-box-sub {
-    color: var(--color-text-muted);
-  }
-
-  /* muted: dimmer for context-only nodes */
-  .diagram-box[data-variant='muted'] {
-    background: transparent;
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-text) 11%, transparent);
-    color: var(--color-text-muted);
-  }
-
-  /* outline: no fill, just stroke */
-  .diagram-box[data-variant='outline'] {
-    background: transparent;
-    border: 1px dashed color-mix(in oklab, var(--color-text) 30%, transparent);
-    box-shadow: none;
-    color: var(--color-text-muted);
-  }
-</style>
