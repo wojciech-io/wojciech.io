@@ -269,9 +269,10 @@ const hub = compareLabels[locale as keyof typeof compareLabels] ?? compareLabels
 
     <ArticleCover coverType={post.data.coverType} coverImage={post.data.coverImage} tags={post.data.tags} title={post.data.title} />
 
-    <div class="mx-auto max-w-6xl px-6 pb-16 pt-12 md:pt-16 lg:grid lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-16">
+    <div class="mx-auto max-w-6xl px-6 pb-16 pt-12 md:pt-16">
       <div class="min-w-0 max-w-[46rem]">
         {post.data.tldr && post.data.tldr.length > 0 && <TLDR items={post.data.tldr} title={labels.tldrTitle} />}
+        <ArticleToc headings={headings} label={labels.onThisPage} />
 
         <div class="prose-content">
           <Content components={mdxComponents} />
@@ -281,12 +282,6 @@ const hub = compareLabels[locale as keyof typeof compareLabels] ?? compareLabels
           <ArticleShare url={canonicalURL} title={post.data.title} label={labels.shareArticle} copyLabel={labels.copyLink} copiedLabel={labels.linkCopied} />
         </div>
       </div>
-
-      <aside class="hidden lg:block" data-pagefind-ignore>
-        <div class="sticky top-28">
-          <ArticleToc headings={headings} label={labels.onThisPage} />
-        </div>
-      </aside>
     </div>
   </article>
 
