@@ -33,6 +33,7 @@ const VENDOR_OF: Record<string, Vendor> = {
   'Claude Sonnet 5.5': 'Anthropic',
   'Claude Sonnet 5': 'Anthropic',
   'Claude Sonnet 4.6': 'Anthropic',
+  'Claude Haiku 5.5': 'Anthropic',
   'Claude Haiku 4.5': 'Anthropic',
   'Claude Fable 5.1': 'Anthropic',
   'Claude Fable 5': 'Anthropic',
@@ -47,8 +48,10 @@ const VENDOR_OF: Record<string, Vendor> = {
   'GPT-5.6 Luna': 'OpenAI',
   'GPT-5.6 Terra': 'OpenAI',
   Codex: 'OpenAI',
+  'Gemini 4 Carbon': 'Google',
   'Gemini 3.8 Flash': 'Google',
   'Muse Spark 1.3': 'Meta',
+  'Grok 4.7': 'xAI',
   'Grok 4.6': 'xAI',
   'DeepSeek V4.1 Flash': 'DeepSeek',
 };
@@ -61,7 +64,7 @@ const VENDOR_OF: Record<string, Vendor> = {
 const CURRENT = new Set([
   'Claude Opus 5.5',
   'Claude Sonnet 5.5',
-  'Claude Haiku 4.5',
+  'Claude Haiku 5.5',
   'Claude Fable 5.1',
   'Claude Mythos 5.1',
   'Claude Code',
@@ -69,9 +72,10 @@ const CURRENT = new Set([
   'GPT-6.1 Sol',
   'GPT-6 Luna',
   'Codex',
+  'Gemini 4 Carbon',
   'Gemini 3.8 Flash',
   'Muse Spark 1.3',
-  'Grok 4.6',
+  'Grok 4.7',
   'DeepSeek V4.1 Flash',
 ]);
 

@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ComparisonRow from '../../components/insights/ComparisonRow.astro';
 import { SITE } from '../../data/site';
+import { isAgentPiece } from '../../lib/clusters';
 import { CARD_SIZES, coverImg, FEATURED_SIZES } from '../../lib/coverSources';
 import {
   insightSlug,
@@ -63,7 +64,15 @@ const allComparisons = comparisons.filter((c) => !secondarySet.has(c.post));
 // read as a benchmark feed rather than a front page, and it gave each article
 // exactly one internal link from a page that also had to sell everything else.
 const tableRows = allComparisons.slice(0, 5);
-const playbooks = essays.filter((e) => !secondarySet.has(e));
+// Agents and coding tools get their own band between the comparisons and the
+// playbooks. Nothing is listed twice: anything already in the trio or the
+// table stays there. A comparison that is also about agents (Claude Code
+// against Codex) lands here once it falls out of the newest five.
+const shownAbove = new Set([...secondary, ...tableRows.map((r) => r.post)]);
+const agentPosts = restPosts.filter((p) => isAgentPiece(p) && !shownAbove.has(p));
+const agentSet = new Set(agentPosts);
+const playbooks = essays.filter((e) => !secondarySet.has(e) && !agentSet.has(e));
+const AGENTS_VISIBLE = 6;
 // Six visible, the rest rendered and hidden behind a button. Slicing the
 // array instead would have cut seventeen articles off their only link from
 // this index, which costs more than a long page does.
@@ -72,7 +81,7 @@ const PLAYBOOKS_VISIBLE = 6;
 
 // What the page actually renders, so the count under the filter is not a
 // different number from what a reader can see.
-const onPage = 1 + secondary.length + tableRows.length + playbooks.length;
+const onPage = 1 + secondary.length + tableRows.length + agentPosts.length + playbooks.length;
 
 // Only show categories that have at least one article
 const usedCategories = [...new Set(allPosts.map(p => p.data.category).filter(Boolean))] as string[];
@@ -169,7 +178,7 @@ const formatDate = (date: Date) =>
             {featuredPost.data.title}
           </h2>
           <p class="t-lead max-w-[34rem] text-[var(--color-text-muted)]">{featuredPost.data.description}</p>
-          <span class="t-caption text-[var(--color-accent-hi)]">Read the comparison →</span>
+          <span class="t-caption text-[var(--color-accent-hi)]">{featuredPost.data.models?.length ? 'Read the comparison →' : 'Read the article →'}</span>
         </div>
         {featuredPost.data.coverImage && (
           <div class="overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] md:col-span-5">
@@ -298,6 +307,50 @@ const formatDate = (date: Date) =>
           </span>
           <span class="t-caption shrink-0 text-[var(--color-accent-hi)]">→</span>
         </a>
+      </section>
+    )}
+
+    <!-- Band: agents and coding tools. The cluster nearest to what people
+         already search for after the comparisons, so it sits ahead of the
+         playbooks. Capped like them, with every item kept in the DOM. -->
+    {agentPosts.length > 0 && (
+      <section class="mb-14" aria-labelledby="agents-heading">
+        <div class="mb-5 flex items-end justify-between gap-6 border-t border-[var(--color-border-2)] pt-8">
+          <div>
+            <h2 id="agents-heading" class="t-h3 mb-1 text-[var(--color-text)]">Agents and coding tools</h2>
+            <p class="t-small text-[var(--color-text-dim)]">What runs unattended, what it costs and what stops it.</p>
+          </div>
+          <span class="t-caption shrink-0 text-[var(--color-text-dim)]">{agentPosts.length} pieces</span>
+        </div>
+        <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          {agentPosts.map((post, i) => (
+            <a
+              href={`/insights/${insightSlug(post)}/`}
+              class:list={[
+                'js-article group flex flex-col gap-2.5 border-l border-[var(--color-border-2)] pl-5 transition-colors hover:border-[var(--color-accent-cta)]',
+                i >= AGENTS_VISIBLE && 'agent-extra hidden',
+              ]}
+              data-category={post.data.category ?? ''}
+            >
+              <span class="t-caption text-[var(--color-text-dim)]">
+                {post.data.category ?? 'Insight'} · {readTime(post.body, 'en')}
+              </span>
+              <h3 class="t-h3 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">
+                {post.data.title}
+              </h3>
+              <p class="t-small line-clamp-2 text-[var(--color-text-muted)]">{post.data.description}</p>
+            </a>
+          ))}
+        </div>
+        {agentPosts.length > AGENTS_VISIBLE && (
+          <button
+            type="button"
+            id="agents-more"
+            class="t-button mt-7 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+          >
+            Show {agentPosts.length - AGENTS_VISIBLE} more
+          </button>
+        )}
       </section>
     )}
 
@@ -459,6 +512,7 @@ const formatDate = (date: Date) =>
     });
   };
   liftCap('playbooks-more', '.playbook-extra');
+  liftCap('agents-more', '.agent-extra');
 
   document.addEventListener('click', (e) => {
     const chip = (e.target as Element).closest<HTMLElement>('[data-filter-cat]');

@@ -7,6 +7,7 @@ import { getLocalizedPage } from '../../../data/localizedPages';
 import { localizedHome, type LocaleKey } from '../../../data/locales';
 import { SITE } from '../../../data/site';
 import { compareLabels } from '../../../lib/compare';
+import { isAgentPiece } from '../../../lib/clusters';
 import {
   insightLocaleLabels,
   insightSlug,
@@ -58,7 +59,13 @@ const secondarySet = new Set(secondary);
 // benchmark feed and every comparison gains a second way in.
 const allComparisons = comparisons.filter((c) => !secondarySet.has(c.post));
 const tableRows = allComparisons.slice(0, 5);
-const playbooks = essays.filter((e) => !secondarySet.has(e));
+// Same agents band as the canonical index: nothing listed twice, the rest of
+// the cluster between the comparisons and the playbooks.
+const shownAbove = new Set([...secondary, ...tableRows.map((r) => r.post)]);
+const agentPosts = restPosts.filter((p) => isAgentPiece(p) && !shownAbove.has(p));
+const agentSet = new Set(agentPosts);
+const playbooks = essays.filter((e) => !secondarySet.has(e) && !agentSet.has(e));
+const AGENTS_VISIBLE = 6;
 const PLAYBOOKS_VISIBLE = 6;
 
 const formatDate = (date: Date) =>
@@ -203,6 +210,46 @@ const breadcrumbSchema = {
       </section>
     )}
 
+    {agentPosts.length > 0 && (
+      <section class="mb-14" aria-labelledby="agents-heading">
+        <div class="mb-5 flex items-end justify-between gap-6 border-t border-[var(--color-border-2)] pt-8">
+          <div>
+            <h2 id="agents-heading" class="t-h3 mb-1 text-[var(--color-text)]">{labels.agentsHeading}</h2>
+            <p class="t-small text-[var(--color-text-dim)]">{labels.agentsLead}</p>
+          </div>
+          <span class="t-caption shrink-0 text-[var(--color-text-dim)]">{agentPosts.length} {labels.playbooksUnit}</span>
+        </div>
+        <div class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          {agentPosts.map((post, i) => (
+            <a
+              href={`/${locale}/insights/${insightSlug(post)}/`}
+              class:list={[
+                'group flex flex-col gap-2.5 border-l border-[var(--color-border-2)] pl-5 transition-colors hover:border-[var(--color-accent-cta)]',
+                i >= AGENTS_VISIBLE && 'agent-extra hidden',
+              ]}
+            >
+              <span class="t-caption text-[var(--color-text-dim)]">
+                {post.data.category ?? labels.article} · {readTime(post.body, locale)}
+              </span>
+              <h3 class="t-h3 text-pretty text-[var(--color-text)] transition-colors group-hover:text-[var(--color-accent-hi)]">
+                {post.data.title}
+              </h3>
+              <p class="t-small line-clamp-2 text-[var(--color-text-muted)]">{post.data.description}</p>
+            </a>
+          ))}
+        </div>
+        {agentPosts.length > AGENTS_VISIBLE && (
+          <button
+            type="button"
+            id="agents-more"
+            class="t-button mt-7 rounded-[var(--radius-btn)] border border-[var(--color-border-2)] px-4 py-2.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-accent-cta)]"
+          >
+            {labels.showMore}
+          </button>
+        )}
+      </section>
+    )}
+
     {playbooks.length > 0 && (
       <section class="mb-16" aria-labelledby="playbooks-heading">
         <div class="mb-5 flex items-end justify-between gap-6 border-t border-[var(--color-border-2)] pt-8">
@@ -256,4 +303,5 @@ const breadcrumbSchema = {
     });
   };
   liftCap('playbooks-more', '.playbook-extra');
+  liftCap('agents-more', '.agent-extra');
 </script>
