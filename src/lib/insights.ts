@@ -35,6 +35,8 @@ export const insightLocaleLabels: Record<InsightLocale, {
   playbooksHeading: string;
   playbooksLead: string;
   playbooksUnit: string;
+  agentsHeading: string;
+  agentsLead: string;
   colPair: string;
   colVerdict: string;
   colDate: string;
@@ -69,6 +71,8 @@ export const insightLocaleLabels: Record<InsightLocale, {
     playbooksHeading: 'Playbooks',
     playbooksLead: 'Longer pieces about systems rather than models.',
     playbooksUnit: 'pieces',
+    agentsHeading: 'Agents and coding tools',
+    agentsLead: 'What runs unattended, what it costs and what stops it.',
     colPair: 'Pair',
     colVerdict: 'What it comes down to',
     colDate: 'Date',
@@ -103,6 +107,8 @@ export const insightLocaleLabels: Record<InsightLocale, {
     playbooksHeading: 'Playbooki',
     playbooksLead: 'Dłuższe teksty o systemach, nie o modelach.',
     playbooksUnit: 'tekstów',
+    agentsHeading: 'Agenci i narzędzia do kodowania',
+    agentsLead: 'Co działa bez nadzoru, ile kosztuje i co to zatrzymuje.',
     colPair: 'Para',
     colVerdict: 'Do czego się to sprowadza',
     colDate: 'Data',
@@ -137,6 +143,8 @@ export const insightLocaleLabels: Record<InsightLocale, {
     playbooksHeading: 'Playbooks',
     playbooksLead: 'Längere Texte über Systeme statt über Modelle.',
     playbooksUnit: 'Texte',
+    agentsHeading: 'Agenten und Coding-Tools',
+    agentsLead: 'Was ohne Aufsicht läuft, was es kostet und was es stoppt.',
     colPair: 'Paar',
     colVerdict: 'Worauf es hinausläuft',
     colDate: 'Datum',
@@ -171,6 +179,8 @@ export const insightLocaleLabels: Record<InsightLocale, {
     playbooksHeading: 'Playbooks',
     playbooksLead: 'Piezas más largas sobre sistemas, no sobre modelos.',
     playbooksUnit: 'piezas',
+    agentsHeading: 'Agentes y herramientas de código',
+    agentsLead: 'Qué corre sin supervisión, cuánto cuesta y qué lo detiene.',
     colPair: 'Par',
     colVerdict: 'En qué se resume',
     colDate: 'Fecha',
@@ -205,6 +215,8 @@ export const insightLocaleLabels: Record<InsightLocale, {
     playbooksHeading: 'Playbook',
     playbooksLead: 'Testi più lunghi sui sistemi, non sui modelli.',
     playbooksUnit: 'testi',
+    agentsHeading: 'Agenti e strumenti di coding',
+    agentsLead: 'Cosa gira senza supervisione, quanto costa e cosa lo ferma.',
     colPair: 'Coppia',
     colVerdict: 'A cosa si riduce',
     colDate: 'Data',

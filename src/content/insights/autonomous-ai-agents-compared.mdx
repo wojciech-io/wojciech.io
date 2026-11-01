@@ -1,0 +1,222 @@
+---
+title: "What stops your agent? Claude, ChatGPT, Grok, Gemini and Hercules compared on the part the launch posts skip"
+seoTitle: "Autonomous AI agents compared: Claude, ChatGPT, Grok, Gemini"
+description: "Laptop or cloud, schedule or event, hard cap or none: what Claude, ChatGPT, Grok, Gemini and Hercules agents do when nobody is watching."
+publishedAt: "2026-11-01"
+updatedAt: "2026-11-01"
+tags:
+  - AI
+  - AI Agents
+  - Claude Code
+  - Codex
+  - AI Systems
+category: "AI Systems"
+coverType: "system"
+featured: true
+draft: false
+tldr:
+  - "Every vendor now sells an agent you can leave running, and the loop is the same in all of them: wake, act, check, sleep. What differs is what wakes it, where it runs, what stops it and who pays."
+  - "Of the five, only Claude Code's /loop expires on its own, after 7 days. Hercules ships run limits as blank fields. Grok Bot caps speed at 300 runs an hour, not total spend."
+  - "A hard spending cap exists in two places I found: Claude Managed Agents sessions and Hercules runs, and in Hercules you have to fill it in. Gemini's token budget is best effort."
+  - "Before an agent runs unattended, answer three questions: what is the worst thing one run can do with the credentials it holds, what ends a run you forgot, and who sees the second run's mistake before the thirtieth."
+faq:
+  - q: "Can an AI agent keep working while my laptop is off?"
+    a: "Yes, if it runs in the vendor's cloud: Claude cloud scheduled tasks, Grok Bot routines, ChatGPT web tasks and dots. No, if it runs on your machine: Claude Code /loop, Claude Code Desktop tasks and ChatGPT desktop tasks that need local files."
+  - q: "Which AI agent has a hard spending cap?"
+    a: "Claude Managed Agents has a per-session budget that is a hard cap priced at list rates, and Hercules has a per-run spend limit. In Hercules the field is empty by default, which means no limit. Gemini's max_total_tokens on the Antigravity agent is best effort and can be slightly exceeded."
+  - q: "What is Hercules?"
+    a: "Two products under one name: an AI app builder, and Hercules Agents, which are AI workers you set up once and leave running. Agents are in private beta, start from a schedule, events in connected apps or a Slack message, and use the same AI credits as the builder."
+  - q: "What is Grok Bot?"
+    a: "xAI's agent that runs saved skills and routines. A routine runs in the cloud while your laptop is closed, on a schedule at least five minutes apart or from events in Slack, GitHub, Linear, Sentry, PagerDuty, email or a webhook."
+  - q: "Is Paperclip worth installing?"
+    a: "It is an MIT-licensed control plane that puts budgets, approvals and an audit log above a team of agents such as Claude Code and Codex. I read the README and did not run it. Telemetry is on by default, so test it in a throwaway container."
+sources:
+  - url: "https://code.claude.com/docs/en/scheduled-tasks.md"
+    quote: "Recurring tasks automatically expire 7 days after creation."
+    claim: "Claude Code /loop tasks expire after 7 days"
+    checkedAt: "2026-11-01"
+  - url: "https://code.claude.com/docs/en/scheduled-tasks.md"
+    quote: "A session can hold up to 50 scheduled tasks at once."
+    claim: "A Claude Code session holds at most 50 scheduled tasks"
+    checkedAt: "2026-11-01"
+  - url: "https://code.claude.com/docs/en/routines.md"
+    quote: "so they keep working when your laptop is closed."
+    claim: "Claude cloud scheduled tasks run on Anthropic-managed infrastructure"
+    checkedAt: "2026-11-01"
+  - url: "https://platform.claude.com/docs/en/release-notes/overview.md"
+    quote: "a hard cap on the session's spend, priced at public list rates."
+    claim: "Claude Managed Agents sessions can carry a hard spending cap"
+    checkedAt: "2026-11-01"
+  - url: "https://learn.chatgpt.com/docs/automations.md"
+    quote: "Scheduled tasks run unattended and use your default sandbox settings."
+    claim: "ChatGPT scheduled tasks run unattended in the default sandbox"
+    checkedAt: "2026-11-01"
+  - url: "https://learn.chatgpt.com/docs/dots.md"
+    quote: "Cloud work can continue while your devices are off."
+    claim: "ChatGPT dots keep working in the cloud while devices are off"
+    checkedAt: "2026-11-01"
+  - url: "https://docs.x.ai/grok-bot/skills-routines-and-automations"
+    quote: "Routines run in the cloud while your laptop is closed."
+    claim: "Grok Bot routines run in the cloud"
+    checkedAt: "2026-11-01"
+  - url: "https://docs.x.ai/grok-bot/skills-routines-and-automations"
+    quote: "A Bot can own up to 50 routines"
+    claim: "Grok Bot routine limits: 50 per Bot, 300 runs an hour in total, 200 per routine"
+    checkedAt: "2026-11-01"
+  - url: "https://ai.google.dev/gemini-api/docs/antigravity-agent.md.txt"
+    quote: "The limit is best-effort: actual usage may slightly exceed it"
+    claim: "The Antigravity agent's max_total_tokens budget is best effort"
+    checkedAt: "2026-11-01"
+  - url: "https://hercules.app/docs/agents/what-are-agents.md"
+    quote: "Hercules Agents are AI workers you set up once and then leave running."
+    claim: "Hercules Agents are in private beta and start from a schedule, an app event or Slack"
+    checkedAt: "2026-11-01"
+  - url: "https://hercules.app/docs/agents/costs-and-limits.md"
+    quote: "empty for no limit."
+    claim: "Hercules run limits are optional and the step limit defaults to 200"
+    checkedAt: "2026-11-01"
+  - url: "https://github.com/paperclipai/paperclip"
+    quote: "orchestrates a team of AI agents to run a business"
+    claim: "Paperclip is an MIT-licensed control plane for agent teams with budgets and approvals"
+    checkedAt: "2026-11-01"
+---
+
+Every large lab now sells you an agent you can leave running. Read five sets of documentation side by side and the loop is the same in all of them: wake up, act, check, go back to sleep.
+
+What differs is what wakes it, where it runs, what stops it and who pays. The launch posts cover the first one. The other three sit lower in the docs, and that is where the bill and the damage are.
+
+<Callout type="note" title="What this piece is">
+  Nothing here is a benchmark run. It is each vendor's own documentation and changelog, read side by side on 1 November 2026, with the sentence that carries each limit kept in the sources. Several of these products are in preview or private beta, so check the page before you rely on a number.
+</Callout>
+
+## Five products, one table
+
+<DataTable
+  columns={[
+    { key: "p", label: "Product" },
+    { key: "wakes", label: "Wakes on" },
+    { key: "runs", label: "Runs on" },
+    { key: "laptop", label: "Laptop on?" },
+  ]}
+  rows={[
+    { p: "Claude Code /loop", wakes: "A fixed interval, or a delay Claude picks between 1 minute and 1 hour", runs: "Your machine, in an open session", laptop: "Yes" },
+    { p: "Claude cloud scheduled tasks", wakes: "A schedule (1 hour minimum), an API call or a GitHub event", runs: "Anthropic's cloud", laptop: "No" },
+    { p: "ChatGPT scheduled tasks", wakes: "A schedule, or Gmail, Slack and GitHub events, never both on one task", runs: "Desktop: your machine. Web: the cloud", laptop: "Desktop yes, web no" },
+    { p: "ChatGPT dots", wakes: "Its own decision to pause and wake, or a time you name", runs: "A cloud computer and browser per dot", laptop: "No" },
+    { p: "Grok Bot routines", wakes: "A schedule at least 5 minutes apart, or Slack, GitHub, Linear, Sentry, PagerDuty, email, a webhook", runs: "The cloud", laptop: "No" },
+    { p: "Gemini Antigravity agent", wakes: "Your API call with background=True. I found no scheduler or event trigger in the docs", runs: "A Linux sandbox per call", laptop: "No" },
+    { p: "Hercules Agents", wakes: "A schedule, events in connected apps, a Slack message, a private web address", runs: "Not stated on the pages I read", laptop: "Not stated" },
+  ]}
+  caption="Sources: Claude Code, ChatGPT, xAI, Gemini API and Hercules documentation, read 1 November 2026."
+/>
+
+A ChatGPT task can use several event triggers but cannot combine them with a schedule, so "every morning, and also when the client emails" is two tasks. A Claude cloud task cannot see your local files, because it starts from a fresh clone. Anything that needs your disk belongs on your machine, and your machine has to stay on. Those details decide more than the logos do.
+
+## What stops it is the part nobody puts on the launch page
+
+A forgotten agent is a cost and a risk. So the useful column is not what starts a run, it is what ends one you stopped thinking about.
+
+<DataTable
+  columns={[
+    { key: "p", label: "Product" },
+    { key: "stop", label: "What ends a run you forgot" },
+    { key: "who", label: "Who sets it" },
+  ]}
+  rows={[
+    { p: "Claude Code /loop", stop: "The task expires 7 days after creation, fires one last time, then deletes itself", who: "Anthropic, built in" },
+    { p: "Claude Managed Agents", stop: "A per-session budget that is a hard cap. At the cap the session pauses with budget_reached", who: "You, in the API" },
+    { p: "Claude cloud tasks", stop: "100 scheduled runs an hour per account. An auto-mode classifier allows or blocks risky actions, and after repeated blocks a prompt waits for a person", who: "Anthropic defaults" },
+    { p: "ChatGPT scheduled tasks", stop: "No numeric limit in the docs. Runs are unattended, and where policy allows they use approval_policy never", who: "You and your admin" },
+    { p: "ChatGPT dots", stop: "No cap named. Stopping a task does not undo actions it has already completed", who: "You" },
+    { p: "Grok Bot routines", stop: "300 runs an hour across all routines, 200 for any one. The docs tell you to require approval for sending, purchasing, deleting, publishing", who: "xAI ceilings, your approvals" },
+    { p: "Gemini Antigravity agent", stop: "max_total_tokens, best effort and slightly exceedable. Cached tokens do not count toward it", who: "You" },
+    { p: "Hercules Agents", stop: "Spend limit and time limit, both blank by default. Step limit defaults to 200", who: "You, if you fill them in" },
+  ]}
+  caption="A run that hits a Hercules cap is labelled Stopped at cost limit or Stopped at time limit in run history. Limits are checked between steps, so a run can go slightly over."
+/>
+
+Read the last row twice. In Hercules the cap is a blank field, and the docs say plainly that leaving it empty means no limit. In Claude Code the loop ends itself after a week, and the docs give the reason: it bounds how long a forgotten loop can run. Nobody else in this set built a stop that works without you remembering to configure it.
+
+Grok's number deserves its own sentence. 300 runs an hour is a speed limit. It stops a runaway in minutes and does nothing about a slow leak: a routine that is wrong 200 times an hour for a day is 4,800 wrong runs inside the limit.
+
+<StatRow cols={4}>
+  <Stat value="7 days" label="Claude Code /loop expiry" sub="Claude Code docs, 1 Nov 2026" />
+  <Stat value="300 / hour" label="Grok Bot routines, all together" sub="xAI docs, 1 Nov 2026" />
+  <Stat value="200 steps" label="Hercules default step limit" sub="Hercules docs, 1 Nov 2026" />
+  <Stat value="$0.25 to $3.25" label="Gemini Antigravity, typical per task" sub="Gemini API docs, preview pricing" />
+</StatRow>
+
+## Who pays for each run
+
+Money is where the five diverge most, and the docs are least precise about it.
+
+- **Claude cloud tasks** draw subscription usage "the same way interactive sessions do". With usage credits switched on they can keep running on metered overage. Without them extra runs are rejected until the window resets.
+- **ChatGPT dots**: conversations with your dot do not count toward ChatGPT usage limits. Tasks it starts in Work or Codex do.
+- **Grok Bot**: every run spends usage, so a routine that fires often costs more than one that fires rarely, and there is a weekly limit and a monthly on-demand one.
+- **Gemini**: pay as you go on tokens and tool use. Google puts a typical task at $0.25 to $3.25 and a heavy workflow at 3 to 5 million tokens, roughly $5. Sandbox compute is not billed during the preview.
+- **Hercules**: AI credits, the same pool as the app builder. Guardrail checks, scoring and Auto-improve draw from it too.
+
+## The leash, as three questions
+
+<KeyPoint
+  type="warning"
+  title="Ask these before you let anything run unattended"
+  items={[
+    "What is the worst thing one run can do with the credentials it holds? If the answer includes sending, buying, deleting or publishing, put an approval in front of it.",
+    "What ends a run I have forgotten? If the answer is me remembering, set a cap or an expiry now.",
+    "Who sees the second run's mistake before the thirtieth? An agent that is wrong on a schedule is wrong at scale.",
+  ]}
+/>
+
+The same shape of thinking sits behind the content studio I wrote up in [the approval workflow article](/insights/ai-content-studio-approval-workflow/): the model approves nothing, and one person approves one exact version. That is a leash designed before the agent, not bolted on after the first incident.
+
+## The models underneath moved this month
+
+The agent is only as cheap as the model it calls. October changed several of those, and I covered them in [the October digest](/insights/ai-models-october-2026-tldr/). GPT-6.1 Terra reached ChatGPT Work and Codex on 26 October, and it is not in Chat. Google's Antigravity agent is built on Gemini 3.8 Flash, a different cost profile from the Claude Haiku 5.5 that [I put against Grok 4.7](/insights/claude-haiku-5-5-vs-grok-4-7/).
+
+For the tools themselves, the older pair is still the most direct comparison I have: [Claude Code against Codex](/insights/claude-code-vs-codex/).
+
+## Radar: Hercules, Grok Bot and a repo with 109,000 stars
+
+These are the ones people share in group chats. Here is what the documentation says, without the thread.
+
+**Hercules** is two products. The App Builder is a chat-driven builder whose agent can read and write a codebase, search the web, generate images and control a browser to test its own changes. Hercules Agents are the other half: workers you describe once and leave running, in private beta, enabled per organisation. What stands out is the tooling around a run. Every run is recorded, you can mark runs good or bad, turn a run into a test case, score runs, and let Auto-improve read the history and suggest fixes under a credit cap. It is the only one of the five whose docs describe an evaluation loop shipped with the agent. It is also the one whose default is no spend limit.
+
+**Grok Bot** treats a successful task as something to freeze. Skills are saved instructions, routines say when to run them. The ceilings are generous and the safety advice is in prose: keep write actions behind approval, use narrow triggers, test before enabling. All of that is guidance you have to follow, not a switch you flip.
+
+**Paperclip** is an MIT-licensed repository with more than 109,000 GitHub stars when I looked. Its README calls it a Node.js server and React UI that "orchestrates a team of AI agents to run a business", with org charts, tasks, budgets and approvals, and it drives runtimes such as Claude Code, Codex, Cursor and Gemini CLI. Budgets can be set per company, agent and project, and work pauses at the configured limit. That is the leash as a product, one level above the vendors. I read the README and did not run it. Telemetry is on by default and has to be switched off with an environment variable, so try it in a throwaway container, not on the machine that holds your keys. For one person with three scheduled jobs it is a lot of company. For someone running Claude Code and Codex side by side it is worth reading for the budget and approval design even if you never install it.
+
+## Which one I would use
+
+If the job only reads, any of them. If it writes, sends or spends, I would start from the leash, not from the logo.
+
+1. Run it as a `/loop` for a week. It expires on its own, so a mistake has a deadline.
+2. If the log is boring after a week, promote it to a cloud task, and keep write actions behind the approval mode.
+3. If it runs through the API, set the session budget on day one. A hard cap is the only stop that does not depend on a person.
+4. If you pick Hercules, fill in the spend and time fields before the first run, and read the history after the first ten.
+
+## What would change my mind
+
+Gemini shipping a scheduler or event triggers would put it in the same table as the rest. OpenAI publishing numeric limits for scheduled tasks would fix the one column where it is vaguest. Hercules defaulting to a cap instead of a blank would remove my main objection. Docs here change monthly, and I re-check the quoted lines against the live pages on a schedule.
+
+## Questions people asked
+
+### Can an AI agent keep working while my laptop is off?
+
+Yes, if it runs in the vendor's cloud: Claude cloud scheduled tasks, Grok Bot routines, ChatGPT web tasks and dots. No, if it runs on your machine: Claude Code `/loop`, Claude Code Desktop tasks and ChatGPT desktop tasks that need local files.
+
+### Which AI agent has a hard spending cap?
+
+Claude Managed Agents has a per-session budget that is a hard cap priced at list rates, and Hercules has a per-run spend limit. In Hercules the field is empty by default, which means no limit. Gemini's `max_total_tokens` on the Antigravity agent is best effort and can be slightly exceeded.
+
+### What is Hercules?
+
+Two products under one name: an AI app builder, and Hercules Agents, which are AI workers you set up once and leave running. Agents are in private beta, start from a schedule, events in connected apps or a Slack message, and use the same AI credits as the builder.
+
+### What is Grok Bot?
+
+xAI's agent that runs saved skills and routines. A routine runs in the cloud while your laptop is closed, on a schedule at least five minutes apart or from events in Slack, GitHub, Linear, Sentry, PagerDuty, email or a webhook.
+
+### Is Paperclip worth installing?
+
+It is an MIT-licensed control plane that puts budgets, approvals and an audit log above a team of agents such as Claude Code and Codex. I read the README and did not run it. Telemetry is on by default, so test it in a throwaway container.
