@@ -7,6 +7,7 @@ import { localizedHomeList } from '../../data/locales';
 import { localizedPageSlugs, type LocalizedPageSlug } from '../../data/localizedPages';
 import { getPrimaryNavLinks, getUiStringsForPath, localizeHref, getLocaleFromPath } from '../../data/uiStrings';
 import { CAL_BOOKING_LINK } from '../../data/site';
+import { localizedInsightLocales } from '../../lib/insights';
 
 const pathname = Astro.url.pathname;
 const t = getUiStringsForPath(pathname);
@@ -25,14 +26,12 @@ const currentPageSegment = currentLocale ? segments[1] : segments[0];
 const localizedPage = localizedPageSlugs.includes(currentPageSegment as LocalizedPageSlug)
   ? currentPageSegment
   : '';
-// Insights only exist in EN+PL; for other locales, the language switcher
-// falls back to the locale home rather than emitting a 404.
-const INSIGHT_LOCALES = new Set(['en', 'pl']);
+const insightLocales = new Set<string>(localizedInsightLocales);
 const isInsightsPage = localizedPage === 'insights';
 const languageOptions = [
   { code: 'EN', label: 'English', href: localizedPage ? `/${localizedPage}/` : '/' },
   ...localizedHomeList.map((locale) => {
-    const hasLocalizedPage = localizedPage && (!isInsightsPage || INSIGHT_LOCALES.has(locale.path));
+    const hasLocalizedPage = localizedPage && (!isInsightsPage || insightLocales.has(locale.path));
     return {
       code: locale.code,
       label: locale.label,
@@ -377,9 +376,9 @@ const languageOptions = [
   // The server-side fallback only knows top-level slugs (e.g. /insights/), but each
   // article page emits <link rel="alternate" hreflang> tags with exact translated URLs.
   // We read those and update [data-lang-switch] anchors to point to the right article.
-  const hreflangToCode: Record<string, string> = {
-    en: 'EN', pl: 'PL', 'de-DE': 'DE', 'da-DK': 'DK', 'nb-NO': 'NO',
-    'ja-JP': 'JP', 'it-IT': 'IT', 'es-ES': 'ES',
+  const languageToCode: Record<string, string> = {
+    en: 'EN', pl: 'PL', de: 'DE', da: 'DK', nb: 'NO',
+    ja: 'JP', it: 'IT', es: 'ES', ar: 'AR',
   };
 
   function applyAlternates() {
@@ -387,7 +386,7 @@ const languageOptions = [
     if (!alternates.length) return;
     const map = new Map<string, string>();
     alternates.forEach((link) => {
-      const code = hreflangToCode[link.hreflang];
+      const code = languageToCode[link.hreflang.toLowerCase().split('-')[0]];
       if (code) map.set(code, link.href);
     });
     if (!map.size) return;

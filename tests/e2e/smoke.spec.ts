@@ -82,3 +82,14 @@ test('article page has h1, canonical, og:image, and reading progress bar', async
 
   await expect(page.locator('#progress-bar')).toBeAttached();
 });
+
+test('the language menu uses the translated URLs of an article', async ({ page }) => {
+  const path = '/insights/claude-fable-5-2-vs-gpt-6-astra/';
+  await page.goto(`/pl${path}`);
+  for (const [code, prefix] of [['EN', ''], ['PL', '/pl'], ['ES', '/es'], ['DE', '/de']]) {
+    await expect(page.locator(`[data-lang-switch="${code}"]`).first()).toHaveAttribute(
+      'href',
+      `https://wojciech.io${prefix}${path}`,
+    );
+  }
+});

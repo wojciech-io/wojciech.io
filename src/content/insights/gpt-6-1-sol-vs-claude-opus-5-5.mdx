@@ -1,0 +1,114 @@
+---
+title: "GPT-6.1 Sol vs Claude Opus 5.5 for daily work"
+seoTitle: "GPT-6.1 Sol vs Claude Opus 5.5: quality and cost"
+description: "Sol costs $0.76 per index task at Xhigh. Opus costs $3.46 at High for the same rounded score. Where the extra spend buys better work."
+publishedAt: 2026-11-10
+category: "AI Systems"
+locale: "en"
+coverType: "chart"
+coverImage: "/images/insights/gpt-6-1-sol-vs-claude-opus-5-5.webp"
+draft: false
+tags: ["AI", "OpenAI", "Anthropic", "Claude", "Model comparisons"]
+models: ["GPT-6.1 Sol", "Claude Opus 5.5"]
+tldr:
+  - "At Max, Opus scores 59 at $10.04 per index task. Sol scores 55 at $1.27."
+  - "Sol Xhigh and Opus High both round to 52. Sol costs $0.76 against $3.46, but they lead on different tests."
+  - "Sol is a good default to try for repeated work. Test Opus on the tasks that fail or take too long to review."
+sources:
+  - url: https://developers.openai.com/api/docs/models/gpt-6.1-sol
+    claim: "Current Sol API pricing, default effort and long-context rates"
+    checkedAt: 2026-11-10
+  - url: https://platform.claude.com/docs/en/models/opus-5-5/overview
+    claim: "Opus API pricing and default effort"
+    checkedAt: 2026-11-10
+  - url: https://platform.claude.com/docs/en/about-claude/pricing#long-context-pricing
+    claim: "Standard Opus rates across the 1M context window"
+    checkedAt: 2026-11-10
+  - url: https://artificialanalysis.ai/models/releases/comparisons/gpt-6-1-sol-vs-claude-opus-5-5
+    claim: "Intelligence Index v5.0.1 scores, component benchmarks and cost per task by effort"
+    checkedAt: 2026-11-10
+faq:
+  - q: "Is GPT-6.1 Sol cheaper than Claude Opus 5.5?"
+    a: "Sol lists at $2 input and $10 output per million tokens at standard rates. Opus lists at $4 and $20. Above 272K input, Sol's input and cache rates double and its output rate rises by 50%."
+  - q: "Does the same index score mean these models are interchangeable?"
+    a: "No. Sol Xhigh and Opus High both round to 52, but Opus leads in Terminal-Bench and Sol leads in GDP.pdf in that comparison."
+ogImage: "/images/insights/share/gpt-6-1-sol-vs-claude-opus-5-5.png"
+---
+
+GPT-6.1 Sol at Xhigh and Claude Opus 5.5 at High both score 52 when rounded in [Artificial Analysis](https://artificialanalysis.ai/models/releases/comparisons/gpt-6-1-sol-vs-claude-opus-5-5). The bill per index task is $0.76 for Sol and $3.46 for Opus. I would start with Sol for repeated work and give Opus a queue of tasks where Sol needs too much help.
+
+This is the newer GPT-6.1 Sol. The [September comparison](https://wojciech.io/insights/gpt-6-sol-vs-claude-opus-5-5/) used GPT-6 Sol and an older index version.
+
+## Cost by effort level
+
+<figure class="my-8">
+  <ContentImage src="/images/insights/figures/sol-opus-matched-score.svg" alt="GPT-6.1 Sol Xhigh and Claude Opus 5.5 High both round to 52 points. The estimated API cost per index task is $0.76 and $3.46 respectively." width={420} height={185} class="block h-auto w-full" loading="lazy" decoding="async" />
+  <figcaption class="t-caption text-[var(--color-text-dim)]">At the same rounded index score, each configuration has a different cost and a different mix of strengths. <a href="https://artificialanalysis.ai/models/releases/comparisons/gpt-6-1-sol-vs-claude-opus-5-5">Artificial Analysis, v5.0.1</a></figcaption>
+</figure>
+
+<div role="region" aria-label="Sol and Opus cost and score by effort" tabIndex={0} class="max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2">
+
+| Effort | Sol score | Sol USD | Opus score | Opus USD |
+| --- | ---: | ---: | ---: | ---: |
+| Medium | 46 | $0.36 | 48 | $2.45 |
+| High | 50 | $0.59 | 52 | $3.46 |
+| Xhigh | 52 | $0.76 | 57 | $6.05 |
+| Max | 55 | $1.27 | 59 | $10.04 |
+
+</div>
+
+[Artificial Analysis Intelligence Index v5.0.1](https://artificialanalysis.ai/models/releases/comparisons/gpt-6-1-sol-vs-claude-opus-5-5), checked November 10, 2026. Opus uses the default fallback. Costs are weighted API estimates per attempted index task. The providers label effort differently under the hood, so the rows compare settings you can select, with no assumption that the compute budgets are equal.
+
+Both APIs default to Medium. At that setting, Opus has a two-point edge in the index. At Max, the lead grows to four points and the cost is about 7.9 times higher. You do not need to decide on a permanent model from either row. You can start with Sol High, compare the output on your own work, and decide which failures to send to Opus.
+
+## Where the two models disagree
+
+<div role="region" aria-label="Benchmarks at the matched rounded index score" tabIndex={0} class="max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2">
+
+| Artificial Analysis evaluation | Sol Xhigh | Opus High |
+| --- | ---: | ---: |
+| Terminal-Bench 4.0 | 54.0% | 56.6% |
+| FrontierCode 2.0 | 38.5% | 35.9% |
+| AutomationBench-AA | 66.6% | 63.2% |
+| GDP.pdf | 31.8% | 28.8% |
+
+</div>
+
+[Same snapshot and configurations](https://artificialanalysis.ai/models/releases/comparisons/gpt-6-1-sol-vs-claude-opus-5-5). Opus also scores higher on AA-Briefcase v1.1 in this pairing. If the job is a polished brief with several source files, I would put both models in front of the same reviewer. If the job is structured workflow automation, Sol gets the first run. For repository work, the terminal and patch tests point in different directions. Try a ticket that looks like yours.
+
+## API pricing above 272K input tokens
+
+<div role="region" aria-label="Sol and Opus API prices and limits" tabIndex={0} class="max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2">
+
+| API spec | GPT-6.1 Sol | Claude Opus 5.5 |
+| --- | ---: | ---: |
+| Uncached input / 1M | $2 | $4 |
+| Cached input / 1M | $0.10 | $0.20 |
+| Output / 1M | $10 | $20 |
+| Five-minute cache write on Claude; standard write on OpenAI | $2.50 | $5 |
+| API context window | 1.05M | 1M |
+| Maximum output | 128K | 128K |
+
+</div>
+
+[OpenAI specs](https://developers.openai.com/api/docs/models/gpt-6.1-sol) · [Claude specs](https://platform.claude.com/docs/en/models/opus-5-5/overview) · [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing#long-context-pricing).
+
+Above 272K input tokens, Sol charges $4 for uncached input, $0.20 for cached input and $15 for output, per million tokens. Those prices apply to the whole request. Opus stays at its standard rates across its window. For a hypothetical call with 280K uncached input and 10K billable output, the rate card gives $1.27 for Sol and $1.32 for Opus before tools. At 100K input and the same output, it gives $0.30 and $0.60. That $1.27 long-prompt estimate happens to match Sol's index cost at Max. The two figures describe different things.
+
+## Route the work that needs a second look
+
+For a weekly CRM brief, I would give Sol a fixed set of source records, a definition of the reporting period and a short output format. Require a link for each material claim. Escalate when a validator finds a missing source, when the model flags contradictory records, or when the brief fails human review. Give Opus the source packet and the failure to resolve. If both models lack the record, send it back to the owner of the data.
+
+Log how many drafts each model produces that a reviewer can accept as delivered. Include failed attempts and reviewer time in the cost. If the higher tier costs $3 more and saves five minutes, the reviewer time alone breaks even at $36 an hour. Measure both numbers on your own workflow before changing the default.
+
+For the next tier up, compare the flagships on the same version of the index. [Fable 5.2 vs GPT-6 Astra](/insights/claude-fable-5-2-vs-gpt-6-astra/)
+
+## Questions people ask
+
+### Is GPT-6.1 Sol cheaper than Claude Opus 5.5?
+
+Sol lists at $2 input and $10 output per million tokens at standard rates. Opus lists at $4 and $20. Above 272K input, Sol's input and cache rates double and its output rate rises by 50%.
+
+### Does the same index score mean these models are interchangeable?
+
+No. Sol Xhigh and Opus High both round to 52, but Opus leads in Terminal-Bench and Sol leads in GDP.pdf in that comparison.
