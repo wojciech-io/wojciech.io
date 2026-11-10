@@ -1,0 +1,115 @@
+---
+title: "Grok 4.7 kontra GPT-6.1 Sol. Koszt próby i odczyt cache"
+seoTitle: "Grok 4.7 vs GPT-6.1 Sol: cena tokenów i koszt próby"
+description: "Grok ma tańsze tokeny wyjściowe, a Sol kosztuje mniej za próbę w indeksie. Sprawdzam odczyt cache, długi kontekst i zastosowania X Search."
+publishedAt: "2026-11-10"
+category: "AI Systems"
+locale: "pl"
+translationOf: "grok-4-7-vs-gpt-6-1-sol"
+coverType: "chart"
+coverImage: "/images/insights/grok-4-7-vs-gpt-6-1-sol.webp"
+featured: false
+draft: false
+tags:
+  - "AI"
+  - "Grok"
+  - "OpenAI"
+  - "Porównania modeli"
+models:
+  - "Grok 4.7"
+  - "GPT-6.1 Sol"
+tldr:
+  - "Na High Sol ma 50 punktów przy 0,59 USD za próbę. Grok ma 35 przy 6,18 USD."
+  - "W automatyzacji biznesowej wyniki są bliskie. W terminalu i testach rozumowania różnica jest większa."
+  - "Grok warto sprawdzić osobno, jeśli zadanie zależy od świeżych postów i wątków na X."
+sources:
+  - url: "https://docs.x.ai/developers/models/grok-4.7"
+    checkedAt: "2026-11-10"
+  - url: "https://x.ai/news/grok-4-7"
+    checkedAt: "2026-11-10"
+  - url: "https://docs.x.ai/developers/tools/x-search"
+    checkedAt: "2026-11-10"
+  - url: "https://developers.openai.com/api/docs/models/gpt-6.1-sol"
+    checkedAt: "2026-11-10"
+  - url: "https://artificialanalysis.ai/models/releases/comparisons/gpt-6-1-sol-vs-grok-4-7"
+    checkedAt: "2026-11-10"
+  - url: "https://docs.x.ai/grok-bot/faq"
+    checkedAt: "2026-11-10"
+faq:
+  - q: "Czy Grok 4.7 jest tańszy od GPT-6.1 Sol?"
+    a: "Grok ma tańsze tokeny wyjściowe i droższy odczyt cache. W teście Artificial Analysis na High próba kosztuje 0,59 USD dla Sola i 6,18 USD dla Groka."
+  - q: "Czy Grok Bot i Grok 4.7 to to samo?"
+    a: "Grok 4.7 jest modelem dostępnym w API. Grok Bot to produkt agentowy, który dobiera model do zadania."
+ogImage: "/images/insights/share/grok-4-7-vs-gpt-6-1-sol.png"
+---
+
+Milion tokenów wyjścia kosztuje 6 USD w Groku 4.7 i 10 USD w GPT-6.1 Sol. Przy ustawieniu High próba w indeksie Artificial Analysis kosztuje 6,18 USD dla Groka i 0,59 USD dla Sola. Sol zdobywa też o 15 punktów więcej. [Porównanie Artificial Analysis](https://artificialanalysis.ai/models/releases/comparisons/gpt-6-1-sol-vs-grok-4-7)
+
+Do ogólnej automatyzacji wybrałbym Sola na pierwszy test. Groka sprawdziłbym osobno przy zadaniu, które zależy od świeżych postów i wątków na X.
+
+## Automatyzacja i praca w terminalu
+
+<div role="region" aria-label="Wyniki i koszt prób Groka oraz Sola" tabIndex={0} class="max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2">
+
+| Model i tryb | Punkty | USD / próbę | Automatyzacja | Terminal |
+| --- | ---: | ---: | ---: | ---: |
+| GPT-6.1 Sol Xhigh | 52 | 0,76 USD | 66,6% | 54,0% |
+| GPT-6.1 Sol High | 50 | 0,59 USD | 64,5% | 51,5% |
+| Grok 4.7 Xhigh | 35 | 7,77 USD | 65,6% | 25,8% |
+| Grok 4.7 High | 35 | 6,18 USD | 63,5% | 24,7% |
+| GPT-6.1 Sol Low | 35 | 0,16 USD | 52,6% | 30,8% |
+
+</div>
+
+To ważone szacunki kosztu API na próbę z 10 listopada 2026 r. Na High Grok traci do Sola jeden punkt procentowy w AutomationBench-AA, który mierzy automatyzację procesów biznesowych. W Terminal-Bench 4.0 różnica wynosi 26,8 pkt proc. Grok High i Sol Low mają po zaokrągleniu 35 punktów w całym indeksie, ale poszczególne testy dają im różne wyniki. [Artificial Analysis Intelligence Index v5.0.1](https://artificialanalysis.ai/models/releases/comparisons/gpt-6-1-sol-vs-grok-4-7)
+
+## Jak odczyt cache zmienia rachunek
+
+<div role="region" aria-label="Ceny i limity API Groka oraz Sola" tabIndex={0} class="max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2">
+
+| Parametr API | Grok 4.7 | GPT-6.1 Sol |
+| --- | ---: | ---: |
+| Wejście bez cache / mln | 2 USD | 2 USD |
+| Odczyt cache / mln | 0,50 USD | 0,10 USD |
+| Wyjście / mln | 6 USD | 10 USD |
+| Okno kontekstu API | 500 tys. | 1,05 mln |
+| Długi prompt: wejście / cache / wyjście | Powyżej 200 tys.: 4 / 1 / 12 USD | Powyżej 272 tys.: 4 / 0,20 / 15 USD |
+
+</div>
+
+Po przekroczeniu progu wyższe stawki obowiązują dla całego wywołania. [Cennik Groka](https://docs.x.ai/developers/models/grok-4.7) · [Cennik Sola](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
+
+<figure class="my-8">
+  <ContentImage src="/images/insights/figures/grok-sol-cache-scenarios-pl.svg" alt="Dla Groka i Sola odpowiednio 0,260 i 0,300 USD bez cache, 0,175 i 0,155 USD z cache oraz 0,460 i 0,282 USD przy długim prompcie z cache. W każdej parze liczba tokenów jest identyczna." width={420} height={394} class="block h-auto w-full" loading="lazy" decoding="async" />
+  <figcaption class="t-caption text-[var(--color-text-dim)]">Symulacja w USD z 10 tys. rozliczanych tokenów wyjścia w każdym przykładzie. Bez opłat za narzędzia i zapis cache. <a href="https://docs.x.ai/developers/models/grok-4.7">Cennik Groka</a> · <a href="https://developers.openai.com/api/docs/models/gpt-6.1-sol">Cennik OpenAI</a></figcaption>
+</figure>
+
+<div role="region" aria-label="Trzy przykłady rozliczeń API" tabIndex={0} class="max-w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2">
+
+| Przykład wywołania | Grok 4.7 | GPT-6.1 Sol |
+| --- | ---: | ---: |
+| 100 tys. wejścia bez cache, 10 tys. wyjścia | 0,260 USD | 0,300 USD |
+| 150 tys. z cache + 20 tys. nowego wejścia, 10 tys. wyjścia | 0,175 USD | 0,155 USD |
+| 260 tys. z cache + 20 tys. nowego wejścia, 10 tys. wyjścia | 0,460 USD | 0,282 USD |
+
+</div>
+
+Przykłady zakładają identyczną liczbę tokenów dla obu modeli i pomijają zapis cache oraz narzędzia. W krótkim prompcie Grok oszczędza 4 USD na milionie tokenów wyjścia i dolicza 0,40 USD na milionie odczytów cache. Rachunki zrównują się, kiedy na każdy rozliczany token wyjścia przypada dziesięć tokenów z cache. Agent, który w każdej turze wczytuje ten sam brief, może szybko przekroczyć tę granicę. Przed decyzją sprawdź faktyczną liczbę odczytów cache i rozliczanych tokenów rozumowania.
+
+## Kiedy przetestowałbym Groka
+
+Wybierz zadanie, w którym informacje z X zmieniają twoje decyzje. Przykład to pięć nowo zgłoszonych awarii u dostawcy, od którego zależysz. Zbierz oryginalny post, datę, zakres awarii i link do oficjalnej strony statusu, jeśli istnieje. Połącz zgłoszenia dotyczące tego samego zdarzenia. Zaznacz niepotwierdzone informacje.
+
+Najpierw daj obu modelom ten sam zamrożony zestaw źródeł. Potem pozwól Grokowi użyć X Search, a Solowi daj najlepsze wyszukiwanie dostępne w twoim procesie. Drugi test mierzy efekt całego procesu. X Search kosztuje 5 USD za tysiąc pobranych postów i 10 USD za tysiąc profili, poza opłatą za tokeny. Zapisz koszt i liczbę dodatkowych sygnałów, które da się potwierdzić. [Dokumentacja X Search](https://docs.x.ai/developers/tools/x-search)
+
+Grok Bot może uruchamiać zadania cykliczne i wybierać modele różnych dostawców. Użytkownik nie widzi modelu wybranego dla konkretnego zadania. W produkcie liczy się jakość raportu, zakres danych i czas pracy po stronie człowieka. [FAQ Grok Bot](https://docs.x.ai/grok-bot/faq) · [Grok Bot vs ChatGPT Work](/pl/insights/grok-bot-vs-chatgpt-work/)
+
+## Najczęstsze pytania
+
+### Czy Grok 4.7 jest tańszy od GPT-6.1 Sol?
+
+Grok ma tańsze tokeny wyjściowe i droższy odczyt cache. W teście Artificial Analysis na High próba kosztuje 0,59 USD dla Sola i 6,18 USD dla Groka.
+
+### Czy Grok Bot i Grok 4.7 to to samo?
+
+Grok 4.7 jest modelem dostępnym w API. Grok Bot to produkt agentowy, który dobiera model do zadania.

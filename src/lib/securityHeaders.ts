@@ -30,7 +30,8 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
     "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://eu-assets.i.posthog.com https://app.cal.com",
     "style-src 'self' 'unsafe-inline'",
     // cdn.simpleicons.org: tech-logo chips on the /stack overview page
-    "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://cdn.simpleicons.org https://app.cal.com https://cal.com",
+    "img-src 'self' data: https://www.gravatar.com https://img.youtube.com https://i.ytimg.com https://cdn.simpleicons.org https://app.cal.com https://cal.com https://cdn.sanity.io/images/4zrzovbb/website/68c5eadd6bd16e87c4cdb46348b7aeb360bc88c3-1440x810.webp https://developers.openai.com/images/codex/work-101/getting-started.webp",
+    "media-src 'self' https://cdn.sanity.io/files/4zrzovbb/website/36cbf7ed8431034d95a61bc6757fa975b26f0daf.webm https://cdn.openai.com/devhub/videos-learn/work-101/getting-started.mp4 https://developers.openai.com/captions/work-101/getting-started.en.vtt",
     // *.google-analytics.com, not just www: GA4 sends hits to a regional
     // endpoint (region1.google-analytics.com for EU traffic, other regionN
     // elsewhere). Listing only www silently blocked every hit at connect-src.
