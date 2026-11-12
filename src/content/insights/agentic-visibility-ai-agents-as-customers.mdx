@@ -1,0 +1,132 @@
+---
+title: "Agents are becoming customers. GEO only covers the first step"
+seoTitle: "Agentic visibility: selling to AI agents beyond GEO"
+description: "AI agents now find, compare and sometimes pay for products for their owners. Discovery moved fast, checkout did not. What B2B teams should build first."
+publishedAt: "2026-11-12"
+tags:
+  - AI Agents
+  - GEO
+  - MCP
+  - Agentic commerce
+  - B2B SaaS
+category: "AI Marketing"
+coverType: "system"
+featured: false
+draft: false
+tldr:
+  - "Agents read your product before a person does. GEO measures whether you get mentioned, not whether an agent can check, compare and buy you"
+  - "Discovery for agents scaled in 2026. Agent checkout mostly did not: OpenAI handed checkout back to merchants in March and Cloudflare Wallets is still a waitlist"
+  - "For most B2B SaaS the first job is a machine-readable offer and a well-described tool listing, not a payment protocol"
+  - "Measure agent traffic separately. GA4 does not see an agent calling your API or MCP server"
+faq:
+  - q: "What is agentic visibility?"
+    a: "How easily an AI agent acting for a buyer can find your product, verify what it does, compare it with alternatives and complete the next step, whether that is a trial, a quote or a purchase. GEO covers the first part: whether models mention you. Agentic visibility covers the rest of the path."
+  - q: "Can AI agents already pay for products?"
+    a: "In narrow cases. Google's Universal Commerce Protocol supports checkout for eligible US retailers in AI Mode and Gemini, and Cloudflare's Monetization Gateway lets eligible US sellers charge agents per request in a closed beta. In March 2026 OpenAI let merchants use their own checkout and moved ChatGPT toward product discovery. Broad agent-run payment is not here yet."
+  - q: "Where should a B2B SaaS company start?"
+    a: "With pricing and plan limits published as structured data, an MCP server or ChatGPT plugin whose tool descriptions are written for a model, and a separate measurement of agent traffic. Payment protocols matter later, and mostly for products sold per request."
+sources:
+  - url: "https://openai.com/index/powering-product-discovery-in-chatgpt/"
+    claim: "OpenAI extended ACP to product discovery and let merchants use their own checkout"
+    checkedAt: "2026-11-12"
+  - url: "https://blog.cloudflare.com/wallets/"
+    claim: "Cloudflare Wallets announced August 4, 2026"
+    checkedAt: "2026-11-12"
+  - url: "https://blog.cloudflare.com/monetization-gateway-beta/"
+    claim: "Monetization Gateway closed beta, four production use cases"
+    checkedAt: "2026-11-12"
+  - url: "https://modelcontextprotocol.io/registry/about"
+    claim: "Official MCP Registry with namespace verification"
+    checkedAt: "2026-11-12"
+  - url: "https://help.openai.com/en/articles/11487775-connectors-in-chatgpt"
+    claim: "ChatGPT app directory migrated to the plugin directory on July 9, 2026"
+    checkedAt: "2026-11-12"
+---
+
+In September Michał Sadowski, founder of Brand24, [posted on LinkedIn](https://lnkd.in/p/ekzaWNv4) that a new kind of marketing is coming. Its job is to make a product easy to find and easy to test for an AI agent working on the customer's behalf. GEO, tracking how a brand appears in model answers, is one piece of it. He listed three more: getting the product into the protocols agents use, managing how the brand looks in MCP marketplaces and integration platforms, and publishing an offer an agent can evaluate.
+
+I agree with all of it. But two months on, the picture has moved. That changes where I would start.
+
+<Callout type="warning" title="Discovery moved faster than checkout">
+In 2026 agents learned to find and compare products far faster than they learned to pay for them. Most teams should build for the first part now and keep the second on watch.
+</Callout>
+
+## What is live in 2026 and what is still a waitlist
+
+Payments got the loudest announcements. They got the least adoption.
+
+OpenAI launched Instant Checkout in ChatGPT with Stripe in September 2025, on the Agentic Commerce Protocol. In March 2026 it [stepped back](https://openai.com/index/powering-product-discovery-in-chatgpt/): merchants can use their own checkout, and ACP now carries product feeds for discovery inside ChatGPT. Google went the other way in January with the Universal Commerce Protocol, which supports checkout from eligible US retailers in AI Mode and the Gemini app.
+
+Cloudflare announced [Cloudflare Wallets](https://blog.cloudflare.com/wallets/) on August 4, 2026. This is Michał's example. An owner gives an agent a wallet with a spending cap, an approved merchant list and a maximum transaction size. Today you can reserve a handle. Funding and agent wallets are still listed as coming. The seller side moved further. Cloudflare's [Monetization Gateway](https://blog.cloudflare.com/monetization-gateway-beta/) entered a closed beta for eligible US sellers on September 30, charging agents per request over HTTP 402, with payments settled in USDC on Base. It already runs in production for paid inference, search, market signals and PDF generation.
+
+Discovery is where the volume is. OpenAI [moved its app directory into a plugin directory](https://help.openai.com/en/articles/11487775-connectors-in-chatgpt) in July 2026, shared by ChatGPT and Codex. The [official MCP Registry](https://modelcontextprotocol.io/registry/about) verifies that a server published under your domain is really yours. Integration platforms such as [Composio](https://composio.dev/) and [Pipedream](https://pipedream.com/) put thousands of tools behind one endpoint, and an agent picks among them by reading descriptions.
+
+## Where I would start, in order
+
+### 1. Publish an offer a machine can evaluate
+
+An agent comparing five tools reads your pricing page first. "Enterprise: contact us" is an invitation to a person. To an agent it is missing data, and missing data usually ends the comparison.
+
+You do not have to give up sales-led pricing. Publish the structure: plans, what each includes, limits, unit prices, and where custom pricing starts. Put it in structured data on the pricing page, in documentation an agent can read without rendering JavaScript, and in an [llms.txt](https://llmstxt.org/) that points to both.
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Example SaaS, Business plan",
+  "offers": {
+    "@type": "Offer",
+    "price": "49.00",
+    "priceCurrency": "EUR",
+    "priceSpecification": {
+      "@type": "UnitPriceSpecification",
+      "price": "49.00",
+      "priceCurrency": "EUR",
+      "unitText": "per month, up to 10 users"
+    },
+    "url": "https://example.com/pricing#business"
+  }
+}
+```
+
+Add the terms an agent needs to limit risk for the person it works for: trial length, cancellation, refunds, data location. An agent is told to avoid surprises, so the vendor with predictable terms gets picked.
+
+### 2. Treat your tool listing as a product page
+
+A plugin listing, a registry entry or a connector on an integration platform is read by a model before any person sees it. The tool name, its description and the description of each parameter decide whether the agent understands what your integration does and chooses it over a competitor's.
+
+This is copywriting for a different reader. A tool described as "Manage records" loses to one described as "Create an invoice for an existing customer and return its PDF link". Models choose tools from their descriptions, so the gap between a tool an agent calls readily and one it skips can come down to two sentences and clearly named parameters. Test it: give an agent your tools and a competitor's, and log which one it calls.
+
+### 3. Get into the payment rails only where you sell per request
+
+If your product is an API, a dataset or a paid tool, per-request payment over x402 is worth a pilot now, because it removes account creation and API keys from the agent's path. If you sell annual seats, payment protocols matter less this year than a trial an agent can start without emailing sales.
+
+## Measure it separately or you will not see it
+
+GA4 sees people with browsers. An agent calling your API or MCP server never shows up there. Before you optimise any of this, log agent requests at the server, count MCP tool calls by tool, and track 402 responses and completed payments if you charge per request. Otherwise you are tuning a channel you cannot see, which is where most teams already are with GEO.
+
+| What to track | Where it lives |
+| --- | --- |
+| Mentions and position in model answers | GEO monitoring |
+| Plugin and registry installs, tool calls per tool | Your MCP server logs |
+| Agent requests to pricing and docs | Server or CDN logs, by user agent |
+| Trials started by agents, paid requests | Product analytics and billing |
+
+## Why I am writing about this
+
+I have run SEO, conversion and pipeline work in B2B SaaS, most recently as Head of Growth & Web Development at Symfonia and as a fractional GTM lead at CodiLime, where much of the work was building assets for technical buyers. When buyers change how they reach a product, I see it in revenue first. My own marketing stack runs on agents connected to my tools through MCP. This site runs on Cloudflare. I also publish [model comparisons](/compare/) here, built on repeatable tasks. So I see the problem from both sides: as someone who writes for buyers, and as someone watching which tool an agent actually calls.
+
+Gartner [expects](https://www.digitalcommerce360.com/2025/11/28/gartner-ai-agents-15-trillion-in-b2b-purchases-by-2028/) AI agents to intermediate 90% of B2B purchases by 2028. I would not plan a budget on that number. I would plan on this: the first evaluation of your product is increasingly done by software, and it reads different signals than a person does.
+
+<KeyTakeaway
+  title="A first month of agentic visibility work"
+  items={[
+    "Publish plans, limits and unit prices as structured data and in an llms.txt",
+    "Rewrite tool and parameter descriptions in your MCP server or plugin for a model reader",
+    "Claim your namespace in the MCP Registry and check your listing in the ChatGPT plugin directory",
+    "Make a trial startable without a sales email",
+    "Log agent traffic separately from human traffic before you change anything else"
+  ]}
+/>
+
+If you want to see how your product looks to an agent before your competitors do, [book a call](/contact/). We start with a short audit of the five points above.

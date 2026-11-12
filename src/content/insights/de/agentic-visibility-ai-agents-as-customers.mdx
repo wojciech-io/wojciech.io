@@ -1,0 +1,129 @@
+---
+title: "KI-Agenten werden zu Kunden. GEO ist nur der erste Schritt"
+seoTitle: "Agentische Sichtbarkeit: an KI-Agenten verkaufen, nicht nur GEO"
+description: "KI-Agenten suchen, vergleichen und kaufen teils schon für ihre Nutzer. Die Suche wuchs schnell, das Bezahlen nicht. Was B2B-Teams zuerst bauen sollten."
+publishedAt: "2026-11-12"
+tags:
+  - "AI Agents"
+  - "GEO"
+  - "MCP"
+  - "Agentic commerce"
+  - "B2B SaaS"
+category: "AI Marketing"
+coverType: "system"
+locale: "de"
+translationOf: "agentic-visibility-ai-agents-as-customers"
+featured: false
+draft: false
+tldr:
+  - "Ein Agent liest Ihr Produkt, bevor ein Mensch es tut. GEO misst, ob Sie erwähnt werden, nicht ob ein Agent Sie prüfen, vergleichen und kaufen kann"
+  - "2026 wuchs die Produktsuche durch Agenten, das Bezahlen durch Agenten kaum: OpenAI gab den Checkout im März an die Händler zurück, Cloudflare Wallets ist weiter eine Warteliste"
+  - "Für die meisten B2B-SaaS-Anbieter ist der erste Schritt ein maschinenlesbares Angebot mit gut beschriebenen Tools, kein Zahlungsprotokoll"
+  - "Messen Sie Agenten-Traffic getrennt. GA4 sieht keinen Agenten, der Ihre API oder Ihren MCP-Server aufruft"
+faq:
+  - q: "Was ist agentische Sichtbarkeit?"
+    a: "Wie leicht ein KI-Agent, der für einen Käufer arbeitet, Ihr Produkt findet, prüft, was es leistet, es mit Alternativen vergleicht und den nächsten Schritt geht: Testzugang, Angebot oder Kauf. GEO deckt den ersten Teil ab, also ob Modelle Sie nennen. Agentische Sichtbarkeit deckt den Rest des Weges ab."
+  - q: "Bezahlen KI-Agenten schon für Produkte?"
+    a: "In engen Fällen. Googles Universal Commerce Protocol unterstützt Käufe bei berechtigten US-Händlern in AI Mode und Gemini, und Cloudflares Monetization Gateway lässt berechtigte US-Anbieter in einer geschlossenen Beta pro Anfrage von Agenten abrechnen. Im März 2026 ließ OpenAI Händler ihren eigenen Checkout nutzen und richtete ChatGPT auf Produktsuche aus. Breites Bezahlen durch Agenten gibt es noch nicht."
+  - q: "Wo sollte ein B2B-SaaS-Unternehmen anfangen?"
+    a: "Mit Preisen und Planlimits als strukturierte Daten, einem MCP-Server oder ChatGPT-Plugin mit Tool-Beschreibungen für ein Modell als Leser und einer getrennten Messung des Agenten-Traffics. Zahlungsprotokolle kommen später, vor allem bei Produkten, die pro Anfrage verkauft werden."
+sources:
+  - url: "https://openai.com/index/powering-product-discovery-in-chatgpt/"
+    checkedAt: "2026-11-12"
+  - url: "https://blog.cloudflare.com/wallets/"
+    checkedAt: "2026-11-12"
+  - url: "https://blog.cloudflare.com/monetization-gateway-beta/"
+    checkedAt: "2026-11-12"
+  - url: "https://modelcontextprotocol.io/registry/about"
+    checkedAt: "2026-11-12"
+  - url: "https://help.openai.com/en/articles/11487775-connectors-in-chatgpt"
+    checkedAt: "2026-11-12"
+---
+
+Im September schrieb Michał Sadowski, Gründer von Brand24, [auf LinkedIn](https://lnkd.in/p/ekzaWNv4), dass eine neue Art von Marketing entsteht. Ihre Aufgabe: Ein KI-Agent, der im Auftrag eines Kunden handelt, soll ein Produkt leicht finden und leicht testen können. GEO, also die Beobachtung, wie eine Marke in Modellantworten erscheint, ist nur ein Teil davon. Er nannte drei weitere: das Produkt in die Protokolle bringen, die Agenten nutzen, das Markenbild in MCP-Marktplätzen und auf Integrationsplattformen pflegen und ein Angebot veröffentlichen, das ein Agent bewerten kann.
+
+Ich stimme allem zu. Zwei Monate später hat sich das Bild aber verschoben. Das ändert, wo ich heute anfangen würde.
+
+<Callout type="warning" title="Die Suche lief dem Bezahlen davon">
+2026 haben Agenten viel schneller gelernt, Produkte zu finden und zu vergleichen, als sie zu bezahlen. Die meisten Teams sollten jetzt für das Erste bauen und das Zweite beobachten.
+</Callout>
+
+## Was 2026 läuft und was noch auf der Warteliste steht
+
+Zahlungen bekamen die lautesten Ankündigungen. Und die geringste Nutzung.
+
+OpenAI startete Instant Checkout in ChatGPT im September 2025 mit Stripe, auf Basis des Agentic Commerce Protocol. Im März 2026 [ruderte OpenAI zurück](https://openai.com/index/powering-product-discovery-in-chatgpt/): Händler können ihren eigenen Checkout nutzen, und ACP liefert jetzt Produktfeeds für die Suche in ChatGPT. Google ging den umgekehrten Weg. Im Januar stellte es das Universal Commerce Protocol vor, das Käufe bei berechtigten US-Händlern in AI Mode und in der Gemini-App unterstützt.
+
+Cloudflare kündigte [Cloudflare Wallets](https://blog.cloudflare.com/wallets/) am 4. August 2026 an. Das ist Michałs Beispiel. Der Eigentümer gibt einem Agenten eine Wallet mit Ausgabenlimit, einer Liste freigegebener Händler und einem Höchstbetrag pro Transaktion. Heute lässt sich ein Handle reservieren. Einzahlungen und Agenten-Wallets sind weiter angekündigt. Weiter ist die Verkäuferseite. Cloudflares [Monetization Gateway](https://blog.cloudflare.com/monetization-gateway-beta/) ging am 30. September für berechtigte US-Anbieter in eine geschlossene Beta. Es rechnet pro Anfrage über HTTP 402 mit Agenten ab, bezahlt wird in USDC auf Base. Produktiv läuft es bereits für bezahlte Inferenz, Suche, Marktsignale und PDF-Erzeugung.
+
+Das Volumen liegt in der Suche. OpenAI [verlegte sein App-Verzeichnis im Juli 2026 in ein Plugin-Verzeichnis](https://help.openai.com/en/articles/11487775-connectors-in-chatgpt), das ChatGPT und Codex gemeinsam nutzen. Die [offizielle MCP Registry](https://modelcontextprotocol.io/registry/about) prüft, dass ein unter Ihrer Domain veröffentlichter Server wirklich Ihnen gehört. Integrationsplattformen wie [Composio](https://composio.dev/) und [Pipedream](https://pipedream.com/) bieten Tausende Tools hinter einem Endpunkt an, und der Agent wählt, indem er Beschreibungen liest.
+
+## Wo ich anfangen würde, der Reihe nach
+
+### 1. Veröffentlichen Sie ein Angebot, das eine Maschine bewerten kann
+
+Ein Agent, der fünf Tools vergleicht, liest zuerst Ihre Preisseite. „Enterprise: Kontakt aufnehmen“ ist eine Einladung an einen Menschen. Für einen Agenten fehlen dort Daten, und fehlende Daten beenden den Vergleich meist.
+
+Sie müssen den vertriebsgeführten Verkauf nicht aufgeben. Veröffentlichen Sie die Struktur: Pläne, Leistungsumfang, Limits, Stückpreise und die Stelle, an der individuelle Preise beginnen. Hinterlegen Sie das als strukturierte Daten auf der Preisseite, in einer Dokumentation, die ein Agent ohne JavaScript lesen kann, und in einer [llms.txt](https://llmstxt.org/), die auf beides verweist.
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Beispiel-SaaS, Plan Business",
+  "offers": {
+    "@type": "Offer",
+    "price": "49.00",
+    "priceCurrency": "EUR",
+    "priceSpecification": {
+      "@type": "UnitPriceSpecification",
+      "price": "49.00",
+      "priceCurrency": "EUR",
+      "unitText": "pro Monat, bis 10 Nutzer"
+    },
+    "url": "https://example.com/preise#business"
+  }
+}
+```
+
+Ergänzen Sie die Bedingungen, die ein Agent braucht, um das Risiko für seinen Auftraggeber zu begrenzen: Testdauer, Kündigung, Erstattung, Datenstandort. Ein Agent soll Überraschungen vermeiden, also wählt er den Anbieter mit berechenbaren Bedingungen.
+
+### 2. Behandeln Sie Ihren Tool-Eintrag wie eine Produktseite
+
+Einen Eintrag im Plugin-Verzeichnis, in der Registry oder einen Konnektor auf einer Integrationsplattform liest ein Modell, bevor ein Mensch ihn sieht. Name, Beschreibung und die Beschreibung jedes Parameters entscheiden, ob der Agent versteht, was Ihre Integration tut, und ob er sie der eines Wettbewerbers vorzieht.
+
+Das ist Copywriting für einen anderen Leser. Ein Tool mit der Beschreibung „Datensätze verwalten“ verliert gegen eines, das „eine Rechnung für einen bestehenden Kunden erstellt und den PDF-Link zurückgibt“. Modelle wählen Tools anhand ihrer Beschreibungen. Der Unterschied zwischen einem Tool, das ein Agent bereitwillig aufruft, und einem, das er übergeht, kann an zwei Sätzen und klar benannten Parametern hängen. Testen Sie es: Geben Sie einem Agenten Ihre Tools und die eines Wettbewerbers und prüfen Sie im Log, welches er aufruft.
+
+### 3. Steigen Sie nur dort in Zahlungen ein, wo Sie pro Anfrage verkaufen
+
+Ist Ihr Produkt eine API, ein Datensatz oder ein kostenpflichtiges Tool, lohnt sich ein Pilot mit Abrechnung pro Anfrage über x402 schon jetzt. Er nimmt dem Agenten Kontoanlage und API-Schlüssel ab. Verkaufen Sie Jahreslizenzen, zählt in diesem Jahr ein Testzugang, den ein Agent ohne E-Mail an den Vertrieb starten kann, mehr als jedes Zahlungsprotokoll.
+
+## Messen Sie es getrennt, sonst sehen Sie es nicht
+
+GA4 sieht Menschen mit Browsern. Ein Agent, der Ihre API oder Ihren MCP-Server aufruft, taucht dort nie auf. Bevor Sie optimieren, protokollieren Sie Agentenanfragen auf dem Server, zählen MCP-Aufrufe je Tool und verfolgen 402-Antworten und bezahlte Anfragen, wenn Sie nach Nutzung abrechnen. Sonst steuern Sie einen Kanal, den Sie nicht sehen. Bei GEO stehen die meisten Teams genau dort.
+
+| Was messen | Wo es liegt |
+| --- | --- |
+| Nennungen und Position in Modellantworten | GEO-Monitoring |
+| Installationen von Plugin und Registry-Eintrag, Aufrufe je Tool | Logs Ihres MCP-Servers |
+| Agentenzugriffe auf Preise und Dokumentation | Server- oder CDN-Logs, nach User Agent |
+| Von Agenten gestartete Tests, bezahlte Anfragen | Produktanalyse und Abrechnung |
+
+## Warum ich darüber schreibe
+
+Ich habe SEO, Conversion und Pipeline in B2B SaaS verantwortet, zuletzt als Head of Growth & Web Development bei Symfonia und als Fractional GTM Lead bei CodiLime, wo ein großer Teil der Arbeit Inhalte für technische Käufer waren. Wenn Käufer ihren Weg zum Produkt ändern, sehe ich es zuerst im Umsatz. Mein eigener Marketing-Stack läuft auf Agenten, die über MCP an meine Tools angebunden sind. Diese Website läuft auf Cloudflare. Hier veröffentliche ich auch [Modellvergleiche](/de/compare/) auf Basis wiederholbarer Aufgaben. Ich sehe das Thema also von beiden Seiten: als jemand, der für Käufer schreibt, und als jemand, der beobachtet, welches Tool ein Agent tatsächlich aufruft.
+
+Gartner [erwartet](https://www.digitalcommerce360.com/2025/11/28/gartner-ai-agents-15-trillion-in-b2b-purchases-by-2028/), dass KI-Agenten bis 2028 an 90% der B2B-Käufe beteiligt sind. Ein Budget würde ich nicht auf diese Zahl bauen. Sondern darauf: Die erste Bewertung Ihres Produkts übernimmt zunehmend Software, und Software liest andere Signale als ein Mensch.
+
+<KeyTakeaway
+  title="Ein erster Monat Arbeit an agentischer Sichtbarkeit"
+  items={[
+    "Pläne, Limits und Stückpreise als strukturierte Daten und in einer llms.txt veröffentlichen",
+    "Tool- und Parameterbeschreibungen im MCP-Server oder Plugin für ein Modell als Leser neu schreiben",
+    "Den eigenen Namespace in der MCP Registry sichern und den Eintrag im ChatGPT-Plugin-Verzeichnis prüfen",
+    "Einen Testzugang ohne E-Mail an den Vertrieb ermöglichen",
+    "Agenten-Traffic getrennt vom menschlichen Traffic messen, bevor Sie etwas anderes ändern"
+  ]}
+/>
+
+Wenn Sie sehen wollen, wie Ihr Produkt für einen Agenten aussieht, bevor Ihre Wettbewerber es tun, [buchen Sie ein Gespräch](/de/contact/). Wir beginnen mit einem kurzen Audit der fünf Punkte oben.

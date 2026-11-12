@@ -1,0 +1,129 @@
+---
+title: "Agent AI staje się klientem. GEO to dopiero pierwszy krok"
+seoTitle: "Widoczność agentyczna: jak sprzedawać agentom AI, nie tylko GEO"
+description: "Agenci AI szukają, porównują i coraz częściej kupują w imieniu klientów. Wyszukiwanie ruszyło szybko, płatności nie. Od czego zacząć w B2B."
+publishedAt: "2026-11-12"
+tags:
+  - "AI Agents"
+  - "GEO"
+  - "MCP"
+  - "Agentic commerce"
+  - "B2B SaaS"
+category: "AI Marketing"
+coverType: "system"
+locale: "pl"
+translationOf: "agentic-visibility-ai-agents-as-customers"
+featured: false
+draft: false
+tldr:
+  - "Agent czyta twój produkt, zanim zrobi to człowiek. GEO mierzy, czy model cię wspomina, a nie czy agent może cię sprawdzić, porównać i kupić"
+  - "W 2026 roku wyszukiwanie przez agentów wyraźnie urosło, a zakupy przez agentów prawie nie: OpenAI w marcu oddało checkout sprzedawcom, a Cloudflare Wallets to wciąż lista oczekujących"
+  - "W większości firm B2B SaaS pierwsza robota to oferta czytelna dla maszyn i dobrze opisane narzędzia, nie protokół płatności"
+  - "Ruch od agentów mierz osobno. GA4 nie widzi agenta, który odpytuje twoje API albo serwer MCP"
+faq:
+  - q: "Czym jest widoczność agentyczna?"
+    a: "To, jak łatwo agent AI działający dla kupującego znajdzie twój produkt, sprawdzi, co robi, porówna go z alternatywami i zrobi kolejny krok: uruchomi trial, poprosi o wycenę albo kupi. GEO obejmuje pierwszą część, czyli to, czy modele cię wspominają. Widoczność agentyczna obejmuje resztę tej ścieżki."
+  - q: "Czy agenci AI już płacą za produkty?"
+    a: "W wąskich przypadkach. Universal Commerce Protocol od Google obsługuje zakupy u wybranych amerykańskich sprzedawców w AI Mode i Gemini, a Monetization Gateway od Cloudflare pozwala wybranym sprzedawcom z USA pobierać od agentów opłaty za zapytanie w zamkniętej becie. W marcu 2026 OpenAI pozwoliło sprzedawcom używać własnego checkoutu i przestawiło ChatGPT na odkrywanie produktów. Masowych płatności przez agentów jeszcze nie ma."
+  - q: "Od czego powinna zacząć firma B2B SaaS?"
+    a: "Od cennika i limitów planów opublikowanych jako dane strukturalne, od serwera MCP albo pluginu do ChatGPT z opisami narzędzi pisanymi pod model i od osobnego pomiaru ruchu agentów. Protokoły płatności przydadzą się później, głównie przy produktach sprzedawanych za zapytanie."
+sources:
+  - url: "https://openai.com/index/powering-product-discovery-in-chatgpt/"
+    checkedAt: "2026-11-12"
+  - url: "https://blog.cloudflare.com/wallets/"
+    checkedAt: "2026-11-12"
+  - url: "https://blog.cloudflare.com/monetization-gateway-beta/"
+    checkedAt: "2026-11-12"
+  - url: "https://modelcontextprotocol.io/registry/about"
+    checkedAt: "2026-11-12"
+  - url: "https://help.openai.com/en/articles/11487775-connectors-in-chatgpt"
+    checkedAt: "2026-11-12"
+---
+
+We wrześniu Michał Sadowski, założyciel Brand24, [napisał na LinkedInie](https://lnkd.in/p/ekzaWNv4), że rośnie nowy rodzaj marketingu. Jego zadaniem jest sprawić, żeby produkt dało się łatwo znaleźć i przetestować agentowi AI, który działa w imieniu klienta. GEO, czyli śledzenie, jak marka wypada w odpowiedziach modeli, to tylko jeden element. Michał wymienił jeszcze trzy: wprowadzenie produktu do protokołów, z których korzystają agenci, dbanie o wizerunek w marketplace'ach MCP i u integratorów oraz ofertę, którą agent potrafi ocenić. Traktowanie agentów jako nowego typu klienta nazwał absolutnym must-have.
+
+Zgadzam się z każdym punktem. Ale po dwóch miesiącach obraz się przesunął. I to zmienia, od czego zacząłbym dziś.
+
+<Callout type="warning" title="Wyszukiwanie ruszyło szybciej niż płatności">
+W 2026 roku agenci nauczyli się znajdować i porównywać produkty dużo szybciej, niż nauczyli się za nie płacić. Większość zespołów powinna budować pod pierwszą część już teraz, a drugą obserwować.
+</Callout>
+
+## Co działa w 2026, a co jest jeszcze listą oczekujących
+
+Płatności dostały najgłośniejsze premiery. I najmniejszą adopcję.
+
+OpenAI uruchomiło Instant Checkout w ChatGPT razem ze Stripe we wrześniu 2025, na Agentic Commerce Protocol. W marcu 2026 [zrobiło krok w tył](https://openai.com/index/powering-product-discovery-in-chatgpt/): sprzedawcy mogą używać własnego checkoutu, a ACP przenosi teraz feedy produktowe do odkrywania produktów w ChatGPT. Google poszło w drugą stronę. W styczniu pokazało Universal Commerce Protocol, który obsługuje zakupy u wybranych sprzedawców z USA w AI Mode i w aplikacji Gemini.
+
+Cloudflare ogłosił [Cloudflare Wallets](https://blog.cloudflare.com/wallets/) 4 sierpnia 2026. To przykład z posta Michała. Właściciel daje agentowi portfel z limitem wydatków, listą zaakceptowanych sprzedawców i maksymalną kwotą transakcji. Dziś można zarezerwować identyfikator. Zasilanie portfela i portfele dla agentów wciąż są zapowiedzią. Dalej zaszła strona sprzedawcy. [Monetization Gateway](https://blog.cloudflare.com/monetization-gateway-beta/) od Cloudflare wszedł 30 września w zamkniętą betę dla wybranych sprzedawców z USA. Pobiera od agentów opłatę za każde zapytanie przez HTTP 402, a rozliczenia idą w USDC na Base. Działa już produkcyjnie przy płatnej inferencji, wyszukiwaniu, sygnałach rynkowych i generowaniu PDF.
+
+Wolumen jest w wyszukiwaniu. OpenAI [przeniosło katalog aplikacji do katalogu pluginów](https://help.openai.com/en/articles/11487775-connectors-in-chatgpt) w lipcu 2026, wspólnego dla ChatGPT i Codex. [Oficjalny rejestr MCP](https://modelcontextprotocol.io/registry/about) weryfikuje, że serwer opublikowany pod twoją domeną naprawdę należy do ciebie. Integratorzy tacy jak [Composio](https://composio.dev/) i [Pipedream](https://pipedream.com/) wystawiają tysiące narzędzi pod jednym adresem, a agent wybiera spośród nich, czytając opisy.
+
+## Od czego zacząłbym, po kolei
+
+### 1. Opublikuj ofertę, którą maszyna potrafi ocenić
+
+Agent, który porównuje pięć narzędzi, najpierw czyta cennik. „Enterprise: skontaktuj się z nami” to zaproszenie dla człowieka. Dla agenta to brak danych, a brak danych zwykle kończy porównanie.
+
+Nie musisz rezygnować ze sprzedaży z handlowcem. Opublikuj strukturę: plany, co zawierają, limity, ceny jednostkowe i miejsce, w którym zaczyna się wycena indywidualna. Wstaw ją jako dane strukturalne na stronie cennika, do dokumentacji, którą agent przeczyta bez renderowania JavaScriptu, i do pliku [llms.txt](https://llmstxt.org/), który wskaże jedno i drugie.
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Przykładowy SaaS, plan Business",
+  "offers": {
+    "@type": "Offer",
+    "price": "199.00",
+    "priceCurrency": "PLN",
+    "priceSpecification": {
+      "@type": "UnitPriceSpecification",
+      "price": "199.00",
+      "priceCurrency": "PLN",
+      "unitText": "miesięcznie, do 10 użytkowników"
+    },
+    "url": "https://example.com/cennik#business"
+  }
+}
+```
+
+Dopisz warunki, których agent potrzebuje, żeby ograniczyć ryzyko osoby, dla której pracuje: długość triala, wypowiedzenie, zwroty, miejsce przechowywania danych. Agent ma unikać niespodzianek, więc wybiera dostawcę z przewidywalnymi warunkami.
+
+### 2. Traktuj opis narzędzia jak kartę produktu
+
+Listing w katalogu pluginów, wpis w rejestrze albo konektor u integratora czyta model, zanim zobaczy go człowiek. Nazwa narzędzia, jego opis i opis każdego parametru decydują, czy agent zrozumie, co robi twoja integracja, i czy wybierze ją zamiast konkurencyjnej.
+
+To copywriting dla innego czytelnika. Narzędzie opisane jako „Zarządzaj rekordami” przegra z takim, które „Tworzy fakturę dla istniejącego klienta i zwraca link do PDF”. Model wybiera narzędzia po opisach, więc różnica między narzędziem, które agent wywołuje chętnie, a takim, które pomija, potrafi sprowadzić się do dwóch zdań i czytelnych nazw parametrów. Sprawdź to sam: daj agentowi swoje narzędzia i narzędzia konkurenta, a potem zobacz w logach, które wywołał.
+
+### 3. Wchodź w płatności tylko tam, gdzie sprzedajesz za zapytanie
+
+Jeśli twój produkt to API, zbiór danych albo płatne narzędzie, pilotaż płatności za zapytanie przez x402 ma sens już teraz. Usuwa z drogi agenta zakładanie konta i klucze API. Jeśli sprzedajesz roczne licencje, w tym roku ważniejszy od protokołu płatności jest trial, który agent uruchomi bez maila do handlowca.
+
+## Mierz to osobno, bo inaczej tego nie zobaczysz
+
+GA4 widzi ludzi z przeglądarkami. Agent, który odpytuje twoje API albo serwer MCP, nigdy się tam nie pojawi. Zanim zaczniesz cokolwiek optymalizować, loguj zapytania agentów na serwerze, licz wywołania narzędzi MCP osobno dla każdego narzędzia i śledź odpowiedzi 402 oraz opłacone zapytania, jeśli pobierasz opłaty za użycie. Inaczej stroisz kanał, którego nie widzisz. W GEO większość zespołów już jest w tym miejscu.
+
+| Co mierzyć | Gdzie to znaleźć |
+| --- | --- |
+| Wzmianki i pozycja w odpowiedziach modeli | Monitoring GEO |
+| Instalacje pluginu i wpisu w rejestrze, wywołania każdego narzędzia | Logi twojego serwera MCP |
+| Wejścia agentów na cennik i dokumentację | Logi serwera albo CDN, po user agencie |
+| Triale uruchomione przez agentów, opłacone zapytania | Analityka produktowa i billing |
+
+## Dlaczego o tym piszę
+
+Prowadziłem SEO, konwersję i pipeline w B2B SaaS, ostatnio jako Head of Growth & Web Development w Symfonii i jako fractional GTM lead w CodiLime, gdzie dużą część pracy stanowiły materiały dla kupujących technicznych. Kiedy kupujący zmieniają drogę do produktu, ja widzę to najpierw w przychodzie. Mój własny stack marketingowy działa na agentach podpiętych do narzędzi przez MCP. Ta strona stoi na Cloudflare. Publikuję też tutaj [porównania modeli](/pl/compare/) oparte na powtarzalnych zadaniach. Widzę więc ten temat z dwóch stron: jako ktoś, kto pisze dla kupujących, i jako ktoś, kto patrzy, które narzędzie agent faktycznie wywołuje.
+
+Gartner [przewiduje](https://www.digitalcommerce360.com/2025/11/28/gartner-ai-agents-15-trillion-in-b2b-purchases-by-2028/), że do 2028 roku agenci AI będą pośredniczyć w 90% zakupów B2B. Nie planowałbym budżetu na tej liczbie. Planowałbym na czymś innym: pierwszą ocenę twojego produktu coraz częściej robi oprogramowanie, a ono czyta inne sygnały niż człowiek.
+
+<KeyTakeaway
+  title="Pierwszy miesiąc pracy nad widocznością agentyczną"
+  items={[
+    "Opublikuj plany, limity i ceny jednostkowe jako dane strukturalne i w llms.txt",
+    "Przepisz opisy narzędzi i parametrów w serwerze MCP albo pluginie pod model jako czytelnika",
+    "Zarejestruj swoją przestrzeń nazw w rejestrze MCP i sprawdź swój wpis w katalogu pluginów ChatGPT",
+    "Pozwól uruchomić trial bez maila do handlowca",
+    "Mierz ruch agentów osobno od ruchu ludzi, zanim zmienisz cokolwiek innego"
+  ]}
+/>
+
+Jeśli chcesz zobaczyć, jak twój produkt wygląda z perspektywy agenta, zanim zrobi to konkurencja, [umów rozmowę](/pl/contact/). Zaczynamy od krótkiego audytu pięciu punktów z listy powyżej.
