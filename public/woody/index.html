@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woody: write from your own sources, a person says yes</title>
+<meta name="description" content="Woody is a content studio that runs on your own server. It writes from the sources you give it, scores each text for search and for AI answers, and waits for a person to approve it. Write as one person, as your brand, or both.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0C0F14">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js'); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');</script>
+<style>
+@font-face { font-family: 'Geist'; font-weight: 400; font-display: swap; src: url('fonts/Geist-Regular.woff2') format('woff2'); }
+@font-face { font-family: 'Geist'; font-weight: 500; font-display: swap; src: url('fonts/Geist-Medium.woff2') format('woff2'); }
+@font-face { font-family: 'Geist'; font-weight: 600; font-display: swap; src: url('fonts/Geist-SemiBold.woff2') format('woff2'); }
+@font-face { font-family: 'Geist'; font-weight: 700; font-display: swap; src: url('fonts/Geist-Bold.woff2') format('woff2'); }
+@font-face { font-family: 'Geist Mono'; font-weight: 500; font-display: swap; src: url('fonts/GeistMono-Medium.woff2') format('woff2'); }
+
+:root {
+  --ink: #0C0F14; --ink-2: #151A22; --paper: #F4F5F7; --signal: #FF4D2E; --signal-ink: #A8331E; --mute: #4A5261; --mute-dark: #B4BCC9; --line: #DDE0E6;
+  --color-primary-500: #FF4D2E; --dur-base: 200ms; --ease-standard: cubic-bezier(.2, 0, .2, 1); --ease-out: cubic-bezier(.2, 0, .2, 1); --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --ease-emphasized: cubic-bezier(.34, 1.36, .64, 1); --max: 1240px; --pad: 32px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; -webkit-text-size-adjust: 100%; }
+body { font-family: 'Geist', system-ui, sans-serif; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; line-height: 1.5; overflow-x: hidden; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; border-radius: 6px; }
+.wrap { width: 100%; max-width: calc(var(--max) + var(--pad) * 2); margin: 0 auto; padding: 0 var(--pad); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -60px; z-index: 100; background: var(--signal); color: var(--ink); padding: 10px 16px; border-radius: 10px; font-weight: 600; text-decoration: none; }
+.skip:focus { top: 12px; }
+
+/* icons: the product's own, drawn inline */
+.i { display: inline-flex; width: 1.5rem; height: 1.5rem; flex: none; }
+.i svg { width: 100%; height: 100%; }
+.lhi { --lhi-accent: currentColor; overflow: visible; }
+/* the mark of a page title: an ink tile in both themes, the icon in white, a soft light of the signal colour in one corner and a hairline */
+.page-mark { position: relative; display: grid; flex: none; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: var(--radius-xl, 1rem); color: var(--color-neutral-0);
+  background: radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--color-primary-500) 34%, transparent), transparent 55%), linear-gradient(160deg, var(--color-ink-900), var(--color-ink-950));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, white 12%, transparent), 0 8px 20px -10px color-mix(in srgb, var(--color-ink-950) 70%, transparent); }
+.lhi .lhi-fill { fill: var(--lhi-accent); transition: fill var(--dur-base) var(--ease-standard); }
+.lhi .lhi-stroke { stroke: var(--lhi-accent); transition: stroke var(--dur-base) var(--ease-standard); }
+.lhi :is(.lhi-write, .lhi-draw, .lhi-front, .lhi-back, .lhi-needle, .lhi-hop, .lhi-lean, .lhi-drop, .lhi-knob, .lhi-spin, .lhi-twinkle, .lhi-leave, .lhi-nudge, .lhi-stretch) { transform-box: fill-box; }
+.lhi .lhi-write, .lhi .lhi-stretch { transform-origin: 0 50%; }
+.lhi .lhi-draw { stroke-dasharray: 1; }
+.lhi :is(.lhi-needle, .lhi-spin, .lhi-twinkle, .lhi-hop, .lhi-knob) { transform-origin: 50% 50%; }
+.lhi .lhi-lean { transform-origin: 0 100%; }
+[aria-current="page"] .lhi, .lhi-on .lhi, .lhi.lhi-on { --lhi-accent: var(--color-primary-500); }
+@media (hover: hover) { .group:hover .lhi { --lhi-accent: var(--color-primary-500); } }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-write { animation: lhi-write 420ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 90ms); }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-draw { animation: lhi-draw 520ms var(--ease-out) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-front { animation: lhi-front 520ms var(--ease-emphasized) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-back { animation: lhi-back 520ms var(--ease-emphasized) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-needle { animation: lhi-needle 900ms var(--ease-out) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-hop { animation: lhi-hop 560ms var(--ease-out) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-lean { animation: lhi-lean 620ms var(--ease-emphasized) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-drop { animation: lhi-drop 520ms var(--ease-emphasized) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-knob { animation: lhi-knob 640ms var(--ease-in-out) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-spin { animation: lhi-spin 700ms var(--ease-out) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-twinkle { animation: lhi-twinkle 700ms var(--ease-out) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-leave { animation: lhi-leave 640ms var(--ease-out) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-nudge { animation: lhi-nudge 520ms var(--ease-in-out) both; }
+:is(.group:focus-visible, [aria-current="page"], .lhi-play) .lhi .lhi-stretch { animation: lhi-stretch 520ms var(--ease-in-out) both; }
+@media (hover: hover) {
+  .group:hover .lhi .lhi-write { animation: lhi-write 420ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 90ms); }
+  .group:hover .lhi .lhi-draw { animation: lhi-draw 520ms var(--ease-out) both; }
+  .group:hover .lhi .lhi-front { animation: lhi-front 520ms var(--ease-emphasized) both; }
+  .group:hover .lhi .lhi-back { animation: lhi-back 520ms var(--ease-emphasized) both; }
+  .group:hover .lhi .lhi-needle { animation: lhi-needle 900ms var(--ease-out) both; }
+  .group:hover .lhi .lhi-hop { animation: lhi-hop 560ms var(--ease-out) both; }
+  .group:hover .lhi .lhi-lean { animation: lhi-lean 620ms var(--ease-emphasized) both; }
+  .group:hover .lhi .lhi-drop { animation: lhi-drop 520ms var(--ease-emphasized) both; }
+  .group:hover .lhi .lhi-knob { animation: lhi-knob 640ms var(--ease-in-out) both; }
+  .group:hover .lhi .lhi-spin { animation: lhi-spin 700ms var(--ease-out) both; }
+  .group:hover .lhi .lhi-twinkle { animation: lhi-twinkle 700ms var(--ease-out) both; }
+  .group:hover .lhi .lhi-leave { animation: lhi-leave 640ms var(--ease-out) both; }
+  .group:hover .lhi .lhi-nudge { animation: lhi-nudge 520ms var(--ease-in-out) both; }
+  .group:hover .lhi .lhi-stretch { animation: lhi-stretch 520ms var(--ease-in-out) both; }
+}
+@keyframes lhi-write { from { transform: scaleX(0); } }
+@keyframes lhi-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes lhi-front { 50% { transform: translate(-1px, 1.5px); } }
+@keyframes lhi-back { 50% { transform: translate(1.5px, -1.5px); } }
+@keyframes lhi-needle { 30% { transform: rotate(-38deg); } 60% { transform: rotate(16deg); } 82% { transform: rotate(-5deg); } }
+@keyframes lhi-hop { 40% { transform: translateY(-3px) scale(1.12); } 70% { transform: translateY(0) scale(0.94); } }
+@keyframes lhi-lean { 50% { transform: rotate(-12deg); } }
+@keyframes lhi-drop { from { transform: translateY(-5px); opacity: 0; } }
+@keyframes lhi-knob { 50% { transform: translateX(var(--x, 3px)); } }
+@keyframes lhi-spin { from { transform: rotate(-45deg); } }
+@keyframes lhi-twinkle { 50% { transform: scale(1.6) rotate(45deg); } }
+@keyframes lhi-leave { 45% { transform: translateX(3px); opacity: 0; } 46% { transform: translateX(-4px); opacity: 0; } }
+@keyframes lhi-nudge { 50% { transform: translateX(var(--x, 2px)); } }
+@keyframes lhi-stretch { 50% { transform: scaleX(1.6); } }
+
+/* the top bar */
+.bar { position: fixed; inset: 0 0 auto 0; z-index: 50; background: rgba(12, 15, 20, .94); backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 24px; }
+.bar img { height: 30px; width: auto; }
+.bar nav { display: flex; align-items: center; gap: 28px; }
+.bar nav a { color: var(--mute-dark); text-decoration: none; font-size: 14.5px; font-weight: 500; transition: color var(--dur-base); }
+.bar nav a:hover { color: #fff; }
+.bar nav a:not(.btn) { position: relative; }
+.bar nav a:not(.btn)::after { content: ''; position: absolute; left: 0; right: 0; bottom: -8px; height: 2px; border-radius: 2px; background: var(--signal); transform: scaleX(0); transform-origin: 0 50%; transition: transform 380ms var(--ease-out); }
+.bar nav a.on { color: #fff; }
+.bar nav a.on::after { transform: scaleX(1); }
+.bar .progress { position: absolute; left: 0; bottom: -1px; width: 100%; height: 2px; background: var(--signal); transform: scaleX(var(--p, 0)); transform-origin: 0 50%; pointer-events: none; }
+.btn { display: inline-flex; align-items: center; gap: 10px; border-radius: 999px; padding: 14px 24px; font: 600 16px/1 'Geist', system-ui, sans-serif; text-decoration: none; cursor: pointer; border: 0; position: relative; overflow: hidden; transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base); }
+.btn .i { width: 1.15rem; height: 1.15rem; }
+.btn-signal { background: var(--signal); color: var(--ink); box-shadow: 0 10px 30px -8px rgba(255, 77, 46, .6), inset 0 1px 0 rgba(255, 255, 255, .35); }
+.btn-signal::after { content: ''; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .45) 50%, transparent 65%); transform: translateX(-120%); }
+.btn-signal:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -8px rgba(255, 77, 46, .75), inset 0 1px 0 rgba(255, 255, 255, .35); }
+.btn-signal:hover::after { transform: translateX(120%); transition: transform 700ms var(--ease-out); }
+.btn-ghost { color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .28); }
+.btn-ghost:hover { box-shadow: inset 0 0 0 1.5px #fff; transform: translateY(-2px); }
+.btn-sm { padding: 10px 18px; font-size: 14.5px; }
+
+/* type */
+.kicker { font: 500 12.5px/1 'Geist Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--signal-ink); display: flex; align-items: center; gap: 12px; }
+.dark .kicker, .hero .kicker { color: var(--signal); }
+.kicker b { font-weight: 500; color: var(--mute); }
+.dark .kicker b, .hero .kicker b { color: #9AA3B2; }
+h1 { font-size: clamp(44px, 5.6vw, 82px); line-height: 1.02; letter-spacing: -.035em; font-weight: 700; }
+h2 { font-size: clamp(34px, 3.7vw, 54px); line-height: 1.06; letter-spacing: -.03em; font-weight: 700; }
+h3 { font-size: 20px; line-height: 1.25; letter-spacing: -.012em; font-weight: 600; }
+em { font-style: normal; color: var(--signal); }
+.light em { color: var(--signal-ink); }
+.lede { font-size: clamp(17px, 1.45vw, 20px); line-height: 1.6; color: var(--mute); max-width: 36em; }
+.dark .lede, .hero .lede { color: var(--mute-dark); }
+p { max-width: 38em; }
+
+/* the hero: dark, the mark, and the product on windows that cross into the next part */
+.dark { background: var(--ink); color: var(--paper); position: relative; }
+.hero { background: var(--ink); color: var(--paper); position: relative; padding: 124px 0 0; z-index: 2; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(640px 460px at 78% 30%, rgba(255, 77, 46, .26), transparent 70%), radial-gradient(700px 500px at 4% 92%, rgba(255, 255, 255, .07), transparent 70%); }
+.hero::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, .09) 1px, transparent 1.4px); background-size: 30px 30px; -webkit-mask-image: radial-gradient(ellipse 60% 70% at 72% 42%, #000, transparent 75%); mask-image: radial-gradient(ellipse 60% 70% at 72% 42%, #000, transparent 75%); }
+.hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 590px) minmax(0, 1fr); gap: 40px; align-items: start; }
+.hero-copy { padding-top: 22px; }
+.hero h1 { margin-top: 24px; font-size: clamp(42px, 5.1vw, 74px); text-wrap: balance; }
+.hero .lede { margin-top: 28px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+.hero small { display: block; margin-top: 18px; font: 500 13.5px/1.5 'Geist Mono', monospace; letter-spacing: .04em; color: #A3ACBA; }
+.axis { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 8px; list-style: none; }
+.axis a { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px 9px 11px; border-radius: 999px; background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); color: #E6E9EF; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: background var(--dur-base), transform var(--dur-base) var(--ease-emphasized); }
+.axis a:hover { background: rgba(255, 255, 255, .12); transform: translateY(-2px); }
+.axis .i { width: 1.2rem; height: 1.2rem; }
+
+/* the composite on the right of the hero. Everything is sized in percent of the stage, so it scales as one picture. */
+.stage { position: relative; width: 100%; aspect-ratio: 680 / 820; margin-bottom: -150px; --mx: 0; --my: 0; }
+.layer { translate: calc(var(--mx) * var(--d, 10) * 1px) calc(var(--my) * var(--d, 10) * 1px); transition: translate 260ms var(--ease-out); }
+.tilt { transform: perspective(1600px) rotateY(-9deg) rotateX(4deg); transform-origin: 0 50%; }
+.win { position: relative; overflow: hidden; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgba(12, 15, 20, .08), 0 44px 70px -24px rgba(12, 15, 20, .5), 0 14px 28px -12px rgba(12, 15, 20, .28); }
+.dark .win, .hero .win { box-shadow: 0 0 0 1px rgba(255, 255, 255, .14), 0 50px 80px -20px rgba(0, 0, 0, .75), 0 16px 34px rgba(0, 0, 0, .45); }
+.win img { width: 100%; height: auto; }
+/* children of a composite sit where the percentages say (this comes after .win, which is relative) */
+.stage > *, .vis > * { position: absolute; }
+.win::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, .34) 50%, transparent 62%); transform: translateX(-130%); }
+.win:hover::after { transform: translateX(130%); transition: transform 900ms var(--ease-out); }
+.s-studio { left: 0; top: 24%; width: 82%; }
+.s-forester { right: -2%; top: -3%; width: 49%; z-index: 3; --d: -16; }
+.s-forester img { filter: drop-shadow(0 30px 34px rgba(0, 0, 0, .55)); animation: bob 6.5s var(--ease-in-out) infinite; }
+.s-shadow { right: 4%; top: 32%; width: 36%; height: 6%; z-index: 2; background: radial-gradient(closest-side, rgba(0, 0, 0, .55), transparent); animation: shade 6.5s var(--ease-in-out) infinite; --d: -16; }
+.s-scores { right: -3%; top: 58%; width: 43%; z-index: 4; border-radius: 16px; --d: -24; }
+.s-cover-a { left: -5%; top: 75%; width: 37%; z-index: 5; transform: rotate(-5deg); border-radius: 10px; --d: 20; }
+.s-cover-b { left: 4%; top: 2%; width: 36%; z-index: 1; transform: rotate(3deg); border-radius: 10px; --d: 14; }
+.s-stage { left: 18%; top: 55%; width: 53%; z-index: 4; border-radius: 12px; --d: 12; }
+@keyframes bob { 50% { transform: translateY(-14px) rotate(.6deg); } }
+@keyframes shade { 50% { transform: scale(.88); opacity: .75; } }
+.leaf { position: absolute; z-index: 2; width: 22px; color: var(--signal); opacity: .9; animation: leaf 9s var(--ease-in-out) infinite; }
+.leaf svg { width: 100%; height: auto; display: block; }
+.l1 { right: 3%; top: 7%; animation-delay: -2s; } .l2 { right: 44%; top: 1%; width: 15px; animation-delay: -5s; opacity: .6; } .l3 { right: 0; top: 36%; width: 17px; animation-delay: -7s; opacity: .7; }
+@keyframes leaf { 0%, 100% { transform: translate(0, 0) rotate(0); } 50% { transform: translate(-10px, 22px) rotate(28deg); } }
+
+/* sections */
+section { position: relative; }
+.part { padding: 132px 0; }
+.part.after-hero { padding-top: 190px; }
+.light { background: var(--paper); }
+.split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 72px; align-items: center; }
+.split.flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.split.flip .copy { order: 2; }
+.copy h2 { margin-top: 20px; }
+.copy > p { margin-top: 22px; }
+.facts { list-style: none; margin-top: 30px; display: grid; gap: 16px; }
+.facts li { display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: center; }
+.facts .badge { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; background: var(--ink); color: #fff; box-shadow: 0 8px 18px -8px rgba(12, 15, 20, .6), inset 0 1px 0 rgba(255, 255, 255, .14); }
+.dark .facts .badge { background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+.facts .badge .i { width: 1.4rem; height: 1.4rem; }
+.facts h3 { font-size: 18.5px; font-weight: 600; line-height: 1.3; }
+.facts p { font-size: 16px; line-height: 1.55; color: var(--mute); }
+.dark .facts p { color: var(--mute-dark); }
+.chans { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; }
+.chans li { display: inline-flex; align-items: center; gap: 8px; padding: 8px 13px 8px 10px; background: #fff; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); font-size: 14px; font-weight: 500; }
+.chans .i { width: 1.15rem; height: 1.15rem; }
+.note { margin-top: 20px; font: 400 14.5px/1.6 'Geist', system-ui, sans-serif; color: #566070; max-width: 40em; }
+.dark .note { color: #A3ACBA; }
+
+/* a visual: percent sized children in a box of fixed proportions */
+.vis { position: relative; width: 100%; }
+.vis-studio { aspect-ratio: 1500 / 815; }
+.vis-studio .win { inset: 0; }
+.vis-studio .chip { left: -3%; bottom: -9%; width: 40%; }
+.pull { background: var(--ink); color: #fff; border-radius: 16px; padding: 18px 20px; box-shadow: 0 30px 50px -18px rgba(12, 15, 20, .6); font-size: 15px; line-height: 1.45; }
+.pull b { display: block; font: 500 12px/1 'Geist Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--signal); margin-bottom: 10px; }
+.vis-scores { aspect-ratio: 1.1; }
+.vis-scores .glow { inset: 4% 6%; background: radial-gradient(closest-side, rgba(40, 185, 100, .38), rgba(255, 77, 46, .18) 60%, transparent 75%); filter: blur(26px); animation: breathe 7s var(--ease-in-out) infinite; }
+@keyframes breathe { 50% { transform: scale(1.08); opacity: .8; } }
+.vis-scores .front { left: 17%; top: 9%; width: 66%; z-index: 2; border-radius: 18px; }
+.vis-review { aspect-ratio: 1500 / 1330; }
+.vis-review .win { left: 0; top: 0; width: 100%; }
+.vis-fan { aspect-ratio: 1.15; }
+.fan { border-radius: 12px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .12), 0 40px 60px -16px rgba(0, 0, 0, .75); transition: transform 500ms var(--ease-emphasized); transform-origin: 50% 100%; }
+.fan img { border-radius: 12px; }
+.f1 { left: 0; top: 6%; width: 55%; transform: rotate(-6deg); z-index: 1; }
+.f2 { right: 0; top: 0; width: 55%; transform: rotate(5deg); z-index: 2; }
+.f3 { left: 22%; top: 40%; width: 55%; transform: rotate(-1deg); z-index: 3; }
+.vis-fan:hover .f1 { transform: rotate(-9deg) translate(-3%, -2%); } .vis-fan:hover .f2 { transform: rotate(8deg) translate(3%, -3%); }
+.vis-fan:hover .f3 { transform: rotate(-1deg) translateY(-3%); }
+.vis-own { aspect-ratio: 1.15; }
+.vis-own .win { left: 17%; top: 0; width: 64%; transform: perspective(1500px) rotateY(-10deg) rotateX(3deg); transform-origin: 100% 50%; z-index: 2; }
+.ring { margin-top: 30px; max-width: 24em; border-radius: 20px; background: var(--ink); color: var(--paper); padding: 22px 24px 24px; font-size: 16px; line-height: 1.5; box-shadow: 0 30px 50px -22px rgba(12, 15, 20, .6); }
+.ring b { display: block; font: 500 12px/1 'Geist Mono', monospace; letter-spacing: .12em; color: var(--signal); margin-bottom: 10px; text-transform: uppercase; }
+
+/* three plain facts under the fourth part */
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 90px; }
+.card { background: #fff; border-radius: 22px; padding: 30px 28px 32px; box-shadow: 0 0 0 1px var(--line), 0 22px 40px -28px rgba(12, 15, 20, .35); transition: transform 320ms var(--ease-emphasized), box-shadow 320ms; }
+.card:hover { transform: translateY(-6px); box-shadow: 0 0 0 1px var(--line), 0 34px 50px -26px rgba(12, 15, 20, .4); }
+.card .badge { width: 52px; height: 52px; border-radius: 15px; display: grid; place-items: center; background: var(--ink); color: #fff; margin-bottom: 22px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 10px 18px -8px rgba(12, 15, 20, .55); }
+.card .badge .i { width: 1.7rem; height: 1.7rem; }
+.card p { margin-top: 10px; font-size: 16px; line-height: 1.6; color: var(--mute); }
+
+/* the people on the covers: two rows that drift in opposite directions */
+.wall { margin-top: 96px; display: grid; gap: 16px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.track { display: flex; gap: 16px; width: max-content; animation: drift 150s linear infinite; }
+.track img { width: 300px; height: 200px; object-fit: cover; border-radius: 16px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .1); }
+.wall:hover .track { animation-play-state: paused; }
+@keyframes drift { to { transform: translateX(calc(-50% - 8px)); } }
+.wall-cap { margin-top: 26px; text-align: center; font: 500 13.5px/1.5 'Geist Mono', monospace; letter-spacing: .04em; color: #A3ACBA; max-width: none; }
+
+/* plain answers */
+.answers { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 72px; }
+.qa { border-top: 1px solid var(--line); }
+.qa details { border-bottom: 1px solid var(--line); }
+.qa summary { list-style: none; cursor: pointer; padding: 22px 0; font-size: 19px; font-weight: 600; letter-spacing: -.01em; display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+.qa summary::-webkit-details-marker { display: none; }
+.qa summary::after { content: '+'; font: 500 26px/1 'Geist Mono', monospace; color: var(--signal-ink); transition: transform 300ms var(--ease-emphasized); }
+.qa details[open] summary::after { transform: rotate(45deg); }
+.qa details p { padding: 0 0 24px; color: var(--mute); font-size: 17px; line-height: 1.6; max-width: 40em; }
+
+/* the end */
+.end { padding: 150px 0 120px; overflow: hidden; background: var(--ink); color: var(--paper); }
+.end::before { content: ''; position: absolute; inset: 0; background: radial-gradient(700px 420px at 50% 112%, rgba(255, 77, 46, .35), transparent 70%), radial-gradient(500px 360px at 8% 10%, rgba(255, 255, 255, .06), transparent 70%); }
+.end .wrap { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 40px; align-items: center; }
+.end h2 { font-size: clamp(40px, 5vw, 72px); margin-top: 22px; }
+.end .lede { margin-top: 26px; color: var(--mute-dark); }
+.end .forester { position: relative; }
+.end .forester img { margin: 0 auto; width: min(100%, 440px); filter: drop-shadow(0 40px 40px rgba(0, 0, 0, .55)); animation: bob 7s var(--ease-in-out) infinite; }
+.priv { margin-top: 22px; font: 400 14.5px/1.6 'Geist', system-ui, sans-serif; color: #A3ACBA; max-width: 40em; }
+footer { background: var(--ink); color: #A3ACBA; padding: 34px 0 40px; border-top: 1px solid rgba(255, 255, 255, .08); font-size: 14px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 14px 40px; justify-content: space-between; align-items: center; }
+footer img { height: 28px; width: auto; }
+footer b { color: #fff; font-weight: 600; }
+footer p { max-width: 46em; }
+
+/* reveal on scroll: only where scripts run */
+.js .rv { opacity: 0; transform: translateY(34px); transition: opacity 800ms var(--ease-out), transform 900ms var(--ease-out); transition-delay: calc(var(--n, 0) * 90ms); }
+.js .rv.in { opacity: 1; transform: none; }
+.count { font-variant-numeric: tabular-nums; font-weight: inherit; }
+
+/* a card follows the pointer with a soft light behind its text */
+.card { position: relative; overflow: hidden; }
+.card::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 360ms; background: radial-gradient(280px circle at var(--px, 50%) var(--py, 0%), rgba(255, 77, 46, .1), transparent 70%); }
+.card:hover::before { opacity: 1; }
+.card > * { position: relative; z-index: 1; }
+
+/* the answers open with a short move */
+.qa details[open] p { animation: faq 420ms var(--ease-out); }
+@keyframes faq { from { opacity: 0; translate: 0 -8px; } }
+
+/* the way out: the button breathes, so the eye finds it */
+.end .btn-signal { animation: breathe-btn 3.6s var(--ease-in-out) infinite; }
+@keyframes breathe-btn { 50% { box-shadow: 0 14px 46px -6px rgba(255, 77, 46, .9), inset 0 1px 0 rgba(255, 255, 255, .35); } }
+
+/* motion: the script switches it on, and only when the person has not asked for less of it (see the end of this sheet) */
+.fan.f1 { --k: 0; } .fan.f2 { --k: 1; } .fan.f3 { --k: 2; } .fan.f4 { --k: 3; }
+.s-cover-b { --e: 0; --sw: 11s; } .s-studio { --e: 1; --sw: 13s; } .s-forester { --e: 3; --sw: 8s; } .s-shadow { --e: 3; }
+.s-scores { --e: 4; --sw: 10s; } .s-cover-a { --e: 5; --sw: 9s; } .s-stage { --e: 6; --sw: 12s; }
+@keyframes enter { from { opacity: 0; scale: .86; filter: blur(12px); } }
+@keyframes rise { from { opacity: 0; translate: 0 22px; } }
+@keyframes deal { from { opacity: 0; transform: translateY(70px) rotate(0deg) scale(.92); } }
+@keyframes pop { from { opacity: 0; scale: .9; translate: 0 36px; } }
+@keyframes slide { from { opacity: 0; translate: -48px 0; } }
+
+.motion .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .16em; margin-bottom: -.16em; }
+.motion .w > span { display: inline-block; transform: translateY(112%); transition: transform 860ms var(--ease-emphasized); transition-delay: calc(var(--i, 0) * 55ms + 120ms); }
+.motion .in .w > span, .motion .go .w > span { transform: none; }
+.motion .w.settled { overflow: visible; }
+.motion .w.settled > span { transition: none; }
+.hero h1 em { display: block; }
+
+.motion .hero:not(.go) h1, .motion .hero:not(.go) .hero-copy > :not(h1), .motion .hero:not(.go) .stage { opacity: 0; }
+.motion .hero.go .hero-copy > :nth-child(1) { animation: rise 700ms var(--ease-out) backwards; }
+.motion .hero.go .hero-copy > :nth-child(3) { animation: rise 800ms var(--ease-out) 520ms backwards; }
+.motion .hero.go .hero-copy > :nth-child(4) { animation: rise 800ms var(--ease-out) 640ms backwards; }
+.motion .hero.go .hero-copy > :nth-child(5) { animation: rise 800ms var(--ease-out) 740ms backwards; }
+.motion .hero.go .hero-copy > :nth-child(6) { animation: rise 800ms var(--ease-out) 840ms backwards; }
+.motion .hero.go .layer:not(.s-shadow) { animation: enter 1100ms var(--ease-emphasized) calc(var(--e, 0) * 120ms + 150ms) backwards; }
+.motion .hero.go .s-shadow { animation: shade 6.5s var(--ease-in-out) infinite, enter 1100ms var(--ease-emphasized) 510ms backwards; }
+
+.motion .vis-fan.in .fan { animation: deal 1000ms var(--ease-emphasized) calc(var(--k, 0) * 140ms + 250ms) backwards; }
+.motion .vis-scores.in .front { animation: pop 1000ms var(--ease-emphasized) 300ms backwards; }
+
+@media (max-width: 1080px) {
+  :root { --pad: 24px; }
+  .bar nav a:not(.btn) { display: none; }
+  .hero { padding-top: 104px; }
+  .hero .wrap, .split, .split.flip, .answers, .end .wrap { grid-template-columns: 1fr; gap: 48px; }
+  .split.flip .copy { order: 0; }
+  .stage { max-width: 680px; margin: 0 auto -90px; }
+  .part { padding: 88px 0; }
+  .part.after-hero { padding-top: 170px; }
+  .trio { grid-template-columns: 1fr; margin-top: 64px; }
+  .vis { max-width: 720px; margin: 0 auto; }
+  .end { padding: 96px 0 80px; }
+  .end .forester img { width: min(70%, 320px); }
+}
+@media (max-width: 560px) {
+  :root { --pad: 20px; }
+  .bar .wrap { height: 58px; }
+  .bar img { height: 26px; }
+  .hero { padding-top: 92px; }
+  h1 { font-size: 42px; }
+  .stage { margin-bottom: -60px; }
+  .s-stage { display: none; }
+  .leaf { display: none; }
+  .part { padding: 64px 0; }
+  .part.after-hero { padding-top: 120px; }
+  .track img { width: 220px; height: 147px; }
+  .wall { margin-top: 70px; }
+  .vis-studio .chip { display: none; }
+  .vis-review .stage-card { left: -2%; width: 78%; }
+  .vis-fan .look { width: 56%; }
+  .btn { padding: 13px 20px; }
+  .cta-row .btn { flex: 1 1 100%; justify-content: center; }
+  .facts li { grid-template-columns: 40px 1fr; gap: 14px; }
+  .facts .badge { width: 40px; height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js .rv { opacity: 1; transform: none; }
+  .track { transform: none; }
+  .wall { overflow-x: auto; }
+}
+</style>
+<noscript><style>.js .rv { opacity: 1; transform: none; }</style></noscript>
+</head>
+<body>
+<a class="skip" href="#request">Skip to the content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a href="#top" aria-label="Woody, back to the top"><img src="img/logo-dark.svg" width="86" height="30" alt="Woody"></a>
+    <nav aria-label="Page">
+      <a href="#request">How it works</a>
+      <a href="#covers">Covers</a>
+      <a href="#yours">Your server</a>
+      <a href="#answers">Answers</a>
+      <a class="btn btn-signal btn-sm" href="mailto:hello@wojciech.io?subject=Woody%20waiting%20list&body=Please%20add%20me%20to%20the%20Woody%20waiting%20list.%20I%20agree%20that%20you%20write%20to%20me%20about%20Woody%20at%20this%20address%2C%20and%20for%20nothing%20else.">Join the waiting list</a>
+    </nav>
+  </div>
+  <i class="progress" aria-hidden="true"></i>
+</header>
+
+<main id="top">
+<section class="hero" aria-labelledby="h1">
+  <div class="wrap">
+    <div class="hero-copy">
+      <p class="kicker">Content studio</p>
+      <h1 id="h1">Write from your own sources. <em>A person says yes.</em></h1>
+      <p class="lede">Type what you need. Woody writes it from your sources and scores it for search and for AI answers. Then a person approves it.</p>
+      <div class="cta-row">
+        <a class="btn btn-signal" href="mailto:hello@wojciech.io?subject=Woody%20waiting%20list&body=Please%20add%20me%20to%20the%20Woody%20waiting%20list.%20I%20agree%20that%20you%20write%20to%20me%20about%20Woody%20at%20this%20address%2C%20and%20for%20nothing%20else.">Join the waiting list <span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="person-plus" aria-hidden="true" focusable="false"><circle cx="10" cy="8.5" r="3.5"></circle><path d="M3.5 20.25c.5-3.6 3.1-5.75 6.5-5.75s6 2.15 6.5 5.75"></path><path class="lhi-a lhi-stroke lhi-draw" d="M19 4.5v5M16.5 7h5" pathLength="1"></path></svg></span></a>
+        <a class="btn btn-ghost" href="#request">See it work</a>
+      </div>
+      <small>Not on sale yet. Runs on your own server.</small>
+    </div>
+
+    <div class="stage" aria-label="Woody at work: the Studio with a request typed in, the two scores of a text, and the forester">
+      <div class="layer s-studio tilt win"><img src="img/studio.webp" width="1500" height="816" alt="The Studio with a request typed in: a LinkedIn post about a vendor shortlist, in the voice of Mara" decoding="async"></div>
+      <div class="layer s-shadow" aria-hidden="true"></div>
+      <div class="layer s-forester"><img src="img/forester.webp" width="900" height="900" alt="A 3D forester in a red jacket plants a sapling, the mark of Woody" decoding="async"></div>
+      <div class="layer s-scores win"><img src="img/scores.webp" width="775" height="690" alt="The SEO and GEO scores of a text, both 100, with the words Found on Google and Quoted by AI assistants" decoding="async"></div>
+    </div>
+  </div>
+</section>
+
+<section class="part light after-hero" id="request" aria-labelledby="h-request">
+  <div class="wrap split">
+    <div class="copy rv">
+      <p class="kicker"><b>01</b> The request</p>
+      <h2 id="h-request">Type one sentence. Woody works out <em>the rest.</em></h2>
+      <p class="lede">Say what you need, like “a LinkedIn post about why a case study needs a number”. Woody picks the format, the length and the sources, and shows you what it picked. Change anything before you press Create.</p>
+      <ul class="facts group">
+        <li class="rv" style="--n:1"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="sources" aria-hidden="true" focusable="false"><rect x="3.75" y="4" width="4.25" height="16.5" rx="1.25"></rect><rect x="9.75" y="4" width="4.25" height="16.5" rx="1.25"></rect><rect class="lhi-lean" x="15.25" y="5.25" width="4.25" height="15.25" rx="1.25"></rect><path class="lhi-a lhi-fill lhi-drop" d="M10.9 4h2v5.2l-1-0.9-1 0.9z" stroke="none"></path></svg></span></span><h3>A claim with no source behind it is flagged</h3></li>
+        <li class="rv" style="--n:2"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="voices" aria-hidden="true" focusable="false"><path d="M4 5.5A2 2 0 0 1 6 3.5h7.5a2 2 0 0 1 2 2V10a2 2 0 0 1-2 2H9l-3 2.5V12H6a2 2 0 0 1-2-2z"></path><path class="lhi-a lhi-stroke lhi-draw" d="M11.5 15.5h2.5l3 2.5v-2.5h1A2 2 0 0 0 20 13.5V10" pathLength="1"></path></svg></span></span><h3>Split your communication between you and your brand, if you want to</h3></li>
+      </ul>
+      <ul class="chans" aria-label="Formats Woody writes">
+        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="blog" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"></rect><path d="M3.5 8.5h17"></path><circle cx="6.25" cy="6.5" r="0.7" fill="currentColor" stroke="none"></circle><circle cx="8.5" cy="6.5" r="0.7" fill="currentColor" stroke="none"></circle><rect class="lhi-a lhi-fill lhi-write" x="6.5" y="11" width="8" height="2.75" rx="1" stroke="none"></rect><path d="M6.5 16.5h11"></path></svg></span>Blog</li><li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="faq" aria-hidden="true" focusable="false"><path d="M6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H11.5L7.5 20.25V17h-1A2.5 2.5 0 0 1 4 14.5v-8A2.5 2.5 0 0 1 6.5 4z"></path><path d="M10 8.9a2.05 2.05 0 1 1 2.85 1.9c-.55.25-.85.65-.85 1.2v.35"></path><circle class="lhi-a lhi-fill lhi-hop" cx="12" cy="14.35" r="1.05" stroke="none"></circle></svg></span>FAQ</li><li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="newsletter" aria-hidden="true" focusable="false"><rect x="3" y="5.5" width="18" height="13" rx="2.5"></rect><path class="lhi-a lhi-stroke lhi-draw" d="M3.75 7.25L12 13l8.25-5.75" pathLength="1"></path></svg></span>Newsletter</li><li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="linkedin" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="17" height="17" rx="3.75"></rect><circle class="lhi-a lhi-fill lhi-hop" cx="8.25" cy="8.25" r="1.25" stroke="none"></circle><path d="M8.25 11v5.75M12 16.75V11M12 13.6a2.6 2.6 0 0 1 5.1 0v3.15"></path></svg></span>LinkedIn</li><li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="facebook" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.75"></circle><path d="M15 7.75h-1.25A2.25 2.25 0 0 0 11.5 10v10.6"></path><path class="lhi-a lhi-stroke lhi-write" d="M9 13.25h5.25"></path></svg></span>Facebook</li><li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="instagram" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="3.75"></circle><circle class="lhi-a lhi-fill lhi-hop" cx="16.85" cy="7.15" r="1.05" stroke="none"></circle></svg></span>Instagram</li><li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="in-app" aria-hidden="true" focusable="false"><rect x="6" y="2.5" width="12" height="19" rx="2.75"></rect><path d="M10.5 5.25h3M9.5 17h5"></path><rect class="lhi-a lhi-fill lhi-drop" x="8.75" y="8.5" width="6.5" height="4.25" rx="1.4" stroke="none"></rect></svg></span>In-app text</li>
+      </ul>
+    </div>
+    <div class="vis vis-studio rv" style="--n:1">
+      <div class="win"><img src="img/studio.webp" width="1500" height="816" alt="The Studio: one field with a request typed in, the voice, the format and the detected category and setup under it" decoding="async" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section class="part dark" id="result" aria-labelledby="h-result">
+  <div class="wrap split flip">
+    <div class="vis vis-scores rv">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="win front"><img src="img/scores.webp" width="775" height="690" alt="The SEO and GEO scores of the sample text: 100 and 100, all 13 search checks and all 8 AI checks pass" decoding="async" loading="lazy"></div>
+    </div>
+    <div class="copy rv" style="--n:1">
+      <p class="kicker"><b>02</b> The result</p>
+      <h2 id="h-result">Scored for Google and for AI answers, <em>before you see it.</em></h2>
+      <p class="lede">SEO asks whether a search engine can find the text. GEO asks whether an AI assistant can quote it. A text that misses is corrected, up to two times.</p>
+      <ul class="facts group">
+        <li class="rv" style="--n:1"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="strategy" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.75"></circle><path class="lhi-a lhi-fill lhi-needle" d="M15.4 8.6l-1.9 4.9-4.9 1.9 1.9-4.9z" stroke="none"></path><circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none"></circle></svg></span></span><h3>Padding does not raise a score</h3></li>
+        <li class="rv" style="--n:2"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="texts" aria-hidden="true" focusable="false"><path class="lhi-back" d="M8.5 4h9A2.5 2.5 0 0 1 20 6.5v9"></path><g class="lhi-front"><rect x="4" y="7.5" width="12.5" height="13" rx="2.5"></rect><rect class="lhi-a lhi-fill" x="6.5" y="10" width="7.5" height="3.5" rx="1" stroke="none"></rect><path d="M6.75 17h5"></path></g></svg></span></span><h3>Bring to 100, or take it back with one click</h3></li>
+      </ul>
+      <p class="note">These are the scores of a sample FAQ in the Fernwood demo, a made up company.</p>
+    </div>
+  </div>
+</section>
+
+<section class="part light" id="review" aria-labelledby="h-review">
+  <div class="wrap split">
+    <div class="copy rv">
+      <p class="kicker"><b>03</b> The review</p>
+      <h2 id="h-review">The model approves nothing. <em>A person does.</em></h2>
+      <p class="lede">Each text waits for the reviewer you assigned. They approve it, or send it back with a note. Only approved texts reach the calendar.</p>
+      <ul class="facts group">
+        <li class="rv" style="--n:1"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="review" aria-hidden="true" focusable="false"><path d="M9 4.5H7.5A2.5 2.5 0 0 0 5 7v11.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V7a2.5 2.5 0 0 0-2.5-2.5H15"></path><rect x="9" y="2.75" width="6" height="3.5" rx="1.25"></rect><path class="lhi-a lhi-stroke lhi-draw" d="M8.75 13.5l2.3 2.3 4.2-4.6" pathLength="1"></path></svg></span></span><h3>You choose who approves what</h3></li>
+        <li class="rv" style="--n:2"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="calendar" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 9.75h17M8 3v4M16 3v4"></path><circle cx="8" cy="13.75" r="0.95" fill="currentColor" stroke="none"></circle><circle cx="8" cy="17.25" r="0.95" fill="currentColor" stroke="none"></circle><circle cx="12" cy="17.25" r="0.95" fill="currentColor" stroke="none"></circle><rect class="lhi-a lhi-fill lhi-hop" x="13.75" y="12.5" width="3.5" height="3.5" rx="1" stroke="none"></rect></svg></span></span><h3>History is never deleted: every edit adds a version</h3></li>
+      </ul>
+    </div>
+    <div class="vis vis-review rv" style="--n:1">
+      <div class="win"><img src="img/review.webp" width="1500" height="996" alt="The Review page: five texts waiting, each with its cover and the name of the person it waits for" decoding="async" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section class="part dark" id="covers" aria-labelledby="h-covers">
+  <div class="wrap">
+    <div class="split flip">
+      <div class="vis vis-fan rv">
+        <div class="fan f1 win"><img src="img/cover-meeting.webp" width="900" height="473" alt="A cover with a woman presenting to three colleagues at a table" decoding="async" loading="lazy"></div>
+        <div class="fan f2 win"><img src="img/cover-blog.webp" width="900" height="472" alt="A dark green cover with a headline in the colours of the company" decoding="async" loading="lazy"></div>
+        <div class="fan f3 win"><img src="img/cover-warehouse.webp" width="900" height="473" alt="A cover with two colleagues in safety vests in a warehouse" decoding="async" loading="lazy"></div>
+      </div>
+      <div class="copy rv" style="--n:1">
+        <p class="kicker"><b>04</b> The covers</p>
+        <h2 id="h-covers">Every text gets a cover with <em>people on it.</em></h2>
+        <p class="lede">Woody draws each cover in your colours and fonts, and adds a person when the topic fits. It picks from <b class="count" data-to="27">27</b> generated photos, or from your own. None is a real customer.</p>
+        <ul class="facts group">
+          <li class="rv" style="--n:1"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="casual" aria-hidden="true" focusable="false"><path d="M4.75 10h11.5v4.5a5 5 0 0 1-5 5h-1.5a5 5 0 0 1-5-5z"></path><path d="M16.25 11.5h1.25a2.5 2.5 0 0 1 0 5h-2"></path><path class="lhi-a lhi-stroke lhi-drop" d="M8.75 3.5v3M12.25 3.5v3"></path></svg></span></span><h3>A tone slider, from formal to casual</h3></li>
+          <li class="rv" style="--n:2"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="person-plus" aria-hidden="true" focusable="false"><circle cx="10" cy="8.5" r="3.5"></circle><path d="M3.5 20.25c.5-3.6 3.1-5.75 6.5-5.75s6 2.15 6.5 5.75"></path><path class="lhi-a lhi-stroke lhi-draw" d="M19 4.5v5M16.5 7h5" pathLength="1"></path></svg></span></span><h3>Up to six photos of your own person</h3></li>
+        </ul>
+      </div>
+    </div>
+    <div class="wall rv" role="group" tabindex="0" aria-label="Generated photos of people that the covers use">
+      <div class="track"><img src="img/people-meeting-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="A woman presents at a whiteboard to three colleagues in a meeting room"><img src="img/people-studio-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="A portrait of a woman with dark curly hair on a dark ground"><img src="img/people-cafe-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="A man works on a laptop with a coffee in a cafe"><img src="img/people-production-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="An engineer in a hard hat and a safety vest checks a tablet by an automated line"><img src="img/people-studio-4.webp" width="300" height="200" loading="lazy" decoding="async" alt="A portrait of a grey haired man in a dark t-shirt on a dark ground"><img src="img/people-warehouse-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="Two colleagues in safety vests check a scanner and a tablet between the racks of a warehouse"><img src="img/people-home-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="A man smiles at his laptop in a home office at dusk"><img src="img/people-studio-3.webp" width="300" height="200" loading="lazy" decoding="async" alt="A portrait of a woman with short grey hair in a black blazer on a dark ground"><img src="img/people-office-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="Two colleagues talk over a laptop at a desk in a bright office"><img src="img/people-studio-2.webp" width="300" height="200" loading="lazy" decoding="async" alt="A portrait of a bearded man in a green sweater on a dark ground"><img src="img/people-retail-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="A shop owner in an apron arranges jars on a wooden shelf"><img src="img/people-control-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="Two operators watch the screens of a dim control room"><img src="img/people-field-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="A technician in a cap reads a tablet while servicing a heating unit"><img src="img/people-cafe-2.webp" width="300" height="200" loading="lazy" decoding="async" alt="Colleagues laugh over coffee at a table in a canteen"><img src="img/people-workshop-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="A craftsman in an apron measures a part with a caliper in his workshop"><img src="img/people-meeting-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-studio-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-cafe-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-production-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-studio-4.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-warehouse-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-home-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-studio-3.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-office-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-studio-2.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-retail-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-control-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-field-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-cafe-2.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="img/people-workshop-1.webp" width="300" height="200" loading="lazy" decoding="async" alt="" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<section class="part light" id="yours" aria-labelledby="h-yours">
+  <div class="wrap">
+    <div class="split flip">
+      <div class="vis vis-own rv">
+        <div class="win"><img src="img/settings.webp" width="900" height="1205" alt="The Setup and License cards of the Settings page: setup progress, and a field for the license key" decoding="async" loading="lazy"></div>
+      </div>
+      <div class="copy rv" style="--n:1">
+        <p class="kicker"><b>05</b> Yours</p>
+        <h2 id="h-yours">Your sources, your look, <em>your server.</em></h2>
+        <p class="lede">Woody is a package you run yourself. Your texts, their history and your keys stay on your machine.</p>
+        <div class="ring"><b>The rule</b>A license can stop writing. It never stops reading.</div>
+      </div>
+    </div>
+    <div class="trio">
+      <article class="card group rv"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="company" aria-hidden="true" focusable="false"><path d="M5 20.5V6.25A1.75 1.75 0 0 1 6.75 4.5h6.5A1.75 1.75 0 0 1 15 6.25V20.5"></path><path d="M15 10.5h2.25A1.75 1.75 0 0 1 19 12.25V20.5M3.5 20.5h17"></path><path d="M8.25 8.25h3.5M8.25 11.5h3.5"></path><rect class="lhi-a lhi-fill lhi-drop" x="8.75" y="15" width="2.5" height="5.5" rx="0.6" stroke="none"></rect></svg></span></span><h3>Set up in five steps</h3><p>Company, look, voices, sources, team. Give it your website address and it proposes colours, fonts and pages.</p></article>
+      <article class="card group rv" style="--n:1"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="settings" aria-hidden="true" focusable="false"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke-opacity="0.55"></path><circle class="lhi-knob" style="--x:4px" cx="8.5" cy="6.5" r="2.1" fill="currentColor" stroke="none"></circle><circle class="lhi-a lhi-fill lhi-knob" style="--x:-5px" cx="15.5" cy="12" r="2.4" stroke="none"></circle><circle class="lhi-knob" style="--x:6px" cx="7" cy="17.5" r="2.1" fill="currentColor" stroke="none"></circle></svg></span></span><h3>Runs on your own server</h3><p>One package, with Node.js or Docker. Keys stay on the server. The database is backed up every 23 hours.</p></article>
+      <article class="card group rv" style="--n:2"><span class="badge"><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="sources" aria-hidden="true" focusable="false"><rect x="3.75" y="4" width="4.25" height="16.5" rx="1.25"></rect><rect x="9.75" y="4" width="4.25" height="16.5" rx="1.25"></rect><rect class="lhi-lean" x="15.25" y="5.25" width="4.25" height="15.25" rx="1.25"></rect><path class="lhi-a lhi-fill lhi-drop" d="M10.9 4h2v5.2l-1-0.9-1 0.9z" stroke="none"></path></svg></span></span><h3>When a license ends, nothing is lost</h3><p>Woody turns read only: texts stay readable and exportable. An online license sends four counters, never text.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="part light" id="answers" aria-labelledby="h-answers" style="padding-top:0">
+  <div class="wrap answers">
+    <div class="rv"><p class="kicker">Plain answers</p><h2 id="h-answers" style="margin-top:20px">What people ask <em>first.</em></h2></div>
+    <div class="qa rv" style="--n:1">
+      <details><summary>Does it write without an AI key?</summary><p>No. Without a key you can browse and edit. You bring your own key, so the cost stays on your account. You set the monthly limit.</p></details>
+      <details><summary>Which models does it use?</summary><p>Claude first, Gemini second, both with your own key. This page was prepared from the documentation and from test runs with stand-ins, not from a live model.</p></details>
+      <details><summary>Which languages does it write in?</summary><p>English or Slovak, chosen from the language of your request. The interface is in English.</p></details>
+      <details><summary>Does it publish for me?</summary><p>No. An approved text goes to the calendar, and you export it or save it to Google Docs.</p></details>
+      <details><summary>Who sees what I write?</summary><p>The people you add to your team. Woody runs on your server, so your texts stay there.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="end" id="join" aria-labelledby="h-join">
+  <div class="wrap">
+    <div class="rv">
+      <p class="kicker">Not on sale yet</p>
+      <h2 id="h-join">Join the <em>waiting list.</em></h2>
+      <p class="lede">Send one short email and you are on the list. I will write to you once, when Woody opens.</p>
+      <div class="cta-row"><a class="btn btn-signal" href="mailto:hello@wojciech.io?subject=Woody%20waiting%20list&body=Please%20add%20me%20to%20the%20Woody%20waiting%20list.%20I%20agree%20that%20you%20write%20to%20me%20about%20Woody%20at%20this%20address%2C%20and%20for%20nothing%20else.">Write to hello@wojciech.io <span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="person-plus" aria-hidden="true" focusable="false"><circle cx="10" cy="8.5" r="3.5"></circle><path d="M3.5 20.25c.5-3.6 3.1-5.75 6.5-5.75s6 2.15 6.5 5.75"></path><path class="lhi-a lhi-stroke lhi-draw" d="M19 4.5v5M16.5 7h5" pathLength="1"></path></svg></span></a></div>
+      <p class="priv">The button opens your own email program with a message you can read and change. This page collects nothing and loads nothing from other sites.</p>
+    </div>
+    <div class="forester rv" style="--n:1"><img src="img/forester.webp" width="900" height="900" alt="The forester kneeling to plant a sapling" decoding="async" loading="lazy"></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="img/logo-dark.svg" width="80" height="28" alt="Woody">
+    <p>Every screen on this page is the real product running the Fernwood sample, a made up company, with no keys. The people in the photos are generated.</p>
+    <p><b>wojciech.io</b> &middot; Wojciech Luszczynski</p>
+  </div>
+</footer>
+<script>
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s) => [...document.querySelectorAll(s)];
+  const bar = document.querySelector('.bar');
+  const links = $('.bar nav a:not(.btn)');
+  // the sections of the page and the entry of the bar each one belongs to
+  const marks = [['request', '#request'], ['result', '#request'], ['review', '#request'], ['covers', '#covers'], ['yours', '#yours'], ['answers', '#answers'], ['join', '#answers']]
+    .map(([id, href]) => [document.getElementById(id), href]);
+  let queued = false;
+  // how far down the page you are (the line under the bar) and where you are (the underline of the entry)
+  const update = () => {
+    const vh = innerHeight;
+    bar.style.setProperty('--p', Math.min(1, scrollY / Math.max(1, root.scrollHeight - vh)).toFixed(4));
+    let on = null;
+    for (const [el, href] of marks) if (el && el.getBoundingClientRect().top < vh * 0.4) on = href;
+    links.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === on));
+    queued = false;
+  };
+  const later = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', later, { passive: true });
+  addEventListener('resize', later);
+  update();
+
+  const rv = $('.rv');
+  if (reduce || !('IntersectionObserver' in window)) { root.classList.remove('motion'); rv.forEach((el) => el.classList.add('in', 'lhi-play')); return; }
+
+  // every headline comes in word by word: each word rises out of a line of its own
+  const split = (el) => {
+    let i = 0;
+    const walk = (node) => {
+      [...node.childNodes].forEach((n) => {
+        if (n.nodeType === 1) { walk(n); return; }
+        if (n.nodeType !== 3) return;
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach((part) => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+          const w = document.createElement('span');
+          w.className = 'w';
+          const s = document.createElement('span');
+          s.textContent = part;
+          s.style.setProperty('--i', i++);
+          w.appendChild(s);
+          frag.appendChild(w);
+        });
+        n.replaceWith(frag);
+      });
+    };
+    walk(el);
+  };
+  $('h1, h2').forEach(split);
+  // a word that has come in loses its mask and its transition, so no layer is left behind
+  addEventListener('transitionend', (e) => { const t = e.target; if (t.matches && t.matches('.w > span') && e.propertyName === 'transform') t.parentElement.classList.add('settled'); });
+
+  // the hero plays once the fonts are there, so the words do not jump
+  const hero = document.querySelector('.hero');
+  const go = () => hero && hero.classList.add('go');
+  Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise((r) => setTimeout(r, 700))]).then(() => requestAnimationFrame(go));
+  setTimeout(go, 1500);
+
+  // a part comes in when it is on the screen; the icons inside it play their move once
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in', 'lhi-play'); io.unobserve(e.target); } }), { threshold: 0.12, rootMargin: '0px 0px -5% 0px' });
+  rv.forEach((el) => io.observe(el));
+
+  // a number counts up to its value when it comes into view
+  const count = (el) => {
+    const to = +el.dataset.to;
+    const t0 = performance.now();
+    const tick = (t) => {
+      const k = Math.min(1, (t - t0) / 1400);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3)));
+      if (k < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const numbers = $('.count');
+  numbers.forEach((el) => { el.textContent = '0'; });
+  const nio = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { count(e.target); nio.unobserve(e.target); } }), { threshold: 0.9 });
+  numbers.forEach((el) => nio.observe(el));
+
+  // the hero follows the pointer a little, layer by layer; a card gets a soft light under the pointer
+  const stage = document.querySelector('.stage');
+  if (hero && stage && matchMedia('(hover: hover)').matches) {
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      stage.style.setProperty('--mx', ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+      stage.style.setProperty('--my', ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
+    });
+    hero.addEventListener('pointerleave', () => { stage.style.setProperty('--mx', 0); stage.style.setProperty('--my', 0); });
+    $('.card').forEach((c) => c.addEventListener('pointermove', (e) => {
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--px', (e.clientX - r.left) + 'px');
+      c.style.setProperty('--py', (e.clientY - r.top) + 'px');
+    }));
+  }
+})();
+</script>
+</body>
+</html>
