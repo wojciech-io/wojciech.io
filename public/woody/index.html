@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>Woody: writes from your sources, waits for a person's yes</title>
 <meta name="description" content="Woody is a content studio that runs on your own server. It writes from the sources you give it, scores each text for search and for AI answers, and waits for a person to approve it. Write as one person, as your brand, or both.">
-<meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#0C0F14">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -15,6 +15,8 @@
 @font-face { font-family: 'Geist'; font-weight: 500; font-display: swap; src: url('fonts/Geist-Medium.woff2') format('woff2'); }
 @font-face { font-family: 'Geist'; font-weight: 600; font-display: swap; src: url('fonts/Geist-SemiBold.woff2') format('woff2'); }
 @font-face { font-family: 'Geist'; font-weight: 700; font-display: swap; src: url('fonts/Geist-Bold.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-weight: 100 900; font-style: normal; font-display: swap; src: url('fonts/fraunces-latin-opsz-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-weight: 100 900; font-style: italic; font-display: swap; src: url('fonts/fraunces-latin-opsz-italic.woff2') format('woff2'); }
 @font-face { font-family: 'Geist Mono'; font-weight: 500; font-display: swap; src: url('fonts/GeistMono-Medium.woff2') format('woff2'); }
 
 :root {
@@ -96,7 +98,8 @@ a { color: inherit; }
 @keyframes lhi-stretch { 50% { transform: scaleX(1.6); } }
 
 /* the top bar */
-.bar { position: fixed; inset: 0 0 auto 0; z-index: 50; background: rgba(12, 15, 20, .94); backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); border-bottom: 1px solid rgba(255, 255, 255, .07); }
+.bar { position: fixed; inset: 0 0 auto 0; z-index: 50; background: transparent; border-bottom: 1px solid transparent; transition: background-color 300ms, border-color 300ms; }
+.bar.solid { background: rgba(12, 15, 20, .92); backdrop-filter: blur(16px) saturate(1.4); -webkit-backdrop-filter: blur(16px) saturate(1.4); border-bottom-color: rgba(255, 255, 255, .07); }
 .bar .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 24px; }
 .bar img { height: 30px; width: auto; }
 .bar nav { display: flex; align-items: center; gap: 28px; }
@@ -122,24 +125,25 @@ a { color: inherit; }
 .dark .kicker, .hero .kicker { color: var(--signal); }
 .kicker b { font-weight: 500; color: var(--mute); }
 .dark .kicker b, .hero .kicker b { color: #9AA3B2; }
-h1 { font-size: clamp(44px, 5.6vw, 82px); line-height: 1.02; letter-spacing: -.035em; font-weight: 700; }
-h2 { font-size: clamp(34px, 3.7vw, 54px); line-height: 1.06; letter-spacing: -.03em; font-weight: 700; }
+h1 { font-size: clamp(44px, 5.6vw, 82px); line-height: 1; letter-spacing: -.04em; font-weight: 700; }
+h2 { font-size: clamp(40px, 5.4vw, 84px); line-height: .98; letter-spacing: -.045em; font-weight: 700; text-wrap: balance; }
 h3 { font-size: 20px; line-height: 1.25; letter-spacing: -.012em; font-weight: 600; }
-em { font-style: normal; color: var(--signal); }
-.light em { color: var(--signal-ink); }
+em { font-style: normal; color: inherit; }
 .lede { font-size: clamp(17px, 1.45vw, 20px); line-height: 1.6; color: var(--mute); max-width: 36em; }
 .dark .lede, .hero .lede { color: var(--mute-dark); }
 p { max-width: 38em; }
 
-/* the hero: dark, the Studio in one window, the forester standing on its edge */
+/* the hero: the dawn scene of the forester fills the window, the headline stands over its dark forest, the Studio rises from the bottom edge */
 .dark { background: var(--ink); color: var(--paper); position: relative; }
-.hero { background: var(--ink); color: var(--paper); position: relative; padding: 112px 0 100px; z-index: 2; overflow: hidden; }
-.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(640px 460px at 76% 40%, rgba(255, 77, 46, .22), transparent 70%), radial-gradient(700px 500px at 4% 70%, rgba(255, 255, 255, .06), transparent 70%); -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); mask-image: linear-gradient(180deg, #000 70%, transparent); }
-.hero::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, .08) 1px, transparent 1.4px); background-size: 30px 30px; -webkit-mask-image: radial-gradient(ellipse 60% 70% at 72% 50%, #000, transparent 75%); mask-image: radial-gradient(ellipse 60% 70% at 72% 50%, #000, transparent 75%); }
-.hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 470px) minmax(0, 1fr); gap: 48px; align-items: center; }
-.hero h1 { margin-top: 24px; font-size: clamp(38px, 4.1vw, 58px); text-wrap: balance; }
+.hero { background: var(--ink); color: var(--paper); position: relative; z-index: 2; overflow: hidden; min-height: max(100svh, 720px); padding: 128px 0 0; }
+.hero-bg { position: absolute; inset: 0; overflow: hidden; }
+.hero-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 64% 50%; transform-origin: 70% 60%; will-change: transform; }
+.hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(7, 10, 14, .92) 0%, rgba(7, 10, 14, .66) 34%, rgba(7, 10, 14, 0) 64%), linear-gradient(0deg, var(--ink) 0%, rgba(12, 15, 20, 0) 24%); }
+.hero .wrap { position: relative; z-index: 1; }
+.hero-copy { max-width: 780px; }
+.hero h1 { margin-top: 22px; font-size: clamp(46px, 6.4vw, 100px); line-height: .94; letter-spacing: -.048em; }
 .hero h1 em { display: block; }
-.hero .lede { margin-top: 26px; font-size: clamp(17px, 1.3vw, 19px); }
+.hero .lede { margin-top: 28px; max-width: 29em; font-size: clamp(17px, 1.3vw, 19px); color: #CBD2DD; }
 .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
 .hero small { display: block; margin-top: 18px; font: 500 13.5px/1.5 'Geist Mono', monospace; letter-spacing: .04em; color: #A3ACBA; }
 
@@ -147,18 +151,16 @@ p { max-width: 38em; }
 .win img { width: 100%; height: auto; }
 .win::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(112deg, transparent 38%, rgba(255, 255, 255, .34) 50%, transparent 62%); transform: translateX(-130%); }
 .win:hover::after { transform: translateX(130%); transition: transform 900ms var(--ease-out); }
-.hero-view { position: relative; width: 100%; padding-top: 21%; }
-.hv-wrap { position: relative; }
-.hv-scores { position: absolute; right: -3%; bottom: -13%; width: 36%; border-radius: 16px; z-index: 3; }
-/* the forester stands on the top edge of a window: its base sinks a little into the edge */
-.guide { position: absolute; right: 6%; bottom: 100%; width: 21%; aspect-ratio: 1; translate: 0 6%; z-index: 4; pointer-events: none; }
-.guide img { filter: drop-shadow(0 16px 16px rgba(0, 0, 0, .5)); }
-.hg img { animation: bob 7s var(--ease-in-out) infinite; }
+/* the Studio, tilted back a little, comes up out of the bottom edge: only its top shows, and it climbs a little as the page scrolls */
+.hero-view { position: absolute; z-index: 2; left: 50%; top: calc(100% - 168px); width: min(1180px, 86vw); transform: translate(-50%, var(--hy, 0px)); }
+.hero-view .hv { transform: perspective(2200px) rotateX(8deg); transform-origin: 50% 0; }
 @keyframes bob { 50% { transform: translateY(-9px) rotate(.5deg); } }
 
 /* sections */
 section { position: relative; }
 .part { padding: 132px 0; }
+#answers { padding-top: 0; }
+.plans[data-mode='night'] + #answers { padding-top: 96px; }
 .light { background: var(--paper); }
 .chans { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
 .chans li { display: inline-flex; align-items: center; gap: 8px; padding: 8px 13px 8px 10px; background: #fff; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); font-size: 14px; font-weight: 500; }
@@ -212,13 +214,58 @@ section { position: relative; }
 .vlayer:first-child { opacity: 1; }
 .vlayer img { width: 100%; height: 100%; }
 .vlayer .hl { opacity: 0; background: rgba(255, 77, 46, .07); box-shadow: 0 0 0 calc(3px * var(--inv, 1)) var(--signal), 0 0 calc(34px * var(--inv, 1)) rgba(255, 77, 46, .5); }
-.tour-view .guide { right: 4%; width: 19%; }
-.tour-view .guide img { position: absolute; inset: 0; opacity: 0; }
+
+/* the world behind the tour: the scenes of the forester fill the pinned window and the camera drifts through them as the page scrolls */
+.world { display: none; }
+.tour-on .world { display: block; position: absolute; inset: 0; overflow: hidden; }
+.world img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; will-change: transform, opacity; }
+.world::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(7, 10, 14, .9) 0%, rgba(7, 10, 14, .58) 32%, rgba(7, 10, 14, .1) 70%), radial-gradient(900px 600px at 70% 55%, transparent, rgba(7, 10, 14, .55)); }
+.tour-on .tour-pin { overflow: hidden; }
+.tour-on .tour-grid { position: relative; z-index: 1; }
+.tour-on .tour-grid { grid-template-columns: minmax(300px, 390px) min(34vw, 600px); justify-content: start; }
+.tour-on .frame { transform: perspective(2400px) rotateY(-5deg) rotateX(2deg); box-shadow: 0 0 0 1px rgba(255, 255, 255, .16), 0 80px 120px -30px rgba(0, 0, 0, .9), 0 24px 50px rgba(0, 0, 0, .5); }
+.tour-on .tstep h3 { transition: font-size 400ms var(--ease-out); }
+.tour-on .tstep.on h3 { font-size: 27px; letter-spacing: -.02em; }
 
 /* a caption over the frame: where in the product the camera is */
 .cap { position: absolute; left: 0; bottom: 100%; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 10px; padding: 9px 15px 9px 12px; border-radius: 999px; background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); color: #fff; font: 500 12px/1 'Geist Mono', monospace; letter-spacing: .1em; text-transform: uppercase; }
 .cap i { width: 8px; height: 8px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 10px var(--signal); }
 .cap.swap span { animation: rise 500ms var(--ease-out) backwards; }
+
+/* the pile: one book of ideas, then the jobs inside it, all as pictures of the real product */
+.pile { background: var(--ink); padding: 140px 0 120px; overflow: hidden; }
+.pile-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 72px; align-items: center; }
+.pile h2 { margin-top: 20px; }
+.pile h2 em, .proof h2 em { display: block; }
+.pile .lede { margin-top: 26px; max-width: 22em; font-size: clamp(18px, 1.5vw, 21px); }
+.pile-art { position: relative; }
+.shotframe { overflow: hidden; border-radius: 20px; background: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .14), 0 70px 100px -30px rgba(0, 0, 0, .85), 0 24px 50px rgba(0, 0, 0, .4); }
+.shotframe img { display: block; width: 100%; height: auto; }
+.pile-art .float { position: absolute; width: 25%; }
+.pile-art .float img { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .16), 0 30px 50px -16px rgba(0, 0, 0, .85); }
+.pile-art .f1 { left: -11%; bottom: -3%; transform: rotate(-5deg); }
+.pile-art .f2 { right: -4%; top: -7%; transform: rotate(4deg); }
+.pile-art .f3 { right: 7%; bottom: -9%; width: 21%; transform: rotate(-2deg); }
+.pile-nums, .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; }
+.pile-nums { margin-top: 110px; }
+.pile-nums b, .stats b { display: block; font-size: clamp(64px, 8.4vw, 132px); font-weight: 700; letter-spacing: -.065em; line-height: .88; color: #fff; font-variant-numeric: tabular-nums; }
+.pile-nums span, .stats span { display: block; margin-top: 16px; font: 500 13.5px/1.45 'Geist Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--mute-dark); }
+.cases { background: var(--paper); color: var(--ink); padding: 140px 0 60px; }
+.cases-head h2 { margin-top: 20px; max-width: 12em; }
+.cases-head h2 em { display: block; }
+.case { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 80px; align-items: center; margin-top: 120px; }
+.case.rev { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.case.rev .case-art { order: 2; }
+.case-art .shotframe { box-shadow: 0 0 0 1px rgba(12, 15, 20, .08), 0 70px 90px -34px rgba(12, 15, 20, .5), 0 24px 40px -14px rgba(12, 15, 20, .22); }
+.case-copy h3 { margin-top: 18px; font-size: clamp(36px, 4vw, 62px); line-height: 1; letter-spacing: -.04em; text-wrap: balance; }
+.case-copy > p:last-child { margin-top: 22px; font-size: 19px; line-height: 1.55; color: var(--mute); max-width: 23em; }
+.proof { background: var(--ink); color: var(--paper); padding: 160px 0; overflow: hidden; }
+.proof-bg { position: absolute; inset: 0; overflow: hidden; }
+.proof-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.proof-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(7, 10, 14, .94) 0%, rgba(7, 10, 14, .74) 44%, rgba(7, 10, 14, .08) 82%), linear-gradient(0deg, var(--ink), transparent 18%), linear-gradient(180deg, var(--ink), transparent 18%); }
+.proof .wrap { position: relative; z-index: 1; }
+.proof h2 { max-width: 9em; }
+.proof .stats { margin-top: 80px; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 820px; gap: 64px 56px; }
 
 /* the covers: whole covers, as the product draws them, in two rows that drift against each other */
 .covers { padding: 130px 0 120px; background: var(--ink-2); overflow: hidden; }
@@ -234,7 +281,6 @@ section { position: relative; }
 /* two shifts: the whole section turns from day to night */
 .plans { --bg: var(--paper); --fg: var(--ink); --mu: #4A5261; --ln: #DDE0E6; --acc: var(--signal-ink); background: var(--bg); color: var(--fg); padding: 130px 0 120px; overflow: hidden; transition: background-color 900ms var(--ease-in-out), color 900ms var(--ease-in-out); }
 .plans[data-mode='night'] { --bg: #090C12; --fg: var(--paper); --mu: #A9B2C1; --ln: rgba(255, 255, 255, .14); --acc: var(--signal); }
-.plans em { color: var(--acc); transition: color 900ms; }
 .plans .kicker { color: var(--acc); }
 .plans-head h2 { margin-top: 20px; max-width: 16em; }
 .shift { display: inline-flex; margin-top: 32px; padding: 5px; gap: 4px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--ln); transition: box-shadow 900ms; }
@@ -250,11 +296,9 @@ section { position: relative; }
 .pane h3 { font-size: clamp(26px, 2.6vw, 36px); letter-spacing: -.02em; line-height: 1.15; }
 .pane .tag { display: inline-block; margin-bottom: 16px; }
 .pane > p { margin-top: 14px; color: var(--mu); font-size: 18px; line-height: 1.6; max-width: 34em; transition: color 900ms; }
-.rows { margin-top: 26px; display: grid; }
-.rows div { display: grid; grid-template-columns: 112px 1fr; gap: 20px; padding: 17px 0; border-top: 1px solid var(--ln); transition: border-color 900ms; }
-.rows div:last-child { border-bottom: 1px solid var(--ln); }
-.rows dt { font: 500 12.5px/1.7 'Geist Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--acc); padding-top: 2px; transition: color 900ms; }
-.rows dd { font-size: 16.5px; line-height: 1.55; }
+.story { margin-top: 8px; }
+.story p { margin-top: 20px; font-size: 19px; line-height: 1.7; max-width: 35em; transition: color 900ms; }
+.story b { font-weight: 600; color: var(--acc); transition: color 900ms; }
 .pane .fine { margin-top: 18px; font: 400 14.5px/1.6 'Geist', system-ui, sans-serif; color: var(--mu); max-width: 38em; transition: color 900ms; }
 .plans-art { position: relative; aspect-ratio: 1; width: 100%; max-width: 500px; justify-self: center; }
 .art { position: absolute; inset: 0; border-radius: 40px; overflow: hidden; opacity: 0; transform: scale(.92) translateY(20px); transition: opacity 700ms, transform 900ms var(--ease-emphasized); }
@@ -266,10 +310,59 @@ section { position: relative; }
 .art.night::before { background: radial-gradient(closest-side, rgba(255, 226, 150, .16), transparent 72%); animation: breathe 7s var(--ease-in-out) infinite; }
 .art.day img { animation: bob 7s var(--ease-in-out) infinite; }
 .art.night img { transform-origin: 38% 92%; animation: gnaw 2.6s var(--ease-in-out) infinite; }
+.art.night.scene::before { display: none; }
+.art.night.scene .fly { display: none; }
+.art.scene img { padding: 0; object-fit: cover; object-position: 88% 50%; filter: none; transform-origin: 88% 60%; animation: nightdrift 18s var(--ease-in-out) infinite alternate; }
+.art.day.scene img { object-position: 100% 50%; transform-origin: 100% 60%; }
+@keyframes nightdrift { from { transform: scale(1.02); } to { transform: scale(1.12); } }
+.plans-bg { display: none; }
+@media (min-width: 1081px) {
+  .plans.has-night { position: relative; }
+  .plans.has-night > .wrap { position: relative; z-index: 1; }
+  .plans-bg { display: block; position: absolute; top: 0; right: 0; bottom: 0; width: min(62vw, 1060px); opacity: 0; transition: opacity 1400ms var(--ease-in-out); pointer-events: none; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 42%); mask-image: linear-gradient(90deg, transparent 0, #000 42%); }
+  .plans-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 88% 50%; transform-origin: 88% 60%; animation: nightdrift 22s var(--ease-in-out) infinite alternate; }
+  .plans-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, #090C12 0, transparent 14%), linear-gradient(180deg, #090C12 0, transparent 12%); }
+  .plans.has-night[data-mode='night'] .plans-bg { opacity: 1; }
+  .plans.has-night[data-mode='night'] .plans-art { opacity: 0; transition: opacity 500ms; }
+}
 @keyframes gnaw { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-1.4deg) translateY(2px); } 50% { transform: rotate(.6deg); } 75% { transform: rotate(-1deg) translateY(2px); } }
 @keyframes breathe { 50% { transform: scale(1.08); opacity: .7; } }
 .fly { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #FFE38A; box-shadow: 0 0 12px 4px rgba(255, 227, 138, .7); animation: fly 7s var(--ease-in-out) infinite; }
 @keyframes fly { 0%, 100% { transform: translate(0, 0); opacity: .25; } 50% { transform: translate(16px, -30px); opacity: 1; } }
+
+/* the trial: one big number and the three moments of it, on the page and not in boxes */
+.start { background: var(--paper); color: var(--ink); padding: 70px 0 60px; }
+.trial { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 72px; align-items: center; }
+.trial-num { display: flex; flex-direction: column; line-height: .8; }
+.trial-num b { font-size: clamp(150px, 21vw, 330px); font-weight: 700; letter-spacing: -.07em; color: var(--signal-ink); font-variant-numeric: tabular-nums; }
+.trial-num span { margin-top: 10px; font: 500 15px/1 'Geist Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); }
+.trial-copy h2 { margin-top: 20px; max-width: 12em; }
+.trial-copy .lede { margin-top: 26px; font-size: clamp(18px, 1.5vw, 21px); }
+.path { margin-top: 44px; list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 36px; position: relative; }
+.path::before { content: ''; position: absolute; left: 0; right: 0; top: 7px; height: 1px; background: var(--line); }
+.path li { position: relative; padding-top: 34px; }
+.path li::before { content: ''; position: absolute; left: 0; top: 0; width: 15px; height: 15px; border-radius: 50%; background: var(--paper); box-shadow: inset 0 0 0 2px var(--signal-ink); }
+.path li:last-child::before { background: var(--signal-ink); }
+.path h3 { font: 500 12.5px/1.4 'Geist Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--signal-ink); }
+.trial-cta { margin-top: 48px; align-items: center; }
+.trial-cta small { color: var(--mute); font-size: 15px; }
+.path p { margin-top: 10px; font-size: 16.5px; line-height: 1.6; color: var(--ink); }
+
+/* the pricing: three columns of big numbers, separated by air and one rule each */
+.pricing { background: var(--paper); color: var(--ink); padding: 100px 0 140px; }
+.price-head h2 { margin-top: 20px; max-width: 14em; }
+.price-head .lede { margin-top: 24px; max-width: 38em; font-size: clamp(18px, 1.5vw, 21px); }
+.tiers { margin-top: 72px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 72px; }
+.tier { border-top: 2px solid var(--ink); padding-top: 26px; }
+.tier h3 { font-size: 30px; letter-spacing: -.025em; line-height: 1.1; }
+.tier .amt { margin-top: 10px; font: 500 14px/1.4 'Geist Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--signal-ink); }
+.tier ul { margin-top: 38px; list-style: none; padding: 0; display: grid; gap: 22px; }
+.tier li { display: flex; align-items: baseline; gap: 16px; }
+.tier li b { flex: none; width: 2.1ch; font-size: 60px; font-weight: 700; letter-spacing: -.05em; line-height: .9; font-variant-numeric: tabular-nums; }
+.tier li span { font-size: 17px; line-height: 1.35; color: var(--mute); }
+.tier .grace { margin-top: 30px; font-size: 15.5px; line-height: 1.55; color: var(--mute); max-width: 22em; }
+.price-note { margin-top: 56px; max-width: 46em; font-size: 16.5px; line-height: 1.65; color: var(--mute); }
+.price-note b { color: var(--ink); font-weight: 600; }
 
 /* plain answers */
 .answers { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 72px; }
@@ -283,21 +376,16 @@ section { position: relative; }
 .qa details[open] p { animation: faq 420ms var(--ease-out); }
 @keyframes faq { from { opacity: 0; translate: 0 -8px; } }
 
-/* the end: the waiting list as one ticket with both characters on it */
-.end { padding: 120px 0 110px; overflow: hidden; background: var(--ink); color: var(--paper); }
-.end::before { content: ''; position: absolute; inset: 0; background: radial-gradient(800px 460px at 50% 112%, rgba(255, 77, 46, .3), transparent 70%); }
-.ticket { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); border-radius: 36px; overflow: hidden; background: linear-gradient(135deg, #1B222D, #10151C 62%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1), 0 60px 100px -40px rgba(0, 0, 0, .85); }
-.ticket-copy { padding: 68px 40px 64px 72px; }
-.ticket-copy h2 { font-size: clamp(38px, 4.6vw, 64px); margin-top: 22px; }
-.ticket-copy .lede { margin-top: 24px; color: var(--mute-dark); }
-.ticket-art { position: relative; align-self: stretch; display: grid; place-items: center; padding: 48px 40px 44px; border-left: 2px dashed rgba(255, 255, 255, .16); background: radial-gradient(circle at 50% 46%, rgba(255, 77, 46, .24), transparent 62%), linear-gradient(160deg, #202A38, #10151C); }
-.ticket-art::before, .ticket-art::after { content: ''; position: absolute; left: -19px; width: 36px; height: 36px; border-radius: 50%; background: var(--ink); }
-.ticket-art::before { top: -18px; }
-.ticket-art::after { bottom: -18px; }
-.ticket-art .big { width: min(86%, 320px); filter: drop-shadow(0 34px 34px rgba(0, 0, 0, .55)); animation: bob 7s var(--ease-in-out) infinite; }
-.ticket-art .peek { position: absolute; right: 7%; bottom: 7%; width: 30%; filter: drop-shadow(0 18px 18px rgba(0, 0, 0, .55)); animation: gnaw 2.6s var(--ease-in-out) infinite; transform-origin: 38% 92%; }
-.ticket-art .fly { top: 18%; left: 20%; } .ticket-art .fly.f2 { top: 34%; left: 78%; animation-delay: -3s; } .ticket-art .fly.f3 { top: 66%; left: 12%; animation-delay: -5s; }
-.ticket .btn { padding: 19px 32px; font-size: 18px; }
+/* the end: dawn again, one sentence and one button */
+.end { position: relative; min-height: max(84svh, 640px); display: flex; align-items: center; overflow: hidden; background: var(--ink); color: var(--paper); padding: 120px 0; }
+.end-bg { position: absolute; inset: 0; overflow: hidden; }
+.end-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.06); }
+.end-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(7, 10, 14, .92) 0%, rgba(7, 10, 14, .6) 40%, rgba(7, 10, 14, .04) 74%), linear-gradient(180deg, var(--ink) 0%, rgba(12, 15, 20, 0) 24%); }
+.end .wrap { position: relative; z-index: 1; }
+.end h2 { font-size: clamp(46px, 6.4vw, 100px); line-height: .94; letter-spacing: -.048em; max-width: 8.5em; margin-top: 22px; }
+.end h2 em { display: block; }
+.end .lede { margin-top: 26px; max-width: 27em; color: #CBD2DD; }
+.end .btn { padding: 19px 32px; font-size: 18px; }
 .end .btn-signal { animation: breathe-btn 3.6s var(--ease-in-out) infinite; }
 @keyframes breathe-btn { 50% { box-shadow: 0 14px 46px -6px rgba(255, 77, 46, .9), inset 0 1px 0 rgba(255, 255, 255, .35); } }
 .priv { margin-top: 22px; font: 400 14.5px/1.6 'Geist', system-ui, sans-serif; color: #A3ACBA; max-width: 40em; }
@@ -306,6 +394,33 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 14px 40px; justify-content: 
 footer img { height: 28px; width: auto; }
 footer b { color: #fff; font-weight: 600; }
 footer p { max-width: 46em; }
+
+/* round 5: a serif with character for the headlines and the numbers, pictures that bleed off the page and dissolve, and the edge of a pine forest between the sections */
+:root { --serif: 'Fraunces', 'Iowan Old Style', Charter, Georgia, serif; --bleed: max(var(--pad), calc((100vw - var(--max)) / 2)); --trees: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201800%20160%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%230C0F14%22%20d%3D%22M-20.0%2065.7%20L-14.7%2097.2%20L-17.6%2091.5%20L-9.3%20128.6%20L-15.2%20122.9%20L-4.0%20160.0%20L-12.8%20154.3%20L-16.0%20160%20L-24.0%20160%20L-27.2%20154.3%20L-36.0%20160.0%20L-24.8%20122.9%20L-30.7%20128.6%20L-22.4%2091.5%20L-25.3%2097.2%20Z%20M-4.8%2069.9%20L4.8%2092.4%20L-0.5%2088.4%20L14.4%20114.9%20L3.8%20110.9%20L24.0%20137.5%20L8.1%20133.4%20L33.5%20160.0%20L12.4%20155.9%20L-0.8%20160%20L-8.8%20160%20L-22.1%20155.9%20L-43.2%20160.0%20L-17.8%20133.4%20L-33.6%20137.5%20L-13.5%20110.9%20L-24.0%20114.9%20L-9.1%2088.4%20L-14.4%2092.4%20Z%20M21.3%2083.6%20L30.8%20109.1%20L25.6%20104.5%20L40.2%20134.5%20L29.8%20129.9%20L49.6%20160.0%20L34.1%20155.4%20L25.3%20160%20L17.3%20160%20L8.6%20155.4%20L-6.9%20160.0%20L12.8%20129.9%20L2.5%20134.5%20L17.1%20104.5%20L11.9%20109.1%20Z%20M53.9%2072.9%20L58.8%2094.7%20L56.1%2090.8%20L63.7%20116.5%20L58.3%20112.5%20L68.6%20138.2%20L60.5%20134.3%20L73.5%20160.0%20L62.7%20156.1%20L57.9%20160%20L49.9%20160%20L45.0%20156.1%20L34.2%20160.0%20L47.2%20134.3%20L39.1%20138.2%20L49.5%20112.5%20L44.1%20116.5%20L51.7%2090.8%20L49.0%2094.7%20Z%20M89.4%20104.9%20L98.0%20123.2%20L93.3%20119.9%20L106.7%20141.6%20L97.2%20138.3%20L115.3%20160.0%20L101.1%20156.7%20L93.4%20160%20L85.4%20160%20L77.7%20156.7%20L63.4%20160.0%20L81.6%20138.3%20L72.1%20141.6%20L85.5%20119.9%20L80.7%20123.2%20Z%20M122.5%2054.1%20L130.3%2080.6%20L126.0%2075.8%20L138.2%20107.1%20L129.6%20102.3%20L146.0%20133.5%20L133.1%20128.8%20L153.9%20160.0%20L136.6%20155.2%20L126.5%20160%20L118.5%20160%20L108.4%20155.2%20L91.1%20160.0%20L111.9%20128.8%20L98.9%20133.5%20L115.4%20102.3%20L106.8%20107.1%20L119.0%2075.8%20L114.6%2080.6%20Z%20M142.6%2028.0%20L150.6%2072.0%20L146.2%2064.1%20L158.6%20116.0%20L149.8%20108.1%20L166.6%20160.0%20L153.4%20152.1%20L146.6%20160%20L138.6%20160%20L131.8%20152.1%20L118.6%20160.0%20L135.4%20108.1%20L126.6%20116.0%20L139.0%2064.1%20L134.6%2072.0%20Z%20M161.6%2037.0%20L171.9%2078.0%20L166.3%2070.6%20L182.3%20119.0%20L170.9%20111.6%20L192.6%20160.0%20L175.6%20152.6%20L165.6%20160%20L157.6%20160%20L147.7%20152.6%20L130.6%20160.0%20L152.3%20111.6%20L141.0%20119.0%20L157.0%2070.6%20L151.3%2078.0%20Z%20M185.6%2057.6%20L198.6%2091.7%20L191.5%2085.6%20L211.6%20125.9%20L197.3%20119.7%20L224.7%20160.0%20L203.2%20153.9%20L189.6%20160%20L181.6%20160%20L168.0%20153.9%20L146.5%20160.0%20L173.9%20119.7%20L159.6%20125.9%20L179.7%2085.6%20L172.6%2091.7%20Z%20M215.5%2079.4%20L223.7%2095.5%20L219.2%2092.6%20L231.9%20111.6%20L222.9%20108.7%20L240.0%20127.8%20L226.5%20124.9%20L248.2%20143.9%20L230.2%20141.0%20L256.4%20160.0%20L233.9%20157.1%20L219.5%20160%20L211.5%20160%20L197.1%20157.1%20L174.5%20160.0%20L200.7%20141.0%20L182.7%20143.9%20L204.4%20124.9%20L190.9%20127.8%20L208.1%20108.7%20L199.1%20111.6%20L211.8%2092.6%20L207.3%2095.5%20Z%20M230.0%2026.7%20L236.9%2053.4%20L233.1%2048.6%20L243.8%2080.0%20L236.2%2075.2%20L250.8%20106.7%20L239.3%20101.9%20L257.7%20133.3%20L242.4%20128.5%20L264.6%20160.0%20L245.6%20155.2%20L234.0%20160%20L226.0%20160%20L214.4%20155.2%20L195.3%20160.0%20L217.5%20128.5%20L202.2%20133.3%20L220.6%20101.9%20L209.2%20106.7%20L223.7%2075.2%20L216.1%2080.0%20L226.9%2048.6%20L223.0%2053.4%20Z%20M251.4%2027.6%20L255.5%2054.1%20L253.3%2049.4%20L259.6%2080.6%20L255.1%2075.8%20L263.6%20107.1%20L256.9%20102.3%20L267.7%20133.5%20L258.7%20128.8%20L271.8%20160.0%20L260.6%20155.2%20L255.4%20160%20L247.4%20160%20L242.3%20155.2%20L231.1%20160.0%20L244.1%20128.8%20L235.2%20133.5%20L245.9%20102.3%20L239.2%20107.1%20L247.8%2075.8%20L243.3%2080.6%20L249.6%2049.4%20L247.4%2054.1%20Z%20M284.5%2027.5%20L295.0%2060.7%20L289.2%2054.7%20L305.5%2093.8%20L293.9%2087.8%20L316.0%20126.9%20L298.6%20120.9%20L326.5%20160.0%20L303.4%20154.0%20L288.5%20160%20L280.5%20160%20L265.6%20154.0%20L242.5%20160.0%20L270.3%20120.9%20L253.0%20126.9%20L275.0%2087.8%20L263.5%2093.8%20L279.7%2054.7%20L274.0%2060.7%20Z%20M305.1%20111.4%20L311.5%20121.1%20L308.0%20119.4%20L317.9%20130.8%20L310.8%20129.1%20L324.3%20140.6%20L313.7%20138.8%20L330.7%20150.3%20L316.6%20148.5%20L337.1%20160.0%20L319.5%20158.3%20L309.1%20160%20L301.1%20160%20L290.7%20158.3%20L273.1%20160.0%20L293.6%20148.5%20L279.5%20150.3%20L296.4%20138.8%20L285.9%20140.6%20L299.3%20129.1%20L292.3%20130.8%20L302.2%20119.4%20L298.7%20121.1%20Z%20M340.7%2019.6%20L349.1%2066.4%20L344.5%2058.0%20L357.5%20113.2%20L348.3%20104.8%20L365.9%20160.0%20L352.0%20151.6%20L344.7%20160%20L336.7%20160%20L329.4%20151.6%20L315.6%20160.0%20L333.2%20104.8%20L323.9%20113.2%20L336.9%2058.0%20L332.3%2066.4%20Z%20M372.0%2054.6%20L380.2%2075.7%20L375.7%2071.9%20L388.3%2096.8%20L379.4%2093.0%20L396.5%20117.9%20L383.0%20114.1%20L404.6%20138.9%20L386.7%20135.1%20L412.8%20160.0%20L390.4%20156.2%20L376.0%20160%20L368.0%20160%20L353.7%20156.2%20L331.3%20160.0%20L357.4%20135.1%20L339.4%20138.9%20L361.0%20114.1%20L347.6%20117.9%20L364.7%2093.0%20L355.7%2096.8%20L368.4%2071.9%20L363.9%2075.7%20Z%20M399.3%2067.2%20L406.9%2085.7%20L402.7%2082.4%20L414.5%20104.3%20L406.1%20101.0%20L422.2%20122.9%20L409.6%20119.5%20L429.8%20141.4%20L413.0%20138.1%20L437.5%20160.0%20L416.5%20156.7%20L403.3%20160%20L395.3%20160%20L382.1%20156.7%20L361.1%20160.0%20L385.5%20138.1%20L368.7%20141.4%20L389.0%20119.5%20L376.4%20122.9%20L392.4%20101.0%20L384.0%20104.3%20L395.8%2082.4%20L391.6%2085.7%20Z%20M439.2%2026.4%20L446.0%2059.8%20L442.3%2053.8%20L452.8%2093.2%20L445.3%2087.2%20L459.5%20126.6%20L448.4%20120.6%20L466.3%20160.0%20L451.4%20154.0%20L443.2%20160%20L435.2%20160%20L427.0%20154.0%20L412.2%20160.0%20L430.1%20120.6%20L418.9%20126.6%20L433.1%2087.2%20L425.7%2093.2%20L436.2%2053.8%20L432.5%2059.8%20Z%20M459.1%20108.4%20L462.5%20118.7%20L460.6%20116.8%20L466.0%20129.0%20L462.2%20127.2%20L469.4%20139.4%20L463.7%20137.5%20L472.9%20149.7%20L465.3%20147.8%20L476.3%20160.0%20L466.8%20158.1%20L463.1%20160%20L455.1%20160%20L451.3%20158.1%20L441.8%20160.0%20L452.9%20147.8%20L445.3%20149.7%20L454.4%20137.5%20L448.7%20139.4%20L456.0%20127.2%20L452.2%20129.0%20L457.5%20116.8%20L455.6%20118.7%20Z%20M475.9%2054.5%20L482.2%2080.9%20L478.7%2076.1%20L488.5%20107.3%20L481.6%20102.5%20L494.8%20133.6%20L484.4%20128.9%20L501.0%20160.0%20L487.2%20155.3%20L479.9%20160%20L471.9%20160%20L464.6%20155.3%20L450.8%20160.0%20L467.4%20128.9%20L457.1%20133.6%20L470.3%20102.5%20L463.4%20107.3%20L473.1%2076.1%20L469.6%2080.9%20Z%20M502.2%2073.1%20L508.4%20102.0%20L505.0%2096.8%20L514.7%20131.0%20L507.8%20125.8%20L521.0%20160.0%20L510.6%20154.8%20L506.2%20160%20L498.2%20160%20L493.8%20154.8%20L483.4%20160.0%20L496.6%20125.8%20L489.7%20131.0%20L499.4%2096.8%20L495.9%20102.0%20Z%20M531.1%2014.1%20L541.2%2062.7%20L535.6%2054.0%20L551.3%20111.4%20L540.2%20102.6%20L561.4%20160.0%20L544.7%20151.2%20L535.1%20160%20L527.1%20160%20L517.5%20151.2%20L500.8%20160.0%20L522.0%20102.6%20L510.9%20111.4%20L526.5%2054.0%20L521.0%2062.7%20Z%20M570.6%2030.4%20L581.0%2062.8%20L575.3%2056.9%20L591.5%2095.2%20L580.0%2089.4%20L601.9%20127.6%20L584.7%20121.8%20L612.4%20160.0%20L589.4%20154.2%20L574.6%20160%20L566.6%20160%20L551.7%20154.2%20L528.7%20160.0%20L556.4%20121.8%20L539.2%20127.6%20L561.1%2089.4%20L549.6%2095.2%20L565.9%2056.9%20L560.1%2062.8%20Z%20M594.2%2044.2%20L603.8%2073.2%20L598.5%2068.0%20L613.4%20102.1%20L602.8%2096.9%20L623.0%20131.1%20L607.1%20125.8%20L632.6%20160.0%20L611.4%20154.8%20L598.2%20160%20L590.2%20160%20L576.9%20154.8%20L555.8%20160.0%20L581.2%20125.8%20L565.4%20131.1%20L585.5%2096.9%20L575.0%20102.1%20L589.9%2068.0%20L584.6%2073.2%20Z%20M616.1%2086.3%20L622.1%20101.0%20L618.8%2098.4%20L628.1%20115.8%20L621.5%20113.1%20L634.0%20130.5%20L624.2%20127.9%20L640.0%20145.3%20L626.9%20142.6%20L646.0%20160.0%20L629.6%20157.3%20L620.1%20160%20L612.1%20160%20L602.7%20157.3%20L586.3%20160.0%20L605.4%20142.6%20L592.2%20145.3%20L608.1%20127.9%20L598.2%20130.5%20L610.7%20113.1%20L604.2%20115.8%20L613.4%2098.4%20L610.2%20101.0%20Z%20M644.9%2098.1%20L658.1%20118.7%20L650.9%20115.0%20L671.4%20139.4%20L656.8%20135.7%20L684.6%20160.0%20L662.8%20156.3%20L648.9%20160%20L640.9%20160%20L627.1%20156.3%20L605.3%20160.0%20L633.0%20135.7%20L618.5%20139.4%20L639.0%20115.0%20L631.7%20118.7%20Z%20M683.9%2082.9%20L690.7%2098.3%20L687.0%2095.5%20L697.5%20113.7%20L690.0%20110.9%20L704.3%20129.1%20L693.1%20126.4%20L711.1%20144.6%20L696.2%20141.8%20L717.9%20160.0%20L699.2%20157.2%20L687.9%20160%20L679.9%20160%20L668.6%20157.2%20L650.0%20160.0%20L671.7%20141.8%20L656.8%20144.6%20L674.8%20126.4%20L663.5%20129.1%20L677.8%20110.9%20L670.3%20113.7%20L680.9%2095.5%20L677.1%2098.3%20Z%20M707.4%2061.8%20L717.1%2086.4%20L711.8%2081.9%20L726.8%20110.9%20L716.1%20106.5%20L736.5%20135.5%20L720.5%20131.0%20L746.2%20160.0%20L724.9%20155.6%20L711.4%20160%20L703.4%20160%20L689.9%20155.6%20L668.5%20160.0%20L694.3%20131.0%20L678.2%20135.5%20L698.6%20106.5%20L688.0%20110.9%20L703.0%2081.9%20L697.7%2086.4%20Z%20M727.4%2027.8%20L731.1%2054.2%20L729.1%2049.5%20L734.8%2080.7%20L730.7%2075.9%20L738.6%20107.1%20L732.4%20102.4%20L742.3%20133.6%20L734.1%20128.8%20L746.0%20160.0%20L735.8%20155.2%20L731.4%20160%20L723.4%20160%20L719.0%20155.2%20L708.8%20160.0%20L720.7%20128.8%20L712.5%20133.6%20L722.4%20102.4%20L716.2%20107.1%20L724.0%2075.9%20L719.9%2080.7%20L725.7%2049.5%20L723.7%2054.2%20Z%20M748.2%2077.3%20L755.4%2093.8%20L751.4%2090.8%20L762.5%20110.4%20L754.6%20107.4%20L769.6%20126.9%20L757.9%20123.9%20L776.8%20143.5%20L761.1%20140.5%20L783.9%20160.0%20L764.3%20157.0%20L752.2%20160%20L744.2%20160%20L732.2%20157.0%20L712.5%20160.0%20L735.4%20140.5%20L719.7%20143.5%20L738.6%20123.9%20L726.8%20126.9%20L741.8%20107.4%20L733.9%20110.4%20L745.0%2090.8%20L741.1%2093.8%20Z%20M773.5%20111.8%20L778.9%20127.9%20L775.9%20125.0%20L784.2%20143.9%20L778.3%20141.0%20L789.5%20160.0%20L780.7%20157.1%20L777.5%20160%20L769.5%20160%20L766.3%20157.1%20L757.5%20160.0%20L768.7%20141.0%20L762.8%20143.9%20L771.1%20125.0%20L768.2%20127.9%20Z%20M802.0%2026.7%20L809.9%2071.2%20L805.6%2063.2%20L817.8%20115.6%20L809.1%20107.6%20L825.7%20160.0%20L812.7%20152.0%20L806.0%20160%20L798.0%20160%20L791.3%20152.0%20L778.3%20160.0%20L794.9%20107.6%20L786.2%20115.6%20L798.5%2063.2%20L794.1%2071.2%20Z%20M832.6%2060.8%20L841.0%2080.6%20L836.4%2077.0%20L849.3%20100.5%20L840.1%2096.9%20L857.7%20120.3%20L843.9%20116.7%20L866.0%20140.2%20L847.6%20136.6%20L874.4%20160.0%20L851.4%20156.4%20L836.6%20160%20L828.6%20160%20L813.8%20156.4%20L790.9%20160.0%20L817.6%20136.6%20L799.2%20140.2%20L821.4%20116.7%20L807.6%20120.3%20L825.1%2096.9%20L815.9%20100.5%20L828.9%2077.0%20L824.3%2080.6%20Z%20M851.1%2060.6%20L862.1%2093.7%20L856.1%2087.7%20L873.1%20126.9%20L861.0%20120.9%20L884.1%20160.0%20L866.0%20154.0%20L855.1%20160%20L847.1%20160%20L836.3%20154.0%20L818.1%20160.0%20L841.2%20120.9%20L829.1%20126.9%20L846.2%2087.7%20L840.1%2093.7%20Z%20M872.0%2046.7%20L879.2%2075.0%20L875.3%2070.0%20L886.5%20103.4%20L878.5%2098.3%20L893.7%20131.7%20L881.8%20126.6%20L900.9%20160.0%20L885.0%20154.9%20L876.0%20160%20L868.0%20160%20L859.0%20154.9%20L843.1%20160.0%20L862.2%20126.6%20L850.3%20131.7%20L865.5%2098.3%20L857.5%20103.4%20L868.7%2070.0%20L864.8%2075.0%20Z%20M893.8%2059.0%20L903.4%2092.6%20L898.1%2086.6%20L913.0%20126.3%20L902.5%20120.3%20L922.6%20160.0%20L906.8%20153.9%20L897.8%20160%20L889.8%20160%20L880.9%20153.9%20L865.1%20160.0%20L885.2%20120.3%20L874.7%20126.3%20L889.5%2086.6%20L884.2%2092.6%20Z%20M924.2%2060.4%20L933.5%2085.3%20L928.4%2080.8%20L942.8%20110.2%20L932.6%20105.7%20L952.1%20135.1%20L936.8%20130.6%20L961.4%20160.0%20L941.0%20155.5%20L928.2%20160%20L920.2%20160%20L907.5%20155.5%20L887.0%20160.0%20L911.6%20130.6%20L896.3%20135.1%20L915.8%20105.7%20L905.6%20110.2%20L920.0%2080.8%20L914.9%2085.3%20Z%20M943.8%2073.6%20L955.8%20102.4%20L949.2%2097.2%20L967.8%20131.2%20L954.6%20126.0%20L979.9%20160.0%20L960.0%20154.8%20L947.8%20160%20L939.8%20160%20L927.5%20154.8%20L907.7%20160.0%20L932.9%20126.0%20L919.7%20131.2%20L938.3%2097.2%20L931.7%20102.4%20Z%20M972.6%2092.7%20L979.1%20109.5%20L975.6%20106.5%20L985.7%20126.3%20L978.5%20123.3%20L992.2%20143.2%20L981.4%20140.1%20L998.7%20160.0%20L984.4%20157.0%20L976.6%20160%20L968.6%20160%20L960.9%20157.0%20L946.6%20160.0%20L963.8%20140.1%20L953.1%20143.2%20L966.8%20123.3%20L959.6%20126.3%20L969.7%20106.5%20L966.1%20109.5%20Z%20M1010.6%2096.3%20L1015.9%20109.0%20L1013.0%20106.8%20L1021.1%20121.8%20L1015.3%20119.5%20L1026.4%20134.5%20L1017.7%20132.2%20L1031.6%20147.3%20L1020.1%20145.0%20L1036.8%20160.0%20L1022.4%20157.7%20L1014.6%20160%20L1006.6%20160%20L998.8%20157.7%20L984.4%20160.0%20L1001.2%20145.0%20L989.6%20147.3%20L1003.5%20132.2%20L994.9%20134.5%20L1005.9%20119.5%20L1000.1%20121.8%20L1008.2%20106.8%20L1005.4%20109.0%20Z%20M1046.3%2088.0%20L1057.9%20112.0%20L1051.5%20107.7%20L1069.5%20136.0%20L1056.8%20131.7%20L1081.2%20160.0%20L1062.0%20155.7%20L1050.3%20160%20L1042.3%20160%20L1030.6%20155.7%20L1011.4%20160.0%20L1035.8%20131.7%20L1023.0%20136.0%20L1041.1%20107.7%20L1034.7%20112.0%20Z%20M1066.4%2014.8%20L1071.2%2043.8%20L1068.6%2038.6%20L1076.1%2072.9%20L1070.8%2067.7%20L1080.9%20101.9%20L1072.9%2096.7%20L1085.7%20131.0%20L1075.1%20125.7%20L1090.5%20160.0%20L1077.3%20154.8%20L1070.4%20160%20L1062.4%20160%20L1055.6%20154.8%20L1042.3%20160.0%20L1057.7%20125.7%20L1047.1%20131.0%20L1059.9%2096.7%20L1051.9%20101.9%20L1062.1%2067.7%20L1056.8%2072.9%20L1064.2%2038.6%20L1061.6%2043.8%20Z%20M1095.0%2058.5%20L1101.8%2083.9%20L1098.1%2079.3%20L1108.5%20109.3%20L1101.1%20104.7%20L1115.3%20134.6%20L1104.1%20130.1%20L1122.0%20160.0%20L1107.2%20155.4%20L1099.0%20160%20L1091.0%20160%20L1082.9%20155.4%20L1068.1%20160.0%20L1085.9%20130.1%20L1074.8%20134.6%20L1089.0%20104.7%20L1081.5%20109.3%20L1092.0%2079.3%20L1088.3%2083.9%20Z%20M1128.3%2029.3%20L1131.6%2055.4%20L1129.8%2050.7%20L1134.9%2081.6%20L1131.3%2076.9%20L1138.1%20107.7%20L1132.7%20103.0%20L1141.4%20133.9%20L1134.2%20129.2%20L1144.7%20160.0%20L1135.7%20155.3%20L1132.3%20160%20L1124.3%20160%20L1121.0%20155.3%20L1112.0%20160.0%20L1122.4%20129.2%20L1115.2%20133.9%20L1123.9%20103.0%20L1118.5%20107.7%20L1125.4%2076.9%20L1121.8%2081.6%20L1126.9%2050.7%20L1125.1%2055.4%20Z%20M1142.8%2061.5%20L1151.9%2086.1%20L1146.9%2081.7%20L1161.0%20110.7%20L1151.0%20106.3%20L1170.1%20135.4%20L1155.1%20130.9%20L1179.2%20160.0%20L1159.2%20155.6%20L1146.8%20160%20L1138.8%20160%20L1126.4%20155.6%20L1106.4%20160.0%20L1130.5%20130.9%20L1115.5%20135.4%20L1134.6%20106.3%20L1124.6%20110.7%20L1138.7%2081.7%20L1133.7%2086.1%20Z%20M1157.0%208.7%20L1164.6%2038.9%20L1160.5%2033.5%20L1172.2%2069.2%20L1163.9%2063.8%20L1179.8%2099.5%20L1167.3%2094.0%20L1187.4%20129.7%20L1170.7%20124.3%20L1195.0%20160.0%20L1174.1%20154.6%20L1161.0%20160%20L1153.0%20160%20L1140.0%20154.6%20L1119.1%20160.0%20L1143.4%20124.3%20L1126.7%20129.7%20L1146.8%2094.0%20L1134.3%2099.5%20L1150.2%2063.8%20L1141.9%2069.2%20L1153.6%2033.5%20L1149.4%2038.9%20Z%20M1177.5%2074.3%20L1182.6%2095.7%20L1179.8%2091.9%20L1187.7%20117.1%20L1182.1%20113.3%20L1192.8%20138.6%20L1184.4%20134.7%20L1197.9%20160.0%20L1186.7%20156.1%20L1181.5%20160%20L1173.5%20160%20L1168.3%20156.1%20L1157.1%20160.0%20L1170.6%20134.7%20L1162.2%20138.6%20L1172.9%20113.3%20L1167.3%20117.1%20L1175.2%2091.9%20L1172.4%2095.7%20Z%20M1217.4%2063.3%20L1229.3%2095.5%20L1222.8%2089.7%20L1241.1%20127.8%20L1228.1%20122.0%20L1253.0%20160.0%20L1233.4%20154.2%20L1221.4%20160%20L1213.4%20160%20L1201.5%20154.2%20L1181.9%20160.0%20L1206.8%20122.0%20L1193.8%20127.8%20L1212.1%2089.7%20L1205.6%2095.5%20Z%20M1246.1%206.7%20L1256.7%2057.8%20L1250.9%2048.6%20L1267.3%20108.9%20L1255.7%2099.7%20L1277.9%20160.0%20L1260.4%20150.8%20L1250.1%20160%20L1242.1%20160%20L1231.9%20150.8%20L1214.4%20160.0%20L1236.6%2099.7%20L1225.0%20108.9%20L1241.4%2048.6%20L1235.6%2057.8%20Z%20M1262.4%2010.3%20L1268.0%2040.2%20L1264.9%2034.9%20L1273.6%2070.2%20L1267.4%2064.8%20L1279.2%20100.1%20L1269.9%2094.7%20L1284.8%20130.1%20L1272.5%20124.7%20L1290.4%20160.0%20L1275.0%20154.6%20L1266.4%20160%20L1258.4%20160%20L1249.7%20154.6%20L1234.3%20160.0%20L1252.2%20124.7%20L1239.9%20130.1%20L1254.8%2094.7%20L1245.5%20100.1%20L1257.3%2064.8%20L1251.1%2070.2%20L1259.8%2034.9%20L1256.7%2040.2%20Z%20M1278.2%2035.8%20L1284.4%2060.6%20L1281.0%2056.2%20L1290.6%2085.5%20L1283.8%2081.0%20L1296.8%20110.3%20L1286.6%20105.8%20L1303.1%20135.2%20L1289.4%20130.7%20L1309.3%20160.0%20L1292.2%20155.5%20L1282.2%20160%20L1274.2%20160%20L1264.2%20155.5%20L1247.2%20160.0%20L1267.0%20130.7%20L1253.4%20135.2%20L1269.8%20105.8%20L1259.6%20110.3%20L1272.6%2081.0%20L1265.8%2085.5%20L1275.4%2056.2%20L1272.0%2060.6%20Z%20M1305.2%2094.3%20L1310.3%20107.4%20L1307.5%20105.1%20L1315.4%20120.6%20L1309.8%20118.2%20L1320.5%20133.7%20L1312.1%20131.4%20L1325.5%20146.9%20L1314.3%20144.5%20L1330.6%20160.0%20L1316.6%20157.6%20L1309.2%20160%20L1301.2%20160%20L1293.7%20157.6%20L1279.7%20160.0%20L1296.0%20144.5%20L1284.8%20146.9%20L1298.3%20131.4%20L1289.9%20133.7%20L1300.6%20118.2%20L1295.0%20120.6%20L1302.9%20105.1%20L1300.1%20107.4%20Z%20M1336.3%2054.1%20L1341.2%2080.6%20L1338.5%2075.8%20L1346.1%20107.1%20L1340.7%20102.3%20L1351.0%20133.5%20L1342.9%20128.8%20L1355.9%20160.0%20L1345.1%20155.2%20L1340.3%20160%20L1332.3%20160%20L1327.5%20155.2%20L1316.7%20160.0%20L1329.7%20128.8%20L1321.6%20133.5%20L1331.9%20102.3%20L1326.5%20107.1%20L1334.1%2075.8%20L1331.4%2080.6%20Z%20M1367.0%20111.1%20L1376.5%20123.3%20L1371.3%20121.1%20L1385.9%20135.5%20L1375.5%20133.3%20L1395.4%20147.8%20L1379.8%20145.6%20L1404.9%20160.0%20L1384.0%20157.8%20L1371.0%20160%20L1363.0%20160%20L1350.0%20157.8%20L1329.2%20160.0%20L1354.2%20145.6%20L1338.6%20147.8%20L1358.5%20133.3%20L1348.1%20135.5%20L1362.7%20121.1%20L1357.5%20123.3%20Z%20M1403.7%2030.6%20L1416.0%2073.8%20L1409.2%2066.0%20L1428.3%20116.9%20L1414.8%20109.1%20L1440.7%20160.0%20L1420.3%20152.2%20L1407.7%20160%20L1399.7%20160%20L1387.0%20152.2%20L1366.7%20160.0%20L1392.6%20109.1%20L1379.0%20116.9%20L1398.1%2066.0%20L1391.3%2073.8%20Z%20M1423.1%2030.3%20L1434.9%2073.5%20L1428.4%2065.8%20L1446.7%20116.8%20L1433.8%20109.0%20L1458.5%20160.0%20L1439.1%20152.2%20L1427.1%20160%20L1419.1%20160%20L1407.2%20152.2%20L1387.7%20160.0%20L1412.5%20109.0%20L1399.5%20116.8%20L1417.8%2065.8%20L1411.3%2073.5%20Z%20M1455.8%2073.1%20L1465.3%2094.9%20L1460.1%2090.9%20L1474.8%20116.6%20L1464.3%20112.7%20L1484.3%20138.3%20L1468.6%20134.4%20L1493.8%20160.0%20L1472.9%20156.1%20L1459.8%20160%20L1451.8%20160%20L1438.7%20156.1%20L1417.7%20160.0%20L1442.9%20134.4%20L1427.3%20138.3%20L1447.2%20112.7%20L1436.8%20116.6%20L1451.5%2090.9%20L1446.3%2094.9%20Z%20M1482.8%20105.0%20L1488.1%20118.8%20L1485.2%20116.3%20L1493.4%20132.5%20L1487.6%20130.0%20L1498.7%20146.3%20L1490.0%20143.8%20L1503.9%20160.0%20L1492.3%20157.5%20L1486.8%20160%20L1478.8%20160%20L1473.4%20157.5%20L1461.8%20160.0%20L1475.7%20143.8%20L1467.0%20146.3%20L1478.1%20130.0%20L1472.3%20132.5%20L1480.5%20116.3%20L1477.6%20118.8%20Z%20M1517.4%2056.6%20L1525.7%2077.3%20L1521.1%2073.6%20L1534.0%2098.0%20L1524.9%2094.3%20L1542.3%20118.7%20L1528.6%20114.9%20L1550.7%20139.3%20L1532.4%20135.6%20L1559.0%20160.0%20L1536.1%20156.3%20L1521.4%20160%20L1513.4%20160%20L1498.7%20156.3%20L1475.8%20160.0%20L1502.4%20135.6%20L1484.1%20139.3%20L1506.2%20114.9%20L1492.5%20118.7%20L1509.9%2094.3%20L1500.8%2098.0%20L1513.7%2073.6%20L1509.1%2077.3%20Z%20M1554.4%2016.1%20L1560.8%2052.1%20L1557.2%2045.6%20L1567.2%2088.1%20L1560.1%2081.6%20L1573.6%20124.0%20L1563.0%20117.6%20L1580.0%20160.0%20L1565.9%20153.5%20L1558.4%20160%20L1550.4%20160%20L1542.8%20153.5%20L1528.7%20160.0%20L1545.7%20117.6%20L1535.1%20124.0%20L1548.6%2081.6%20L1541.5%2088.1%20L1551.5%2045.6%20L1547.9%2052.1%20Z%20M1585.5%2023.6%20L1596.9%2069.1%20L1590.7%2060.9%20L1608.3%20114.5%20L1595.8%20106.4%20L1619.7%20160.0%20L1600.9%20151.8%20L1589.5%20160%20L1581.5%20160%20L1570.2%20151.8%20L1551.4%20160.0%20L1575.3%20106.4%20L1562.8%20114.5%20L1580.4%2060.9%20L1574.2%2069.1%20Z%20M1622.2%2078.7%20L1625.5%2095.0%20L1623.7%2092.0%20L1628.8%20111.2%20L1625.2%20108.3%20L1632.1%20127.5%20L1626.7%20124.6%20L1635.4%20143.7%20L1628.2%20140.8%20L1638.7%20160.0%20L1629.6%20157.1%20L1626.2%20160%20L1618.2%20160%20L1614.9%20157.1%20L1605.8%20160.0%20L1616.3%20140.8%20L1609.1%20143.7%20L1617.8%20124.6%20L1612.4%20127.5%20L1619.3%20108.3%20L1615.7%20111.2%20L1620.8%2092.0%20L1619.0%2095.0%20Z%20M1654.2%2029.8%20L1667.6%2073.2%20L1660.2%2065.4%20L1681.1%20116.6%20L1666.3%20108.8%20L1694.5%20160.0%20L1672.3%20152.2%20L1658.2%20160%20L1650.2%20160%20L1636.0%20152.2%20L1613.9%20160.0%20L1642.1%20108.8%20L1627.3%20116.6%20L1648.1%2065.4%20L1640.7%2073.2%20Z%20M1668.4%20113.9%20L1675.7%20125.4%20L1671.7%20123.4%20L1683.0%20137.0%20L1675.0%20134.9%20L1690.3%20148.5%20L1678.3%20146.4%20L1697.6%20160.0%20L1681.6%20157.9%20L1672.4%20160%20L1664.4%20160%20L1655.3%20157.9%20L1639.3%20160.0%20L1658.6%20146.4%20L1646.5%20148.5%20L1661.9%20134.9%20L1653.8%20137.0%20L1665.1%20123.4%20L1661.1%20125.4%20Z%20M1697.9%2061.5%20L1707.6%2094.3%20L1702.3%2088.4%20L1717.4%20127.2%20L1706.7%20121.3%20L1727.1%20160.0%20L1711.0%20154.1%20L1701.9%20160%20L1693.9%20160%20L1684.8%20154.1%20L1668.7%20160.0%20L1689.1%20121.3%20L1678.4%20127.2%20L1693.5%2088.4%20L1688.2%2094.3%20Z%20M1717.1%20101.5%20L1729.4%20121.0%20L1722.6%20117.5%20L1741.6%20140.5%20L1728.1%20137.0%20L1753.9%20160.0%20L1733.7%20156.5%20L1721.1%20160%20L1713.1%20160%20L1700.6%20156.5%20L1680.4%20160.0%20L1706.1%20137.0%20L1692.6%20140.5%20L1711.6%20117.5%20L1704.9%20121.0%20Z%20M1754.5%2014.1%20L1761.1%2050.6%20L1757.5%2044.0%20L1767.7%2087.0%20L1760.5%2080.5%20L1774.4%20123.5%20L1763.4%20117.0%20L1781.0%20160.0%20L1766.4%20153.4%20L1758.5%20160%20L1750.5%20160%20L1742.6%20153.4%20L1728.0%20160.0%20L1745.5%20117.0%20L1734.6%20123.5%20L1748.5%2080.5%20L1741.2%2087.0%20L1751.5%2044.0%20L1747.9%2050.6%20Z%20M1777.6%2084.1%20L1787.4%20103.1%20L1782.0%2099.6%20L1797.2%20122.0%20L1786.4%20118.6%20L1807.0%20141.0%20L1790.8%20137.6%20L1816.7%20160.0%20L1795.2%20156.6%20L1781.6%20160%20L1773.6%20160%20L1759.9%20156.6%20L1738.4%20160.0%20L1764.3%20137.6%20L1748.2%20141.0%20L1768.7%20118.6%20L1758.0%20122.0%20L1773.2%2099.6%20L1767.8%20103.1%20Z%20M1802.6%2010.2%20L1808.4%2047.6%20L1805.2%2040.9%20L1814.3%2085.1%20L1807.9%2078.3%20L1820.2%20122.5%20L1810.5%20115.8%20L1826.1%20160.0%20L1813.1%20153.3%20L1806.6%20160%20L1798.6%20160%20L1792.0%20153.3%20L1779.1%20160.0%20L1794.6%20115.8%20L1784.9%20122.5%20L1797.3%2078.3%20L1790.8%2085.1%20L1799.9%2040.9%20L1796.7%2047.6%20Z%20M1819.8%2046.8%20L1827.3%2075.1%20L1823.2%2070.0%20L1834.9%20103.4%20L1826.6%2098.3%20L1842.4%20131.7%20L1830.0%20126.6%20L1850.0%20160.0%20L1833.4%20154.9%20L1823.8%20160%20L1815.8%20160%20L1806.2%20154.9%20L1789.6%20160.0%20L1809.6%20126.6%20L1797.2%20131.7%20L1813.0%2098.3%20L1804.7%20103.4%20L1816.4%2070.0%20L1812.3%2075.1%20Z%20M1836.5%20100.6%20L1843.0%20120.4%20L1839.4%20116.8%20L1849.5%20140.2%20L1842.3%20136.6%20L1856.0%20160.0%20L1845.3%20156.4%20L1840.5%20160%20L1832.5%20160%20L1827.7%20156.4%20L1817.0%20160.0%20L1830.7%20136.6%20L1823.5%20140.2%20L1833.6%20116.8%20L1830.0%20120.4%20Z%20%22%2F%3E%3Crect%20y%3D%22148%22%20width%3D%221800%22%20height%3D%2212%22%20fill%3D%22%230C0F14%22%2F%3E%3C%2Fsvg%3E"); }
+h1, h2, h3, .pile-nums b, .stats b, .tier li b, .trial-num b { font-family: var(--serif); font-optical-sizing: none; font-variation-settings: 'opsz' 56; font-variant-ligatures: none; word-spacing: .04em; }
+h1, h2 { font-weight: 600; letter-spacing: -.018em; }
+.hero h1 { font-size: clamp(44px, 5.8vw, 88px); line-height: 1; letter-spacing: -.02em; }
+h2 { line-height: 1.02; }
+h1 em, h2 em, h3 em { font-style: italic; font-weight: 500; color: var(--signal-ink); }
+.hero em, .dark em, .end em, .proof em, .plans[data-mode='night'] em { color: var(--signal); }
+.pile-nums b, .stats b, .tier li b, .trial-num b { font-weight: 500; letter-spacing: -.035em; }
+.case-copy h3 { font-weight: 600; letter-spacing: -.02em; line-height: 1.05; }
+.tier h3, .pane h3 { font-weight: 600; letter-spacing: -.02em; }
+.pile-art { margin-right: calc(var(--bleed) * -1); }
+.pile-art::before { content: ''; position: absolute; inset: -12% -10% -10% 4%; background: radial-gradient(closest-side, rgba(255, 77, 46, .24), transparent 72%); filter: blur(30px); }
+.pile-art .shotframe { position: relative; border-radius: 0; background: none; box-shadow: none; overflow: visible; transform: perspective(2400px) rotateY(-8deg) rotateX(2deg) rotate(-1deg); transform-origin: 0 50%; -webkit-mask-image: linear-gradient(100deg, transparent 0, #000 17%), linear-gradient(180deg, #000 78%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(100deg, transparent 0, #000 17%), linear-gradient(180deg, #000 78%, transparent 100%); mask-composite: intersect; }
+.cases { position: relative; overflow: hidden; padding-bottom: 170px; }
+.case-art { margin-left: calc(var(--bleed) * -1); }
+.case.rev .case-art { margin-left: 0; margin-right: calc(var(--bleed) * -1); }
+.case-art .shotframe { border-radius: 0; background: none; box-shadow: none; overflow: visible; -webkit-mask-image: linear-gradient(270deg, transparent 0, #000 28%), linear-gradient(180deg, transparent 0, #000 9%, #000 86%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(270deg, transparent 0, #000 28%), linear-gradient(180deg, transparent 0, #000 9%, #000 86%, transparent 100%); mask-composite: intersect; }
+.case.rev .case-art .shotframe { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28%), linear-gradient(180deg, transparent 0, #000 9%, #000 86%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent 0, #000 28%), linear-gradient(180deg, transparent 0, #000 9%, #000 86%, transparent 100%); mask-composite: intersect; }
+.case-art { position: relative; }
+.case-art::before { content: ''; position: absolute; inset: 8% 0 -6% 0; background: radial-gradient(closest-side, rgba(255, 77, 46, .13), transparent 78%); filter: blur(24px); }
+.case-art .shotframe { position: relative; }
+.case-copy { position: relative; z-index: 1; margin-left: -64px; }
+.case.rev .case-copy { margin-left: 0; margin-right: -64px; }
+#answers { position: relative; padding-bottom: 190px; }
+.trees { position: absolute; left: 0; right: 0; bottom: -1px; height: clamp(70px, 9vw, 130px); background: var(--trees) repeat-x left bottom / auto 100%; pointer-events: none; }
 
 /* reveal on scroll: only where scripts run */
 .js .rv { opacity: 0; transform: translateY(34px); transition: opacity 800ms var(--ease-out), transform 900ms var(--ease-out); transition-delay: calc(var(--n, 0) * 90ms); }
@@ -326,30 +441,41 @@ footer p { max-width: 46em; }
 .motion .hero.go .hero-copy > :nth-child(4) { animation: rise 800ms var(--ease-out) 640ms backwards; }
 .motion .hero.go .hero-copy > :nth-child(5) { animation: rise 800ms var(--ease-out) 740ms backwards; }
 .motion .hero.go .hv { animation: enter 1100ms var(--ease-emphasized) 150ms backwards; }
-.motion .hero.go .hv-scores { animation: enter 1100ms var(--ease-emphasized) 450ms backwards; }
-.motion .hero.go .hg { animation: rise 900ms var(--ease-emphasized) 800ms backwards; }
 
 @media (max-width: 1080px) {
   :root { --pad: 24px; }
   .bar nav a:not(.btn) { display: none; }
-  .hero { padding: 100px 0 80px; }
-  .hero .wrap { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 36px; }
-  .answers, .plans-body, .ticket { grid-template-columns: 1fr; gap: 40px; }
-  .ticket-art { border-left: 0; border-top: 2px dashed rgba(255, 255, 255, .16); min-height: 300px; }
-  .ticket-art::before { left: -19px; top: -19px; } .ticket-art::after { left: auto; right: -19px; top: -19px; bottom: auto; }
-  .ticket-copy { padding: 48px 32px 36px; }
+  .hero { padding-top: 108px; }
+  .answers, .plans-body, .trial, .pile-grid, .case, .case.rev { grid-template-columns: 1fr; gap: 40px; }
+  .case.rev .case-art { order: 0; margin-right: 0; }
+  .case-art, .case.rev .case-art { margin-left: calc(var(--pad) * -1); margin-right: calc(var(--pad) * -1); }
+  .case-copy, .case.rev .case-copy { margin: 0; }
+  .pile-art { margin-right: calc(var(--pad) * -1); }
+  .pile-art .shotframe { transform: none; }
+  .case { margin-top: 80px; }
+  .pile, .proof { padding: 90px 0; }
+  .pile-nums { margin-top: 70px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 44px 28px; }
+  .stats { gap: 44px 28px; }
+  .cases { padding: 90px 0 30px; }
+  .pile-art .f1 { left: -3%; } .pile-art .f2 { right: -2%; }
+  .tiers { grid-template-columns: 1fr; gap: 56px; }
+  .trial-num b { font-size: clamp(120px, 34vw, 220px); }
+  .start { padding: 100px 0 40px; }
+  .pricing { padding: 70px 0 100px; }
   .pane { grid-area: auto; }
   .plans[data-mode='day'] .pane.night, .plans[data-mode='night'] .pane.day { display: none; }
   .plans-art { order: -1; max-width: 300px; }
   .part { padding: 88px 0; }
+  .plans[data-mode='night'] + #answers { padding-top: 64px; }
   .tour { padding-top: 88px; }
   .covers { padding: 88px 0; }
   .plans { padding: 100px 0; }
-  .end { padding: 80px 0 70px; }
+  .end { padding: 80px 0 70px; min-height: 0; }
 }
 @media (max-width: 900px) {
-  .hero .wrap { grid-template-columns: 1fr; gap: 48px; }
-  .hero-view { max-width: 680px; margin: 0 auto; }
+  .hero-bg img { object-position: 76% 50%; }
+  .hero-bg::after { background: linear-gradient(180deg, rgba(7, 10, 14, .8) 0%, rgba(7, 10, 14, .55) 46%, rgba(7, 10, 14, .94) 100%); }
+  .end-bg::after { background: linear-gradient(180deg, rgba(7, 10, 14, .72) 0%, rgba(7, 10, 14, .82) 100%); }
 }
 @media (max-width: 560px) {
   :root { --pad: 20px; }
@@ -357,21 +483,25 @@ footer p { max-width: 46em; }
   .bar img { height: 26px; }
   .hero { padding-top: 92px; }
   h1 { font-size: 40px; }
-  .hv-scores { display: none; }
+  .hero-view { display: none; }
+  .hero { min-height: 0; padding-bottom: 72px; }
   .part { padding: 64px 0; }
+  .plans[data-mode='night'] + #answers { padding-top: 40px; }
   .covers { padding: 70px 0; }
   .marq-row img { width: 260px; }
   .marq { margin-top: 44px; }
   .plans { padding: 80px 0; }
-  .rows div { grid-template-columns: 1fr; gap: 4px; }
+  .path { grid-template-columns: 1fr; gap: 28px 0; }
+  .path::before { left: 7px; right: auto; top: 0; bottom: 0; width: 1px; height: auto; }
+  .path li { padding: 0 0 0 38px; }
+  .tier li b { font-size: 52px; }
   .shift button { padding: 10px 14px; font-size: 14px; }
-  .ticket-copy { padding: 36px 24px 28px; }
   .tbody { margin-left: 0; }
   .btn { padding: 13px 20px; }
   .cta-row .btn { flex: 1 1 100%; justify-content: center; }
 }
 @media (max-width: 1180px) and (min-width: 900px) {
-  .tour-on .tour-grid { grid-template-columns: minmax(250px, 300px) minmax(0, 1fr); gap: 36px; }
+  .tour-on .tour-grid { grid-template-columns: minmax(250px, 300px) min(42vw, 560px); gap: 36px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -390,9 +520,10 @@ footer p { max-width: 46em; }
   <div class="wrap">
     <a href="#top" aria-label="Woody, back to the top"><img src="img/logo-dark.svg" width="86" height="30" alt="Woody"></a>
     <nav aria-label="Page">
+      <a href="#cases">Use cases</a>
       <a href="#tour">How it works</a>
       <a href="#covers">Covers</a>
-      <a href="#plans">Plans</a>
+      <a href="#pricing">Pricing</a>
       <a href="#answers">Answers</a>
       <a class="btn btn-signal btn-sm" href="mailto:hello@wojciech.io?subject=Woody%20waiting%20list&body=Please%20add%20me%20to%20the%20Woody%20waiting%20list.%20I%20agree%20that%20you%20write%20to%20me%20about%20Woody%20at%20this%20address%2C%20and%20for%20nothing%20else.">Join the waiting list</a>
     </nav>
@@ -402,26 +533,70 @@ footer p { max-width: 46em; }
 
 <main id="top">
 <section class="hero" aria-labelledby="h1">
+  <div class="hero-bg" aria-hidden="true"><img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:64% 50%;transform-origin:64% 50%" data-z="1" decoding="async"></div>
   <div class="wrap">
     <div class="hero-copy">
       <p class="kicker">Content studio</p>
-      <h1 id="h1">Writes from your sources. <em>Waits for a person's yes.</em></h1>
-      <p class="lede">Type one sentence, like “a LinkedIn post about how to build a vendor shortlist”. Woody writes it from your documents and scores it for Google and for AI answers. Then it waits for the person who approves.</p>
+      <h1 id="h1">A forest of articles to write? <em>Plant them one yes at a time.</em></h1>
+      <p class="lede">Woody keeps the whole content book, writes each text from your sources and waits for the person who approves.</p>
       <div class="cta-row">
         <a class="btn btn-signal" href="mailto:hello@wojciech.io?subject=Woody%20waiting%20list&body=Please%20add%20me%20to%20the%20Woody%20waiting%20list.%20I%20agree%20that%20you%20write%20to%20me%20about%20Woody%20at%20this%20address%2C%20and%20for%20nothing%20else.">Join the waiting list <span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="person-plus" aria-hidden="true" focusable="false"><circle cx="10" cy="8.5" r="3.5"></circle><path d="M3.5 20.25c.5-3.6 3.1-5.75 6.5-5.75s6 2.15 6.5 5.75"></path><path class="lhi-a lhi-stroke lhi-draw" d="M19 4.5v5M16.5 7h5" pathLength="1"></path></svg></span></a>
         <a class="btn btn-ghost" href="#tour">See it work</a>
       </div>
       <small>Not on sale yet. Runs on your own server.</small>
     </div>
+  </div>
+  <div class="hero-view" aria-label="Woody at work: the Studio with a request typed in">
+    <div class="win hv"><img src="img/studio.webp" width="1500" height="800" alt="The Studio with a request typed in: a LinkedIn post about a vendor shortlist, in the voice of Mara" decoding="async"></div>
+  </div>
+</section>
 
-    <div class="hero-view" aria-label="Woody at work: the Studio with a request typed in, and the two scores of a text">
-      <div class="hv-wrap">
-        <div class="win hv"><img src="img/studio.webp" width="1500" height="800" alt="The Studio with a request typed in: a LinkedIn post about a vendor shortlist, in the voice of Mara" decoding="async"></div>
-        <div class="guide hg"><img src="img/forester-sm.webp" width="560" height="560" alt="A 3D forester in a red jacket plants a sapling, the mark of Woody" decoding="async"></div>
-      </div>
-      <div class="win hv-scores"><img src="img/scores.webp" width="775" height="690" alt="The SEO and GEO scores of a text, both 100, with the words Found on Google and Quoted by AI assistants" decoding="async"></div>
+<section class="pile dark" id="pile" aria-labelledby="h-pile">
+  <div class="wrap pile-grid">
+    <div class="pile-copy rv">
+      <p class="kicker">When the pile is the problem</p>
+      <h2 id="h-pile">48 articles to write. <em>One book.</em></h2>
+      <p class="lede">Every idea sits in one content book. Woody offers the next one and writes it from your sources.</p>
+    </div>
+    <div class="pile-art rv" style="--n:1">
+      <div class="shotframe"><img src="img/bookshot.webp" width="1500" height="1026" alt="The Strategy page of the sample: a content book with 48 pages, a counter for each status, and the first chapter with five pages" decoding="async"></div>
+      <div class="float f1"><img src="img/cv-booking.webp" width="760" height="399" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+      <div class="float f2"><img src="img/cv-forest.webp" width="760" height="399" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
+      <div class="float f3"><img src="img/cv-quote.webp" width="760" height="399" alt="" aria-hidden="true" loading="lazy" decoding="async"></div>
     </div>
   </div>
+  <div class="wrap pile-nums rv">
+    <div><b class="count" data-to="48">48</b><span>ideas in one book</span></div>
+    <div><b>7</b><span>formats for every idea</span></div>
+    <div><b>2</b><span>voices, a person and the brand</span></div>
+    <div><b>1</b><span>yes before it goes out</span></div>
+  </div>
+</section>
+
+<section class="cases" id="cases" aria-labelledby="h-cases">
+  <div class="wrap">
+    <div class="cases-head rv">
+      <p class="kicker">What you use it for</p>
+      <h2 id="h-cases">Four jobs hiding <em>in every pile.</em></h2>
+    </div>
+    <article class="case rv">
+      <div class="case-art"><div class="shotframe"><img src="img/studio.webp" width="1500" height="800" alt="The Studio with a request typed in: a LinkedIn post about a vendor shortlist, in the voice of Mara" decoding="async" loading="lazy"></div></div>
+      <div class="case-copy"><p class="kicker">The quick post</p><h3>One sentence in. A text out.</h3><p>Type what you need. Woody says what it understood, then writes from your sources.</p></div>
+    </article>
+    <article class="case rev rv">
+      <div class="case-art"><div class="shotframe"><img src="img/textsshot.webp" width="1400" height="789" alt="The Texts page: one topic as a newsletter, an FAQ, a blog post and LinkedIn posts, each with its own cover" decoding="async" loading="lazy"></div></div>
+      <div class="case-copy"><p class="kicker">The same topic everywhere</p><h3>One topic in seven channels.</h3><p>Blog, FAQ, newsletter, LinkedIn, Facebook, Instagram and text for your app, each with a cover.</p></div>
+    </article>
+    <article class="case rv">
+      <div class="case-art"><div class="shotframe"><img src="img/v-sources.webp" width="2000" height="1250" alt="The Sources page: the documents Woody reads, with the ones it could not read marked Missing" decoding="async" loading="lazy"></div></div>
+      <div class="case-copy"><p class="kicker">Facts that must be right</p><h3>Only what it has read.</h3><p>A source counts when Woody holds its text. Gaps are marked Missing.</p></div>
+    </article>
+    <article class="case rev rv">
+      <div class="case-art"><div class="shotframe"><img src="img/reviewshot.webp" width="1400" height="811" alt="The Review page: five texts waiting, each with its cover and the name of the person it waits for" decoding="async" loading="lazy"></div></div>
+      <div class="case-copy"><p class="kicker">Nothing goes out unseen</p><h3>A name on every yes.</h3><p>Each text waits for the person you assigned. The model approves nothing.</p></div>
+    </article>
+  </div>
+  <div class="trees" aria-hidden="true"></div>
 </section>
 
 <section class="tour dark" id="tour" aria-labelledby="h-tour">
@@ -432,6 +607,15 @@ footer p { max-width: 46em; }
   </div>
   <div class="tour-track" style="--n:7">
     <div class="tour-pin">
+      <div class="world" aria-hidden="true">
+          <img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:74% 60%;transform-origin:74% 60%" data-z="1.04" data-step="0" decoding="async">
+          <img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:22% 40%;transform-origin:22% 40%" data-z="1.5" data-step="1" loading="lazy" decoding="async">
+          <img src="img/world-sources.webp" width="1920" height="1080" alt="" style="object-position:0% 50%;transform-origin:0% 50%" data-z="1.04" data-step="2" loading="lazy" decoding="async">
+          <img src="img/world-scores.webp" width="1920" height="1080" alt="" style="object-position:0% 50%;transform-origin:0% 50%" data-z="1.04" data-step="3" loading="lazy" decoding="async">
+          <img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:70% 30%;transform-origin:70% 30%" data-z="1.5" data-step="4" loading="lazy" decoding="async">
+          <img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:34% 80%;transform-origin:34% 80%" data-z="1.4" data-step="5" loading="lazy" decoding="async">
+          <img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:46% 36%;transform-origin:46% 36%" data-z="1.35" data-step="6" loading="lazy" decoding="async">
+      </div>
       <div class="wrap tour-grid">
         <ol class="tour-list">
           <li class="tstep" id="step-1" data-view="studio" data-s="1.3" data-cx="50" data-cy="48" data-cap="Studio">
@@ -493,18 +677,22 @@ footer p { max-width: 46em; }
             <div class="vlayer" data-view="look"><img src="img/v-look.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><i class="hl" data-step="5" style="left:48%;top:8%;width:24%;height:38%"></i><i class="hl" data-step="5" style="left:76%;top:7%;width:22%;height:57%"></i></div>
             <div class="vlayer" data-view="strategy"><img src="img/v-strategy.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><i class="hl" data-step="6" style="left:20%;top:10%;width:77%;height:21%"></i></div>
           </div>
-          <div class="guide">
-            <img src="img/scene-seeds.webp" width="560" height="560" alt="" data-step="0" loading="lazy" decoding="async">
-            <img src="img/scene-plan.webp" width="560" height="560" alt="" data-step="1" loading="lazy" decoding="async">
-            <img src="img/forester-sm.webp" width="560" height="560" alt="" data-step="2" loading="lazy" decoding="async">
-            <img src="img/scene-done.webp" width="560" height="560" alt="" data-step="3" loading="lazy" decoding="async">
-            <img src="img/scene-lost.webp" width="560" height="560" alt="" data-step="4" loading="lazy" decoding="async">
-            <img src="img/scene-seeds.webp" width="560" height="560" alt="" data-step="5" loading="lazy" decoding="async">
-            <img src="img/scene-plan.webp" width="560" height="560" alt="" data-step="6" loading="lazy" decoding="async">
-          </div>
           <div class="cap" aria-hidden="true"><i></i><span></span></div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="proof dark" id="proof" aria-labelledby="h-proof">
+  <div class="proof-bg" aria-hidden="true"><img src="img/world-scores.webp" width="1920" height="1080" alt="" style="object-position:0% 50%;transform-origin:0% 50%" data-z="1.04" decoding="async"></div>
+  <div class="wrap">
+    <h2 id="h-proof" class="rv">Trust a text <em>you did not write.</em></h2>
+    <div class="stats rv" style="--n:1">
+      <div><b class="count" data-to="13">13</b><span>search checks</span></div>
+      <div><b class="count" data-to="8">8</b><span>AI answer checks</span></div>
+      <div><b>2</b><span>automatic fixes at most</span></div>
+      <div><b>0</b><span>texts approved by the model</span></div>
     </div>
   </div>
 </section>
@@ -523,7 +711,8 @@ footer p { max-width: 46em; }
   </div>
 </section>
 
-<section class="plans" id="plans" data-mode="day" aria-labelledby="h-plans">
+<section class="plans has-night" id="plans" data-mode="day" aria-labelledby="h-plans">
+  <div class="plans-bg" aria-hidden="true"><img src="img/world-night.webp" width="1920" height="1080" alt="" decoding="async" loading="lazy"></div>
   <div class="wrap">
     <div class="plans-head rv">
       <p class="kicker">Two shifts</p>
@@ -537,36 +726,88 @@ footer p { max-width: 46em; }
       <div class="panes">
         <div class="pane day" role="tabpanel">
           <h3>Write, check, approve.</h3>
-          <p>Everything you just scrolled through, on your own server.</p>
-          <dl class="rows">
-            <div><dt>Writes</dt><dd>From your sources, in your voice, for seven formats: blog, FAQ, newsletter, LinkedIn, Facebook, Instagram and text in your app.</dd></div>
-            <div><dt>Checks</dt><dd>13 search checks and 8 AI checks on every text, with up to two corrections before you see it.</dd></div>
-            <div><dt>Approves</dt><dd>A person you name decides on one version. History is never deleted.</dd></div>
-            <div><dt>Yours</dt><dd>Keys stay in the environment of the server. The database is copied every 23 hours. A license can stop writing, never reading.</dd></div>
-          </dl>
+          <div class="story">
+            <p><b>Woody writes</b> from your sources in seven formats, <b>checks</b> every text and <b>waits for a person you name</b>. Keys stay on your server, and history is never deleted.</p>
+          </div>
         </div>
         <div class="pane night" role="tabpanel">
           <span class="chip tag">Planned, not built yet</span>
           <h3>While you sleep, the beaver works through your library.</h3>
-          <p>A second character with a night shift. When nobody uses Woody, it audits, researches and prunes, then stacks the result into briefs for the forester.</p>
-          <dl class="rows">
-            <div><dt>Gnaws</dt><dd>Audits published texts: outdated facts, claims with no source, keywords that compete, dead links. Fixes arrive as proposals.</dd></div>
-            <div><dt>Fells</dt><dd>Researches your sources and the sites you allow. Every fact carries a link, a date and a confidence.</dd></div>
-            <div><dt>Trims</dt><dd>Merges duplicate ideas and drops the weak ones with the reason. One click brings one back.</dd></div>
-            <div><dt>Dam</dt><dd>Stacks verified facts into briefs. In the morning the Studio offers the best brief first.</dd></div>
-          </dl>
-          <p class="fine">The beaver publishes nothing and never edits an original. You set the night window and a budget, and you approve everything in the morning.</p>
+          <div class="story">
+            <p><b>It gnaws</b> through published texts for outdated facts and dead links, <b>fells</b> research from your sources, <b>trims</b> duplicate ideas and <b>builds a dam</b> of verified briefs. In the morning the Studio offers the best one first.</p>
+          </div>
+          <p class="fine">The beaver publishes nothing and never edits an original. You approve everything in the morning.</p>
         </div>
       </div>
       <div class="plans-art" aria-hidden="true">
-        <div class="art day"><img src="img/forester.webp" width="900" height="900" alt="" decoding="async" loading="lazy"></div>
-        <div class="art night"><img src="img/beaver.webp" width="800" height="800" alt="" decoding="async" loading="lazy"><i class="fly" style="left:16%;top:22%"></i><i class="fly" style="left:80%;top:30%;animation-delay:-3s"></i><i class="fly" style="left:70%;top:12%;animation-delay:-5s"></i></div>
+        <div class="art day scene"><img src="img/world-scores.webp" width="1920" height="1080" alt="" decoding="async" loading="lazy"></div>
+        <div class="art night scene"><img src="img/world-night.webp" width="1920" height="1080" alt="" decoding="async" loading="lazy"><i class="fly" style="left:16%;top:22%"></i><i class="fly" style="left:80%;top:30%;animation-delay:-3s"></i><i class="fly" style="left:70%;top:12%;animation-delay:-5s"></i></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="part light" id="answers" aria-labelledby="h-answers" style="padding-top:0">
+<section class="start" id="trial" aria-labelledby="h-trial">
+  <div class="wrap trial">
+    <div class="trial-num rv" aria-hidden="true"><b>14</b><span>days</span></div>
+    <div class="trial-copy rv" style="--n:1">
+      <p class="kicker">The trial</p>
+      <h2 id="h-trial">Start with a <em>14 day trial.</em></h2>
+      <p class="lede">You start with a trial key. It lasts 14 days, lets 3 people write and runs on 1 installation of your own server. Add your own AI key, enter the license in Settings, and Woody writes.</p>
+      <ol class="path">
+        <li><h3>Day 1</h3><p>You enter the key. Sources, texts, scores, reviews and covers all work.</p></li>
+        <li><h3>Day 14</h3><p>The key ends. Writing stops, and nothing you wrote is lost.</p></li>
+        <li><h3>After</h3><p>Every text stays readable and exportable. A renewed key brings writing back.</p></li>
+      </ol>
+      <div class="cta-row trial-cta"><a class="btn btn-signal" href="mailto:hello@wojciech.io?subject=Woody%20waiting%20list&body=Please%20add%20me%20to%20the%20Woody%20waiting%20list.%20I%20agree%20that%20you%20write%20to%20me%20about%20Woody%20at%20this%20address%2C%20and%20for%20nothing%20else.">Join the waiting list <span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="person-plus" aria-hidden="true" focusable="false"><circle cx="10" cy="8.5" r="3.5"></circle><path d="M3.5 20.25c.5-3.6 3.1-5.75 6.5-5.75s6 2.15 6.5 5.75"></path><path class="lhi-a lhi-stroke lhi-draw" d="M19 4.5v5M16.5 7h5" pathLength="1"></path></svg></span></a><small>Not on sale yet.</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing" aria-labelledby="h-price">
+  <div class="wrap">
+    <div class="price-head rv">
+      <p class="kicker">Pricing</p>
+      <h2 id="h-price">A license counts people, <em>not texts.</em></h2>
+      <p class="lede">Every plan is the same Woody. The plans differ in how many people write, how long the key lasts and how many installations it covers. The model runs on your own AI key, so its cost stays on your account, under the monthly limit you set.</p>
+    </div>
+    <div class="tiers rv" style="--n:1">
+      <article class="tier">
+        <h3>Trial</h3>
+        <p class="amt">Start here</p>
+        <ul>
+          <li><b>3</b><span>people can write</span></li>
+          <li><b>14</b><span>days of use</span></li>
+          <li><b>1</b><span>installation of Woody</span></li>
+        </ul>
+        <p class="grace">Writing stops the day the key ends.</p>
+      </article>
+      <article class="tier">
+        <h3>Team</h3>
+        <p class="amt">Price at launch</p>
+        <ul>
+          <li><b>10</b><span>people can write</span></li>
+          <li><b>1</b><span>year of use</span></li>
+          <li><b>2</b><span>installations of Woody</span></li>
+        </ul>
+        <p class="grace">Writing runs on for 14 days after the key ends.</p>
+      </article>
+      <article class="tier">
+        <h3>Business</h3>
+        <p class="amt">Price at launch</p>
+        <ul>
+          <li><b>50</b><span>people can write</span></li>
+          <li><b>1</b><span>year of use</span></li>
+          <li><b>3</b><span>installations of Woody</span></li>
+        </ul>
+        <p class="grace">Writing runs on for 30 days after the key ends.</p>
+      </article>
+    </div>
+    <p class="price-note rv"><b>The night shift</b> with the beaver is planned as a premium add on and is not built yet. In every plan the texts stay readable and exportable, also after the key has ended.</p>
+  </div>
+</section>
+
+<section class="part light" id="answers" aria-labelledby="h-answers">
   <div class="wrap answers">
     <div class="rv"><p class="kicker">Plain answers</p><h2 id="h-answers" style="margin-top:20px">What people ask <em>first.</em></h2></div>
     <div class="qa rv" style="--n:1">
@@ -574,27 +815,22 @@ footer p { max-width: 46em; }
       <details><summary>Which models does it use?</summary><p>Claude first, Gemini second, both with your own key. This page was prepared from the documentation and from test runs with stand-ins, not from a live model.</p></details>
       <details><summary>Which languages does it write in?</summary><p>English or Slovak, chosen from the language of your request. The interface is in English.</p></details>
       <details><summary>Does it publish for me?</summary><p>No. An approved text goes to the calendar, and you export it or save it to Google Docs.</p></details>
+      <details><summary>What happens when the trial ends?</summary><p>Writing stops, and every text stays readable and exportable. A renewed key brings writing back.</p></details>
+      <details><summary>Does the license read my texts?</summary><p>No. An online key activates the installation and then sends four counts, never a text, a name or an address, while an offline key sends nothing at all.</p></details>
       <details><summary>Who sees what I write?</summary><p>The people you add to your team. Woody runs on your server, so your texts stay there.</p></details>
     </div>
   </div>
+  <div class="trees" aria-hidden="true"></div>
 </section>
 
 <section class="end" id="join" aria-labelledby="h-join">
-  <div class="wrap">
-    <div class="ticket rv">
-      <div class="ticket-copy">
-        <p class="kicker">Not on sale yet</p>
-        <h2 id="h-join">One email, <em>when Woody opens.</em></h2>
-        <p class="lede">No newsletter and no follow-ups. I write once, on the day Woody opens. Write to me and I add you to the list.</p>
-        <div class="cta-row"><a class="btn btn-signal" href="mailto:hello@wojciech.io?subject=Woody%20waiting%20list&body=Please%20add%20me%20to%20the%20Woody%20waiting%20list.%20I%20agree%20that%20you%20write%20to%20me%20about%20Woody%20at%20this%20address%2C%20and%20for%20nothing%20else.">Join the waiting list <span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="person-plus" aria-hidden="true" focusable="false"><circle cx="10" cy="8.5" r="3.5"></circle><path d="M3.5 20.25c.5-3.6 3.1-5.75 6.5-5.75s6 2.15 6.5 5.75"></path><path class="lhi-a lhi-stroke lhi-draw" d="M19 4.5v5M16.5 7h5" pathLength="1"></path></svg></span></a></div>
-        <p class="priv">The button opens your own email program with a message you can read and change. This page collects nothing and loads nothing from other sites.</p>
-      </div>
-      <div class="ticket-art" aria-hidden="true">
-        <img class="big" src="img/scene-done.webp" width="560" height="560" alt="" decoding="async" loading="lazy">
-        <img class="peek" src="img/beaver.webp" width="800" height="800" alt="" decoding="async" loading="lazy">
-        <i class="fly"></i><i class="fly f2"></i><i class="fly f3"></i>
-      </div>
-    </div>
+  <div class="end-bg" aria-hidden="true"><img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:100% 50%;transform-origin:100% 50%" data-z="1" decoding="async"></div>
+  <div class="wrap rv">
+    <p class="kicker">Not on sale yet</p>
+    <h2 id="h-join">One email, <em>when Woody opens.</em></h2>
+    <p class="lede">No newsletter and no follow-ups. I write once, on the day Woody opens. Write to me and I add you to the list.</p>
+    <div class="cta-row"><a class="btn btn-signal" href="mailto:hello@wojciech.io?subject=Woody%20waiting%20list&body=Please%20add%20me%20to%20the%20Woody%20waiting%20list.%20I%20agree%20that%20you%20write%20to%20me%20about%20Woody%20at%20this%20address%2C%20and%20for%20nothing%20else.">Join the waiting list <span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="person-plus" aria-hidden="true" focusable="false"><circle cx="10" cy="8.5" r="3.5"></circle><path d="M3.5 20.25c.5-3.6 3.1-5.75 6.5-5.75s6 2.15 6.5 5.75"></path><path class="lhi-a lhi-stroke lhi-draw" d="M19 4.5v5M16.5 7h5" pathLength="1"></path></svg></span></a></div>
+    <p class="priv">The button opens your own email program with a message you can read and change. This page collects nothing and loads nothing from other sites.</p>
   </div>
 </section>
 </main>
@@ -615,7 +851,7 @@ footer p { max-width: 46em; }
   const bar = document.querySelector('.bar');
   const links = $('.bar nav a:not(.btn)');
   // the sections of the page and the entry of the bar each one belongs to
-  const marks = [['tour', '#tour'], ['covers', '#covers'], ['plans', '#plans'], ['answers', '#answers'], ['join', '#answers']]
+  const marks = [['pile', '#cases'], ['cases', '#cases'], ['tour', '#tour'], ['proof', '#tour'], ['covers', '#covers'], ['plans', '#covers'], ['trial', '#pricing'], ['pricing', '#pricing'], ['answers', '#answers'], ['join', '#answers']]
     .map(([id, href]) => [document.getElementById(id), href]);
 
   // the tour: while the page scrolls through the tall track, the camera moves over the screens of the product.
@@ -629,7 +865,7 @@ footer p { max-width: 46em; }
     const N = kf.length;
     const layers = $('.vlayer');
     const hls = $('.hl[data-step]');
-    const guides = $('.tour-view .guide img');
+    const worlds = $('.world img');
     const cap = document.querySelector('.tour-view .cap');
     const smooth = (a) => a * a * (3 - 2 * a);
     const near = (d, grace, fade) => cl(1 - (d - grace) / fade);
@@ -660,10 +896,10 @@ footer p { max-width: 46em; }
         if (o > 0) place(el, s * k, x, y);
       });
       hls.forEach((el) => { el.style.opacity = near(Math.abs(u - +el.dataset.step), 0.14, 0.2).toFixed(3); });
-      guides.forEach((el) => {
-        const o = near(Math.abs(u - +el.dataset.step), 0.18, 0.3);
-        el.style.opacity = o.toFixed(3);
-        el.style.transform = 'translateY(' + ((1 - o) * 12).toFixed(2) + '%) scale(' + (0.94 + 0.06 * o).toFixed(3) + ')';
+      worlds.forEach((el) => {
+        const n = +el.dataset.step, z = +el.dataset.z;
+        el.style.opacity = near(Math.abs(u - n), 0.16, 0.5).toFixed(3);
+        el.style.transform = 'translate3d(' + (-(u - n) * 2.2).toFixed(2) + '%, 0, 0) scale(' + (z * (1 + 0.03 * (u - n))).toFixed(4) + ')';
       });
       const now = Math.round(u);
       if (now !== shown) {
@@ -695,6 +931,15 @@ footer p { max-width: 46em; }
   const update = () => {
     const vh = innerHeight;
     bar.style.setProperty('--p', Math.min(1, scrollY / Math.max(1, root.scrollHeight - vh)).toFixed(4));
+    bar.classList.toggle('solid', scrollY > 24);
+    if (!reduce && scrollY < vh * 1.2) {
+      // the scene of the hero drifts slower than the page, and the Studio climbs out of the bottom edge
+      const y = Math.min(scrollY, vh);
+      const hb = document.querySelector('.hero-bg img');
+      if (hb) hb.style.transform = 'translate3d(0, ' + (y * 0.16).toFixed(1) + 'px, 0) scale(' + (1 + (y / vh) * 0.08).toFixed(4) + ')';
+      const hv = document.querySelector('.hero-view');
+      if (hv) hv.style.setProperty('--hy', (-y * 0.16).toFixed(1) + 'px');
+    }
     let on = null;
     for (const [el, href] of marks) if (el && el.getBoundingClientRect().top < vh * 0.4) on = href;
     links.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === on));
