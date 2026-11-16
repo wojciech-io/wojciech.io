@@ -322,8 +322,11 @@ section { position: relative; }
   .plans-bg { display: block; position: absolute; top: 0; right: 0; bottom: 0; width: min(62vw, 1060px); opacity: 0; transition: opacity 1400ms var(--ease-in-out); pointer-events: none; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 42%); mask-image: linear-gradient(90deg, transparent 0, #000 42%); }
   .plans-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 88% 50%; transform-origin: 88% 60%; animation: nightdrift 22s var(--ease-in-out) infinite alternate; }
   .plans-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, #090C12 0, transparent 14%), linear-gradient(180deg, #090C12 0, transparent 12%); }
-  .plans.has-night[data-mode='night'] .plans-bg { opacity: 1; }
-  .plans.has-night[data-mode='night'] .plans-art { opacity: 0; transition: opacity 500ms; }
+  .plans.has-night[data-mode='night'] .plans-bg.n, .plans.has-night[data-mode='day'] .plans-bg.d { opacity: 1; }
+  .plans-bg.d { top: 17%; }
+  .plans-bg.d img { object-position: 100% 50%; transform-origin: 100% 60%; }
+  .plans-bg.d::after { background: linear-gradient(0deg, var(--paper) 0, transparent 14%), linear-gradient(180deg, var(--paper) 0, transparent 12%); }
+  .plans.has-night .plans-art { opacity: 0; }
 }
 @keyframes gnaw { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-1.4deg) translateY(2px); } 50% { transform: rotate(.6deg); } 75% { transform: rotate(-1deg) translateY(2px); } }
 @keyframes breathe { 50% { transform: scale(1.08); opacity: .7; } }
@@ -612,7 +615,7 @@ h1 em, h2 em, h3 em { font-style: italic; font-weight: 500; color: var(--signal-
           <img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:22% 40%;transform-origin:22% 40%" data-z="1.5" data-step="1" loading="lazy" decoding="async">
           <img src="img/world-sources.webp" width="1920" height="1080" alt="" style="object-position:0% 50%;transform-origin:0% 50%" data-z="1.04" data-step="2" loading="lazy" decoding="async">
           <img src="img/world-scores.webp" width="1920" height="1080" alt="" style="object-position:0% 50%;transform-origin:0% 50%" data-z="1.04" data-step="3" loading="lazy" decoding="async">
-          <img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:70% 30%;transform-origin:70% 30%" data-z="1.5" data-step="4" loading="lazy" decoding="async">
+          <img src="img/world-yes.webp" width="1920" height="1080" alt="" style="object-position:0% 50%;transform-origin:0% 50%" data-z="1.04" data-step="4" loading="lazy" decoding="async">
           <img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:34% 80%;transform-origin:34% 80%" data-z="1.4" data-step="5" loading="lazy" decoding="async">
           <img src="img/world-hero.webp" width="1920" height="1080" alt="" style="object-position:46% 36%;transform-origin:46% 36%" data-z="1.35" data-step="6" loading="lazy" decoding="async">
       </div>
@@ -712,7 +715,7 @@ h1 em, h2 em, h3 em { font-style: italic; font-weight: 500; color: var(--signal-
 </section>
 
 <section class="plans has-night" id="plans" data-mode="day" aria-labelledby="h-plans">
-  <div class="plans-bg" aria-hidden="true"><img src="img/world-night.webp" width="1920" height="1080" alt="" decoding="async" loading="lazy"></div>
+  <div class="plans-bg n" aria-hidden="true"><img src="img/world-night.webp" width="1920" height="1080" alt="" decoding="async" loading="lazy"></div><div class="plans-bg d" aria-hidden="true"><img src="img/world-scores.webp" width="1920" height="1080" alt="" decoding="async" loading="lazy"></div>
   <div class="wrap">
     <div class="plans-head rv">
       <p class="kicker">Two shifts</p>
