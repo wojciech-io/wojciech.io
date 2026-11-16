@@ -1,5 +1,4 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import type { KVNamespace } from '@cloudflare/workers-types';
 import { onRequestPost, onRequestOptions } from '../functions/api/woody-waitlist';
 import { onRequestGet as confirm } from '../functions/api/woody-confirm';
 import { woodyAlreadyEmail, woodyConfirmationEmail } from '../src/email/woody';
