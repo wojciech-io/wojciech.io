@@ -496,8 +496,8 @@ footer.foot .foot-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) 
 .foot nav a:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 4px; }
 .foot-base { margin-top: 64px; padding-top: 28px; border-top: 1px solid rgba(255, 255, 255, .1); display: flex !important; flex-wrap: wrap; justify-content: space-between; gap: 12px 40px; font-size: 13.5px; color: #8993A3; }
 .foot-base p { max-width: 44em; }
-@media (max-width: 1080px) { .foot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .foot-brand { grid-column: 1 / -1; } }
-@media (max-width: 560px) { footer.foot { padding: 56px 0 32px; } .foot-grid { gap: 36px 24px; } }
+@media (max-width: 1080px) { footer.foot .foot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .foot-brand { grid-column: 1 / -1; } }
+@media (max-width: 560px) { footer.foot { padding: 56px 0 32px; } footer.foot .foot-grid { gap: 36px 24px; } .foot nav a { overflow-wrap: anywhere; } }
 
 /* round 10: Woody walks you through the page. The scenes are cameras on a 1920 by 1080 world (world.js fits them to the window); the clouds, the seeds and the pines are planted in front of them */
 .clay-cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--k, 1)); }
@@ -526,7 +526,7 @@ footer.foot .foot-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) 
 .tfig-in img { position: absolute; inset: 0; }
 .frame, .tfig { container-type: inline-size; }
 .ov { position: absolute; inset: 0; pointer-events: none; }
-.o-ring { position: absolute; border-radius: 12px; border: 2.5px solid var(--signal); box-shadow: 0 0 0 6px rgba(255, 77, 46, .18), 0 0 40px rgba(255, 77, 46, .35); animation: ringpulse 2.4s var(--ease-in-out) infinite; }
+.o-ring { position: absolute; left: var(--l); top: var(--t); width: var(--w); height: var(--h); border-radius: 12px; border: 2.5px solid var(--signal); box-shadow: 0 0 0 6px rgba(255, 77, 46, .18), 0 0 40px rgba(255, 77, 46, .35); animation: ringpulse 2.4s var(--ease-in-out) infinite; }
 @keyframes ringpulse { 50% { box-shadow: 0 0 0 11px rgba(255, 77, 46, .1), 0 0 52px rgba(255, 77, 46, .45); } }
 .o-pin { position: absolute; width: clamp(22px, 3.4cqw, 32px); height: clamp(22px, 3.4cqw, 32px); transform: translate(-50%, -50%); display: grid; place-items: center; border-radius: 50%; background: var(--signal); color: var(--ink); font: 600 clamp(11px, 1.8cqw, 15px)/1 'Geist', system-ui, sans-serif; box-shadow: 0 6px 16px rgba(255, 77, 46, .5); }
 .o-tag { position: absolute; padding: .78em 1.2em; border-radius: 999px; background: var(--ink); color: #fff; font: 500 clamp(9px, 1.6cqw, 13px)/1 'Geist Mono', monospace; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 10px 24px rgba(0, 0, 0, .35); }
@@ -680,6 +680,7 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
 .tour-on .tbtn .num { width: 10px; height: 10px; padding: 0; font-size: 0; color: transparent; background: rgba(255, 255, 255, .38); box-shadow: none; transition: width 320ms var(--ease-out), background-color 280ms; }
 .tour-on .tstep.on .tbtn .num { width: 30px; background: var(--signal); }
 .tour-on .tbtn:hover .num { background: #fff; }
+.tour-on .tstep.on .tbtn { background: none; box-shadow: none; }
 .tour-on .tstep.on .tbtn:hover .num { background: var(--signal); }
 .tour-on .tbody, .tour-on .tstep.on .tbody { display: none; }
 #h-plans em, #h-join em, #h-price em { display: block; }
@@ -719,6 +720,8 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
 .bar nav a:not(.btn) { font-size: 15px; }
 .bar nav a:not(.btn)::after { bottom: -6px; }
 @media (max-width: 560px) { .bar { top: 8px; } .bar .wrap { height: 56px; } .brand-name { font-size: 22px; } .bar .brand-face { width: 36px; height: 36px; } }
+.bar .btn-sm { white-space: nowrap; }
+@media (max-width: 400px) { .bar .btn-sm { padding-inline: 14px; font-size: 14px; } .brand { gap: 9px; } }
 
 /* the two shifts: the headline stays on the left, clear of the forester and the beaver */
 .shifts-head h2 { max-width: 8.6em; font-size: clamp(34px, 4.4vw, 70px); }
@@ -825,6 +828,48 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
 @media (max-width: 1180px) and (min-width: 900px) {
   .tour-on .tour-grid { grid-template-columns: minmax(250px, 300px) min(42vw, 560px); gap: 36px; }
 }
+
+/* phones and tablets held upright: the same pinned tour, the frame at the foot of the window and a camera that goes to the place of each station. The class is set by the script. */
+.tour-m .tour-track { height: calc((var(--n) + .1) * 64svh + 100svh); }
+.tour-m .tour-pin { height: 100svh; min-height: 480px; --fl: 20px; --fw: calc(100vw - 40px); --fh: min(calc((100vw - 32px) * .75), 37svh); --wd: 56px; }
+.tour-m .world, .tour-m .world-fg { top: var(--wd); }
+.tour-m .world-fg { display: none; }
+.tour-m .world .vig { background: linear-gradient(180deg, rgba(7, 10, 14, .9) 0%, rgba(7, 10, 14, .62) 34%, rgba(7, 10, 14, 0) 60%), linear-gradient(0deg, rgba(7, 10, 14, .92) 0%, rgba(7, 10, 14, .4) 30%, rgba(7, 10, 14, 0) 50%); }
+.tour-m .tour-list { top: 66px; left: 14px; width: calc(100vw - 28px); gap: 0; }
+.tour-m .tbtn { padding: 16px 5px; }
+.tour-m .tbtn .num { width: 12px; height: 12px; }
+.tour-m .tstep.on .tbtn .num { width: 34px; }
+.tour-m .tour-cap { top: 112px; }
+.tour-m .tour-cap h3 { font-size: clamp(27px, 7.6vw, 38px); line-height: 1.08; }
+.tour-m .tour-cap p { margin-top: 8px; max-width: none; font-size: 16.5px; line-height: 1.45; }
+.tour-m .tour-view { left: 16px; top: auto; bottom: max(18px, env(safe-area-inset-bottom)); width: calc(100vw - 32px); filter: drop-shadow(0 24px 34px rgba(0, 0, 0, .65)); }
+.tour-m .tour-view .chrome { padding: 8px 12px; }
+.tour-m .frame { aspect-ratio: auto; height: var(--fh); }
+.tour-m .vlayer { inset: 0 auto auto 0; width: 100%; height: auto; aspect-ratio: 16 / 10; }
+.tour-m .o-ring { left: var(--ml); top: var(--mt); width: var(--mw); height: var(--mh); border-width: calc(2.5px * var(--iz, 1)); border-radius: calc(9px * var(--iz, 1)); animation: none; box-shadow: 0 0 0 calc(5px * var(--iz, 1)) rgba(255, 77, 46, .2), 0 0 calc(32px * var(--iz, 1)) rgba(255, 77, 46, .4); }
+.tour-m .o-pin, .tour-m .o-tag { display: none; }
+.tour-m .o-cur { width: calc(26px * var(--iz, 1)); }
+.tour-m .o-rip { width: calc(44px * var(--iz, 1)); height: calc(44px * var(--iz, 1)); margin: calc(-22px * var(--iz, 1)) 0 0 calc(-22px * var(--iz, 1)); border-width: calc(3px * var(--iz, 1)); }
+.tour-m .shift-track { height: 215svh; }
+.tour-m .shift-pin { height: 100svh; min-height: 480px; }
+.tour-m .shifts-head { padding-top: 84px; }
+.tour-m .shifts-head h2 { font-size: clamp(30px, 8.6vw, 46px); max-width: 9.5em; }
+.tour-m .cmp-stage { margin-top: 124px; height: calc(100% - 124px); }
+.tour-m .cmp-stage::after { background: linear-gradient(180deg, rgba(7, 10, 14, .94) 0%, rgba(7, 10, 14, .74) 24%, rgba(7, 10, 14, 0) 52%), linear-gradient(0deg, rgba(7, 10, 14, .9) 0%, rgba(7, 10, 14, 0) 46%); }
+.tour-m .cmp-label { left: 20px; right: 20px; bottom: max(30px, env(safe-area-inset-bottom)); max-width: none; }
+.tour-m .cmp-label b { font-size: clamp(30px, 8.4vw, 40px); }
+.tour-m .cmp-label span { max-width: 20em; font-size: 16.5px; }
+.tour-m .cmp-stage video.morph { object-position: 76% 50%; }
+
+/* the plain column on a phone: the frame is taller, and the screen is held still on the place of the station, the way the camera of the pinned tour would have it */
+@media (max-width: 899px) {
+  .tour-list { padding-inline: var(--pad); }
+  .tfig { aspect-ratio: 4 / 3; }
+  .tfig-in { inset: 0 auto auto 0; width: 100%; height: auto; aspect-ratio: 16 / 10; --iz: calc(1 / var(--fz, 1));
+    transform: translate(min(0px, max(calc((1 - var(--fz, 1)) * 100cqw), calc((0.5 - var(--fz, 1) * var(--fx, 0.5)) * 100cqw))), min(0px, max(calc((75 - var(--fz, 1) * 62.5) * 1cqw), calc((37.5 - var(--fz, 1) * var(--fy, 0.5) * 62.5) * 1cqw)))) scale(var(--fz, 1)); }
+  .tfig .o-ring { left: var(--ml); top: var(--mt); width: var(--mw); height: var(--mh); border-width: calc(2.5px * var(--iz, 1)); border-radius: calc(9px * var(--iz, 1)); animation: none; box-shadow: 0 0 0 calc(5px * var(--iz, 1)) rgba(255, 77, 46, .2), 0 0 calc(32px * var(--iz, 1)) rgba(255, 77, 46, .4); }
+  .tfig .o-pin, .tfig .o-tag { display: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -894,35 +939,35 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
             <h3><button type="button" class="tbtn"><span class="num">01</span><span class="ttl">Plan the whole book.</span></button></h3>
             <div class="tbody"><div>
               <p>All 42 ideas sit in one book, sorted into chapters. The next idea is always offered to you.</p>
-              <figure class="tfig"><div class="tfig-in"><img src="img/v-strategy.webp" width="2000" height="1250" alt="The Strategy page of the sample: a content book with 42 pages, a counter for each status, and the first chapter with five pages" loading="lazy" decoding="async"><div class="ov" data-step="0" aria-hidden="true"><span class="o-ring" style="left:20.00%;top:10.00%;width:77.00%;height:22.00%"></span></div></div></figure>
+              <figure class="tfig"><div class="tfig-in" style="--fx:0.43;--fy:0.2;--fz:2.5"><img src="img/v-strategy.webp" width="2000" height="1250" alt="The Strategy page of the sample: a content book with 42 pages, a counter for each status, and the first chapter with five pages" loading="lazy" decoding="async"><div class="ov" data-step="0" aria-hidden="true"><span class="o-ring" style="--l:20.00%;--t:10.00%;--w:77.00%;--h:22.00%;--ml:30.50%;--mt:13.80%;--mw:25.50%;--mh:7.80%"></span></div></div></figure>
             </div></div>
           </li>
           <li class="tstep" id="step-2" data-title="Ask in one sentence." data-text="Describe the text. Woody shows what it understood before it writes." data-hx="1370" data-hy="268">
             <h3><button type="button" class="tbtn"><span class="num">02</span><span class="ttl">Ask in one sentence.</span></button></h3>
             <div class="tbody"><div>
               <p>Describe the text. Woody shows what it understood before it writes.</p>
-              <figure class="tfig"><div class="tfig-in"><img src="img/v-studio.webp" width="2000" height="1250" alt="The Studio: one field with a request typed in, a LinkedIn post about a vendor shortlist in the voice of Mara" loading="lazy" decoding="async"><div class="ov" data-step="1" aria-hidden="true"><span class="o-ring" style="left:21.00%;top:29.00%;width:49.00%;height:14.00%"></span></div></div></figure>
+              <figure class="tfig"><div class="tfig-in" style="--fx:0.44;--fy:0.4;--fz:2"><img src="img/v-studio.webp" width="2000" height="1250" alt="The Studio: one field with a request typed in, a LinkedIn post about a vendor shortlist in the voice of Mara" loading="lazy" decoding="async"><div class="ov" data-step="1" aria-hidden="true"><span class="o-ring" style="--l:21.00%;--t:29.00%;--w:49.00%;--h:14.00%;--ml:21.50%;--mt:30.00%;--mw:46.00%;--mh:10.00%"></span></div></div></figure>
             </div></div>
           </li>
           <li class="tstep" id="step-3" data-title="Writes from your sources." data-text="Only documents Woody has read count. The rest are marked Missing." data-hx="1365" data-hy="285">
             <h3><button type="button" class="tbtn"><span class="num">03</span><span class="ttl">Writes from your sources.</span></button></h3>
             <div class="tbody"><div>
               <p>Only documents Woody has read count. The rest are marked Missing.</p>
-              <figure class="tfig"><div class="tfig-in"><img src="img/v-sources.webp" width="2000" height="1250" alt="The Sources page: the voice of Mara and the voice of Fernwood, each with a Missing: 2 tag over the sources that have no text yet" loading="lazy" decoding="async"><div class="ov" data-step="2" aria-hidden="true"><span class="o-ring" style="left:20.00%;top:20.00%;width:38.00%;height:42.00%"></span></div></div></figure>
+              <figure class="tfig"><div class="tfig-in" style="--fx:0.39;--fy:0.41;--fz:2"><img src="img/v-sources.webp" width="2000" height="1250" alt="The Sources page: the voice of Mara and the voice of Fernwood, each with a Missing: 2 tag over the sources that have no text yet" loading="lazy" decoding="async"><div class="ov" data-step="2" aria-hidden="true"><span class="o-ring" style="--l:20.00%;--t:20.00%;--w:38.00%;--h:42.00%;--ml:20.00%;--mt:20.00%;--mw:38.00%;--mh:42.00%"></span></div></div></figure>
             </div></div>
           </li>
           <li class="tstep" id="step-4" data-title="Scored before you open it." data-text="13 checks for Google, 8 for AI answers, and up to two automatic fixes." data-hx="1488" data-hy="276">
             <h3><button type="button" class="tbtn"><span class="num">04</span><span class="ttl">Scored before you open it.</span></button></h3>
             <div class="tbody"><div>
               <p>13 checks for Google, 8 for AI answers, and up to two automatic fixes.</p>
-              <figure class="tfig"><div class="tfig-in"><img src="img/v-text.webp" width="2000" height="1250" alt="The SEO and GEO scores of the sample FAQ: 100 and 100, all 13 search checks and all 8 AI checks pass" loading="lazy" decoding="async"><div class="ov" data-step="3" aria-hidden="true"><span class="o-ring" style="left:71.00%;top:60.00%;width:24.00%;height:34.00%"></span></div></div></figure>
+              <figure class="tfig"><div class="tfig-in" style="--fx:0.8;--fy:0.76;--fz:2.4"><img src="img/v-text.webp" width="2000" height="1250" alt="The SEO and GEO scores of the sample FAQ: 100 and 100, all 13 search checks and all 8 AI checks pass" loading="lazy" decoding="async"><div class="ov" data-step="3" aria-hidden="true"><span class="o-ring" style="--l:71.00%;--t:60.00%;--w:24.00%;--h:34.00%;--ml:71.00%;--mt:60.00%;--mw:24.00%;--mh:34.00%"></span></div></div></figure>
             </div></div>
           </li>
           <li class="tstep" id="step-5" data-title="One person says yes." data-text="Each text waits for the person assigned to it. The model approves nothing." data-hx="1455" data-hy="273">
             <h3><button type="button" class="tbtn"><span class="num">05</span><span class="ttl">One person says yes.</span></button></h3>
             <div class="tbody"><div>
               <p>Each text waits for the person assigned to it. The model approves nothing.</p>
-              <figure class="tfig"><div class="tfig-in"><img src="img/v-review.webp" width="2000" height="1250" alt="The Review page: five texts waiting, each with its cover and a tag with the name of the reviewer it waits for" loading="lazy" decoding="async"><div class="ov" data-step="4" aria-hidden="true"><span class="o-ring" style="left:20.00%;top:26.50%;width:77.00%;height:16.00%"></span></div></div></figure>
+              <figure class="tfig"><div class="tfig-in" style="--fx:0.43;--fy:0.37;--fz:2.05"><img src="img/v-review.webp" width="2000" height="1250" alt="The Review page: five texts waiting, each with its cover and a tag with the name of the reviewer it waits for" loading="lazy" decoding="async"><div class="ov" data-step="4" aria-hidden="true"><span class="o-ring" style="--l:20.00%;--t:26.50%;--w:77.00%;--h:16.00%;--ml:20.50%;--mt:27.80%;--mw:43.00%;--mh:13.50%"></span></div></div></figure>
             </div></div>
           </li>
       </ol>
@@ -930,11 +975,11 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
       <div class="tour-view" aria-hidden="true">
         <div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span>studio.fernwood.example</span></div>
         <div class="frame">
-            <div class="vlayer" data-step="0"><img src="img/v-strategy.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="0" aria-hidden="true"><span class="o-ring" style="left:20.00%;top:10.00%;width:77.00%;height:22.00%"></span><span class="o-cur" data-c="0.55 0.88 0.93 0.6" style="left:55.00%;top:88.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:93.00%;top:60.00%"></span></div></div>
-            <div class="vlayer" data-step="1"><img src="img/v-studio.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="1" aria-hidden="true"><span class="o-ring" style="left:21.00%;top:29.00%;width:49.00%;height:14.00%"></span><span class="o-cur" data-c="0.3 0.62 0.64 0.86" style="left:30.00%;top:62.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:64.00%;top:86.00%"></span></div></div>
-            <div class="vlayer" data-step="2"><img src="img/v-sources.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="2" aria-hidden="true"><span class="o-ring" style="left:20.00%;top:20.00%;width:38.00%;height:42.00%"></span><span class="o-cur" data-c="0.7 0.8 0.35 0.38" style="left:70.00%;top:80.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:35.00%;top:38.00%"></span></div></div>
-            <div class="vlayer" data-step="3"><img src="img/v-text.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="3" aria-hidden="true"><span class="o-ring" style="left:71.00%;top:60.00%;width:24.00%;height:34.00%"></span><span class="o-cur" data-c="0.3 0.8 0.86 0.72" style="left:30.00%;top:80.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:86.00%;top:72.00%"></span></div></div>
-            <div class="vlayer" data-step="4"><img src="img/v-review.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="4" aria-hidden="true"><span class="o-ring" style="left:20.00%;top:26.50%;width:77.00%;height:16.00%"></span><span class="o-cur" data-c="0.5 0.85 0.88 0.34" style="left:50.00%;top:85.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:88.00%;top:34.00%"></span></div></div>
+            <div class="vlayer" data-step="0" data-f="0.43 0.2 2.5"><img src="img/v-strategy.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="0" aria-hidden="true"><span class="o-ring" style="--l:20.00%;--t:10.00%;--w:77.00%;--h:22.00%;--ml:30.50%;--mt:13.80%;--mw:25.50%;--mh:7.80%"></span><span class="o-cur" data-c="0.55 0.88 0.93 0.6" style="left:55.00%;top:88.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:93.00%;top:60.00%"></span></div></div>
+            <div class="vlayer" data-step="1" data-f="0.44 0.4 2"><img src="img/v-studio.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="1" aria-hidden="true"><span class="o-ring" style="--l:21.00%;--t:29.00%;--w:49.00%;--h:14.00%;--ml:21.50%;--mt:30.00%;--mw:46.00%;--mh:10.00%"></span><span class="o-cur" data-c="0.3 0.62 0.64 0.86" style="left:30.00%;top:62.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:64.00%;top:86.00%"></span></div></div>
+            <div class="vlayer" data-step="2" data-f="0.39 0.41 2"><img src="img/v-sources.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="2" aria-hidden="true"><span class="o-ring" style="--l:20.00%;--t:20.00%;--w:38.00%;--h:42.00%;--ml:20.00%;--mt:20.00%;--mw:38.00%;--mh:42.00%"></span><span class="o-cur" data-c="0.7 0.8 0.35 0.38" style="left:70.00%;top:80.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:35.00%;top:38.00%"></span></div></div>
+            <div class="vlayer" data-step="3" data-f="0.8 0.76 2.4"><img src="img/v-text.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="3" aria-hidden="true"><span class="o-ring" style="--l:71.00%;--t:60.00%;--w:24.00%;--h:34.00%;--ml:71.00%;--mt:60.00%;--mw:24.00%;--mh:34.00%"></span><span class="o-cur" data-c="0.3 0.8 0.86 0.72" style="left:30.00%;top:80.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:86.00%;top:72.00%"></span></div></div>
+            <div class="vlayer" data-step="4" data-f="0.43 0.37 2.05"><img src="img/v-review.webp" width="2000" height="1250" alt="" loading="lazy" decoding="async"><div class="ov" data-step="4" aria-hidden="true"><span class="o-ring" style="--l:20.00%;--t:26.50%;--w:77.00%;--h:16.00%;--ml:20.50%;--mt:27.80%;--mw:43.00%;--mh:13.50%"></span><span class="o-cur" data-c="0.5 0.85 0.88 0.34" style="left:50.00%;top:85.00%"><svg viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.8L9.5 20z" fill="#0C0F14" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="o-rip" style="left:88.00%;top:34.00%"></span></div></div>
         </div>
       </div>
       <div class="world-fg" aria-hidden="true"><div class="clay-cam fg"></div></div>
@@ -1151,7 +1196,9 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
   const $ = (s) => [...document.querySelectorAll(s)];
   const cl = (a, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, a));
   // the clips of the clay world (loops and the change into the beaver): loaded after the page, played where they are seen, never for less motion or a saved data connection
-  const slow = navigator.connection && navigator.connection.saveData;
+  const net = navigator.connection;
+  const slow = net && (net.saveData || /^(slow-)?2g$/.test(net.effectiveType || ''));
+  const heavy = slow || (net && net.effectiveType === '3g'); // the change into the beaver is a few megabytes
   const motionOn = !reduce && !slow;
   const clip = (v) => v.dataset.src + (v.canPlayType('video/webm; codecs="vp9"') ? '.webm' : '.mp4');
   const startClip = (v) => {
@@ -1179,6 +1226,8 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
     const pin = track.querySelector('.tour-pin');
     const fgcam = track.querySelector('.world-fg .clay-cam');
     const ovs = layers.map((l) => ({ ov: l.querySelector('.ov'), cur: l.querySelector('.o-cur'), rip: l.querySelector('.o-rip') }));
+    const frame = track.querySelector('.frame');
+    const FOC = layers.map((l) => l.dataset.f.split(' ').map(Number)); // where the camera goes on a phone: [centre x, centre y, zoom], as fractions of the screen
     const smooth = (a) => a * a * (3 - 2 * a);
     const near = (d, grace, fade) => cl(1 - (d - grace) / fade);
     const SPOTS = [{ x: 190, y: 1040, h: 260 }, { x: 390, y: 1062, h: 240 }, { x: 590, y: 1034, h: 280 }, { x: 800, y: 1056, h: 250 }, { x: 1000, y: 1036, h: 290 }]; // where the five pines stand, in the world
@@ -1186,7 +1235,7 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
     const build = (s) => {
       ideas.forEach((i) => i.destroy());
       ideas = [];
-      if (!root.classList.contains('tour-on')) return;
+      if (!root.classList.contains('tour-on') || root.classList.contains('tour-m')) return;
       const v = s.vis, wide = v.r - v.l;
       const cw = Math.round(Math.min(430, wide * 0.4)), ch = Math.round(cw * 0.28);
       ideas = items.map((li, n) => {
@@ -1199,20 +1248,31 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
         return it;
       });
     };
-    const st = W7.stage(pin, { headX: 1400, hx: 0.72, onfit: build });
+    const st = W7.stage(pin, { headX: 1400, hx: (W) => (W < 700 ? 0.58 : W < 900 ? 0.62 : 0.72), onfit: build });
     tourFit = () => st.fit();
     let shown = -1;
     draw = () => {
       if (!root.classList.contains('tour-on')) return;
       const r = track.getBoundingClientRect();
-      const p = cl(-r.top / Math.max(1, r.height - innerHeight));
+      const vh = pin.offsetHeight || innerHeight; // the pin is as tall as the small window, so the bars of a phone that come and go do not move the scroll
+      const mob = root.classList.contains('tour-m');
+      const p = cl(-r.top / Math.max(1, r.height - vh));
       const u = p * U, pos = Math.min(u, N - 1);
+      const fw = mob ? frame.clientWidth : 0, fh = mob ? frame.clientHeight : 0, lh = fw / 1.6;
       const now = performance.now() / 1000;
       // the screens: the next one fades in over the one below it, so a scroll back shows the old one again
       layers.forEach((el, n) => {
         const e = n === 0 ? 1 : smooth(cl((pos - (n - 1) - 0.34) / 0.32));
         el.style.opacity = e.toFixed(3);
-        el.style.transform = 'scale(' + (0.97 + 0.03 * e).toFixed(4) + ')';
+        if (mob) {
+          // the camera of a phone goes to the place of the station: wide when the screen comes in, then it closes in on the ring and goes on closing slowly
+          const f = FOC[n];
+          const z = Math.max(f[2], 1, fh / lh) * (0.82 + 0.18 * smooth(cl((pos - (n - 1) - 0.3) / 0.7))) * (1 + 0.08 * cl(pos - n, 0, 1));
+          const tx = Math.min(0, Math.max(fw - z * fw, fw / 2 - z * f[0] * fw));
+          const ty = Math.min(0, Math.max(fh - z * lh, fh / 2 - z * f[1] * lh));
+          el.style.transform = 'translate3d(' + tx.toFixed(1) + 'px, ' + ty.toFixed(1) + 'px, 0) scale(' + z.toFixed(4) + ')';
+          el.style.setProperty('--iz', (1 / z).toFixed(4));
+        } else el.style.transform = 'scale(' + (0.97 + 0.03 * e).toFixed(4) + ')';
         const m = ovs[n];
         m.ov.style.opacity = near(Math.abs(pos - n), 0.14, 0.2).toFixed(3);
         // the cursor glides to the place of the station and clicks
@@ -1232,6 +1292,8 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
       vids.forEach((v, n) => {
         const o = near(Math.abs(pos - n), 0.16, 0.5);
         if (motionOn && r.bottom > 0 && r.top < innerHeight && o > 0.05) startClip(v); else if (!v.paused) v.pause();
+        // a phone holds one decoder at a time: a clip two stations away is let go and loads again when its station comes near
+        if (mob && v.getAttribute('src') && Math.abs(pos - n) > 1.3) { v.removeAttribute('src'); v.load(); v.classList.remove('on'); }
         v.style.opacity = v.classList.contains('on') ? o.toFixed(3) : 0;
         v.style.transform = scenes[n].style.transform;
       });
@@ -1254,17 +1316,25 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
     $('.tbtn').forEach((btn, n) => btn.addEventListener('click', () => {
       if (!root.classList.contains('tour-on')) return;
       const r = track.getBoundingClientRect();
-      scrollTo({ top: scrollY + r.top + (r.height - innerHeight) * (n / U) + 1, behavior: 'smooth' });
+      scrollTo({ top: scrollY + r.top + (r.height - (pin.offsetHeight || innerHeight)) * (n / U) + 1, behavior: 'smooth' });
     }));
     // the clay moves on its own while the tour is on the screen (the clouds bob, the pines sway)
     let live = false;
     const loop = () => { if (!live) return; draw(); requestAnimationFrame(loop); };
     if ('IntersectionObserver' in window) new IntersectionObserver((es) => es.forEach((e) => { const was = live; live = e.isIntersecting; if (live && !was && !reduce) requestAnimationFrame(loop); })).observe(track);
-    // wide screens that allow motion get the live frame; everything else gets the same stations as a plain column
+    // screens that allow motion get the live frame: wide ones with the list beside it, phones and tablets held upright with the frame at the foot of the window (class tour-m).
+    // Everything else (less motion, a phone on its side) gets the same stations as a plain column.
     const wide = matchMedia('(min-width: 900px) and (min-height: 540px)');
-    const sync = () => { const yes = wide.matches && !reduce; root.classList.toggle('tour-on', yes); if (yes) { tourFit(); draw(); } };
+    const upright = matchMedia('(max-width: 899px) and (min-height: 480px) and (orientation: portrait)');
+    const sync = () => {
+      const m = !wide.matches && upright.matches && !reduce;
+      const yes = (wide.matches && !reduce) || m;
+      root.classList.toggle('tour-on', yes);
+      root.classList.toggle('tour-m', m);
+      if (yes) { tourFit(); draw(); shiftDraw(); }
+    };
     sync();
-    if (wide.addEventListener) wide.addEventListener('change', sync); else wide.addListener(sync);
+    [wide, upright].forEach((q) => { if (q.addEventListener) q.addEventListener('change', sync); else q.addListener(sync); });
   }
 
   let queued = false;
@@ -1332,22 +1402,26 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
       if (morphReady) {
         const t = W7.seg(p, 0.06, 0.94) * Math.max(0, (morph.duration || 5) - 0.04);
         if (Math.abs(morph.currentTime - t) > 0.015) morph.currentTime = t;
+        // on a phone the window holds one of the two at a time: it follows the forester at the start and the beaver at the end
+        morph.style.objectPosition = morph.dataset.src.endsWith('-m') ? (78 + 20 * W7.eio(W7.seg(p, 0.25, 0.75))).toFixed(2) + '% 50%' : '';
       }
       labels[0].style.opacity = (1 - W7.seg(p, 0.38, 0.52)).toFixed(3);
       labels[1].style.opacity = W7.seg(p, 0.5, 0.64).toFixed(3);
     };
-    W7.stage(stageEl, { headX: 1450, hx: 0.7, ay: 0.42, onfit: (s) => { st = s; cv.width = s.W; cv.height = s.H; paint(P); } });
+    W7.stage(stageEl, { headX: 1450, hx: (W) => (W < 700 ? 0.6 : 0.7), ay: 0.42, onfit: (s) => { st = s; cv.width = s.W; cv.height = s.H; paint(P); } });
     shiftDraw = () => {
       if (root.classList.contains('tour-on')) {
         const r = shifts.getBoundingClientRect();
-        paint(W7.seg(cl(-r.top / Math.max(1, r.height - innerHeight)), 0.12, 0.86));
+        const vh = (shifts.querySelector('.shift-pin') || {}).offsetHeight || innerHeight;
+        paint(W7.seg(cl(-r.top / Math.max(1, r.height - vh)), 0.12, 0.86));
       }
     };
     // it is a few megabytes: it loads when the section is near, and where it cannot (less motion, a saved data connection) the circle that opens from the cap does the same
-    if (motionOn && 'IntersectionObserver' in window) {
+    if (motionOn && !heavy && 'IntersectionObserver' in window) {
       const mio = new IntersectionObserver((es) => es.forEach((e) => {
         if (!e.isIntersecting) return;
         mio.disconnect();
+        if (root.classList.contains('tour-m')) morph.dataset.src = 'img/morph-m'; // a phone gets the portrait crop, a quarter of the pixels
         morph.src = clip(morph);
         morph.addEventListener('loadeddata', () => { morphReady = true; morph.classList.add('ready'); stageEl.classList.add('morphing'); paint(P); }, { once: true });
         morph.load();
