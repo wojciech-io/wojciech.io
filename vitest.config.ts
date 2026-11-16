@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'apps/subscribe/tests/**/*.test.ts'],
     coverage: {
       provider: 'v8',
       // Unit-testable modules: pure data and the public middleware headers export.
