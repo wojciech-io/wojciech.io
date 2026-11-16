@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Woody Content Studio · Sign in</title>
+<meta name="robots" content="noindex,nofollow" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0c0f14" />
+<link rel="icon" type="image/svg+xml" href="/woody-gate/favicon.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preload" href="/woody-gate/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/woody-gate/fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/woody-gate/fonts/Geist-SemiBold.woff2" as="font" type="font/woff2" crossorigin />
+<style>
+  /*
+    The sign-in screen of the Woody Content Studio, for app.wojciech.io/woody/ only.
+    Source of truth: the product (src/pages/Login.jsx and the "sign-in screen" block of
+    src/design-system/base.css). The rules below are that block, rewritten without the
+    build step, with the same tokens. The middleware (functions/_middleware.ts) serves
+    this file instead of login.html for /woody and /woody/*. Every asset sits under
+    /woody-gate/, which the middleware lets through before the password check.
+    Dark in both themes, like the product: no theme toggle.
+  */
+  @font-face { font-family: 'Geist'; src: url('/woody-gate/fonts/Geist-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Geist'; src: url('/woody-gate/fonts/Geist-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+  @font-face { font-family: 'Fraunces'; src: url('/woody-gate/fonts/fraunces-latin-opsz-normal.woff2') format('woff2'); font-weight: 100 900; font-style: normal; font-display: swap; }
+
+  :root {
+    color-scheme: dark;
+    --dusk-100: #f4f5f7; --dusk-300: #d0d4dc; --dusk-400: #b4bcc9; --dusk-500: #8993a3; --dusk-950: #0c0f14;
+    --ember: #ff4d2e; --amber-400: #f2a33a; --ring: #ff7a62; --danger: #ff9b7a;
+    --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-accent: 'Fraunces', 'Iowan Old Style', Charter, Georgia, serif;
+    --ease-out: cubic-bezier(0.2, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-emphasized: cubic-bezier(0.34, 1.36, 0.64, 1);
+    --dur-base: 200ms;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; background: var(--dusk-950); }
+  body { margin: 0; background: var(--dusk-950); color: var(--dusk-100); font-family: var(--font-sans); font-size: 1rem; line-height: 1.5; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  h1, p { margin: 0; }
+  button, input { font: inherit; }
+
+  /* The page: two columns on a wide screen, stacked on a small one (the form first, so the button is always on the first screen). */
+  .sign { position: relative; isolation: isolate; overflow: hidden; display: grid; min-height: 100vh; min-height: 100dvh; color: var(--dusk-100);
+    background: linear-gradient(180deg, #0c0f14 0%, #0a1519 40%, #061317 62%, #051216 100%); }
+  .sign::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; display: none; }
+  /* stacked: the form, the language switch, then the scene, which takes whatever height is left */
+  @media (max-width: 899.98px) { .sign { grid-template-rows: auto auto 1fr; } }
+  @media (min-width: 900px) {
+    .sign { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      /* The ground is the colour of the picture's near edge, darkened: a vertical dusk sampled from the left edge of the picture, so where the picture starts to show there is no seam. */
+      background: linear-gradient(180deg, #051216 0%, #0e1c21 12.5%, #262625 25%, #3b2a20 37.5%, #1c1a17 50%, #060d09 62.5%, #0a0c04 75%, #0e0904 87.5%, #040503 100%); }
+    .sign::before { display: block; background: linear-gradient(90deg, rgb(8 11 15 / 0.78) 0, rgb(8 11 15 / 0.55) 24%, rgb(8 11 15 / 0.16) 40%, transparent 46%); }
+  }
+  .sign-dawn { position: absolute; inset: 0; z-index: -1; pointer-events: none; transform-origin: 78% 40%;
+    background: radial-gradient(60% 70% at 78% 40%, color-mix(in srgb, var(--amber-400) 17%, transparent), transparent 70%), radial-gradient(50% 60% at 6% 100%, color-mix(in srgb, var(--ember) 11%, transparent), transparent 70%);
+    animation: sign-breathe 9s var(--ease-in-out) infinite alternate; }
+  @keyframes sign-breathe { from { opacity: 0.72; transform: scale(1); } to { opacity: 1; transform: scale(1.07); } }
+
+  /* The left column. */
+  .sign-col { position: relative; z-index: 10; display: flex; flex-direction: column; order: 1; padding: 1rem 1.25rem 1.25rem; }
+  @media (min-width: 640px) { .sign-col { padding: 1.25rem 2rem 1.5rem; } }
+  @media (min-width: 900px) { .sign-col { order: 0; padding: 1.25rem 2.5rem 2.5rem; } }
+  @media (min-width: 1280px) { .sign-col { padding-left: 3.5rem; padding-right: 3.5rem; } }
+  .sign-main { display: flex; flex: 1; align-items: center; padding-top: 2rem; }
+  @media (min-width: 900px) { .sign-main { padding-top: 0; } }
+  .sign-body { width: 100%; max-width: 32rem; }
+
+  /* The floating pill with the face of the forester. */
+  .sign-pill { display: inline-flex; align-items: center; gap: 0.75rem; height: 3.5rem; padding: 0 1.25rem 0 0.5rem; border-radius: 9999px; background: rgb(16 20 28 / 0.8); -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 24px 40px -24px rgb(0 0 0 / 0.7); }
+  .sign-face { flex: none; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: url(/woody-gate/forester.webp) -19px 0 / 79px 79px no-repeat; box-shadow: 0 0 0 2px rgb(255 255 255 / 0.16), 0 6px 14px rgb(0 0 0 / 0.4); }
+  .sign-name { font-family: var(--font-accent); font-optical-sizing: none; font-variation-settings: 'opsz' 72; font-weight: 520; font-size: 1.5rem; line-height: 1; letter-spacing: -0.01em; color: #fff; }
+  .sign-kind { padding-left: 0.75rem; border-left: 1px solid rgb(255 255 255 / 0.18); font-size: 0.875rem; line-height: 1; color: var(--dusk-400); }
+
+  /* The headline: the serif of the brand, its words rise one after another out of an invisible line. */
+  .sign-title { font-family: var(--font-accent); font-optical-sizing: none; font-variation-settings: 'opsz' 72; font-variant-ligatures: none; word-spacing: 0.1em; font-weight: 480; font-size: 2.25rem; line-height: 1.04; letter-spacing: -0.016em; color: #fff; text-wrap: balance; }
+  @media (min-width: 640px) { .sign-title { font-size: 4rem; } }
+  .sign-title-soft { display: block; color: var(--dusk-400); }
+  .sign-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.16em; margin-bottom: -0.16em; }
+  .sign-w > span { display: inline-block; animation: sign-word 860ms var(--ease-emphasized) both; animation-delay: calc(var(--i, 0) * 55ms + 160ms); }
+  @keyframes sign-word { from { transform: translateY(112%); } }
+  .sign-lede { max-width: 26rem; margin-top: 1.25rem; font-size: 1.0625rem; line-height: 1.55; color: #cbd2dd; text-wrap: pretty; }
+  /* stacked, the warm light of the dawn sits behind this line, so it takes the lighter grey */
+  .sign-fine { max-width: 24rem; margin-top: 1.75rem; font-size: 0.875rem; line-height: 1.55; color: var(--dusk-400); }
+  @media (min-width: 640px) { .sign-fine { margin-top: 2.5rem; } }
+  @media (min-width: 900px) { .sign-fine { color: var(--dusk-500); } }
+
+  /* Everything else comes in by one step of the system (8 px) on a cascade of 40 ms. */
+  .rise { animation: sign-rise 320ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 40ms); }
+  @keyframes sign-rise { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes sign-fade { from { opacity: 0; } }
+
+  /* The form: the password field is dark and round like the pill, the button is the ember pill of the landing page. */
+  .sign-form { display: flex; flex-direction: column; gap: 0.75rem; max-width: 24rem; margin-top: 2rem; }
+  .sign-label { padding-left: 1.25rem; font-size: 0.875rem; line-height: 1.25; color: var(--dusk-400); }
+  .sign-input { display: block; width: 100%; height: 3.5rem; padding: 0 1.25rem; border: 0; border-radius: 9999px; outline: none; color: #fff; font-size: 1rem; font-weight: 400;
+    background: rgb(16 20 28 / 0.8); -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3);
+    box-shadow: inset 0 0 0 1px rgb(137 147 163 / 0.7), 0 24px 40px -28px rgb(0 0 0 / 0.7); transition: box-shadow var(--dur-base) var(--ease-out); }
+  .sign-input::placeholder { color: var(--dusk-500); opacity: 1; }
+  /* the browser paints saved passwords on a light ground: keep the field dark */
+  .sign-input:-webkit-autofill { -webkit-text-fill-color: #fff; caret-color: #fff; transition: background-color 600000s 0s; }
+  .sign-input:hover { box-shadow: inset 0 0 0 1px var(--dusk-500), 0 24px 40px -28px rgb(0 0 0 / 0.7); }
+  .sign-input:focus-visible { box-shadow: inset 0 0 0 2px var(--ring), 0 0 0 4px rgb(255 122 98 / 0.2), 0 24px 40px -28px rgb(0 0 0 / 0.7); }
+  .sign-input[aria-invalid="true"] { box-shadow: inset 0 0 0 2px var(--danger), 0 24px 40px -28px rgb(0 0 0 / 0.7); }
+  /* The message sits right under the ember button, in the glow of its shadow, so it gets a dark pill of its own: the contrast then holds whatever is behind it. */
+  .sign-err { align-self: center; display: flex; align-items: center; min-height: 2rem; padding: 0 0.875rem; border-radius: 9999px; font-size: 0.875rem; line-height: 1.25; text-align: center; color: var(--danger); opacity: 0; transition: opacity var(--dur-base) var(--ease-out); }
+  .sign-err.show { opacity: 1; background: rgb(12 15 20 / 0.78); box-shadow: inset 0 0 0 1px rgb(255 155 122 / 0.35); }
+
+  /* The button: ember, ink words, a lock on a white disc, a band of light and an arrow on hover, a slow breath while it waits. */
+  .sign-cta { position: relative; display: flex; align-items: center; justify-content: center; gap: 0.625rem; width: 100%; height: 3.5rem; padding: 0 3.25rem 0 4rem; border: 0; border-radius: 9999px; overflow: hidden; cursor: pointer; text-decoration: none;
+    background: var(--ember); color: var(--dusk-950); font-family: var(--font-sans); font-size: 1rem; font-weight: 600; line-height: 1;
+    box-shadow: 0 10px 30px -8px rgb(255 77 46 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.35); transition: transform var(--dur-base) var(--ease-emphasized), box-shadow var(--dur-base) var(--ease-out); animation: sign-glow 3.6s var(--ease-in-out) infinite; }
+  .sign-cta::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.45) 50%, transparent 65%); transform: translateX(-120%); }
+  .sign-cta:hover:not(:disabled), .sign-cta:focus-visible { transform: translateY(-2px); box-shadow: 0 16px 36px -8px rgb(255 77 46 / 0.75), inset 0 1px 0 rgb(255 255 255 / 0.35); animation-play-state: paused; }
+  .sign-cta:hover:not(:disabled)::after, .sign-cta:focus-visible::after { transform: translateX(120%); transition: transform 700ms var(--ease-out); }
+  .sign-cta:active:not(:disabled) { transform: translateY(0) scale(0.985); }
+  .sign-cta:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .sign-cta:disabled { cursor: progress; opacity: 0.85; }
+  .sign-disc { position: absolute; left: 0.5rem; top: 50%; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #fff; color: var(--dusk-950); transform: translateY(-50%); box-shadow: 0 2px 8px rgb(0 0 0 / 0.2); transition: transform var(--dur-base) var(--ease-emphasized); }
+  .sign-cta:hover:not(:disabled) .sign-disc, .sign-cta:focus-visible .sign-disc { transform: translateY(-50%) scale(1.1); }
+  .sign-arrow { position: absolute; right: 1.25rem; top: 50%; width: 1.25rem; height: 1.25rem; margin-top: -0.625rem; opacity: 0; transform: translateX(-4px); transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out); }
+  .sign-cta:hover:not(:disabled) .sign-arrow, .sign-cta:focus-visible .sign-arrow { opacity: 1; transform: none; }
+  @keyframes sign-glow { 50% { box-shadow: 0 14px 40px -6px rgb(255 77 46 / 0.9), inset 0 1px 0 rgb(255 255 255 / 0.35); } }
+
+  /* The language switch: top right on a wide screen, under the form on a small one. */
+  .sign-lang { order: 2; justify-self: start; display: inline-flex; gap: 0.125rem; margin: 0 1.25rem 1.25rem; padding: 0.25rem; border-radius: 9999px; background: rgb(16 20 28 / 0.8); -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1); }
+  @media (min-width: 640px) { .sign-lang { margin-left: 2rem; margin-right: 2rem; } }
+  @media (min-width: 900px) { .sign-lang { position: absolute; z-index: 20; top: 1.625rem; right: 2.5rem; margin: 0; } }
+  @media (min-width: 1280px) { .sign-lang { right: 3.5rem; } }
+  .sign-lang button { min-width: 2.5rem; height: 2.25rem; padding: 0 0.75rem; border: 0; border-radius: 9999px; background: transparent; color: var(--dusk-400); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.04em; cursor: pointer; transition: color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out); }
+  .sign-lang button:hover { color: #fff; }
+  .sign-lang button[aria-pressed="true"] { background: rgb(255 255 255 / 0.14); color: #fff; }
+  .sign-lang button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  /* The right column: the scene flush with the page. Its near edge dissolves into the ground along an eased curve (a smoothstep in eight stops), so the forest grows out of the page and not out of a card. */
+  .sign-stage { position: relative; order: 3; min-height: 0; animation: sign-fade 320ms var(--ease-out) both; animation-delay: 160ms; }
+  @media (min-width: 900px) { .sign-stage { order: 0; } }
+  .sign-scene { position: relative; isolation: isolate; height: 100%; min-height: 26rem; overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, rgb(0 0 0 / 0.03) 4%, rgb(0 0 0 / 0.12) 9%, rgb(0 0 0 / 0.3) 14%, rgb(0 0 0 / 0.55) 20%, rgb(0 0 0 / 0.8) 26%, rgb(0 0 0 / 0.94) 32%, #000 38%);
+    mask-image: linear-gradient(180deg, transparent 0, rgb(0 0 0 / 0.03) 4%, rgb(0 0 0 / 0.12) 9%, rgb(0 0 0 / 0.3) 14%, rgb(0 0 0 / 0.55) 20%, rgb(0 0 0 / 0.8) 26%, rgb(0 0 0 / 0.94) 32%, #000 38%); }
+  @media (min-width: 900px) { .sign-scene { height: 100%; min-height: 34rem;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, rgb(0 0 0 / 0.03) 5%, rgb(0 0 0 / 0.12) 12%, rgb(0 0 0 / 0.3) 19%, rgb(0 0 0 / 0.55) 27%, rgb(0 0 0 / 0.8) 35%, rgb(0 0 0 / 0.94) 42%, #000 50%);
+    mask-image: linear-gradient(90deg, transparent 0, rgb(0 0 0 / 0.03) 5%, rgb(0 0 0 / 0.12) 12%, rgb(0 0 0 / 0.3) 19%, rgb(0 0 0 / 0.55) 27%, rgb(0 0 0 / 0.8) 35%, rgb(0 0 0 / 0.94) 42%, #000 50%); } }
+  .sign-par { position: absolute; inset: 0; }
+  .sign-scene[data-live] .sign-par { transform: translate3d(calc(var(--px, 0) * -9px), calc(var(--py, 0) * -5px), 0) scale(1.035); transition: transform 900ms var(--ease-out); will-change: transform; }
+  .sign-scene[data-live] .sign-par-fg { transform: translate3d(calc(var(--px, 0) * -18px), calc(var(--py, 0) * -10px), 0) scale(1.035); }
+  .sign-rays { position: absolute; inset: -25%; pointer-events: none; mix-blend-mode: screen; opacity: 0;
+    background: conic-gradient(from 196deg at 86% -8%, transparent 0 18%, rgb(255 214 150 / 0.13) 24%, transparent 31% 42%, rgb(255 214 150 / 0.09) 49%, transparent 57% 100%); }
+  .sign-scene[data-live] .sign-rays { opacity: 1; animation: sign-rays 16s var(--ease-in-out) infinite alternate; transform-origin: 86% 8%; }
+  @keyframes sign-rays { from { transform: rotate(-3deg); opacity: 0.55; } to { transform: rotate(4deg); opacity: 1; } }
+  .sign-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(8, 10, 14, 0.45), rgba(8, 10, 14, 0) 30%); }
+
+  /* The scene is a 1920 by 1080 world fitted like a camera (the script at the end sets --k, --tx and --ty). The pines stand there grown. */
+  .clay-cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--k, 1)); }
+  .clay-cam > img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; max-width: none; display: block; }
+  .clay-cam.fg { pointer-events: none; }
+  .clay-tree { position: absolute; width: 0; height: 0; transform-origin: 50% 100%; }
+  .clay-tree img { position: absolute; bottom: 0; max-width: none; transform-origin: 50% 100%; display: block; filter: brightness(1.3) saturate(1.12);
+    -webkit-mask-image: linear-gradient(#000 81.5%, transparent 87.5%); mask-image: linear-gradient(#000 81.5%, transparent 87.5%); }
+  .clay-glow { position: absolute; border-radius: 50%; pointer-events: none; }
+  .clay-glow.lit { background: radial-gradient(closest-side, rgba(255, 190, 120, 0.16), transparent); }
+  .clay-glow.foot { background: radial-gradient(closest-side, rgba(10, 4, 0, 0.55), transparent); }
+
+  /* Nothing moves for people who asked for reduced motion: the words and the button stand still and the parts come in with a short fade. */
+  @media (prefers-reduced-motion: reduce) {
+    .sign-w > span, .sign-dawn, .sign-rays, .sign-cta { animation: none; }
+    .rise, .sign-stage { animation: sign-fade 160ms var(--ease-out) both; animation-delay: 0ms; }
+    .sign-cta, .sign-disc, .sign-arrow, .sign-cta::after { transition: none; }
+    .sign-cta:hover:not(:disabled), .sign-cta:focus-visible { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<main class="sign">
+  <span class="sign-dawn" aria-hidden="true"></span>
+
+  <section class="sign-col">
+    <header class="rise" style="--i:0">
+      <div class="sign-pill">
+        <span class="sign-face" aria-hidden="true"></span>
+        <span class="sign-name">woody</span>
+        <span class="sign-kind">Content Studio</span>
+      </div>
+    </header>
+
+    <div class="sign-main">
+      <div class="sign-body">
+        <h1 class="sign-title">
+          <span class="sign-title-soft"><span class="sign-w"><span style="--i:0">Woody</span></span></span>
+          <span class="sign-w"><span style="--i:1">Content</span></span> <span class="sign-w"><span style="--i:2">Studio</span></span>
+        </h1>
+        <p class="sign-lede rise" style="--i:3" data-i18n="lede">Write, check and approve content for every channel.</p>
+
+        <form class="sign-form rise" style="--i:4" id="loginForm" novalidate>
+          <label class="sign-label" for="pw" data-i18n="label">Password</label>
+          <input class="sign-input" id="pw" type="password" placeholder="••••••••" autocomplete="current-password" required autofocus />
+          <button class="sign-cta" id="submitBtn" type="submit">
+            <span class="sign-disc" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+            <span id="submitLabel" data-i18n="submit">Enter</span>
+            <svg class="sign-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <div class="sign-err" id="err" role="alert"></div>
+        </form>
+
+        <p class="sign-fine rise" style="--i:5" data-i18n="foot">Private workspace. Access by invitation.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="sign-stage">
+    <div class="sign-scene" id="scene" role="img" aria-label="Woody, the forester, plants a pine for every idea">
+      <div class="sign-par"><div class="clay-cam"><img src="/woody-gate/scene.webp" alt="" width="1920" height="1080" decoding="async" fetchpriority="high" /></div></div>
+      <span class="sign-rays" aria-hidden="true"></span>
+      <div class="sign-shade" aria-hidden="true"></div>
+      <div class="sign-par sign-par-fg" aria-hidden="true"><div class="clay-cam fg" id="grove"></div></div>
+    </div>
+  </div>
+
+  <div class="sign-lang rise" style="--i:5" role="group" aria-label="Language">
+    <button data-lang="pl" type="button" aria-pressed="false">PL</button>
+    <button data-lang="en" type="button" aria-pressed="true">EN</button>
+    <button data-lang="it" type="button" aria-pressed="false">IT</button>
+  </div>
+</main>
+
+<script>
+  // The scene: fit the 1920 by 1080 world to the box like a camera (it covers the box and keeps the head of
+  // the forester at a fixed fraction of the width), then stand the five grown pines on the free ground.
+  (function () {
+    var box = document.getElementById('scene');
+    var grove = document.getElementById('grove');
+    var cams = box.querySelectorAll('.clay-cam');
+    var HEAD_X = 1370;
+    var PINE_W = 250, PINE_H = 601;
+    // where along the free ground, how far down, how tall
+    var GROUND = [{ f: 0.95, y: 1040, h: 380 }, { f: 0.7, y: 1008, h: 330 }, { f: 0.5, y: 1050, h: 290 }, { f: 0.3, y: 1030, h: 240 }, { f: 0.1, y: 1052, h: 200 }];
+    var pines = GROUND.map(function (g, i) {
+      var tree = document.createElement('div'); tree.className = 'clay-tree';
+      tree.style.transform = 'rotate(' + (Math.sin(i * 1.7) * 1.1).toFixed(2) + 'deg)';
+      var lit = document.createElement('div'); lit.className = 'clay-glow lit';
+      var img = document.createElement('img'); img.src = '/woody-gate/pine.webp'; img.alt = ''; img.decoding = 'async';
+      var foot = document.createElement('div'); foot.className = 'clay-glow foot';
+      tree.appendChild(lit); tree.appendChild(img); tree.appendChild(foot); grove.appendChild(tree);
+      return { g: g, tree: tree, lit: lit, img: img, foot: foot };
+    });
+    function px(el, props) { for (var k in props) el.style[k] = props[k].toFixed(2) + 'px'; }
+    function fit() {
+      var W = box.clientWidth, H = box.clientHeight;
+      if (!W || !H) return;
+      var k = Math.max(W / 1920, H / 1080);
+      var hx = W < 520 ? 0.66 : 0.72;
+      var tx = Math.min(0, Math.max(W - 1920 * k, W * hx - HEAD_X * k));
+      var ty = (H - 1080 * k) * 0.5;
+      cams.forEach(function (c) {
+        c.style.setProperty('--k', k.toFixed(5));
+        c.style.setProperty('--tx', tx.toFixed(2) + 'px');
+        c.style.setProperty('--ty', ty.toFixed(2) + 'px');
+      });
+      var left = -tx / k, right = (W - tx) / k, bottom = (H - ty) / k;
+      var xl = left + 60, xr = Math.min(HEAD_X - 170, right - 60);
+      pines.forEach(function (p) {
+        var h = p.g.h, s = h / PINE_H;
+        var y = Math.min(p.g.y, bottom - 26);
+        px(p.tree, { left: xl + p.g.f * (xr - xl), top: y });
+        p.tree.style.zIndex = Math.round(y);
+        px(p.lit, { left: -h * 0.3, top: -h * 0.14, width: h * 0.6, height: h * 0.14 });
+        px(p.img, { width: PINE_W * s, height: h, left: -(PINE_W * s) / 2 });
+        px(p.foot, { left: -h * 0.13, top: -h * 0.075, width: h * 0.26, height: h * 0.05 });
+      });
+    }
+    fit();
+    if (typeof ResizeObserver !== 'undefined') new ResizeObserver(fit).observe(box); else addEventListener('resize', fit);
+
+    // A little depth: the sky and the forest follow the pointer by a few pixels (not on touch screens, not for reduced motion).
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      box.setAttribute('data-live', '');
+      if (matchMedia('(hover: hover)').matches) {
+        addEventListener('pointermove', function (e) {
+          box.style.setProperty('--px', ((e.clientX / innerWidth) * 2 - 1).toFixed(3));
+          box.style.setProperty('--py', ((e.clientY / innerHeight) * 2 - 1).toFixed(3));
+        }, { passive: true });
+      }
+    }
+  })();
+
+  // i18n
+  var I18N = {
+    en: { title:'Woody Content Studio · Sign in', lede:'Write, check and approve content for every channel.', label:'Password', submit:'Enter', err:'Wrong password', net:'Network error', foot:'Private workspace. Access by invitation.', scene:'Woody, the forester, plants a pine for every idea' },
+    pl: { title:'Woody Content Studio · Logowanie', lede:'Pisz, sprawdzaj i zatwierdzaj treści na każdy kanał.', label:'Hasło', submit:'Wejdź', err:'Nieprawidłowe hasło', net:'Błąd sieci', foot:'Prywatny workspace. Dostęp na zaproszenie.', scene:'Leśnik Woody sadzi sosnę dla każdego pomysłu' },
+    it: { title:'Woody Content Studio · Accesso', lede:'Scrivi, controlla e approva i contenuti per ogni canale.', label:'Password', submit:'Entra', err:'Password errata', net:'Errore di rete', foot:'Workspace privato. Accesso su invito.', scene:'Woody pianta un pino per ogni idea' },
+  };
+  var lang = 'en';
+  function setLang(l) {
+    var dict = I18N[l] || I18N.en;
+    lang = I18N[l] ? l : 'en';
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if (dict[key]) el.textContent = dict[key];
+    });
+    document.title = dict.title;
+    document.getElementById('scene').setAttribute('aria-label', dict.scene);
+    document.documentElement.setAttribute('lang', lang);
+    document.querySelectorAll('.sign-lang button').forEach(function(b){
+      b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang ? 'true' : 'false');
+    });
+    // a message that is already on screen follows the language
+    if (errEl.classList.contains('show')) errEl.textContent = dict[errKey];
+    try { localStorage.setItem('lang', lang); } catch(e){}
+  }
+
+  var form = document.getElementById('loginForm');
+  var pwInput = document.getElementById('pw');
+  var errEl = document.getElementById('err');
+  var btn = document.getElementById('submitBtn');
+  var btnLabel = document.getElementById('submitLabel');
+  var errKey = 'err';
+
+  document.querySelectorAll('.sign-lang button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+  });
+  var savedLang = (function(){ try{return localStorage.getItem('lang');}catch(e){return null;} })();
+  if (savedLang && I18N[savedLang]) setLang(savedLang);
+
+  function showError(key) {
+    errKey = key;
+    errEl.textContent = (I18N[lang] || I18N.en)[key];
+    errEl.classList.add('show');
+    pwInput.setAttribute('aria-invalid', 'true');
+    pwInput.setAttribute('aria-describedby', 'err');
+  }
+  function clearError() {
+    errEl.classList.remove('show');
+    pwInput.removeAttribute('aria-invalid');
+    pwInput.removeAttribute('aria-describedby');
+  }
+  pwInput.addEventListener('input', clearError);
+
+  // Login submit: the same call as the generic sign-in page (POST /api/auth, then on to the workspace).
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clearError();
+    var password = (pwInput.value || '').trim();
+    if (!password) { pwInput.focus(); return; }
+
+    btn.disabled = true;
+    btn.setAttribute('aria-busy', 'true');
+    btnLabel.textContent = '…';
+
+    try {
+      var res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ password: password }),
+        credentials: 'same-origin',
+      });
+      if (res.ok) {
+        window.location.href = '/';
+        return;
+      }
+      showError('err');
+      pwInput.value = '';
+      pwInput.focus();
+    } catch (err) {
+      showError('net');
+    } finally {
+      btn.disabled = false;
+      btn.removeAttribute('aria-busy');
+      btnLabel.textContent = (I18N[lang] || I18N.en).submit;
+    }
+  });
+</script>
+
+</body>
+</html>

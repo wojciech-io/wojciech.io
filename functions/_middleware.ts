@@ -5,6 +5,7 @@
 
 import { verifyToken } from './_utils/crypto';
 import { PUBLIC_SECURITY_HEADERS } from '../src/lib/securityHeaders';
+import { isGateAsset, loginPageFor } from '../src/lib/appGate';
 
 interface Env {
   APP_PASSWORD: string;
@@ -81,7 +82,8 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
     return applySecurityHeaders(response);
   }
 
-  if (ALLOWED.includes(url.pathname)) {
+  // The files of the Woody sign-in screen (picture, fonts, icon) are public too.
+  if (ALLOWED.includes(url.pathname) || isGateAsset(url.pathname)) {
     return next();
   }
 
@@ -89,9 +91,10 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
     return next();
   }
 
-  // Not authenticated — serve login.html from static assets.
+  // Not authenticated: serve the sign-in page from static assets. The Woody
+  // screen under /woody, login.html everywhere else.
   const loginUrl = new URL(request.url);
-  loginUrl.pathname = '/login.html';
+  loginUrl.pathname = loginPageFor(url.pathname);
   const loginResponse = await env.ASSETS.fetch(new Request(loginUrl.toString(), { method: 'GET' }));
 
   // Return with 401 so it's clear to clients that this is a gate, not the real content.
