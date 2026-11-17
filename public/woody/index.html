@@ -870,6 +870,70 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   .tfig .o-ring { left: var(--ml); top: var(--mt); width: var(--mw); height: var(--mh); border-width: calc(2.5px * var(--iz, 1)); border-radius: calc(9px * var(--iz, 1)); animation: none; box-shadow: 0 0 0 calc(5px * var(--iz, 1)) rgba(255, 77, 46, .2), 0 0 calc(32px * var(--iz, 1)) rgba(255, 77, 46, .4); }
   .tfig .o-pin, .tfig .o-tag { display: none; }
 }
+
+/* phones and small screens: the scene of the hero comes first (the planting is the first thing you see), the words sit under it */
+@media (max-width: 900px) {
+  .hero { min-height: 0; display: flex; flex-direction: column; padding: 0 0 56px; }
+  .hero-bg { order: 0; position: relative; inset: auto; margin: 0; height: clamp(300px, 54svh, 560px); }
+  .hero .wrap { order: 1; margin-top: -30px; }
+  .hero h1 { font-size: clamp(36px, 10.4vw, 56px); max-width: 11em; }
+  .hero-bg .vig { background: linear-gradient(180deg, rgba(8, 10, 14, .6) 0%, rgba(8, 10, 14, 0) 26%), linear-gradient(0deg, var(--ink) 0%, rgba(12, 15, 20, 0) 34%); }
+}
+
+/* the menu on small screens: the pill is frosted glass from the first pixel, and a button opens a frosted sheet with the links */
+.bar .btn .sh, .menu-btn, .menu-scrim, .menu-sheet { display: none; }
+@media (max-width: 1080px) {
+  .bar .wrap { gap: 8px; background: rgba(14, 18, 26, .5); -webkit-backdrop-filter: blur(18px) saturate(1.35); backdrop-filter: blur(18px) saturate(1.35); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .13), 0 18px 36px -22px rgba(0, 0, 0, .7); }
+  .bar .wrap nav { margin-left: auto; }
+  .bar.open .wrap { background: rgba(14, 18, 26, .88); }
+  .menu-btn { display: block; position: relative; flex: none; width: 42px; height: 42px; border: 0; padding: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color 240ms; }
+  .menu-btn:active { background: rgba(255, 255, 255, .2); }
+  .menu-btn i { position: absolute; left: 13px; right: 13px; height: 2px; border-radius: 2px; background: #fff; transition: top 380ms var(--ease-emphasized), transform 380ms var(--ease-emphasized); }
+  .menu-btn i:nth-child(1) { top: 16px; }
+  .menu-btn i:nth-child(2) { top: 24px; }
+  .bar.open .menu-btn i:nth-child(1) { top: 20px; transform: rotate(45deg); }
+  .bar.open .menu-btn i:nth-child(2) { top: 20px; transform: rotate(-45deg); }
+  .menu-scrim { display: block; position: fixed; inset: 0; z-index: -1; background: rgba(5, 7, 10, .5); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); opacity: 0; visibility: hidden; pointer-events: none; touch-action: none; transition: opacity 360ms var(--ease-out), visibility 0s 360ms; }
+  .bar.open .menu-scrim { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+  .menu-sheet { display: block; position: absolute; right: 14px; top: calc(100% + 8px); width: min(440px, calc(100vw - 28px)); padding: 8px; border-radius: 30px; background: rgba(14, 18, 26, .74); -webkit-backdrop-filter: blur(26px) saturate(1.4); backdrop-filter: blur(26px) saturate(1.4); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .13), 0 44px 80px -30px rgba(0, 0, 0, .85); opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-10px) scale(.97); transform-origin: 90% 0; transition: opacity 300ms var(--ease-out), transform 460ms var(--ease-emphasized), visibility 0s 460ms; }
+  .bar.open .menu-sheet { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition-delay: 0s; }
+  .menu-sheet a:not(.btn) { display: flex; align-items: center; justify-content: space-between; padding: 17px 20px; border-radius: 22px; font: 520 28px/1.1 var(--serif); font-variation-settings: 'opsz' 72; letter-spacing: -.012em; color: #fff; text-decoration: none; -webkit-tap-highlight-color: transparent; opacity: 0; transform: translateY(8px); transition: opacity 360ms var(--ease-out), transform 460ms var(--ease-out), background-color 200ms, color 200ms; }
+  .menu-sheet a:not(.btn)::after { content: ''; width: 9px; height: 9px; margin-right: 4px; border: solid currentColor; border-width: 2px 2px 0 0; transform: rotate(45deg); opacity: .45; }
+  .menu-sheet a:not(.btn):active { background: rgba(255, 255, 255, .09); }
+  .menu-sheet a.on { color: var(--signal); }
+  .menu-sheet .btn { display: flex; justify-content: center; margin: 6px 4px 4px; padding: 17px 24px; font-size: 17px; opacity: 0; transform: translateY(8px); transition: opacity 360ms var(--ease-out), transform 460ms var(--ease-out), box-shadow var(--dur-base); }
+  .bar.open .menu-sheet a { opacity: 1; transform: none; transition-delay: calc(70ms + var(--i, 0) * 50ms), calc(70ms + var(--i, 0) * 50ms), 0s, 0s; }
+}
+@media (max-width: 560px) { .bar .btn .lg { display: none; } .bar .btn .sh { display: inline; } .menu-btn { width: 40px; height: 40px; } .menu-btn i { left: 12px; right: 12px; } .menu-btn i:nth-child(1) { top: 15px; } .menu-btn i:nth-child(2) { top: 23px; } .bar.open .menu-btn i:nth-child(1), .bar.open .menu-btn i:nth-child(2) { top: 19px; } }
+
+/* the covers on a phone are a slider you swipe: two rows that snap to the next cover instead of drifting away on their own */
+@media (max-width: 900px) {
+  .marq { margin-top: 40px; gap: 14px; -webkit-mask-image: none; mask-image: none; }
+  .marq-row, .marq-row.rev { width: auto; gap: 14px; animation: none; transform: none; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--pad); padding: 4px var(--pad) 22px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .marq-row::-webkit-scrollbar { display: none; }
+  .marq-row img { flex: none; width: min(76vw, 360px); scroll-snap-align: center; }
+  .marq-row img[aria-hidden='true'] { display: none; }
+}
+
+.cn { position: fixed; z-index: 60; left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; border-radius: 22px; background: rgba(14, 18, 26, .88); -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .13), 0 24px 60px -20px rgba(0, 0, 0, .8); color: #CBD2DD; font: 400 14.5px/1.5 'Geist', system-ui, sans-serif; opacity: 0; transform: translateY(18px); transition: opacity 320ms cubic-bezier(.2, 0, .2, 1), transform 420ms cubic-bezier(.2, 0, .2, 1); }
+.cn[hidden] { display: none; }
+.cn[data-state='shown'] { opacity: 1; transform: none; }
+.cn.away { opacity: 0; transform: translateY(18px); pointer-events: none; }
+.cn-t { margin: 0; }
+.cn-t b { color: #fff; font-weight: 600; }
+.cn-a { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.cn-a a { color: #fff; font-weight: 500; text-decoration: underline; text-decoration-color: #FF4D2E; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.cn-ok { flex: none; border: 0; border-radius: 999px; padding: 12px 22px; font: 600 15px/1 'Geist', system-ui, sans-serif; background: #FF4D2E; color: #0C0F14; cursor: pointer; box-shadow: 0 8px 22px -8px rgba(255, 77, 46, .7); transition: transform 200ms; }
+.cn-ok:hover { transform: translateY(-1px); }
+.cn a:focus-visible, .cn-ok:focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 8px; }
+.cn-ok:focus-visible { border-radius: 999px; }
+@media (min-width: 700px) { .cn { left: 24px; right: auto; width: 540px; bottom: 24px; } }
+@media (prefers-reduced-motion: reduce) { .cn { transition: none; } }
+
+.foot .foot-legal { display: flex; flex-wrap: wrap; gap: 10px 26px; }
+.foot-legal button { padding: 0; border: 0; background: none; color: #A3ACBA; font: inherit; cursor: pointer; transition: color 200ms; }
+.foot-legal button:hover, .foot-legal button:focus-visible { color: #fff; }
+.foot-legal button:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 4px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -882,6 +946,10 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
 </head>
 <body>
 <a class="skip" href="#tour">Skip to the content</a>
+<div class="cn" id="cookie-notice" role="region" aria-label="Cookie notice" hidden>
+  <p class="cn-t"><b>No cookies here.</b> Cloudflare counts visits without them. The only thing stored in your browser is that you closed this note.</p>
+  <div class="cn-a"><a href="privacy/">Privacy policy</a><button type="button" class="cn-ok">Got it</button></div>
+</div>
 
 <header class="bar">
   <div class="wrap">
@@ -891,8 +959,17 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
       <a href="#covers">Covers</a>
       <a href="#pricing">Pricing</a>
       <a href="#answers">Answers</a>
-      <a class="btn btn-signal btn-sm" href="#join">Join the waiting list</a>
+      <a class="btn btn-signal btn-sm" href="#join"><span class="lg">Join the waiting list</span><span class="sh">Join the list</span></a>
     </nav>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open the menu"><i></i><i></i></button>
+  </div>
+  <div class="menu-scrim" aria-hidden="true"></div>
+  <div class="menu-sheet" id="menu" role="navigation" aria-label="Menu" inert>
+    <a href="#tour" style="--i:0">How it works</a>
+    <a href="#covers" style="--i:1">Covers</a>
+    <a href="#pricing" style="--i:2">Pricing</a>
+    <a href="#answers" style="--i:3">Answers</a>
+    <a class="btn btn-signal" href="#join" style="--i:4">Join the waiting list <span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="person-plus" aria-hidden="true" focusable="false"><circle cx="10" cy="8.5" r="3.5"></circle><path d="M3.5 20.25c.5-3.6 3.1-5.75 6.5-5.75s6 2.15 6.5 5.75"></path><path class="lhi-a lhi-stroke lhi-draw" d="M19 4.5v5M16.5 7h5" pathLength="1"></path></svg></span></a>
   </div>
   <i class="progress" aria-hidden="true"></i>
 </header>
@@ -907,7 +984,7 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   <div class="wrap">
     <div class="hero-copy">
         <h1 id="h1">Articles from your sources. <em>Approved by a person.</em></h1>
-      <p class="lede">Woody runs on your own server and writes from your documents. Every text is scored for Google and AI answers, then waits for a person to approve it.</p>
+      <p class="lede">Blog posts, FAQs and newsletters written from your own documents, on your own server. Nothing goes out without a person's yes.</p>
       <div class="cta-row">
         <a class="btn btn-signal" href="#join">Join the waiting list <span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="person-plus" aria-hidden="true" focusable="false"><circle cx="10" cy="8.5" r="3.5"></circle><path d="M3.5 20.25c.5-3.6 3.1-5.75 6.5-5.75s6 2.15 6.5 5.75"></path><path class="lhi-a lhi-stroke lhi-draw" d="M19 4.5v5M16.5 7h5" pathLength="1"></path></svg></span></a>
         <a class="btn btn-ghost" href="#tour">See it work</a>
@@ -920,7 +997,7 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
 <section class="tour dark" id="tour" aria-labelledby="h-tour">
   <div class="wrap tour-head rv">
     <h2 id="h-tour">From one sentence <em>to one yes.</em></h2>
-    <p class="lede">This is the real product, not a mockup: Woody running a sample company called Fernwood, with no AI key. Follow one text from the request to the approval.</p>
+    <p class="lede">This is the real app running a made up company, Fernwood, with no AI key. Follow one text from the first sentence to the yes.</p>
   </div>
   <div class="tour-track" style="--n:5">
     <div class="tour-pin">
@@ -935,24 +1012,24 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
         <div class="vig"></div>
       </div>
       <ol class="tour-list">
-          <li class="tstep" id="step-1" data-title="Plan the whole book." data-text="All 42 ideas sit in one book, sorted into chapters. The next idea is always offered to you." data-hx="1416" data-hy="210">
+          <li class="tstep" id="step-1" data-title="Plan the whole book." data-text="All 42 ideas in one book, sorted into chapters. Woody offers the next one." data-hx="1416" data-hy="210">
             <h3><button type="button" class="tbtn"><span class="num">01</span><span class="ttl">Plan the whole book.</span></button></h3>
             <div class="tbody"><div>
-              <p>All 42 ideas sit in one book, sorted into chapters. The next idea is always offered to you.</p>
+              <p>All 42 ideas in one book, sorted into chapters. Woody offers the next one.</p>
               <figure class="tfig"><div class="tfig-in" style="--fx:0.43;--fy:0.2;--fz:2.5"><img src="img/v-strategy.webp" width="2000" height="1250" alt="The Strategy page of the sample: a content book with 42 pages, a counter for each status, and the first chapter with five pages" loading="lazy" decoding="async"><div class="ov" data-step="0" aria-hidden="true"><span class="o-ring" style="--l:20.00%;--t:10.00%;--w:77.00%;--h:22.00%;--ml:30.50%;--mt:13.80%;--mw:25.50%;--mh:7.80%"></span></div></div></figure>
             </div></div>
           </li>
-          <li class="tstep" id="step-2" data-title="Ask in one sentence." data-text="Describe the text. Woody shows what it understood before it writes." data-hx="1370" data-hy="268">
+          <li class="tstep" id="step-2" data-title="Ask in one sentence." data-text="Say it in a sentence. Woody shows what it understood before it writes." data-hx="1370" data-hy="268">
             <h3><button type="button" class="tbtn"><span class="num">02</span><span class="ttl">Ask in one sentence.</span></button></h3>
             <div class="tbody"><div>
-              <p>Describe the text. Woody shows what it understood before it writes.</p>
+              <p>Say it in a sentence. Woody shows what it understood before it writes.</p>
               <figure class="tfig"><div class="tfig-in" style="--fx:0.44;--fy:0.4;--fz:2"><img src="img/v-studio.webp" width="2000" height="1250" alt="The Studio: one field with a request typed in, a LinkedIn post about a vendor shortlist in the voice of Mara" loading="lazy" decoding="async"><div class="ov" data-step="1" aria-hidden="true"><span class="o-ring" style="--l:21.00%;--t:29.00%;--w:49.00%;--h:14.00%;--ml:21.50%;--mt:30.00%;--mw:46.00%;--mh:10.00%"></span></div></div></figure>
             </div></div>
           </li>
-          <li class="tstep" id="step-3" data-title="Writes from your sources." data-text="Only documents Woody has read count. The rest are marked Missing." data-hx="1365" data-hy="285">
+          <li class="tstep" id="step-3" data-title="Writes from your sources." data-text="A source counts only once Woody has read it. The rest are marked Missing." data-hx="1365" data-hy="285">
             <h3><button type="button" class="tbtn"><span class="num">03</span><span class="ttl">Writes from your sources.</span></button></h3>
             <div class="tbody"><div>
-              <p>Only documents Woody has read count. The rest are marked Missing.</p>
+              <p>A source counts only once Woody has read it. The rest are marked Missing.</p>
               <figure class="tfig"><div class="tfig-in" style="--fx:0.39;--fy:0.41;--fz:2"><img src="img/v-sources.webp" width="2000" height="1250" alt="The Sources page: the voice of Mara and the voice of Fernwood, each with a Missing: 2 tag over the sources that have no text yet" loading="lazy" decoding="async"><div class="ov" data-step="2" aria-hidden="true"><span class="o-ring" style="--l:20.00%;--t:20.00%;--w:38.00%;--h:42.00%;--ml:20.00%;--mt:20.00%;--mw:38.00%;--mh:42.00%"></span></div></div></figure>
             </div></div>
           </li>
@@ -963,10 +1040,10 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
               <figure class="tfig"><div class="tfig-in" style="--fx:0.8;--fy:0.76;--fz:2.4"><img src="img/v-text.webp" width="2000" height="1250" alt="The SEO and GEO scores of the sample FAQ: 100 and 100, all 13 search checks and all 8 AI checks pass" loading="lazy" decoding="async"><div class="ov" data-step="3" aria-hidden="true"><span class="o-ring" style="--l:71.00%;--t:60.00%;--w:24.00%;--h:34.00%;--ml:71.00%;--mt:60.00%;--mw:24.00%;--mh:34.00%"></span></div></div></figure>
             </div></div>
           </li>
-          <li class="tstep" id="step-5" data-title="One person says yes." data-text="Each text waits for the person assigned to it. The model approves nothing." data-hx="1455" data-hy="273">
+          <li class="tstep" id="step-5" data-title="One person says yes." data-text="Each text waits for the person it is assigned to. The model approves nothing." data-hx="1455" data-hy="273">
             <h3><button type="button" class="tbtn"><span class="num">05</span><span class="ttl">One person says yes.</span></button></h3>
             <div class="tbody"><div>
-              <p>Each text waits for the person assigned to it. The model approves nothing.</p>
+              <p>Each text waits for the person it is assigned to. The model approves nothing.</p>
               <figure class="tfig"><div class="tfig-in" style="--fx:0.43;--fy:0.37;--fz:2.05"><img src="img/v-review.webp" width="2000" height="1250" alt="The Review page: five texts waiting, each with its cover and a tag with the name of the reviewer it waits for" loading="lazy" decoding="async"><div class="ov" data-step="4" aria-hidden="true"><span class="o-ring" style="--l:20.00%;--t:26.50%;--w:77.00%;--h:16.00%;--ml:20.50%;--mt:27.80%;--mw:43.00%;--mh:13.50%"></span></div></div></figure>
             </div></div>
           </li>
@@ -992,7 +1069,7 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   <div class="wrap">
     <div class="covers-head rv">
         <h2 id="h-covers">Every text <em>gets a cover.</em></h2>
-      <p class="lede">In your colours and fonts, with generated pictures or your own photos.</p>
+      <p class="lede">In your colours and fonts, over a generated picture or your own photo.</p>
     </div>
   </div>
   <div class="marq rv" role="group" tabindex="0" aria-label="Covers that Woody drew for the Fernwood sample">
@@ -1023,8 +1100,8 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   </div>
   <div class="wrap shift-notes rv" style="--n:1">
     <div>
-      <h3>Write, check, approve.</h3>
-      <p>Everything above runs on your own server. Keys stay in its environment and history is never deleted.</p>
+      <h3>All of it runs on your server.</h3>
+      <p>Your keys stay in its environment, and history is never deleted.</p>
     </div>
     <div>
       <h3>The night shift is planned.</h3>
@@ -1039,14 +1116,14 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   <div class="wrap">
     <div class="price-head rv">
       <h2 id="h-price">Try it free <em>for 7 days.</em></h2>
-      <p class="lede">The trial starts when you add a card. Every plan has the whole product. The plans differ in three numbers: how many people write, how long the key lasts and on how many servers it runs. The AI model runs on your own key, so its cost stays on your account.</p>
+      <p class="lede">Add a card and the 7 days start. Every plan is the whole product. Only the numbers below differ.</p>
     </div>
     <div class="tiers rv" style="--n:1">
       <article class="tier">
         <div class="grove-art" style="aspect-ratio:360 / 210;--w:0.4160" aria-hidden="true"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:10.83%;bottom:2.86%;height:80.75%;--i:0;--d:0.22s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:51.97%;bottom:2.86%;height:85.31%;--i:1;--d:3.76s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:81.89%;bottom:2.86%;height:88.98%;--i:2;--d:2.17s;z-index:0"></div>
         <h3>Trial</h3>
         <p class="amt">Free for 7 days</p>
-        <p class="for">The 7 days start when you add a card. The whole product, for a few people.</p>
+        <p class="for">Starts the day you add a card. Everything works.</p>
         <dl>
           <div><dt>People</dt><dd>3</dd></div>
           <div><dt>Term</dt><dd>7 days</dd></div>
@@ -1058,7 +1135,7 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
         <div class="grove-art" style="aspect-ratio:360 / 210;--w:0.4160" aria-hidden="true"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:6.50%;bottom:15.24%;height:66.81%;--i:0;--d:1.67s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:32.66%;bottom:15.24%;height:67.08%;--i:1;--d:1.42s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:51.44%;bottom:15.24%;height:55.43%;--i:2;--d:0.95s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:66.64%;bottom:15.24%;height:63.64%;--i:3;--d:3.96s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:89.75%;bottom:15.24%;height:60.27%;--i:4;--d:4.01s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:13.12%;bottom:2.86%;height:53.77%;--i:5;--d:0.58s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:31.76%;bottom:2.86%;height:52.84%;--i:6;--d:1.31s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:48.61%;bottom:2.86%;height:64.82%;--i:7;--d:4.78s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:71.35%;bottom:2.86%;height:65.82%;--i:8;--d:1.90s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:92.16%;bottom:2.86%;height:56.26%;--i:9;--d:2.59s;z-index:1"></div>
         <h3>Team</h3>
         <p class="amt">Price at launch</p>
-        <p class="for">For a team that publishes every week and has its own reviewers.</p>
+        <p class="for">For a team that writes and approves every week.</p>
         <dl>
           <div><dt>People</dt><dd>10</dd></div>
           <div><dt>Term</dt><dd>1 year</dd></div>
@@ -1070,7 +1147,7 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
         <div class="grove-art" style="aspect-ratio:360 / 210;--w:0.4160" aria-hidden="true"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:2.50%;bottom:45.71%;height:36.56%;--i:0;--d:2.79s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:10.80%;bottom:45.71%;height:37.19%;--i:1;--d:0.21s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:19.47%;bottom:45.71%;height:37.53%;--i:2;--d:1.81s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:26.68%;bottom:45.71%;height:35.23%;--i:3;--d:2.84s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:35.16%;bottom:45.71%;height:42.81%;--i:4;--d:4.70s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:41.32%;bottom:45.71%;height:42.92%;--i:5;--d:2.12s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:48.89%;bottom:45.71%;height:40.70%;--i:6;--d:4.81s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:58.43%;bottom:45.71%;height:38.05%;--i:7;--d:0.87s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:65.49%;bottom:45.71%;height:43.56%;--i:8;--d:0.29s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:74.33%;bottom:45.71%;height:42.61%;--i:9;--d:2.83s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:79.61%;bottom:45.71%;height:42.99%;--i:10;--d:2.17s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:88.76%;bottom:45.71%;height:38.90%;--i:11;--d:0.26s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:96.95%;bottom:45.71%;height:40.01%;--i:12;--d:2.54s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:2.75%;bottom:31.43%;height:39.86%;--i:13;--d:0.20s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:12.20%;bottom:31.43%;height:38.43%;--i:14;--d:4.17s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:20.57%;bottom:31.43%;height:41.30%;--i:15;--d:3.29s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:28.27%;bottom:31.43%;height:34.39%;--i:16;--d:0.79s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:34.01%;bottom:31.43%;height:35.09%;--i:17;--d:0.60s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:43.01%;bottom:31.43%;height:35.84%;--i:18;--d:3.79s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:49.65%;bottom:31.43%;height:34.42%;--i:19;--d:1.66s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:58.38%;bottom:31.43%;height:41.38%;--i:20;--d:1.98s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:65.51%;bottom:31.43%;height:36.85%;--i:21;--d:0.84s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:73.45%;bottom:31.43%;height:43.64%;--i:22;--d:0.64s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:79.57%;bottom:31.43%;height:39.41%;--i:23;--d:0.64s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:87.76%;bottom:31.43%;height:36.80%;--i:24;--d:0.68s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:96.27%;bottom:31.43%;height:41.43%;--i:25;--d:3.77s;z-index:1"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:4.88%;bottom:17.14%;height:37.75%;--i:26;--d:2.65s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:12.60%;bottom:17.14%;height:42.54%;--i:27;--d:4.33s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:19.91%;bottom:17.14%;height:40.22%;--i:28;--d:2.46s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:27.99%;bottom:17.14%;height:43.45%;--i:29;--d:4.36s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:35.49%;bottom:17.14%;height:42.31%;--i:30;--d:1.53s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:41.58%;bottom:17.14%;height:39.15%;--i:31;--d:2.64s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:50.44%;bottom:17.14%;height:37.01%;--i:32;--d:4.06s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:58.63%;bottom:17.14%;height:39.53%;--i:33;--d:3.68s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:66.18%;bottom:17.14%;height:41.93%;--i:34;--d:2.27s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:72.92%;bottom:17.14%;height:35.60%;--i:35;--d:4.09s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:80.49%;bottom:17.14%;height:38.26%;--i:36;--d:2.72s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:87.54%;bottom:17.14%;height:39.07%;--i:37;--d:4.95s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:95.79%;bottom:17.14%;height:37.29%;--i:38;--d:3.94s;z-index:2"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:5.19%;bottom:2.86%;height:37.26%;--i:39;--d:0.87s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:12.06%;bottom:2.86%;height:35.32%;--i:40;--d:0.82s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:23.64%;bottom:2.86%;height:38.84%;--i:41;--d:0.20s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:32.09%;bottom:2.86%;height:36.19%;--i:42;--d:4.75s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:40.80%;bottom:2.86%;height:41.71%;--i:43;--d:4.32s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:49.26%;bottom:2.86%;height:38.80%;--i:44;--d:1.10s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:58.53%;bottom:2.86%;height:38.91%;--i:45;--d:0.57s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:67.53%;bottom:2.86%;height:39.11%;--i:46;--d:2.28s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:77.42%;bottom:2.86%;height:39.87%;--i:47;--d:0.74s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:85.03%;bottom:2.86%;height:38.88%;--i:48;--d:4.00s;z-index:3"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:94.08%;bottom:2.86%;height:42.49%;--i:49;--d:4.34s;z-index:3"></div>
         <h3>Business</h3>
         <p class="amt">Price at launch</p>
-        <p class="for">For a company with many writers and reviewers, and more than one server.</p>
+        <p class="for">For dozens of writers and reviewers, on more than one server.</p>
         <dl>
           <div><dt>People</dt><dd>50</dd></div>
           <div><dt>Term</dt><dd>1 year</dd></div>
@@ -1083,17 +1160,17 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
       <h3 class="incl-h">In every plan</h3>
       <ul class="incl-grid">
         <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="studio" aria-hidden="true" focusable="false"><path class="lhi-a lhi-fill" d="M5 7.5V5.5A2.5 2.5 0 0 1 7.5 3h9A2.5 2.5 0 0 1 19 5.5v2z" stroke="none"></path><rect x="5" y="3" width="14" height="18" rx="2.5"></rect><path class="lhi-write" style="--i:0" d="M8.5 11.5h7"></path><path class="lhi-write" style="--i:1" d="M8.5 14.5h7"></path><path class="lhi-write" style="--i:2" d="M8.5 17.5h4"></path></svg></span><b>The Studio</b><span>Type one sentence. Woody picks the formats, the voice and the sources.</span></li>
-        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="voices" aria-hidden="true" focusable="false"><path d="M4 5.5A2 2 0 0 1 6 3.5h7.5a2 2 0 0 1 2 2V10a2 2 0 0 1-2 2H9l-3 2.5V12H6a2 2 0 0 1-2-2z"></path><path class="lhi-a lhi-stroke lhi-draw" d="M11.5 15.5h2.5l3 2.5v-2.5h1A2 2 0 0 0 20 13.5V10" pathLength="1"></path></svg></span><b>Two voices</b><span>A person and the brand, each with its own style and samples, never mixed.</span></li>
+        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="voices" aria-hidden="true" focusable="false"><path d="M4 5.5A2 2 0 0 1 6 3.5h7.5a2 2 0 0 1 2 2V10a2 2 0 0 1-2 2H9l-3 2.5V12H6a2 2 0 0 1-2-2z"></path><path class="lhi-a lhi-stroke lhi-draw" d="M11.5 15.5h2.5l3 2.5v-2.5h1A2 2 0 0 0 20 13.5V10" pathLength="1"></path></svg></span><b>Voices</b><span>Mara sounds like Mara, the brand like the brand. Each has its own style and samples.</span></li>
         <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="sources" aria-hidden="true" focusable="false"><rect x="3.75" y="4" width="4.25" height="16.5" rx="1.25"></rect><rect x="9.75" y="4" width="4.25" height="16.5" rx="1.25"></rect><rect class="lhi-lean" x="15.25" y="5.25" width="4.25" height="15.25" rx="1.25"></rect><path class="lhi-a lhi-fill lhi-drop" d="M10.9 4h2v5.2l-1-0.9-1 0.9z" stroke="none"></path></svg></span><b>Your sources</b><span>Your site, Google Docs, files and links. Only documents Woody has read count.</span></li>
-        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="review" aria-hidden="true" focusable="false"><path d="M9 4.5H7.5A2.5 2.5 0 0 0 5 7v11.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V7a2.5 2.5 0 0 0-2.5-2.5H15"></path><rect x="9" y="2.75" width="6" height="3.5" rx="1.25"></rect><path class="lhi-a lhi-stroke lhi-draw" d="M8.75 13.5l2.3 2.3 4.2-4.6" pathLength="1"></path></svg></span><b>Scores and a yes</b><span>13 checks for Google, 8 for AI answers, up to two corrections. Then a person approves. The model approves nothing.</span></li>
+        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="review" aria-hidden="true" focusable="false"><path d="M9 4.5H7.5A2.5 2.5 0 0 0 5 7v11.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V7a2.5 2.5 0 0 0-2.5-2.5H15"></path><rect x="9" y="2.75" width="6" height="3.5" rx="1.25"></rect><path class="lhi-a lhi-stroke lhi-draw" d="M8.75 13.5l2.3 2.3 4.2-4.6" pathLength="1"></path></svg></span><b>A score, then a yes</b><span>13 checks for Google, 8 for AI answers, up to two corrections. Then a person approves.</span></li>
         <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="strategy" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.75"></circle><path class="lhi-a lhi-fill lhi-needle" d="M15.4 8.6l-1.9 4.9-4.9 1.9 1.9-4.9z" stroke="none"></path><circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none"></circle></svg></span><b>The content book</b><span>Your plan as chapters and pages, with the stage of every text.</span></li>
-        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="calendar" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 9.75h17M8 3v4M16 3v4"></path><circle cx="8" cy="13.75" r="0.95" fill="currentColor" stroke="none"></circle><circle cx="8" cy="17.25" r="0.95" fill="currentColor" stroke="none"></circle><circle cx="12" cy="17.25" r="0.95" fill="currentColor" stroke="none"></circle><rect class="lhi-a lhi-fill lhi-hop" x="13.75" y="12.5" width="3.5" height="3.5" rx="1" stroke="none"></rect></svg></span><b>The calendar</b><span>Approved texts on a day axis, a feed for your calendar program, a one way sync to Google Calendar.</span></li>
+        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="calendar" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 9.75h17M8 3v4M16 3v4"></path><circle cx="8" cy="13.75" r="0.95" fill="currentColor" stroke="none"></circle><circle cx="8" cy="17.25" r="0.95" fill="currentColor" stroke="none"></circle><circle cx="12" cy="17.25" r="0.95" fill="currentColor" stroke="none"></circle><rect class="lhi-a lhi-fill lhi-hop" x="13.75" y="12.5" width="3.5" height="3.5" rx="1" stroke="none"></rect></svg></span><b>The calendar</b><span>Approved texts on a timeline, as a calendar feed and a one way sync to Google Calendar.</span></li>
         <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="covers" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="2.75"></rect><path d="M3.75 16.5l4.5-4.25 3.5 3 3-2.5 5.5 4.25"></path><circle class="lhi-a lhi-fill lhi-hop" cx="15.9" cy="9" r="1.5" stroke="none"></circle></svg></span><b>Covers</b><span>A cover for every text, in your colours and fonts.</span></li>
-        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="texts" aria-hidden="true" focusable="false"><path class="lhi-back" d="M8.5 4h9A2.5 2.5 0 0 1 20 6.5v9"></path><g class="lhi-front"><rect x="4" y="7.5" width="12.5" height="13" rx="2.5"></rect><rect class="lhi-a lhi-fill" x="6.5" y="10" width="7.5" height="3.5" rx="1" stroke="none"></rect><path d="M6.75 17h5"></path></g></svg></span><b>History</b><span>Every edit is a new version. Nothing is deleted: texts are archived.</span></li>
-        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="blog" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"></rect><path d="M3.5 8.5h17"></path><circle cx="6.25" cy="6.5" r="0.7" fill="currentColor" stroke="none"></circle><circle cx="8.5" cy="6.5" r="0.7" fill="currentColor" stroke="none"></circle><rect class="lhi-a lhi-fill lhi-write" x="6.5" y="11" width="8" height="2.75" rx="1" stroke="none"></rect><path d="M6.5 16.5h11"></path></svg></span><b>Seven formats</b><span>Blog, FAQ, newsletter, LinkedIn, Facebook, Instagram and in-app text.</span></li>
+        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="texts" aria-hidden="true" focusable="false"><path class="lhi-back" d="M8.5 4h9A2.5 2.5 0 0 1 20 6.5v9"></path><g class="lhi-front"><rect x="4" y="7.5" width="12.5" height="13" rx="2.5"></rect><rect class="lhi-a lhi-fill" x="6.5" y="10" width="7.5" height="3.5" rx="1" stroke="none"></rect><path d="M6.75 17h5"></path></g></svg></span><b>History</b><span>Every edit is saved as a new version. Texts are archived, never deleted.</span></li>
+        <li><span class="i" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lhi h-5 w-5 shrink-0" data-icon="blog" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"></rect><path d="M3.5 8.5h17"></path><circle cx="6.25" cy="6.5" r="0.7" fill="currentColor" stroke="none"></circle><circle cx="8.5" cy="6.5" r="0.7" fill="currentColor" stroke="none"></circle><rect class="lhi-a lhi-fill lhi-write" x="6.5" y="11" width="8" height="2.75" rx="1" stroke="none"></rect><path d="M6.5 16.5h11"></path></svg></span><b>Formats</b><span>Blog, FAQ, newsletter, LinkedIn, Facebook, Instagram and in-app text.</span></li>
       </ul>
     </div>
-    <p class="price-note rv">It runs on your own server and your keys stay in its environment. When a key ends, writing stops after the grace period and every text stays readable and exportable. The night shift with the beaver is planned as an extra.</p>
+    <p class="price-note rv">If a license key runs out, writing stops after the grace period, and every text stays readable and exportable. The beaver's night shift is planned as an extra.</p>
   </div>
 </section>
 
@@ -1102,8 +1179,8 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   <div class="wrap answers">
     <div class="rv"><h2 id="h-answers" style="margin-top:20px">Quick <em>answers.</em></h2></div>
     <div class="qa rv" style="--n:1">
-      <details><summary>How does the free trial work?</summary><p>It lasts 7 days and starts when you add a card. Woody is not on sale yet: the trial opens at the launch.</p></details>
-      <details><summary>Does it write without an AI key?</summary><p>No. You bring your own key, so its cost stays on your account.</p></details>
+      <details><summary>How does the free trial work?</summary><p>It lasts 7 days and starts the moment you add a card. Woody is not on sale yet, so the trial opens at launch.</p></details>
+      <details><summary>Does it write without an AI key?</summary><p>No. Woody needs your own AI key, and the model bills you directly.</p></details>
       <details><summary>Which models does it use?</summary><p>Claude first, Gemini second, both with your own key.</p></details>
       <details><summary>Which languages does it write in?</summary><p>English or Slovak, chosen from your request.</p></details>
       <details><summary>Does it publish for me?</summary><p>No. Approved texts go to the calendar. You export them or save them to Google Docs.</p></details>
@@ -1136,7 +1213,7 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
       </fieldset>
       <fieldset class="wl-step" data-step="2" hidden>
         <legend class="sr">Step 2 of 2: your agreement</legend>
-        <p class="wl-q">One thing to agree to.</p>
+        <p class="wl-q">Last thing before I add you.</p>
         <label class="wl-consent"><input type="checkbox" name="consent" required><span>I agree that you write to me about Woody at this address, and for nothing else.</span></label>
         <div class="wl-row">
           <button class="btn btn-ghost" type="button" data-back>Back</button>
@@ -1182,13 +1259,16 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
     </nav>
   </div>
   <div class="wrap foot-base">
-    <p>Every screen on this page is the real product running the Fernwood sample, a made up company, with no keys. The forester, the beaver and the scenes are clay figures generated for Woody.</p>
-    <p>No cookies. One form: the waiting list sends your address to the mailing service of the author and nowhere else. Cloudflare counts visits without cookies. Not on sale yet.</p>
+    <nav class="foot-legal" aria-label="Legal">
+      <a href="privacy/">Privacy</a>
+      <a href="terms/">Terms</a>
+      <button type="button" data-cookie-settings>Cookie settings</button>
+    </nav>
   </div>
 </footer>
-<script>var W7=(()=>{var J=Object.defineProperty;var ct=Object.getOwnPropertyDescriptor;var it=Object.getOwnPropertyNames;var at=Object.prototype.hasOwnProperty;var lt=(t,n)=>{for(var e in n)J(t,e,{get:n[e],enumerable:!0})},pt=(t,n,e,s)=>{if(n&&typeof n=="object"||typeof n=="function")for(let l of it(n))!at.call(t,l)&&l!==e&&J(t,l,{get:()=>n[l],enumerable:!(s=ct(n,l))||s.enumerable});return t};var xt=t=>pt(J({},"__esModule",{value:!0}),t);var ht={};lt(ht,{GROW:()=>Q,clamp:()=>m,eback:()=>K,ein:()=>_,eio:()=>R,el:()=>u,eout:()=>C,fireflies:()=>gt,idea:()=>ft,lerp:()=>h,makeCloud:()=>st,makeTree:()=>et,rng:()=>j,seg:()=>F,setSprites:()=>dt,stage:()=>$t});var h=(t,n,e)=>t+(n-t)*e,m=(t,n=0,e=1)=>Math.min(e,Math.max(n,t)),F=(t,n,e)=>m((t-n)/(e-n)),R=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,C=t=>1-Math.pow(1-t,3),_=t=>t*t,K=t=>1+2.9*Math.pow(t-1,3)+1.9*Math.pow(t-1,2),j=t=>()=>{t|=0,t=t+1831565813|0;let n=Math.imul(t^t>>>15,1|t);return n=n+Math.imul(n^n>>>7,61|n)^n,((n^n>>>14)>>>0)/4294967296},u=(t,n,e,s)=>{let l=document.createElement(t);return n&&(l.className=n),s&&Object.assign(l.style,s),e&&e.appendChild(l),l},B=[[104,111],[125,254],[144,374],[215,492],[250,601]],yt=[0,.18,.15,.12,.105],Q=5.5,tt=t=>`/login/woody-tree-${t+1}.webp`,dt=t=>{tt=t};function $t(t,{headX:n=1370,hx:e=.72,ay:s=.5,onfit:l}={}){let r={k:1,tx:0,ty:0,W:0,H:0,vis:{l:0,t:0,r:1920,b:1080}},$=()=>{let c=t.clientWidth,y=t.clientHeight;if(!c||!y)return;let o=Math.max(c/1920,y/1080),i=m(c*(typeof e=="function"?e(c,y):e)-n*o,c-1920*o,0),p=(y-1080*o)*s;Object.assign(r,{k:o,tx:i,ty:p,W:c,H:y,vis:{l:-i/o,t:-p/o,r:(c-i)/o,b:(y-p)/o}}),t.querySelectorAll(".clay-cam").forEach(d=>{d.style.setProperty("--k",o.toFixed(5)),d.style.setProperty("--tx",`${i.toFixed(2)}px`),d.style.setProperty("--ty",`${p.toFixed(2)}px`)}),l&&l(r)};r.fit=$,r.toScreen=(c,y)=>[c*r.k+r.tx,y*r.k+r.ty];let x=null;return typeof ResizeObserver<"u"?(x=new ResizeObserver($),x.observe(t)):addEventListener("resize",$),r.stop=()=>{x?x.disconnect():removeEventListener("resize",$)},$(),r}function et(t,{x:n,y:e,h:s,phase:l=0,night:r=!1,grow:$=Q}){let x=u("div","clay-tree",t,{left:`${n}px`,top:`${e}px`,width:0,height:0,zIndex:Math.round(e)});u("div","clay-glow",x,{left:`${-s*.3}px`,top:`${-s*.14}px`,width:`${s*.6}px`,height:`${s*.14}px`,background:r?"radial-gradient(closest-side,rgba(255,190,110,.08),transparent)":"radial-gradient(closest-side,rgba(255,190,120,.16),transparent)"});let c=s/B[4][1],y=B.map(([o,i],p)=>{let d=u("img","",x);return d.src=tt(p),d.alt="",d.decoding="async",Object.assign(d.style,{width:`${o*c}px`,height:`${i*c}px`,left:`${-(o*c)/2}px`,bottom:"0",top:"auto",opacity:0,filter:r?"brightness(.62) saturate(.85) hue-rotate(-6deg)":"brightness(1.3) saturate(1.12)"}),d});return u("div","clay-glow",x,{left:`${-s*.13}px`,top:`${-s*.075}px`,width:`${s*.26}px`,height:`${s*.05}px`,background:"radial-gradient(closest-side,rgba(10,4,0,.55),transparent)"}),x.set=(o,i=0,p=1)=>{if(o<0){x.style.opacity=0;return}x.style.opacity=p;let d=m(o/$),a=R(d)*4,f=Math.min(3,Math.floor(a)),k=a-f;y.forEach((M,b)=>{M.style.opacity=b===f?1-k:b===f+1?k:0,M.style.display=b===f||b===f+1?"block":"none"});let H=h(B[f][1],B[f+1][1],k);y[f].style.transform=`scale(${H/B[f][1]})`,y[f+1].style.transform=`scale(${H/B[f+1][1]})`,[f,f+1].forEach(M=>{let b=yt[M],w=h(100,(1-b)*100-3,F(d,.5,.82)),L=b===0?"none":`linear-gradient(#000 ${w-5}%,transparent ${w+1}%)`;y[M].style.webkitMaskImage=L,y[M].style.maskImage=L});let I=o<.5?K(m(o/.5)):1,q=Math.sin(i*1.25+l)*1.1*Math.min(1,d*2);x.style.transform=`scale(${I}) rotate(${q}deg)`},x}function st(t,n,e,s,l=25){let r=u("div","clay-idea",t,{width:`${e}px`,height:`${s}px`,zIndex:5e3}),$=`c${Math.random().toString(36).slice(2,7)}`,c=[[.15,.42,.3],[.36,.24,.4],[.62,.26,.38],[.84,.44,.3],[.24,.72,.26],[.5,.78,.3],[.76,.72,.26]].map(([o,i,p])=>`<circle cx="${o*e+20}" cy="${i*s+20}" r="${p*s}"/>`).join(""),y=`<rect x="${20+s*.1}" y="${20+s*.3}" width="${e-s*.2}" height="${s*.62}" rx="${s*.31}"/>`;return r.innerHTML=`<svg width="${e+40}" height="${s+40}" viewBox="0 0 ${e+40} ${s+40}" aria-hidden="true"><defs><linearGradient id="${$}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFBF2"/><stop offset=".6" stop-color="#FBE9D6"/><stop offset="1" stop-color="#F0CDB0"/></linearGradient></defs><g fill="#D9B08C" transform="translate(0 6)">${y}${c}</g><g fill="url(#${$})">${y}${c}</g><g fill="#fff" opacity=".55" transform="translate(-3 -4)"><circle cx="${.34*e+20}" cy="${.12*s+20}" r="${.12*s}"/><circle cx="${.62*e+20}" cy="${.16*s+20}" r="${.1*s}"/></g></svg><span></span>`,r.text=r.querySelector("span"),r.text.textContent=n,r.text.style.fontSize=`${l}px`,r.w=e,r.h=s,r}function ft(t,{text:n,cw:e,ch:s,fs:l=25,spot:r,head:$,target:x,night:c=!1,phase:y=0}){let o={cloud:st(t,n,e,s,l),spot:r,head:$,target:x};o.tail=[18,12,7].map(a=>u("div","clay-dot",t,{width:`${a*2}px`,height:`${a*2}px`,margin:`${-a}px 0 0 ${-a}px`,zIndex:5001})),o.seed=u("div","clay-seed",t),o.puff=Array.from({length:7},()=>u("div","clay-glow",t,{width:"9px",height:"9px",background:"#6b4630"})),o.ring=u("div","clay-glow",t,{border:"2px solid rgba(255,230,190,.8)"}),o.tree=et(t,{x:r.x,y:r.y,h:r.h,phase:y,night:c});let i=1,p=1.6,d=1.15;return o.times={E:i,Hd:p,D:d,land:i+p+d},o.set=(a,f,k=1,H=Q)=>{let{cloud:I,tail:q,seed:M,puff:b,ring:w,tree:L}=o,T=$.x,U=$.y,z=x,O=T,S=U,W=0,A=0,V=Math.sin(f*1.9+r.x)*5;if(a>=0&&a<i){let g=C(a/i);O=h(T,z.x,g),S=h(U,z.y,g)-Math.sin(g*Math.PI)*50,W=K(m(a/i)),A=1}else if(a>=i&&a<i+p)O=z.x,S=z.y+V,W=1,A=1;else if(a>=i+p&&a<i+p+d){let g=(a-i-p)/d;W=h(1,.04,R(F(g,0,.38))),A=1-F(g,.22,.42),O=h(z.x,r.x,R(g)),S=h(z.y+V,r.y-6,_(g))}I.style.transform=`translate(${O-e/2}px,${S-s/2}px) scale(${Math.max(W,1e-4)})`,I.style.transformOrigin=`${e/2}px ${s/2}px`,I.style.opacity=A*k,I.text.style.opacity=m((a-.55)/.35)*(a<i+p?1:1-F(a,i+p,i+p+.3)),q.forEach((g,D)=>{let P=[.72,.5,.28][D],N=O+e*.4,v=S+s*.3,nt=h(N,T,1-P),rt=h(v,U,1-P),ot=a>=0&&a<i+.35;g.style.transform=`translate(${nt}px,${rt}px) scale(${ot?C(m((a-(2-D)*.07)/.3))*(1-F(a,i-.15,i+.35)):0})`});let X=i+p+d,Z=F(a,i+p+.25,X);M.style.opacity=Z>0&&Z<1?k:0,M.style.transform=`translate(${O}px,${S}px) scale(${h(.7,1,Z)})`;let E=a-X;b.forEach((g,D)=>{let P=D/7*Math.PI-Math.PI,N=50+D%3*18,v=m(E/.7);g.style.opacity=E>0&&E<.7?1-v:0,g.style.transform=`translate(${r.x+Math.cos(P)*N*C(v)}px,${r.y-6+Math.sin(P)*N*.8*C(v)+28*v*v}px) scale(${1-v*.6})`});let Y=m(E/.9),G=18+Y*70;w.style.opacity=E>0&&E<.9?(1-Y)*.8:0,w.style.width=`${G*2}px`,w.style.height=`${G*.6}px`,w.style.transform=`translate(${r.x-G}px,${r.y-G*.3}px)`,L.set(E,f,k,H)},o.destroy=()=>{[o.cloud,...o.tail,o.seed,...o.puff,o.ring,o.tree].forEach(a=>a.remove())},o}function gt(t,n,e,s=7){let l=j(s),r=Array.from({length:n},()=>({e:u("div","clay-fly",t),x:e.x+l()*e.w,y:e.y+l()*e.h,s:2+l()*3,p:l()*6,sp:.2+l()*.5,a:8+l()*26}));return($,x=1)=>r.forEach(c=>{c.e.style.width=`${c.s}px`,c.e.style.height=`${c.s}px`,c.e.style.transform=`translate(${c.x+Math.sin($*c.sp+c.p)*c.a}px,${c.y+Math.cos($*c.sp*1.3+c.p)*c.a*.6}px)`,c.e.style.opacity=(.35+.65*Math.abs(Math.sin($*c.sp*2+c.p)))*x})}return xt(ht);})();
+<script>var W7=(()=>{var J=Object.defineProperty;var it=Object.getOwnPropertyDescriptor;var at=Object.getOwnPropertyNames;var lt=Object.prototype.hasOwnProperty;var pt=(t,n)=>{for(var e in n)J(t,e,{get:n[e],enumerable:!0})},xt=(t,n,e,s)=>{if(n&&typeof n=="object"||typeof n=="function")for(let l of at(n))!lt.call(t,l)&&l!==e&&J(t,l,{get:()=>n[l],enumerable:!(s=it(n,l))||s.enumerable});return t};var yt=t=>xt(J({},"__esModule",{value:!0}),t);var ut={};pt(ut,{GROW:()=>Q,STAGES:()=>tt,clamp:()=>m,eback:()=>K,ein:()=>_,eio:()=>R,el:()=>u,eout:()=>C,fireflies:()=>ht,idea:()=>gt,lerp:()=>h,makeCloud:()=>nt,makeTree:()=>st,rng:()=>j,seg:()=>S,setSprites:()=>$t,stage:()=>ft});var h=(t,n,e)=>t+(n-t)*e,m=(t,n=0,e=1)=>Math.min(e,Math.max(n,t)),S=(t,n,e)=>m((t-n)/(e-n)),R=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,C=t=>1-Math.pow(1-t,3),_=t=>t*t,K=t=>1+2.9*Math.pow(t-1,3)+1.9*Math.pow(t-1,2),j=t=>()=>{t|=0,t=t+1831565813|0;let n=Math.imul(t^t>>>15,1|t);return n=n+Math.imul(n^n>>>7,61|n)^n,((n^n>>>14)>>>0)/4294967296},u=(t,n,e,s)=>{let l=document.createElement(t);return n&&(l.className=n),s&&Object.assign(l.style,s),e&&e.appendChild(l),l},tt=["1","a","b","c","3","4","5"],v=[[104,111],[104,146],[109,227],[114,294],[144,374],[215,492],[250,601]],dt=[0,.2,.172,.139,.15,.12,.105],Q=7.5,et=t=>`/login/woody-tree-${t}.webp`,$t=t=>{et=t};function ft(t,{headX:n=1370,hx:e=.72,ay:s=.5,onfit:l}={}){let r={k:1,tx:0,ty:0,W:0,H:0,vis:{l:0,t:0,r:1920,b:1080}},$=()=>{let c=t.clientWidth,y=t.clientHeight;if(!c||!y)return;let o=Math.max(c/1920,y/1080),i=m(c*(typeof e=="function"?e(c,y):e)-n*o,c-1920*o,0),p=(y-1080*o)*s;Object.assign(r,{k:o,tx:i,ty:p,W:c,H:y,vis:{l:-i/o,t:-p/o,r:(c-i)/o,b:(y-p)/o}}),t.querySelectorAll(".clay-cam").forEach(d=>{d.style.setProperty("--k",o.toFixed(5)),d.style.setProperty("--tx",`${i.toFixed(2)}px`),d.style.setProperty("--ty",`${p.toFixed(2)}px`)}),l&&l(r)};r.fit=$,r.toScreen=(c,y)=>[c*r.k+r.tx,y*r.k+r.ty];let x=null;return typeof ResizeObserver<"u"?(x=new ResizeObserver($),x.observe(t)):addEventListener("resize",$),r.stop=()=>{x?x.disconnect():removeEventListener("resize",$)},$(),r}function st(t,{x:n,y:e,h:s,phase:l=0,night:r=!1,grow:$=Q}){let x=u("div","clay-tree",t,{left:`${n}px`,top:`${e}px`,width:0,height:0,zIndex:Math.round(e)});u("div","clay-glow",x,{left:`${-s*.3}px`,top:`${-s*.14}px`,width:`${s*.6}px`,height:`${s*.14}px`,background:r?"radial-gradient(closest-side,rgba(255,190,110,.08),transparent)":"radial-gradient(closest-side,rgba(255,190,120,.16),transparent)"});let c=s/v[v.length-1][1],y=v.map(([o,i],p)=>{let d=u("img","",x);return d.src=et(tt[p]),d.alt="",d.decoding="async",Object.assign(d.style,{width:`${o*c}px`,height:`${i*c}px`,left:`${-(o*c)/2}px`,bottom:"0",top:"auto",opacity:0,filter:r?"brightness(.62) saturate(.85) hue-rotate(-6deg)":"brightness(1.3) saturate(1.12)"}),d});return u("div","clay-glow",x,{left:`${-s*.13}px`,top:`${-s*.075}px`,width:`${s*.26}px`,height:`${s*.05}px`,background:"radial-gradient(closest-side,rgba(10,4,0,.55),transparent)"}),x.set=(o,i=0,p=1)=>{if(o<0){x.style.opacity=0;return}x.style.opacity=p;let d=m(o/$),a=R(d)*(v.length-1),f=Math.min(v.length-2,Math.floor(a)),w=a-f;y.forEach((M,b)=>{M.style.opacity=b===f?1-w:b===f+1?w:0,M.style.display=b===f||b===f+1?"block":"none"});let H=h(v[f][1],v[f+1][1],w);y[f].style.transform=`scale(${H/v[f][1]})`,y[f+1].style.transform=`scale(${H/v[f+1][1]})`,[f,f+1].forEach(M=>{let b=dt[M],E=h(100,(1-b)*100-3,S(d,.46,.8)),A=b===0?"none":`linear-gradient(#000 ${E-5}%,transparent ${E+1}%)`;y[M].style.webkitMaskImage=A,y[M].style.maskImage=A});let I=o<.5?K(m(o/.5)):1,T=Math.sin(i*1.25+l)*1.1*Math.min(1,d*2);x.style.transform=`scale(${I}) rotate(${T}deg)`},x}function nt(t,n,e,s,l=25){let r=u("div","clay-idea",t,{width:`${e}px`,height:`${s}px`,zIndex:5e3}),$=`c${Math.random().toString(36).slice(2,7)}`,c=[[.15,.42,.3],[.36,.24,.4],[.62,.26,.38],[.84,.44,.3],[.24,.72,.26],[.5,.78,.3],[.76,.72,.26]].map(([o,i,p])=>`<circle cx="${o*e+20}" cy="${i*s+20}" r="${p*s}"/>`).join(""),y=`<rect x="${20+s*.1}" y="${20+s*.3}" width="${e-s*.2}" height="${s*.62}" rx="${s*.31}"/>`;return r.innerHTML=`<svg width="${e+40}" height="${s+40}" viewBox="0 0 ${e+40} ${s+40}" aria-hidden="true"><defs><linearGradient id="${$}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFBF2"/><stop offset=".6" stop-color="#FBE9D6"/><stop offset="1" stop-color="#F0CDB0"/></linearGradient></defs><g fill="#D9B08C" transform="translate(0 6)">${y}${c}</g><g fill="url(#${$})">${y}${c}</g><g fill="#fff" opacity=".55" transform="translate(-3 -4)"><circle cx="${.34*e+20}" cy="${.12*s+20}" r="${.12*s}"/><circle cx="${.62*e+20}" cy="${.16*s+20}" r="${.1*s}"/></g></svg><span></span>`,r.text=r.querySelector("span"),r.text.textContent=n,r.text.style.fontSize=`${l}px`,r.w=e,r.h=s,r}function gt(t,{text:n,cw:e,ch:s,fs:l=25,spot:r,head:$,target:x,night:c=!1,phase:y=0}){let o={cloud:nt(t,n,e,s,l),spot:r,head:$,target:x};o.tail=[18,12,7].map(a=>u("div","clay-dot",t,{width:`${a*2}px`,height:`${a*2}px`,margin:`${-a}px 0 0 ${-a}px`,zIndex:5001})),o.seed=u("div","clay-seed",t),o.puff=Array.from({length:7},()=>u("div","clay-glow",t,{width:"9px",height:"9px",background:"#6b4630"})),o.ring=u("div","clay-glow",t,{border:"2px solid rgba(255,230,190,.8)"}),o.tree=st(t,{x:r.x,y:r.y,h:r.h,phase:y,night:c});let i=1,p=1.6,d=1.15;return o.times={E:i,Hd:p,D:d,land:i+p+d},o.set=(a,f,w=1,H=Q)=>{let{cloud:I,tail:T,seed:M,puff:b,ring:E,tree:A}=o,q=$.x,U=$.y,z=x,O=q,B=U,G=0,L=0,V=Math.sin(f*1.9+r.x)*5;if(a>=0&&a<i){let g=C(a/i);O=h(q,z.x,g),B=h(U,z.y,g)-Math.sin(g*Math.PI)*50,G=K(m(a/i)),L=1}else if(a>=i&&a<i+p)O=z.x,B=z.y+V,G=1,L=1;else if(a>=i+p&&a<i+p+d){let g=(a-i-p)/d;G=h(1,.04,R(S(g,0,.38))),L=1-S(g,.22,.42),O=h(z.x,r.x,R(g)),B=h(z.y+V,r.y-6,_(g))}I.style.transform=`translate(${O-e/2}px,${B-s/2}px) scale(${Math.max(G,1e-4)})`,I.style.transformOrigin=`${e/2}px ${s/2}px`,I.style.opacity=L*w,I.text.style.opacity=m((a-.55)/.35)*(a<i+p?1:1-S(a,i+p,i+p+.3)),T.forEach((g,D)=>{let P=[.72,.5,.28][D],N=O+e*.4,k=B+s*.3,rt=h(N,q,1-P),ot=h(k,U,1-P),ct=a>=0&&a<i+.35;g.style.transform=`translate(${rt}px,${ot}px) scale(${ct?C(m((a-(2-D)*.07)/.3))*(1-S(a,i-.15,i+.35)):0})`});let X=i+p+d,Z=S(a,i+p+.25,X);M.style.opacity=Z>0&&Z<1?w:0,M.style.transform=`translate(${O}px,${B}px) scale(${h(.7,1,Z)})`;let F=a-X;b.forEach((g,D)=>{let P=D/7*Math.PI-Math.PI,N=50+D%3*18,k=m(F/.7);g.style.opacity=F>0&&F<.7?1-k:0,g.style.transform=`translate(${r.x+Math.cos(P)*N*C(k)}px,${r.y-6+Math.sin(P)*N*.8*C(k)+28*k*k}px) scale(${1-k*.6})`});let Y=m(F/.9),W=18+Y*70;E.style.opacity=F>0&&F<.9?(1-Y)*.8:0,E.style.width=`${W*2}px`,E.style.height=`${W*.6}px`,E.style.transform=`translate(${r.x-W}px,${r.y-W*.3}px)`,A.set(F,f,w,H)},o.destroy=()=>{[o.cloud,...o.tail,o.seed,...o.puff,o.ring,o.tree].forEach(a=>a.remove())},o}function ht(t,n,e,s=7){let l=j(s),r=Array.from({length:n},()=>({e:u("div","clay-fly",t),x:e.x+l()*e.w,y:e.y+l()*e.h,s:2+l()*3,p:l()*6,sp:.2+l()*.5,a:8+l()*26}));return($,x=1)=>r.forEach(c=>{c.e.style.width=`${c.s}px`,c.e.style.height=`${c.s}px`,c.e.style.transform=`translate(${c.x+Math.sin($*c.sp+c.p)*c.a}px,${c.y+Math.cos($*c.sp*1.3+c.p)*c.a*.6}px)`,c.e.style.opacity=(.35+.65*Math.abs(Math.sin($*c.sp*2+c.p)))*x})}return yt(ut);})();
 
-W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
+W7.setSprites((n) => 'img/tree-' + n + '.webp');</script>
 <script>
 (() => {
   const root = document.documentElement;
@@ -1206,10 +1286,27 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
     if (v.paused && !v.starting) { v.starting = true; v.play().then(() => v.classList.add('on')).catch(() => {}).then(() => { v.starting = false; }); }
   };
   const bar = document.querySelector('.bar');
-  const links = $('.bar nav a:not(.btn)');
+  const links = $('.bar nav a:not(.btn), .menu-sheet a:not(.btn)');
   // the sections of the page and the entry of the bar each one belongs to
   const marks = [['tour', '#tour'], ['covers', '#covers'], ['plans', '#covers'], ['pricing', '#pricing'], ['answers', '#answers'], ['join', '#answers']]
     .map(([id, href]) => [document.getElementById(id), href]);
+
+  // the menu of a small screen: a button in the pill opens a frosted sheet with the links; a tap on a link, on the glass around it or on Escape closes it
+  const menuBtn = document.querySelector('.menu-btn');
+  const sheet = document.getElementById('menu');
+  const setMenu = (open) => {
+    bar.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', open ? 'Close the menu' : 'Open the menu');
+    if (open) sheet.removeAttribute('inert'); else sheet.setAttribute('inert', '');
+  };
+  menuBtn.addEventListener('click', () => setMenu(!bar.classList.contains('open')));
+  bar.querySelector('.menu-scrim').addEventListener('click', () => setMenu(false));
+  sheet.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && bar.classList.contains('open')) { setMenu(false); menuBtn.focus(); } });
+  const bigScreen = matchMedia('(min-width: 1081px)');
+  const closeOnBig = () => { if (bigScreen.matches) setMenu(false); };
+  if (bigScreen.addEventListener) bigScreen.addEventListener('change', closeOnBig); else bigScreen.addListener(closeOnBig);
 
   // the tour: while the page scrolls through the tall track, one live frame shows five screens of the product and the forester walks you through them. His words are a cloud at his
   // head; the cloud shrinks into a seed, the seed is planted and grows into a pine in front of the frame. Every picture is a function of the scroll position (world.js does the clay).
@@ -1251,12 +1348,20 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
     const st = W7.stage(pin, { headX: 1400, hx: (W) => (W < 700 ? 0.58 : W < 900 ? 0.62 : 0.72), onfit: build });
     tourFit = () => st.fit();
     let shown = -1;
+    // the scroll is followed with a little give, so the screens and the camera glide on instead of stepping with every flick of the thumb
+    let sp = 0, sp0 = 0;
+    const silk = (to) => {
+      const t = performance.now(), dt = t - sp0; sp0 = t;
+      if (reduce || dt > 250) sp = to; else sp += (to - sp) * (1 - Math.exp(-dt / 95));
+      if (Math.abs(to - sp) < 0.0004) sp = to;
+      return sp;
+    };
     draw = () => {
       if (!root.classList.contains('tour-on')) return;
       const r = track.getBoundingClientRect();
       const vh = pin.offsetHeight || innerHeight; // the pin is as tall as the small window, so the bars of a phone that come and go do not move the scroll
       const mob = root.classList.contains('tour-m');
-      const p = cl(-r.top / Math.max(1, r.height - vh));
+      const p = silk(cl(-r.top / Math.max(1, r.height - vh)));
       const u = p * U, pos = Math.min(u, N - 1);
       const fw = mob ? frame.clientWidth : 0, fh = mob ? frame.clientHeight : 0, lh = fw / 1.6;
       const now = performance.now() / 1000;
@@ -1409,11 +1514,22 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
       labels[1].style.opacity = W7.seg(p, 0.5, 0.64).toFixed(3);
     };
     W7.stage(stageEl, { headX: 1450, hx: (W) => (W < 700 ? 0.6 : 0.7), ay: 0.42, onfit: (s) => { st = s; cv.width = s.W; cv.height = s.H; paint(P); } });
+    // the circle follows the scroll with a little give too: it goes after the thumb and settles, one frame at a time
+    let sk = 0, skTo = 0, sk0 = 0, skRaf = 0;
+    const skStep = () => {
+      skRaf = 0;
+      const t = performance.now(), dt = Math.min(64, t - sk0); sk0 = t;
+      sk += (skTo - sk) * (1 - Math.exp(-dt / 95));
+      if (Math.abs(skTo - sk) < 0.0006) sk = skTo;
+      paint(sk);
+      if (sk !== skTo) skRaf = requestAnimationFrame(skStep);
+    };
     shiftDraw = () => {
       if (root.classList.contains('tour-on')) {
         const r = shifts.getBoundingClientRect();
         const vh = (shifts.querySelector('.shift-pin') || {}).offsetHeight || innerHeight;
-        paint(W7.seg(cl(-r.top / Math.max(1, r.height - vh)), 0.12, 0.86));
+        skTo = W7.seg(cl(-r.top / Math.max(1, r.height - vh)), 0.12, 0.86);
+        if (reduce) { sk = skTo; paint(sk); } else if (!skRaf) { sk0 = performance.now(); skRaf = requestAnimationFrame(skStep); }
       }
     };
     // it is a few megabytes: it loads when the section is near, and where it cannot (less motion, a saved data connection) the circle that opens from the cap does the same
@@ -1463,16 +1579,16 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
       items.forEach((i) => i.destroy());
       items = [];
       const v = s.vis, wide = v.r - v.l, small = wide < 1100;
-      const cw = Math.round(small ? Math.min(560, wide * 0.6) : 400), ch = Math.round(cw * 0.29), fs = Math.round(cw * 0.0625);
+      const cw = Math.round(small ? Math.min(500, wide * 0.42) : 400), ch = Math.round(cw * 0.29), fs = Math.round(cw * (small ? 0.072 : 0.0625));
       const spots = small
         ? [{ x: v.l + wide * 0.09, y: 1012, h: 300 }, { x: v.l + wide * 0.22, y: 1040, h: 340 }, { x: v.l + wide * 0.35, y: 1018, h: 260 }]
         : [{ x: 1080, y: 1040, h: 400 }, { x: 930, y: 1008, h: 340 }, { x: 1200, y: 1064, h: 290 }, { x: 800, y: 1050, h: 250 }, { x: 680, y: 1030, h: 200 }, { x: 560, y: 1052, h: 170 }].map((p) => ({ ...p, x: Math.max(p.x, v.l + 60) }));
       items = spots.map((sp, i) => W7.idea(fg, {
         text: IDEAS[i % IDEAS.length], cw, ch, fs, head: HEAD, phase: i * 1.7,
         spot: { x: sp.x, y: Math.min(sp.y, v.b - 26), h: sp.h },
-        target: small ? { x: v.l + wide * 0.5 + 20, y: 112 + (i % 2) * 26 } : SKY[i % SKY.length],
+        target: small ? { x: v.l + wide * (0.3 + (i % 2) * 0.05), y: 340 + (i % 2) * 70 } : SKY[i % SKY.length], // on a phone the cloud waits in the sky to the left of his cap, under the menu
       }));
-      loopLen = FIRST + (items.length - 1) * GAP + 3.75 + 5.5 + 3.5 + 1.6;
+      loopLen = FIRST + (items.length - 1) * GAP + 3.75 + W7.GROW + 3.5 + 1.6;
       if (reduce) items.forEach((it) => it.set(99, 0));
     };
     W7.stage(heroBox, { headX: HEAD.x, hx: (W) => (W < 900 ? 0.66 : 0.72), onfit: build });
@@ -1489,6 +1605,32 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
       const spin = (now) => { if (!on) return; heroFrame(now); requestAnimationFrame(spin); };
       new IntersectionObserver((es) => es.forEach((e) => { const was = on; on = e.isIntersecting; if (on && !was) requestAnimationFrame(spin); })).observe(heroBox);
     }
+  }
+
+
+  // the covers on a phone are a slider: the first time it comes into view it leans to the side and back once, so you see that it moves (and it stops the moment a finger touches it)
+  const marq = document.querySelector('.marq');
+  if (marq && motionOn && 'IntersectionObserver' in window && matchMedia('(max-width: 900px)').matches) {
+    const rows = [...marq.querySelectorAll('.marq-row')];
+    let touchedRows = false;
+    ['pointerdown', 'touchstart', 'wheel'].forEach((ev) => marq.addEventListener(ev, () => { touchedRows = true; }, { passive: true, once: true }));
+    const cio2 = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      cio2.disconnect();
+      rows.forEach((row, n) => {
+        const to = Math.min(row.scrollWidth - row.clientWidth, row.clientWidth * 0.46);
+        const t0 = performance.now() + 350 + n * 280, D = 2000;
+        row.style.scrollSnapType = 'none';
+        const tick = (t) => {
+          if (touchedRows) { row.style.scrollSnapType = ''; return; }
+          const k = Math.min(1, Math.max(0, (t - t0) / D));
+          row.scrollLeft = to * Math.sin(k * Math.PI);
+          if (k < 1) requestAnimationFrame(tick); else row.style.scrollSnapType = '';
+        };
+        requestAnimationFrame(tick);
+      });
+    }), { threshold: 0.5 });
+    cio2.observe(marq);
   }
 
   // the loops of the clay world: loaded after the page, played only while on the screen; for less motion and for a saved data connection the still picture stays
@@ -1645,6 +1787,40 @@ W7.setSprites((i) => 'img/tree-' + (i + 1) + '.webp');</script>
   numbers.forEach((el) => { el.textContent = '0'; });
   const nio = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { count(e.target); nio.unobserve(e.target); } }), { threshold: 0.9 });
   numbers.forEach((el) => nio.observe(el));
+})();
+</script>
+<script>
+(() => {
+  const KEY = 'woody-cookie-notice';
+  const box = document.getElementById('cookie-notice');
+  if (!box) return;
+  const ok = box.querySelector('.cn-ok');
+  const read = () => { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+  const write = () => { try { localStorage.setItem(KEY, '1'); } catch (e) { /* the page works without it */ } };
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let opener = null; // the button of the footer that opened the note, so the focus goes back to it
+  let pinned = false; // opened by hand: it stays, even when the form of the waiting list is on the screen
+  const show = (byHand) => {
+    pinned = byHand;
+    box.classList.remove('away');
+    box.hidden = false;
+    void box.offsetWidth;
+    box.dataset.state = 'shown';
+    if (byHand) ok.focus();
+  };
+  const hide = () => {
+    pinned = false;
+    box.dataset.state = 'hidden';
+    if (calm) box.hidden = true; else setTimeout(() => { if (box.dataset.state === 'hidden') box.hidden = true; }, 400);
+    if (opener) { opener.focus(); opener = null; }
+  };
+  ok.addEventListener('click', () => { write(); hide(); });
+  box.addEventListener('keydown', (e) => { if (e.key === 'Escape') { write(); hide(); } });
+  document.querySelectorAll('[data-cookie-settings]').forEach((b) => b.addEventListener('click', () => { opener = b; show(true); }));
+  if (!read()) setTimeout(() => show(false), 900);
+  // the note never sits on the form of the waiting list
+  const form = document.getElementById('join');
+  if (form && 'IntersectionObserver' in window) new IntersectionObserver((es) => es.forEach((e) => { if (!pinned) box.classList.toggle('away', e.isIntersecting); })).observe(form);
 })();
 </script>
 </body>
