@@ -853,20 +853,23 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   .marq-row img { flex: none; width: min(76vw, 360px); scroll-snap-align: center; }
   .marq-row img[aria-hidden='true'] { display: none; }
 }
+/* line breaks: headings and short leads balance their lines, text avoids a lonely last word */
+h1, h2, h3, .lede, .cmp-label b, .cmp-label span, .clay-idea span { text-wrap: balance; }
+@media (max-width: 560px) { #h-join { font-size: clamp(31px, 9.4vw, 52px); } }
+p, li, summary, dt, dd { text-wrap: pretty; }
 
-.cn { position: fixed; z-index: 60; left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; border-radius: 22px; background: rgba(14, 18, 26, .88); -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .13), 0 24px 60px -20px rgba(0, 0, 0, .8); color: #CBD2DD; font: 400 14.5px/1.5 'Geist', system-ui, sans-serif; opacity: 0; transform: translateY(18px); transition: opacity 320ms cubic-bezier(.2, 0, .2, 1), transform 420ms cubic-bezier(.2, 0, .2, 1); }
+.cn { position: fixed; z-index: 60; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 12px 20px; width: min(var(--cn-w, calc(var(--max, 1240px) + var(--pad, 32px) * 2)), calc(100vw - 28px)); padding: 9px 9px 9px 26px; border-radius: 999px; background: rgba(16, 20, 28, .82); -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .11), 0 24px 40px -24px rgba(0, 0, 0, .75); color: #CBD2DD; font: 400 15px/1.45 'Geist', system-ui, sans-serif; opacity: 0; transform: translate(-50%, 22px); transition: opacity 320ms cubic-bezier(.2, 0, .2, 1), transform 440ms cubic-bezier(.34, 1.36, .64, 1); }
 .cn[hidden] { display: none; }
-.cn[data-state='shown'] { opacity: 1; transform: none; }
-.cn.away { opacity: 0; transform: translateY(18px); pointer-events: none; }
-.cn-t { margin: 0; }
+.cn[data-state='shown'] { opacity: 1; transform: translate(-50%, 0); }
+.cn.away { opacity: 0; transform: translate(-50%, 22px); pointer-events: none; }
+.cn-t { flex: 1; max-width: none; margin: 0; }
 .cn-t b { color: #fff; font-weight: 600; }
-.cn-a { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.cn-a a { color: #fff; font-weight: 500; text-decoration: underline; text-decoration-color: #FF4D2E; text-decoration-thickness: 2px; text-underline-offset: 4px; }
-.cn-ok { flex: none; border: 0; border-radius: 999px; padding: 12px 22px; font: 600 15px/1 'Geist', system-ui, sans-serif; background: #FF4D2E; color: #0C0F14; cursor: pointer; box-shadow: 0 8px 22px -8px rgba(255, 77, 46, .7); transition: transform 200ms; }
+.cn-t a { color: #fff; font-weight: 500; text-decoration: underline; text-decoration-color: #FF4D2E; text-decoration-thickness: 2px; text-underline-offset: 4px; white-space: nowrap; }
+.cn-ok { flex: none; border: 0; border-radius: 999px; padding: 12px 24px; font: 600 15px/1 'Geist', system-ui, sans-serif; background: #FF4D2E; color: #0C0F14; cursor: pointer; box-shadow: 0 8px 22px -10px rgba(255, 77, 46, .8); transition: transform 200ms; }
 .cn-ok:hover { transform: translateY(-1px); }
-.cn a:focus-visible, .cn-ok:focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 8px; }
+.cn-t a:focus-visible, .cn-ok:focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 8px; }
 .cn-ok:focus-visible { border-radius: 999px; }
-@media (min-width: 700px) { .cn { left: 24px; right: auto; width: 540px; bottom: 24px; } }
+@media (max-width: 640px) { .cn { bottom: max(8px, env(safe-area-inset-bottom)); width: calc(100vw - 28px); padding: 8px 8px 8px 20px; border-radius: 30px; font-size: 14px; gap: 12px; } .cn-ok { padding: 12px 20px; } }
 @media (prefers-reduced-motion: reduce) { .cn { transition: none; } }
 
 .foot .foot-legal { display: flex; flex-wrap: wrap; gap: 10px 26px; }
@@ -1034,17 +1037,25 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   #pricing .pa { margin-top: 60px; }
   #pricing .pa .incl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 18px; }
   #pricing .price-note { margin-top: 40px; }
-  /* the three-button control: a radio group, shown only when the script runs, first in the block */
-  #pricing.pc-js .pc-pick { display: flex; position: sticky; top: 70px; z-index: 5; gap: 6px; margin: 0 0 12px; padding: 8px 0; background: var(--ground); }
-  #pricing .pc-pick label { flex: 1 1 0; min-width: 0; position: relative; }
+  /* the plan slider (only when the script runs): a capsule whose thumb glides to the plan in view, the three cards as a row you swipe, and the list of the plan under it */
+  #pricing.pc-js .pc-bar { position: sticky; top: 70px; z-index: 5; margin: 0 calc(var(--pad) * -1) 8px; padding: 8px var(--pad); background: var(--ground); }
+  #pricing.pc-js .pc-pick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); position: relative; padding: 5px; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 2px var(--ink); }
+  #pricing .pc-thumb { position: absolute; top: 5px; bottom: 5px; left: 5px; width: calc((100% - 10px) / 3); border-radius: 999px; background: var(--ink); transition: transform 460ms var(--ease-emphasized, cubic-bezier(.34, 1.36, .64, 1)); }
+  #pricing.pc-js[data-plan="team"] .pc-thumb { transform: translateX(100%); }
+  #pricing.pc-js[data-plan="business"] .pc-thumb { transform: translateX(200%); }
+  #pricing .pc-pick label { position: relative; z-index: 1; min-width: 0; }
   #pricing .pc-pick input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
-  #pricing .pc-pick span { display: grid; place-items: center; min-height: 58px; padding: 0 6px; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 2px var(--ink); font: 600 19px/1 'Geist', system-ui, sans-serif; color: var(--ink); transition: background-color var(--dur-base, 200ms), color var(--dur-base, 200ms); }
-  #pricing .pc-pick input:checked + span { background: var(--ink); color: #fff; }
-  #pricing .pc-pick input:focus-visible + span { outline: 3px solid var(--signal); outline-offset: 3px; }
-  #pricing.pc-js[data-plan="trial"] .tier:not([data-plan="trial"]), #pricing.pc-js[data-plan="trial"] .pc-plan:not([data-plan="trial"]),
-  #pricing.pc-js[data-plan="team"] .tier:not([data-plan="team"]), #pricing.pc-js[data-plan="team"] .pc-plan:not([data-plan="team"]),
-  #pricing.pc-js[data-plan="business"] .tier:not([data-plan="business"]), #pricing.pc-js[data-plan="business"] .pc-plan:not([data-plan="business"]) { display: none; }
-  #pricing.pc-js .pc-plan { margin-top: 14px; }
+  #pricing .pc-pick span { display: grid; place-items: center; min-height: 50px; padding: 0 6px; font: 600 19px/1 'Geist', system-ui, sans-serif; color: var(--ink); transition: color 260ms; }
+  #pricing .pc-pick input:checked + span { color: #fff; }
+  #pricing .pc-pick input:focus-visible + span { outline: 3px solid var(--signal); outline-offset: -3px; border-radius: 999px; }
+  #pricing.pc-js .tiers { position: relative; display: flex; gap: 12px; margin: 0 calc(var(--pad) * -1); padding: 4px var(--pad) 22px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  #pricing.pc-js .tiers::-webkit-scrollbar { display: none; }
+  #pricing.pc-js .tier { flex: 0 0 calc(100% - var(--pad) * 2 - 26px); scroll-snap-align: center; scroll-snap-stop: always; opacity: .5; transform: scale(.965); box-shadow: 0 0 0 1px rgba(12, 15, 20, .07), 0 18px 28px -20px rgba(70, 45, 15, .5); transition: opacity 320ms, transform 440ms var(--ease-out, ease); }
+  #pricing.pc-js .tier.on { opacity: 1; transform: none; }
+  #pricing.pc-js[data-plan="trial"] .pc-plan:not([data-plan="trial"]),
+  #pricing.pc-js[data-plan="team"] .pc-plan:not([data-plan="team"]),
+  #pricing.pc-js[data-plan="business"] .pc-plan:not([data-plan="business"]) { display: none; }
+  #pricing.pc-js .pc-plan { margin-top: 4px; animation: pc-in 440ms var(--ease-out, ease) both; }
   #pricing.pc-js .pc-plan > h3 { display: none; }
   #pricing.pc-js .pc-plan .eb:first-of-type { margin-top: 14px; }
 }
@@ -1054,8 +1065,10 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   #pricing .pc-pick span { font-size: 18px; }
   #pricing .pa .incl-grid { gap: 20px 14px; }
 }
+@keyframes pc-in { from { opacity: 0; transform: translateY(10px); } }
 @media (prefers-reduced-motion: reduce) {
-  #pricing .pc-pick span { transition: none; }
+  #pricing .pc-pick span, #pricing .pc-thumb, #pricing.pc-js .tier { transition: none; }
+  #pricing.pc-js .pc-plan { animation: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1070,8 +1083,8 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
 <body>
 <a class="skip" href="#tour">Skip to the content</a>
 <div class="cn" id="cookie-notice" role="region" aria-label="Cookie notice" hidden>
-  <p class="cn-t"><b>No cookies here.</b> Cloudflare counts visits without them. The only thing stored in your browser is that you closed this note.</p>
-  <div class="cn-a"><a href="privacy/">Privacy policy</a><button type="button" class="cn-ok">Got it</button></div>
+  <p class="cn-t"><b>No cookies here.</b> Cloudflare counts visits without them. <a href="privacy/">Privacy policy</a></p>
+  <button type="button" class="cn-ok">Got it</button>
 </div>
 
 <header class="bar">
@@ -1239,15 +1252,16 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   <div class="wrap">
     <div class="price-head rv">
       <h2 id="h-price">Try it free <em>for 7 days.</em></h2>
-      <p class="lede">Every plan has the whole product. Size, the night shift and what runs outside the interface differ.</p>
+      <p class="lede">Every plan is the whole product. They differ in size, in the night shift and in what runs outside the interface.</p>
     </div>
 
     <div class="pw">
-      <div class="pc-pick" role="radiogroup" aria-label="Show one plan">
+      <div class="pc-bar"><div class="pc-pick" role="radiogroup" aria-label="Show one plan">
+        <i class="pc-thumb" aria-hidden="true"></i>
         <label><input type="radio" name="pc-plan" value="trial"><span>Trial</span></label>
         <label><input type="radio" name="pc-plan" value="team" checked><span>Team</span></label>
         <label><input type="radio" name="pc-plan" value="business"><span>Business</span></label>
-      </div>
+      </div></div>
       <div class="tiers rv" style="--n:1">
         <article class="tier" data-plan="trial" aria-labelledby="pt-trial">
           <div class="stage"><div class="grove-art" style="aspect-ratio:360 / 210;--w:0.4160" aria-hidden="true"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:10.83%;bottom:2.86%;height:80.75%;--i:0;--d:0.22s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:51.97%;bottom:2.86%;height:85.31%;--i:1;--d:3.76s;z-index:0"><img class="gt" src="img/tree-5.webp" width="250" height="601" alt="" loading="lazy" decoding="async" style="left:81.89%;bottom:2.86%;height:88.98%;--i:2;--d:2.17s;z-index:0"></div></div>
@@ -1408,14 +1422,47 @@ h1 em, h2 em, h3 em { font-style: normal; font-weight: inherit; }
   </div>
 </section>
 <script>
-/* the phone plan switcher: the radio group shows one card and one list at a time; without this script all three stay stacked */
+/* the plan slider on a phone: the capsule, the row of cards you swipe and the list of the plan stay in step; without this script all three plans stack */
 (() => {
   const s = document.getElementById('pricing');
   if (!s) return;
-  const radios = s.querySelectorAll('input[name="pc-plan"]');
-  const show = (r) => { if (r.checked) s.setAttribute('data-plan', r.value); };
+  const radios = [...s.querySelectorAll('input[name="pc-plan"]')];
+  const tiers = s.querySelector('.tiers');
+  const cards = [...tiers.querySelectorAll('.tier')];
+  const phone = matchMedia('(max-width: 720px)');
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
+  let lock = 0;
   s.classList.add('pc-js');
-  radios.forEach((r) => { show(r); r.addEventListener('change', () => show(r)); });
+  const show = (plan) => {
+    s.setAttribute('data-plan', plan);
+    radios.forEach((r) => { r.checked = r.value === plan; });
+    cards.forEach((c) => c.classList.toggle('on', c.dataset.plan === plan));
+  };
+  const goTo = (plan, instant) => {
+    const c = cards.find((x) => x.dataset.plan === plan);
+    if (!c || !phone.matches) return;
+    const still = instant || calm.matches;
+    lock = performance.now() + (still ? 0 : 700);
+    tiers.scrollTo({ left: c.offsetLeft - (tiers.clientWidth - c.offsetWidth) / 2, behavior: still ? 'instant' : 'smooth' });
+  };
+  radios.forEach((r) => r.addEventListener('change', () => { show(r.value); goTo(r.value, false); }));
+  let raf = 0;
+  tiers.addEventListener('scroll', () => {
+    if (raf || performance.now() < lock || !phone.matches) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const mid = tiers.scrollLeft + tiers.clientWidth / 2;
+      let best = cards[0], d = Infinity;
+      cards.forEach((c) => { const k = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (k < d) { d = k; best = c; } });
+      if (best.dataset.plan !== s.getAttribute('data-plan')) show(best.dataset.plan);
+    });
+  }, { passive: true });
+  tiers.addEventListener('scrollend', () => { lock = 0; });
+  show('team');
+  const start = () => goTo(s.getAttribute('data-plan'), true);
+  if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
+  if (phone.addEventListener) phone.addEventListener('change', start); else phone.addListener(start);
+  addEventListener('resize', start);
 })();
 </script>
 

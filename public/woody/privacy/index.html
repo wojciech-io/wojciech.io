@@ -18,7 +18,7 @@
 @font-face { font-family: 'Geist'; font-weight: 600; font-display: swap; src: url('../fonts/Geist-SemiBold.woff2') format('woff2'); }
 @font-face { font-family: 'Fraunces'; font-weight: 100 900; font-style: normal; font-display: swap; src: url('../fonts/fraunces-latin-opsz-normal.woff2') format('woff2'); }
 @font-face { font-family: 'Geist Mono'; font-weight: 500; font-display: swap; src: url('../fonts/GeistMono-Medium.woff2') format('woff2'); }
-:root { --ink: #0C0F14; --signal: #FF4D2E; --serif: 'Fraunces', 'Iowan Old Style', Charter, Georgia, serif; }
+:root { --ink: #0C0F14; --signal: #FF4D2E; --cn-w: 760px; --serif: 'Fraunces', 'Iowan Old Style', Charter, Georgia, serif; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 90px; }
 body { background: var(--ink); color: #CBD2DD; font: 400 18px/1.65 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
@@ -31,6 +31,8 @@ body { background: var(--ink); color: #CBD2DD; font: 400 18px/1.65 'Geist', syst
 .lg-back { padding: 10px 14px; border-radius: 999px; color: #CBD2DD; font-size: 15px; font-weight: 500; text-decoration: none; }
 .lg-back:hover { color: #fff; background: rgba(255, 255, 255, .08); }
 .lg { max-width: 680px; margin: 0 auto; padding: 72px 24px 96px; }
+.lg h1, .lg h2 { text-wrap: balance; }
+.lg p, .lg li { text-wrap: pretty; }
 .lg h1 { font: 480 clamp(40px, 7vw, 60px)/1.04 var(--serif); font-variation-settings: 'opsz' 72; letter-spacing: -.016em; color: #fff; }
 .lg-date { margin-top: 16px; font: 500 13px/1 'Geist Mono', monospace; letter-spacing: .04em; color: #9AA3B2; }
 .lg-lead { margin-top: 28px; font-size: 20px; color: #E8ECF2; }
@@ -43,27 +45,26 @@ body { background: var(--ink); color: #CBD2DD; font: 400 18px/1.65 'Geist', syst
 .lg-foot a, .lg-foot button { padding: 0; border: 0; background: none; color: #A3ACBA; font: inherit; text-decoration: none; cursor: pointer; }
 .lg-foot a:hover, .lg-foot button:hover { color: #fff; }
 
-.cn { position: fixed; z-index: 60; left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; border-radius: 22px; background: rgba(14, 18, 26, .88); -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .13), 0 24px 60px -20px rgba(0, 0, 0, .8); color: #CBD2DD; font: 400 14.5px/1.5 'Geist', system-ui, sans-serif; opacity: 0; transform: translateY(18px); transition: opacity 320ms cubic-bezier(.2, 0, .2, 1), transform 420ms cubic-bezier(.2, 0, .2, 1); }
+.cn { position: fixed; z-index: 60; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 12px 20px; width: min(var(--cn-w, calc(var(--max, 1240px) + var(--pad, 32px) * 2)), calc(100vw - 28px)); padding: 9px 9px 9px 26px; border-radius: 999px; background: rgba(16, 20, 28, .82); -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .11), 0 24px 40px -24px rgba(0, 0, 0, .75); color: #CBD2DD; font: 400 15px/1.45 'Geist', system-ui, sans-serif; opacity: 0; transform: translate(-50%, 22px); transition: opacity 320ms cubic-bezier(.2, 0, .2, 1), transform 440ms cubic-bezier(.34, 1.36, .64, 1); }
 .cn[hidden] { display: none; }
-.cn[data-state='shown'] { opacity: 1; transform: none; }
-.cn.away { opacity: 0; transform: translateY(18px); pointer-events: none; }
-.cn-t { margin: 0; }
+.cn[data-state='shown'] { opacity: 1; transform: translate(-50%, 0); }
+.cn.away { opacity: 0; transform: translate(-50%, 22px); pointer-events: none; }
+.cn-t { flex: 1; max-width: none; margin: 0; }
 .cn-t b { color: #fff; font-weight: 600; }
-.cn-a { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.cn-a a { color: #fff; font-weight: 500; text-decoration: underline; text-decoration-color: #FF4D2E; text-decoration-thickness: 2px; text-underline-offset: 4px; }
-.cn-ok { flex: none; border: 0; border-radius: 999px; padding: 12px 22px; font: 600 15px/1 'Geist', system-ui, sans-serif; background: #FF4D2E; color: #0C0F14; cursor: pointer; box-shadow: 0 8px 22px -8px rgba(255, 77, 46, .7); transition: transform 200ms; }
+.cn-t a { color: #fff; font-weight: 500; text-decoration: underline; text-decoration-color: #FF4D2E; text-decoration-thickness: 2px; text-underline-offset: 4px; white-space: nowrap; }
+.cn-ok { flex: none; border: 0; border-radius: 999px; padding: 12px 24px; font: 600 15px/1 'Geist', system-ui, sans-serif; background: #FF4D2E; color: #0C0F14; cursor: pointer; box-shadow: 0 8px 22px -10px rgba(255, 77, 46, .8); transition: transform 200ms; }
 .cn-ok:hover { transform: translateY(-1px); }
-.cn a:focus-visible, .cn-ok:focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 8px; }
+.cn-t a:focus-visible, .cn-ok:focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 8px; }
 .cn-ok:focus-visible { border-radius: 999px; }
-@media (min-width: 700px) { .cn { left: 24px; right: auto; width: 540px; bottom: 24px; } }
+@media (max-width: 640px) { .cn { bottom: max(8px, env(safe-area-inset-bottom)); width: calc(100vw - 28px); padding: 8px 8px 8px 20px; border-radius: 30px; font-size: 14px; gap: 12px; } .cn-ok { padding: 12px 20px; } }
 @media (prefers-reduced-motion: reduce) { .cn { transition: none; } }
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to the content</a>
 <div class="cn" id="cookie-notice" role="region" aria-label="Cookie notice" hidden>
-  <p class="cn-t"><b>No cookies here.</b> Cloudflare counts visits without them. The only thing stored in your browser is that you closed this note.</p>
-  <div class="cn-a"><a href="../privacy/">Privacy policy</a><button type="button" class="cn-ok">Got it</button></div>
+  <p class="cn-t"><b>No cookies here.</b> Cloudflare counts visits without them. <a href="../privacy/">Privacy policy</a></p>
+  <button type="button" class="cn-ok">Got it</button>
 </div>
 <header class="lg-bar">
   <a class="brand" href="../" aria-label="Woody, back to the page"><img src="../img/favicon-192.png" width="38" height="38" alt=""><span>Woody</span></a>
