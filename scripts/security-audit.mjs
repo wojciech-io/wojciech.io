@@ -55,16 +55,59 @@ if (!raw) {
   process.exit(2);
 }
 
-const report = JSON.parse(raw);
-const vulns = Object.values(report.vulnerabilities ?? {});
-const severe = vulns.filter((v) => v.severity === 'high' || v.severity === 'critical');
+// Advisories waived by ID, not by package name. A package counts as waived only
+// when every high/critical path to it runs through one of these, so the same
+// packages still fail the gate on any other advisory. Each entry needs a reason
+// and an exit condition.
+const WAIVED_ADVISORIES = new Map([
+  [
+    // picomatch ReDoS through repeated extglobs. No patched release exists: the
+    // range is <=4.0.7 and 4.0.7 is the newest version. picomatch runs only at
+    // build and test time, on glob patterns written in this repo (Astro content
+    // globs, Vite, Vitest). Every site builds static and Pages Functions do not
+    // import it. Remove this entry once picomatch ships a fix.
+    'GHSA-fc5q-39xc-vjpf',
+    'picomatch ReDoS, no patched release, build-time only',
+  ],
+]);
 
-const blocking = severe.filter((v) => !DEV_ONLY.has(v.name));
+const report = JSON.parse(raw);
+const byName = report.vulnerabilities ?? {};
+const vulns = Object.values(byName);
+const isSevere = (severity) => severity === 'high' || severity === 'critical';
+const severe = vulns.filter((v) => isSevere(v.severity));
+
+// True when every high/critical cause of `name` is a waived advisory, either
+// directly or through dependencies that are themselves only waived.
+function onlyWaivedAdvisories(name, path = new Set()) {
+  if (path.has(name)) return true;
+  const v = byName[name];
+  if (!v) return true;
+  const next = new Set(path).add(name);
+  return v.via.every((via) => {
+    if (typeof via === 'string') {
+      const dep = byName[via];
+      return !dep || !isSevere(dep.severity) || onlyWaivedAdvisories(via, next);
+    }
+    const id = String(via.url ?? '').split('/').pop();
+    return !isSevere(via.severity) || WAIVED_ADVISORIES.has(id);
+  });
+}
+
 const waived = severe.filter((v) => DEV_ONLY.has(v.name));
+const runtime = severe.filter((v) => !DEV_ONLY.has(v.name));
+const waivedByAdvisory = runtime.filter((v) => onlyWaivedAdvisories(v.name));
+const blocking = runtime.filter((v) => !onlyWaivedAdvisories(v.name));
 
 if (waived.length) {
   console.log(
     `Waived ${waived.length} build/dev-only advisory(ies): ${waived.map((v) => `${v.name} (${v.severity})`).join(', ')}`,
+  );
+}
+
+if (waivedByAdvisory.length) {
+  console.log(
+    `Waived by advisory ID (${[...WAIVED_ADVISORIES.keys()].join(', ')}): ${waivedByAdvisory.map((v) => v.name).join(', ')}`,
   );
 }
 
