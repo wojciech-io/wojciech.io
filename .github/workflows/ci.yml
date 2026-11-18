@@ -159,7 +159,7 @@ jobs:
               timeout --kill-after=10 "$1" ./node_modules/.bin/playwright install-deps webkit
           }
 
-          if ! install_deps 3; then
+          if ! install_deps 120; then
             echo "::warning::WebKit system packages were not installed within 120 s. Retrying once without the regional mirror."
             sudo dpkg --configure -a
             if [ -f /etc/apt/apt-mirrors.txt ]; then
