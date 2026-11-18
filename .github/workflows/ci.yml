@@ -97,18 +97,88 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
 
+      # Binaries only. Their apt libraries come from the step below, which runs
+      # whether or not this cache hit.
       - name: Install Playwright browsers
         if: steps.pw-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium webkit
+        run: npx playwright install chromium webkit
 
-      # A restored cache brings the binaries but not the apt libraries they link
-      # against. Dropping this step was tried and failed loudly: WebKit could not
-      # start because ubuntu-latest does not ship libevent-2.1.so.7. Chromium was
-      # fine, so the cost is WebKit's alone, and mobile-safari coverage is worth
-      # keeping on a site whose iOS behaviour has bitten before.
+      # The browser cache brings the binaries but not the apt libraries they
+      # link against. Dropping the install was tried and failed loudly: WebKit
+      # could not start because ubuntu-latest does not ship libevent-2.1.so.7.
+      # Chromium was fine, so the cost is WebKit's alone, and mobile-safari
+      # coverage is worth keeping on a site whose iOS behaviour has bitten before.
+      #
+      # That cost is 186 packages, 139 MB, fetched from whichever Ubuntu mirror
+      # the runner's cloud assigns. The image fails over to archive.ubuntu.com
+      # only when a mirror goes silent for 15 s. On 18.11.2026 the EC2 mirror
+      # did not go silent, it trickled at 60 to 130 KB/s, and two runs in a row
+      # sat in this step until the 10-minute job timeout cancelled them, which
+      # held every deploy until someone re-ran the job. Hence two guards: the
+      # .deb files are cached, so apt mostly reads them from disk, and the
+      # install is bounded, with one retry that skips the regional mirror.
+      #
+      # Keyed on the image release date, which AWS and Azure runners share
+      # (their full ImageVersion differs), so a new image starts from the
+      # previous one's packages and apt fetches only what changed.
+      - name: Resolve runner image
+        id: image
+        run: |
+          echo "os=${ImageOS:-unknown}" >> "$GITHUB_OUTPUT"
+          echo "release=${ImageVersion%%.*}" >> "$GITHUB_OUTPUT"
+
+      - name: Cache WebKit system packages
+        id: apt-cache
+        uses: actions/cache@3edfce9056124e459a23f683a21433670d47daca # v4
+        with:
+          path: ~/.cache/apt-debs
+          key: apt-webkit-${{ steps.image.outputs.os }}-${{ steps.image.outputs.release }}-pw${{ steps.pw.outputs.version }}
+          restore-keys: |
+            apt-webkit-${{ steps.image.outputs.os }}-${{ steps.image.outputs.release }}-
+            apt-webkit-${{ steps.image.outputs.os }}-
+
       - name: Install browser system dependencies
-        if: steps.pw-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps webkit
+        timeout-minutes: 6
+        env:
+          APT_CACHE_HIT: ${{ steps.apt-cache.outputs.cache-hit }}
+        run: |
+          debs="$HOME/.cache/apt-debs"
+          mkdir -p "$debs"
+          echo 'APT::Keep-Downloaded-Packages "true";' | sudo tee /etc/apt/apt.conf.d/zz-keep-debs > /dev/null
+          # apt checks each file against the index and re-downloads any that
+          # no longer match, so a stale cache costs time, never correctness.
+          if compgen -G "$debs/*.deb" > /dev/null; then
+            sudo cp "$debs"/*.deb /var/cache/apt/archives/
+            echo "Restored $(ls "$debs"/*.deb | wc -l) cached packages"
+          fi
+
+          # Run as root so timeout can kill apt-get itself. As the runner user
+          # it could only signal the playwright wrapper above sudo.
+          install_deps() {
+            sudo env "PATH=$PATH" DEBIAN_FRONTEND=noninteractive \
+              timeout --kill-after=10 "$1" ./node_modules/.bin/playwright install-deps webkit
+          }
+
+          if ! install_deps 120; then
+            echo "::warning::WebKit system packages were not installed within 120 s. Retrying once without the regional mirror."
+            sudo dpkg --configure -a
+            if [ -f /etc/apt/apt-mirrors.txt ]; then
+              cat /etc/apt/apt-mirrors.txt
+              sudo sed -i '/priority:1$/d' /etc/apt/apt-mirrors.txt
+            fi
+            install_deps 180
+          fi
+
+          # Keep this run's downloads for the next one. autoclean drops versions
+          # the index no longer lists, so the cache does not grow across images.
+          if [ "$APT_CACHE_HIT" != "true" ]; then
+            sudo apt-get autoclean -qq
+            rm -f "$debs"/*.deb
+            if compgen -G "/var/cache/apt/archives/*.deb" > /dev/null; then
+              cp /var/cache/apt/archives/*.deb "$debs"/
+            fi
+            du -sh "$debs"
+          fi
 
       # This job already waits on build, so rebuilding the site here was pure
       # duplicated work. Take that job's output instead; PW_SKIP_BUILD tells the
