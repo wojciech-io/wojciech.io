@@ -13,7 +13,7 @@
 <title>Marketing · Wojciech Luszczynski</title>
 <meta property="og:image" content="assets/real/loft-og.webp">
 <meta property="og:title" content="Wojciech Luszczynski">
-<meta name="description" content="Wojciech Luszczynski is an AI-native revenue operator in Berlin. He builds revenue systems, then runs them: GTM, growth and the tools behind them.">
+<meta name="description" content="Wojciech Luszczynski is an AI-native revenue operator. He builds revenue systems, then runs them: GTM, growth and the tools behind them.">
 <script>(function(){var d=document.documentElement,m=null;try{m=localStorage.getItem("wl-mode")}catch(e){}if(m!=="light"&&m!=="dark")m=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";d.dataset.mode=m;d.style.colorScheme=m})()</script>
 <style>
 @font-face{font-family:"Mona Sans";src:url(fonts/mona-latin.woff2) format("woff2");font-weight:200 900;font-stretch:75% 125%;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
@@ -2112,6 +2112,32 @@ html[data-mode="light"] .bf__ln .ok--a{stroke:#86A800}
   .hero .hh .l2{top:calc(11vh + 3.05em)}
   .hero__me{height:clamp(40vh,calc(89vh - var(--hfs) * 4.95 - 18px),60vh)}
 }
+/* contour lines on the cream sections stay dark ink in both modes (the hero and Follow the work never turn dark) */
+html .hero__ct,html[data-mode="dark"] .hero__ct{color:#282C20!important;opacity:.11!important}
+.rl>.contours{color:#282C20!important;opacity:.09!important}
+.rl .rl__pin{position:relative;z-index:1}
+/* follow the work: one card shape for every channel. The picture on top with the channel chip, then what it is,
+   the title in up to three lines and what you do next, all on the same dark base and at the same height */
+.rl .rl__s{align-items:flex-start}
+.rl__c.rl__x{width:22rem;height:31rem;display:flex;flex-direction:column;background:#1b1d15;color:#F4F4ED;transform:none!important;opacity:1!important;box-shadow:0 2rem 3.2rem -2.4rem rgba(28,31,22,.6),0 0 0 1px rgba(28,31,22,.06)}
+.rl__c.rl__x::after{display:none}
+.rl__x .rl__m{position:relative;display:block;flex:0 0 15.5rem;overflow:hidden;background:#0f110b}
+.rl__x .rl__m>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.1,1)}
+.rl__x:hover .rl__m>img{transform:scale(1.05)}
+.rl__x .rl__m>.cv{position:absolute;inset:0}
+.rl__x .rl__k{left:.9rem;top:.9rem}
+.rl__x .rl__pl{top:50%;width:4.4rem;height:4.4rem;margin:-2.2rem 0 0 -2.2rem}
+.rl__x .rl__code{inset:3.9rem 1.2rem auto;font-size:12.5px;line-height:1.5}
+.rl__x .rl__win{top:3.7rem;height:calc(100% - 4.6rem);max-width:calc(100% - 2rem)}
+.rl__x .rl__b{position:static;flex:1;display:flex;flex-direction:column;gap:.6rem;padding:1.15rem 1.3rem 1.25rem;min-height:0}
+.rl__x .rl__b small{color:rgb(244 244 237/.7)}
+.rl__x .rl__b b{font:600 19px/1.28 var(--sans);text-shadow:none;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rl__x .rl__b em{margin-top:auto;display:inline-flex;align-items:center;gap:.5rem;font:600 12px/1 var(--sans);font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:#D2FF00}
+.rl__x .rl__b em i{font-style:normal;transition:transform .3s}.rl__x:hover .rl__b em i{transform:translateX(4px)}
+.rl__x.rl__x--es .rl__b{background:#D2FF00;color:#1c1f16}
+.rl__x.rl__x--es .rl__b small{color:#1c1f16}.rl__x.rl__x--es .rl__b small::before{background:#1c1f16}
+.rl__x.rl__x--es .rl__b b{color:#1c1f16}.rl__x.rl__x--es .rl__b em{color:#1c1f16}
+@media (max-width:767px){.rl__c.rl__x{width:17.5rem;height:27rem}.rl__x .rl__m{flex-basis:12.5rem}.rl__x .rl__b b{font-size:16px}}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -2403,7 +2429,8 @@ if(D&&!RM){
 addEventListener('load',()=>{ScrollTrigger.sort();ScrollTrigger.refresh()});
 /* reel: real posts, talks, repos and notes come off a spool at the right edge and unroll as the page scrolls */
 (()=>{const sec=document.getElementById('socials'),vp=sec&&sec.querySelector('.rl__vp'),st=document.getElementById('reel');if(!st)return;const cs=[...st.children];
- const curl=()=>{const W=innerWidth;cs.forEach(c=>{const r=c.getBoundingClientRect(),t=Math.min(1,Math.max(0,(W-r.left)/(W*.4)));c.style.transform='perspective(1600px) rotateY('+(-(1-t)*46).toFixed(2)+'deg)';c.style.opacity=(.35+.65*t).toFixed(3);c.classList.toggle('on',t>.85)})};
+ /* cards stay flat and fully visible: the spool curl tilted and faded them, which read as uneven */
+ const curl=()=>cs.forEach(c=>c.classList.add('on'));
  const vids=st.querySelectorAll('video');ScrollTrigger.create({trigger:sec,start:'top bottom',end:'bottom top',onToggle:s=>vids.forEach(v=>s.isActive?v.play().catch(()=>{}):v.pause())});
  if(RM){cs.forEach(c=>c.style.opacity=1);return}
  if(D){const dist=()=>Math.max(0,cs[cs.length-1].offsetLeft-innerWidth*.56);
