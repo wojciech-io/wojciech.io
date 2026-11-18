@@ -2363,6 +2363,15 @@ html:not([data-mode="light"]) .lx-h--solo:has(img[src*="marketing-team"]){--sf2:
 html:not([data-mode="light"]) .lx-h--solo:has(img[src*="growth-team"]){--sf2:#0f6b32;--sh:15 107 50}
 /* phone: the figure sat on the right edge with his head cut by it; show the right end of the panel so the whole figure is in frame */
 @media (max-width:767px){.lx-h--solo{--opm:100% 40%!important}}
+/* agent in 2.5D: the canvas sits over the flat image, which keeps the size and hides once WebGL runs. The new figure faces right with his face
+   at the right edge of the frame, so the old fade on that edge is replaced by a fade on the left and bottom only. */
+.s.sh .sh__ag .sh__gl{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.s.sh .sh__ag.gl img{visibility:hidden}
+.s.sh .sh__ag{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%),linear-gradient(180deg,#000 56%,transparent 84%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 16%),linear-gradient(180deg,#000 56%,transparent 84%);mask-composite:intersect}
+@media (min-width:1000px){
+  /* the face ends just left of the night column wherever the window is centred, so the text never runs over it */
+  .s.sh .sh__ag{height:calc(var(--Hr) * .85);left:calc(50% - 345px - var(--Hr) * .688);top:var(--top)}
+}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -3309,6 +3318,36 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
     icons.forEach(el=>{el.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')show(el)});el.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch')off()});
       el.addEventListener('click',e=>{e.stopPropagation();if(cur===el&&tip.classList.contains('in'))off(true);else show(el)})});
     document.addEventListener('click',()=>off(true));addEventListener('scroll',()=>{if(cur)off()},{passive:true})})();
+
+  /* agent, 2.5D: the cut-out and its depth map on a displaced plane, tilted a little by the pointer, the lime seams pulse.
+     The flat image stays underneath as the fallback (no WebGL, reduced motion renders one still frame). Textures are plain image files, so the CSP needs no blob:. */
+  (()=>{const sec=document.querySelector('.sh'),cv=sec&&sec.querySelector('.sh__gl');if(!cv||!window.THREE||!('IntersectionObserver' in window))return;
+    const T=THREE,fig=cv.parentElement,img=fig.querySelector('img'),RM=matchMedia('(prefers-reduced-motion: reduce)').matches,FINE=matchMedia('(hover:hover) and (pointer:fine)').matches;
+    let started=false;
+    const start=()=>{if(started)return;started=true;
+      let r;try{r=new T.WebGLRenderer({canvas:cv,alpha:true,antialias:true,premultipliedAlpha:false,powerPreference:'low-power'})}catch(e){return}
+      r.setClearColor(0x000000,0);
+      const W=+cv.getAttribute('width'),H=+cv.getAttribute('height'),asp=W/H,sc=new T.Scene(),cam=new T.PerspectiveCamera(22,asp,.1,30);cam.position.set(0,0,1/Math.tan(11*Math.PI/180));
+            const ld=new T.TextureLoader();let n=0;const tex={};
+      const done=()=>{if(++n<2)return;
+        const mat=new T.ShaderMaterial({transparent:true,uniforms:{map:{value:tex.c},dm:{value:tex.d},k:{value:.3},t:{value:0}},
+          vertexShader:'uniform sampler2D dm;uniform float k;varying vec2 vUv;void main(){vUv=uv;float d=texture2D(dm,uv).r;vec3 p=position;p.z+=(d-.35)*k;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}',
+          fragmentShader:'uniform sampler2D map;uniform float t;varying vec2 vUv;void main(){vec4 c=texture2D(map,vUv);if(c.a<.03)discard;float g=max(0.,c.g-max(c.r,c.b)-.04);float pl=.6+.4*sin(t*1.7);c.rgb+=vec3(.82,1.,0.)*g*pl*2.4;gl_FragColor=c;}'});
+        const mesh=new T.Mesh(new T.PlaneGeometry(2*asp,2,innerWidth<1000?240:420,innerWidth<1000?290:500),mat);sc.add(mesh);
+        const size=()=>{const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;r.setPixelRatio(Math.min(devicePixelRatio||1,2));r.setSize(w,h,false)};size();
+        if(window.ResizeObserver)new ResizeObserver(size).observe(cv);
+        let tx=0,ty=0,x=0,y=0,vis=true,raf=0,t0=performance.now();
+        const frame=now=>{raf=0;const t=(now-t0)/1000;x+=(tx-x)*.07;y+=(ty-y)*.07;
+          mesh.rotation.y=x*.34+(RM?0:Math.sin(t*.45)*.05);mesh.rotation.x=y*.14+(RM?0:Math.sin(t*.37)*.02);mat.uniforms.t.value=t;r.render(sc,cam);
+          if(vis&&!RM&&!document.hidden)raf=requestAnimationFrame(frame)};
+        const go=()=>{if(!raf)raf=requestAnimationFrame(frame)};
+        new IntersectionObserver(e=>{vis=e[0].isIntersecting;if(vis)go()},{rootMargin:'80px'}).observe(sec);
+        if(FINE&&!RM){sec.addEventListener('pointermove',e=>{const b=sec.getBoundingClientRect();tx=(e.clientX-b.left)/b.width*2-1;ty=(e.clientY-b.top)/b.height*2-1});sec.addEventListener('pointerleave',()=>{tx=0;ty=0})}
+        document.addEventListener('visibilitychange',()=>{if(!document.hidden)go()});
+        fig.classList.add('gl');go()};
+      const load=(u,k)=>ld.load(u,t=>{t.minFilter=T.LinearFilter;t.generateMipmaps=false;tex[k]=t;done()},undefined,()=>{});
+      load(img.currentSrc||img.src,'c');load(cv.getAttribute('data-depth'),'d')};
+    new IntersectionObserver((e,o)=>{if(e[0].isIntersecting){o.disconnect();start()}},{rootMargin:'600px'}).observe(sec)})();
 
 /* pillars (.pl3). Desktop pins the stage and opens one pillar at a time: the rule under the row runs out, each
    column draws its line down from the rule with a branch to every item, then the item slides in. Phones keep every
