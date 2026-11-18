@@ -2043,6 +2043,13 @@ html .mn .mn__links a[aria-current="page"] span::after{display:none}
 .mnp__c b{font:600 12px/1.2 var(--sans);font-stretch:100%;letter-spacing:.06em;text-transform:uppercase;color:#D2FF00}
 .mnp__c span{font:400 15px/1.5 var(--sans);color:rgb(244 244 237/.78)}
 html .mn .mn__foot a:not(.btn),html .mn .mn__foot button,html .mn .mn__foot .mn__lang a,html .mn .mn__foot .mn__lang span{font:600 12px/1 var(--sans)!important;font-stretch:100%!important;letter-spacing:.06em!important;text-transform:uppercase}
+/* menu photo: full height from the top (an absolute grid child takes its grid cell as the box, so drop the placement),
+   no leftover 40 px shift from the opening tween, and a top fade that ends in the menu colour so no edge shows */
+@media (min-width:768px){
+  .mn .mn__ph{grid-column:auto!important;grid-row:auto!important;top:0!important;bottom:74px!important}
+  .mn .mn__ph>.mnp{transform:none!important}
+  .mnp::after{background:linear-gradient(90deg,#1c1f16 0%,rgba(28,31,22,.55) 26%,rgba(28,31,22,0) 55%),linear-gradient(0deg,#1c1f16 0%,rgba(28,31,22,0) 28%),linear-gradient(180deg,#1c1f16 0%,rgba(28,31,22,.6) 12%,rgba(28,31,22,0) 30%)!important}
+}
 /* one active state in the menu footer: language and colour mode both show a lime pill */
 html .mn .mn__lang>*{border-radius:99px}
 html .mn .mn__mode{box-shadow:inset 0 0 0 1px rgb(244 244 237/.16)}
@@ -2096,6 +2103,15 @@ html[data-mode="light"] .bf__ln .ok--a{stroke:#86A800}
 @media (max-width:767px){.bf__it em{display:none!important}.bf__it .nm span{white-space:nowrap}.bf__no{display:none}}
 .bf__ln .ok--b{stroke:currentColor;stroke-dasharray:none;animation:none;stroke-width:1.2;stroke-opacity:.38}
 .bf__ln .ok--c{stroke:currentColor;stroke-dasharray:1 6;stroke-width:1.8;stroke-opacity:.5;animation:bfdash 2.2s linear infinite}
+/* phone: the claims centred above him, the photo as tall as the room under them allows */
+@media (max-width:599px){
+  .hero{--hfs:clamp(40px,13.4vw,56px)}
+  .hero .hh{font-size:var(--hfs)}
+  .hero .hh .l1,.hero .hh .l2{left:var(--gut);right:var(--gut);text-align:center}
+  .hero .hh .l1{top:11vh}
+  .hero .hh .l2{top:calc(11vh + 3.05em)}
+  .hero__me{height:clamp(40vh,calc(89vh - var(--hfs) * 4.95 - 18px),60vh)}
+}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -2813,7 +2829,7 @@ function makeGraph3D(cv,o){
   const sx=document.getElementById('sx');if(sx)new MutationObserver(()=>{if(sx.classList.contains('on'))gsap.from(sx.querySelectorAll('.sx__r:not([hidden])'),{yPercent:60,opacity:0,duration:.7,stagger:.025,ease:'power3.out',delay:.25,overwrite:true})}).observe(sx,{attributes:true,attributeFilter:['class']});
 })();
 /* menu previews */
-const MPV={work:['assets/tools/woody-review.webp','Work','Apps, demos and repos with sample data.',1],gtm:['assets/lens/team-gtm-tall.webp','GTM','Pipeline, RevOps and outbound in one model.'],marketing:['assets/lens/team-marketing-tall.webp','Marketing','Positioning, content and paid, traced to pipeline.'],growth:['assets/lens/team-growth-tall.webp','Growth','Experiments, activation and lifecycle.'],insights:['assets/menu/insights-notes.webp','Insights','Notes and talks on AI and go to market.',1],about:['assets/crowd.webp','About','Twenty years, ten roles, talks and references.'],home:['assets/lens/work-team-hero.webp','Home','Revenue systems for B2B SaaS, built and run.']};
+const MPV={work:['assets/menu/work-flows.webp','Work','Apps, demos and repos with sample data.'],gtm:['assets/lens/team-gtm-tall.webp','GTM','Pipeline, RevOps and outbound in one model.'],marketing:['assets/lens/team-marketing-tall.webp','Marketing','Positioning, content and paid, traced to pipeline.'],growth:['assets/lens/team-growth-tall.webp','Growth','Experiments, activation and lifecycle.'],insights:['assets/menu/insights-reading.webp','Insights','Notes and talks on AI and go to market.'],about:['assets/crowd.webp','About','Twenty years, ten roles, talks and references.'],home:['assets/lens/work-team-hero.webp','Home','Revenue systems for B2B SaaS, built and run.']};
 /* ==== DS js: header behaviour and sideways progress (research/ds/DESIGN.md) ==== */
 (()=>{
   /* header hides on the way down and returns with a surface on the way up */
