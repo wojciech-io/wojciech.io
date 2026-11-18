@@ -2337,6 +2337,32 @@ html.cx :is(input,textarea,select,[contenteditable="true"]),html.cx :is(input,te
 /* menu previews: colour is the content of the tile walls, so the photo filter is lighter than it was for photographs */
 html .mn .mnp:not(.mnp--win) img{filter:saturate(.92) brightness(.88) contrast(1.02)}
 html .mn .mnp--win img{filter:none;border-radius:18px;width:min(88%,700px);top:14%}
+/* board previews: the 90deg wash from the photo version (min-width:768 rule, !important) dimmed the left column of tiles; keep only the bottom fade */
+html .mn .mnp--win::after{background:linear-gradient(0deg,#1c1f16 0%,rgba(28,31,22,0) 26%)!important}
+/* lens panels: the company visual is a 4:3 screen, so it gets a 4:3 slot and is shown whole (the tall slot cropped it with cover);
+   on a phone it sits above the copy */
+@media (min-width:768px){
+#fix .pl3__grid{grid-template-columns:4.6fr 3.2fr 4.2fr 3.4fr}
+#fix .pl3__grid::before{aspect-ratio:4/3;min-height:0;align-self:start;background-size:contain;background-color:#1b1d16}
+}
+@media (max-width:767px){
+#fix .pl3__grid::before{content:"";display:block;aspect-ratio:4/3;margin:4px 0 22px;border-radius:14px;background:#1b1d16 center/contain no-repeat;box-shadow:0 24px 48px -28px rgb(0 0 0/.7)}
+#fix .pl3__p[data-i="0"] .pl3__grid::before{background-image:url(assets/co/sentione-listen.webp)}
+#fix .pl3__p[data-i="1"] .pl3__grid::before{background-image:url(assets/co/tekhuset-camera.webp)}
+#fix .pl3__p[data-i="2"] .pl3__grid::before{background-image:url(assets/co/symfonia-edokumenty.webp)}
+}
+/* cursor, 18.11 evening: "too big, odd figures jumping out, unprofessional". Smaller dot and ring, no figure trail, no confetti (JS removed too) */
+.cx__d{width:7px;height:7px;margin:-3.5px 0 0 -3.5px;box-shadow:0 0 0 1px #1c1f16}
+.cx__r{width:24px;height:24px;margin:-12px 0 0 -12px;border-width:1px}
+.cx__r.h{width:38px;height:38px;margin:-19px 0 0 -19px;background:rgb(255 255 255/.1)}
+.cx__r.d{width:18px;height:18px;margin:-9px 0 0 -9px}
+.cx__p,.cx__c{display:none!important}
+/* lens page heroes in dark mode: no near-black wash on the left, the whole hero carries the lens colour like the panel */
+html:not([data-mode="light"]) .lx-h--solo:has(img[src*="gtm-team"]){--sf2:#1a2480;--sh:26 36 128}
+html:not([data-mode="light"]) .lx-h--solo:has(img[src*="marketing-team"]){--sf2:#0f5f69;--sh:15 95 105}
+html:not([data-mode="light"]) .lx-h--solo:has(img[src*="growth-team"]){--sf2:#0f6b32;--sh:15 107 50}
+/* phone: the figure sat on the right edge with his head cut by it; show the right end of the panel so the whole figure is in frame */
+@media (max-width:767px){.lx-h--solo{--opm:100% 40%!important}}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -3188,7 +3214,7 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
   /* night and day: the glints run only while the section is on screen */
   (()=>{const sec=document.querySelector('.sh');if(!sec||!('IntersectionObserver' in window))return;new IntersectionObserver(e=>sec.classList.toggle('on',e[0].isIntersecting),{rootMargin:'60px'}).observe(sec)})();
 
-  /* own cursor: a dot and a ring, a trail of figures from his own results behind the pointer, confetti on click (fine pointer only, never with reduced motion) */
+  /* own cursor: a small dot and a ring (fine pointer only, never with reduced motion). The trail of figures and the click confetti were removed on 18.11: too big, unprofessional */
   (()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches||!matchMedia('(hover:hover) and (pointer:fine)').matches||!document.body)return;
     const root=document.documentElement,mk=c=>{const e=document.createElement('i');e.className=c;e.setAttribute('aria-hidden','true');document.body.appendChild(e);return e};
     const dot=mk('cx__d'),ring=mk('cx__r');root.classList.add('cx');
@@ -3205,8 +3231,8 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
     addEventListener('pointermove',e=>{if(e.pointerType&&e.pointerType!=='mouse')return;x=e.clientX;y=e.clientY;over=e.target;const form=!!(over.closest&&over.closest(FORM));
       if(!seen){seen=true;rx=x;ry=y;lx=x;ly=y}
       dot.style.transform='translate('+x+'px,'+y+'px)';dot.style.opacity=ring.style.opacity=form?0:1;ring.classList.toggle('h',!!(over.closest&&over.closest(INT)));
-      acc+=Math.hypot(x-lx,y-ly);lx=x;ly=y;if(!form&&acc>56){acc=0;fig(x,y)}if(!run){run=true;requestAnimationFrame(loop)}},{passive:true});
-    addEventListener('pointerdown',e=>{if(e.button!==0||e.pointerType!=='mouse'||(e.target.closest&&e.target.closest(FORM)))return;over=e.target;burst(e.clientX,e.clientY);ring.classList.add('d')});
+      acc+=Math.hypot(x-lx,y-ly);lx=x;ly=y;acc=0;if(!run){run=true;requestAnimationFrame(loop)}},{passive:true});
+    addEventListener('pointerdown',e=>{if(e.button!==0||e.pointerType!=='mouse'||(e.target.closest&&e.target.closest(FORM)))return;over=e.target;ring.classList.add('d')});
     addEventListener('pointerup',()=>ring.classList.remove('d'));
     root.addEventListener('mouseleave',()=>{dot.style.opacity=ring.style.opacity=0});root.addEventListener('mouseenter',()=>{if(seen)dot.style.opacity=ring.style.opacity=1})})();
 
