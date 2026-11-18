@@ -2363,15 +2363,9 @@ html:not([data-mode="light"]) .lx-h--solo:has(img[src*="marketing-team"]){--sf2:
 html:not([data-mode="light"]) .lx-h--solo:has(img[src*="growth-team"]){--sf2:#0f6b32;--sh:15 107 50}
 /* phone: the figure sat on the right edge with his head cut by it; show the right end of the panel so the whole figure is in frame */
 @media (max-width:767px){.lx-h--solo{--opm:100% 40%!important}}
-/* agent in 2.5D: the canvas sits over the flat image, which keeps the size and hides once WebGL runs. The new figure faces right with his face
-   at the right edge of the frame, so the old fade on that edge is replaced by a fade on the left and bottom only. */
+/* agent in 2.5D: the canvas sits over the flat image, which keeps the size and the old placement and hides once WebGL runs */
 .s.sh .sh__ag .sh__gl{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
 .s.sh .sh__ag.gl img{visibility:hidden}
-.s.sh .sh__ag{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%),linear-gradient(180deg,#000 56%,transparent 84%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 16%),linear-gradient(180deg,#000 56%,transparent 84%);mask-composite:intersect}
-@media (min-width:1000px){
-  /* the face ends just left of the night column wherever the window is centred, so the text never runs over it */
-  .s.sh .sh__ag{height:calc(var(--Hr) * .85);left:calc(50% - 345px - var(--Hr) * .688);top:var(--top)}
-}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -3331,7 +3325,7 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
         if(window.ResizeObserver)new ResizeObserver(size).observe(cv);
         let tx=0,ty=0,x=0,y=0,vis=true,raf=0,t0=performance.now();
         const frame=now=>{raf=0;const t=(now-t0)/1000;x+=(tx-x)*.07;y+=(ty-y)*.07;
-          mesh.rotation.y=x*.34+(RM?0:Math.sin(t*.45)*.05);mesh.rotation.x=y*.14+(RM?0:Math.sin(t*.37)*.02);mat.uniforms.t.value=t;r.render(sc,cam);
+          mesh.rotation.y=x*.22+(RM?0:Math.sin(t*.45)*.04);mesh.rotation.x=y*.08+(RM?0:Math.sin(t*.37)*.015);mat.uniforms.t.value=t;r.render(sc,cam);
           if(vis&&!RM&&!document.hidden)raf=requestAnimationFrame(frame)};
         const go=()=>{if(!raf)raf=requestAnimationFrame(frame)};
         new IntersectionObserver(e=>{vis=e[0].isIntersecting;if(vis)go()},{rootMargin:'80px'}).observe(sec);
