@@ -3418,7 +3418,7 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
     if(window.ScrollTrigger){const st={trigger:hero,start:'top top',end:'bottom top',scrub:true};
       if(me)gsap.to(me,{yPercent:-6,ease:'none',scrollTrigger:st});
       gsap.to(belt,{y:-36,opacity:.25,ease:'none',scrollTrigger:st});
-      gsap.to(hero.querySelector('.hh'),{y:-70,ease:'none',scrollTrigger:st})}
+      gsap.to(hero.querySelector('.hh'),{y:-70,ease:'none',scrollTrigger:st});}
   })();
 
   /* section rail: where you are on the page, one dot per section, a label on hover, a click scrolls there with the same smooth scroll (desktop) */
@@ -3426,7 +3426,7 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
     const NAMED=[['.hero','Intro'],['.ms','What I do'],['#on','Before and after'],['#fix','What I fix'],['#apps','Apps'],['#about','Night and day'],['.cr','Track record'],['#socials','Notes and talks'],['.ft','Contact']];
     let list=NAMED.map(([s,t])=>[document.querySelector(s),t]).filter(x=>x[0]&&x[0].offsetHeight>150);
     if(list.length<5){ // other pages: one dot per section, named by its eyebrow
-      list=[...document.querySelectorAll('section.s, .ft')].filter((e,i,a)=>a.indexOf(e)===i&&e.offsetHeight>200&&!e.closest('.mn')).map((e,i)=>{const h=e.querySelector('.eyebrow');let t=h?h.textContent.replace(/\s+/g,' ').trim().slice(0,28):'';if(i===0)t='Intro';if(e.classList.contains('ft'))t='Contact';return [e,t||('Section '+(i+1))]})}
+      list=[...document.querySelectorAll('section.s, .ft')].filter((e,i,a)=>a.indexOf(e)===i&&e.offsetHeight>200&&!e.closest('.mn')).map((e,i)=>{const h=e.querySelector('.eyebrow');let t=h?h.textContent.replace(/\s+/g,' ').trim().slice(0,28):'';if(i===0)t='Intro';if(e.classList.contains('ft'))t='Contact';return [e,t||('Section '+(i+1))]});}
     list.sort((x,y)=>(x[0].getBoundingClientRect().top+scrollY)-(y[0].getBoundingClientRect().top+scrollY));
     if(list.length<3)return;
     const secs=list.map(x=>x[0]),label=(e,i)=>list[i][1];
