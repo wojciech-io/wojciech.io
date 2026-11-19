@@ -2425,8 +2425,8 @@ html.mn-open .rail{display:none}
   .lib__kinds{overflow:visible;flex-wrap:wrap;margin:0;padding:0}
 }
 /* library filter, Lando-shop grammar: search, one ADD FILTER pill, SORT BY text; the old tabs, kinds and sort stay in the DOM as the engine */
-.lib__tabs,.lib__kinds,.lib__sort,.lib__ind{display:none!important}
-.lib__bi{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"q f s";gap:1rem 1.6rem;align-items:center}
+.lib__kinds,.lib__sort{display:none!important}
+.lib__bi{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"q f s" "t t t";gap:1.1rem 1.6rem;align-items:center}
 .fp{grid-area:f;display:inline-flex;align-items:center;gap:1.1rem;height:3.4rem;padding:0 .55rem 0 1.5rem;border:0;border-radius:99px;background:rgb(244 244 237/.1);color:#F4F4ED;font:800 13.5px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:background .25s}
 .fp:hover{background:rgb(244 244 237/.18)}
 .fp i{display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:50%;background:#F4F4ED}
@@ -2436,7 +2436,7 @@ html.mn-open .rail{display:none}
 .fp.has{background:rgb(210 255 0/.16)}
 .fsr{grid-area:s;display:inline-flex;align-items:center;gap:.4rem;border:0;background:none;color:#F4F4ED;font:800 13.5px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
 .fsr span{opacity:.6}.fsr b{font:inherit;margin-right:.3rem}.fsr svg{width:1.1rem;height:1.1rem;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-@media (max-width:767px){.lib__bi{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"q q" "f s"}.fp{height:3.1rem}}
+@media (max-width:767px){.lib__bi{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"q q" "f s" "t t"}.lib__tabs{margin:0 -1.25rem;padding-left:1.25rem!important;padding-right:1.25rem!important;border-radius:0!important;background:none!important;box-shadow:none!important;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}.fp{height:3.1rem}}
 .fd{position:fixed;inset:0;z-index:300}
 .fd[hidden]{display:none}
 .fd__bg{position:absolute;inset:0;background:rgb(12 13 8/.55);opacity:0;transition:opacity .35s}
@@ -2459,6 +2459,15 @@ html.mn-open .rail{display:none}
 .fd__x{height:3.4rem;padding:0 2rem;border:0;border-radius:99px;background:#D2FF00;color:#1c1f16;font:800 13.5px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
 .fd-open{overflow:hidden}
 .lk__t b sup{position:static;display:inline;margin:0 0 0 .45rem;vertical-align:baseline;font:500 12px/1 var(--sans);color:inherit;opacity:.5}
+/* categories: a tactile segmented control (glass track, a lime pill that slides to the chosen one, counts on the baseline) */
+.lib__tabs{grid-area:t;position:relative;display:flex;flex-wrap:nowrap;gap:.2rem;padding:.3rem;border-radius:99px;background:rgb(244 244 237/.06);box-shadow:inset 0 1px 0 rgb(255 255 255/.09),inset 0 0 0 1px rgb(244 244 237/.1),0 18px 34px -22px #000;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);overflow-x:auto;scrollbar-width:none;justify-self:start;max-width:100%}
+.lib__tabs::-webkit-scrollbar{display:none}
+.lib__ind{display:block;position:absolute;left:0;top:.3rem;bottom:auto;height:calc(100% - .6rem);border-radius:99px;background:#D2FF00;box-shadow:0 8px 22px -6px rgb(210 255 0/.55),inset 0 1px 0 rgb(255 255 255/.55);z-index:0;pointer-events:none;transition:transform .55s cubic-bezier(.65,0,.35,1),width .55s cubic-bezier(.65,0,.35,1)}
+.lib__tabs button{position:relative;z-index:1;flex:none;display:inline-flex;align-items:baseline;gap:.45rem;height:2.6rem;padding:0 1.15rem;box-shadow:none!important;border-radius:99px;align-items:center;color:rgb(244 244 237/.72);font:600 14.5px/1 var(--sans);transition:color .3s,transform .2s}
+.lib__tabs button:hover{color:#F4F4ED;transform:translateY(-1px)}.lib__tabs button:active{transform:scale(.97)}
+.lib__tabs button[aria-selected="true"]{color:#1c1f16}
+.lib__tabs button sup{font:600 12px/1 var(--sans);opacity:.55}
+.lib__tabs button[aria-selected="true"] sup{opacity:.8;color:#1c1f16}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
