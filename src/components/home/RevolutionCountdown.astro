@@ -1,0 +1,212 @@
+---
+import { getLocaleFromPath } from '../../data/uiStrings';
+import { COUNTDOWN_COPY, COUNTDOWN_TARGET } from '../../data/countdown';
+
+/* Teaser band at the very top of the homepage hero: one plain sentence, the
+   date, and a big live clock. Says nothing about what changes. Opaque, full
+   width, hairline below (DESIGN.md: rules, not boxes). Hides itself after the
+   date. */
+const locale = getLocaleFromPath(Astro.url.pathname);
+const c = COUNTDOWN_COPY[locale] ?? COUNTDOWN_COPY.en;
+const units = [
+  { k: 'd', label: c.d },
+  { k: 'h', label: c.h },
+  { k: 'm', label: c.m },
+  { k: 's', label: c.s },
+];
+---
+
+<section class="rv" data-countdown={COUNTDOWN_TARGET} aria-label={`${c.label}: ${c.date}`}>
+  <div class="rv-aura" aria-hidden="true"></div>
+  <div class="rv-in">
+    <div class="rv-copy">
+      <p class="rv-kick"><span class="rv-dot" aria-hidden="true"></span>{c.label} · {c.date}</p>
+      <h2 class="rv-title t-h2">{c.title}<span class="rv-mark" aria-hidden="true">.</span></h2>
+      <p class="rv-sub">{c.sub}</p>
+    </div>
+    <p class="sr-only" role="timer" aria-live="off">{c.sr}</p>
+    <dl class="rv-clock" aria-hidden="true">
+      {units.map((u, i) => (
+        <>
+          <div class="rv-cell" data-unit={u.k}>
+            <dd data-cd={u.k}>--</dd>
+            <dt>{u.label}</dt>
+          </div>
+        </>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<script>
+  import { COUNTDOWN_TARGET } from '../../data/countdown';
+
+  let timer = 0;
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  const initCountdown = () => {
+    window.clearInterval(timer);
+    const roots = document.querySelectorAll<HTMLElement>('[data-countdown]');
+    if (!roots.length) return;
+    const end = new Date(COUNTDOWN_TARGET).getTime();
+    const tick = () => {
+      const left = end - Date.now();
+      if (left <= 0) {
+        window.clearInterval(timer);
+        roots.forEach((el) => { el.style.display = 'none'; });
+        return;
+      }
+      const s = Math.floor(left / 1000);
+      const vals: Record<string, string> = {
+        d: pad(Math.floor(s / 86400)),
+        h: pad(Math.floor((s % 86400) / 3600)),
+        m: pad(Math.floor((s % 3600) / 60)),
+        s: pad(s % 60),
+      };
+      document.querySelectorAll<HTMLElement>('[data-cd]').forEach((el) => {
+        el.textContent = vals[el.dataset.cd ?? 'd'];
+      });
+    };
+    tick();
+    timer = window.setInterval(tick, 1000);
+  };
+  initCountdown();
+  document.addEventListener('astro:page-load', initCountdown);
+</script>
+
+<style>
+  /* A clean ink band in both themes: one soft lime aura, one display face, labels in mono. */
+  .rv {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-ink);
+    color: var(--color-ink-text);
+    border-bottom: 1px solid var(--color-ink-border);
+  }
+  .rv-aura {
+    position: absolute;
+    right: -10%;
+    top: -60%;
+    width: 60%;
+    height: 220%;
+    background: radial-gradient(closest-side, rgb(235 255 0 / 0.17), transparent);
+    pointer-events: none;
+  }
+  .rv-in {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1.9rem 1.5rem 2rem;
+  }
+  .rv-kick {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent-cta);
+  }
+  .rv-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-accent-cta);
+    box-shadow: 0 0 12px rgb(235 255 0 / 0.7);
+    animation: rv-pulse 2.4s ease-in-out infinite;
+  }
+  .rv-title {
+    margin: 0.7rem 0 0.5rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: clamp(1.8rem, 4.4vw, 2.9rem);
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--color-ink-text);
+  }
+  .rv-mark {
+    color: var(--color-accent-cta);
+  }
+  .rv-sub {
+    margin: 0;
+    max-width: 28rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-ink-muted);
+  }
+  .rv-clock {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 0;
+  }
+  .rv-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .rv-cell {
+    padding: 0 clamp(0.7rem, 2.4vw, 1.6rem);
+    border-left: 1px solid var(--color-ink-border);
+  }
+  .rv-cell:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .rv-cell dd {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: clamp(2.3rem, 11vw, 5rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink-text);
+  }
+  .rv-cell[data-unit='s'] dd {
+    color: var(--color-accent-cta);
+  }
+  .rv-cell dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+  }
+  @media (min-width: 900px) {
+    .rv-in {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3rem;
+      padding-top: 2.4rem;
+      padding-bottom: 2.5rem;
+    }
+    .rv-copy {
+      flex: 1 1 auto;
+      min-width: 27rem;
+    }
+    .rv-title {
+      font-size: clamp(2rem, 3.2vw, 2.6rem);
+      white-space: nowrap;
+    }
+    .rv-clock {
+      justify-content: flex-end;
+    }
+    .rv-cell dd {
+      font-size: clamp(3rem, 5.2vw, 4.7rem);
+    }
+  }
+  @keyframes rv-pulse {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rv-dot,
+  </style>

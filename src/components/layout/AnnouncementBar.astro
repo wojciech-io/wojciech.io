@@ -1,58 +1,34 @@
 ---
-// Site-wide announcement strip, sits above the sticky header and scrolls away.
-// Localized + dismissible (localStorage). Bump STORAGE_KEY to re-show after a new drop.
+// Site-wide strip above the sticky header: countdown to 24 November. Scrolls away,
+// dismissible (localStorage). Hides itself once the date passes. Bump STORAGE_KEY for a new drop.
 import { getLocaleFromPath } from '../../data/uiStrings';
+import { COUNTDOWN_COPY } from '../../data/countdown';
 import Icon from '../ui/Icon.astro';
 
-const SLUG = 'claude-fable-5-2-vs-gpt-6-astra';
-const STORAGE_KEY = `wio-anno-${SLUG}`;
-
-const pathname = Astro.url.pathname;
-const locale = getLocaleFromPath(pathname);
-const articleLocale = ['pl', 'es', 'de'].includes(locale) ? locale : 'en';
-const href = `${articleLocale === 'en' ? '' : `/${articleLocale}`}/insights/${SLUG}/`;
-
-type Copy = { tag: string; text: string; cta: string; label: string };
-const COPY: Record<string, Copy> = {
-  en: { tag: 'New', text: 'Fable 5.2 vs GPT-6 Astra by effort level', cta: 'Read', label: 'Site announcement' },
-  pl: { tag: 'Nowość', text: 'Fable 5.2 kontra GPT-6 Astra', cta: 'Czytaj', label: 'Nowości na stronie' },
-  it: { tag: 'Novità', text: 'Fable 5.2 a confronto con GPT-6 Astra', cta: 'Leggi', label: 'Novità del sito' },
-  de: { tag: 'Neu', text: 'Fable 5.2 im Vergleich mit GPT-6 Astra', cta: 'Lesen', label: 'Aktuelles auf der Website' },
-  dk: { tag: 'Nyt', text: 'Fable 5.2 mod GPT-6 Astra', cta: 'Læs', label: 'Nyt på siden' },
-  no: { tag: 'Nytt', text: 'Fable 5.2 mot GPT-6 Astra', cta: 'Les', label: 'Nytt på nettstedet' },
-  jp: { tag: '新着', text: 'Fable 5.2とGPT-6 Astraを比較', cta: '読む', label: 'サイトからのお知らせ' },
-  es: { tag: 'Nuevo', text: 'Fable 5.2 frente a GPT-6 Astra', cta: 'Leer', label: 'Novedades del sitio' },
-  ar: { tag: 'جديد', text: 'مقارنة Fable 5.2 مع GPT-6 Astra', cta: 'اقرأ', label: 'إعلان الموقع' },
-};
-const c = COPY[locale] ?? COPY.en;
+const STORAGE_KEY = 'wio-anno-countdown-24-nov';
+// The homepage carries the full countdown band, so the strip is for every other page.
+const isHome = /^\/([a-z]{2}\/)?$/.test(Astro.url.pathname);
+const locale = getLocaleFromPath(Astro.url.pathname);
+const c = COUNTDOWN_COPY[locale] ?? COUNTDOWN_COPY.en;
 const closeLabel = locale === 'pl' ? 'Zamknij' : locale === 'de' ? 'Schließen' : locale === 'es' ? 'Cerrar' : locale === 'it' ? 'Chiudi' : locale === 'jp' ? '閉じる' : locale === 'dk' ? 'Luk' : locale === 'no' ? 'Lukk' : locale === 'ar' ? 'إغلاق' : 'Dismiss';
 ---
 
+{!isHome && (
 <aside
   id="wio-announcement"
   data-anno-key={STORAGE_KEY}
+  data-countdown-strip
   class="relative border-b border-[var(--color-border)] bg-[var(--color-surface-2)]"
   aria-label={c.label}
 >
   <div class="mx-auto max-w-6xl px-6">
-    <div class="flex items-center justify-center gap-3 py-2 pr-8 text-center">
-      <a
-        href={href}
-        hreflang={articleLocale}
-        class="t-caption group inline-flex items-center gap-2.5 text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
-        data-mp-cta="announcement"
-        data-mp-location="announcement_bar"
-      >
-        <span class="inline-flex shrink-0 items-center gap-1.5">
-          <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-cta)]" style="box-shadow:0 0 10px rgb(235 255 0 / 0.6);" aria-hidden="true"></span>
-          <span class="t-label text-[var(--color-accent-hi)]">{c.tag}</span>
-        </span>
-        <span>{c.text}</span>
-        <span class="hidden sm:inline-flex shrink-0 items-center gap-1 font-semibold text-[var(--color-text)] underline-offset-2 group-hover:underline">
-          {c.cta}
-          <Icon name="arrow-right" class="rtl-flip-x h-[11px] w-[11px]" />
-        </span>
-      </a>
+    <div class="t-caption flex items-center justify-center gap-3 py-2 pr-8 text-center text-[var(--color-text-muted)]">
+      <span class="inline-flex shrink-0 items-center gap-1.5">
+        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent-cta)]" style="box-shadow:0 0 10px rgb(235 255 0 / 0.6);" aria-hidden="true"></span>
+        <span class="t-label text-[var(--color-accent-hi)]">{c.date}</span>
+      </span>
+      <span>{c.strip}</span>
+      <span class="hidden sm:inline font-semibold text-[var(--color-text)]" style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;" data-cd-strip aria-hidden="true"></span>
     </div>
   </div>
   <button
@@ -64,6 +40,7 @@ const closeLabel = locale === 'pl' ? 'Zamknij' : locale === 'de' ? 'Schließen' 
     <Icon name="close" class="h-3 w-3" />
   </button>
 </aside>
+)}
 
 <script is:inline>
   // Hide synchronously if previously dismissed (runs during parse, before paint).
@@ -94,4 +71,32 @@ const closeLabel = locale === 'pl' ? 'Zamknij' : locale === 'de' ? 'Schließen' 
   }
   initAnnouncement();
   document.addEventListener('astro:page-load', initAnnouncement);
+</script>
+
+<script>
+  import { COUNTDOWN_TARGET } from '../../data/countdown';
+
+  let stripTimer = 0;
+  const initStripClock = () => {
+    window.clearInterval(stripTimer);
+    const strip = document.getElementById('wio-announcement');
+    const out = strip?.querySelector<HTMLElement>('[data-cd-strip]');
+    if (!strip || !out) return;
+    const end = new Date(COUNTDOWN_TARGET).getTime();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const tick = () => {
+      const left = end - Date.now();
+      if (left <= 0) {
+        window.clearInterval(stripTimer);
+        strip.style.display = 'none';
+        return;
+      }
+      const s = Math.floor(left / 1000);
+      out.textContent = `${Math.floor(s / 86400)}d ${pad(Math.floor((s % 86400) / 3600))}h ${pad(Math.floor((s % 3600) / 60))}m ${pad(s % 60)}s`;
+    };
+    tick();
+    stripTimer = window.setInterval(tick, 1000);
+  };
+  initStripClock();
+  document.addEventListener('astro:page-load', initStripClock);
 </script>
