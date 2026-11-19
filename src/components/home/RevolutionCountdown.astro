@@ -2,9 +2,10 @@
 import { getLocaleFromPath } from '../../data/uiStrings';
 import { COUNTDOWN_COPY, COUNTDOWN_TARGET } from '../../data/countdown';
 
-/* Hero teaser: a live countdown to the date, one lime mark, no hint of what
-   changes. Rules and mono numerals, no box (DESIGN.md). It hides itself once
-   the date has passed. */
+/* Teaser band at the very top of the homepage hero: one plain sentence, the
+   date, and a big live clock. Says nothing about what changes. Opaque, full
+   width, hairline below (DESIGN.md: rules, not boxes). Hides itself after the
+   date. */
 const locale = getLocaleFromPath(Astro.url.pathname);
 const c = COUNTDOWN_COPY[locale] ?? COUNTDOWN_COPY.en;
 const units = [
@@ -15,22 +16,27 @@ const units = [
 ];
 ---
 
-<div class="reveal-up rv max-w-lg" data-reveal-index="3" data-countdown={COUNTDOWN_TARGET}>
-  <div class="rv-head">
-    <span class="rv-dot" aria-hidden="true"></span>
-    <span class="obs-label-accent">{c.label} · {c.date}</span>
+<section class="rv" data-countdown={COUNTDOWN_TARGET} aria-label={`${c.label}: ${c.date}`}>
+  <div class="rv-in">
+    <div class="rv-copy">
+      <p class="rv-kick"><span class="rv-dot" aria-hidden="true"></span>{c.label} · {c.date}</p>
+      <h2 class="rv-title t-h2">{c.title}<span class="rv-mark" aria-hidden="true">.</span></h2>
+      <p class="rv-sub">{c.sub}</p>
+    </div>
+    <p class="sr-only" role="timer" aria-live="off">{c.sr}</p>
+    <dl class="rv-clock" aria-hidden="true">
+      {units.map((u, i) => (
+        <>
+          {i > 0 && <span class="rv-sep">:</span>}
+          <div class="rv-cell" data-unit={u.k}>
+            <dd data-cd={u.k}>--</dd>
+            <dt>{u.label}</dt>
+          </div>
+        </>
+      ))}
+    </dl>
   </div>
-  <p class="rv-title">{c.title}<span class="rv-mark" aria-hidden="true">.</span></p>
-  <p class="sr-only" role="timer" aria-live="off" data-cd-sr>{c.sr}</p>
-  <dl class="rv-grid" aria-hidden="true">
-    {units.map((u) => (
-      <div class="rv-cell">
-        <dt>{u.label}</dt>
-        <dd data-cd={u.k}>--</dd>
-      </div>
-    ))}
-  </dl>
-</div>
+</section>
 
 <script>
   import { COUNTDOWN_TARGET } from '../../data/countdown';
@@ -47,12 +53,12 @@ const units = [
       const left = end - Date.now();
       if (left <= 0) {
         window.clearInterval(timer);
-        document.querySelectorAll<HTMLElement>('[data-countdown]').forEach((el) => { el.style.display = 'none'; });
+        roots.forEach((el) => { el.style.display = 'none'; });
         return;
       }
       const s = Math.floor(left / 1000);
       const vals: Record<string, string> = {
-        d: String(Math.floor(s / 86400)),
+        d: pad(Math.floor(s / 86400)),
         h: pad(Math.floor((s % 86400) / 3600)),
         m: pad(Math.floor((s % 3600) / 60)),
         s: pad(s % 60),
@@ -70,13 +76,27 @@ const units = [
 
 <style>
   .rv {
-    border-top: 1px solid var(--color-border);
-    padding-top: 1.1rem;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
   }
-  .rv-head {
+  .rv-in {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1.6rem 1.5rem 1.7rem;
+  }
+  .rv-kick {
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent-hi);
   }
   .rv-dot {
     width: 6px;
@@ -87,51 +107,96 @@ const units = [
     animation: rv-pulse 2.4s ease-in-out infinite;
   }
   .rv-title {
-    margin: 0.55rem 0 0.9rem;
+    margin: 0.5rem 0 0.35rem;
     font-family: var(--font-sans);
     font-weight: 600;
-    font-size: clamp(1.5rem, 3.4vw, 2.1rem);
-    letter-spacing: -0.02em;
-    line-height: 1.05;
+    font-size: clamp(1.7rem, 4.2vw, 2.9rem);
+    letter-spacing: -0.03em;
+    line-height: 1;
     color: var(--color-text);
   }
   .rv-mark {
     color: var(--color-accent-cta);
   }
-  .rv-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .rv-sub {
     margin: 0;
+    max-width: 28rem;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
   }
-  .rv-cell {
-    padding: 0 0.9rem;
-    border-left: 1px solid var(--color-border);
-  }
-  .rv-cell:first-child {
-    padding-left: 0;
-    border-left: 0;
-  }
-  .rv-cell dt {
-    order: 2;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-dim);
-  }
-  .rv-cell dd {
-    margin: 0 0 0.25rem;
-    font-family: var(--font-mono);
-    font-size: clamp(1.7rem, 4.6vw, 3rem);
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    font-variant-numeric: tabular-nums;
-    color: var(--color-text);
+  .rv-clock {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.4rem;
+    margin: 0;
   }
   .rv-cell {
     display: flex;
     flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+  .rv-cell dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: clamp(2.3rem, 11vw, 5.4rem);
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text);
+  }
+  .rv-cell[data-unit='s'] dd {
+    color: var(--color-accent-cta);
+    text-shadow: 0 0 26px color-mix(in srgb, var(--color-accent-cta) 45%, transparent);
+  }
+  :global(:root[data-theme='light']) .rv-cell[data-unit='s'] dd {
+    color: var(--color-ink, #141009);
+    text-shadow: none;
+    background: var(--color-accent-cta);
+    padding: 0 0.08em;
+    margin: 0 -0.08em;
+  }
+  .rv-cell dt {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+  .rv-sep {
+    font-family: var(--font-mono);
+    font-size: clamp(2.3rem, 11vw, 5.4rem);
+    line-height: 0.95;
+    color: var(--color-text-dim);
+  }
+  @media (min-width: 900px) {
+    .rv-in {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3rem;
+      padding-top: 2rem;
+      padding-bottom: 2.1rem;
+    }
+    .rv-clock {
+      justify-content: flex-end;
+      gap: 0.9rem;
+    }
+    .rv-cell dd,
+    .rv-sep {
+      font-size: clamp(3rem, 5.2vw, 4.7rem);
+    }
+    .rv-copy {
+      flex: 1 1 auto;
+      min-width: 27rem;
+    }
+    .rv-title {
+      font-size: clamp(2rem, 3.2vw, 2.6rem);
+      white-space: nowrap;
+    }
   }
   @keyframes rv-pulse {
     0%, 100% { opacity: 0.45; }

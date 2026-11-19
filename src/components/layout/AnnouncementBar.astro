@@ -6,11 +6,14 @@ import { COUNTDOWN_COPY } from '../../data/countdown';
 import Icon from '../ui/Icon.astro';
 
 const STORAGE_KEY = 'wio-anno-countdown-24-nov';
+// The homepage carries the full countdown band, so the strip is for every other page.
+const isHome = /^\/([a-z]{2}\/)?$/.test(Astro.url.pathname);
 const locale = getLocaleFromPath(Astro.url.pathname);
 const c = COUNTDOWN_COPY[locale] ?? COUNTDOWN_COPY.en;
 const closeLabel = locale === 'pl' ? 'Zamknij' : locale === 'de' ? 'Schließen' : locale === 'es' ? 'Cerrar' : locale === 'it' ? 'Chiudi' : locale === 'jp' ? '閉じる' : locale === 'dk' ? 'Luk' : locale === 'no' ? 'Lukk' : locale === 'ar' ? 'إغلاق' : 'Dismiss';
 ---
 
+{!isHome && (
 <aside
   id="wio-announcement"
   data-anno-key={STORAGE_KEY}
@@ -37,6 +40,7 @@ const closeLabel = locale === 'pl' ? 'Zamknij' : locale === 'de' ? 'Schließen' 
     <Icon name="close" class="h-3 w-3" />
   </button>
 </aside>
+)}
 
 <script is:inline>
   // Hide synchronously if previously dismissed (runs during parse, before paint).
