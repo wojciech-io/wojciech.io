@@ -2596,6 +2596,39 @@ a.cr__mk:focus-visible{outline:2px solid #D2FF00;outline-offset:-3px}
 .rail{display:none!important}
 /* menu: every page preview is the same framed plate, the About photo included */
 .mn .mnp img[src*="crowd"]{inset:auto!important;top:50%!important;right:max(var(--gut),3.2vw)!important;width:min(94%,760px)!important;height:66%!important;max-height:none!important;object-fit:cover!important;border-radius:14px!important;transform:translateY(-52%)!important;filter:none!important;box-shadow:0 24px 60px rgb(0 0 0/.45),0 0 0 1px rgb(244 243 239/.12)!important}
+/* insights filter: one glass bar with labelled fields, docked on the hero photo */
+body:has(#library) .lb__bar{display:none}
+#library.lib--dock{padding-top:0}
+.lib--dock .lib__bar{margin-top:0;margin-bottom:2.8rem;z-index:30}
+.lib--dock .lib__bi{display:grid;grid-template-columns:minmax(0,1.7fr) repeat(3,minmax(8.5rem,1fr)) auto;grid-template-areas:none;gap:0;align-items:stretch;padding:0;border:0;border-radius:20px;background:rgb(16 18 11/.55);-webkit-backdrop-filter:blur(20px) saturate(1.2);backdrop-filter:blur(20px) saturate(1.2);box-shadow:inset 0 0 0 1px rgb(244 243 239/.16),0 30px 60px -30px rgb(0 0 0/.7);overflow:hidden}
+.lib--dock .lib__tabs,.lib--dock .lib__kinds,.lib--dock .lib__sort,.lib--dock .fp,.lib--dock .fsr{display:none!important}
+.lib--dock .lib__q{grid-area:auto;margin:0;padding:0 1.4rem;border-radius:0;background:none;box-shadow:none;min-height:4.6rem;border-right:1px solid rgb(244 243 239/.12)}
+.lib--dock .lib__q:focus-within{background:rgb(244 243 239/.06);box-shadow:inset 0 -2px 0 #D2FF00}
+.fseg{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;column-gap:.6rem;align-content:center;justify-items:start;padding:.8rem 1.3rem;border:0;border-right:1px solid rgb(244 243 239/.12);background:none;color:#F4F4ED;text-align:left;cursor:pointer;transition:background .25s}
+.fseg:hover{background:rgb(244 243 239/.07)}
+.fseg small{grid-column:1;font:600 10.5px/1 var(--font-mono,monospace);letter-spacing:.12em;text-transform:uppercase;color:rgb(244 243 239/.5)}
+.fseg b{grid-column:1;margin-top:.35rem;font:600 15px/1.2 var(--sans);letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:11rem}
+.fseg i{grid-column:2;grid-row:1/3;align-self:center;font-style:normal;color:#D2FF00;font-size:16px;transition:transform .3s}
+.fseg:hover i{transform:translateY(2px)}
+.fcount{display:grid;place-items:center;padding:0 1.6rem;font:600 12px/1 var(--font-mono,monospace);letter-spacing:.1em;text-transform:uppercase;color:#D2FF00;white-space:nowrap}
+.lib--dock .lib__st{margin-top:0}
+/* quiet category index on the hero photo */
+.hm.lb{position:relative}
+.hx{position:absolute;right:max(var(--gut,24px),4vw);bottom:7.4rem;z-index:5;margin:0;padding:0;list-style:none;width:min(21rem,30vw)}
+.hx li{border-top:1px solid rgb(244 243 239/.22)}
+.hx li:last-child{border-bottom:1px solid rgb(244 243 239/.22)}
+.hx button{display:flex;justify-content:space-between;align-items:baseline;width:100%;padding:.62rem 0;border:0;background:none;color:rgb(244 243 239/.82);font:500 15px/1.2 var(--sans);text-align:left;cursor:pointer;transition:color .25s,padding .35s cubic-bezier(.2,.7,.1,1)}
+.hx button:hover{color:#D2FF00;padding-left:.5rem}
+.hx em{font:500 12px/1 var(--font-mono,monospace);font-style:normal;opacity:.6}
+.hx li.on button{color:#D2FF00}
+@media (max-width:899px){
+  .hx{display:none}
+  .lib--dock .lib__bi{grid-template-columns:repeat(3,minmax(0,1fr));border-radius:16px}
+  .lib--dock .lib__q{grid-column:1/-1;border-right:0;border-bottom:1px solid rgb(244 243 239/.12)}
+  .fseg{padding:.7rem .9rem}.fseg b{max-width:6.5rem;font-size:14px}
+  .fcount{grid-column:1/-1;padding:.7rem;border-top:1px solid rgb(244 243 239/.12)}
+  .fseg--srt{border-right:0}
+}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -3626,9 +3659,9 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
     const tabs=[...bi.querySelectorAll('.lib__tabs [data-f]')],kinds=[...bi.querySelectorAll('.lib__kinds [data-k]')],sorts=[...bi.querySelectorAll('.lib__sort [data-s]')],nEl=document.querySelector('.lib__n');
     if(!tabs.length)return;
     const txt=b=>{const c=b.cloneNode(true);c.querySelectorAll('sup,svg').forEach(e=>e.remove());return c.textContent.trim()},num=b=>{const e=b.querySelector('sup');return e?e.textContent:''};
-    const open=document.createElement('button');open.type='button';open.className='fp';open.innerHTML='<span>Add filter</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></svg></i><b class="fp__n" hidden></b>';
-    const so=document.createElement('button');so.type='button';so.className='fsr';so.innerHTML='<span>Sort by:</span> <b></b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
-    bi.appendChild(open);bi.appendChild(so);
+    const seg=(cls,lab)=>{const b=document.createElement('button');b.type='button';b.className='fseg '+cls;const sm=document.createElement('small');sm.textContent=lab;const v=document.createElement('b');const c=document.createElement('i');c.setAttribute('aria-hidden','true');c.textContent='\u2304';b.append(sm,v,c);return b};
+    const open=seg('fseg--cat','Category'),cov=seg('fseg--cov','Cover'),so=seg('fseg--srt','Sort'),cnt=document.createElement('div');cnt.className='fcount';
+    bi.append(open,cov,so,cnt);if(nEl){const up=()=>{cnt.textContent=nEl.textContent};up();new MutationObserver(up).observe(nEl,{childList:true,characterData:true,subtree:true})}
     const d=document.createElement('aside');d.className='fd';d.setAttribute('role','dialog');d.setAttribute('aria-label','Filter notes');d.hidden=true;
     d.innerHTML='<div class="fd__bg"></div><div class="fd__p"><header><h3>Add filter</h3><p class="fd__c"></p></header><div class="fd__b"></div><footer><button type="button" class="fd__rm">Remove all</button><button type="button" class="fd__x">Close</button></footer></div>';
     document.body.appendChild(d);const body=d.querySelector('.fd__b');
@@ -3637,11 +3670,11 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
     const rows=[...body.querySelectorAll('.fd__r')],src=r=>(r.dataset.g==='t'?tabs:kinds)[+r.dataset.i];
     const isOn=b=>b.getAttribute('aria-selected')==='true'||b.getAttribute('aria-pressed')==='true';
     const paint=()=>{rows.forEach(r=>{const b=src(r);r.querySelector('em').textContent=num(b);r.classList.toggle('on',isOn(b));r.classList.toggle('off',b.classList.contains('off'))});
-      const act=(tabs.findIndex(isOn)>0?1:0)+(kinds.some(isOn)?1:0),bd=open.querySelector('.fp__n');bd.hidden=!act;bd.textContent=act;open.classList.toggle('has',!!act);
+      const ct=tabs.find(isOn);open.querySelector('b').textContent=ct?txt(ct):'All';const kv=kinds.find(isOn);cov.querySelector('b').textContent=kv?txt(kv):'All';cnt.textContent=nEl?nEl.textContent:'';
       const cur=sorts.find(b=>b.getAttribute('aria-pressed')==='true');so.querySelector('b').textContent=cur?cur.textContent:'Newest';
       d.querySelector('.fd__c').textContent=nEl?nEl.textContent:'';d.querySelector('.fd__x').textContent='Show '+(nEl?((nEl.textContent.match(/^\d+/)||[''])[0]):'')+' notes'};
     const show=v=>{d.hidden=false;requestAnimationFrame(()=>{d.classList.toggle('on',v);if(!v)setTimeout(()=>{if(!d.classList.contains('on'))d.hidden=true},400)});document.documentElement.classList.toggle('fd-open',v);if(v)paint()};
-    open.addEventListener('click',()=>show(true));d.querySelector('.fd__bg').addEventListener('click',()=>show(false));d.querySelector('.fd__x').addEventListener('click',()=>show(false));
+    open.addEventListener('click',()=>show(true));cov.addEventListener('click',()=>show(true));d.querySelector('.fd__bg').addEventListener('click',()=>show(false));d.querySelector('.fd__x').addEventListener('click',()=>show(false));
     addEventListener('keydown',e=>{if(e.key==='Escape'&&d.classList.contains('on'))show(false)});
     body.addEventListener('click',e=>{const r=e.target.closest('.fd__r');if(!r)return;src(r).click();setTimeout(paint,30)});
     d.querySelector('.fd__rm').addEventListener('click',()=>{tabs[0].click();kinds.filter(isOn).forEach(b=>b.click());const q=document.getElementById('lq');if(q&&q.value){q.value='';q.dispatchEvent(new Event('input',{bubbles:true}))}setTimeout(paint,30)});
@@ -3668,6 +3701,16 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
       const b=e.target.closest&&e.target.closest('.btn');if(b){const r=b.getBoundingClientRect();b.style.setProperty('--bx',((e.clientX-r.left-r.width/2)*.12)+'px');b.style.setProperty('--by',((e.clientY-r.top-r.height/2)*.18)+'px')}},{passive:true});
     document.addEventListener('pointerout',e=>{const c=e.target.closest&&e.target.closest('.cv');if(c&&!c.contains(e.relatedTarget)){c.style.removeProperty('--rx');c.style.removeProperty('--ry')}const b=e.target.closest&&e.target.closest('.btn');if(b&&!b.contains(e.relatedTarget)){b.style.removeProperty('--bx');b.style.removeProperty('--by')}});
     const bands=[...document.querySelectorAll('.hm.lb .bg img,.lb__ph img,.hm .bg>img')];if(bands.length)addEventListener('scroll',()=>{const y=scrollY;bands.forEach(m=>{const r=m.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;m.style.translate='0 '+(y*.08).toFixed(1)+'px'})},{passive:true});
+  })();
+  /* insights: the filter bar docks on the bottom of the hero photo, and the categories read as a quiet index on the photo */
+  (()=>{const lib=document.getElementById('library'),bar=lib&&lib.querySelector('.lib__bar'),hero=document.querySelector('.hm.lb');if(!lib||!bar||!hero||document.querySelector('.hx'))return;
+    lib.insertBefore(bar,lib.firstChild);lib.classList.add('lib--dock');
+    const tabs=[...bar.querySelectorAll('.lib__tabs [data-f]')].filter(b=>b.dataset.f!=='*');
+    const ul=document.createElement('ul');ul.className='hx';
+    tabs.forEach(t=>{const li=document.createElement('li'),b=document.createElement('button'),n=document.createElement('span'),c=document.createElement('em');b.type='button';n.textContent=t.childNodes[0].textContent.trim();c.textContent=(t.querySelector('sup')||{}).textContent||'';b.append(n,c);b.addEventListener('click',()=>{t.click();const y=bar.getBoundingClientRect().top+scrollY-90;if(typeof lenis!=='undefined'&&lenis.scrollTo)lenis.scrollTo(y,{duration:1});else scrollTo({top:y,behavior:'smooth'})});li.appendChild(b);ul.appendChild(li)});
+    hero.appendChild(ul);
+    const sync=()=>{[...ul.querySelectorAll('li')].forEach((li,i)=>{const sp=tabs[i].querySelector('sup');if(sp)li.querySelector('em').textContent=sp.textContent;li.classList.toggle('on',tabs[i].getAttribute('aria-selected')==='true')})};
+    new MutationObserver(sync).observe(bar,{subtree:true,attributes:true,childList:true,characterData:true});sync();
   })();
 
 /* pillars (.pl3). Desktop pins the stage and opens one pillar at a time: the rule under the row runs out, each
