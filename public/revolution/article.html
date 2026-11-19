@@ -2382,16 +2382,11 @@ html[data-mode="light"] .cr__mk{background:radial-gradient(120% 70% at 100% 100%
   .hb__r--b .hb__t{animation-direction:reverse;animation-duration:42s}
   .hb__c{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 13px 0 10px;border-radius:99px;background:rgb(255 255 255/.62);box-shadow:inset 0 0 0 1px rgb(40 44 32/.16);color:#282C20;font:600 13px/1 var(--sans);white-space:nowrap}
   .hb__c svg{width:16px;height:16px;fill:currentColor;flex:none}
-  /* Night shift: both halves large enough to meet in the middle and reach the screen edges */
-  .s.sh{--H:min(142vw,600px)}
-  /* the two faces sit closer to the middle, still bleeding off their own edges */
-  .s.sh .sh__ag{left:calc(var(--Hr) * -.04)}
-  .s.sh .sh__me{height:calc(var(--H) * .78);right:-118px;top:calc(62px + var(--H) * .05)}
+  /* Night shift: the two halves of one face, big enough to nearly meet in the middle of the phone */
+  .s.sh{--H:min(170vw,660px)}
 }
 @keyframes hbl{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.hb__t{animation:none}}
-/* Night shift: the whole face (machine on the left, his half on the right), flush with the left screen edge; the back of the head is cut by the edge like the human one on the right */
-.s.sh .sh__ag{left:calc(var(--Hr) * -.1)}
 /* section rail: a slim dot axis on the right; it uses difference blending so it reads on the cream hero and on the dark sections alike */
 .rail{position:fixed;right:12px;top:50%;translate:0 -50%;z-index:60;display:flex;flex-direction:column;gap:2px;mix-blend-mode:difference;color:#fff}
 .rail__b{position:relative;width:22px;height:20px;padding:0;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:inherit}
@@ -2408,6 +2403,12 @@ html.mn-open .rail{display:none}
 .btn.ft__lap:hover{transform:translateX(-50%) translateY(-2px)}
 /* AI Espresso band: the mark, one headline, one line, the form. The kicker and the extra link are gone (the newsletter page has the full pitch) */
 .nlb__k,.nlb__tx p a{display:none}
+/* Night shift: ONE face split in two, the machine half pushed against the left edge, his real half against the right edge, the seams facing each other */
+.s.sh .sh__ag{left:0;height:var(--Hr);top:var(--top);-webkit-mask-image:linear-gradient(180deg,#000 56%,transparent 84%);mask-image:linear-gradient(180deg,#000 56%,transparent 84%);-webkit-mask-composite:source-over;mask-composite:add}
+.s.sh .sh__me{left:auto;right:0;height:var(--Hr);top:var(--top);-webkit-mask-image:linear-gradient(180deg,#000 56%,transparent 84%);mask-image:linear-gradient(180deg,#000 56%,transparent 84%);-webkit-mask-composite:source-over;mask-composite:add}
+.s.sh .sh__ag{width:calc(var(--Hr) * .2803)}
+.s.sh .sh__me{width:calc(var(--Hr) * .2568)}
+.s.sh .sh__ag img,.s.sh .sh__me img{width:100%;height:100%}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -3473,7 +3474,8 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
 
   /* agent, 2.5D: the cut-out and its depth map on a displaced plane, tilted a little by the pointer, the lime seams pulse.
      The flat image stays underneath as the fallback (no WebGL, reduced motion renders one still frame). Textures are plain image files, so the CSP needs no blob:. */
-  (()=>{const sec=document.querySelector('.sh'),cv=sec&&sec.querySelector('.sh__gl');if(!cv||!window.THREE||!('IntersectionObserver' in window))return;
+  (()=>{const sec=document.querySelector('.sh');if(!sec||!window.THREE||!('IntersectionObserver' in window))return;let SHX=0,SHY=0,ptr=false;
+    sec.querySelectorAll('.sh__gl').forEach((cv,ci)=>{
     const T=THREE,fig=cv.parentElement,img=fig.querySelector('img'),RM=matchMedia('(prefers-reduced-motion: reduce)').matches,FINE=matchMedia('(hover:hover) and (pointer:fine)').matches;
     let started=false;
     const start=()=>{if(started)return;started=true;
@@ -3489,17 +3491,17 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
         const size=()=>{const w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;r.setPixelRatio(Math.min(devicePixelRatio||1,2));r.setSize(w,h,false)};size();
         if(window.ResizeObserver)new ResizeObserver(size).observe(cv);
         let tx=0,ty=0,x=0,y=0,vis=true,raf=0,t0=performance.now();
-        const frame=now=>{raf=0;const t=(now-t0)/1000;x+=(tx-x)*.07;y+=(ty-y)*.07;
-          mesh.rotation.y=x*.22+(RM?0:Math.sin(t*.45)*.04);mesh.rotation.x=y*.08+(RM?0:Math.sin(t*.37)*.015);mat.uniforms.t.value=t;r.render(sc,cam);
+        const frame=now=>{raf=0;const t=(now-t0)/1000;tx=SHX;ty=SHY;x+=(tx-x)*.07;y+=(ty-y)*.07;
+          mesh.rotation.y=(ci?1:1)*x*.22+(RM?0:Math.sin(t*.45)*.04);mesh.rotation.x=y*.08+(RM?0:Math.sin(t*.37)*.015);mat.uniforms.t.value=t;r.render(sc,cam);
           if(vis&&!RM&&!document.hidden)raf=requestAnimationFrame(frame)};
         const go=()=>{if(!raf)raf=requestAnimationFrame(frame)};
         new IntersectionObserver(e=>{vis=e[0].isIntersecting;if(vis)go()},{rootMargin:'80px'}).observe(sec);
-        if(FINE&&!RM){sec.addEventListener('pointermove',e=>{const b=sec.getBoundingClientRect();tx=(e.clientX-b.left)/b.width*2-1;ty=(e.clientY-b.top)/b.height*2-1});sec.addEventListener('pointerleave',()=>{tx=0;ty=0})}
+        if(FINE&&!RM){if(!ptr){ptr=true;sec.addEventListener('pointermove',e=>{const b=sec.getBoundingClientRect();SHX=(e.clientX-b.left)/b.width*2-1;SHY=(e.clientY-b.top)/b.height*2-1});sec.addEventListener('pointerleave',()=>{SHX=0;SHY=0})}}
         document.addEventListener('visibilitychange',()=>{if(!document.hidden)go()});
         fig.classList.add('gl');go()};
       const load=(u,k)=>ld.load(u,t=>{t.minFilter=T.LinearFilter;t.generateMipmaps=false;tex[k]=t;done()},undefined,()=>{});
       load(img.currentSrc||img.src,'c');load(cv.getAttribute('data-depth'),'d')};
-    new IntersectionObserver((e,o)=>{if(e[0].isIntersecting){o.disconnect();start()}},{rootMargin:'600px'}).observe(sec)})();
+    new IntersectionObserver((e,o)=>{if(e[0].isIntersecting){o.disconnect();start()}},{rootMargin:'600px'}).observe(sec)});})();
 
   /* phone hero: the tools from the desktop map as a belt of two rows drifting against each other, an entrance, and motion while you scroll away from it */
   (()=>{const hero=document.querySelector('.hero'),sv=hero&&hero.querySelector('.hero__sk');if(!hero||!sv||!matchMedia('(max-width:599px)').matches)return;
