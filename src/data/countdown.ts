@@ -1,8 +1,6 @@
 /* One date drives the hero countdown and the top strip. After it passes both
    hide themselves, so nothing needs a follow-up deploy. */
 export const COUNTDOWN_TARGET = '2026-11-24T00:00:00+01:00';
-/* Where the progress line starts (the day the teaser goes up). */
-export const COUNTDOWN_FROM = '2026-11-19T00:00:00+01:00';
 
 type Copy = {
   label: string;
