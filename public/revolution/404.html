@@ -2423,14 +2423,25 @@ html.mn-open .rail{display:none}
 @media (max-width:767px){
   .so .card.nv:not(:nth-child(4))>.nv__b{display:none}
   #fsin{margin-top:3.2rem}
-  .lib__tabs{flex-wrap:wrap;overflow:visible;gap:.5rem;padding-bottom:0}
-  .lib__tabs button{padding:.65rem .95rem;border-radius:99px;box-shadow:inset 0 0 0 1px rgb(244 244 237/.28);color:rgb(244 244 237/.85)}
-  .lib__tabs button[aria-selected="true"]{background:#D2FF00;color:#1c1f16;box-shadow:none}
-  .lib__tabs button[aria-selected="true"] sup{color:#1c1f16}
-  .lib__ind{display:none}
   .lib__kinds{overflow:visible;flex-wrap:wrap;margin:0;padding:0}
 }
-@media (min-width:768px){.lib__kinds{flex-wrap:wrap;justify-content:flex-end}.lib__tabs button[aria-selected="true"]{color:#D2FF00}}
+/* filters, quiet: the three cover keys above already filter, so the duplicate pill row is gone; categories are plain text tabs with the count on the baseline; sort is two words */
+.lib__kinds{display:none}
+.lib__bi{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"q s" "t t";gap:1.4rem 2rem;align-items:center}
+.lib__sort{box-shadow:none;padding:0;gap:1.2rem;background:none}
+.lib__sort span{display:none}
+.lib__sort button{padding:.4rem 0;border-radius:0;background:none;color:rgb(244 244 237/.5);font:600 14px/1 var(--sans);box-shadow:inset 0 -2px 0 transparent}
+.lib__sort button:hover{color:#F4F4ED}
+.lib__sort button[aria-pressed="true"]{background:none;color:#F4F4ED;box-shadow:inset 0 -2px 0 #D2FF00}
+.lib__tabs{display:flex;flex-wrap:wrap;overflow:visible;gap:.4rem 1.7rem;padding:0 0 .2rem}
+.lib__tabs button{display:inline-flex;align-items:baseline;gap:.4rem;padding:.5rem 0;border-radius:0;box-shadow:inset 0 -2px 0 transparent;color:rgb(244 244 237/.55);font:600 15px/1 var(--sans);letter-spacing:0;text-transform:none;transition:color .25s,box-shadow .25s}
+.lib__tabs button:hover{color:#F4F4ED}
+.lib__tabs button[aria-selected="true"]{color:#F4F4ED;box-shadow:inset 0 -2px 0 #D2FF00}
+.lib__tabs button.off{opacity:.35}
+.lib__ind{display:none}
+.lib__tabs button sup,.lk__t b sup{position:static;display:inline;margin:0;vertical-align:baseline;font:500 12px/1 var(--sans);font-variant-numeric:tabular-nums;color:inherit;opacity:.5}
+@media (max-width:767px){.lib__bi{grid-template-columns:minmax(0,1fr);grid-template-areas:"q" "s" "t"}.lib__tabs{gap:.2rem 1.3rem}.lib__sort{justify-self:start}}
+.lk__t b sup{margin-left:.45rem}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
