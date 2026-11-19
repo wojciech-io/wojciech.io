@@ -3470,23 +3470,23 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
   })();
   /* library filter, the way the Lando shop does it: one ADD FILTER pill opens a dark drawer (lime caps title, rows with counts, Remove all, lime Close). It drives the existing tab and key buttons, so the filtering logic is untouched. */
   (()=>{const bi=document.querySelector('.lib__bi');if(!bi||document.querySelector('.fd'))return;
-    const tabs=[...bi.querySelectorAll('.lib__tabs [data-f]')],kinds=[...bi.querySelectorAll('.lib__kinds [data-k]')],sorts=[...bi.querySelectorAll('.lib__sort [data-s]')],clr=document.querySelector('.lib__clr'),nEl=document.querySelector('.lib__n');
+    const tabs=[...bi.querySelectorAll('.lib__tabs [data-f]')],kinds=[...bi.querySelectorAll('.lib__kinds [data-k]')],sorts=[...bi.querySelectorAll('.lib__sort [data-s]')],nEl=document.querySelector('.lib__n');
     if(!tabs.length)return;
-    const lbl=b=>b.childNodes[b.childNodes.length-2]&&b.cloneNode(true),txt=b=>{const c=b.cloneNode(true);c.querySelectorAll('sup,svg').forEach(e=>e.remove());return c.textContent.trim()},num=b=>{const e=b.querySelector('sup');return e?e.textContent:''};
+    const txt=b=>{const c=b.cloneNode(true);c.querySelectorAll('sup,svg').forEach(e=>e.remove());return c.textContent.trim()},num=b=>{const e=b.querySelector('sup');return e?e.textContent:''};
     const open=document.createElement('button');open.type='button';open.className='fp';open.innerHTML='<span>Add filter</span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4"/></svg></i><b class="fp__n" hidden></b>';
     const so=document.createElement('button');so.type='button';so.className='fsr';so.innerHTML='<span>Sort by:</span> <b></b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
     bi.appendChild(open);bi.appendChild(so);
     const d=document.createElement('aside');d.className='fd';d.setAttribute('role','dialog');d.setAttribute('aria-label','Filter notes');d.hidden=true;
     d.innerHTML='<div class="fd__bg"></div><div class="fd__p"><header><h3>Add filter</h3><p class="fd__c"></p></header><div class="fd__b"></div><footer><button type="button" class="fd__rm">Remove all</button><button type="button" class="fd__x">Close</button></footer></div>';
     document.body.appendChild(d);const body=d.querySelector('.fd__b');
-    const grp=(t,bs,attr)=>'<section><h4>'+t+'</h4>'+bs.map((b,i)=>'<button type="button" class="fd__r" data-g="'+attr+'" data-i="'+i+'"><span>'+txt(b)+'</span><em>'+num(b)+'</em><i aria-hidden="true"></i></button>').join('')+'</section>';
-    body.innerHTML=grp('Category',tabs,'t')+grp('Cover',kinds,'k');
+    const grp=(t,bs,attr)=>{const s=document.createElement('section'),h=document.createElement('h4');h.textContent=t;s.appendChild(h);bs.forEach((b,i)=>{const r=document.createElement('button'),a=document.createElement('span'),e=document.createElement('em'),m=document.createElement('i');r.type='button';r.className='fd__r';r.dataset.g=attr;r.dataset.i=i;a.textContent=txt(b);e.textContent=num(b);m.setAttribute('aria-hidden','true');r.append(a,e,m);s.appendChild(r)});body.appendChild(s)};
+    grp('Category',tabs,'t');grp('Cover',kinds,'k');
     const rows=[...body.querySelectorAll('.fd__r')],src=r=>(r.dataset.g==='t'?tabs:kinds)[+r.dataset.i];
     const isOn=b=>b.getAttribute('aria-selected')==='true'||b.getAttribute('aria-pressed')==='true';
     const paint=()=>{rows.forEach(r=>{const b=src(r);r.querySelector('em').textContent=num(b);r.classList.toggle('on',isOn(b));r.classList.toggle('off',b.classList.contains('off'))});
       const act=(tabs.findIndex(isOn)>0?1:0)+(kinds.some(isOn)?1:0),bd=open.querySelector('.fp__n');bd.hidden=!act;bd.textContent=act;open.classList.toggle('has',!!act);
       const cur=sorts.find(b=>b.getAttribute('aria-pressed')==='true');so.querySelector('b').textContent=cur?cur.textContent:'Newest';
-      const n=nEl?nEl.textContent.replace(/\s*notes.*/,'').replace(/^\d+ of /,''):'';d.querySelector('.fd__c').textContent=nEl?nEl.textContent:'';d.querySelector('.fd__x').textContent='Show '+(nEl?((nEl.textContent.match(/^\d+/)||[''])[0]):'')+' notes'};
+      d.querySelector('.fd__c').textContent=nEl?nEl.textContent:'';d.querySelector('.fd__x').textContent='Show '+(nEl?((nEl.textContent.match(/^\d+/)||[''])[0]):'')+' notes'};
     const show=v=>{d.hidden=false;requestAnimationFrame(()=>{d.classList.toggle('on',v);if(!v)setTimeout(()=>{if(!d.classList.contains('on'))d.hidden=true},400)});document.documentElement.classList.toggle('fd-open',v);if(v)paint()};
     open.addEventListener('click',()=>show(true));d.querySelector('.fd__bg').addEventListener('click',()=>show(false));d.querySelector('.fd__x').addEventListener('click',()=>show(false));
     addEventListener('keydown',e=>{if(e.key==='Escape'&&d.classList.contains('on'))show(false)});
