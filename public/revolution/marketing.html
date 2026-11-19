@@ -2366,13 +2366,11 @@ html:not([data-mode="light"]) .lx-h--solo:has(img[src*="growth-team"]){--sf2:#0f
 /* agent in 2.5D: the canvas sits over the flat image, which keeps the size and the old placement and hides once WebGL runs */
 .s.sh .sh__ag .sh__gl{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
 .s.sh .sh__ag.gl img{visibility:hidden}
-/* career cards: no screenshot or photo behind the text; the company's mark top right and a soft wash of its colour from the bottom corner */
-.cr__mk{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 70% at 100% 100%,color-mix(in srgb,var(--ac) 34%,transparent),transparent 64%)}
-.cr__mk img{position:absolute;top:24px;right:26px;height:24px;max-width:130px;width:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.78}
-.cr__mk b{position:absolute;top:22px;right:26px;font:800 21px/1 var(--sans);letter-spacing:-.02em;color:#F4F4ED;opacity:.8}
-html[data-mode="light"] .cr__mk img{filter:brightness(0);opacity:.62}
-html[data-mode="light"] .cr__mk b{color:#282C20;opacity:.7}
-html[data-mode="light"] .cr__mk{background:radial-gradient(120% 70% at 100% 100%,color-mix(in srgb,var(--ac) 22%,transparent),transparent 64%)}
+/* career cards: the company is the first thing on the card. A band in the company's colour with its real mark, large, bleeding to the card edges; no screenshots or photos */
+.cr__mk{position:relative;z-index:0;display:grid;place-items:center;flex:none;height:clamp(64px,9.5vh,96px);margin:-28px -28px 18px;border-radius:var(--r-2) var(--r-2) 0 0;background:linear-gradient(135deg,color-mix(in srgb,var(--ac) 78%,#0d0f08),color-mix(in srgb,var(--ac) 38%,#0d0f08));overflow:hidden;pointer-events:none}
+.cr__mk::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgb(255 255 255/.16) 1.6px,transparent 2px);background-size:22px 22px;-webkit-mask-image:radial-gradient(90% 120% at 100% 100%,#000,transparent 70%);mask-image:radial-gradient(90% 120% at 100% 100%,#000,transparent 70%)}
+.cr__mk img{position:relative;z-index:1;height:clamp(26px,4.2vh,40px);max-width:62%;width:auto;object-fit:contain;filter:brightness(0) invert(1)}
+.cr__mk b{position:relative;z-index:1;font:800 clamp(24px,3.6vh,34px)/1 var(--sans);letter-spacing:-.025em;color:#fff}
 /* phone hero: the belt of tools between the headline and the portrait, the portrait a little smaller to make room */
 @media (max-width:599px){
   .hero__me{height:43vh}
@@ -2407,6 +2405,14 @@ html.mn-open .rail{display:none}
 .s.sh .sh__ag{left:0;height:var(--Hr);top:var(--top);-webkit-mask-image:linear-gradient(180deg,#000 56%,transparent 84%);mask-image:linear-gradient(180deg,#000 56%,transparent 84%);-webkit-mask-composite:source-over;mask-composite:add}
 .s.sh .sh__ag{width:calc(var(--Hr) * .2803)}
 .s.sh .sh__ag img{width:100%;height:100%}
+/* desktop: both halves stand on the bottom edge of the section and are cut by it (no fade mid-body). The machine half has a lime seam where it is cut. */
+@media (min-width:1000px){
+  .s.sh{--Hm:calc(var(--Hr) * .94)}
+  .s.sh .sh__ag{top:auto;bottom:0;-webkit-mask-image:none;mask-image:none}
+  .s.sh .sh__ag::after{content:"";position:absolute;top:9%;bottom:0;right:0;width:2px;background:linear-gradient(180deg,transparent,#D2FF00 22%,#D2FF00 88%,rgb(210 255 0/.0));box-shadow:0 0 14px 1px rgb(210 255 0/.35);pointer-events:none}
+  .s.sh .sh__me{top:auto;bottom:0;height:var(--Hm);width:calc(var(--Hm) * .9804);right:calc(var(--Hm) * -.5);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%);mask-image:linear-gradient(90deg,transparent 0,#000 16%);-webkit-mask-composite:source-over;mask-composite:add}
+}
+@media (min-width:768px){.cr__c{height:clamp(570px,73vh,650px)}}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -2741,14 +2747,14 @@ addEventListener('load',()=>{ScrollTrigger.sort();ScrollTrigger.refresh()});
   heads.forEach((h,k)=>{const p=G.head(k);gsap.set(h,{x:p.x,y:p.y});if(!h.querySelector('.bf__no'))h.insertAdjacentHTML('beforeend','<i class="bf__no">0'+(k+1)+'</i>')});
   const place=(t)=>{const e=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
     els.forEach((el,i)=>{const c=G.C[i],a=G.A[i],q=Math.min(1,Math.max(0,(t-.04*(i%6))/(1-.04*5)));const k=q<.5?4*q*q*q:1-Math.pow(-2*q+2,3)/2;
-      gsap.set(el,{x:c.x+(a.x-c.x)*k,y:c.y+(a.y-c.y)*k,z:CH[i].z*(1-k)+16*k,rotation:CH[i].r*(1-k),rotationX:CH[i].rx*(1-k),rotationY:CH[i].ry*(1-k),scale:CH[i].s+(1-CH[i].s)*k,filter:'grayscale('+(1-k)+') contrast('+(.8+.2*k)+')',opacity:.75+.25*k})});
+      gsap.set(el,{x:c.x+(a.x-c.x)*k,y:c.y+(a.y-c.y)*k,z:CH[i].z*(1-k)+16*k,rotation:CH[i].r*(1-k),rotationX:CH[i].rx*(1-k),rotationY:CH[i].ry*(1-k),scale:CH[i].s+(1-CH[i].s)*k,filter:'grayscale('+(.55*(1-k))+')',opacity:1})});
     const sm=(a,b)=>{const x=Math.min(1,Math.max(0,(t-a)/(b-a)));return x*x*(3-2*x)},tl=sm(.55,1),ph=innerWidth<768;
     gsap.set(pl,{rotationX:0,y:(ph?-4:-10)*tl,scale:1-(ph?0:.02)*tl});pl.style.setProperty('--fl',sm(.6,.95));
     lanes.forEach((l,k)=>{const q=G.L[k];gsap.set(l,{x:q.x,y:q.y,width:q.w,height:q.h,z:2,opacity:sm(.62+.03*k,.9+.02*k)})});
     const sw=sm(.7,.85),so=sm(.84,.97);els.forEach(el=>{const q=el.querySelector('.n2');if(q){q.style.opacity=sw;el.querySelector('.n1').style.opacity=1-sw}el.lastChild.style.opacity=so;el.lastChild.style.maxHeight=(so*1.2)+'rem'});if(LN.pk)LN.pk.style.opacity=sm(.78,.95);
     heads.forEach((h,k)=>gsap.set(h,{opacity:Math.min(1,Math.max(0,(t-.55)/.3)),y:G.head(k).y+(1-Math.min(1,Math.max(0,(t-.55)/.3)))*18,z:30}));
     LN.cx.forEach(p=>p.style.opacity=.7*(1-Math.min(1,t/.6)));LN.ok.forEach(p=>p.style.opacity=Math.min(1,Math.max(0,(t-.7)/.25)));
-    const c=Math.min(1,Math.max(0,(t-.42)/.22)),E=MODE.get()==='light'?[221,226,206]:[40,44,32],BG=[227+(E[0]-227)*c,227+(E[1]-227)*c,219+(E[2]-219)*c].map(Math.round),lum=(.2126*BG[0]+.7152*BG[1]+.0722*BG[2])/255;sec.style.background='rgb('+BG+')';sec.style.color=lum<.42?'#F4F4ED':'#282C20';
+    const c=Math.min(1,Math.max(0,(t-.46)/.1)),E=MODE.get()==='light'?[221,226,206]:[40,44,32],BG=[227+(E[0]-227)*c,227+(E[1]-227)*c,219+(E[2]-219)*c].map(Math.round),lum=(.2126*BG[0]+.7152*BG[1]+.0722*BG[2])/255;sec.style.background='rgb('+BG+')';sec.style.color=lum<.42?'#F4F4ED':'#282C20';
     sec.querySelector('.bf__tag .a').style.opacity=sec.querySelector('.bf__h .a').style.opacity=Math.min(1,Math.max(0,(t-.6)/.25));
     sec.querySelector('.bf__tag .b').style.opacity=sec.querySelector('.bf__h .b').style.opacity=1-Math.min(1,Math.max(0,(t-.35)/.25));
     const th=c>.62?'dark':'light';if(sec.dataset.theme!==th){sec.dataset.theme=th;try{navTone()}catch(e){}}};
