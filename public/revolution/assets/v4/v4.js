@@ -30,26 +30,25 @@ document.querySelectorAll('[data-nav]').forEach((el) => {
   const here = location.pathname.replace(/\/+$/, '').split('/').pop();
   el.outerHTML = `<div class="nav"><a class="logo" href="${BASE}index.html">Wojciech<i>Luszczynski</i></a><div class="r"><a class="btn" href="${BOOK}">Book a call <i>→</i></a><button class="menu" type="button" aria-expanded="false" aria-controls="v4menu" aria-label="Menu"><i></i></button></div></div>
     <div class="mnu${LIGHT ? ' mnu--lt' : ''}" id="v4menu" role="dialog" aria-modal="true" aria-label="Menu" hidden><svg class="mnu__ct" aria-hidden="true"></svg><div class="mnu__top"><a class="logo" href="${BASE}index.html">Wojciech<i>Luszczynski</i></a><button class="mnu__x" type="button" aria-label="Close menu"><i></i></button></div>
-      <nav class="mnu__nav" aria-label="Pages">${MENU.map(([t, h, im, d], i) => `<a href="${BASE}${h}" data-k="${h.replace('.html', '')}" data-im="${BASE}${im}" data-d="${d}"${h === here ? ' aria-current="page"' : ''}><span>0${i + 1}</span>${t}</a>`).join('')}</nav>
-      <div class="mnu__ph" aria-hidden="true"><div class="mnu__pv"><img src="${BASE}${MENU[0][2]}" alt=""><div class="mnu__pc"><b>${MENU[0][0]}</b><span>${MENU[0][3]}</span></div><div class="mnu__q"></div></div></div>
+      <nav class="mnu__nav" aria-label="Pages">${MENU.map(([t, h, im, d], i) => `<a style="--i:${i}" href="${BASE}${h}" data-k="${h.replace('.html', '')}" data-im="${BASE}${im}" data-d="${d}"${h === here ? ' aria-current="page"' : ''}><span>0${i + 1}</span>${t}</a>`).join('')}</nav>
+      <div class="mnu__ph" aria-hidden="true"><div class="mnu__pv"><div class="mnu__im">${MENU.map(([t, h, im], i) => `<img class="${i === 0 ? 'on' : ''}" data-k="${h.replace('.html', '')}" src="${BASE}${im}" alt="" decoding="async">`).join('')}</div><div class="mnu__pc"><b>${MENU[0][0]}</b><span>${MENU[0][3]}</span></div><div class="mnu__q"></div></div></div>
       <div class="mnu__bar"><a class="btn" href="${BOOK}">Book a call <i>→</i></a><div class="mnu__set"><div class="mnu__lg" role="group" aria-label="Language">${LANGS.map((l) => l === 'EN' ? `<a href="${BASE}index.html" aria-current="true" lang="en" title="English">EN</a>` : `<span title="Soon" aria-disabled="true">${l}</span>`).join('')}</div><div class="mnu__th" role="group" aria-label="Colour mode"><button type="button" data-th="dark" aria-pressed="${!LIGHT}">${MODEI.dark}Dark</button><button type="button" data-th="light" aria-pressed="${LIGHT}">${MODEI.light}Light</button></div></div><div class="mnu__so">${SOC.map(([t, h, ic]) => `<a href="${h}"${h.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${ic}${t}</a>`).join('')}</div></div></div>`;
 });
 document.querySelectorAll('.menu').forEach((b) => {
   const m = document.getElementById(b.getAttribute('aria-controls')); document.body.append(m); const x = m.querySelector('.mnu__x');
-  const img = m.querySelector('.mnu__pv img'), pt = m.querySelector('.mnu__pc b'), pd = m.querySelector('.mnu__pc span');
-  const qs = m.querySelector('.mnu__q');
+  const imgs = [...m.querySelectorAll('.mnu__pv img')], pt = m.querySelector('.mnu__pc b'), pd = m.querySelector('.mnu__pc span'), pc = m.querySelector('.mnu__pc');
   const preview = (a) => {
-    if (!a) return; pt.textContent = a.lastChild.textContent; pd.textContent = a.dataset.d; if (img.getAttribute('src') !== a.dataset.im) img.src = a.dataset.im;
-    const groups = [];
-    qs.replaceChildren(...groups.map(([h, items]) => { const d = document.createElement('div'); const t = document.createElement('h6'); t.textContent = h; d.append(t); items.forEach(([n, u]) => { const l = document.createElement('a'); l.href = BASE + u; l.textContent = n; d.append(l); }); return d; }));
-    m.querySelector('.mnu__ph').classList.toggle('has-q', groups.length > 0);
+    if (!a || pc.dataset.k === a.dataset.k) return; pc.dataset.k = a.dataset.k;
+    imgs.forEach((i) => i.classList.toggle('on', i.dataset.k === a.dataset.k));
+    pc.classList.add('sw'); setTimeout(() => { pt.textContent = a.lastChild.textContent; pd.textContent = a.dataset.d; pc.classList.remove('sw'); }, 160);
   };
   m.querySelectorAll('.mnu__nav a').forEach((a) => { a.addEventListener('mouseenter', () => preview(a)); a.addEventListener('focus', () => preview(a)); });
   const set = (open) => {
-    m.hidden = !open; b.setAttribute('aria-expanded', String(open)); document.documentElement.classList.toggle('mnu-open', open);
+    m.hidden = !open; b.setAttribute('aria-expanded', String(open)); document.documentElement.classList.toggle('mnu-open', open); m.classList.remove('mnu--in'); if (open) requestAnimationFrame(() => requestAnimationFrame(() => m.classList.add('mnu--in')));
     if (open) { const c = m.querySelector('.mnu__ct'); contours(c, innerWidth, innerHeight, 71, LIGHT ? 'rgba(40,44,32,.13)' : 'rgba(244,244,237,.1)'); const cur = (/\/(apps|work)\//.test(location.pathname) ? 'work' : /\/insights\//.test(location.pathname) ? 'insights' : '');
       const t = m.querySelector('.mnu__nav a[data-k="' + (cur || 'index') + '"]'); preview(t); t.focus(); } else b.focus();
   };
+  m.addEventListener('pointermove', (e) => { m.style.setProperty('--gx', e.clientX + 'px'); m.style.setProperty('--gy', e.clientY + 'px'); });
   b.addEventListener('click', () => set(m.hidden));
   x.addEventListener('click', () => set(false));
   m.querySelectorAll('[data-th]').forEach((t) => t.addEventListener('click', () => { const v = t.dataset.th; if ((v === 'light') === LIGHT) return; try { localStorage.setItem('v4theme', v); } catch (e) {} const u = new URL(location.href); u.searchParams.set('theme', v); location.href = u.href; }));
