@@ -2403,7 +2403,7 @@ html.mn-open .rail{display:none}
 .nlb__k,.nlb__tx p a{display:none}
 /* Night shift: the machine half-face (from the Canva agent) pushed against the left edge; the right side is his real photo, cut by the right edge as before */
 .s.sh .sh__ag{left:0;height:var(--Hr);top:var(--top);-webkit-mask-image:linear-gradient(180deg,#000 56%,transparent 84%);mask-image:linear-gradient(180deg,#000 56%,transparent 84%);-webkit-mask-composite:source-over;mask-composite:add}
-.s.sh .sh__ag{width:calc(var(--Hr) * .2803)}
+.s.sh .sh__ag{width:calc(var(--Hr) * .3629)}
 .s.sh .sh__ag img{width:100%;height:100%}
 /* desktop: both halves stand on the bottom edge of the section and are cut by it (no fade mid-body). The machine half has a lime seam where it is cut. */
 @media (min-width:1000px){
@@ -2536,13 +2536,6 @@ a.cr__mk:focus-visible{outline:2px solid #D2FF00;outline-offset:-3px}
 .cx__d,.cx__r{display:none!important}
 .ft .mq2:hover .mq2__t{animation-play-state:paused}
 .ft .mq2 a.lgl:hover{transform:translateY(-5px) scale(1.18)}
-/* agent on desktop: the full face, part human and part machine, soft on its inner edge; phones keep the half */
-.s.sh .sh__ag2{display:none}
-@media (min-width:1000px){
-  .s.sh .sh__ag:not(.sh__ag2){display:none}
-  .s.sh .sh__ag2{display:block;left:0;top:auto;bottom:0;height:calc(var(--Hr) * .8);width:calc(var(--Hr) * .8 * .537);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 58%,transparent 100%),linear-gradient(180deg,#000 0,#000 100%);mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 58%,transparent 100%);-webkit-mask-composite:source-over;mask-composite:add}
-  .s.sh .sh__ag2 img{width:100%;height:100%}
-}
 /* the apps card: names and what each does, plain rules, no screenshots */
 .cr__al{list-style:none;margin:26px 0 0;padding:0}
 .cr__c--end>*{order:0}.cr__c--end .cr__al{order:1}.cr__c--end .btn{order:2}
@@ -2629,6 +2622,22 @@ body:has(#library) .lb__bar{display:none}
   .fcount{grid-column:1/-1;padding:.7rem;border-top:1px solid rgb(244 243 239/.12)}
   .fseg--srt{border-right:0}
 }
+/* AI Espresso band: copy and form on the left, a tilted sample issue with real headlines on the right */
+.nlb__in{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;padding:52px 56px;overflow:hidden}
+.nlb__in::after{right:-80px;top:-120px;width:560px;height:560px;background:radial-gradient(circle,rgb(210 255 0/.2),transparent 66%)}
+.nlb__l{display:grid;gap:26px;align-content:center}
+.nlb__tx h2{font-size:clamp(34px,4.2vw,58px);line-height:.98;max-width:12em}
+.nlb__ml{position:relative;justify-self:center;width:min(100%,380px);padding:30px 28px 24px;border-radius:20px;background:#F4F4ED;color:#1c1f16;transform:rotate(3deg);box-shadow:0 40px 60px -30px rgb(0 0 0/.65),0 0 0 1px rgb(255 255 255/.5) inset;transition:transform .7s cubic-bezier(.2,.7,.1,1)}
+.nlb__in:hover .nlb__ml{transform:rotate(0deg) translateY(-6px)}
+.nlb__ml .nlb__cup{position:absolute;left:-30px;top:-30px;width:72px;height:72px;border-radius:20px;transform:rotate(-8deg)}
+.nlb__ml .nlb__cup svg{width:42px;height:42px}
+.ml__top{display:flex;justify-content:space-between;align-items:baseline;padding:0 0 14px 38px;border-bottom:1px solid rgb(28 31 22/.14)}
+.ml__top b{font:700 15px/1 var(--sans)}.ml__top small{font:600 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:rgb(28 31 22/.55)}
+.nlb__ml ol{list-style:none;margin:0;padding:6px 0}
+.nlb__ml li{display:grid;grid-template-columns:30px 1fr;gap:6px;padding:14px 0;border-bottom:1px solid rgb(28 31 22/.1);font:600 16px/1.3 var(--sans)}
+.nlb__ml li i{font:800 24px/1 var(--sans);font-style:normal;font-stretch:75%;color:#6E7D0C}
+.ml__ft{padding-top:14px;font:500 13px/1 var(--sans);color:rgb(28 31 22/.6)}
+@media (max-width:899px){.nlb__in{grid-template-columns:1fr;padding:34px 26px;gap:44px}.nlb__ml{transform:rotate(1.5deg);margin-left:14px}.nlb__ml .nlb__cup{left:-18px;top:-26px}}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -3613,7 +3622,7 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
         document.addEventListener('visibilitychange',()=>{if(!document.hidden)go()});
         fig.classList.add('gl');go()};
       const load=(u,k)=>ld.load(u,t=>{t.minFilter=T.LinearFilter;t.generateMipmaps=false;tex[k]=t;done()},undefined,()=>{});
-      load(img.currentSrc||img.src,'c');load(cv.getAttribute('data-depth'),'d')};
+      load(img.currentSrc||img.src,'c');load((matchMedia('(max-width:999px)').matches&&cv.getAttribute('data-depth-m'))||cv.getAttribute('data-depth'),'d')};
     new IntersectionObserver((e,o)=>{if(e[0].isIntersecting){o.disconnect();start()}},{rootMargin:'600px'}).observe(sec)});})();
 
   /* phone hero: the tools from the desktop map as a belt of two rows drifting against each other, an entrance, and motion while you scroll away from it */
