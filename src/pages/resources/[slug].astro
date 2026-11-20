@@ -1,0 +1,369 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { SITE, CAL_BOOKING_LINK, personName } from '../../data/site';
+import { getLocaleFromPath } from '../../data/uiStrings';
+import { LEAD_MAGNETS, type LeadMagnet } from '../../data/leadMagnets';
+
+// One template for every lead magnet in src/data/leadMagnets.ts. English only:
+// the resources are English products, so no locale routes are generated.
+export function getStaticPaths() {
+  return LEAD_MAGNETS.map((magnet) => ({ params: { slug: magnet.slug }, props: { magnet } }));
+}
+
+interface Props {
+  magnet: LeadMagnet;
+}
+const { magnet } = Astro.props;
+
+const url = `${SITE.url}/resources/${magnet.slug}/`;
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url + '/' },
+    { '@type': 'ListItem', position: 2, name: 'Resources', item: SITE.url + '/resources/' },
+    { '@type': 'ListItem', position: 3, name: magnet.title, item: url },
+  ],
+};
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: magnet.title,
+  description: magnet.meta.description,
+  url,
+  isAccessibleForFree: true,
+};
+const owner = personName(getLocaleFromPath(Astro.url.pathname));
+---
+
+<Layout
+  title={magnet.meta.title}
+  description={magnet.meta.description}
+  schema={[breadcrumbSchema, pageSchema]}
+>
+  <section class="relative overflow-hidden pt-20 pb-14 border-b border-[var(--color-border)]">
+    <div class="relative mx-auto max-w-6xl px-6">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="h-px w-9 bg-[var(--color-accent-cta)]" aria-hidden="true"></span>
+        <a href="/resources/" class="obs-label-accent">Resources</a>
+      </div>
+      <h1 class="t-h1 text-[var(--color-text)] mb-5 max-w-3xl">{magnet.title}</h1>
+      <p class="t-lead text-[var(--color-text-muted)] max-w-2xl">
+        <strong class="text-[var(--color-text)]">In short.</strong> {magnet.inShort}
+      </p>
+    </div>
+  </section>
+
+  <section class="py-[var(--space-section)] border-b border-[var(--color-border)]">
+    <div class="mx-auto max-w-6xl px-6 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-16">
+      <div>
+        <h2 class="t-h3 text-[var(--color-text)] mb-6">What you get</h2>
+        <ul class="magnet-list">
+          {magnet.gets.map((item) => <li class="t-small text-[var(--color-text-muted)]">{item}</li>)}
+        </ul>
+      </div>
+
+      <aside class="magnet-panel" aria-label={magnet.gated ? 'Get the files' : 'Files'}>
+        {magnet.gated && (
+          <div id="gate" data-gated>
+            <h2 class="t-h3 text-[var(--color-text)] mb-2">Get the files</h2>
+            <p class="t-small text-[var(--color-text-muted)] mb-5">
+              Join AI Espresso, my weekday newsletter, and the downloads open on this page.
+            </p>
+            <form id="magnet-form" class="magnet-form" novalidate>
+              <label class="sr-only" for="magnet-email">Email address</label>
+              <input
+                type="email"
+                id="magnet-email"
+                name="email"
+                class="magnet-input"
+                required
+                autocomplete="email"
+                inputmode="email"
+                placeholder="you@company.com"
+              />
+              <div class="magnet-hp" aria-hidden="true">
+                <label for="magnet-website">Leave this field empty</label>
+                <input type="text" id="magnet-website" name="website" tabindex="-1" autocomplete="off" />
+              </div>
+              <label class="magnet-consent" for="magnet-consent">
+                <input type="checkbox" id="magnet-consent" name="consent" required />
+                <span>I agree to receive the AI Espresso newsletter by email from {owner} and accept the <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy policy</a>. Unsubscribe anytime.</span>
+              </label>
+              <button type="submit" id="magnet-btn" class="t-button btn-press magnet-submit">Open the downloads</button>
+              <p id="magnet-status" class="magnet-status" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        )}
+
+        <div id="files" class:list={['magnet-files', { 'is-locked': magnet.gated }]} hidden={magnet.gated}>
+          <h2 class="t-h3 text-[var(--color-text)] mb-2">Downloads</h2>
+          {magnet.gated && (
+            <p class="t-small text-[var(--color-text-muted)] mb-4">
+              One more step: confirm your email from the message I just sent, so the newsletter reaches you.
+            </p>
+          )}
+          <ul class="magnet-file-list">
+            {magnet.files.map((file) => (
+              <li>
+                <a href={file.href} download class="magnet-file">
+                  <span class="magnet-file-icon" aria-hidden="true"><Icon name="download" class="h-[18px] w-[18px]" /></span>
+                  <span>
+                    <span class="t-small block font-semibold text-[var(--color-text)]">{file.label}</span>
+                    <span class="t-caption block text-[var(--color-text-muted)]">{file.note}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  {magnet.offer && (
+    <section class="py-12 border-b border-[var(--color-border)]">
+      <div class="mx-auto max-w-6xl px-6">
+        <div class="magnet-offer">
+          <h2 class="t-h3 text-[var(--color-text)] mb-2">{magnet.offer.heading}</h2>
+          <p class="t-small text-[var(--color-text-muted)] max-w-2xl">{magnet.offer.body}</p>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- The one call to action on the page. Same booking behaviour as CTABand,
+       without its secondary button. page-ask hides the footer sign-up band. -->
+  <section class="page-ask bg-[var(--color-bg)] py-14 md:py-20">
+    <div class="mx-auto max-w-6xl px-6">
+      <div class="cta-ink relative overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-ink)] text-[var(--color-ink-text)] px-6 py-12 md:px-12 md:py-16">
+        <h2 class="t-h2 text-[var(--color-ink-text)] max-w-2xl">{magnet.cta.heading}</h2>
+        <div class="mt-8">
+          <a
+            href="/contact/"
+            data-cal-link={CAL_BOOKING_LINK}
+            class="t-button btn-press inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[var(--color-accent-cta)] px-6 py-3.5 text-[var(--color-accent-text)] transition-colors hover:bg-[var(--color-accent-cta-hi)]"
+            data-mp-cta={magnet.cta.button}
+            data-mp-location="lead_magnet"
+          >
+            <span>{magnet.cta.button}</span>
+            <Icon name="arrow-right" class="rtl-flip-x h-[13px] w-[13px]" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Soft gate: a successful sign-up reveals the downloads. The files are static,
+  // so this keeps honest visitors on the path to the newsletter and nothing more.
+  // Wired on astro:page-load because ClientRouter swaps page bodies.
+  document.addEventListener('astro:page-load', () => {
+    const form = document.getElementById('magnet-form') as HTMLFormElement | null;
+    if (!form || form.dataset.wired === '1') return;
+    form.dataset.wired = '1';
+    const gate = document.getElementById('gate') as HTMLElement;
+    const files = document.getElementById('files') as HTMLElement;
+    const status = document.getElementById('magnet-status') as HTMLElement;
+    const btn = document.getElementById('magnet-btn') as HTMLButtonElement;
+    const emailInput = document.getElementById('magnet-email') as HTMLInputElement;
+    const consentInput = document.getElementById('magnet-consent') as HTMLInputElement;
+    const honeypot = document.getElementById('magnet-website') as HTMLInputElement;
+    const loadedAt = Date.now();
+    const idle = btn.textContent || 'Open the downloads';
+
+    const fail = (message: string) => {
+      status.textContent = message;
+      status.classList.add('is-error');
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.classList.remove('is-error');
+      const email = emailInput.value.trim().toLowerCase();
+      if (!email || !emailInput.validity.valid) {
+        fail('Please enter a valid email address.');
+        emailInput.focus();
+        return;
+      }
+      if (!consentInput.checked) {
+        fail('Please tick the consent box. It is required to send you the newsletter.');
+        consentInput.focus();
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      status.textContent = '';
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            consent: true,
+            website: honeypot?.value || '',
+            elapsed: Date.now() - loadedAt,
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error((data as { error?: string })?.error || 'Failed');
+        gate.hidden = true;
+        files.hidden = false;
+        files.classList.remove('is-locked');
+        (files.querySelector('a') as HTMLElement | null)?.focus();
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = idle;
+        const message = err instanceof Error ? err.message : '';
+        fail(message && message !== 'Failed' ? message : 'Something went wrong. Try again.');
+      }
+    });
+  });
+</script>
+
+<style>
+  .magnet-list {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .magnet-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    max-width: 40rem;
+  }
+  .magnet-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--color-accent-cta);
+  }
+
+  .magnet-panel {
+    align-self: start;
+    padding: 1.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .magnet-form {
+    display: grid;
+    gap: 0.875rem;
+  }
+  .magnet-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font: inherit;
+  }
+  .magnet-input:focus-visible,
+  .magnet-submit:focus-visible,
+  .magnet-file:focus-visible {
+    outline: 2px solid var(--color-accent-hi);
+    outline-offset: 2px;
+  }
+  .magnet-hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .magnet-consent {
+    display: flex;
+    gap: 0.625rem;
+    align-items: flex-start;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+  .magnet-consent input {
+    margin-top: 0.2rem;
+  }
+  .magnet-consent a {
+    text-decoration: underline;
+  }
+  .magnet-submit {
+    padding: 0.85rem 1.25rem;
+    border: 0;
+    border-radius: var(--radius-btn);
+    background: var(--color-accent-cta);
+    color: var(--color-accent-text);
+    cursor: pointer;
+  }
+  .magnet-submit:hover:not(:disabled) {
+    background: var(--color-accent-cta-hi);
+  }
+  .magnet-submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .magnet-status {
+    min-height: 1.25rem;
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+  .magnet-status.is-error {
+    color: #b42318;
+  }
+  :global(:root[data-theme='dark']) .magnet-status.is-error {
+    color: #f87171;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .magnet-status.is-error {
+      color: #f87171;
+    }
+  }
+
+  .magnet-file-list {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .magnet-file {
+    display: flex;
+    gap: 0.875rem;
+    align-items: flex-start;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    background: var(--color-surface-2);
+    transition: border-color 0.2s;
+  }
+  .magnet-file:hover {
+    border-color: var(--color-accent-hi);
+  }
+  .magnet-file-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-badge);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    color: var(--color-accent-hi);
+  }
+
+  .magnet-offer {
+    padding: 1.5rem 1.75rem;
+    border-left: 3px solid var(--color-accent-cta);
+    background: var(--color-surface);
+    border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  }
+</style>

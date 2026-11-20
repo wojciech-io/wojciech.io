@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.test/schemas/write-proposal.schema.json",
+  "title": "CRM write proposal",
+  "description": "What an AI step may hand to a reviewer. It is a proposal, never a write. Every populated field carries evidence; a field without evidence is empty and listed as a gap.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["proposal_id", "revision", "source", "destination", "fields", "gaps", "proposed_action"],
+  "properties": {
+    "proposal_id": { "type": "string", "minLength": 1 },
+    "revision": { "type": "integer", "minimum": 1, "description": "Increments on every edit. Approval binds to one revision." },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ref"],
+      "properties": {
+        "type": { "enum": ["inbound_enquiry", "meeting_transcript", "email_thread", "other"] },
+        "ref": { "type": "string", "description": "Stable reference to the original text, so a reviewer can open it later." }
+      }
+    },
+    "destination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "object", "operation", "record_id"],
+      "properties": {
+        "system": { "type": "string" },
+        "object": { "enum": ["lead", "contact", "company", "deal", "note"] },
+        "operation": { "enum": ["create", "update"] },
+        "record_id": { "type": ["string", "null"], "description": "Null only when operation is create." }
+      }
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "value", "status", "evidence"],
+        "properties": {
+          "field": { "type": "string", "description": "Must be on the destination's allow-list. Anything else is rejected." },
+          "value": { "type": ["string", "number", "boolean", "null"] },
+          "status": { "enum": ["observed", "inferred", "missing"] },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["source_ref", "speaker", "excerpt"],
+              "properties": {
+                "source_ref": { "type": "string" },
+                "speaker": { "enum": ["buyer", "seller", "system"], "description": "Who said it. A seller impression is not a buyer statement." },
+                "excerpt": { "type": "string", "minLength": 1, "description": "Verbatim text from the source. A script checks that it appears there." }
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "status": { "const": "missing" } } },
+            "then": { "properties": { "value": { "const": null }, "evidence": { "maxItems": 0 } } }
+          },
+          {
+            "if": { "properties": { "status": { "enum": ["observed", "inferred"] } } },
+            "then": { "properties": { "evidence": { "minItems": 1 }, "value": { "not": { "const": null } } } }
+          },
+          {
+            "if": { "properties": { "status": { "const": "observed" } } },
+            "then": { "properties": { "evidence": { "items": { "properties": { "speaker": { "enum": ["buyer", "system"] } } } } } }
+          }
+        ]
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "question"],
+        "properties": {
+          "field": { "type": "string" },
+          "question": { "type": "string", "description": "What to ask the buyer to fill this field." }
+        }
+      }
+    },
+    "proposed_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "idempotency_key"],
+      "properties": {
+        "summary": { "type": "string", "description": "One sentence a reviewer can read as the exact action being approved." },
+        "idempotency_key": { "type": "string", "description": "Same key, same write, one record. A repeated request cannot create a second one." }
+      }
+    },
+    "approval": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["approved_by", "approved_at", "approved_revision"],
+      "properties": {
+        "approved_by": { "type": "string" },
+        "approved_at": { "type": "string", "format": "date-time" },
+        "approved_revision": { "type": "integer", "minimum": 1 }
+      },
+      "description": "Filled by the reviewer, never by the model. The write service refuses it unless approved_revision equals revision."
+    }
+  }
+}
