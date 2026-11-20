@@ -2403,7 +2403,7 @@ html.mn-open .rail{display:none}
 .nlb__k,.nlb__tx p a{display:none}
 /* Night shift: the machine half-face (from the Canva agent) pushed against the left edge; the right side is his real photo, cut by the right edge as before */
 .s.sh .sh__ag{left:0;height:var(--Hr);top:var(--top);-webkit-mask-image:linear-gradient(180deg,#000 56%,transparent 84%);mask-image:linear-gradient(180deg,#000 56%,transparent 84%);-webkit-mask-composite:source-over;mask-composite:add}
-.s.sh .sh__ag{width:calc(var(--Hr) * .2803)}
+.s.sh .sh__ag{width:calc(var(--Hr) * .3629)}
 .s.sh .sh__ag img{width:100%;height:100%}
 /* desktop: both halves stand on the bottom edge of the section and are cut by it (no fade mid-body). The machine half has a lime seam where it is cut. */
 @media (min-width:1000px){
@@ -2536,13 +2536,6 @@ a.cr__mk:focus-visible{outline:2px solid #D2FF00;outline-offset:-3px}
 .cx__d,.cx__r{display:none!important}
 .ft .mq2:hover .mq2__t{animation-play-state:paused}
 .ft .mq2 a.lgl:hover{transform:translateY(-5px) scale(1.18)}
-/* agent on desktop: the full face, part human and part machine, soft on its inner edge; phones keep the half */
-.s.sh .sh__ag2{display:none}
-@media (min-width:1000px){
-  .s.sh .sh__ag:not(.sh__ag2){display:none}
-  .s.sh .sh__ag2{display:block;left:0;top:auto;bottom:0;height:calc(var(--Hr) * .8);width:calc(var(--Hr) * .8 * .537);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 58%,transparent 100%),linear-gradient(180deg,#000 0,#000 100%);mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 58%,transparent 100%);-webkit-mask-composite:source-over;mask-composite:add}
-  .s.sh .sh__ag2 img{width:100%;height:100%}
-}
 /* the apps card: names and what each does, plain rules, no screenshots */
 .cr__al{list-style:none;margin:26px 0 0;padding:0}
 .cr__c--end>*{order:0}.cr__c--end .cr__al{order:1}.cr__c--end .btn{order:2}
@@ -2629,6 +2622,22 @@ body:has(#library) .lb__bar{display:none}
   .fcount{grid-column:1/-1;padding:.7rem;border-top:1px solid rgb(244 243 239/.12)}
   .fseg--srt{border-right:0}
 }
+/* AI Espresso band: copy and form on the left, a tilted sample issue with real headlines on the right */
+.nlb__in{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;padding:52px 56px;overflow:hidden}
+.nlb__in::after{right:-80px;top:-120px;width:560px;height:560px;background:radial-gradient(circle,rgb(210 255 0/.2),transparent 66%)}
+.nlb__l{display:grid;gap:26px;align-content:center}
+.nlb__tx h2{font-size:clamp(34px,4.2vw,58px);line-height:.98;max-width:12em}
+.nlb__ml{position:relative;justify-self:center;width:min(100%,380px);padding:30px 28px 24px;border-radius:20px;background:#F4F4ED;color:#1c1f16;transform:rotate(3deg);box-shadow:0 40px 60px -30px rgb(0 0 0/.65),0 0 0 1px rgb(255 255 255/.5) inset;transition:transform .7s cubic-bezier(.2,.7,.1,1)}
+.nlb__in:hover .nlb__ml{transform:rotate(0deg) translateY(-6px)}
+.nlb__ml .nlb__cup{position:absolute;left:-30px;top:-30px;width:72px;height:72px;border-radius:20px;transform:rotate(-8deg)}
+.nlb__ml .nlb__cup svg{width:42px;height:42px}
+.ml__top{display:flex;justify-content:space-between;align-items:baseline;padding:0 0 14px 38px;border-bottom:1px solid rgb(28 31 22/.14)}
+.ml__top b{font:700 15px/1 var(--sans)}.ml__top small{font:600 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:rgb(28 31 22/.55)}
+.nlb__ml ol{list-style:none;margin:0;padding:6px 0}
+.nlb__ml li{display:grid;grid-template-columns:30px 1fr;gap:6px;padding:14px 0;border-bottom:1px solid rgb(28 31 22/.1);font:600 16px/1.3 var(--sans)}
+.nlb__ml li i{font:800 24px/1 var(--sans);font-style:normal;font-stretch:75%;color:#6E7D0C}
+.ml__ft{padding-top:14px;font:500 13px/1 var(--sans);color:rgb(28 31 22/.6)}
+@media (max-width:899px){.nlb__in{grid-template-columns:1fr;padding:34px 26px;gap:44px}.nlb__ml{transform:rotate(1.5deg);margin-left:14px}.nlb__ml .nlb__cup{left:-18px;top:-26px}}
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
    the point of view and who hires me, what I build, where I have done it. Lines are drawn by pillars.js. ==== */
@@ -2875,8 +2884,7 @@ html[data-mode="dark"] .pl3 img.pl3__tm[alt="Apollo"]{filter:invert(1)}
 <!-- 8 collabs -->
 <section class="s sh" id="about" data-theme="dark">
   <svg class="contours" data-seed="17" aria-hidden="true"></svg>
-  <figure class="sh__ag" id="shag" aria-hidden="true"><img src="assets/real/agent3d2/half-M-color.webp" alt="" width="574" height="2048" decoding="async"><canvas class="sh__gl" data-depth="assets/real/agent3d2/half-M-depth.webp" width="574" height="2048"></canvas></figure>
-  <figure class="sh__ag sh__ag2" id="shag2" aria-hidden="true"><img src="assets/real/agent3d2/color-flip.webp" alt="" width="1100" height="2048" decoding="async"><canvas class="sh__gl" data-depth="assets/real/agent3d2/depth-flip.webp" width="1100" height="2048"></canvas></figure>
+  <figure class="sh__ag" id="shag" aria-hidden="true"><picture><source media="(max-width:999px)" srcset="assets/real/agent3d2/half-Nm-color.webp"><img src="assets/real/agent3d2/half-N-color.webp" alt="" width="700" height="1929" decoding="async"></picture><canvas class="sh__gl" data-depth="assets/real/agent3d2/half-N-depth.webp" data-depth-m="assets/real/agent3d2/half-Nm-depth.webp" width="700" height="1929"></canvas></figure>
   <figure class="sh__me"><img src="assets/real/loft-head.webp" alt="Wojciech Luszczynski in a white shirt" width="1800" height="1836" decoding="async"><i class="sh__sh"></i></figure>
   <span class="eyebrow chp sh__eb" data-ch="04">About</span>
   <div class="sh__in">
@@ -2989,7 +2997,7 @@ html[data-mode="dark"] .pl3 img.pl3__tm[alt="Apollo"]{filter:invert(1)}
 </section>
 
 <!-- 9b newsletter: AI Espresso sign-up, same form as newsletter.html (handled in ds.js, [data-nl]) -->
-<section class="s nlb" data-theme="lime"><div class="nlb__in" data-rv><span class="nlb__cup"><svg viewBox="0 0 48 48" aria-hidden="true"><g class="cup__st" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M16.5 5.5c-2.6 2.8 2.6 5 0 8"/><path d="M23.5 3.5c-2.6 2.8 2.6 5 0 8"/><path d="M30.5 5.5c-2.6 2.8 2.6 5 0 8"/></g><path fill="currentColor" d="M7 18h31v8.5C38 34.4 31.6 41 23.8 41h-2.6C13.4 41 7 34.4 7 26.5z"/><path fill="none" stroke="currentColor" stroke-width="3.2" d="M37.4 21.6h2.4a5 5 0 0 1 0 10h-3.6"/><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" d="M4 45.5h37"/></svg></span><div class="nlb__tx"><span class="nlb__k">AI Espresso · weekday mornings</span><h2>Three things that matter in AI, every weekday.</h2><p>Under three minutes. Free. <a href="newsletter.html">See a real issue →</a></p></div><div class="nlb__fm"><form class="nlf" data-nl novalidate data-e1="Please enter a valid email address." data-e2="Please tick the consent box. It is required to send you the newsletter." data-e3="Something went wrong. Try again."><div class="nlf__row"><input type="email" name="email" required placeholder="you@company.com" aria-label="Email address" autocomplete="email"><button class="btn" type="submit">Subscribe free <i>→</i></button></div><input class="nlf__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><label class="nlf__c"><input type="checkbox" name="consent" required><span>I agree to receive the AI Espresso newsletter by email from Wojciech Luszczynski and accept the <a href="https://wojciech.io/terms/" target="_blank" rel="noopener">Terms</a> and <a href="https://wojciech.io/privacy/" target="_blank" rel="noopener">Privacy policy</a>. Unsubscribe anytime.</span></label><p class="nlf__s" role="status" aria-live="polite"></p></form><div class="nlf__ok" hidden><b>One click left. Check your inbox.</b><span>We sent a confirmation link. Click it and the next issue is yours.</span><small>Nothing after a minute or two? Look in spam or the promotions tab.</small></div></div></div></section>
+<section class="s nlb" data-theme="lime"><div class="nlb__in" data-rv><div class="nlb__l"><div class="nlb__tx"><span class="nlb__k">AI Espresso · weekday mornings</span><h2>Three things that matter in AI, every weekday.</h2><p>Under three minutes. Free. <a href="newsletter.html">See a real issue →</a></p></div><div class="nlb__fm"><form class="nlf" data-nl novalidate data-e1="Please enter a valid email address." data-e2="Please tick the consent box. It is required to send you the newsletter." data-e3="Something went wrong. Try again."><div class="nlf__row"><input type="email" name="email" required placeholder="you@company.com" aria-label="Email address" autocomplete="email"><button class="btn" type="submit">Subscribe free <i>→</i></button></div><input class="nlf__hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><label class="nlf__c"><input type="checkbox" name="consent" required><span>I agree to receive the AI Espresso newsletter by email from Wojciech Luszczynski and accept the <a href="https://wojciech.io/terms/" target="_blank" rel="noopener">Terms</a> and <a href="https://wojciech.io/privacy/" target="_blank" rel="noopener">Privacy policy</a>. Unsubscribe anytime.</span></label><p class="nlf__s" role="status" aria-live="polite"></p></form><div class="nlf__ok" hidden><b>One click left. Check your inbox.</b><span>We sent a confirmation link. Click it and the next issue is yours.</span><small>Nothing after a minute or two? Look in spam or the promotions tab.</small></div></div></div><aside class="nlb__ml" aria-hidden="true"><span class="nlb__cup"><svg viewBox="0 0 48 48" aria-hidden="true"><g class="cup__st" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M16.5 5.5c-2.6 2.8 2.6 5 0 8"/><path d="M23.5 3.5c-2.6 2.8 2.6 5 0 8"/><path d="M30.5 5.5c-2.6 2.8 2.6 5 0 8"/></g><path fill="currentColor" d="M7 18h31v8.5C38 34.4 31.6 41 23.8 41h-2.6C13.4 41 7 34.4 7 26.5z"/><path fill="none" stroke="currentColor" stroke-width="3.2" d="M37.4 21.6h2.4a5 5 0 0 1 0 10h-3.6"/><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" d="M4 45.5h37"/></svg></span><div class="ml__top"><b>AI Espresso</b><small>Every weekday</small></div><ol><li><i>1</i><span>GitHub ships Opus 4.8 fast mode to Copilot.</span></li><li><i>2</i><span>OpenAI folds Codex into ChatGPT Business seats.</span></li><li><i>3</i><span>GitHub locks the Actions cache for untrusted triggers.</span></li></ol><div class="ml__ft">Three things. Under three minutes.</div></aside></div></section>
 
 <!-- 10 footer -->
 <section class="s ft" id="book" data-theme="lime">
@@ -3854,7 +3862,7 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
         document.addEventListener('visibilitychange',()=>{if(!document.hidden)go()});
         fig.classList.add('gl');go()};
       const load=(u,k)=>ld.load(u,t=>{t.minFilter=T.LinearFilter;t.generateMipmaps=false;tex[k]=t;done()},undefined,()=>{});
-      load(img.currentSrc||img.src,'c');load(cv.getAttribute('data-depth'),'d')};
+      load(img.currentSrc||img.src,'c');load((matchMedia('(max-width:999px)').matches&&cv.getAttribute('data-depth-m'))||cv.getAttribute('data-depth'),'d')};
     new IntersectionObserver((e,o)=>{if(e[0].isIntersecting){o.disconnect();start()}},{rootMargin:'600px'}).observe(sec)});})();
 
   /* phone hero: the tools from the desktop map as a belt of two rows drifting against each other, an entrance, and motion while you scroll away from it */
