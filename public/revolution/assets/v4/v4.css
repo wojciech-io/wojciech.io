@@ -456,11 +456,27 @@ svg.ct{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 button.menu{border:0;cursor:pointer}
 :focus-visible{outline:2px solid var(--lime);outline-offset:3px}
 :is(.cream,.paper,.lime) :focus-visible{outline-color:var(--ink)}
-.mnu{position:absolute;right:var(--m);top:76px;z-index:40;min-width:210px;padding:10px;border-radius:10px;background:var(--black);box-shadow:0 0 0 1px rgba(221,225,210,.18),0 24px 60px rgba(0,0,0,.4);display:flex;flex-direction:column}
+.mnu{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;padding:0 var(--m) 28px;background:#1F2218;color:#F4F4ED;overflow-y:auto}
 .mnu[hidden]{display:none}
-.mnu a,.mnu__th{display:block;padding:12px 14px;border-radius:6px;font:600 17px/1.2 var(--sans);color:var(--paper);background:none;border:0;text-align:left;cursor:pointer}
-.mnu a:hover,.mnu__th:hover{background:rgba(221,225,210,.1)}
-.mnu__th{margin-top:6px;border-top:1px solid rgba(221,225,210,.18);border-radius:0 0 6px 6px;color:var(--grey);font-size:14px}
+.mnu-open{overflow:hidden}
+.mnu__top{display:flex;align-items:center;justify-content:space-between;height:84px;flex:none}
+.mnu__top .logo{color:#F4F4ED}
+.mnu__x{width:44px;height:44px;border-radius:8px;background:#F4F4ED;display:grid;place-items:center;cursor:pointer;border:0}
+.mnu__x i{position:relative;display:block;width:18px;height:2px;background:#111112;transform:rotate(45deg)}
+.mnu__x i::after{content:"";position:absolute;inset:0;background:inherit;transform:rotate(90deg)}
+.mnu__nav{display:flex;flex-direction:column;justify-content:center;flex:1;padding:24px 0}
+.mnu__nav a{display:block;width:max-content;max-width:100%;font:700 clamp(40px,6.4vw,84px)/1.04 var(--sans);letter-spacing:-.02em;text-transform:uppercase;color:#F4F4ED;transition:color .2s,transform .35s cubic-bezier(.2,.7,.1,1)}
+.mnu__nav a:hover,.mnu__nav a:focus-visible,.mnu__nav a[aria-current]{color:#D2FF00}
+.mnu__nav a:hover{transform:translateX(10px)}
+.mnu__nav a:focus-visible,.mnu__bar a:focus-visible,.mnu__bar button:focus-visible,.mnu__x:focus-visible{outline:2px solid #D2FF00;outline-offset:4px}
+.mnu__bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px 28px;padding-top:22px;border-top:1px solid rgba(244,244,237,.18);flex:none}
+.mnu__th{display:inline-flex;padding:4px;border-radius:99px;box-shadow:inset 0 0 0 1px rgba(244,244,237,.28)}
+.mnu__th button{border:0;background:none;color:#B9BBAD;padding:10px 16px;border-radius:99px;font:700 12px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.mnu__th button[aria-pressed=true]{background:#D2FF00;color:#111112}
+.mnu__so{display:flex;gap:6px 26px;flex-wrap:wrap}
+.mnu__so a{font:700 12px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:#F4F4ED;padding:12px 0;box-shadow:inset 0 -1px 0 currentColor;box-shadow:none}
+.mnu__so a:hover{color:#D2FF00}
+@media (max-width:760px){.mnu__top{height:68px}.mnu__nav a{font-size:clamp(38px,12vw,56px)}.mnu__bar{flex-direction:column;align-items:stretch}.mnu__bar .btn{justify-content:center;height:52px}.mnu__th{align-self:flex-start}}
 .hero--app{padding-bottom:5vw}
 .hero--app .acts{display:flex;flex-wrap:wrap;gap:10px}
 /* live demo inside the demo window: the ZIP demo logic, v4 skin */
@@ -502,7 +518,6 @@ button.menu{border:0;cursor:pointer}
 @media (max-width:760px){
   .dm .board,.dm .metrics,.dm .panels,.dm .dash-detail,.dm .review-detail{grid-template-columns:1fr}
   .dm .board section:has(ul:empty){min-height:64px}
-  .mnu{top:70px}
 }
 /* case drawings */
 .fig{border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px rgba(221,225,210,.14),0 30px 70px rgba(0,0,0,.28)}

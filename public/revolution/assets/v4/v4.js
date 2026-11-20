@@ -22,15 +22,26 @@ document.querySelectorAll('[data-img]').forEach((el) => { const [k, n] = el.data
 const REAL = BASE + 'assets/real/';
 const BOOK = 'https://wojciech.io/contact/';
 const PAGES = [['GTM', 'gtm.html'], ['Marketing', 'marketing.html'], ['Growth', 'growth.html'], ['Work', 'work.html'], ['Insights', 'insights.html'], ['About', 'about.html']];
+const MENU = [['Home', 'index.html'], ['Work', 'work.html'], ['GTM', 'gtm.html'], ['Marketing', 'marketing.html'], ['Growth', 'growth.html'], ['Insights', 'insights.html'], ['About', 'about.html']];
+const SOC = [['LinkedIn', 'https://www.linkedin.com/in/wojciech-luszczynski/'], ['GitHub', 'https://github.com/wojciechluszczynski'], ['Newsletter', BASE + 'newsletter.html']];
 document.querySelectorAll('[data-nav]').forEach((el) => {
-  el.outerHTML = `<div class="nav"><a class="logo" href="${BASE}index.html">Wojciech<i>Luszczynski</i></a><div class="r"><a class="btn" href="${BOOK}">Book a call <i>→</i></a><button class="menu" type="button" aria-expanded="false" aria-controls="v4menu" aria-label="Menu"><i></i></button></div>
-    <nav class="mnu" id="v4menu" aria-label="Pages" hidden>${PAGES.map(([t, h]) => `<a href="${BASE}${h}">${t}</a>`).join('')}<button type="button" class="mnu__th">${LIGHT ? 'Dark mode' : 'Light mode'}</button></nav></div>`;
+  const here = location.pathname.replace(/\/+$/, '').split('/').pop();
+  el.outerHTML = `<div class="nav"><a class="logo" href="${BASE}index.html">Wojciech<i>Luszczynski</i></a><div class="r"><a class="btn" href="${BOOK}">Book a call <i>→</i></a><button class="menu" type="button" aria-expanded="false" aria-controls="v4menu" aria-label="Menu"><i></i></button></div></div>
+    <div class="mnu" id="v4menu" role="dialog" aria-modal="true" aria-label="Menu" hidden><div class="mnu__top"><a class="logo" href="${BASE}index.html">Wojciech<i>Luszczynski</i></a><button class="mnu__x" type="button" aria-label="Close menu"><i></i></button></div>
+      <nav class="mnu__nav" aria-label="Pages">${MENU.map(([t, h]) => `<a href="${BASE}${h}"${h === here ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+      <div class="mnu__bar"><a class="btn" href="${BOOK}">Book a call <i>→</i></a><div class="mnu__th" role="group" aria-label="Theme"><button type="button" data-th="dark" aria-pressed="${!LIGHT}">Dark</button><button type="button" data-th="light" aria-pressed="${LIGHT}">Light</button></div><div class="mnu__so">${SOC.map(([t, h]) => `<a href="${h}"${h.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${t}</a>`).join('')}</div></div></div>`;
 });
 document.querySelectorAll('.menu').forEach((b) => {
-  const m = document.getElementById(b.getAttribute('aria-controls'));
-  b.addEventListener('click', () => { const open = m.hidden; m.hidden = !open; b.setAttribute('aria-expanded', String(open)); });
-  m.querySelector('.mnu__th').addEventListener('click', () => { try { localStorage.setItem('v4theme', LIGHT ? 'dark' : 'light'); } catch (e) {} const u = new URL(location.href); u.searchParams.set('theme', LIGHT ? 'dark' : 'light'); location.href = u.href; });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !m.hidden) { m.hidden = true; b.setAttribute('aria-expanded', 'false'); b.focus(); } });
+  const m = document.getElementById(b.getAttribute('aria-controls')); document.body.append(m); const x = m.querySelector('.mnu__x');
+  const set = (open) => { m.hidden = !open; b.setAttribute('aria-expanded', String(open)); document.documentElement.classList.toggle('mnu-open', open); if (open) m.querySelector('.mnu__nav a').focus(); else b.focus(); };
+  b.addEventListener('click', () => set(m.hidden));
+  x.addEventListener('click', () => set(false));
+  m.querySelectorAll('[data-th]').forEach((t) => t.addEventListener('click', () => { const v = t.dataset.th; if ((v === 'light') === LIGHT) return; try { localStorage.setItem('v4theme', v); } catch (e) {} const u = new URL(location.href); u.searchParams.set('theme', v); location.href = u.href; }));
+  document.addEventListener('keydown', (e) => {
+    if (m.hidden) return;
+    if (e.key === 'Escape') set(false);
+    if (e.key === 'Tab') { const f = [...m.querySelectorAll('a,button')]; const first = f[0], last = f[f.length - 1]; if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } }
+  });
 });
 document.querySelectorAll('[data-ftr]').forEach((el) => {
   el.outerHTML = `<footer class="ftr"><div class="ftr__pn"><svg class="ct" data-seed="53"></svg>
