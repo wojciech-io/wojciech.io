@@ -1,0 +1,15 @@
+// Extra portrait screens for the case pages: each one is a real artifact with fictional values (a run list, a redirect map, a funnel report,
+// an event list, a scenario table), redrawn in the same screen language as ui4.js. Loaded after ui4.js, before v4.js.
+Object.assign(U, (() => {
+  const head = (view) => `<div class="u-top"><div class="u-brand">${view}</div></div>`;
+  const bar = (v) => `<span class="u-bar"><i style="width:${v}%"></i></span>`;
+  const row = (cols, a, b, c) => `<div class="u-row" style="grid-template-columns:${cols};padding:13px 0"><div>${a}</div>${b}${c || ''}</div>`;
+  const chip = (t, cls = '') => `<span class="u-chip ${cls}">${t}</span>`;
+  return {
+    p_feeds: () => `<div class="ui ui--p">${head('Feeds')}<div>${[['Ads', 'Refreshed 06:10', 'on', 'Current'], ['Web analytics', 'Refreshed 06:12', 'on', 'Current'], ['CRM', 'Waiting for the export', 'cr', 'Delayed']].map(([n, s, c, l]) => row('minmax(0,1fr) auto', `<b>${n}</b><br><span>${s}</span>`, chip(l, c))).join('')}</div><div class="u-top" style="margin-top:auto"><span class="u-l">Snapshot, 3 Nov</span>${chip('Validated for the period', 'on')}</div></div>`,
+    p_redirects: () => `<div class="ui ui--p">${head('Redirect map')}<div>${[['/pricing-old', '/pricing', 'Batch 1', 'on'], ['/solutions/crm', '/products/crm', 'Batch 1', 'on'], ['/blog/launch', '/insights/launch', 'Batch 2', ''], ['/contact-us', '/contact', 'Open', 'cr']].map(([a, b, c, k]) => row('minmax(0,1fr) auto', `<b>${a}</b><br><span>to ${b}</span>`, chip(c, k))).join('')}</div><div class="u-top" style="margin-top:auto"><span class="u-l">Checks open</span>${chip('1 in batch 2', 'cr')}</div></div>`,
+    p_funnel: () => `<div class="ui ui--p">${head('Funnel')}<div>${[['Product views', 1200, 100], ['Basket', 180, 15], ['Checkout', 108, 9], ['Orders', 72, 6]].map(([n, v, p], i) => row('96px minmax(0,1fr) 52px', `<b>${n}</b>`, bar(Math.max(p, 4)), `<b style="text-align:right">${v.toLocaleString('en')}</b>`)).join('')}</div><div class="u-top" style="margin-top:auto"><span class="u-l">Illustrative numbers</span>${chip('Test the basket step', 'on')}</div></div>`,
+    p_segments: () => `<div class="ui ui--p">${head('Landing pages')}<div>${[['Segment A', 'use_case_view'], ['Segment B', 'use_case_view'], ['Segment C', 'use_case_view']].map(([n, e]) => row('minmax(0,1fr) auto auto', `<b>${n}</b><br><span>Published</span>`, `<span class="u-l" style="align-self:center;margin-right:10px">${e}</span>`, chip('Next step tracked', 'on'))).join('')}</div><div class="u-top" style="margin-top:auto"><span class="u-l">One measurement framework</span>${chip('3 pages', 'on')}</div></div>`,
+    p_scenarios: () => `<div class="ui ui--p">${head('Scenarios')}<div>${[['Onboarding stalled', 'Eligible', 'A person approves', 'CS lead'], ['Usage drops', 'Eligible', 'Draft a check-in', 'CS lead'], ['Billing issue', 'Eligible', 'A person approves', 'Finance']].map(([s, e, a, o]) => row('minmax(0,1fr) auto', `<b>${s}</b><br><span>${e}. ${a}</span>`, chip(o))).join('')}</div><div class="u-top" style="margin-top:auto"><span class="u-l">Design proposal</span>${chip('Not built', 'cr')}</div></div>`,
+  };
+})());
