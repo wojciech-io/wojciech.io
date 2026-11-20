@@ -3719,8 +3719,12 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
   (()=>{const sec=document.querySelector('.sh');if(!sec||!window.gsap||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
     const tl=gsap.timeline({scrollTrigger:{trigger:sec,start:'top 62%',once:true}});
     tl.from('#shag',{xPercent:-12,opacity:0,duration:1.4,ease:'power3.out'},0).from('.sh__me',{xPercent:10,opacity:0,duration:1.4,ease:'power3.out'},0)
-      .from('.sh__col h2',{y:40,opacity:0,duration:1,stagger:.12,ease:'power3.out'},.2).from('.sh__col>p',{y:20,opacity:0,duration:.8,stagger:.12,ease:'power3.out'},.45)
+      .from('.sh__col h2',{x:i=>i?56:-56,y:24,opacity:0,duration:1,stagger:.12,ease:'power3.out'},.2).from('.sh__col>p',{y:20,opacity:0,duration:.8,stagger:.12,ease:'power3.out'},.45)
       .from('.sh__ls li',{y:14,opacity:0,duration:.6,stagger:.06,ease:'power3.out'},.6).from('.sh__col .btn',{scale:.6,opacity:0,duration:.6,stagger:.1,ease:'back.out(2)'},.9)})();
+  /* night and day: faces drift slower than the copy while the section scrolls */
+  (()=>{const sec=document.querySelector('.sh');if(!sec||!window.gsap||!window.ScrollTrigger||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    const st={trigger:sec,start:'top bottom',end:'bottom top',scrub:.6};
+    gsap.fromTo('.sh__ag',{y:28},{y:-28,ease:'none',scrollTrigger:st});gsap.fromTo('.sh__me',{y:36},{y:-36,ease:'none',scrollTrigger:st})})();
 
   /* lens pages: the three fixes run as one pinned stage */
   (()=>{const run=document.querySelector('.fx3__run');if(!run)return;const D2=matchMedia('(min-width:768px)').matches;if(!D2)return;
