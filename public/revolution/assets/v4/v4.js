@@ -49,7 +49,7 @@ document.querySelectorAll('[data-nav]').forEach((el) => {
 });
 document.querySelectorAll('.menu').forEach((b) => {
   const m = document.getElementById(b.getAttribute('aria-controls')); document.body.append(m); const x = m.querySelector('.mnu__x');
-  const ph = m.querySelector('.mnu__ph'), scenes = [...m.querySelectorAll('.mnu__sc')], RM = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const ph = m.querySelector('.mnu__ph'), scenes = [...m.querySelectorAll('.mnu__sc')];
   const preview = (a) => {
     if (!a) return; const sc = scenes.find((x) => x.dataset.k === a.dataset.k); if (!sc || sc.classList.contains('on')) return;
     scenes.forEach((x) => x.classList.toggle('on', x === sc)); ph.style.setProperty('--pb', sc.dataset.c);
