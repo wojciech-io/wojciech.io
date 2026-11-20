@@ -1,0 +1,41 @@
+{
+  "proposal_id": "prop-0001",
+  "revision": 1,
+  "source": { "type": "inbound_enquiry", "ref": "enquiry-0001" },
+  "destination": { "system": "crm-example", "object": "lead", "operation": "create", "record_id": null },
+  "fields": [
+    {
+      "field": "company_name",
+      "value": "Northfield Supplies (fictional)",
+      "status": "observed",
+      "evidence": [{ "source_ref": "enquiry-0001", "speaker": "buyer", "excerpt": "I run operations at Northfield Supplies" }]
+    },
+    {
+      "field": "buying_stage",
+      "value": "comparing vendors",
+      "status": "observed",
+      "evidence": [{ "source_ref": "enquiry-0001", "speaker": "buyer", "excerpt": "we are comparing vendors" }]
+    },
+    {
+      "field": "budget",
+      "value": null,
+      "status": "missing",
+      "evidence": []
+    },
+    {
+      "field": "timing",
+      "value": null,
+      "status": "missing",
+      "evidence": []
+    }
+  ],
+  "gaps": [
+    { "field": "budget", "question": "Is there a budget range set for this, or is it still to be agreed?" },
+    { "field": "timing", "question": "When do you need this in place?" }
+  ],
+  "proposed_action": {
+    "summary": "Create one lead for Northfield Supplies with buying stage 'comparing vendors', and leave budget and timing empty.",
+    "idempotency_key": "enquiry-0001:create-lead"
+  },
+  "approval": null
+}
