@@ -3904,12 +3904,26 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
 })();
 /* ==== /DS js ==== */
 
+
 /* ---- v4 menu scenes ---- */
-(()=>{const mn=document.getElementById('mn');if(!mn)return;const sc=[...mn.querySelectorAll('.mns__sc')];if(!sc.length)return;
- const show=p=>{const t=sc.find(s=>s.dataset.p===p);if(!t||t.classList.contains('on'))return;sc.forEach(s=>s.classList.toggle('on',s===t));mn.style.setProperty('--pb',t.dataset.c)};
- mn.querySelectorAll('.mn__links a[data-p]').forEach(a=>{a.addEventListener('mouseenter',()=>show(a.dataset.p));a.addEventListener('focus',()=>show(a.dataset.p))});
- mn.addEventListener('pointermove',e=>{mn.style.setProperty('--px',(e.clientX/innerWidth*2-1).toFixed(3));mn.style.setProperty('--py',(e.clientY/innerHeight*2-1).toFixed(3))});
- const here=mn.querySelector('.mn__links a[aria-current="page"]');if(here){const s=sc.find(x=>x.dataset.p===here.dataset.p);if(s){sc.forEach(x=>x.classList.toggle('on',x===s));mn.style.setProperty('--pb',s.dataset.c)}}else mn.style.setProperty('--pb',sc[0].dataset.c);
+(() => {
+ const mn = document.getElementById('mn');
+ if (!mn) { return; }
+ const sc = [...mn.querySelectorAll('.mns__sc')];
+ if (!sc.length) { return; }
+ const lit = (t) => { sc.forEach((s) => { s.classList.toggle('on', s === t); }); mn.style.setProperty('--pb', t.dataset.c); };
+ const show = (p) => { const t = sc.find((s) => s.dataset.p === p); if (t && !t.classList.contains('on')) { lit(t); } };
+ mn.querySelectorAll('.mn__links a[data-p]').forEach((a) => {
+  a.addEventListener('mouseenter', () => { show(a.dataset.p); });
+  a.addEventListener('focus', () => { show(a.dataset.p); });
+ });
+ mn.addEventListener('pointermove', (e) => {
+  mn.style.setProperty('--px', (e.clientX / innerWidth * 2 - 1).toFixed(3));
+  mn.style.setProperty('--py', (e.clientY / innerHeight * 2 - 1).toFixed(3));
+ });
+ const here = mn.querySelector('.mn__links a[aria-current="page"]');
+ const start = here ? sc.find((x) => x.dataset.p === here.dataset.p) : null;
+ lit(start || sc[0]);
 })();
 /* ---- /v4 menu scenes ---- */
 </script>
