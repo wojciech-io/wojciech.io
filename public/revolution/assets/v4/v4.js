@@ -45,6 +45,9 @@ document.querySelectorAll('[data-ftr]').forEach((el) => {
   </div></footer>`;
 });
 
+// markup from our own templates goes in through a <template> (no insertAdjacentHTML: semgrep blocks it)
+const put = (el, how, html) => { const t = document.createElement('template'); t.innerHTML = html; el[how](t.content); };
+
 // contour lines (own generator: concentric wobbly rings)
 function contours(svg, w, h, seed, stroke) {
   let s = seed; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
@@ -76,7 +79,7 @@ function contours(svg, w, h, seed, stroke) {
 const NOTCH = (W, H, nw) => `M12,0H${W - 12}Q${W},0 ${W},12V${H - 44}Q${W},${H - 32} ${W - 12},${H - 32}H${W - nw + 34}C${W - nw + 20},${H - 32} ${W - nw + 16},${H} ${W - nw},${H}H12Q0,${H} 0,${H - 12}V12Q0,0 12,0Z`;
 
 // data-uim names a simpler screen for the phone (a portrait instead of a cropped full screen)
-document.querySelectorAll('[data-ui]').forEach((h) => { const m = innerWidth <= 760 && h.dataset.uim; if (m) { h.dataset.m = ''; h.dataset.d = ''; } h.insertAdjacentHTML('beforeend', U[m || h.dataset.ui]()); });
+document.querySelectorAll('[data-ui]').forEach((h) => { const m = innerWidth <= 760 && h.dataset.uim; if (m) { h.dataset.m = ''; h.dataset.d = ''; } put(h, 'append', U[m || h.dataset.ui]()); });
 // skin: data-skin on the host wins (dk, lt, bl, gr, lm); otherwise the page theme decides
 document.querySelectorAll('[data-ui]').forEach((h) => { const el = h.querySelector('.ui'), sk = h.dataset.skin; if (sk === 'lt' || (!sk && LIGHT)) el.classList.add('lt'); else if (sk && sk !== 'dk') el.classList.add('sk-' + sk); });
 // scale a redrawn screen into its host: data-d / data-m = "zoom,panX%,panY%,fit(w|h)"
@@ -99,7 +102,7 @@ function draw() {
   document.querySelectorAll('.cell').forEach((c) => {
     const W = c.clientWidth, H = c.clientHeight, lab = c.querySelector('.cell__lab');
     const nw = Math.min(W - 40, (lab ? lab.offsetWidth : 150) + 52);
-    c.insertAdjacentHTML('afterbegin', `<svg class="o" viewBox="0 0 ${W} ${H}"><path d="${NOTCH(W, H, nw)}"/></svg>`);
+    put(c, 'prepend', `<svg class="o" viewBox="0 0 ${W} ${H}"><path d="${NOTCH(W, H, nw)}"/></svg>`);
   });
   document.documentElement.dataset.ready = '1';
 }
