@@ -2661,9 +2661,10 @@ body:has(#library) .lb__bar{display:none}
 @media (max-width:899px){.nlb__in{min-height:0;padding-bottom:330px}.nlb__l{padding:40px 26px}.nlb__ph{right:auto;left:-46%;top:auto;bottom:0;height:340px;-webkit-mask-image:linear-gradient(0deg,#000 40%,transparent);mask-image:linear-gradient(0deg,#000 40%,transparent)}.nlb__is{display:none}}
 /* agent scale: the machine head is the same size as his (eye to chin matches), eyes level, no shirt (baked into the image alpha) */
 .s.sh{--Hc:calc(var(--Hm, var(--H)) * .7231)}
-.s.sh .sh__ag{height:var(--Hc);width:calc(var(--Hc) * .3629);top:calc(var(--top) - var(--H) * .0092);bottom:auto;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 72%,transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 72%,transparent 100%)}
+.s.sh .sh__ag{height:calc(var(--Hc) * 1.2701);width:calc(var(--Hc) * .3629);top:calc(var(--top) - var(--H) * .0092);bottom:auto;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 72%,transparent 100%),linear-gradient(180deg,#000 0,#000 64%,transparent 80%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,#000 0,#000 72%,transparent 100%),linear-gradient(180deg,#000 0,#000 64%,transparent 80%);mask-composite:intersect}
 @media (min-width:1000px){
-  .s.sh .sh__ag{top:auto;bottom:calc(var(--Hm) * .2861);-webkit-mask-image:linear-gradient(90deg,#000 0,#000 66%,transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 66%,transparent 100%)}
+  .s.sh{--Hc:calc(var(--Hm) * .8316)}
+  .s.sh .sh__ag{top:auto;bottom:calc(var(--Hm) * .2183 - var(--Hc) * .2701);-webkit-mask-image:linear-gradient(90deg,#000 0,#000 66%,transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 66%,transparent 100%);-webkit-mask-composite:source-over;mask-composite:add}
 }
 /* espresso band on a phone: the cup centred under the form, whole */
 @media (max-width:899px){.nlb__in{padding-bottom:250px}.nlb__l{padding-bottom:28px}.nlb__ph{left:50%;right:auto;transform:translateX(-74%);height:330px;bottom:0;top:auto;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%),linear-gradient(0deg,#000 60%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%),linear-gradient(0deg,#000 60%,transparent 100%);mask-composite:intersect}}
@@ -2680,6 +2681,16 @@ body:has(#library) .lb__bar{display:none}
   .nlb__in{padding-bottom:210px}.nlb__l{padding:36px 24px 20px;gap:22px}
   .nlb__ph{height:270px}
   .nlb__tx h2{font-size:clamp(32px,9vw,44px)}
+}
+/* night / day shift on phones: the two columns share rows (heading, intro, list, button), the machine column reads toward the centre like on desktop */
+@media (max-width:999px){
+  .s.sh .sh__in{grid-template-rows:auto auto auto auto;row-gap:14px}
+  .s.sh .sh__col,.s.sh .sh__col--a,.s.sh .sh__col--h{grid-row:1 / span 4;grid-template-rows:subgrid;row-gap:14px;gap:14px}
+  .s.sh .sh__col--a{text-align:right;justify-items:end}
+  .s.sh .sh__col--a .sh__ls{text-align:right}.s.sh .sh__col--a .sh__ls li{flex-direction:row-reverse;text-align:right}
+  .s.sh .sh__col--a h2{text-align:right}
+  .s.sh .sh__col--a .sh__go{justify-self:end}
+  .s.sh .sh__ls li{text-wrap:balance}
 }
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
