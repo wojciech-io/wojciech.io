@@ -2660,10 +2660,10 @@ body:has(#library) .lb__bar{display:none}
 @media (max-width:899px){.nlb__in{min-height:0;padding-bottom:330px}.nlb__l{padding:40px 26px}.nlb__ph{right:auto;left:-46%;top:auto;bottom:0;height:340px;-webkit-mask-image:linear-gradient(0deg,#000 40%,transparent);mask-image:linear-gradient(0deg,#000 40%,transparent)}.nlb__is{display:none}}
 /* agent scale: the machine head is the same size as his (eye to chin matches), eyes level, no shirt (baked into the image alpha) */
 .s.sh{--Hc:calc(var(--Hm, var(--H)) * .7231)}
-.s.sh .sh__ag{height:var(--Hc);width:calc(var(--Hc) * .3629);top:calc(var(--top) - var(--H) * .0092);bottom:auto;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 72%,transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 72%,transparent 100%)}
+.s.sh .sh__ag{height:calc(var(--Hc) * 1.2701);width:calc(var(--Hc) * .3629);top:calc(var(--top) - var(--H) * .0092);bottom:auto;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 72%,transparent 100%),linear-gradient(180deg,#000 0,#000 64%,transparent 80%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,#000 0,#000 72%,transparent 100%),linear-gradient(180deg,#000 0,#000 64%,transparent 80%);mask-composite:intersect}
 @media (min-width:1000px){
   .s.sh{--Hc:calc(var(--Hm) * .8316)}
-  .s.sh .sh__ag{top:auto;bottom:calc(var(--Hm) * .2183);-webkit-mask-image:linear-gradient(90deg,#000 0,#000 66%,transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 66%,transparent 100%)}
+  .s.sh .sh__ag{top:auto;bottom:calc(var(--Hm) * .2183 - var(--Hc) * .2701);-webkit-mask-image:linear-gradient(90deg,#000 0,#000 66%,transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 66%,transparent 100%);-webkit-mask-composite:source-over;mask-composite:add}
 }
 /* espresso band on a phone: the cup centred under the form, whole */
 @media (max-width:899px){.nlb__in{padding-bottom:250px}.nlb__l{padding-bottom:28px}.nlb__ph{left:50%;right:auto;transform:translateX(-74%);height:330px;bottom:0;top:auto;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%),linear-gradient(0deg,#000 60%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%),linear-gradient(0deg,#000 60%,transparent 100%);mask-composite:intersect}}
@@ -2680,6 +2680,16 @@ body:has(#library) .lb__bar{display:none}
   .nlb__in{padding-bottom:210px}.nlb__l{padding:36px 24px 20px;gap:22px}
   .nlb__ph{height:270px}
   .nlb__tx h2{font-size:clamp(32px,9vw,44px)}
+}
+/* night / day shift on phones: the two columns share rows (heading, intro, list, button), the machine column reads toward the centre like on desktop */
+@media (max-width:999px){
+  .s.sh .sh__in{grid-template-rows:auto auto auto auto;row-gap:14px}
+  .s.sh .sh__col,.s.sh .sh__col--a,.s.sh .sh__col--h{grid-row:1 / span 4;grid-template-rows:subgrid;row-gap:14px;gap:14px}
+  .s.sh .sh__col--a{text-align:right;justify-items:end}
+  .s.sh .sh__col--a .sh__ls{text-align:right}.s.sh .sh__col--a .sh__ls li{flex-direction:row-reverse;text-align:right}
+  .s.sh .sh__col--a h2{text-align:right}
+  .s.sh .sh__col--a .sh__go{justify-self:end}
+  .s.sh .sh__ls li{text-wrap:balance}
 }
 
 /* ==== pillars (.pl3): three rows that unfold on scroll. Each opens into three columns hanging from its rule:
@@ -2927,12 +2937,12 @@ html[data-mode="dark"] .pl3 img.pl3__tm[alt="Apollo"]{filter:invert(1)}
 <!-- 8 collabs -->
 <section class="s sh" id="about" data-theme="dark">
   <svg class="contours" data-seed="17" aria-hidden="true"></svg>
-  <figure class="sh__ag" id="shag" aria-hidden="true"><img src="assets/real/agent3d2/half-N3-color.webp" alt="" width="700" height="1929" decoding="async"><canvas class="sh__gl" data-depth="assets/real/agent3d2/half-N3-depth.webp" width="700" height="1929"></canvas></figure>
+  <figure class="sh__ag" id="shag" aria-hidden="true"><img src="assets/real/agent3d2/half-N4-color.webp" alt="" width="700" height="2450" decoding="async"><canvas class="sh__gl" data-depth="assets/real/agent3d2/half-N4-depth.webp" width="700" height="2450"></canvas></figure>
   <figure class="sh__me"><img src="assets/real/loft-head.webp" alt="Wojciech Luszczynski in a white shirt" width="1800" height="1836" decoding="async"><i class="sh__sh"></i></figure>
   <span class="eyebrow chp sh__eb" data-ch="04">About</span>
   <div class="sh__in">
-    <div class="sh__col sh__col--a"><h2>Night<span>Shift</span></h2><p>Claude Code agents research each account, enrich it from Apollo and Clearbit, score it against your ICP and write the first email. The queue waits for review in the morning.</p><ul class="sh__ls"><li style="--i:0"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.8"/><path d="M15 15l5 5"/></svg><span>Account research</span></li><li style="--i:1"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 16l8 4 8-4"/></svg><span>Apollo and Clearbit enrichment</span></li><li style="--i:2"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 16a7.5 7.5 0 1 1 15 0"/><path d="M12 16l3.6-4.6"/></svg><span>ICP score from 0 to 100</span></li><li style="--i:3"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19l1-4 10-10a2 2 0 0 1 3 3L9 18z"/></svg><span>First email drafts</span></li></ul><a class="btn btn--o sh__go" href="work.html">See the AI workflows</a></div>
-    <div class="sh__col sh__col--h"><h2>Day<span>Shift</span></h2><p>I set the ICP and the offer, join calls with sales and customers, and approve every sequence before it goes out.</p><ul class="sh__ls"><li style="--i:0"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="3.5"/></svg><span>ICP and offer</span></li><li style="--i:1"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5h14v9H11l-4 3v-3H5z"/></svg><span>Sales and customer calls</span></li><li style="--i:2"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8.2 12.4l2.6 2.6 5-5.4"/></svg><span>Approval before send</span></li><li style="--i:3"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="5.5" width="15" height="14" rx="2"/><path d="M4.5 10h15M8.5 3.5v4M15.5 3.5v4"/></svg><span>Weekly pipeline review</span></li></ul><a class="btn btn--o sh__go" href="about.html">About me</a></div>
+    <div class="sh__col sh__col--a"><h2>Night<span>Shift</span></h2><p>Claude Code agents research, score and draft the first email. The queue waits for review.</p><ul class="sh__ls"><li style="--i:0"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.8"/><path d="M15 15l5 5"/></svg><span>Researches every account</span></li><li style="--i:1"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 16l8 4 8-4"/></svg><span>Enriches from Apollo and Clearbit</span></li><li style="--i:2"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 16a7.5 7.5 0 1 1 15 0"/><path d="M12 16l3.6-4.6"/></svg><span>Scores the fit from 0 to 100</span></li><li style="--i:3"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19l1-4 10-10a2 2 0 0 1 3 3L9 18z"/></svg><span>Drafts the first email</span></li></ul><a class="btn btn--o sh__go" href="work.html">See the AI workflows</a></div>
+    <div class="sh__col sh__col--h"><h2>Day<span>Shift</span></h2><p>I set the ICP and the offer, join the calls and approve every send.</p><ul class="sh__ls"><li style="--i:0"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="3.5"/></svg><span>Sets the ICP and the offer</span></li><li style="--i:1"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5h14v9H11l-4 3v-3H5z"/></svg><span>Joins sales and customer calls</span></li><li style="--i:2"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8.2 12.4l2.6 2.6 5-5.4"/></svg><span>Approves every sequence</span></li><li style="--i:3"><svg class="sh__i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="5.5" width="15" height="14" rx="2"/><path d="M4.5 10h15M8.5 3.5v4M15.5 3.5v4"/></svg><span>Reviews the pipeline weekly</span></li></ul><a class="btn btn--o sh__go" href="about.html">About me</a></div>
   </div>
 </section>
 <section class="s cr" id="career" data-theme="dark">
