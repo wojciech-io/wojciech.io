@@ -63,7 +63,7 @@
   .lh{padding-top:92px}
   .lh h1{font-size:clamp(44px,13vw,60px)}
   .lh__fig{margin-top:36px}
-  .lh__crop{aspect-ratio:1050/700;--ct:-5.71%}
+  .lh__crop{aspect-ratio:1050/700;--ct:-5.8%}
 }
 @media (prefers-reduced-motion:no-preference){
   .lh__crop img{transition:transform .9s var(--m-ease,cubic-bezier(.2,.7,.1,1))}
@@ -107,3 +107,23 @@
 .lh__fig.lh-js .lh__s:not(.is-on):not(:first-child){display:block}
 @media (max-width:640px){.lh__tab{padding:0 14px}}
 @media (prefers-reduced-motion:reduce){.lh__s,.lh__s.is-on{transition:none}}
+
+/* ---- hero, round 4: bigger type, a lime marker under the key line, and the window straddles the edge into the dark section ---- */
+:root{--x:clamp(72px,11vw,168px)}
+.lh{overflow:visible;position:relative;z-index:9;background:none!important}
+.lh::before{content:"";position:absolute;z-index:-1;inset:0 0 var(--x) 0;background:#F4F4ED}
+.lh h1{font-size:clamp(52px,9vw,148px);line-height:.88;max-width:9.5em}
+.lh h1 span:not(.vh){padding:0 .08em;margin:0 -.08em;background:linear-gradient(#D2FF00,#D2FF00) 0 84%/100% .3em no-repeat;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.lh__fig{margin:clamp(40px,6vw,72px) auto calc(var(--x)*-1);position:relative;z-index:3}
+.lh__crop{aspect-ratio:1050/672;border-radius:clamp(14px,2.2vw,28px);box-shadow:0 0 0 1px rgb(20 22 18/.14),0 60px 100px -40px rgb(20 22 18/.55),0 18px 30px -12px rgb(20 22 18/.25)}
+.lh__crop img{top:var(--ct,-5.8%)}
+.lh+.s{padding-top:calc(var(--x) + clamp(40px,6vw,88px))!important}
+@media (max-width:640px){
+  :root{--x:72px}
+  .lh h1{font-size:clamp(46px,14vw,64px)}
+  .lh__crop{aspect-ratio:1050/672;--ct:-5.8%}
+}
+@media (prefers-reduced-motion:no-preference){
+  .lh h1 span:not(.vh){background-size:0% .3em;animation:lh-mark .9s var(--m-ease,cubic-bezier(.2,.7,.1,1)) .45s forwards}
+}
+@keyframes lh-mark{to{background-size:100% .3em}}
