@@ -79,7 +79,7 @@
   .lh__w{perspective:1600px}
   .lh__crop{transform-origin:50% 100%;animation:lh-tilt 1.2s var(--m-ease,cubic-bezier(.2,.7,.1,1)) .3s backwards}
   @supports (animation-timeline:view()){
-    .lh__crop{animation:lh-tilt linear both;animation-timeline:view();animation-range:entry 10% cover 38%}
+    .lh__crop{animation:lh-tilt linear both;animation-timeline:view();animation-range:entry 20% entry 100%}
   }
   .lh__crop::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
     background:linear-gradient(180deg,rgb(255 255 255/.55),rgb(255 255 255/0) 22%);mix-blend-mode:soft-light}
@@ -88,3 +88,22 @@
 @keyframes lh-up{from{opacity:0;translate:0 18px}}
 @keyframes lh-tilt{from{transform:rotateX(9deg) translateY(28px) scale(.965);opacity:.4}to{transform:none;opacity:1}}
 .lh__crop{box-shadow:0 0 0 1px rgb(20 22 18/.12),0 30px 80px -30px rgb(20 22 18/.35)}
+
+/* ---- hero screens: tabs, cross-fade, slow autoplay with progress in the active tab ---- */
+.lh__tabs{display:flex;justify-content:center;gap:2px;width:max-content;max-width:100%;margin:0 auto 22px;padding:4px;border-radius:999px;background:rgb(20 22 18/.06);box-shadow:inset 0 0 0 1px rgb(20 22 18/.08)}
+.lh__tabs[hidden]{display:none}
+.lh__tab{position:relative;min-height:44px;padding:0 20px;border:0;border-radius:999px;background:none;color:rgb(20 22 18/.72);font:600 14px/1 var(--sans);cursor:pointer;overflow:hidden;transition:background .3s,color .3s}
+.lh__tab span{position:relative;z-index:1}
+.lh__tab:hover{color:#141612}
+.lh__tab[aria-selected=true]{background:#141612;color:#F4F4ED}
+.lh__tab:focus-visible{outline:2px solid #141612;outline-offset:2px}
+.lh__tab i{position:absolute;left:14px;right:14px;bottom:5px;height:2px;border-radius:2px;background:#D2FF00;transform:scaleX(0);transform-origin:0 50%}
+.lh__fig.is-auto:not(.is-manual) .lh__tab[aria-selected=true] i{animation:lh-prog 6s linear forwards}
+.lh__fig.is-paused .lh__tab i,.lh__fig.is-off .lh__tab i{animation-play-state:paused}
+@keyframes lh-prog{to{transform:scaleX(1)}}
+.lh__s{opacity:0;visibility:hidden;transition:opacity .6s var(--m-ease,ease),visibility 0s .6s}
+.lh__s.is-on{opacity:1;visibility:visible;transition:opacity .6s var(--m-ease,ease)}
+.lh__s:not(.is-on):not(:first-child){display:none}
+.lh__fig.lh-js .lh__s:not(.is-on):not(:first-child){display:block}
+@media (max-width:640px){.lh__tab{padding:0 14px}}
+@media (prefers-reduced-motion:reduce){.lh__s,.lh__s.is-on{transition:none}}
