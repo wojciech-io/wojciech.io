@@ -1,0 +1,301 @@
+/* g22: one shared layer for every /revolution page, loaded after the page's own CSS.
+   Tokens come first, so a new visual direction changes values here, not rules on 32 pages.
+   Scope: tap targets, minimum text size, one heading scale, one line weight, one radius,
+   one icon stroke, steady menu screens. Page layouts stay in the page CSS. */
+
+:root{
+  --g-tap:44px;                    /* every control on a phone */
+  --g-txt-min:12px;                /* nothing readable below this */
+  --g-line:1px;                    /* every outline, ring and divider */
+  --g-line-on:rgb(244 244 237/.28);/* line on dark */
+  --g-line-ink:rgb(40 44 32/.28);  /* line on light */
+  --g-r-ctl:8px;                   /* buttons, inputs, header controls */
+  --g-r-card:12px;                 /* cards and screens */
+  --g-ico:18px;                    /* header and control icons */
+  --g-ico-stroke:1.5;              /* one stroke for line icons */
+  /* phone heading scale (old pages, family A) */
+  --g-h1:44px;
+  --g-h2:38px;
+  --g-h3:26px;
+  --g-stm:32px;
+  --g-lh-d:.92;                    /* display line height */
+}
+
+/* ---------- lines: one weight everywhere ---------- */
+.nav .mode,.nav .menu,.lang__b,.pill,.nlf__c input,.cx__r{border-width:var(--g-line)}
+.ph__gh{box-shadow:inset 0 0 0 var(--g-line) rgb(var(--on,244 244 237)/.45)}
+.nx a>i{box-shadow:inset 0 0 0 var(--g-line) rgb(var(--on,244 244 237)/.3)}
+.bf__gh{box-shadow:inset 0 0 0 var(--g-line) currentColor}
+.lx-fx__l li>i{box-shadow:inset 0 0 0 var(--g-line) rgba(40,44,32,.25)}
+.fs__go{border-bottom-width:var(--g-line)}
+.ar__toc a{border-left-width:var(--g-line)}
+/* v4 pages */
+.btn--o{box-shadow:inset 0 0 0 var(--g-line) rgba(221,225,210,.5)}
+:is(.cream,.paper,.lime) .btn--o{box-shadow:inset 0 0 0 var(--g-line) var(--ink)}
+.arr{box-shadow:inset 0 0 0 var(--g-line) var(--line)}
+.doc ol{border-top-width:var(--g-line)}
+.doc li::before{box-shadow:inset 0 0 0 var(--g-line) var(--ink)}
+.fm__in{box-shadow:inset 0 0 0 var(--g-line) var(--ink)}
+.u-btn.o{box-shadow:inset 0 0 0 var(--g-line) var(--ub2)}
+.u-nav::before{box-shadow:inset 0 0 0 var(--g-line) currentColor}
+.dm button,.dm select,.dm textarea{border-width:var(--g-line)}
+.mk--pro::before,.mk--stg::before{border-width:var(--g-line)}
+
+/* ---------- line icons: one stroke ---------- */
+.sr__in svg,.sxb svg,.sx__q svg,.lib__q svg,.nf__q svg,.bf__sh svg,.si.sl,.bk__x svg,.fp svg,.fsr svg,
+.cv__pl svg,.lib__kinds button svg,.cv__bolt polyline,.lang__b svg{stroke-width:var(--g-ico-stroke)}
+.nav .mode svg,.nav .lang__b svg{width:var(--g-ico);height:var(--g-ico)}
+
+/* ---------- menu screens stand still: entry only, no pointer drift, no glow ---------- */
+.mns__fr,.mnu__fr{transform:none!important}
+.mns__gl,.mnu__gl{display:none!important}
+
+/* ==== C2 / menu scenes on desktop: three fixed slots, screens whole, never stacked ==== */
+@media (min-width:768px){
+  .mn .mns__sc,.mnu__sc{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;gap:14px;align-content:center;padding:84px 0 104px;
+    left:auto!important;right:0!important;width:min(100%,calc(100svh - 300px))!important;margin-left:auto}
+  .mnu__sc{right:40px!important}
+  .mn .mns__fr img,.mnu__fr img{width:100%!important;height:auto!important;object-fit:contain!important;scale:1!important;aspect-ratio:1280/840}
+  .mn .mns__fr,.mnu__fr{aspect-ratio:auto!important;overflow:hidden}
+  .mn .mns__fr,.mnu__fr{position:relative!important;left:auto!important;top:auto!important;width:auto!important;z-index:auto!important;filter:none!important;box-shadow:0 0 0 var(--g-line) var(--g-line-on)!important;border-radius:var(--g-r-card)!important}
+  .mn .mns__sc>.mns__fr:first-child,.mnu__sc>.mnu__fr:first-child{grid-column:1/-1}
+  .mn .mns__sc>.mns__fr:nth-child(n+4),.mnu__sc>.mnu__fr:nth-child(n+4){display:none!important}
+  .mn .mns__fr img,.mnu__fr img{border-radius:var(--g-r-card)}
+  .mn .mns__cp,.mnu__cp{grid-column:1/-1;position:static!important;margin-top:4px}
+  .mn .mns__sc.on .mns__fr,.mnu__sc.on .mnu__fr{transition:opacity .4s cubic-bezier(.2,.7,.2,1) var(--d),translate .45s cubic-bezier(.2,.7,.2,1) var(--d)!important}
+}
+
+/* ==== C3 / home hero: what you want fixed first, the screens that fix it, the agent and me as a small signature ==== */
+.s.hero.c3-old{display:none!important}
+.c3h{--seam:50;--e:cubic-bezier(.2,.7,.2,1);--ink:#F4F4ED;--mute:#a8aea8;--lime:#D2FF00;position:relative;background:#0b0c0b;color:var(--ink)}
+.c3h__in{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"top res" "ask res" "duo res";grid-template-rows:auto auto 1fr;column-gap:48px;max-width:1344px;margin:0 auto;padding:128px 48px 64px}
+.c3h__top{grid-area:top}
+.c3h__k{margin:0 0 16px;font:600 12px/1.2 "Mona Sans",system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--lime)}
+.c3h__h{margin:0;font:800 56px/.94 "Mona Sans",system-ui,sans-serif;font-stretch:75%;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance}
+.c3h__ask{grid-area:ask;margin-top:40px}
+.c3h__ask>p{margin:0 0 12px;font:600 14px/1.2 "Mona Sans",system-ui,sans-serif;color:var(--mute)}
+.c3h__chips{display:flex;flex-wrap:wrap;gap:8px}
+.c3h__chips button{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:0;border-radius:8px;background:transparent;box-shadow:inset 0 0 0 1px rgb(244 244 237/.28);font:600 14px/1 "Mona Sans",system-ui,sans-serif;color:var(--ink);cursor:pointer;transition:background .35s var(--e),color .35s var(--e),box-shadow .35s var(--e)}
+.c3h__chips button:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.c3h__chips button[aria-pressed="true"]{background:var(--lime);color:#0b0c0b;box-shadow:none}
+.c3h__chips button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.c3h__res{grid-area:res;align-self:start;min-width:0}
+.c3h__track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;cursor:grab;outline:none}
+.c3h__track::-webkit-scrollbar{display:none}
+.c3h__track.is-drag{cursor:grabbing;scroll-snap-type:none;user-select:none}
+.c3h__track:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:12px}
+.c3h__p{flex:0 0 100%;margin:0;scroll-snap-align:start;min-width:0}
+.c3h__ui{display:block;width:100%;height:auto;aspect-ratio:1280/840;border-radius:12px;box-shadow:0 0 0 1px rgb(244 244 237/.28);background:#161912;-webkit-user-drag:none}
+.c3h__p figcaption{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:4px 24px;margin-top:16px;font:400 18px/1.45 "Mona Sans",system-ui,sans-serif;color:var(--mute)}
+.c3h__p figcaption b{font-weight:600;color:var(--ink)}
+.c3h__p figcaption a{display:inline-flex;align-items:center;min-height:44px;margin-top:-12px;font:600 14px/1 "Mona Sans",system-ui,sans-serif;color:var(--lime);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;white-space:nowrap}
+.c3h__nav{display:flex;align-items:center;gap:16px;margin-top:16px}
+.c3h__n{min-width:56px;font:600 12px/1 "Mona Sans",system-ui,sans-serif;letter-spacing:.06em;font-variant-numeric:tabular-nums;color:var(--mute)}
+.c3h .hp{display:none!important}
+.c3h__n b{color:var(--ink)}
+.c3h__bar{position:relative;flex:1;height:1px;background:rgb(244 244 237/.28)}
+.c3h__bar i{position:absolute;left:0;top:-1px;height:3px;width:0;background:var(--lime);transition:width .45s var(--e)}
+.c3h__ar{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:8px;background:transparent;box-shadow:inset 0 0 0 1px rgb(244 244 237/.28);color:var(--ink);cursor:pointer}
+.c3h__ar:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.c3h__ar:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.c3h__ar svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5}
+.c3h__duo{grid-area:duo;align-self:end;margin:48px 0 0;width:min(100%,360px)}
+.c3h__pair{position:relative;display:flex;height:180px;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px rgb(244 244 237/.28);touch-action:pan-y}
+.c3h__half{position:relative;height:100%;overflow:hidden;transition:flex-basis .45s var(--e)}
+.c3h__agent{flex:0 0 calc(var(--seam) * 1%);background:#0b0c0b}
+.c3h__me{flex:1 1 0;background:#14150f}
+.c3h.is-drag .c3h__half{transition:none}
+.c3h__fig{position:absolute;top:0;height:260%;width:auto;max-width:none;pointer-events:none;user-select:none}
+.c3h__agent .c3h__fig{right:-18%}
+.c3h__me .c3h__fig{left:-34%;top:-6%}
+.c3h__seam{position:absolute;z-index:3;top:0;bottom:0;left:calc(var(--seam) * 1%);width:44px;margin-left:-22px;display:grid;place-items:center;cursor:ew-resize;touch-action:none;transition:left .45s var(--e)}
+.c3h.is-drag .c3h__seam{transition:none}
+.c3h__seam::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;background:var(--lime)}
+.c3h__seam i{position:relative;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#0b0c0b;box-shadow:0 0 0 1px var(--lime)}
+.c3h__seam svg{width:16px;height:16px;fill:none;stroke:var(--lime);stroke-width:1.5}
+.c3h__seam:focus-visible i{outline:2px solid var(--ink);outline-offset:3px}
+.c3h__duo figcaption{display:flex;justify-content:space-between;gap:16px;margin-top:12px;font:600 12px/1.2 "Mona Sans",system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.c3h__duo figcaption span:first-child{color:var(--lime)}
+@media (max-width:1100px) and (min-width:768px){
+  .c3h__in{column-gap:32px;padding:112px 32px 56px}
+  .c3h__h{font-size:44px}
+}
+@media (max-width:767px){
+  .c3h__in{grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "ask" "res" "duo";grid-template-rows:none;padding:88px 16px 48px}
+  html body .c3h .c3h__h{font-size:28px!important;line-height:1.05!important}
+  .c3h__k{margin-bottom:12px}
+  .c3h__ask{margin-top:24px}
+  .c3h__chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+  .c3h__chips::-webkit-scrollbar{display:none}
+  .c3h__chips button{flex:none}
+  .c3h__res{margin-top:16px}
+  .c3h__track{gap:12px;margin:0 -16px;padding:0 16px;scroll-padding:0 16px}
+  .c3h__p{flex-basis:calc(100% - 24px)}
+  .c3h__p figcaption{grid-template-columns:minmax(0,1fr);margin-top:12px;font-size:14px;line-height:1.4}
+  .c3h__p figcaption a{margin-top:0}
+  .c3h__nav{margin-top:8px}
+  .c3h__duo{width:100%;margin-top:32px}
+  .c3h__pair{height:140px}
+}
+@media (prefers-reduced-motion:reduce){.c3h__half,.c3h__seam,.c3h__chips button,.c3h__bar i{transition:none!important}}
+
+/* ---------- decoration: no blurred glow blobs behind sections ---------- */
+.s[data-theme="dark"]:is(.ms,.hm:not(.lb),.cr,.ab-st,.cvq,.lib),
+.s[data-theme="light"]:is(.bf,.ex,.so){background-image:none}
+
+/* ==== C1 / icons: two sizes (16 next to text, 20 in the header), one 1.5 px stroke ==== */
+.lc__go svg,.bf__it svg,.bf__sh svg,.mk-go,em .ico svg,.em .ico svg,a>em.ico svg,.lz__go svg,.pl3__go svg,.cr__mk .ico-a,
+.flc a svg.si,.sh__i,.rl__k svg,.crs__b svg,.lang__b svg,.sxb svg,.sx__q svg,.lib__q svg{width:16px!important;height:16px!important}
+.nav .mode svg,.nav .mode .mi{width:20px;height:20px}
+:is(.sh__i,.crs__b svg,.lang__b svg,.sxb svg,.sx__q svg,.lib__q svg,.cv__pl svg,.si.sl,.bk__x svg,.fp svg,.fsr svg) :is(path,circle,line,polyline,rect){vector-effect:non-scaling-stroke;stroke-width:var(--g-ico-stroke)}
+
+/* ==== C1 / frames: 1 px, no glow, no pulsing highlight ==== */
+.ex .e2,.ex .e2[class]{border-width:var(--g-line)!important;background:var(--lime,#D2FF00)}
+.gi .hl{border-width:var(--g-line);box-shadow:none;animation:none}
+.rail__b.on::after{box-shadow:none}
+
+/* ==== C1 / footer CTA: the dark card fills the section, no lime frame around it ==== */
+.s.ft[data-theme="lime"]{background:#1C1F16}
+.s.ft .clip{border-radius:0}
+
+/* ---------- phone ---------- */
+@media (max-width:767px){
+  /* ==== C1 / phone header: name and one menu button (spec C: 40 px visual, 44 px hit) ==== */
+  .nav .btns>.btn,.nav .btns>.mode,.nav .r>.btn{display:none!important}
+  .nav .menu{position:relative;width:40px!important;height:40px!important;border-width:var(--g-line)}
+  .nav .menu::after{content:"";position:absolute;inset:-2px}
+  html[data-mode="light"] .nav .menu,.nav .menu{background:transparent;color:inherit;border:var(--g-line) solid currentColor}
+  .nav .menu i{background:currentColor!important;box-shadow:4px 6px 0 0 currentColor!important}
+
+  /* ==== C1 / phone menu: outlined close, one language chip, one still screen under the list ==== */
+  html.mn-open .nav .menu,html[data-mode="light"].mn-open .nav .menu{background:transparent!important;color:#F4F4ED!important;border-color:currentColor!important}
+  .mn__lang span[aria-disabled]{display:none}
+  .mn__lang::after{content:"More languages soon";margin-left:12px;font:500 12px/1 var(--sans);letter-spacing:.04em;text-transform:none;opacity:.6}
+  .mn .mn__ph{display:block!important;grid-column:auto;height:auto;padding:0;min-height:0;flex:none}
+  .mn .mn__ph>div{opacity:1!important;transform:none!important}
+  .mn .mns{position:relative!important;inset:auto!important}
+  .mn .mns__sc{display:none!important}
+  .mn .mns__sc.on{display:block!important;position:relative!important;inset:auto!important;opacity:1!important;visibility:visible!important}
+  .mn .mns__sc.on>.mns__fr{display:none}
+  .mn .mns__sc.on>.mns__fr--u{display:block;position:relative!important;left:auto!important;top:auto!important;width:100%!important;opacity:1!important;translate:none!important;scale:1!important;filter:none;box-shadow:0 0 0 var(--g-line) var(--g-line-on);border-radius:var(--g-r-card)}
+  .mn .mns__sc.on>.mns__fr--u~.mns__fr--u{display:none}
+  .mn .mns__sc.on .mns__cp{position:static!important;margin:12px 0 0;padding:0!important;opacity:1!important;translate:none!important;max-width:none}
+  .mn .mns__sc.on .mns__cp b{font-size:12px;letter-spacing:.08em}
+  .mn .mns__sc.on .mns__cp p{margin-top:6px;font-size:16px;line-height:1.35}
+
+  /* ==== C1 / phone footer: one column, button under the photo, no repeated kicker ==== */
+  .ft__eb{display:none}
+  .s.ft{padding-top:0}
+  .s.ft .lw{width:100%}
+  .ft__bg{flex-direction:column;align-items:center;justify-content:flex-start;height:auto!important;padding-top:340px}
+  .ft__me{bottom:auto!important;height:340px!important}
+  .ft__lap{position:static!important;margin:16px auto 0!important;translate:none!important;transform:none!important}
+  .s.ft .links{flex-direction:column;gap:24px;width:auto;padding:32px 24px 0}
+  .s.ft .flc .x{display:none}
+  .s.ft .legal{flex-direction:column;gap:12px;align-items:flex-start}
+  .s.ft .legal__tm{display:block;margin-top:6px}
+
+  :root{--ctl:var(--g-tap)}
+
+  /* tap targets */
+  .nav .brand,.logo{display:inline-grid;align-content:center;min-height:var(--g-tap)}
+  .nav .mode,.nav .menu,.nav .lang__b{width:var(--g-tap);height:var(--g-tap);border-radius:var(--g-r-ctl)}
+  .nav .btn{height:var(--g-tap);border-radius:var(--g-r-ctl)}
+  .sxb{min-height:var(--g-tap)}
+  .fs__go,.ar__bk{display:inline-flex;align-items:center;min-height:var(--g-tap)}
+  input[type="email"],input[type="search"],#lq,#nfq,.nf__q,.nlf__c{min-height:var(--g-tap)}
+  .nlf__c{display:flex;align-items:center}
+  /* footer link lists and card links: full-height rows */
+  .flc a,.ftr__lk a{display:flex;align-items:center;min-height:var(--g-tap)}
+  .v4s__rd,.lm__ct a,.lgl,.fs__go{display:inline-flex;align-items:center;min-height:var(--g-tap)}
+  /* filter chips keep their 24-36 px look; the hit area reaches 44 px */
+  .sx__f button{position:relative;min-height:32px}
+  .sx__f button::after{content:"";position:absolute;left:0;right:0;top:50%;height:var(--g-tap);translate:0 -50%}
+
+  /* nothing below 12 px: stack chips, filters, card meta */
+  .ap__m small,.sx__f button sup,.nv__b small,.lib__bi .fseg small,.cv__m small{font-size:var(--g-txt-min)}
+  /* drawn interfaces: labels at the floor, layout untouched */
+  html body :is(.ui .u-cal i,.ui .u-cal i.w),
+  .ui .u-l,.ui .u-th span,.ui .u-rings span,.ui .u-cal>div,.ui .u-task span,.ui .u-task em,
+  .doc__hd span,.doc__ft span{font-size:11.5px}
+
+  /* ==== phone type scale (spec C): 12 / 14 / 18 / 28 / 56, every page, both families ====
+     12 labels, meta, tags · 14 buttons, captions, secondary · 18 body, leads, quotes, card titles
+     28 section and card headings, figures · 56 page titles and hero figures.
+     Selectors come from a 390 px inventory of 15 pages; drawn interfaces keep their own sizes. */
+  html body :is(h1,h2,h3):not(:is(.ui,[data-ui],.u-app,.doc,.demo__win,.cv,.mnu,.mns,.mn) *) :is(span,b,i,em,strong){font-size:inherit!important;line-height:inherit!important}
+  html body :is(.art__hd h1.st,.big p.big__n,.fx3__f b.fx3__num,.hero h1.hh,.hero__grid h1.d1,.lb h1,.lx-h__in h1,.nlh__tx h1,.nums dt):not(:is(.ui,[data-ui],.u-app,.doc,.demo__win,.cv,.mnu,.mns,.mn) *){font-size:56px!important;line-height:.94!important}
+  html body :is(.ab-h__facts dd,.ab-st__hd h2,.bf__hd h2.bf__h,.big__s span.s.w,.big__s span.w,.body dt,.body h2.ah,.cf__hd h2,.cl__in h2.cl__h,.cr__c h3,.cr__f b,.cr__hd h2,.cr__mk b,.crs__c h3,.cv__hd h2,.feat__tx h3.feat__t,.ft h2,.ftr__pn h2.st,.fx3__hd h2,.fx3__idx b,.hm h2,.it__m b,.lib__hd h2,.lm__tx h2.h2,.lt h2,.lx-fq__l h2,.lx-h__in b,.lx-sys h2,.lz__b b.lz__n,.ms__in h2.ms__t,.next h2.h2,.nla__hd h2,.nlb__tx h2,.nli__hd h2,.nli__it span.nli__n,.nli__mail h3,.pl3__f b,.pl3__hd h2,.pl3__kpi b,.pl3__row h3.pl3__nm,.prod__tx h2.h2,.pull span.s.w,.pull span.w,.pv2__in span.w,.rl__hd h2,.sh__col h2,.sheet h2,.stm span.s.w,.stm span.w,.sx__r span,.tk__hd h2,.v4s h2,.v4s__tx h3):not(:is(.ui,[data-ui],.u-app,.doc,.demo__win,.cv,.mnu,.mns,.mn) *){font-size:28px!important;line-height:1.05!important}
+  html body :is(.ab-st__ls b,.big a,.cr__mk b.mk-mags,.ftr__lk a,.hero__side b,.hz span.it__t,.lx-bk__c b,.lz__b span.lz__k,.nli__it h4,.pl3__cap span,.pl3__co b,.prod__tx a,.rl__b b,.vc__b b.vc__t):not(:is(.ui,[data-ui],.u-app,.doc,.demo__win,.cv,.mnu,.mns,.mn) *){font-size:18px!important;line-height:1.3!important}
+  html body :is(.ab-h__tx p.ab-h__lead,.ab-st__hd p,.art__hd p.q,.big p.q,.body dd,.body p,.cf__facts dd,.cf__hd p.cf__lede,.cf__rows dd,.cl__in p.cl__p,.cr__c p.cr__w,.cr__hd p,.crs__c blockquote,.fq__l summary,.ft p.ft__sub,.ftr__pn p.ftr__sub,.fx3__get li,.fx3__t p,.hero__side p.q,.lib__hd p.pp,.lm__tx p.lm__ct,.lm__tx p.p,.ms__q p,.nla__hd p,.nlh__tx p.nlh__lead,.nli__hd p,.nli__mail p.nli__lead,.nums dd,.nums p.q.nums__n,.pl3__hd p,.prod__tx p.p,.tk__end p.tk__p,.trk__intro p.q,.v4s__tx p):not(:is(.ui,[data-ui],.u-app,.doc,.demo__win,.cv,.mnu,.mns,.mn) *){font-size:18px!important;line-height:1.45!important}
+  html body :is(.crs__c b,.crs__c p,.ftr__me a.btn.ftr__lap,.hero__side a.btn,.hero__side a.btn.btn--o,.hero__side dd,.hero__side span.mk.mk--dep,.hero__side span.mk.mk--pro,.lib__bi small,.lk__t sup,.lm__tx a.btn,.nlf__row span,.nli__it p,.nli__it p.nli__why,.nli__why b,.sx__f button,.sx__f sup,.tk__end span):not(:is(.ui,[data-ui],.u-app,.doc,.demo__win,.cv,.mnu,.mns,.mn) *){font-size:14px!important}
+  html body :is(.ab-st__ls span,.art__hd span.cap,.cr__fo span,.cr__tg li,.crs__c span,.fx3__tl small,.lm__ct a,.lz__ph i,.nlf__c a,.nlf__c span,.nlh__tx p.nlh__proof,.nli__it span.nli__lb,.pl3__co small,.pl3__f small,.pl3__kpi span,.rl__m span.rl__k,.sh__ls span,.vc__b span.vc__c,.vc__b span.vc__m):not(:is(.ui,[data-ui],.u-app,.doc,.demo__win,.cv,.mnu,.mns,.mn) *){font-size:12px!important}
+  html body :is(.ft .flc a,.ftr__lk a){font-size:18px!important;line-height:1.3!important}
+
+  /* ==== phone rhythm (spec C): 80 px above and below each content section, 16 px gutters ==== */
+  html body :is(.ms__in,.c2,.cc,.rl__pin,.hz .track){padding-left:16px!important;padding-right:16px!important}
+  html body :is(.bf__pin,.so>.c,.lw .stm,.rl__hd,.lx-h__in){padding-left:16px!important;padding-right:16px!important}
+  html body :is(.ms__in,.c2,.rl__pin,.hz .track){padding-top:80px!important;padding-bottom:80px!important}
+  html body .cc,html body .so .lay,html body .pl3__hd{padding-top:80px!important}
+  html body :is(.s.ex,.s.so,.s.fx3){padding-bottom:80px!important}
+  html body :is(.s.pv2,.s.sys,.s.lx-fq,.s.cvq,.s.cl){padding-top:80px!important;padding-bottom:80px!important}
+  html body .sec:not(.hero,.cvr,.body,.trk){padding-top:80px!important;padding-bottom:80px!important}
+  /* kicker to heading: 16 px everywhere (was 10 to 52) */
+  html body .eyebrow{margin-bottom:0!important}
+  html body .eyebrow+:is(h1,h2,q){margin-top:16px!important}
+  html body :is(.pl3__hd,.cr__hd,.ab-h__tx,.ab-st__hd,.cv__hd,.pv2__in){row-gap:16px!important}
+  html body :is(.pl3__hd,.cr__hd,.ab-h__tx,.ab-st__hd,.cv__hd,.pv2__in)>.eyebrow+*{margin-top:0!important}
+
+  /* one button label on both page families: sentence case, 14 px, 600 */
+  html body :is(a.btn,button.btn):not(:is(.ui,[data-ui],.u-app,.demo__win) *){text-transform:none!important;letter-spacing:0!important;font-weight:600!important;font-size:14px!important}
+}
+
+/* ==== C1 / one stroke: every drawn line icon is 1.5 ==== */
+.ico-a :is(path,circle,line,polyline,rect),.rl__k svg :is(path,circle,line,polyline,rect){stroke-width:var(--g-ico-stroke)}
+.ico-a,.si{stroke-width:var(--g-ico-stroke)}
+.ico-a :is(path,circle,line,polyline,rect),.si :is(path,circle,line,polyline,rect){vector-effect:non-scaling-stroke}
+
+/* ==== C1 / desktop header controls: 36 px to the eye, 44 px to the finger ==== */
+@media (min-width:768px){
+  .nav .mode,.nav .menu,.nav .lang__b{position:relative;width:36px;height:36px;border-radius:var(--g-r-ctl)}
+  .nav .lang__b{width:auto;padding-inline:10px}
+  .nav .btns>.btn,.nav .r>.btn{height:36px}
+  .nav .mode::after,.nav .menu::after,.nav .lang__b::after{content:"";position:absolute;inset:-4px}
+}
+
+/* ==== C1 / home hero: no tool pill strips on the phone ==== */
+@media (max-width:599px){.hero__belt{display:none!important}}
+
+/* ==== C1 / phone: library shows 12 and a button; carousels swipe, no arrows, 8 px dots with a 44 px hit area ==== */
+.g22-more{display:none}
+@media (max-width:767px){
+  #notesg>[data-g22x]{display:none!important}
+  .g22-more{display:flex;align-items:center;justify-content:center;width:100%;min-height:var(--g-tap);margin-top:16px;border:var(--g-line) solid currentColor;border-radius:var(--g-r-ctl);background:transparent;color:inherit;font:600 14px/1 var(--sans);cursor:pointer}
+  .g22-more[hidden]{display:none}
+  .crs__b,.crs__bar,.crs__n{display:none!important}
+  .crs__tr{cursor:auto}
+  .g22-dots{display:flex;justify-content:center;gap:0;margin-top:8px}
+  .g22-dots button{position:relative;width:var(--g-tap);height:var(--g-tap);padding:0;border:0;background:none;color:inherit;cursor:pointer}
+  .g22-dots button::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:999px;background:currentColor;opacity:.3}
+  .g22-dots button[aria-current="true"]::before{opacity:1}
+}
+
+/* ==== C2 / menu: the header never turns into a light bar over the open menu ==== */
+html.mn-open .nav.bar{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
+html.mn-open .nav .brand,html[data-mode="light"].mn-open .nav .brand{color:#F4F4ED!important}
+
+/* ==== C2 / menu on desktop: one Book a call and one theme switch (both live in the header) ==== */
+@media (min-width:768px){
+  html .mn .mn__foot>.btn,html .mn .mn__mode{display:none!important}
+}
+
+/* ==== C2 / menu scenes: slots start 24 px under the header and end 24 px above the bottom row ==== */
+@media (min-width:768px){
+  .mn .mns__sc{padding:92px 40px 128px 0}
+  /* motion: one 300 ms entry when the menu opens, an 8 px rise when a row is hovered or focused, nothing else */
+  .mn .mns__sc:not(.on) .mns__fr{translate:0 8px}
+  .mn .mns__sc.on .mns__fr{translate:0 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .mn .mns__sc,.mn .mns__fr,.mnu__fr{transition:none!important;translate:none!important}
+}
