@@ -1,6 +1,6 @@
 /* section covers: the insights plate language (diagonal split, light on top, shade below, a lime plus on the seam),
    one olive family, a real screen or the real photo breaking out of the plate */
-.lh-cv{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(16px,3vw,48px);
+.lh-cv{--pd:clamp(28px,4vw,64px);position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(16px,3vw,48px);
   min-height:clamp(300px,32vw,440px);padding:clamp(28px,4vw,64px);border-radius:28px;color:#F4F4ED;
   background:linear-gradient(112deg,#2F3514 0 55%,#5A6A0E 55.15% 100%)}
 .lh-cv::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
@@ -41,9 +41,40 @@
 
 /* portrait plate: the real cut-out of the head and shoulders, no laptop, no box; it rises with the plate and drifts up while you scroll */
 .lh-cv--p .lh-cv__art{min-height:300px}
-.lh-cv--p .lh-cv__art img{position:absolute;left:auto;top:auto;right:2%;bottom:calc(-1*clamp(28px,4vw,64px));width:min(78%,430px);max-width:none;transform:none;border-radius:0;box-shadow:none;filter:drop-shadow(0 30px 38px rgba(8,10,3,.55))}
+.lh-cv--p .lh-cv__art img{position:absolute;left:auto;top:auto;right:2%;bottom:calc(-1*clamp(28px,4vw,64px));width:auto;height:calc(100% + var(--pd) - 14px);max-width:none;transform:none;border-radius:0;box-shadow:none;filter:drop-shadow(0 30px 38px rgba(8,10,3,.55))}
 .lh-cv--c.lh-cv--p .lh-cv__art{min-height:260px}
-.lh-cv--c.lh-cv--p .lh-cv__art img{width:min(74%,330px);right:0}
+.lh-cv--c.lh-cv--p .lh-cv__art img{right:0}
 @keyframes lh-drift{from{translate:0 40px}to{translate:0 0}}
 @supports (animation-timeline:view()){@media (prefers-reduced-motion:no-preference){.lh-cv--p .lh-cv__art img{animation:lh-drift linear both;animation-timeline:view();animation-range:entry 0% cover 55%}}}
-@media (max-width:900px){.lh-cv--p .lh-cv__art,.lh-cv--c.lh-cv--p .lh-cv__art{min-height:0;height:250px;overflow:hidden;margin:6px -22px 0}.lh-cv--p .lh-cv__art img,.lh-cv--c.lh-cv--p .lh-cv__art img{left:50%;right:auto;bottom:0;width:min(74%,320px);transform:translateX(-50%)}}
+@media (max-width:900px){.lh-cv--p .lh-cv__art,.lh-cv--c.lh-cv--p .lh-cv__art{min-height:0;height:260px;overflow:hidden;margin:6px -22px 0}.lh-cv--p .lh-cv__art img,.lh-cv--c.lh-cv--p .lh-cv__art img{left:50%;right:auto;bottom:0;height:248px;width:auto;transform:translateX(-50%)}}
+
+/* tall cut-outs: the plate edge cuts the figure at the chest or the belt */
+.lh-cv--tall .lh-cv__art img{top:calc(14px - var(--pd));bottom:auto;height:calc((100% + var(--pd) - 14px)*var(--k,1.45))}
+/* a real event photo, faded into the plate instead of a box */
+.lh-cv--ph .lh-cv__art img{position:absolute;inset:calc(-1*var(--pd)) calc(-1*var(--pd)) calc(-1*var(--pd)) 0;width:calc(100% + var(--pd));height:calc(100% + 2*var(--pd));max-width:none;object-fit:cover;object-position:30% 52%;border-radius:0;box-shadow:none;filter:none;transform:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 38%);mask-image:linear-gradient(90deg,transparent 0,#000 38%)}
+@media (max-width:900px){
+  .lh-cv--tall .lh-cv__art img{top:12px;bottom:auto;height:calc(248px*var(--k,1.45))}
+  .lh-cv--ph .lh-cv__art{height:260px;min-height:0;overflow:hidden;margin:6px -22px 0}
+  .lh-cv--ph .lh-cv__art img{inset:0;width:100%;height:100%;left:0;transform:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%);mask-image:linear-gradient(180deg,transparent 0,#000 30%)}
+}
+
+.lh-cv--c.lh-cv--ph .lh-cv__art{min-height:300px}
+.lh-cv--c.lh-cv--ph .lh-cv__art img{inset:0 calc(-1*var(--pd)) calc(-1*var(--pd)) calc(-1*var(--pd));width:calc(100% + 2*var(--pd));height:calc(100% + var(--pd));-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 32%);mask-image:linear-gradient(180deg,transparent 0,#000 32%)}
+@keyframes lh-zoom{from{scale:1.1}to{scale:1}}
+@supports (animation-timeline:view()){@media (prefers-reduced-motion:no-preference){.lh-cv--ph .lh-cv__art img{animation:lh-zoom linear both;animation-timeline:view();animation-range:entry 0% cover 60%}}}
+
+/* headers that carry a plate (home and work): the plate takes the row, the intro sits under it */
+.tl:has(.lh-cv){display:block}
+.tl:has(.lh-cv) .hd{width:100%;max-width:none}
+.tl:has(.lh-cv) .pp{max-width:46em;margin:22px 0 0}
+
+/* the fade stays off the face: short fade at the plate edge, the face sits clear of it, the plus moves away from the photo */
+.lh-cv--ph .lh-cv__art img{object-position:50% 14%}
+.lh-cv--c.lh-cv--ph .lh-cv__art{min-height:330px}
+.lh-cv--c.lh-cv--ph .lh-cv__art img{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 15%);mask-image:linear-gradient(180deg,transparent 0,#000 15%)}
+.lh-cv--c.lh-cv--ph .lh-cv__plus{left:auto;right:28px;top:28px;margin:0}
+@media (max-width:900px){
+  .lh-cv--ph .lh-cv__art img{object-position:50% 12%;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%);mask-image:linear-gradient(180deg,transparent 0,#000 12%)}
+  .lh-cv--ph .lh-cv__plus{left:auto;right:22px;top:22px;bottom:auto;margin:0}
+}
