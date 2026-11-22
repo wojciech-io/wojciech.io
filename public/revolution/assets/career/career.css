@@ -1,0 +1,64 @@
+/* Career: a timeline on the left, the chosen role on the right. On a phone each role opens in place.
+   Marks are white in the dark theme and ink in the light one. No coloured plates. */
+.crb{padding:clamp(72px,8vw,120px) 0;background:var(--sf1,#1c1f16);color:rgb(var(--on,244 244 237))}
+.crb__in{width:min(1240px,100% - 2*var(--gut,24px));margin-inline:auto}
+.crb__hd{max-width:40em;margin-bottom:clamp(32px,4vw,52px)}
+.crb__hd .eyebrow{display:block;margin-bottom:14px;color:var(--lt,#D2FF00)}
+.crb__hd h2{margin:0;font:800 clamp(44px,5.4vw,80px)/.92 var(--sans);font-stretch:75%;text-transform:uppercase;letter-spacing:-.01em}
+.crb__hd p{margin:18px 0 22px;font:400 18px/1.5 var(--sans);opacity:.8}
+.crb__md{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);gap:clamp(32px,5vw,88px);align-items:start}
+.crb__rail{list-style:none;margin:0;padding:0 0 0 30px;position:relative}
+.crb__rail::before{content:"";position:absolute;left:5px;top:10px;bottom:10px;width:1px;background:rgb(var(--on,244 244 237)/.25)}
+.crb__li{position:relative}
+.crb__bt{position:relative;display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center;width:100%;min-height:44px;padding:12px 0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;opacity:.58;transition:opacity .25s}
+.crb__bt::before{content:"";position:absolute;left:-30px;top:50%;width:11px;height:11px;margin-top:-5.5px;border-radius:50%;background:var(--sf1,#1c1f16);border:1px solid rgb(var(--on,244 244 237)/.6);transition:background .25s,border-color .25s,box-shadow .25s}
+.crb__bt:hover,.crb__bt:focus-visible{opacity:.95}
+.crb__li.on>.crb__bt{opacity:1}
+.crb__li.on>.crb__bt::before{background:var(--lt,#D2FF00);border-color:var(--lt,#D2FF00);box-shadow:0 0 0 5px rgb(210 255 0/.16)}
+.crb__y{font:600 12px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.crb__lg{display:flex;align-items:center;min-height:24px}
+.crb__lg b{font:600 15px/1.2 var(--sans)}
+.crb img{display:block;width:auto;object-fit:contain;filter:brightness(0) invert(1)}
+html[data-mode="light"] .crb img{filter:brightness(0)}
+.crb__lg img{height:20px;max-width:130px}
+.crb__lg img.s{height:14px;margin-right:6px}
+.crb__lg img.sq{height:30px}
+.crb__d{display:none}
+.crb__pn{position:sticky;top:96px;padding-top:6px;min-height:380px}
+.crb__pn .crb__d{display:block}
+.crb__yr{font:600 12px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;opacity:.65}
+.crb__d h3{margin:14px 0 0;font:500 clamp(30px,3.6vw,56px)/1.04 var(--serif);max-width:14em}
+.crb__at{display:flex;align-items:center;flex-wrap:wrap;gap:14px 20px;margin-top:22px}
+.crb__at a{font:600 15px/1.2 var(--sans);color:var(--lt,#D2FF00);text-decoration:none;border-bottom:1px solid transparent}
+.crb__at a:hover,.crb__at a:focus-visible{border-color:currentColor}
+.crb__at a::after{content:"\00a0\2197"}
+.crb__at img{height:26px;max-width:150px}
+.crb__at img.s{height:18px}
+.crb__at img.sq{height:50px}
+.crb__mags{display:flex;flex-wrap:wrap;align-items:center;gap:16px 32px;margin:24px 0 0;padding:0;list-style:none}
+.crb__mags img{height:20px;max-width:150px;opacity:.9}
+.crb__mags .joy{height:22px}
+.crb__wh{margin:24px 0 0;max-width:34em;font:400 20px/1.5 var(--sans);opacity:.9}
+.crb__rs{display:flex;align-items:baseline;gap:18px;margin-top:32px;padding-top:24px;border-top:1px solid rgb(var(--on,244 244 237)/.2)}
+.crb__rs b{font:800 clamp(60px,7.4vw,112px)/.85 var(--sans);font-stretch:75%;color:var(--lt,#D2FF00)}
+.crb__rs span{font:500 15px/1.35 var(--sans);opacity:.8;max-width:12em}
+.crb__tg{margin:22px 0 0;font:500 14px/1.5 var(--sans);opacity:.65}
+@media (max-width:900px){
+  .crb__md{grid-template-columns:1fr}
+  .crb__pn{display:none}
+  .crb__rail{padding-left:26px}
+  .crb__bt::before{left:-26px}
+  .crb__bt{grid-template-columns:84px minmax(0,1fr)}
+  .crb__li.on>.crb__d{display:block;padding:4px 0 26px 0}
+  .crb__d h3{font-size:30px;margin-top:0}
+  .crb__yr{display:none}
+  .crb__wh{font-size:17px;margin-top:18px}
+  .crb__rs b{font-size:64px}
+  .crb__mags{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px}
+  .crb__mags li{display:flex;align-items:center}
+  .crb__mags li:last-child:nth-child(odd){grid-column:1/-1;justify-content:center}
+}
+/* without script every role stays open */
+.crb:not(.js) .crb__d{display:block;padding:0 0 28px}
+.crb:not(.js) .crb__pn{display:none}
+@media (prefers-reduced-motion:reduce){.crb__bt,.crb__bt::before{transition:none}}
