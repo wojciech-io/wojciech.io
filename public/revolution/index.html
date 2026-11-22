@@ -1634,7 +1634,9 @@ html .mn .mn__foot .mn__lang a[aria-current]{color:#1c1f16!important}
 .tm__hl{fill:none;stroke:currentColor;stroke-width:.9;stroke-dasharray:2 6;opacity:0;transition:opacity .9s 1.9s}
 .tm.in .tm__hl{opacity:.24}
 .tm__p .h{fill:#D2FF00;opacity:.5}.tm__p circle:last-child{fill:#6E7D0C}
-@media (max-width:599px){.tm__c,.tm__tr,.tm__pu{display:none}}
+/* phone: the same map in portrait, two columns of tools down the edges (ds.js-free, see the hero map script); clipped to the hero so nothing can widen the page */
+@media (max-width:599px){.hero__sk.tm{overflow:hidden}.tm__tr{stroke-width:1;opacity:.15}.tm__br{stroke-width:.9;opacity:.13}.tm--near .tm__g use,.tm--mid .tm__g use{opacity:.28}.tm__t{opacity:.46}.tm__p .h{opacity:.14}.tm__p circle:last-child{opacity:.55}.tm.in .tm__hub{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.tm__tr,.tm__br,.tm__g,.tm__g use,.tm__hub,.tm__halo use,.tm__hl{transition-delay:0s!important}}
 /* tablet: the desktop composition, scaled; his photo keeps its desktop height so the map's hub stays behind his chest */
 @media (min-width:600px) and (max-width:767px){.hero__me{height:min(84vh,150vw)}.hero .hh{font-size:clamp(44px,7.6vw,76px)}.hero .hh .l1{left:var(--gut);right:auto;top:15vh;text-align:left}.hero .hh .l2{left:auto;right:var(--gut);top:36vh;text-align:right}}
 @media (max-width:599px){.hero .hh .l1{top:12vh;left:var(--gut);right:auto;text-align:left}.hero .hh .l2{top:calc(12vh + 2.95em);left:var(--gut);right:auto;text-align:left}}
@@ -2054,7 +2056,7 @@ html .cv.cv--pl,html .cv.cv--one{background:var(--bg)}
   .hero .hh em{margin-top:0;line-height:.95}
 }
 /* portrait screens cut the side groups in half, so the map shows only where it fits whole (landscape), as on phones */
-@media (max-aspect-ratio:1/1){.tm__c,.tm__tr,.tm__pu,.tm__halo{display:none}}
+@media (min-width:600px) and (max-aspect-ratio:1/1){.tm__c,.tm__tr,.tm__pu,.tm__halo{display:none}}
 /* portrait tablets: the tablet composition (claims above and beside his head, photo large), not the desktop one shrunk */
 @media (min-width:768px) and (max-aspect-ratio:1/1){.hero{--mh:min(84vh,150vw)}.hero .hh{font-size:clamp(44px,7.6vw,76px)}.hero .hh .l1{left:var(--gut);right:auto;top:15vh;text-align:left}.hero .hh .l2{left:auto;right:var(--gut);top:36vh;text-align:right}}
 /* section labels carry no chapter numbers */
@@ -3797,34 +3799,75 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
      in layers (near ones further), and they lean away from the pointer. Paused while the hero is off screen. */
   (()=>{const sv=document.querySelector('.hero__sk.tm');if(!sv)return;const RMq=matchMedia('(prefers-reduced-motion: reduce)').matches;
     const H=[800,560],hero=sv.closest('.hero'),pu=sv.querySelector('.tm__pu'),halo=sv.querySelector('.tm__halo'),NS='http://www.w3.org/2000/svg';
-    const C=[...sv.querySelectorAll('.tm__c')].map(g=>({g,x:+g.dataset.x,y:+g.dataset.y,tr:sv.querySelector('.tm__tr[data-k="'+g.dataset.k+'"]'),w:g.classList.contains('tm--mid')?.65:1,n:[...g.querySelectorAll('.tm__g')],X:+g.dataset.x,Y:+g.dataset.y,k:(g.dataset.tc||'.42,.05,.62,.95').split(',').map(Number)}));
+    const C=[...sv.querySelectorAll('.tm__c')].map(g=>({g,x:+g.dataset.x,y:+g.dataset.y,tr:sv.querySelector('.tm__tr[data-k="'+g.dataset.k+'"]'),w:g.classList.contains('tm--mid')?.65:1,n:[...g.querySelectorAll('.tm__g')],nd:[...g.querySelectorAll('.tm__n')],X:+g.dataset.x,Y:+g.dataset.y,k:(g.dataset.tc||'.42,.05,.62,.95').split(',').map(Number)}));
     const ctl=c=>{const dx=H[0]-c.X,dy=H[1]-c.Y,k=c.k;return[c.X,c.Y,c.X+dx*k[0],c.Y+dy*k[1],c.X+dx*k[2],c.Y+dy*k[3],H[0],H[1]]};
     const at=(p,t)=>{const u=1-t,a=u*u*u,b=3*u*u*t,c=3*u*t*t,d=t*t*t;return[a*p[0]+b*p[2]+c*p[4]+d*p[6],a*p[1]+b*p[3]+c*p[5]+d*p[7]]};
+    const paintT=c=>{const p=ctl(c);c.tr.setAttribute('d','M'+p[0].toFixed(1)+' '+p[1].toFixed(1)+'C'+p[2].toFixed(1)+' '+p[3].toFixed(1)+' '+p[4].toFixed(1)+' '+p[5].toFixed(1)+' '+H[0].toFixed(1)+' '+H[1].toFixed(1))};
+    /* phone: portrait has no room for four corner groups, so the same groups become two columns down the screen edges, in the room beside the claims and him.
+       Each group is a spine with one branch per tool (labels 12 px, one line), and its trunk sweeps into the hub behind his chest. Everything is measured
+       from the claims and the photo, in px (the viewBox is the hero's own size), and redone on resize. */
+    const PHq=matchMedia('(max-width:599px)'),SIDE={dev:[-1,0],ag:[-1,1],data:[1,0],crm:[1,1]},ROWS={dev:[118,262],data:[176,322],ag:[0,132,268],crm:[44,196,338]},JX=[.15,.85,.45,1,.3,.7],JY=[-12,10,-4,16,-16,6],KS=[.9,-.6,.5,-1,.7,-.4,1];let isP=false,key='',dirty=true,le=-1;
+    C.forEach(c=>{c.all=c.n.slice();c.o=c.nd.map(nd=>{const gl=nd.querySelector('.tm__g'),u=gl.querySelector('use'),t=gl.querySelector('.tm__t'),br=nd.querySelector('.tm__br');return{nd,gl,u,t,br,d:br.getAttribute('d'),tf:gl.getAttribute('transform'),ux:u.getAttribute('x'),uw:u.getAttribute('width'),ty:t.getAttribute('y')}})});
+    const restore=()=>{isP=false;key='';dirty=true;H[0]=800;H[1]=560;sv.setAttribute('viewBox','0 0 1600 1000');
+      C.forEach(c=>{c.x=+c.g.dataset.x;c.y=+c.g.dataset.y;c.X=c.x;c.Y=c.y;c.n=c.all.slice();
+        c.o.forEach(o=>{o.nd.style.display='';o.br.setAttribute('d',o.d);o.gl.setAttribute('transform',o.tf);o.u.setAttribute('x',o.ux);o.u.setAttribute('y',o.ux);o.u.setAttribute('width',o.uw);o.u.setAttribute('height',o.uw);o.t.setAttribute('y',o.ty)});
+        c.g.setAttribute('transform','translate('+c.x+' '+c.y+')');paintT(c)})};
+    /* a tool's place on the phone: its rest position plus the scroll offset (dx, dy); the branch follows it */
+    const nodeP=(o,dx,dy)=>{const x=o.bx+dx,y=o.by+dy,ex=o.ex+dx;o.gl.setAttribute('transform','translate('+x.toFixed(1)+' '+y.toFixed(1)+')');o.br.setAttribute('d','M0 0Q'+(ex/2+o.bl).toFixed(1)+' '+(y/2).toFixed(1)+' '+ex.toFixed(1)+' '+y.toFixed(1))};
+    const lay=()=>{if(!PHq.matches){if(isP)restore();return}
+      const r=hero.getBoundingClientRect(),me=hero.querySelector('.hero__me'),hh=hero.querySelector('.hh');if(!r.width||!r.height||!me||!hh)return;
+      const W=r.width,HH=r.height,dy=hh.getBoundingClientRect().top-r.top,tb=[];
+      /* the ink of the claims, line by line (the block around "Then I run them" spans the whole width) */
+      hh.querySelectorAll('.l1,.l2').forEach(e=>{const w=document.createTreeWalker(e,NodeFilter.SHOW_TEXT);let t=w.nextNode();while(t){if(t.nodeValue.trim()){const g=document.createRange();g.selectNodeContents(t);for(const q of g.getClientRects())tb.push(q)}t=w.nextNode()}});
+      if(!tb.length)return;
+      const tl=Math.min(...tb.map(b=>b.left-r.left)),trr=Math.min(...tb.map(b=>r.right-b.right)),cb=Math.max(...tb.map(b=>b.bottom-r.top))-dy;
+      /* untransformed photo box: the entrance and scroll tweens move it */
+      const pt=HH-me.offsetHeight,pl=(W-me.offsetWidth)/2,k=[W,HH,tl,trr,cb,pt,pl].map(Math.round).join('|');if(isP&&k===key)return;key=k;
+      const xs=Math.min(Math.max(70,Math.min(tl,trr)-8),pl+14),bs=cb+56;
+      sv.setAttribute('viewBox','0 0 '+W.toFixed(1)+' '+HH.toFixed(1));sv.setAttribute('preserveAspectRatio','xMinYMin meet');sv.style.setProperty('--tmk','1');
+      H[0]=W/2;H[1]=pt+(HH-pt)*.3;isP=true;dirty=true;
+      C.forEach(c=>{const s=SIDE[c.g.dataset.k],sd=s[0],bot=s[1],mx=v=>sd>0?W-v:v,rows=ROWS[c.g.dataset.k].map(v=>(bot?bs:0)+v).filter(v=>v<(bot?HH-40:cb-14));
+        /* measure every label at 12 px, keep the tools whose name fits between the screen edge and the anchor column, in source order */
+        c.o.forEach(o=>{o.u.setAttribute('x','-10');o.u.setAttribute('y','-10');o.u.setAttribute('width','20');o.u.setAttribute('height','20');o.t.setAttribute('y','24');o.hw=Math.max(11,o.t.getComputedTextLength()/2)});
+        const ok=c.o.filter(o=>8+2*o.hw+6<=xs),n=Math.min(rows.length,ok.length),ax=mx(xs),ay=bot?bs+(sd<0?18:56):Math.min(cb+16,pt-6);
+        c.o.forEach(o=>{o.nd.style.display='none'});c.n=[];c.x=ax;c.y=ay;c.X=ax;c.Y=ay;c.sd=sd;c.sh=[];
+        /* scattered, not gridded: each tool sits at its own height and its own distance from the edge, joined to the anchor by an arc */
+        ok.slice(0,n).forEach((o,i)=>{o.nd.style.display='';c.n.push(o.gl);c.sh.push(o);
+          const room=Math.max(0,xs-14-2*o.hw-8),x=8+o.hw+room*JX[(i*2+(bot?1:0)+(sd>0?3:0))%JX.length],y=rows[i]+JY[(i+(bot?2:0)+(sd>0?1:0))%JY.length];
+          o.bx=mx(x)-ax;o.by=y-ay;o.ex=mx(x+12)-ax;o.k=KS[(i+(bot?1:0)+(sd>0?2:0))%KS.length];o.bl=(i%2?1:-1)*sd*(16+6*(i%3));nodeP(o,0,0)});
+        c.g.setAttribute('transform','translate('+ax.toFixed(1)+' '+ay.toFixed(1)+')');paintT(c)})};
     /* wide screens fit the whole map (meet) instead of cropping its top; labels stay 12 px on screen at any scale */
-    const fit=()=>{const r=hero.getBoundingClientRect();if(!r.height)return;const wide=r.width/r.height>1.6,k=wide?r.height/1000:Math.max(r.width/1600,r.height/1000);sv.setAttribute('preserveAspectRatio','xMidYMax '+(wide?'meet':'slice'));sv.style.setProperty('--tmk',(1/k).toFixed(3))};
+    const fit=()=>{lay();if(isP)return;const r=hero.getBoundingClientRect();if(!r.height)return;const wide=r.width/r.height>1.6,k=wide?r.height/1000:Math.max(r.width/1600,r.height/1000);sv.setAttribute('preserveAspectRatio','xMidYMax '+(wide?'meet':'slice'));sv.style.setProperty('--tmk',(1/k).toFixed(3))};
     /* the claims stand in the middle of the free fields of the map: the common middle of the gap between the top and bottom groups on each side */
     const place=()=>{hero.style.setProperty('--cl-dy','0px');if(!matchMedia('(min-width:768px) and (min-aspect-ratio:1/1)').matches)return;
       const R=k=>{const e=sv.querySelector('.tm__c[data-k="'+k+'"]');return e?e.getBoundingClientRect():null},d=R('dev'),da=R('data'),ag=R('ag'),cr=R('crm'),l1=hero.querySelector('.hh .l1'),l2=hero.querySelector('.hh .l2');
       if(!d||!da||!ag||!cr||!l1||!l2||!d.height||!ag.height)return;const a=l1.getBoundingClientRect(),b=l2.getBoundingClientRect();
       const tgt=((d.bottom+ag.top)/2+(da.bottom+cr.top)/2)/2,cur=((a.top+a.bottom)/2+(b.top+b.bottom)/2)/2;hero.style.setProperty('--cl-dy',Math.round(tgt-cur)+'px')};
-    fit();place();addEventListener('resize',()=>{fit();place()});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(place);
+    fit();place();addEventListener('resize',()=>{fit();place()});addEventListener('load',()=>{fit();place()});if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{fit();place()});
     const go=()=>sv.classList.add('in');
     if(RMq){go();return}
-    setTimeout(go,450);
-    let scr=0,px=0,py=0,tx=0,ty=0,vis=true,P=[],next=C.map((c,i)=>2200+i*700);
+    /* phone: draw once the loader has left, so the lines are seen being drawn */
+    if(isP){const de=document.documentElement,run=()=>setTimeout(go,250);setTimeout(go,7000);
+      if(de.classList.contains('ld-on')){const mo=new MutationObserver(()=>{if(!de.classList.contains('ld-on')){mo.disconnect();run()}});mo.observe(de,{attributes:true,attributeFilter:['class']})}else run()}
+    else setTimeout(go,450);
+    let scr=0,px=0,py=0,tx=0,ty=0,vis=true,P=[],inAt=0,next=C.map((c,i)=>2200+i*700);
     addEventListener('scroll',()=>{scr=Math.min(1,Math.max(0,scrollY/(hero.offsetHeight*.8)))},{passive:true});
-    hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();tx=(e.clientX-r.left)/r.width-.5;ty=(e.clientY-r.top)/r.height-.5});
+    hero.addEventListener('pointermove',e=>{if(isP)return;const r=hero.getBoundingClientRect();tx=(e.clientX-r.left)/r.width-.5;ty=(e.clientY-r.top)/r.height-.5});
     hero.addEventListener('pointerleave',()=>{tx=ty=0});
     new IntersectionObserver(es=>{vis=es[0].isIntersecting},{rootMargin:'80px'}).observe(hero);
     const pulse=c=>{const g=document.createElementNS(NS,'g');g.setAttribute('class','tm__p');g.innerHTML='<circle class="h" r="10"/><circle r="3.4"/>';pu.appendChild(g);P.push({c,g,t:0,v:.0055+Math.random()*.002});
       const n=c.n[Math.floor(Math.random()*c.n.length)];n.classList.remove('pi');void n.getBBox;n.classList.add('pi');setTimeout(()=>n.classList.remove('pi'),800)};
     let last=performance.now();
-    const loop=now=>{requestAnimationFrame(loop);const dt=Math.min(50,now-last);last=now;if(!vis||document.hidden)return;
+    const loop=now=>{requestAnimationFrame(loop);const dt=Math.min(50,now-last);last=now;if(!vis||document.hidden)return;if(!inAt&&sv.classList.contains('in'))inAt=now;
       px+=(tx-px)*.05;py+=(ty-py)*.05;const e=scr*scr*(3-2*scr);
       /* the groups spread sideways on scroll and never climb: the top group used to fly up under the nav */
-      C.forEach((c,i)=>{const vx=c.x-H[0],vy=c.y-H[1],l=Math.hypot(vx,vy);c.X=c.x+(vx/l*70*e-px*18)*c.w;c.Y=c.y+(Math.max(0,vy/l)*40*e-py*10)*c.w;
-        c.g.setAttribute('transform','translate('+c.X.toFixed(1)+' '+c.Y.toFixed(1)+')');const p=ctl(c);c.tr.setAttribute('d','M'+p[0].toFixed(1)+' '+p[1].toFixed(1)+'C'+p[2].toFixed(1)+' '+p[3].toFixed(1)+' '+p[4].toFixed(1)+' '+p[5].toFixed(1)+' '+H[0]+' '+H[1]);
-        if(now>next[i]&&sv.classList.contains('in')){pulse(c);next[i]=now+1600+Math.random()*1800}});
+      /* phone: a light drift only while scrolling (near groups further than far ones), no pointer */
+      C.forEach((c,i)=>{const vx=c.x-H[0],vy=c.y-H[1],l=Math.hypot(vx,vy)||1;
+        if(!isP){c.X=c.x+(vx/l*70*e-px*18)*c.w;c.Y=c.y+(Math.max(0,vy/l)*40*e-py*10)*c.w}
+        else if(dirty||e!==le){c.X=c.x+Math.sign(vx)*3*e*c.w;c.Y=c.y+10*e*c.w;c.sh.forEach(o=>nodeP(o,c.sd*Math.abs(o.k)*4*e*c.w,o.k*26*e*c.w))}
+        if(!isP||dirty||e!==le){c.g.setAttribute('transform','translate('+c.X.toFixed(1)+' '+c.Y.toFixed(1)+')');paintT(c)}
+        if(inAt&&now>Math.max(next[i],inAt+1200+i*700)){pulse(c);next[i]=now+1600+Math.random()*1800}});
+      le=e;dirty=false;
       halo.setAttribute('transform','translate('+(-px*8).toFixed(1)+' '+(-py*6).toFixed(1)+')');
       P=P.filter(o=>{o.t+=o.v*dt/16;if(o.t>=1){o.g.remove();return false}const q=at(ctl(o.c),o.t);o.g.setAttribute('transform','translate('+q[0].toFixed(1)+' '+q[1].toFixed(1)+')');o.g.style.opacity=(o.t<.12?o.t/.12:o.t>.8?(1-o.t)/.2:1).toFixed(2);return true})};
     requestAnimationFrame(loop);
@@ -4049,21 +4092,13 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
       load(img.currentSrc||img.src,'c');load((matchMedia('(max-width:999px)').matches&&cv.getAttribute('data-depth-m'))||cv.getAttribute('data-depth'),'d')};
     new IntersectionObserver((e,o)=>{if(e[0].isIntersecting){o.disconnect();start()}},{rootMargin:'600px'}).observe(sec)});})();
 
-  /* phone hero: the tools from the desktop map as a belt of two rows drifting against each other, an entrance, and motion while you scroll away from it */
-  (()=>{const hero=document.querySelector('.hero'),sv=hero&&hero.querySelector('.hero__sk');if(!hero||!sv||!matchMedia('(max-width:599px)').matches)return;
-    const seen=new Set(),items=[];sv.querySelectorAll('.tm__g').forEach(g=>{const u=g.querySelector('use'),t=g.querySelector('.tm__t');if(!u||!t)return;const k=t.textContent.trim();if(!k||seen.has(k))return;seen.add(k);items.push([u.getAttribute('href'),k])});
-    if(items.length<6)return;
-    const chip=a=>'<span class="hb__c"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="'+a[0]+'"/></svg>'+a[1]+'</span>',half=Math.ceil(items.length/2),rows=[items.slice(0,half),items.slice(half)];
-    const belt=document.createElement('div');belt.className='hero__belt';belt.setAttribute('aria-hidden','true');
-    belt.innerHTML=rows.map((r,i)=>'<div class="hb__r'+(i?' hb__r--b':'')+'"><div class="hb__t">'+r.map(chip).join('')+r.map(chip).join('')+'</div></div>').join('');
-    hero.appendChild(belt);
+  /* phone hero: an entrance for him and motion while you scroll away from it (the tool map draws and drifts in the hero map script above) */
+  (()=>{const hero=document.querySelector('.hero');if(!hero||!matchMedia('(max-width:599px)').matches)return;
     if(!window.gsap||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
     const me=hero.querySelector('.hero__me');
-    gsap.from(belt.children,{opacity:0,y:18,duration:1,delay:.9,stagger:.14,ease:'power3.out'}); // the rows, not the belt: the scroll tween below owns the belt's own opacity
     if(me)gsap.from(me,{y:48,opacity:0,scale:1.05,duration:1.3,delay:.15,ease:'power3.out',transformOrigin:'50% 100%'});
     if(window.ScrollTrigger){const st={trigger:hero,start:'top top',end:'bottom top',scrub:true};
       if(me)gsap.to(me,{yPercent:-6,ease:'none',scrollTrigger:st});
-      gsap.to(belt,{y:-36,opacity:.25,ease:'none',scrollTrigger:st});
       gsap.to(hero.querySelector('.hh'),{y:-70,ease:'none',scrollTrigger:st});}
   })();
 
