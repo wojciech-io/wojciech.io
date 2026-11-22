@@ -2902,9 +2902,9 @@ html[data-mode="dark"] .pl3 img.pl3__tm[alt="Apollo"]{filter:invert(1)}
   </dl>
   <p class="mk-ho"><b>Handed over</b>Dashboards, playbooks, automation workflows, CRM configuration, and a handoff operating manual. The system ran without me: that was the acceptance criterion.</p>
   <div class="mk-shots" data-m="stagger">
-    <a href="apps/marketing-performance-hub.html"><img src="assets/real/ui-hub.webp" alt="All segments: spend, leads and cost per lead on current snapshots" width="640" height="420" loading="lazy" decoding="async"><span>App · Marketing performance hub ↗</span></a>
-    <a href="apps/marketing-performance-hub.html"><img src="assets/real/ui-feeds.webp" alt="Ads, web analytics and CRM feeds with their refresh state" width="640" height="420" loading="lazy" decoding="async"><span>The feeds behind every number ↗</span></a>
-    <a href="apps/adsai.html"><img src="assets/real/ui-ads-roas.webp" alt="Priorities by ROAS, each with an action" width="640" height="420" loading="lazy" decoding="async"><span>App · AdsAI ↗</span></a>
+    <a href="#book"><img src="assets/real/ui-hub.webp" alt="All segments: spend, leads and cost per lead on current snapshots" width="640" height="420" loading="lazy" decoding="async"><span>Book a call about this ↗</span></a>
+    <a href="newsletter.html"><img src="assets/real/ui-feeds.webp" alt="Ads, web analytics and CRM feeds with their refresh state" width="640" height="420" loading="lazy" decoding="async"><span>Get the newsletter ↗</span></a>
+    <a href="#book"><img src="assets/real/ui-ads-roas.webp" alt="Priorities by ROAS, each with an action" width="640" height="420" loading="lazy" decoding="async"><span>Book a call about this ↗</span></a>
   </div>
 </div></section>
 
@@ -2912,7 +2912,7 @@ html[data-mode="dark"] .pl3 img.pl3__tm[alt="Apollo"]{filter:invert(1)}
   <div class="mk-strip">
     <a href="work/content-studio.html"><picture><source media="(max-width:640px)" srcset="assets/real/ui-woody-studio-m.webp" width="716" height="1284"><img src="assets/real/ui-woody-studio.webp" alt="Woody Content Studio: a request typed in, the voice and format chosen, and the texts waiting for a decision" width="1520" height="1080" loading="lazy" decoding="async"></picture><b>Content Studio</b><span>One sentence in, drafts in two voices out. A named person approves one exact version.</span><em>Internal tool ↗</em></a>
     <a href="work/content-studio.html"><picture><source media="(max-width:640px)" srcset="assets/real/ui-woody-sources-m.webp" width="716" height="1284"><img src="assets/real/ui-woody-sources.webp" alt="Woody sources: the sources of two voices, the samples and what is missing" width="1520" height="1080" loading="lazy" decoding="async"></picture><b>Sources</b><span>Every draft shows which source it came from.</span><em>Internal tool ↗</em></a>
-    <a href="apps/adsai.html"><img src="assets/real/ui-ads-dash.webp" alt="AdsAI dashboard: spend, revenue, ROAS and priorities" width="640" height="420" loading="lazy" decoding="async"><b>AdsAI</b><span>The Google Ads interface is built for configuration. This one is built for decisions.</span><em>Live demo ↗</em></a>
+    <a href="#book"><img src="assets/real/ui-ads-dash.webp" alt="AdsAI dashboard: spend, revenue, ROAS and priorities" width="640" height="420" loading="lazy" decoding="async"><b>AdsAI</b><span>The Google Ads interface is built for configuration. This one is built for decisions.</span><em>Book a call ↗</em></a>
   </div>
 </section>
 
@@ -3165,7 +3165,7 @@ addEventListener('load',()=>{ScrollTrigger.sort();ScrollTrigger.refresh()});
 
 /* nav: colour follows the section under it, buttons scale 1.2 > 1 over the first screen */
 const nav=document.getElementById('nav');
-function navTone(){nav.classList.toggle('sc',scrollY>60);let t='dark',el=null;document.querySelectorAll('[data-theme]').forEach(s=>{const b=s.getBoundingClientRect();if(b.top<=40&&b.bottom>40){t=s.dataset.theme;el=s}});if(MODE.get()==='light'&&t==='dark'&&!(el&&el.matches(ISL)))t='light';nav.dataset.t=(t==='light'||t==='lime')?'light':'dark'}
+function navTone(){nav.classList.toggle('sc',scrollY>60);let t='dark',el=null;document.querySelectorAll('[data-theme]').forEach(s=>{const b=s.getBoundingClientRect();if(b.top<=40&&b.bottom>40){t=s.dataset.theme;el=s}});if(MODE.get()==='light'&&t==='dark'&&!(el&&el.matches(ISL)))t='light';let tt=(t==='light'||t==='lime')?'light':'dark';for(let n=el||document.body;n&&n.nodeType===1;n=n.parentElement){const m=getComputedStyle(n).backgroundColor.match(/[\d.]+/g);if(m&&(m.length<4||+m[3]>.6)){tt=(.2126*+m[0]+.7152*+m[1]+.0722*+m[2])/255>.5?'light':'dark';break}}nav.dataset.t=tt}
 addEventListener('wl:mode',()=>navTone());
 lenis.on('scroll',navTone);if(RM)addEventListener('scroll',navTone,{passive:true});navTone();
 if(D&&!RM){/* header keeps one size */}

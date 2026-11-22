@@ -333,6 +333,117 @@ html[data-mode="light"] span.cv:not(.cv--ph):not(.cv--sc) .cv__lg{filter:brightn
   html .mn .mn__foot>.btn,html .mn .mn__mode{display:inline-flex!important}
 }
 
+/* ==== MODES R3 ====
+   Two modes with their own character, not one palette turned over (docs/revolution-modes.md).
+   Dark = Ink: a deeper ground, flat surfaces drawn with 1px lime hairlines, no drop shadows, lime as the only accent.
+   Light = Paper: a bright paper ground, white surfaces lifted with soft shadows, olive #4D5C00 as the only accent.
+   Hero, the closing card and the strips follow the mode. Written for the 13 older pages (tokens) and the 19 v4 pages (.sec classes). */
+html[data-mode="dark"]:root{--sf0:#171A11}
+html[data-mode="light"]:root{--sf0:#EEF0E3;--sf1:#E6E9DA;--sf2:#F5F6EE;--sfb:#F5F6EE;--sh:245 246 238}
+
+/* seams: Ink draws them, Paper does not */
+html[data-mode="dark"] .s+.s,html[data-mode="dark"] .sec+.sec{border-top:var(--g-line,1px) solid rgb(210 255 0/.16)}
+html[data-mode="light"] .s+.s,html[data-mode="light"] .sec+.sec{border-top:0}
+
+/* hero follows the mode (Home) */
+html[data-mode="dark"] .hero{background:#10120C}
+html[data-mode="dark"] .hero .hh{color:#F4F4ED}
+html[data-mode="dark"] .hero .hh em{color:#D2FF00}
+html[data-mode="dark"] .hero .mk{color:#F4F4ED}
+html[data-mode="dark"] .hero__sk,html[data-mode="dark"] .hero__sk.tm{color:#F4F4ED}
+html[data-mode="dark"] .hero__sk .sk__n circle{fill:#10120C}
+html[data-mode="dark"] .hero__me{filter:none}
+
+/* app screens (ui-*): the windows stay light, the stage around them changes */
+html[data-mode="dark"] img[src*="/real/ui-"]{box-shadow:0 0 0 1px rgb(210 255 0/.24);filter:brightness(.95)}
+html[data-mode="light"] img[src*="/real/ui-"]{box-shadow:0 1.6rem 3.2rem -1.4rem rgb(40 44 32/.38),0 0 0 1px rgb(40 44 32/.08)}
+
+/* v4 pages: the same switch as the older pages */
+.nav .r>.mode{width:44px;height:44px;border-radius:8px;border:0;background:var(--cream,#F4F4ED);color:var(--ink,#282C20);display:grid;place-items:center;cursor:pointer;padding:0}
+.nav .r>.mode .mi{width:20px;height:20px;fill:currentColor;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;transition:transform .5s cubic-bezier(.2,.7,.1,1)}
+.nav .r>.mode .mi__c{transition:transform .5s;transform-origin:12px 12px;transform:scale(.5);stroke:none}
+.nav .r>.mode .mi__m{transition:transform .5s}
+.nav .r>.mode .mi__r{fill:none;opacity:0;transition:opacity .4s}
+html[data-mode="dark"] .nav .r>.mode .mi__c{transform:scale(1)}
+html[data-mode="light"] .nav .r>.mode .mi__c{transform:scale(.56)}
+html[data-mode="light"] .nav .r>.mode .mi__m{transform:translate(9px,-9px)}
+html[data-mode="light"] .nav .r>.mode .mi__r{opacity:1}
+.nav .r>.mode:hover .mi{transform:rotate(-18deg)}
+.nav .r>.mode:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* the first screen of Home (c3h): Ink on dark, Paper on light */
+html[data-mode="light"] .c3h{--ink:#23261B;--mute:#565C49;--lime:#4D5C00;background:#F5F6EE}
+html[data-mode="light"] .c3h__chips button,html[data-mode="light"] .c3h__ar{box-shadow:inset 0 0 0 1px rgb(40 44 32/.3)}
+html[data-mode="light"] .c3h__chips button[aria-pressed="true"]{background:#4D5C00;color:#F5F6EE}
+html[data-mode="light"] .c3h__ui,html[data-mode="light"] .c3h__pair{box-shadow:0 1.6rem 3rem -1.4rem rgb(40 44 32/.4),0 0 0 1px rgb(40 44 32/.1)}
+html[data-mode="light"] .c3h__bar{background:rgb(40 44 32/.28)}
+html[data-mode="light"] .c3h__agent{background:#0b0c0b}
+
+/* the closing card (ft): Ink keeps the dark card, Paper turns it into a paper card */
+html[data-mode="light"] .ft,html[data-mode="light"] .ft .clip{background:#E6E9DA!important;color:#23261B}
+html[data-mode="light"] .ft .clip *{--white:#23261B}
+html[data-mode="light"] .ft h2,html[data-mode="light"] .ft .flc a,html[data-mode="light"] .ft .legal,html[data-mode="light"] .ft .legal a,html[data-mode="light"] .ft p.ft__sub,html[data-mode="light"] .ft .lb{color:#23261B}
+html[data-mode="light"] .ft h2 em{color:#4D5C00}
+html[data-mode="light"] .ft .flc small,html[data-mode="light"] .ft .flc>span,html[data-mode="light"] .ft .lb small{color:#565C49}
+html[data-mode="light"] .ft .pat .contours{color:#23261B}
+html[data-mode="light"] .ft .btn,html[data-mode="light"] .ft a.btn{background:#23261B;color:#D2FF00}
+html[data-mode="light"] .ft .ft__eb{color:#4D5C00}
+html[data-mode="light"] .ft .flc b{color:#565C49}
+html[data-mode="light"] .ft .mq2 img,html[data-mode="light"] .ft .mq2 svg{filter:brightness(0);opacity:.55}
+html[data-mode="light"] .ft img[alt*="logo" i],html[data-mode="light"] .ft .logos img{filter:brightness(0);opacity:.6}
+
+/* v4 pages (apps, insights, work). v4.js authors dark and rewrites the markup for light, so these rules only add the character. */
+html[data-mode="dark"] .sec.olive{background:#171A11}
+html[data-mode="dark"] .sec.cream{background:#0F110B;color:#E4E7D8;--moss:#D2FF00;--ink2:#C9CDBE;--line:rgba(221,225,210,.28)}
+html[data-mode="dark"] .sec.cream .nums dt{color:#F4F4ED}
+html[data-mode="dark"] .sec.black{background:#0A0B08}
+html[data-mode="dark"] .ftr{background:#0A0B08}
+html[data-mode="dark"] .ftr__pn{background:#171A11;box-shadow:inset 0 0 0 1px rgb(210 255 0/.18)}
+html[data-mode="light"] .ftr{background:#EEF0E3}
+html[data-mode="light"] .ftr__pn{background:#E6E9DA;color:#23261B}
+html[data-mode="light"] .ftr__pn .st,html[data-mode="light"] .ftr__lk a{color:#23261B}
+html[data-mode="light"] .ftr__sub{color:#3B3F33}
+html[data-mode="light"] .ftr__eb,html[data-mode="light"] .ftr__pn .st .s,html[data-mode="light"] .ftr__pn .st em{color:#4D5C00}
+html[data-mode="light"] .ftr__lk h6{color:#565C49}
+html[data-mode="light"] .ftr__lap{background:#23261B;color:#D2FF00}
+html[data-mode="light"] .ftr__me img{filter:drop-shadow(0 30px 40px rgb(40 44 32/.28))}
+
+/* About hero follows the mode */
+html[data-mode="light"] .abh{background:#F5F6EE;color:#23261B}
+html[data-mode="light"] .abh h1,html[data-mode="light"] .abh__lead{color:#23261B}
+html[data-mode="light"] .abh .eyebrow{color:#4D5C00}
+html[data-mode="light"] .abh .btn{background:#23261B;color:#D2FF00}
+html[data-mode="light"] .abh figcaption{color:#565C49}
+
+/* contrast: small grey text that sat under 4.5:1 in one mode */
+html[data-mode="light"] .cv__m small,html[data-mode="light"] .ar__bk,html[data-mode="light"] .ar2__by>div>span,html[data-mode="light"] .nlh__proof,html[data-mode="light"] .crb__lg b,html[data-mode="light"] .crb__d .crb__yr,html[data-mode="light"] .crb__yr{color:#565C49!important;opacity:1!important}
+html[data-mode] .fs__k,html[data-mode] .fs__m>span{color:#565C49}
+html[data-mode="light"] .sx2 .cap b{color:#56680A!important}
+html[data-mode] .gr-pov ol li i{color:#B4B8A5}
+html[data-mode] .mk-pov li small,html[data-mode] .mk-pov small{color:#2E3800;opacity:1}
+html[data-mode="dark"] .rc__c:not(.on){opacity:.82}
+html[data-mode="light"] .demo__bar .tag{color:#D2FF00}
+html[data-mode="light"] .crb__bt{opacity:.9!important}
+html[data-mode="light"] .crb__tg{opacity:1!important;color:#565C49!important}
+html[data-mode="light"] .lib__hd .pp{color:#3B3F33!important}
+html[data-mode="light"] .lk__t b{color:#23261B!important}
+html[data-mode="light"] .tk__end .sxl .br span{color:#565C49!important}
+html[data-mode="light"] li[data-img] a sup{color:#56680A!important}
+html[data-mode="light"] .lc__cv{background-color:#5F6258!important}
+html[data-mode="light"] .rc__c:not(.on){opacity:1}
+html[data-mode="light"] .lc__n{background:#3B3F33!important;border-radius:4px;padding:2px 6px;color:#F4F4ED!important;opacity:1!important}
+html[data-mode="light"] .lib__n{color:#56680A!important}
+html[data-mode="light"] .rc__rl,html[data-mode="light"] .lk__t b sup{color:#565C49!important;opacity:1!important}
+html[data-mode="light"] figcaption small{color:#56680A!important}
+
+/* lens pages: the cream hero and the light sheets become ink in the dark mode */
+html[data-mode="dark"] .lh.cream,html[data-mode="dark"] .gt-sheet[data-theme="light"],html[data-mode="dark"] .mk-sheet[data-theme="light"],html[data-mode="dark"] .gr-sheet[data-theme="light"],html[data-mode="dark"] .gr-rw[data-theme="light"]{background:#10120C;color:#F4F4ED}
+html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] :is(h1,h2,h3,h4,p,ul,ol,li,dt,dd,small,summary,label,span,b,i,em,a,div):not(.btn *):not(.btn):not(button *):not(figure *):not(.lh-cv *):not([class*="chip"]){color:inherit}
+html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] :is(.pg-hd,.lh) .eyebrow{color:#D2FF00}
+html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] .lh__tabs,html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] [role="tablist"]{background:rgb(244 244 237/.1)}
+html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] button:not(.btn){color:#F4F4ED}
+/* ==== /MODES R3 ==== */
+
 /* ==== MOBILE R3 / phone first on all 32 pages (360, 390, 430, 768, 1024, landscape) ==== */
 /* 1. type floor: nothing the reader has to read is below 12 px (scale 12/14/18/28/56) */
 html .lc.lc--v .lc__c,html span.cv .cv__x,html .lk__cv .cv__x,html span.cv .cv__m small,html .cv__m small,html .lc__c,html .cv__x,html .vc__c,html .u-av,html .u-nav b,html .gr-tl small,html .gt-tl small,html .mk-tl small,
