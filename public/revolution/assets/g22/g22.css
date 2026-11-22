@@ -1,0 +1,88 @@
+/* g22: one shared layer for every /revolution page, loaded after the page's own CSS.
+   Tokens come first, so a new visual direction changes values here, not rules on 32 pages.
+   Scope: tap targets, minimum text size, one heading scale, one line weight, one radius,
+   one icon stroke, steady menu screens. Page layouts stay in the page CSS. */
+
+:root{
+  --g-tap:44px;                    /* every control on a phone */
+  --g-txt-min:12px;                /* nothing readable below this */
+  --g-line:1px;                    /* every outline, ring and divider */
+  --g-line-on:rgb(244 244 237/.28);/* line on dark */
+  --g-line-ink:rgb(40 44 32/.28);  /* line on light */
+  --g-r-ctl:8px;                   /* buttons, inputs, header controls */
+  --g-r-card:12px;                 /* cards and screens */
+  --g-ico:18px;                    /* header and control icons */
+  --g-ico-stroke:1.5;              /* one stroke for line icons */
+  /* phone heading scale (old pages, family A) */
+  --g-h1:44px;
+  --g-h2:38px;
+  --g-h3:26px;
+  --g-stm:32px;
+  --g-lh-d:.92;                    /* display line height */
+}
+
+/* ---------- lines: one weight everywhere ---------- */
+.nav .mode,.nav .menu,.lang__b,.pill,.nlf__c input,.cx__r{border-width:var(--g-line)}
+.ph__gh{box-shadow:inset 0 0 0 var(--g-line) rgb(var(--on,244 244 237)/.45)}
+.nx a>i{box-shadow:inset 0 0 0 var(--g-line) rgb(var(--on,244 244 237)/.3)}
+.bf__gh{box-shadow:inset 0 0 0 var(--g-line) currentColor}
+.lx-fx__l li>i{box-shadow:inset 0 0 0 var(--g-line) rgba(40,44,32,.25)}
+.fs__go{border-bottom-width:var(--g-line)}
+.ar__toc a{border-left-width:var(--g-line)}
+/* v4 pages */
+.btn--o{box-shadow:inset 0 0 0 var(--g-line) rgba(221,225,210,.5)}
+:is(.cream,.paper,.lime) .btn--o{box-shadow:inset 0 0 0 var(--g-line) var(--ink)}
+.arr{box-shadow:inset 0 0 0 var(--g-line) var(--line)}
+.doc ol{border-top-width:var(--g-line)}
+.doc li::before{box-shadow:inset 0 0 0 var(--g-line) var(--ink)}
+.fm__in{box-shadow:inset 0 0 0 var(--g-line) var(--ink)}
+.u-btn.o{box-shadow:inset 0 0 0 var(--g-line) var(--ub2)}
+.u-nav::before{box-shadow:inset 0 0 0 var(--g-line) currentColor}
+.dm button,.dm select,.dm textarea{border-width:var(--g-line)}
+.mk--pro::before,.mk--stg::before{border-width:var(--g-line)}
+
+/* ---------- line icons: one stroke ---------- */
+.sr__in svg,.sxb svg,.sx__q svg,.lib__q svg,.nf__q svg,.bf__sh svg,.si.sl,.bk__x svg,.fp svg,.fsr svg,
+.cv__pl svg,.lib__kinds button svg,.cv__bolt polyline,.lang__b svg{stroke-width:var(--g-ico-stroke)}
+.nav .mode svg,.nav .lang__b svg{width:var(--g-ico);height:var(--g-ico)}
+
+/* ---------- menu screens stand still: entry only, no pointer drift, no glow ---------- */
+.mns__fr,.mnu__fr{transform:none!important}
+.mns__gl,.mnu__gl{display:none!important}
+
+/* ---------- decoration: no blurred glow blobs behind sections ---------- */
+.s[data-theme="dark"]:is(.ms,.hm:not(.lb),.cr,.ab-st,.cvq,.lib),
+.s[data-theme="light"]:is(.bf,.ex,.so){background-image:none}
+
+/* ---------- phone ---------- */
+@media (max-width:767px){
+  :root{--ctl:var(--g-tap)}
+
+  /* tap targets */
+  .nav .brand,.logo{display:inline-grid;align-content:center;min-height:var(--g-tap)}
+  .nav .mode,.nav .menu,.nav .lang__b{width:var(--g-tap);height:var(--g-tap);border-radius:var(--g-r-ctl)}
+  .nav .btn{height:var(--g-tap);border-radius:var(--g-r-ctl)}
+  .sxb{min-height:var(--g-tap)}
+  .fs__go,.ar__bk{display:inline-flex;align-items:center;min-height:var(--g-tap)}
+  input[type="email"],input[type="search"],#lq,#nfq,.nf__q,.nlf__c{min-height:var(--g-tap)}
+  .nlf__c{display:flex;align-items:center}
+  /* footer link lists and card links: full-height rows */
+  .flc a,.ftr__lk a{display:flex;align-items:center;min-height:var(--g-tap)}
+  .v4s__rd,.lm__ct a,.lgl,.fs__go{display:inline-flex;align-items:center;min-height:var(--g-tap)}
+  /* filter chips keep their 24-36 px look; the hit area reaches 44 px */
+  .sx__f button{position:relative;min-height:32px}
+  .sx__f button::after{content:"";position:absolute;left:0;right:0;top:50%;height:var(--g-tap);translate:0 -50%}
+
+  /* nothing below 12 px: stack chips, filters, card meta */
+  .ap__m small,.sx__f button sup,.nv__b small,.lib__bi .fseg small,.cv__m small{font-size:var(--g-txt-min)}
+  /* drawn interfaces: labels at the floor, layout untouched */
+  html body :is(.ui .u-cal i,.ui .u-cal i.w),
+  .ui .u-l,.ui .u-th span,.ui .u-rings span,.ui .u-cal>div,.ui .u-task span,.ui .u-task em,
+  .doc__hd span,.doc__ft span{font-size:11.5px}
+
+  /* one heading scale (family A pages; lens pages, About and career are rebuilt separately) */
+  html body :is(.c2 .hd h1,.nlh__tx h1,.lx-h.nf h1){font-size:var(--g-h1);line-height:var(--g-lh-d)}
+  html body :is(.pl3__hd h2,.c2 .hd h2,.cl__h,.cc .tx h2,.sh__col h2,.rl__hd h2,.nlb__tx h2,.stm h2,.lay h2,.tk__hd h2,.lib__hd h2,.ar2__rh h2,.nli__hd h2,.nla__hd h2){font-size:var(--g-h2);line-height:var(--g-lh-d)}
+  html body .ms__t{font-size:var(--g-stm);line-height:1}
+  html body :is(.v4s__c h3,.nli__mail h3){font-size:var(--g-h3);line-height:1.05}
+}
