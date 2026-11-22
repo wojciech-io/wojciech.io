@@ -15,6 +15,6 @@ export function espressoSchema(locale?: string | null) {
       `A free daily newsletter by ${personName(locale)}. Three stories on AI models, agents, and GTM systems every weekday morning, each with a why it matters, readable in three minutes.`,
     url: SITE.url + '/subscribe/',
     inLanguage: 'en',
-    publisher: { '@type': 'Person', name: personName(locale), url: SITE.url + '/' },
+    publisher: { '@type': 'Person', '@id': SITE.url + '/#person', name: personName(locale), url: SITE.url + '/' },
   };
 }

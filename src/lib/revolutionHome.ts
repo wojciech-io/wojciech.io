@@ -237,6 +237,35 @@ function assertNoRelativeUrls(html: string, where: string): void {
   if (bad.size) fail(`${where} still has relative URLs: ${[...bad].slice(0, 8).join(', ')}`);
 }
 
+/**
+ * One <h1> per page. The preview has two: the hero heading and the heading of the
+ * "What I fix" section. The hero heading names the page; the section heading
+ * becomes an <h2>. Its class carries all the styling, so nothing changes visually.
+ */
+function singleH1(body: string): string {
+  const h1s = body.match(/<h1\b/g)?.length ?? 0;
+  if (h1s !== 2) fail(`expected 2 <h1> in the preview body, found ${h1s}`);
+  const demoted = body.replace(/<h1 class="c3h__h">([\s\S]*?)<\/h1>/, '<h2 class="c3h__h">$1</h2>');
+  if (demoted === body) fail('the "What I fix" <h1 class="c3h__h"> was not found');
+  if ((demoted.match(/<h1\b/g)?.length ?? 0) !== 1) fail('more than one <h1> is left on `/`');
+  return demoted;
+}
+
+/**
+ * Images after the "What I fix" section are below the first screen: let the
+ * browser fetch them when they near the viewport. Hero and that section stay
+ * eager. Only static <img> tags are touched; ones built by the preview's own
+ * script (their src holds a quote) are left alone.
+ */
+function lazyBelowFold(body: string): string {
+  const start = body.indexOf('id="c3h"');
+  if (start < 0) fail('the "What I fix" section (#c3h) was not found');
+  const end = body.indexOf('</section>', start);
+  if (end < 0) fail('the "What I fix" section is not closed');
+  const tail = body.slice(end).replace(/<img\b(?![^>]*\bloading=)(?![^>]*fetchpriority)([^>]*\bsrc="[^"'+]*"[^>]*)>/g, '<img loading="lazy"$1>');
+  return body.slice(0, end) + tail;
+}
+
 export function buildRevolutionHome(preview: string, alternates: HomeAlternate[]): RevolutionHome {
   const localeHomes = new Map<string, string>();
   for (const { lang, href } of alternates) {
@@ -270,6 +299,8 @@ export function buildRevolutionHome(preview: string, alternates: HomeAlternate[]
   }
 
   let body = preview.slice(bodyStart, bodyEnd);
+  body = singleH1(body);
+  body = lazyBelowFold(body);
   body = tagCtas(body);
   body = linkLocales(body, localeHomes);
   body = absolutizePageLinks(body);

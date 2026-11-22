@@ -54,7 +54,30 @@ describe('home page built from the preview', () => {
     );
     expect(home.match(/<link[^>]+rel="alternate"[^>]+hreflang=/g)).toHaveLength(10);
     expect(home).toMatch(/<meta property="og:image" content="https:\/\/wojciech\.io\//);
-    expect(jsonLd(home)).toHaveLength(3);
+    // Person, WebSite (SEOHead), ProfessionalService, WebPage, FAQPage, Periodical.
+    expect(jsonLd(home)).toHaveLength(6);
+  });
+
+  it('has exactly one <h1> and no image-less sections of lazy hero art', () => {
+    expect(home.match(/<h1\b/g)).toHaveLength(1);
+    expect(home).toMatch(/<h1 class="hh"/);
+    expect(home).toMatch(/<h2 class="c3h__h">/);
+    expect(home).toMatch(/<img[^>]*class="hero__me"[^>]*fetchpriority="high"/);
+    expect(home).not.toMatch(/<img[^>]*class="hero__me"[^>]*loading="lazy"/);
+    expect(home.match(/<img loading="lazy"/g)?.length ?? 0).toBeGreaterThan(20);
+  });
+
+  it('ties the JSON-LD blocks together by @id and answers FAQs from the page', () => {
+    const blocks = jsonLd(home) as Array<Record<string, any>>;
+    const byType = (t: string) => blocks.find((b) => b['@type'] === t);
+    expect(byType('Person')?.['@id']).toBe('https://wojciech.io/#person');
+    expect(byType('WebSite')?.['@id']).toBe('https://wojciech.io/#website');
+    expect(byType('ProfessionalService')?.provider?.['@id']).toBe('https://wojciech.io/#person');
+    expect(byType('WebPage')?.isPartOf?.['@id']).toBe('https://wojciech.io/#website');
+    const faq = byType('FAQPage');
+    expect(faq?.mainEntity.length).toBeGreaterThanOrEqual(5);
+    expect(faq?.mainEntity.length).toBeLessThanOrEqual(7);
+    expect(JSON.stringify(blocks)).not.toContain('SearchAction');
   });
 
   it('turns the "Soon" languages into links to the existing homes', () => {
