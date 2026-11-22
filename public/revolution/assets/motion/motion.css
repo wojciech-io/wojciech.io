@@ -2,7 +2,13 @@
    One easing, one distance, one duration. Everything moves with transform, translate, scale or opacity, so nothing reflows.
    Hidden start states exist only under html.m-on, which motion.js sets in <head>: without JS, or with reduced motion, the page is fully visible. */
 :root{
-  --m-ease:cubic-bezier(.2,.7,.1,1);
+  /* time scale: 120 feedback, 200 hover and focus, 320 small reveals, 560 section moves. Longer motion (screens, bars) uses --m-dur. */
+  --m-t1:120ms;--m-t2:200ms;--m-t3:320ms;--m-t4:560ms;
+  /* curves: out for entrances, in-out for things that travel both ways, soft for a tiny overshoot on press release */
+  --m-out:cubic-bezier(.2,.7,.1,1);
+  --m-inout:cubic-bezier(.65,0,.35,1);
+  --m-soft:cubic-bezier(.34,1.25,.5,1);
+  --m-ease:var(--m-out);
   --m-dist:22px;
   --m-dur:.8s;
   --m-step:.08s;
@@ -47,7 +53,7 @@ html.m-on [data-m="depth"].m-in .m-card{animation:m-card .9s var(--m-ease) backw
 /* ---- hot spots on a screen: hover, focus or tap shows a note ---- */
 .m-hot{display:none;position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);margin:0;padding:0;border:0;border-radius:var(--g-r-card,12px);background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;color:inherit;font:inherit}
 html.m-js .m-hot{display:block}
-.m-hot::before{content:"";position:absolute;inset:-3px;border-radius:inherit;background:var(--m-fill);box-shadow:0 0 0 var(--g-line,1px) var(--m-ring),0 0 0 4px rgb(58 66 16/.14);opacity:0;scale:.97;transition:opacity .35s var(--m-ease),scale .45s var(--m-ease)}
+.m-hot::before{content:"";position:absolute;inset:-3px;border-radius:inherit;background:var(--m-fill);box-shadow:0 0 0 var(--g-line,1px) var(--m-ring),0 0 0 4px rgb(58 66 16/.14);opacity:0;scale:.97;transition:opacity var(--m-t3) var(--m-out),scale var(--m-t4) var(--m-out)}
 .m-hot::after{content:"";position:absolute;inset:-6px}
 .m-hot.is-on::before{opacity:1;scale:1}
 .m-hot:focus{outline:0}
@@ -57,14 +63,14 @@ html.m-js .m-hot{display:block}
 .m-stage[data-m-skin="amber"] .m-hot:focus-visible::before{box-shadow:0 0 0 2px #4D5C00}
 
 .m-tip{position:absolute;left:0;top:0;z-index:3;display:block;width:max-content;max-width:62%;padding:9px 12px 10px;border-radius:11px;background:var(--m-ink);color:#F4F4ED;pointer-events:none;
-  box-shadow:0 14px 28px -10px rgb(14 17 32/.55);opacity:0;translate:0 6px;transition:opacity .3s var(--m-ease),translate .4s var(--m-ease)}
+  box-shadow:0 14px 28px -10px rgb(14 17 32/.55);opacity:0;translate:0 6px;transition:opacity var(--m-t3) var(--m-out),translate var(--m-t3) var(--m-out)}
 .m-tip.is-on{opacity:1;translate:0 0}
 .m-tip b{display:block;font:700 15px/1.1 var(--sans);letter-spacing:-.02em;color:var(--m-lime)}
 .m-tip span{display:block;margin-top:4px;font:500 var(--g-txt-min,12px)/1.35 var(--sans);color:rgb(244 244 237/.88)}
 .m-tip::after{content:"";position:absolute;left:var(--ax,24px);width:9px;height:9px;margin-left:-4px;border-radius:2px;background:var(--m-ink);transform:rotate(45deg)}
 .m-tip[data-side="above"]::after{bottom:-4px}
 .m-tip[data-side="below"]::after{top:-4px}
-.m-tip.is-jump{transition:opacity .3s var(--m-ease),translate .4s var(--m-ease),left .45s var(--m-ease),top .45s var(--m-ease)}
+.m-tip.is-jump{transition:opacity var(--m-t3) var(--m-out),translate var(--m-t3) var(--m-out),left var(--m-t4) var(--m-out),top var(--m-t4) var(--m-out)}
 
 /* phones: the hot spots are tap targets, the tip sits inside the picture */
 @media (max-width:640px){
