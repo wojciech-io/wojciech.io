@@ -1,0 +1,23 @@
+---
+// Cross-subdomain language cookie (wio_lang), shared by every page layout.
+// subscribe, app and academy read it to open in the visitor's language.
+---
+
+<script is:inline>
+  (function () {
+    try {
+      var path = location.pathname || '/';
+      var seg = path.split('/').filter(Boolean)[0] || '';
+      var known = ['en','pl','it','de','dk','no','jp','es'];
+      var lang = known.indexOf(seg) >= 0 ? seg : 'en';
+      var host = location.hostname;
+      if (!host || host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) {
+        try { localStorage.setItem('appLang', lang); } catch (_) {}
+        return;
+      }
+      var domain = host.endsWith('wojciech.io') ? '.wojciech.io' : '.' + host.split('.').slice(-2).join('.');
+      var secure = location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie = 'wio_lang=' + lang + '; Path=/; Max-Age=31536000; SameSite=Lax; Domain=' + domain + secure;
+    } catch (_) {}
+  })();
+</script>

@@ -1,6 +1,6 @@
 ---
-import { personName } from '../../data/site';
-import { SITE } from '../../data/site';
+import { SITE, personName } from '../../data/site';
+import { espressoSchema } from '../../data/espressoSchema';
 import { getUiStringsForPath, getLocaleFromPath, localizeHref } from '../../data/uiStrings';
 import FooterNewsletter from './FooterNewsletter.astro';
 import Icon from '../ui/Icon.astro';
@@ -23,18 +23,8 @@ const termsLabel = isPL ? 'Regulamin' : 'Terms';
 // footer there would compete with it.
 const showNewsletter = !pathname.startsWith('/subscribe');
 
-// Machine-readable identity for the newsletter, on every page. Search
-// engines and LLMs get the what/who/where without parsing the band markup.
-const espressoSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Periodical',
-  name: 'AI Espresso',
-  description:
-    `A free daily newsletter by ${personName(locale)}. Three stories on AI models, agents, and GTM systems every weekday morning, each with a why it matters, readable in three minutes.`,
-  url: SITE.url + '/subscribe/',
-  inLanguage: 'en',
-  publisher: { '@type': 'Person', name: personName(locale), url: SITE.url + '/' },
-};
+// Machine-readable identity for the newsletter, on every page (see data/espressoSchema.ts).
+const espresso = espressoSchema(locale);
 
 const contactHref = localizeHref('/contact/', locale);
 const insightsHref = locale === 'pl' ? '/pl/insights/' : locale === 'ar' ? '/ar/insights/' : '/insights/';
@@ -224,7 +214,7 @@ const connect = [
     </div>
   </div>
 
-  <script type="application/ld+json" set:html={JSON.stringify(espressoSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(espresso)} />
 </footer>
 
 <style>

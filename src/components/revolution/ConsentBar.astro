@@ -1,0 +1,127 @@
+---
+// Analytics consent bar for the standalone home page (built from the
+// /revolution/ preview). Same contract and behaviour as components/ui/CookieBanner.astro
+// (see utils/consent-banner.ts), but dressed in the preview's own tokens: that
+// page does not load the site's Tailwind sheet, so the Tailwind classes of the
+// site banner would render unstyled here. The text comes from the same UI
+// strings, so there is no new copy.
+import { getUiStringsForPath } from '../../data/uiStrings';
+
+const t = getUiStringsForPath(Astro.url.pathname);
+---
+
+<div
+  id="cookie-banner"
+  class="rc"
+  data-state="hidden"
+  role="dialog"
+  aria-label="Analytics consent"
+  aria-live="polite"
+>
+  <div class="rc__in">
+    <p class="rc__t">
+      {t.cookie.bannerText}{' '}<a href="/privacy/">{t.cookie.privacyPolicy}</a>
+    </p>
+    <div class="rc__b">
+      <button id="cookie-decline" class="rc__no" type="button">{t.cookie.reject}</button>
+      <button id="cookie-accept" class="rc__yes" type="button">{t.cookie.accept}</button>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* The bar stays dark in both colour modes, like the footer card and the app
+     window chrome on the home page. Radius 12 for the bar, 8 for controls. */
+  .rc {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 95;
+    padding: 0 16px 16px;
+    pointer-events: none;
+    font-family: var(--sans, ui-sans-serif, system-ui, sans-serif);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease, visibility 0s;
+  }
+  .rc[data-state='hidden'] {
+    transform: translateY(calc(100% + 16px));
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease, visibility 0s 0.35s;
+  }
+  .rc__in {
+    pointer-events: auto;
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid rgb(244 244 237 / 0.14);
+    border-radius: 12px;
+    background: #282c20;
+    color: #f4f4ed;
+    box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.55);
+  }
+  .rc__t {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+    color: rgb(244 244 237 / 0.82);
+  }
+  .rc__t a {
+    color: #f4f4ed;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+  }
+  .rc__b {
+    display: flex;
+    flex: none;
+    gap: 8px;
+  }
+  .rc button {
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 8px;
+    font: 600 14px/1 var(--sans, ui-sans-serif, system-ui, sans-serif);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .rc__no {
+    border: 1px solid rgb(244 244 237 / 0.3);
+    background: transparent;
+    color: #f4f4ed;
+  }
+  .rc__yes {
+    border: 1px solid #d2ff00;
+    background: #d2ff00;
+    color: #1c1f16;
+  }
+  .rc a:focus-visible,
+  .rc button:focus-visible {
+    outline: 2px solid #d2ff00;
+    outline-offset: 2px;
+  }
+  @media (max-width: 640px) {
+    .rc__in {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .rc__b {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rc,
+    .rc[data-state='hidden'] {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { initConsentBanner } from '../../utils/consent-banner';
+
+  initConsentBanner();
+</script>

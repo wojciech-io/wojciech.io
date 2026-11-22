@@ -18,6 +18,12 @@ interface Props {
   publishedAt?: Date | string;
   updatedAt?: Date | string;
   schema?: Record<string, unknown> | Record<string, unknown>[];
+  /** For pages that bring their own design system and theme handling (the
+   *  home page, built from the static /revolution/ preview). Skips what would
+   *  change how such a page looks: the Geist preloads, the colour-scheme and
+   *  theme-color tags, and the script that writes data-theme on <html>. Every
+   *  SEO, social, feed and icon tag is still emitted. */
+  standalone?: boolean;
 }
 
 const {
@@ -33,6 +39,7 @@ const {
   publishedAt,
   updatedAt,
   schema,
+  standalone = false,
 } = Astro.props;
 
 const siteTitle = authorName;
@@ -118,9 +125,13 @@ const schemaItems = [...baseSchema, ...pageSchema];
 
 {/* charset + viewport live at the very top of <head> in Layout.astro */}
 <meta name="generator" content={Astro.generator} />
-<meta name="color-scheme" content="dark light" />
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141009" />
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f3ef" />
+{!standalone && (
+  <>
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141009" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f3ef" />
+  </>
+)}
 
 <!-- Analytics (GA + PostHog) loads lazily after consent, so a cheap DNS
      warm-up beats an eager preconnect that holds TCP/TLS on the first-paint
@@ -136,8 +147,12 @@ const schemaItems = [...baseSchema, ...pageSchema];
 {alternates.map((item) => (
   <link rel="alternate" hreflang={item.lang} href={item.href} />
 ))}
-<link rel="preload" href="/fonts/Geist-Regular.woff2?v=2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" href="/fonts/Geist-SemiBold.woff2?v=2" as="font" type="font/woff2" crossorigin />
+{!standalone && (
+  <>
+    <link rel="preload" href="/fonts/Geist-Regular.woff2?v=2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Geist-SemiBold.woff2?v=2" as="font" type="font/woff2" crossorigin />
+  </>
+)}
 
 {shouldNoindex && <meta name="robots" content="noindex, nofollow" />}
 
@@ -196,13 +211,15 @@ const schemaItems = [...baseSchema, ...pageSchema];
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Wojciech" />
 
-<script is:inline>
-  (() => {
-    const root = document.documentElement;
-    const stored = localStorage.getItem('theme');
-    const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    const theme = stored === 'light' || stored === 'dark' ? stored : preferred;
-    root.dataset.theme = theme;
-    root.style.colorScheme = theme;
-  })();
-</script>
+{!standalone && (
+  <script is:inline>
+    (() => {
+      const root = document.documentElement;
+      const stored = localStorage.getItem('theme');
+      const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      const theme = stored === 'light' || stored === 'dark' ? stored : preferred;
+      root.dataset.theme = theme;
+      root.style.colorScheme = theme;
+    })();
+  </script>
+)}

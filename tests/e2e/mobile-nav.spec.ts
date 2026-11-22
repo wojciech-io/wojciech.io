@@ -9,10 +9,13 @@ async function openMobileNav(page: Page) {
   await expect(page.locator('#mobile-nav-open')).toHaveAttribute('aria-expanded', 'true');
 }
 
+// The site header and its hamburger live on every page that uses Layout.astro.
+// The home page (`/`) is built from the /revolution/ preview and has its own
+// menu, covered by the separate describe block at the bottom.
 test.describe('Mobile nav', () => {
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto(pageUrl('/'));
+    await page.goto(pageUrl('/about/'));
   });
 
   test('opens when hamburger is clicked', async ({ page }) => {
@@ -47,5 +50,31 @@ test.describe('Mobile nav', () => {
     await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('hidden');
     await page.locator('#mobile-nav-close').click();
     await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('');
+  });
+});
+
+test.describe('Home menu (built from the preview)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto(pageUrl('/'));
+  });
+
+  test('opens from the Menu button and closes with Escape', async ({ page }) => {
+    const menu = page.locator('#mn');
+    await expect(menu).toHaveAttribute('aria-hidden', 'true');
+    await page.getByRole('button', { name: 'Menu' }).first().click();
+    await expect(menu).toHaveAttribute('aria-hidden', 'false');
+    // The menu ignores keys while its mask animation runs, so retry until it
+    // has finished opening and takes the Escape.
+    await expect(async () => {
+      await page.keyboard.press('Escape');
+      await expect(menu).toHaveAttribute('aria-hidden', 'true', { timeout: 1500 });
+    }).toPass({ timeout: 8000 });
+  });
+
+  test('lists the existing language homes as links', async ({ page }) => {
+    for (const code of ['pl', 'de', 'es', 'it', 'dk', 'no', 'jp', 'ar']) {
+      await expect(page.locator(`#mn a[href="/${code}/"]`)).toHaveCount(1);
+    }
   });
 });

@@ -3,7 +3,7 @@
 // - One ink bar at the bottom, centred on the max-w-6xl content grid (text left,
 //   buttons right); bottom sheet on phones; reject and accept carry equal weight
 // - Stores choice in localStorage as 'cookie-consent' = 'accepted' | 'declined'
-// - On accept: fires initAfterConsent() which initialises GA4 + PostHog
+// - On accept: fires initAfterConsent() which initialises GA4 + PostHog (logic in utils/consent-banner.ts)
 // - On decline: fires optOut() so PostHog stays in opt-out mode
 // - Copy localized per current path (UI strings in src/data/uiStrings.ts)
 
@@ -74,44 +74,7 @@ const privacyHref = getLocaleFromPath(pathname) === 'ar' ? '/ar/privacy/' : '/pr
 </style>
 
 <script>
-  const COOKIE_KEY = 'cookie-consent';
-  const banner = document.getElementById('cookie-banner') as HTMLElement;
-  const acceptBtn = document.getElementById('cookie-accept') as HTMLButtonElement;
-  const declineBtn = document.getElementById('cookie-decline') as HTMLButtonElement;
+  import { initConsentBanner } from '../../utils/consent-banner';
 
-  async function initAnalytics() {
-    const { initAfterConsent } = await import('../../utils/analytics');
-    initAfterConsent();
-  }
-
-  function hideBanner() {
-    banner.dataset.state = 'hidden';
-  }
-
-  function showBanner() {
-    // Small delay so it slides in after page has settled
-    setTimeout(() => {
-      banner.dataset.state = 'shown';
-    }, 1000);
-  }
-
-  const consent = localStorage.getItem(COOKIE_KEY);
-
-  if (consent === 'accepted') {
-    initAnalytics();
-  } else if (!consent) {
-    showBanner();
-  }
-
-  acceptBtn?.addEventListener('click', () => {
-    localStorage.setItem(COOKIE_KEY, 'accepted');
-    hideBanner();
-    initAnalytics();
-    window.dispatchEvent(new Event('analytics-consent-accepted'));
-  });
-
-  declineBtn?.addEventListener('click', () => {
-    localStorage.setItem(COOKIE_KEY, 'declined');
-    hideBanner();
-  });
+  initConsentBanner();
 </script>

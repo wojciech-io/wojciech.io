@@ -42,7 +42,7 @@ export const PUBLIC_SECURITY_HEADERS: Record<string, string> = {
     "worker-src 'self'",
     // manifest-src: webmanifest served from same origin
     "manifest-src 'self'",
-    "frame-src https://gh.wojciech.io https://app.cal.com",
+    "frame-src https://gh.wojciech.io https://app.cal.com https://cal.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
