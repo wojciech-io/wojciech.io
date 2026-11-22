@@ -2,7 +2,7 @@
    Hooks, all opt-in with data-m:
      rise      one block fades up when it scrolls in
      stagger   the children of a block fade up one after another
-     depth     an app screen with glass cards: depth from scroll and pointer, cards arrive in sequence, optional hot spots
+     depth     an app screen with glass cards: cards arrive in sequence, no parallax, optional hot spots
      count     a number counts up once
      bar, barv a bar draws once (horizontal, vertical)
    Nothing is hidden without JS. With prefers-reduced-motion nothing moves; hot spots still answer to hover, focus and tap. */
@@ -11,7 +11,6 @@
   var root = document.documentElement;
   function mq(q) { return !!(window.matchMedia && window.matchMedia(q).matches); }
   var reduce = mq("(prefers-reduced-motion: reduce)");
-  var fine = mq("(hover: hover) and (pointer: fine)");
   var hasIO = "IntersectionObserver" in window;
   root.classList.add("m-js");
   if (!reduce && hasIO) { root.classList.add("m-on"); }
@@ -222,16 +221,7 @@
     }, { rootMargin: "0px 0px -8% 0px" });
     each(targets, function (el) { io.observe(el); });
     setTimeout(function () { if (!alive) { root.classList.remove("m-on"); live = false; } }, 3000);
-    if (fine) {
-      window.addEventListener("pointermove", function (e) {
-        px = clamp(e.clientX / window.innerWidth * 2 - 1, -1, 1);
-        py = clamp(e.clientY / window.innerHeight * 2 - 1, -1, 1);
-        kick();
-      }, { passive: true });
-      root.addEventListener("pointerleave", function () { px = 0; py = 0; kick(); });
-    }
-    window.addEventListener("scroll", kick, { passive: true });
-    window.addEventListener("resize", kick, { passive: true });
+    /* no pointer or scroll parallax: screens stay still, only the entrance moves */
   }
   function ready(fn) {
     if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", fn); } else { fn(); }
