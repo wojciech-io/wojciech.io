@@ -68,3 +68,23 @@
 @media (prefers-reduced-motion:no-preference){
   .lh__crop img{transition:transform .9s var(--m-ease,cubic-bezier(.2,.7,.1,1))}
 }
+
+/* ---- hero depth: type rises in, the product window starts tilted and settles flat as it enters.
+   Pure CSS. Scroll-driven where the browser supports it, a short entrance elsewhere; nothing moves under reduced motion. ---- */
+@media (prefers-reduced-motion:no-preference){
+  .lh__tx>*{animation:lh-up .9s var(--m-ease,cubic-bezier(.2,.7,.1,1)) backwards}
+  .lh__tx>:nth-child(2){animation-delay:.08s}
+  .lh__tx>:nth-child(3){animation-delay:.16s}
+  .lh__tx>:nth-child(4){animation-delay:.24s}
+  .lh__w{perspective:1600px}
+  .lh__crop{transform-origin:50% 100%;animation:lh-tilt 1.2s var(--m-ease,cubic-bezier(.2,.7,.1,1)) .3s backwards}
+  @supports (animation-timeline:view()){
+    .lh__crop{animation:lh-tilt linear both;animation-timeline:view();animation-range:entry 10% cover 38%}
+  }
+  .lh__crop::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(180deg,rgb(255 255 255/.55),rgb(255 255 255/0) 22%);mix-blend-mode:soft-light}
+  .lh__crop:hover img{transform:scale(1.012)}
+}
+@keyframes lh-up{from{opacity:0;translate:0 18px}}
+@keyframes lh-tilt{from{transform:rotateX(9deg) translateY(28px) scale(.965);opacity:.4}to{transform:none;opacity:1}}
+.lh__crop{box-shadow:0 0 0 1px rgb(20 22 18/.12),0 30px 80px -30px rgb(20 22 18/.35)}
