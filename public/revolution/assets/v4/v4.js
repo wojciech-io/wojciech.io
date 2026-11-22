@@ -13,7 +13,16 @@ const LIGHT = THEME !== 'dark';
 // The markup is authored dark; light flips it: olive blocks turn cream and the other way round, statements stay dark, interfaces go light.
 if (LIGHT) {
   document.documentElement.dataset.theme = 'light';
-  document.querySelectorAll('.sec').forEach((sec) => { const c = sec.classList; if (c.contains('stm')) return; if (c.contains('olive')) c.replace('olive', 'cream'); else if (c.contains('cream')) c.replace('cream', 'olive'); else if (c.contains('black')) c.replace('black', 'paper'); });
+  // rev-v4-light: no dark blocks. Authored olive stays the page ground (cream); statements, former cream blocks (product, numbers), the black closer and the lime checklist take paper; two paper blocks never touch.
+  let prevGround = '';
+  document.querySelectorAll('.sec').forEach((sec) => {
+    const c = sec.classList;
+    const cur = ['olive', 'cream', 'black', 'lime', 'paper'].find((k) => c.contains(k));
+    if (!cur) return;
+    let g = cur === 'olive' && !c.contains('stm') ? 'cream' : 'paper';
+    if (g === 'paper' && prevGround === 'paper') g = 'cream';
+    c.remove(cur); c.add(g); prevGround = g;
+  });
 }
 document.querySelectorAll('.curve,.demo').forEach((sec) => { const prev = sec.previousElementSibling; if (prev) sec.style.setProperty('--from', getComputedStyle(prev).backgroundColor); });
 document.querySelectorAll('[data-img]').forEach((el) => { const [k, n] = el.dataset.img.split(':'); el.src = SRC[k](n); });
