@@ -151,3 +151,39 @@
   html body .ms__t{font-size:var(--g-stm);line-height:1}
   html body :is(.v4s__c h3,.nli__mail h3){font-size:var(--g-h3);line-height:1.05}
 }
+
+/* ==== C1 / one stroke: every drawn line icon is 1.5 ==== */
+.ico-a :is(path,circle,line,polyline,rect),.rl__k svg :is(path,circle,line,polyline,rect){stroke-width:var(--g-ico-stroke)}
+.ico-a,.si{stroke-width:var(--g-ico-stroke)}
+.ico-a :is(path,circle,line,polyline,rect),.si :is(path,circle,line,polyline,rect){vector-effect:non-scaling-stroke}
+
+/* ==== C1 / desktop header controls: 36 px to the eye, 44 px to the finger ==== */
+@media (min-width:768px){
+  .nav .mode,.nav .menu,.nav .lang__b{position:relative;width:36px;height:36px;border-radius:var(--g-r-ctl)}
+  .nav .lang__b{width:auto;padding-inline:10px}
+  .nav .btns>.btn,.nav .r>.btn{height:36px}
+  .nav .mode::after,.nav .menu::after,.nav .lang__b::after{content:"";position:absolute;inset:-4px}
+}
+
+/* ==== C1 / home hero tools: bigger mark, one hairline, same slow drift (the only drift on the site) ==== */
+@media (max-width:599px){
+  .hb__c{height:36px;gap:8px;padding:0 14px 0 11px;font-size:14px;background:rgb(255 255 255/.72);box-shadow:inset 0 0 0 var(--g-line) var(--g-line-ink)}
+  html[data-mode="dark"] .hb__c{background:rgb(255 255 255/.06);box-shadow:inset 0 0 0 var(--g-line) var(--g-line-on);color:#F4F4ED}
+  .hb__c svg{width:20px;height:20px}
+  .hb__t{animation-duration:60s}
+  .hb__r--b .hb__t{animation-duration:70s}
+}
+
+/* ==== C1 / phone: library shows 12 and a button; carousels swipe, no arrows, 8 px dots with a 44 px hit area ==== */
+.g22-more{display:none}
+@media (max-width:767px){
+  #notesg>[data-g22x]{display:none!important}
+  .g22-more{display:flex;align-items:center;justify-content:center;width:100%;min-height:var(--g-tap);margin-top:16px;border:var(--g-line) solid currentColor;border-radius:var(--g-r-ctl);background:transparent;color:inherit;font:600 14px/1 var(--sans);cursor:pointer}
+  .g22-more[hidden]{display:none}
+  .crs__b,.crs__bar,.crs__n{display:none!important}
+  .crs__tr{cursor:auto}
+  .g22-dots{display:flex;justify-content:center;gap:0;margin-top:8px}
+  .g22-dots button{position:relative;width:var(--g-tap);height:var(--g-tap);padding:0;border:0;background:none;color:inherit;cursor:pointer}
+  .g22-dots button::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:999px;background:currentColor;opacity:.3}
+  .g22-dots button[aria-current="true"]::before{opacity:1}
+}
