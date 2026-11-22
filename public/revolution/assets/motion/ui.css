@@ -1,0 +1,26 @@
+/* Shared UI layer for /revolution (loaded by ui.js on every page): reading progress, one focus ring, press feedback, reduced motion.
+   Tokens come from motion.css, which ui.js loads when the page does not already have it. Nothing here moves layout. */
+:root{--m-focus:#4D5C00;--m-prog:#4D5C00}
+html[data-mode="dark"]{--m-focus:#D2FF00;--m-prog:#D2FF00}
+@media (prefers-color-scheme:dark){html:not([data-mode="light"]):not([data-mode="dark"]){--m-focus:#D2FF00;--m-prog:#D2FF00}}
+[data-theme="dark"],.dk{--m-focus:#D2FF00}
+
+/* ---- reading progress: one 2 px line, only on long pages ---- */
+.m-prog{position:fixed;left:0;right:0;top:0;z-index:2147483000;height:2px;background:var(--m-prog);transform-origin:0 50%;transform:scaleX(var(--p,0));opacity:0;pointer-events:none;transition:opacity var(--m-t3,320ms) var(--m-out,ease)}
+.m-prog.is-on{opacity:1}
+
+/* ---- one focus ring ---- */
+:where(a,button,summary,input,select,textarea,[role="button"],[role="tab"],[role="slider"],[tabindex]:not([tabindex="-1"])):focus-visible{outline:2px solid var(--m-focus);outline-offset:3px}
+
+/* ---- press feedback: 120 ms, no layout ---- */
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  :where(button,[role="button"],.btn):not(:disabled){transition:scale var(--m-t1,120ms) var(--m-out,ease)}
+  :where(button,[role="button"],.btn):not(:disabled):active{scale:.97}
+}
+
+/* ---- reduced motion: loops stop at their static frame, transitions are instant, smooth scroll off ---- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  .m-prog{transition:none}
+}
