@@ -44,11 +44,12 @@ await browser.close();
 
 const key = (p, m, w) => results.find((r) => r.p === p && r.m === m && r.w === w);
 const cell = (r) => (!r ? '?' : r.error ? 'ERR' : r.mode && !r.hscroll && r.contrast === 0 ? 'ok' : `${!r.mode ? 'M ' : ''}${r.hscroll ? 'H ' : ''}${r.contrast ? 'C' + r.contrast : ''}`.trim());
-console.log('| page | dark 390 | dark 1440 | light 390 | light 1440 |\n|---|---|---|---|---|');
-for (const p of pages) console.log(`| ${p} | ${[['dark', 390], ['dark', 1440], ['light', 390], ['light', 1440]].map(([m, w]) => cell(key(p, m, w))).join(' | ')} |`);
+process.stdout.write('| page | dark 390 | dark 1440 | light 390 | light 1440 |\n|---|---|---|---|---|\n');
+const out = (t) => process.stdout.write(t + '\n');
+for (const p of pages) out('| ' + p + ' | ' + [['dark', 390], ['dark', 1440], ['light', 390], ['light', 1440]].map(([m, w]) => cell(key(p, m, w))).join(' | ') + ' |');
 const bad = results.filter((r) => r.error || !r.mode || r.hscroll || r.contrast);
 const okN = results.length - bad.length;
-console.log(`\n${okN}/${results.length} combinations pass (M = mode not applied, H = horizontal scroll, Cn = n contrast failures).`);
-for (const r of bad) console.log(`- ${r.p} ${r.m} ${r.w}: ${r.error || ''} ${r.nodes.join(' | ')}`);
+out('\n' + okN + '/' + results.length + ' combinations pass (M = mode not applied, H = horizontal scroll, Cn = n contrast failures).');
+for (const r of bad) out('- ' + r.p + ' ' + r.m + ' ' + r.w + ': ' + (r.error || '') + ' ' + r.nodes.join(' | '));
 if (jsonOut) fs.writeFileSync(jsonOut, JSON.stringify(results, null, 1));
 process.exit(bad.length ? 1 : 0);

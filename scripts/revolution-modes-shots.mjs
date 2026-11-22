@@ -40,7 +40,7 @@ for (const p of pages) {
     await sharp({ create: { width: w * 2 + gap, height: H, channels: 3, background: '#888' } })
       .composite([{ input: imgs[0], left: 0, top: 0 }, { input: imgs[1], left: w + gap, top: 0 }])
       .jpeg({ quality: 70 }).toFile(name);
-    console.log(name, w * 2 + gap, H);
+    process.stdout.write([name, w * 2 + gap, H].join(' ') + '\n');
   }
 }
 await browser.close();
