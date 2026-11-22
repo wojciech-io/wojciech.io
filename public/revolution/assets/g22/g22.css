@@ -249,3 +249,33 @@
   /* one button label on both page families: sentence case, 14 px, 600 */
   html body :is(a.btn,button.btn):not(:is(.ui,[data-ui],.u-app,.demo__win) *){text-transform:none!important;letter-spacing:0!important;font-weight:600!important;font-size:14px!important}
 }
+
+/* ==== C1 / one stroke: every drawn line icon is 1.5 ==== */
+.ico-a :is(path,circle,line,polyline,rect),.rl__k svg :is(path,circle,line,polyline,rect){stroke-width:var(--g-ico-stroke)}
+.ico-a,.si{stroke-width:var(--g-ico-stroke)}
+.ico-a :is(path,circle,line,polyline,rect),.si :is(path,circle,line,polyline,rect){vector-effect:non-scaling-stroke}
+
+/* ==== C1 / desktop header controls: 36 px to the eye, 44 px to the finger ==== */
+@media (min-width:768px){
+  .nav .mode,.nav .menu,.nav .lang__b{position:relative;width:36px;height:36px;border-radius:var(--g-r-ctl)}
+  .nav .lang__b{width:auto;padding-inline:10px}
+  .nav .btns>.btn,.nav .r>.btn{height:36px}
+  .nav .mode::after,.nav .menu::after,.nav .lang__b::after{content:"";position:absolute;inset:-4px}
+}
+
+/* ==== C1 / home hero: no tool pill strips on the phone ==== */
+@media (max-width:599px){.hero__belt{display:none!important}}
+
+/* ==== C1 / phone: library shows 12 and a button; carousels swipe, no arrows, 8 px dots with a 44 px hit area ==== */
+.g22-more{display:none}
+@media (max-width:767px){
+  #notesg>[data-g22x]{display:none!important}
+  .g22-more{display:flex;align-items:center;justify-content:center;width:100%;min-height:var(--g-tap);margin-top:16px;border:var(--g-line) solid currentColor;border-radius:var(--g-r-ctl);background:transparent;color:inherit;font:600 14px/1 var(--sans);cursor:pointer}
+  .g22-more[hidden]{display:none}
+  .crs__b,.crs__bar,.crs__n{display:none!important}
+  .crs__tr{cursor:auto}
+  .g22-dots{display:flex;justify-content:center;gap:0;margin-top:8px}
+  .g22-dots button{position:relative;width:var(--g-tap);height:var(--g-tap);padding:0;border:0;background:none;color:inherit;cursor:pointer}
+  .g22-dots button::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:999px;background:currentColor;opacity:.3}
+  .g22-dots button[aria-current="true"]::before{opacity:1}
+}
