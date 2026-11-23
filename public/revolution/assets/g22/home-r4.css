@@ -202,3 +202,82 @@ html[data-mode="light"] body .ms .ms__q,html[data-mode="light"] .ms .ms__q{
 }
 @media (prefers-reduced-motion:reduce){html body .ms .lz{transition:none}.lz__bar{animation:none!important}}
 /* /HOME R4 */
+
+/* ==== HOME DARK R6: the dark mode of Home as "Ink" (touches Home) ====
+   Spec: docs in the handoff `revolution-modes.md`. Dark = ink ground, lime as the only accent, higher contrast, 1px lime hairlines,
+   flat surfaces, no drop shadows, no glows, no gradients. Light mode is not touched: every rule here sits under html[data-mode="dark"].
+   Two grounds only, alternating: A #10120C and B #171A11. A card sits on the other ground and is drawn with a hairline.
+   Order on Home: hero A, c3h B, ms A, bf B, fix A, apps B, showcase A, cl A, promo (paper, kept on purpose), about B, career A,
+   socials B, references A, newsletter B, footer A. */
+html[data-mode="dark"]{--hd-a:#10120C;--hd-b:#171A11;--hd-line:rgb(210 255 0/.16);--hd-line2:rgb(210 255 0/.26)}
+
+/* grounds */
+html[data-mode="dark"] .s.c3h{background:var(--hd-b)}
+html[data-mode="dark"] .s.ms{background:var(--hd-a)}
+html[data-mode="dark"] .s.pl3{background:var(--hd-a)}
+html[data-mode="dark"] .s.hm{background:var(--hd-b)}
+html[data-mode="dark"] .s.hm.v4s,html[data-mode="dark"] .s.cl{background:var(--hd-a)}
+html[data-mode="dark"] .s.sh{background:var(--hd-b)}
+html[data-mode="dark"] .s.crb{background:var(--hd-a)}
+html[data-mode="dark"] .s.rcs{background:var(--hd-a)}
+html[data-mode="dark"] .s.sh::before{content:none}
+
+/* c3h: the screen sits on ink with a hairline, not on a black drop shadow */
+html[data-mode="dark"] .c3h__win{box-shadow:0 0 0 1px var(--hd-line2)}
+html[data-mode="dark"] .c3h__bar{background:rgb(244 244 237/.2)}
+
+/* ms: client cards are flat ink surfaces with a hairline; the bars are flat lime, no gradient, no shadow */
+html[data-mode="dark"] body .ms .ms__lz{
+  --lz-bg:var(--hd-b);--lz-line:var(--hd-line2);--lz-bar0:rgb(244 244 237/.2);--lz-bar0-fg:#F4F4ED;
+  --lz-bar1:#D2FF00;--lz-bar1-fg:#10120C;--lz-num:#D2FF00;--lz-shadow:none;
+  --lz-chip:#F4F4ED;--lz-mute:#C9CDBE;--lz-soft:#E4E7D8;
+}
+html[data-mode="dark"] body .ms .lz{border-radius:12px;box-shadow:0 0 0 1px var(--lz-line)}
+html[data-mode="dark"] body .ms .lz:hover{box-shadow:0 0 0 1px #D2FF00}
+html[data-mode="dark"] .lz__bar--1{box-shadow:none}
+html[data-mode="dark"] .lz__ix{color:#C9CDBE}
+html[data-mode="dark"] body .ms .ms__q{background:var(--hd-b);box-shadow:inset 0 0 0 1px var(--hd-line2);border-radius:12px}
+html[data-mode="dark"] body .ms .ms__q p{color:#F4F4ED}
+html[data-mode="dark"] .ms .contours{opacity:.05}
+
+/* bf (before): was a beige block in the middle of an ink page. Ink ground, the chips stay light like every other window */
+/* the pin script writes the beige into an inline style on the section, hence !important */
+html[data-mode="dark"] .s.bf[data-theme="light"]{background:var(--hd-b)!important;color:#F4F4ED!important;--on:244 244 237}
+html[data-mode="dark"] .bf__tag .b{background:#F4F4ED;color:#23261B}
+html[data-mode="dark"] .bf__h .b{color:#F4F4ED}
+html[data-mode="dark"] .bf__h .b b{color:#D2FF00;background:none}
+html[data-mode="dark"] .bf__ln .cx{stroke:#B6BAA8;opacity:.6}
+html[data-mode="dark"] .bf__it{box-shadow:0 0 0 1px rgb(210 255 0/.2)}
+
+/* pl3 (what I fix): the two rows that are not in focus were at 30%, which fails contrast; 64% keeps the hierarchy */
+html[data-mode="dark"] .pl3__nm[style*="opacity: 0.3"],html[data-mode="dark"] .pl3__kpi[style*="opacity: 0.3"]{opacity:.7!important}
+html[data-mode="dark"] .pl3__tag{color:#C9CDBE}
+html[data-mode="dark"] .pl3__row,html[data-mode="dark"] .pl3__p:first-child .pl3__row{border-color:var(--hd-line)}
+
+/* apps: the stage behind each window was an accent gradient with dots; now a flat ink panel with a hairline */
+html[data-mode="dark"] .gi .st{background:var(--hd-a);box-shadow:inset 0 0 0 1px var(--hd-line)}
+html[data-mode="dark"] .gi::before{background:var(--hd-b)}
+html[data-mode="dark"] .gi .win{box-shadow:0 0 0 1px var(--hd-line2)}
+
+/* about: no glow behind the portraits (the topographic lines stay) */
+html[data-mode="dark"] .sh .contours{opacity:.06}
+
+/* socials: ink instead of a paper strip; the cards get a hairline instead of a drop shadow */
+html[data-mode="dark"] .s.so[data-theme="light"]{background:var(--hd-b);color:#F4F4ED;--on:244 244 237}
+html[data-mode="dark"] .so h2,html[data-mode="dark"] .so .intro{color:#F4F4ED}
+html[data-mode="dark"] .so h2 span{color:#D2FF00}
+html[data-mode="dark"] .so .ch{box-shadow:0 0 0 1px var(--hd-line2)}
+html[data-mode="dark"] .so .contours{opacity:.06;color:#F4F4ED}
+
+/* newsletter: the neon field around the card is gone; the card is ink on ink with a hairline */
+html[data-mode="dark"] .s.nlb[data-theme="lime"]{background:var(--hd-b)}
+html[data-mode="dark"] .nlb__in{background:var(--hd-a);box-shadow:inset 0 0 0 1px var(--hd-line2)}
+html[data-mode="dark"] .nlb__in::after{content:none}
+html[data-mode="dark"] .nlb__cup{box-shadow:none}
+
+/* footer: the clip and the notch pieces share one ink, the lime/cream gradient behind the corners is replaced by the ground */
+html[data-mode="dark"] .s.ft[data-theme="lime"]{background:var(--hd-a);--dark:#10120C}
+html[data-mode="dark"] .ft .grad{background:var(--hd-a)}
+html[data-mode="dark"] .ft .clip{background:var(--hd-a);box-shadow:inset 0 1px 0 var(--hd-line2)}
+html[data-mode="dark"] .ft .legal,html[data-mode="dark"] .ft .legal a{color:#C9CDBE;opacity:1}
+/* /HOME DARK R6 */
