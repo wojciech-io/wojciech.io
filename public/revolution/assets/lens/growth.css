@@ -15,20 +15,28 @@
 .gr-pov li:last-child{border-bottom:1px solid rgb(244 244 237/.2)}
 @media (max-width:900px){.gr-pov li:nth-child(n){padding-left:0}}
 
-/* the loop */
-.gr-lp{padding:clamp(72px,9vw,128px) 0 clamp(40px,5vw,72px);background:#F4F4ED;color:#1C1F16}
-.gr-lp .eyebrow{display:block;margin-bottom:18px;color:#3B3C38}
-.gr-lp h2{margin:0;font-size:clamp(40px,5.4vw,80px);line-height:.95;color:#1C1F16}
-.gr-lp h2 span{display:block;color:#3B3C38}
-.gr-loop{list-style:none;margin:clamp(36px,5vw,64px) 0 0;padding:0 0 46px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;position:relative;counter-reset:l}
-.gr-loop::after{content:"";position:absolute;left:12.5%;right:12.5%;bottom:0;height:34px;border:1.5px solid #1C1F16;border-top:0;border-radius:0 0 22px 22px}
-.gr-loop::before{content:"";position:absolute;left:12.5%;bottom:-5px;border:6px solid transparent;border-bottom:8px solid #1C1F16;border-top:0;transform:translateY(-2px)}
-.gr-loop li{padding:22px 24px 0 0;border-top:2px solid #1C1F16;margin-right:22px}
-.gr-loop li:last-child{margin-right:0}
-.gr-loop i{display:block;font:600 12px/1 var(--sans);font-style:normal;letter-spacing:.06em;color:#3B3C38}
-.gr-loop b{display:block;margin-top:10px;font:800 clamp(22px,2.4vw,34px)/1 var(--sans);font-stretch:75%;text-transform:uppercase;color:#1C1F16}
-.gr-loop span{display:block;margin-top:8px;font:400 15px/1.4 var(--sans);color:rgba(14,42,24,.8)}
-@media (max-width:900px){.gr-loop{grid-template-columns:1fr;padding-bottom:0}.gr-loop::after,.gr-loop::before{display:none}.gr-loop li{margin:0 0 6px;padding-bottom:16px}}
+/* the loop: four steps on a rail with dots, the lit dot moves on by itself (CSS only, still on 01 under reduced motion) */
+.gr-lp{padding:clamp(72px,9vw,128px) 0 clamp(40px,5vw,72px);background:#F4F4ED;color:#1C1F16;--ac:#4D5C00}
+html[data-mode="dark"] .gr-lp{--ac:#D2FF00}
+.gr-loop{list-style:none;margin:clamp(40px,5vw,64px) 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:relative}
+.gr-loop::before{content:"";position:absolute;left:0;right:0;top:9px;height:1px;background:color-mix(in srgb,currentColor 28%,transparent)}
+.gr-loop li{position:relative;padding:44px 18px 0 0}
+.gr-loop li::before{content:"";position:absolute;top:0;left:0;width:19px;height:19px;border-radius:50%;border:1px solid var(--ac);background:var(--gr-bg,#F4F4ED);animation:gr-dot 12s step-end infinite}
+html[data-mode="dark"] .gr-lp{--gr-bg:#14160F}
+.gr-loop li:nth-child(2)::before{animation-delay:3s}
+.gr-loop li:nth-child(3)::before{animation-delay:6s}
+.gr-loop li:nth-child(4)::before{animation-delay:9s}
+@keyframes gr-dot{0%{background:var(--ac)}25%,100%{background:var(--gr-bg,#F4F4ED)}}
+.gr-loop i{display:block;font:600 12px/1 var(--sans);font-style:normal;letter-spacing:.06em;color:color-mix(in srgb,currentColor 62%,transparent)}
+.gr-loop b{display:block;margin-top:10px;font:800 clamp(22px,2.4vw,34px)/1 var(--sans);font-stretch:75%;text-transform:uppercase}
+.gr-loop span{display:block;margin-top:8px;font:400 15px/1.4 var(--sans);color:color-mix(in srgb,currentColor 80%,transparent)}
+@media (prefers-reduced-motion:reduce){.gr-loop li::before{animation:none}.gr-loop li:first-child::before{background:var(--ac)}}
+@media (max-width:900px){
+  .gr-loop{grid-template-columns:1fr}
+  .gr-loop::before{left:9px;right:auto;top:0;bottom:0;width:1px;height:auto}
+  .gr-loop li{padding:0 0 28px 48px}.gr-loop li:last-child{padding-bottom:0}
+  .gr-loop li::before{animation-duration:12s}
+}
 
 /* rows: screen and text, side by side, alternating */
 .gr-rw{padding:clamp(24px,3vw,48px) 0 clamp(72px,9vw,128px);background:#F4F4ED;color:#1C1F16}
