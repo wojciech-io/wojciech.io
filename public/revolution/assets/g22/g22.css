@@ -66,7 +66,6 @@
 }
 
 /* ==== C3 / home hero: what you want fixed first, the screens that fix it, the agent and me as a small signature ==== */
-.s.hero.c3-old{display:none!important}
 .c3h{--seam:50;--e:cubic-bezier(.2,.7,.2,1);--ink:#F4F4ED;--mute:#a8aea8;--lime:#D2FF00;position:relative;background:#0b0c0b;color:var(--ink)}
 .c3h__in{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"top res" "ask res" "duo res";grid-template-rows:auto auto 1fr;column-gap:48px;max-width:1344px;margin:0 auto;padding:128px 48px 64px}
 .c3h__top{grid-area:top}
@@ -138,6 +137,27 @@
   .c3h__pair{height:140px}
 }
 @media (prefers-reduced-motion:reduce){.c3h__half,.c3h__seam,.c3h__chips button,.c3h__bar i{transition:none!important}}
+/* ==== covers / note and card covers: one quiet tile, marks in one style, no gradient or glow ====
+   The grammar stays: a plus is a stack that works together, "vs" with a bolt is a head to head. */
+span.cv{--bg:#161912!important;background:#161912!important;color:#ECEDE4!important;box-shadow:inset 0 0 0 var(--g-line) rgb(236 237 228/.1)}
+span.cv::after,span.cv::before,.cv__p::after,.cv__p--alt::after{display:none!important}
+span.cv .cv__p{background:#161912!important}
+span.cv .cv__p--alt{background:#1D2118!important}
+span.cv .cv__ghost{display:none!important}
+span.cv .cv__m svg{width:clamp(26px,13cqw,64px)!important;height:auto!important;filter:none!important;fill:currentColor}
+span.cv.cv--one .cv__m svg{width:clamp(36px,18cqw,88px)!important}
+span.cv .cv__m small{font:600 10px/1 var(--sans)!important;letter-spacing:.1em!important;opacity:.62}
+span.cv .cv__m,span.cv .cv__pl{translate:none!important;rotate:none!important}
+span.cv .cv__pl,span.cv .cv__x{background:#161912!important;color:#D2FF00!important;box-shadow:0 0 0 var(--g-line) rgb(210 255 0/.55)!important;width:22px!important}
+span.cv .cv__x{width:34px!important;font-size:11px!important}
+span.cv .cv__pl svg{stroke-width:2!important}
+span.cv .cv__bolt polyline{stroke:rgb(210 255 0/.6)!important;stroke-width:1.5!important;filter:none!important}
+span.cv.cv--sc{background:#161912!important}
+span.cv.cv--sc img{box-shadow:0 0 0 var(--g-line) rgb(236 237 228/.14)!important}
+html[data-mode="light"] span.cv:not(.cv--ph):not(.cv--sc){background:#E9EBE0!important;color:#1C1F16!important;box-shadow:inset 0 0 0 var(--g-line) rgb(28 31 22/.12)}
+html[data-mode="light"] span.cv .cv__p{background:#E9EBE0!important}
+html[data-mode="light"] span.cv .cv__p--alt{background:#DFE2D4!important}
+html[data-mode="light"] span.cv .cv__pl,html[data-mode="light"] span.cv .cv__x{background:#E9EBE0!important;color:#4d5c00!important;box-shadow:0 0 0 var(--g-line) rgb(77 92 0/.5)!important}
 
 /* ---------- decoration: no blurred glow blobs behind sections ---------- */
 .s[data-theme="dark"]:is(.ms,.hm:not(.lb),.cr,.ab-st,.cvq,.lib),
@@ -299,3 +319,201 @@ html.mn-open .nav .brand,html[data-mode="light"].mn-open .nav .brand{color:#F4F4
 @media (prefers-reduced-motion:reduce){
   .mn .mns__sc,.mn .mns__fr,.mnu__fr{transition:none!important;translate:none!important}
 }
+html[data-mode="light"] span.cv:not(.cv--ph):not(.cv--sc) .cv__m{color:#1C1F16}
+html[data-mode="light"] span.cv:not(.cv--ph):not(.cv--sc) .cv__lg{filter:brightness(0)!important}
+
+/* ==== C4 / desktop header: the name and one menu button (spec C 2.2: 40 px to the eye, 44 px to the finger) ==== */
+@media (min-width:768px){
+  /* Book a call, the theme switch and the language pill move into the menu; the markup stays as it is */
+  .nav .btns>.btn,.nav .btns>.mode,.nav .btns>.lang,.nav .r>.btn{display:none!important}
+  .nav .menu{width:40px;height:40px;border-width:var(--g-line)}
+  .nav .menu::after{inset:-2px}
+  .nav .brand{display:inline-grid;align-content:center;min-height:var(--g-tap)}
+  /* the menu footer now carries the single Book a call and the single theme switch on desktop */
+  html .mn .mn__foot>.btn,html .mn .mn__mode{display:inline-flex!important}
+}
+
+/* ==== MODES R3 ====
+   Two modes with their own character, not one palette turned over (docs/revolution-modes.md).
+   Dark = Ink: a deeper ground, flat surfaces drawn with 1px lime hairlines, no drop shadows, lime as the only accent.
+   Light = Paper: a bright paper ground, white surfaces lifted with soft shadows, olive #4D5C00 as the only accent.
+   Hero, the closing card and the strips follow the mode. Written for the 13 older pages (tokens) and the 19 v4 pages (.sec classes). */
+html[data-mode="dark"]:root{--sf0:#171A11}
+html[data-mode="light"]:root{--sf0:#EEF0E3;--sf1:#E6E9DA;--sf2:#F5F6EE;--sfb:#F5F6EE;--sh:245 246 238}
+
+/* seams: Ink draws them, Paper does not */
+html[data-mode="dark"] .s+.s,html[data-mode="dark"] .sec+.sec{border-top:var(--g-line,1px) solid rgb(210 255 0/.16)}
+html[data-mode="light"] .s+.s,html[data-mode="light"] .sec+.sec{border-top:0}
+
+/* hero follows the mode (Home) */
+html[data-mode="dark"] .hero{background:#10120C}
+html[data-mode="dark"] .hero .hh{color:#F4F4ED}
+html[data-mode="dark"] .hero .hh em{color:#D2FF00}
+html[data-mode="dark"] .hero .mk{color:#F4F4ED}
+html[data-mode="dark"] .hero__sk,html[data-mode="dark"] .hero__sk.tm{color:#F4F4ED}
+html[data-mode="dark"] .hero__sk .sk__n circle{fill:#10120C}
+html[data-mode="dark"] .hero__me{filter:none}
+
+/* app screens (ui-*): the windows stay light, the stage around them changes */
+html[data-mode="dark"] img[src*="/real/ui-"]{box-shadow:0 0 0 1px rgb(210 255 0/.24);filter:brightness(.95)}
+html[data-mode="light"] img[src*="/real/ui-"]{box-shadow:0 1.6rem 3.2rem -1.4rem rgb(40 44 32/.38),0 0 0 1px rgb(40 44 32/.08)}
+
+/* v4 pages: the same switch as the older pages */
+.nav .r>.mode{width:44px;height:44px;border-radius:8px;border:0;background:var(--cream,#F4F4ED);color:var(--ink,#282C20);display:grid;place-items:center;cursor:pointer;padding:0}
+.nav .r>.mode .mi{width:20px;height:20px;fill:currentColor;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;transition:transform .5s cubic-bezier(.2,.7,.1,1)}
+.nav .r>.mode .mi__c{transition:transform .5s;transform-origin:12px 12px;transform:scale(.5);stroke:none}
+.nav .r>.mode .mi__m{transition:transform .5s}
+.nav .r>.mode .mi__r{fill:none;opacity:0;transition:opacity .4s}
+html[data-mode="dark"] .nav .r>.mode .mi__c{transform:scale(1)}
+html[data-mode="light"] .nav .r>.mode .mi__c{transform:scale(.56)}
+html[data-mode="light"] .nav .r>.mode .mi__m{transform:translate(9px,-9px)}
+html[data-mode="light"] .nav .r>.mode .mi__r{opacity:1}
+.nav .r>.mode:hover .mi{transform:rotate(-18deg)}
+.nav .r>.mode:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* the first screen of Home (c3h): Ink on dark, Paper on light */
+html[data-mode="light"] .c3h{--ink:#23261B;--mute:#565C49;--lime:#4D5C00;background:#F5F6EE}
+html[data-mode="light"] .c3h__chips button,html[data-mode="light"] .c3h__ar{box-shadow:inset 0 0 0 1px rgb(40 44 32/.3)}
+html[data-mode="light"] .c3h__chips button[aria-pressed="true"]{background:#4D5C00;color:#F5F6EE}
+html[data-mode="light"] .c3h__ui,html[data-mode="light"] .c3h__pair{box-shadow:0 1.6rem 3rem -1.4rem rgb(40 44 32/.4),0 0 0 1px rgb(40 44 32/.1)}
+html[data-mode="light"] .c3h__bar{background:rgb(40 44 32/.28)}
+html[data-mode="light"] .c3h__agent{background:#0b0c0b}
+
+/* the closing card (ft): Ink keeps the dark card, Paper turns it into a paper card */
+html[data-mode="light"] .ft,html[data-mode="light"] .ft .clip{background:#E6E9DA!important;color:#23261B}
+html[data-mode="light"] .ft .clip *{--white:#23261B}
+html[data-mode="light"] .ft h2,html[data-mode="light"] .ft .flc a,html[data-mode="light"] .ft .legal,html[data-mode="light"] .ft .legal a,html[data-mode="light"] .ft p.ft__sub,html[data-mode="light"] .ft .lb{color:#23261B}
+html[data-mode="light"] .ft h2 em{color:#4D5C00}
+html[data-mode="light"] .ft .flc small,html[data-mode="light"] .ft .flc>span,html[data-mode="light"] .ft .lb small{color:#565C49}
+html[data-mode="light"] .ft .pat .contours{color:#23261B}
+html[data-mode="light"] .ft .btn,html[data-mode="light"] .ft a.btn{background:#23261B;color:#D2FF00}
+html[data-mode="light"] .ft .ft__eb{color:#4D5C00}
+html[data-mode="light"] .ft .flc b{color:#565C49}
+html[data-mode="light"] .ft .mq2 img,html[data-mode="light"] .ft .mq2 svg{filter:brightness(0);opacity:.55}
+html[data-mode="light"] .ft img[alt*="logo" i],html[data-mode="light"] .ft .logos img{filter:brightness(0);opacity:.6}
+
+/* v4 pages (apps, insights, work). v4.js authors dark and rewrites the markup for light, so these rules only add the character. */
+html[data-mode="dark"] .sec.olive{background:#171A11}
+html[data-mode="dark"] .sec.cream{background:#0F110B;color:#E4E7D8;--moss:#D2FF00;--ink2:#C9CDBE;--line:rgba(221,225,210,.28)}
+html[data-mode="dark"] .sec.cream .nums dt{color:#F4F4ED}
+html[data-mode="dark"] .sec.black{background:#0A0B08}
+html[data-mode="dark"] .ftr{background:#0A0B08}
+html[data-mode="dark"] .ftr__pn{background:#171A11;box-shadow:inset 0 0 0 1px rgb(210 255 0/.18)}
+html[data-mode="light"] .ftr{background:#EEF0E3}
+html[data-mode="light"] .ftr__pn{background:#E6E9DA;color:#23261B}
+html[data-mode="light"] .ftr__pn .st,html[data-mode="light"] .ftr__lk a{color:#23261B}
+html[data-mode="light"] .ftr__sub{color:#3B3F33}
+html[data-mode="light"] .ftr__eb,html[data-mode="light"] .ftr__pn .st .s,html[data-mode="light"] .ftr__pn .st em{color:#4D5C00}
+html[data-mode="light"] .ftr__lk h6{color:#565C49}
+html[data-mode="light"] .ftr__lap{background:#23261B;color:#D2FF00}
+html[data-mode="light"] .ftr__me img{filter:drop-shadow(0 30px 40px rgb(40 44 32/.28))}
+
+/* About hero follows the mode */
+html[data-mode="light"] .abh{background:#F5F6EE;color:#23261B}
+html[data-mode="light"] .abh h1,html[data-mode="light"] .abh__lead{color:#23261B}
+html[data-mode="light"] .abh .eyebrow{color:#4D5C00}
+html[data-mode="light"] .abh .btn{background:#23261B;color:#D2FF00}
+html[data-mode="light"] .abh figcaption{color:#565C49}
+
+/* contrast: small grey text that sat under 4.5:1 in one mode */
+html[data-mode="light"] .cv__m small,html[data-mode="light"] .ar__bk,html[data-mode="light"] .ar2__by>div>span,html[data-mode="light"] .nlh__proof,html[data-mode="light"] .crb__lg b,html[data-mode="light"] .crb__d .crb__yr,html[data-mode="light"] .crb__yr{color:#565C49!important;opacity:1!important}
+html[data-mode] .fs__k,html[data-mode] .fs__m>span{color:#565C49}
+html[data-mode="light"] .sx2 .cap b{color:#56680A!important}
+html[data-mode] .gr-pov ol li i{color:#B4B8A5}
+html[data-mode] .mk-pov li small,html[data-mode] .mk-pov small{color:#2E3800;opacity:1}
+html[data-mode="dark"] .rc__c:not(.on){opacity:.82}
+html[data-mode="light"] .demo__bar .tag{color:#D2FF00}
+html[data-mode="light"] .crb__bt{opacity:.9!important}
+html[data-mode="light"] .crb__tg{opacity:1!important;color:#565C49!important}
+html[data-mode="light"] .lib__hd .pp{color:#3B3F33!important}
+html[data-mode="light"] .lk__t b{color:#23261B!important}
+html[data-mode="light"] .tk__end .sxl .br span{color:#565C49!important}
+html[data-mode="light"] li[data-img] a sup{color:#56680A!important}
+html[data-mode="light"] .lc__cv{background-color:#5F6258!important}
+html[data-mode="light"] .rc__c:not(.on){opacity:1}
+html[data-mode="light"] .lc__n{background:#3B3F33!important;border-radius:4px;padding:2px 6px;color:#F4F4ED!important;opacity:1!important}
+html[data-mode="light"] .lib__n{color:#56680A!important}
+html[data-mode="light"] .rc__rl,html[data-mode="light"] .lk__t b sup{color:#565C49!important;opacity:1!important}
+html[data-mode="light"] figcaption small{color:#56680A!important}
+
+/* lens pages: the cream hero and the light sheets become ink in the dark mode */
+html[data-mode="dark"] .lh.cream,html[data-mode="dark"] .gt-sheet[data-theme="light"],html[data-mode="dark"] .mk-sheet[data-theme="light"],html[data-mode="dark"] .gr-sheet[data-theme="light"],html[data-mode="dark"] .gr-rw[data-theme="light"]{background:#10120C;color:#F4F4ED}
+html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] :is(h1,h2,h3,h4,p,ul,ol,li,dt,dd,small,summary,label,span,b,i,em,a,div):not(.btn *):not(.btn):not(button *):not(figure *):not(.lh-cv *):not([class*="chip"]){color:inherit}
+html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] :is(.pg-hd,.lh) .eyebrow{color:#D2FF00}
+html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] .lh__tabs,html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] [role="tablist"]{background:rgb(244 244 237/.1)}
+html[data-mode="dark"] :is(.lh.cream,.gt-sheet,.mk-sheet,.gr-sheet,.gr-rw)[data-theme="light"] button:not(.btn){color:#F4F4ED}
+/* ==== /MODES R3 ==== */
+
+/* ==== MOBILE R3 / phone first on all 32 pages (360, 390, 430, 768, 1024, landscape) ==== */
+/* 1. type floor: nothing the reader has to read is below 12 px (scale 12/14/18/28/56) */
+html .lc.lc--v .lc__c,html .vc .vc__b .vc__c,html .rel__cards .vc__c,html span.cv .cv__x,html .lk__cv .cv__x,html span.cv .cv__m small,html .cv__m small,html .lc__c,html .cv__x,html .vc__c,html .u-av,html .u-nav b,html .gr-tl small,html .gt-tl small,html .mk-tl small,
+html .lz__ph i,html .lz__co,html .bf__no,html .nli__lb,html .nlh__nt small,html .ap__pl,html .ap__m small,html .sx__f sup,html .fseg small{font-size:12px!important}
+/* 2. touch targets: 44 px to the finger, the look stays */
+@media (max-width:1024px){
+  html .nav .menu{width:44px!important;height:44px!important}
+  html .nav .menu::after{inset:0}
+  html .logo,html .legal a,html .lgl,html .crb__at a,html .v4s__tx h3 a,html .fs__go,html .sx__r a,html .sx__f button{display:inline-flex;align-items:center;min-height:44px}
+  html .lgl{min-width:44px;justify-content:center}
+  html .fs__go{min-height:44px!important}
+  html .legal{row-gap:0}
+  html .rc__dots button{min-width:44px;min-height:44px}
+  html .nlf__c,html .dm .controls label{display:flex;align-items:center;min-height:44px}
+  html details>summary{display:flex;align-items:center;min-height:44px}
+  html .ftr__lk a,html .flc a,html .lm__ct a,html .nf__r a,html .ar__bk,html .ar__toc a,html .v4s__rd,html .c3h__p figcaption a{display:inline-flex;align-items:center;min-height:44px}
+  html .ftr__lk a,html .flc a{display:flex}
+  html .c3h__p figcaption a{min-width:44px}
+  html .nf__q input,html .hx button{min-height:44px;box-sizing:border-box}
+  html .g22-dots{flex-wrap:wrap}
+  html .g22-dots button{width:44px;height:44px;flex:0 0 auto}
+  html .sx__f button{min-width:44px}
+  html .fs__go{box-sizing:border-box}
+  html a.btn,html button.btn,html a.btn.btn--o{min-height:44px!important}
+}
+/* 3. dynamic toolbars: on a phone the blocks that really fill the screen use the small viewport, so they do not jump when the address bar moves */
+@supports (height:100svh){
+  @media (max-width:767px){
+    html.lenis .hero{height:100svh}
+    html.lenis .bf__pin{height:100svh}
+    html.lenis .mnt,html.lenis .nlh{min-height:100svh}
+  }
+  @media (max-width:599px){
+    html.lenis .hero{--mh:min(86svh,1100px);--ht:max(calc(100svh - var(--mh) * .92),110px)}
+  }
+}
+/* 4. covers and frames on a phone */
+@media (max-width:767px){
+  /* Work: stacked project cards fill the column instead of shrinking to their picture */
+  html .tk .it.spr{align-self:stretch;width:100%!important}
+  html .tk .it.spr .iw{width:100%}
+  /* newsletter: portrait frame, not a full-height slice of the photo */
+  html .nlh__ph img{height:auto!important;aspect-ratio:4/5;max-height:70svh}
+}
+/* 6. maintenance: the name sits on the dark photo, so it stays light in both modes */
+html:has(.pg>.mnt:first-child) .nav .brand,html[data-mode="light"]:has(.pg>.mnt:first-child) .nav .brand{color:#F4F4ED}
+
+/* ==== COVERS R4 / client proof on Work: a logo, not a coloured plate ==== */
+/* Work: client logo plates become a calm field with the client logo, the result stays the number under it */
+html .tk .it.spr .iw:has(img[src*="wt-sentione"],img[src*="wt-symfonia"],img[src*="wt-getresponse"],img[src*="wt-webwave"]){display:grid;place-items:center;background:rgb(28 31 22/.07);border-radius:12px}
+html[data-mode="dark"] .tk .it.spr .iw:has(img[src*="wt-sentione"],img[src*="wt-symfonia"],img[src*="wt-getresponse"],img[src*="wt-webwave"]){background:rgb(244 244 237/.07)}
+html .tk .it.spr .iw:has(img[src*="wt-sentione"],img[src*="wt-symfonia"],img[src*="wt-getresponse"],img[src*="wt-webwave"]) img{display:none}
+html .tk .it.spr .iw:has(img[src*="wt-sentione"],img[src*="wt-symfonia"],img[src*="wt-getresponse"],img[src*="wt-webwave"])::before{content:"";width:min(62%,220px);height:clamp(28px,26%,52px);background:no-repeat center/contain;filter:brightness(0);opacity:.78}
+html[data-mode="dark"] .tk .it.spr .iw:has(img[src*="wt-sentione"],img[src*="wt-symfonia"],img[src*="wt-getresponse"],img[src*="wt-webwave"])::before{filter:brightness(0) invert(1);opacity:.9}
+@media (max-width:767px){html .tk .it.spr .iw:has(img[src*="wt-sentione"],img[src*="wt-symfonia"],img[src*="wt-getresponse"],img[src*="wt-webwave"]){aspect-ratio:16/8!important}}
+html .tk .it.spr .iw:has(img[src*="wt-sentione"])::before{background-image:url(../logos/sentione.png)}
+html .tk .it.spr .iw:has(img[src*="wt-symfonia"])::before{background-image:url(../logos/symfonia.webp)}
+html .tk .it.spr .iw:has(img[src*="wt-getresponse"])::before{background-image:url(../logos/getresponse.svg)}
+html .tk .it.spr .iw:has(img[src*="wt-webwave"])::before{background-image:url(../logos/webwave.svg)}
+/* 404 and maintenance: the photo settles once, then the WL signature is drawn over its dark side in lime */
+@keyframes wlPaint{to{clip-path:inset(0 0 0 0)}}
+@keyframes wlSettle{from{transform:scale(1.07)}to{transform:scale(1)}}
+html .mnt>.wl-mk,html .lx-h>.wl-mk{position:absolute;z-index:0;top:clamp(64px,8vh,110px);right:clamp(16px,5vw,80px);width:min(25vw,380px);height:auto;color:#D2FF00;pointer-events:none;clip-path:inset(0 100% 0 0);animation:wlPaint 1.7s cubic-bezier(.65,0,.25,1) 2.3s forwards}
+html .wl-mk path{fill:currentColor;stroke:none}
+html .mnt .mt__in,html .lx-h .lx-h__in{position:relative;z-index:1}
+html .mt__bg img,html .lx-h__bg img{animation:wlSettle 2.8s cubic-bezier(.2,.7,.1,1) 2s both}
+html .mnt>.wl-mk{top:clamp(24px,3.5vh,40px);right:auto;left:54vw;width:min(21vw,330px)}
+@media (max-width:767px){
+  html .lx-h>.wl-mk{top:92px;right:16px;width:min(54vw,240px)}
+  html .mnt>.wl-mk{top:68px;left:auto;right:16px;width:min(42vw,190px)}
+}
+@media (min-width:768px){html[data-mode="light"]:has(.pg>.mnt:first-child) .nav .brand{color:#282C20}}
+@media (prefers-reduced-motion:reduce){html .mnt>.wl-mk,html .lx-h>.wl-mk{animation:none;clip-path:none}html .mt__bg img,html .lx-h__bg img{animation:none}}

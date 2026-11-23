@@ -1,0 +1,52 @@
+/* References carousel. One card in focus, the next one peeks. Autoplay runs on a CSS animation, so it stops with a hover, a focus,
+   a touch, or when the visitor asks for less motion. Swipe is native scroll snap. */
+.rcs{padding:clamp(72px,9vw,128px) 0;--rc-ink:244 244 237}
+html[data-mode="light"] .rcs{--rc-ink:40 44 32}
+.rcs__in{width:min(1240px,100% - 2*var(--gut,24px));margin-inline:auto}
+.rcs__hd{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,48px)}
+.rcs__hd .eyebrow{display:block;margin-bottom:14px;color:var(--lt,#D2FF00)}
+.rcs__hd h2{margin:0;max-width:15em;font-size:clamp(34px,4.2vw,60px);line-height:1;text-wrap:balance}
+.rc{position:relative}
+.rc__vp{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:0 calc(-1*var(--gut,24px));padding:0 var(--gut,24px);scroll-padding-inline:var(--gut,24px)}
+.rc__vp::-webkit-scrollbar{display:none}
+.rc__tr{list-style:none;margin:0;padding:0;display:flex;gap:clamp(14px,1.6vw,24px)}
+.rc__c{flex:0 0 min(900px,88%);scroll-snap-align:start;display:grid;grid-template-columns:132px minmax(0,1fr);gap:clamp(20px,3vw,44px);padding:clamp(24px,3vw,44px);border-radius:20px;background:rgb(var(--rc-ink)/.05);box-shadow:inset 0 0 0 1px rgb(var(--rc-ink)/.14);opacity:.42;transition:opacity .45s ease,transform .45s ease;transform:scale(.985)}
+.rc__c.on{opacity:1;transform:none}
+.rc__who{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0}
+.rc__av{width:88px;height:88px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px rgb(var(--rc-ink)/.2)}
+.rc__mono{display:grid;place-items:center;width:88px;height:88px;border-radius:50%;background:rgb(var(--rc-ink)/.1);box-shadow:0 0 0 2px rgb(var(--rc-ink)/.2);font:700 28px/1 var(--sans);font-stretch:75%;letter-spacing:.02em}
+.rc__nm{font:700 17px/1.2 var(--sans)}
+.rc__nm a{color:inherit;text-decoration:none;border-bottom:1px solid rgb(var(--rc-ink)/.3)}
+.rc__nm a:hover,.rc__nm a:focus-visible{border-color:var(--lt,#D2FF00);color:var(--lt,#D2FF00)}
+.rc__nm a::after{content:"\00a0↗";font-weight:500;opacity:.7}
+.rc__rl{font:400 14px/1.35 var(--sans);opacity:.74}
+.rc__co{display:flex;align-items:center;height:22px;margin-top:2px}
+.rc__co img{display:block;height:20px;width:auto;max-width:120px;object-fit:contain;filter:brightness(0) invert(1);opacity:.8}
+html[data-mode="light"] .rc__co img{filter:brightness(0);opacity:.7}
+.rc__co span{font:700 13px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;opacity:.8}
+.rc__q{margin:0;padding-top:22px;border-top:2px solid var(--lt,#D2FF00);align-self:start;font:500 clamp(20px,2.1vw,30px)/1.32 var(--sans);letter-spacing:-.005em}
+.rc__ct{display:flex;align-items:center;gap:18px;margin-top:26px}
+.rc__bar{flex:1 1 auto;height:2px;border-radius:2px;background:rgb(var(--rc-ink)/.18);overflow:hidden}
+.rc__bar i{display:block;height:100%;width:100%;background:var(--lt,#D2FF00);transform-origin:0 50%;transform:scaleX(0)}
+.rc.play .rc__bar i{animation:rc-p 8s linear forwards}
+.rc.hold .rc__bar i{animation-play-state:paused}
+@keyframes rc-p{to{transform:scaleX(1)}}
+.rc__n{font:600 12px/1 var(--sans);letter-spacing:.06em;opacity:.7;white-space:nowrap}
+.rc__bt{display:flex;gap:8px}
+.rc__bt button{width:44px;height:44px;border-radius:8px;border:0;background:transparent;color:inherit;box-shadow:inset 0 0 0 1px rgb(var(--rc-ink)/.35);font:600 18px/1 var(--sans);cursor:pointer;transition:background .25s,color .25s}
+.rc__bt button:hover,.rc__bt button:focus-visible{background:var(--lt,#D2FF00);color:#282C20;box-shadow:none}
+.rc__dots{display:flex}
+.rc__dots button{width:28px;height:44px;border:0;background:transparent;cursor:pointer;padding:0;display:grid;place-items:center}
+.rc__dots button::before{content:"";width:8px;height:8px;border-radius:50%;background:rgb(var(--rc-ink)/.3);transition:background .25s,transform .25s}
+.rc__dots button[aria-current="true"]::before{background:var(--lt,#D2FF00);transform:scale(1.35)}
+@media (max-width:767px){
+  .rc__c{flex-basis:88%;grid-template-columns:1fr;gap:18px;padding:22px}
+  .rc__who{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 14px}
+  .rc__av,.rc__mono{width:64px;height:64px;font-size:22px}
+  .rc__id{flex:1 1 0;min-width:0}
+  .rc__co{flex-basis:100%}
+  .rc__q{font-size:19px;padding-top:18px}
+  .rc__bt{display:none}
+  .rc__n{display:none}
+}
+@media (prefers-reduced-motion:reduce){.rc__c{transition:none;transform:none}.rc.play .rc__bar i{animation:none}}

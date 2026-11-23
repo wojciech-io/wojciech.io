@@ -3090,7 +3090,7 @@ addEventListener('load',()=>{ScrollTrigger.sort();ScrollTrigger.refresh()});
 
 /* nav: colour follows the section under it, buttons scale 1.2 > 1 over the first screen */
 const nav=document.getElementById('nav');
-function navTone(){nav.classList.toggle('sc',scrollY>60);let t='dark',el=null;document.querySelectorAll('[data-theme]').forEach(s=>{const b=s.getBoundingClientRect();if(b.top<=40&&b.bottom>40){t=s.dataset.theme;el=s}});if(MODE.get()==='light'&&t==='dark'&&!(el&&el.matches(ISL)))t='light';nav.dataset.t=(t==='light'||t==='lime')?'light':'dark'}
+function navTone(){nav.classList.toggle('sc',scrollY>60);let t='dark',el=null;document.querySelectorAll('[data-theme]').forEach(s=>{const b=s.getBoundingClientRect();if(b.top<=40&&b.bottom>40){t=s.dataset.theme;el=s}});if(MODE.get()==='light'&&t==='dark'&&!(el&&el.matches(ISL)))t='light';let tt=(t==='light'||t==='lime')?'light':'dark';for(let n=el||document.body;n&&n.nodeType===1;n=n.parentElement){const m=getComputedStyle(n).backgroundColor.match(/[\d.]+/g);if(m&&(m.length<4||+m[3]>.6)){tt=(.2126*+m[0]+.7152*+m[1]+.0722*+m[2])/255>.5?'light':'dark';break}}nav.dataset.t=tt}
 addEventListener('wl:mode',()=>navTone());
 lenis.on('scroll',navTone);if(RM)addEventListener('scroll',navTone,{passive:true});navTone();
 if(D&&!RM){/* header keeps one size */}
@@ -3927,5 +3927,6 @@ const MPV={work:['assets/menu/work-apps.webp','Work','Apps, demos and repos with
 })();
 /* ---- /v4 menu scenes ---- */
 </script>
+<script src="assets/motion/ui.js" defer></script>
 </body>
 </html>
