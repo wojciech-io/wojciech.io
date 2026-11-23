@@ -7,7 +7,12 @@
     if (!base || document.querySelector('link[href*="motion/' + name + '"]')) return;
     var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = base + name; document.head.appendChild(l);
   }
+  function js(name) {
+    if (!base || document.querySelector('script[src*="motion/' + name + '"]')) return;
+    var s = document.createElement('script'); s.src = base + name; s.defer = true; document.head.appendChild(s);
+  }
   css('motion.css'); css('ui.css'); css('rhythm.css');
+  if (document.querySelector('.rc__vp,.crs__tr,.rs__rail,.mk-strip,.rl__vp,.c3h__track')) { css('carousel.css'); js('carousel.js'); }
 
   var root = document.documentElement, bar, on = false, tick = false, max = 0;
   function measure() { max = Math.max(0, root.scrollHeight - innerHeight); }
