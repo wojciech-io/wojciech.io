@@ -517,3 +517,25 @@ html .mnt>.wl-mk{top:clamp(24px,3.5vh,40px);right:auto;left:54vw;width:min(21vw,
 }
 @media (min-width:768px){html[data-mode="light"]:has(.pg>.mnt:first-child) .nav .brand{color:#282C20}}
 @media (prefers-reduced-motion:reduce){html .mnt>.wl-mk,html .lx-h>.wl-mk{animation:none;clip-path:none}html .mt__bg img,html .lx-h__bg img{animation:none}}
+
+/* ==== MOBILE R4 / tap targets ==== */
+/* 1. decoration never takes a tap: the contour pattern sat over the footer Book a call on every page */
+html .pat,html .pat *,html svg.contours,html .wl-mk{pointer-events:none}
+/* the photo layer under it lets taps through on purpose; the button inside it inherited that and never took a tap */
+html .ft .ft__bg .ft__lap{pointer-events:auto}
+/* 2. carousel dots are a phone control; on a desktop the arrows do the job and the bare 4 px buttons stacked their hit areas */
+@media (min-width:768px){html .g22-dots{display:none}}
+/* 3. one floor for small type: the issue numbers 01 to 03 on the newsletter band */
+html .nlb__is i{font-size:12px}
+@media (max-width:1024px){
+  /* 4. 44 px to the finger, the look stays: padding grows the box, the negative margin keeps the line */
+  html .sh__go{min-height:44px!important;box-sizing:border-box}
+  html .rc__nm a{padding-block:11px}
+  html .nlf__c a{display:inline-block;padding:14px 5px;margin:-14px -5px}
+  html body .ft .flc a{min-height:44px;box-sizing:border-box}
+}
+@media (max-width:767px){
+  /* 5. the dark footer card fills the screen edge to edge; with side margins on a 100% box it ran 16 px past the right edge */
+  html .s.ft .lw{margin:0}
+}
+/* ==== /MOBILE R4 ==== */
