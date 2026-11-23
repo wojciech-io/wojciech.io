@@ -14,12 +14,14 @@ const pages = (process.env.PAGES || 'index,gtm,marketing,growth,about,work,newsl
 const widths = [390, 1440];
 const modes = ['dark', 'light'];
 const jobs = pages.flatMap((p) => modes.flatMap((m) => widths.map((w) => ({ p, m, w }))));
-const browser = await chromium.launch();
+let browser = await chromium.launch();
+// another process may stop a headless browser mid-run: start a new one and retry the job once
+async function fresh() { if (!browser.isConnected()) browser = await chromium.launch(); return browser; }
 const results = [];
 let next = 0;
 
 async function run({ p, m, w }) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: w === 390 ? 844 : 900 }, reducedMotion: 'reduce', hasTouch: w === 390 });
+  const ctx = await (await fresh()).newContext({ viewport: { width: w, height: w === 390 ? 844 : 900 }, reducedMotion: 'reduce', hasTouch: w === 390 });
   await ctx.addInitScript((mode) => {
     try { localStorage.setItem('wl-mode', mode); localStorage.setItem('v4theme', mode); localStorage.setItem('wl-consent', 'denied'); } catch (e) {}
   }, m);
@@ -94,10 +96,18 @@ async function run({ p, m, w }) {
     Object.assign(out, r);
     out.overflowX = await pg.evaluate(() => [...document.querySelectorAll('p,h1,h2,h3')].filter((e) => { const b = e.getBoundingClientRect(); return b.width && (b.right > innerWidth + 0.5 || b.left < -0.5) && !e.closest('[aria-hidden="true"],.mq2,.mq'); }).map((e) => e.textContent.trim().slice(0, 30)).slice(0, 5));
   } catch (e) { out.error = String(e.message || e).slice(0, 160); }
-  await ctx.close();
+  await ctx.close().catch(() => {});
   return out;
 }
-await Promise.all(Array.from({ length: 4 }, async () => { while (next < jobs.length) { const j = jobs[next++]; results.push(await run(j)); } }));
+await Promise.all(Array.from({ length: 3 }, async () => {
+  while (next < jobs.length) {
+    const j = jobs[next++];
+    let r;
+    try { r = await run(j); } catch (e) { r = { ...j, error: String(e.message || e).slice(0, 160) }; }
+    if (r.error && /closed/.test(r.error)) { try { r = await run(j); } catch (e) { r = { ...j, error: String(e.message || e).slice(0, 160) }; } }
+    results.push({ total: 0, hits: [], small: [], textUnder12: [], ...r });
+  }
+}));
 await browser.close();
 
 const o = (t) => process.stdout.write(t + '\n');
