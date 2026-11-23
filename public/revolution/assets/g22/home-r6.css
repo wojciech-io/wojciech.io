@@ -4,3 +4,67 @@
 /* card 1: the "where" line under each lens card, taken over from the removed "What I get hired for" section */
 .lz__where{margin:0;font:400 12px/1.45 var(--sans);letter-spacing:.01em;color:var(--lz-mute,rgb(var(--on,244 244 237)/.72))}
 .lz__where b{margin-right:6px;font:600 12px/1.2 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--lz-num,var(--lt,#D2FF00))}
+
+/* ==== card 2: one Apps section, built like the career index. The list on the left (name, status, one line),
+   the whole screen of the chosen tool on the right. On a phone the screen opens under the row. No gradients,
+   no tiles: the screen sits on the section ground with a radius of 12 and a shadow. ==== */
+html[data-mode="dark"] .s.hm.ap{background:var(--hd-a)}
+.ap{padding:clamp(72px,8vw,120px) 0}
+.ap__in{width:min(1240px,100% - 2*var(--gut,24px));margin-inline:auto}
+.ap__hd{max-width:40em;margin-bottom:clamp(32px,4vw,52px)}
+.ap__hd .eyebrow{display:block;margin-bottom:14px;color:var(--lt,#D2FF00)}
+.ap__hd h2{margin:0;font:800 clamp(44px,5.4vw,80px)/.92 var(--sans);font-stretch:75%;text-transform:uppercase;letter-spacing:-.01em}
+.ap__hd h2 em{display:block;font-style:normal;color:var(--lt,#D2FF00)}
+.ap__hd p{margin:18px 0 0;max-width:30em;font:400 18px/1.5 var(--sans);color:rgb(var(--on,244 244 237)/.8)}
+
+.ap__ix{position:relative}
+.ap__ls{list-style:none;margin:0;padding:0}
+.ap__li{border-top:1px solid rgb(var(--on,244 244 237)/.16)}
+.ap__li:last-child{border-bottom:1px solid rgb(var(--on,244 244 237)/.16)}
+.ap__bt::before{content:"";position:absolute;left:0;top:-1px;width:0;height:3px;background:var(--lt,#D2FF00)}
+.ap__li.on .ap__bt::before{width:56px}
+.ap__bt{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) auto;grid-template-areas:"no nm st" ". tx tx";gap:4px 14px;align-items:baseline;width:100%;min-height:44px;padding:16px 0 18px;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.ap__no{grid-area:no;font:600 12px/1.2 var(--sans);letter-spacing:.06em;font-variant-numeric:tabular-nums;color:rgb(var(--on,244 244 237)/.7)}
+.ap__nm{grid-area:nm;font:600 19px/1.25 var(--sans);color:rgb(var(--on,244 244 237)/.9)}
+.ap__st{grid-area:st;font:600 12px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--on,244 244 237)/.7)}
+.ap__tx{grid-area:tx;max-width:34em;font:400 15px/1.45 var(--sans);color:rgb(var(--on,244 244 237)/.74)}
+.ap__li.on .ap__no,.ap__li.on .ap__st{color:var(--lt,#D2FF00)}
+.ap__li.on .ap__nm{color:rgb(var(--on,244 244 237))}
+.ap__li.on .ap__tx{color:rgb(var(--on,244 244 237)/.88)}
+.ap__bt:hover .ap__nm,.ap__bt:focus-visible .ap__nm{color:rgb(var(--on,244 244 237))}
+.ap__bt:focus-visible,.ap__go:focus-visible,.ap__dm a:focus-visible{outline:2px solid var(--lt,#D2FF00);outline-offset:3px}
+
+.ap__d{display:none}
+.ap__fig{margin:0}
+.ap__fig img{display:block;width:100%;height:auto;border-radius:12px;outline:1px solid rgb(var(--on,244 244 237)/.14);outline-offset:-1px;filter:drop-shadow(0 26px 36px rgb(0 0 0/.5))}
+html[data-mode="light"] .ap__fig img{filter:drop-shadow(0 22px 32px rgb(40 44 32/.3))}
+.ap__go{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:14px;font:600 15px/1.2 var(--sans);color:var(--lt,#D2FF00);text-decoration:none;border-bottom:1px solid transparent}
+.ap__go:hover{border-bottom-color:currentColor}
+.ap__go i{font-style:normal;transition:transform .3s}
+.ap__go:hover i{transform:translateX(3px)}
+
+.ap__ft{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 40px;margin-top:clamp(28px,3vw,44px)}
+.ap__dm{display:flex;flex-wrap:wrap;align-items:center;gap:0 24px;font:400 15px/1.4 var(--sans)}
+.ap__dl{color:rgb(var(--on,244 244 237)/.74)}
+.ap__dm a{display:inline-flex;align-items:center;min-height:44px;color:var(--lt,#D2FF00);text-decoration:none;border-bottom:1px solid transparent}
+.ap__dm a:hover{border-bottom-color:currentColor}
+
+/* wide: the chosen screen stands on the right, level with the first row */
+@media (min-width:901px){
+  .ap__ls{width:min(44%,520px)}
+  .ap__d{position:absolute;top:0;right:0;width:calc(100% - min(44%,520px) - clamp(32px,5vw,72px))}
+  .ap__li.on>.ap__d{display:block}
+}
+/* phone and tablet: the screen opens in place under its row */
+@media (max-width:900px){
+  .ap__bt{grid-template-columns:28px minmax(0,1fr);grid-template-areas:"no nm" "no st" "no tx";padding:14px 0 16px}
+  .ap__li.on>.ap__d{display:block;padding:2px 0 22px 42px}
+  .ap__fig img{border-radius:12px}
+}
+@media (max-width:480px){.ap__li.on>.ap__d{padding-left:0}}
+/* without script every screen stays open */
+.ap:not(.js) .ap__d{display:block;position:static;width:auto;padding:0 0 24px 42px}
+@media (prefers-reduced-motion:no-preference){
+  .ap__li.on>.ap__d .ap__fig{animation:ap-in .35s cubic-bezier(.2,.7,.1,1)}
+  @keyframes ap-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+}
