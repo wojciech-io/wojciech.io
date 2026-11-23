@@ -1,0 +1,73 @@
+/* About: the career as an index of marks.
+   One row per role: the year, the company mark at a size you can read, the headline result. A row lights up under the pointer
+   and opens in place. Dark = Ink: lime fill, hairlines. Light = Paper: olive fill, soft shadow. Scoped to #roles; Home keeps its own career block. */
+#roles.crb{--ink:rgb(var(--on,244 244 237));--hair:rgb(var(--on,244 244 237)/.16);--hot:var(--lt,#D2FF00);--hot-ink:#171A11;--mute:rgb(var(--on,244 244 237)/.62)}
+html[data-mode="light"] #roles.crb{--ink:#23261B;--hair:rgb(40 44 32/.14);--hot:#4D5C00;--hot-ink:#F5F6EE;--mute:#565C49}
+#roles .crb__md{display:block}
+#roles .crb__pn{display:none}
+#roles .crb__rail{padding:0;margin:0;border-top:1px solid var(--hair)}
+#roles .crb__rail::before{display:none}
+#roles .crb__li{position:relative;border-bottom:1px solid var(--hair);margin:0}
+#roles .crb__bt{position:relative;display:grid;grid-template-columns:clamp(96px,11vw,150px) minmax(0,1fr) auto 28px;gap:clamp(12px,2vw,32px);align-items:center;width:100%;min-height:clamp(84px,9vw,112px);padding:0 clamp(12px,1.6vw,24px);border:0;background:none;color:var(--ink);opacity:1;text-align:left;cursor:pointer;overflow:hidden;isolation:isolate;transition:transform .45s cubic-bezier(.2,.7,.1,1)}
+#roles .crb__bt::before{content:"";display:block;position:absolute;inset:0;left:0;top:0;width:auto;height:auto;margin:0;border:0;border-radius:0;background:var(--hot);transform:scaleX(0);transform-origin:left center;transition:transform .55s cubic-bezier(.2,.7,.1,1);z-index:-1;box-shadow:none}
+#roles .crb__bt:hover::before,#roles .crb__bt:focus-visible::before,#roles .crb__li.on>.crb__bt::before{transform:scaleX(1)}
+#roles .crb__bt:hover,#roles .crb__bt:focus-visible{color:var(--hot-ink)}
+#roles .crb__li.on>.crb__bt{color:var(--hot-ink)}
+#roles .crb__bt:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+#roles .crb__y{font:700 14px/1 var(--sans);font-stretch:75%;letter-spacing:.06em;font-variant-numeric:tabular-nums;text-transform:uppercase;color:inherit;opacity:.75}
+#roles .crb__lg{display:flex;align-items:center;gap:10px;min-height:44px}
+#roles .crb__lg img{height:clamp(28px,2.8vw,38px);width:auto;max-width:min(230px,100%);object-fit:contain;object-position:left center;transition:transform .5s cubic-bezier(.2,.7,.1,1),filter .25s}
+#roles .crb__lg img.s{height:clamp(22px,2.2vw,30px);margin-right:0}
+#roles .crb__lg img.sq{height:clamp(44px,4.4vw,58px)}
+#roles .crb__lg img[src*="marquard"]{height:clamp(44px,4.4vw,58px)}
+#roles .crb__lg img[src*="lodz"]{height:clamp(36px,3.6vw,48px)}
+#roles .crb__lg b{font:800 clamp(24px,2.6vw,36px)/1 var(--sans);font-stretch:75%;text-transform:uppercase;letter-spacing:-.005em}
+#roles .crb__bt:hover .crb__lg img,#roles .crb__li.on .crb__lg img{transform:scale(1.06) translateX(4px);filter:brightness(0)}
+html[data-mode="light"] #roles .crb__bt:hover .crb__lg img,html[data-mode="light"] #roles .crb__li.on .crb__lg img{filter:brightness(0) invert(1)}
+/* headline result on the row: the number and what it counts */
+#roles .crb__x{display:flex;align-items:center;gap:14px;justify-content:flex-end;text-align:right;color:var(--mute);transition:color .3s}
+#roles .crb__x b{font:800 clamp(30px,4vw,56px)/1 var(--sans);font-stretch:75%;font-variant-numeric:tabular-nums;white-space:nowrap}
+#roles .crb__x small{max-width:9.5em;font:500 12px/1.3 var(--sans);text-align:left}
+#roles .crb__bt:hover .crb__x,#roles .crb__li.on .crb__x{color:var(--hot-ink)}
+#roles .crb__bt::after{content:"";width:14px;height:14px;justify-self:end;background:linear-gradient(currentColor,currentColor) center/100% 2px no-repeat,linear-gradient(currentColor,currentColor) center/2px 100% no-repeat;transition:transform .4s cubic-bezier(.2,.7,.1,1)}
+#roles .crb__li.on>.crb__bt::after{transform:rotate(45deg)}
+/* the opened role */
+#roles .crb__d{display:block;max-height:0;overflow:hidden;opacity:0;padding:0;transition:max-height .7s cubic-bezier(.2,.7,.1,1),opacity .4s ease}
+#roles .crb__li.on>.crb__d{max-height:640px;opacity:1}
+#roles .crb__d{display:grid;grid-template-columns:clamp(96px,11vw,150px) minmax(0,1fr) minmax(0,1fr);column-gap:clamp(12px,2vw,32px);padding-inline:clamp(12px,1.6vw,24px)}
+#roles .crb__li.on>.crb__d{padding-block:clamp(24px,3vw,44px) clamp(28px,3.4vw,52px)}
+#roles .crb__yr{display:none}
+#roles .crb__d h3{grid-column:2;margin:0;font:500 clamp(30px,3.4vw,52px)/1.05 var(--serif);max-width:12em}
+#roles .crb__at{grid-column:2;margin-top:18px}
+#roles .crb__at img{display:none}
+#roles .crb__at a{color:var(--ink);border-bottom:1px solid var(--hair);font-weight:600}
+#roles .crb__mags{grid-column:2;margin-top:22px}
+#roles .crb__wh{grid-column:3;grid-row:1/span 2;margin:0;max-width:30em;font:400 clamp(17px,1.5vw,20px)/1.5 var(--sans);opacity:.92}
+#roles .crb__rs{grid-column:3;margin-top:28px;padding-top:22px;border-top:1px solid var(--hair);display:flex;align-items:baseline;gap:18px}
+#roles .crb__rs b{font:800 clamp(64px,8vw,120px)/.82 var(--sans);font-stretch:75%;color:var(--ink)}
+#roles .crb__rs span{max-width:12em;font:500 15px/1.35 var(--sans);color:var(--mute);opacity:1}
+#roles .crb__tg{grid-column:3;margin:22px 0 0;font:500 14px/1.5 var(--sans);opacity:1;color:var(--mute)}
+html[data-mode="light"] #roles .crb__tg{color:#565C49!important}
+/* the rows arrive in turn */
+#roles.crb.js .crb__li{opacity:0;transform:translateY(22px)}
+#roles.crb.js.tl-in .crb__li{opacity:1;transform:none;transition:opacity .6s ease calc(var(--i,0)*60ms),transform .7s cubic-bezier(.2,.7,.1,1) calc(var(--i,0)*60ms)}
+html[data-mode="light"] #roles .crb__bt:hover{box-shadow:0 1rem 2rem -1.2rem rgb(77 92 0/.55)}
+@media (max-width:900px){
+  #roles .crb__bt{grid-template-columns:minmax(0,1fr) auto 24px;grid-template-rows:auto auto;row-gap:2px;min-height:76px;padding:12px 8px}
+  #roles .crb__y{grid-column:1;grid-row:1;font-size:12px}
+  #roles .crb__lg{grid-column:1;grid-row:2}
+  #roles .crb__x{grid-column:2;grid-row:1/span 2;flex-direction:column;align-items:flex-end;gap:2px}
+  #roles .crb__x b{font-size:32px}
+  #roles .crb__x small{max-width:8em;text-align:right}
+  #roles .crb__bt::after{grid-column:3;grid-row:1/span 2}
+  #roles .crb__d{grid-template-columns:1fr;padding-inline:8px}
+  #roles .crb__d h3,#roles .crb__at,#roles .crb__mags,#roles .crb__wh,#roles .crb__rs,#roles .crb__tg{grid-column:1;grid-row:auto}
+  #roles .crb__wh{margin-top:18px}
+  #roles .crb__li.on>.crb__d{max-height:900px}
+}
+@media (prefers-reduced-motion:reduce){
+  #roles.crb.js .crb__li{opacity:1;transform:none}
+  #roles .crb__bt,#roles .crb__bt::before,#roles .crb__d,#roles .crb__lg img,#roles .crb__bt::after{transition:none!important}
+}
+/* contrast: the two inactive rule tabs from the rules switcher were under 4.5:1 in light */
+html[data-mode="light"] [id^="rr-t"]{color:#565C49!important;opacity:1!important}

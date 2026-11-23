@@ -3,7 +3,7 @@
 .gt-w{width:min(1240px,100% - 2*var(--gut,24px));margin-inline:auto}
 .gt-hero,.gt-rail{--on:244 244 237;--lt:#D2FF00;--lo:#C9E23A;--sh:28 31 22;color:rgb(244 244 237)}
 .gt-sheet{position:relative;border-radius:clamp(22px,3vw,44px) clamp(22px,3vw,44px) 0 0;margin-top:calc(-1*clamp(22px,3vw,44px));z-index:6}
-.gt-hero .eyebrow,.gt-rail .eyebrow,.gt-cs .eyebrow,.gt-ap .eyebrow{display:block;margin-bottom:18px;color:var(--lt,#D2FF00)}
+.gt-hero .eyebrow,.gt-rail .eyebrow,.gt-ap .eyebrow{display:block;margin-bottom:18px;color:var(--lt,#D2FF00)}
 
 /* the rail: six stages, a signal runs along the line */
 .gt-rail{background:#282C20;padding:clamp(72px,9vw,128px) 0}
@@ -60,27 +60,6 @@
   .gt-r__s{grid-column:2;margin-top:26px}
 }
 
-/* case */
-.gt-cs{padding:clamp(72px,9vw,128px) 0}
-.gt-cs__g{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,6vw,96px);align-items:start}
-.gt-cs__l{position:sticky;top:96px}
-.gt-cs h2{margin:0;font-size:clamp(36px,4.6vw,68px);line-height:.95}
-.gt-cs__lede{margin-top:20px;font:400 17px/1.5 var(--sans);opacity:.8;max-width:28em}
-.gt-nums{display:grid;gap:0;margin:36px 0 28px}
-.gt-nums div{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-top:1px solid rgb(var(--on,244 244 237)/.18)}
-.gt-nums div:last-child{border-bottom:1px solid rgb(var(--on,244 244 237)/.18)}
-.gt-nums dd{order:2;margin:0;font:800 clamp(34px,3.6vw,52px)/1 var(--sans);font-stretch:75%;color:var(--lt,#D2FF00);text-align:right;white-space:nowrap}
-.gt-nums dt{order:1;font:500 14px/1.35 var(--sans);opacity:.75}
-.gt-cs__r{margin:0}
-.gt-cs__r>div{display:grid;grid-template-columns:130px minmax(0,1fr);gap:24px;padding:26px 0;border-top:1px solid rgb(var(--on,244 244 237)/.16)}
-.gt-cs__r>div:last-child{border-bottom:1px solid rgb(var(--on,244 244 237)/.16)}
-.gt-cs__r dt{font:600 12px/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--lt,#D2FF00)}
-.gt-cs__r dd{margin:0;font:400 16px/1.55 var(--sans);opacity:.9}
-@media (max-width:900px){
-  .gt-cs__g{grid-template-columns:1fr}
-  .gt-cs__l{position:static}
-  .gt-cs__r>div{grid-template-columns:1fr;gap:10px}
-}
 
 /* apps behind it: three whole screens on a staircase */
 .gt-ap{padding:clamp(72px,9vw,128px) 0;background:#1C1F16}
@@ -122,3 +101,23 @@ html[data-mode="light"] .gt-ap{background:var(--sf2,#E5E8D9)}
 .gt-fq__cta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:28px 0 0;font:700 clamp(20px,2vw,28px)/1.2 var(--sans)}
 .gt-fq__cta small{font:400 14px/1.4 var(--sans);opacity:.7;margin-bottom:12px}
 
+
+/* rail, round 2: a step lights as the packet reaches it; hover moves it. Flat ring, no glow. */
+.gt-st.is-live::after{animation:none;left:calc(var(--i,0)*100%/6 + 5px);box-shadow:none;transition:left .8s var(--m-ease,cubic-bezier(.2,.7,.1,1))}
+.gt-st li::before,.gt-st b{transition:background .4s,color .4s}
+.gt-st li.is-lit::before{background:#D2FF00}
+.gt-st li.is-lit b{color:#D2FF00}
+.gt-st li.is-lit span{color:rgb(244 244 237/.92)}
+@media (max-width:767px){.gt-st li{transition:opacity .4s}.gt-st.is-live li:not(.is-lit){opacity:.62}}
+
+/* LIGHT R4: the rail is paper in light mode */
+html[data-mode="light"] .gt-rail{background:#E9EBDD;color:#23261B;--on:40 44 32;--lt:#4D5C00;--lo:#56680A;--sh:233 235 221}
+html[data-mode="light"] .gt-rail .eyebrow{color:#4D5C00}
+html[data-mode="light"] .gt-st::before{background:rgb(40 44 32/.25)}
+html[data-mode="light"] .gt-st::after{background:#4D5C00;box-shadow:0 0 0 6px rgb(77 92 0/.16)}
+html[data-mode="light"] .gt-st li::before{border-color:#4D5C00;background:#E9EBDD}
+html[data-mode="light"] .gt-st li:last-child::before{background:#4D5C00}
+html[data-mode="light"] .gt-st i{color:#565C49}
+html[data-mode="light"] .gt-st span{color:#3B3F33}
+html[data-mode="light"] .gt-rail q b,html[data-mode="light"] .gt-rail q em{color:#4D5C00}
+html[data-mode="light"] .gt-rail .lh-by,html[data-mode="light"] .gt-rail .lh-by span{color:#3B3F33!important;opacity:1!important}
