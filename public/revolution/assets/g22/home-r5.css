@@ -1,58 +1,74 @@
-/* ==== HOME R5: references carousel on Home ====
-   One lead sentence set large and serif, the rest small and quiet, the person as a small signature under it.
-   Scoped to .rcs so About keeps the shared crs.css look. Cards are raised sheets, not tinted boxes. */
+/* ==== HOME R5: references on Home, set as typography instead of cards ====
+   Four levels on one grid. 1) the lead sentence, serif, 56 px on desktop and 28 px on the phone.
+   2) the rest of the quote, sans 18/14, narrow measure. 3) the person, a 48 px photo with name and role,
+   as a rail on the left on desktop and under the quote on the phone. 4) the company as a small paper chip.
+   No boxes, no tints, no shadows: a hairline over each reference and a short accent stroke on the one in focus.
+   Prefix rf- for anything new, scoped to .rcs so About keeps the shared crs.css look. */
 .rcs{
-  --rf-bg:#FBFBF6;--rf-line:rgb(40 44 32/.08);--rf-ink:#23261B;--rf-mute:#474c3a;--rf-soft:#353a2a;--rf-acc:#4D5C00;--rf-chip:#EEF0E3;
-  --rf-shadow:0 44px 70px -38px rgb(40 44 32/.55),0 12px 24px -14px rgb(40 44 32/.3);
+  --rf-ink:#F4F4ED;--rf-soft:#D6D9C8;--rf-mute:#B6BAA8;--rf-line:rgb(244 244 237/.2);--rf-acc:var(--lt,#D2FF00);
+  --rf-chip:#F1F2E6;--rf-chip-ink:#23261B;--rf-chip-ring:transparent;
+  --rf-rail:224px;--rf-gap:clamp(24px,4vw,64px);
 }
-html[data-mode="dark"] .rcs{
-  --rf-bg:#22271a;--rf-line:rgb(210 255 0/.16);--rf-ink:#F4F4ED;--rf-mute:#b6baa8;--rf-soft:#d6d9c8;--rf-acc:#D2FF00;--rf-chip:#F1F2E6;
-  --rf-shadow:0 48px 70px -34px #000,inset 0 1px 0 rgb(255 255 255/.06);
+html[data-mode="light"] .rcs{
+  --rf-ink:#23261B;--rf-soft:#353A2A;--rf-mute:#474C3A;--rf-line:rgb(40 44 32/.24);--rf-acc:#4D5C00;
+  --rf-chip:#FBFBF6;--rf-chip-ink:#23261B;--rf-chip-ring:rgb(40 44 32/.16);
 }
 
-.rcs .rc__c{
-  flex:0 0 min(800px,86%);display:grid;grid-template-columns:48px minmax(0,1fr);
-  grid-template-areas:"co co" "q q" "av id";grid-template-rows:auto 1fr auto;column-gap:16px;row-gap:0;
-  padding:clamp(28px,3.4vw,52px);border-radius:24px;background:var(--rf-bg);color:var(--rf-ink);
-  box-shadow:0 0 0 1px var(--rf-line),var(--rf-shadow);
+/* one reference = one spread on a 12-column feel: rail | measure */
+html[data-mode] .rcs .rc__c{
+  position:relative;flex:0 0 min(1080px,88%);display:grid;
+  grid-template-columns:var(--rf-rail) minmax(0,1fr);column-gap:var(--rf-gap);row-gap:0;
+  grid-template-areas:"av q" "id q" "co q" "sp q";grid-template-rows:auto auto auto 1fr;
+  padding:clamp(28px,3vw,44px) 0 clamp(8px,1.5vw,20px);border-radius:0;background:none;box-shadow:none;
+  border-top:1px solid var(--rf-line);color:var(--rf-ink);
+  opacity:.8;transform:none;transition:opacity .5s ease;
 }
-html[data-mode] .rcs .rc__c:not(.on){opacity:.82;transform:translateY(14px) scale(.975)}
-html[data-mode] .rcs .rc__c.on{opacity:1;transform:none}
+html[data-mode] .rcs .rc__c.on{opacity:1}
+.rcs .rc__c::before{content:"";position:absolute;left:0;top:-1px;width:0;height:3px;background:var(--rf-acc);transition:width .7s cubic-bezier(.2,.7,.2,1)}
+.rcs .rc__c.on::before{width:clamp(56px,6vw,96px)}
 .rcs .rc__who{display:contents}
 
-/* company: a paper chip, the same one the client cards use */
-.rcs .rc__co{grid-area:co;justify-self:start;display:inline-flex;align-items:center;height:36px;margin:0 0 clamp(24px,3vw,40px);padding:0 12px;border-radius:10px;background:var(--rf-chip)}
-.rcs .rc__co img{height:18px;max-width:120px;filter:none;opacity:1}
-html[data-mode] .rcs .rc__co img{filter:none;opacity:1}
-.rcs .rc__co span{font:700 13px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:#23261B;opacity:1}
+/* level 1 and 2: the quote */
+.rcs .rc__q{grid-area:q;margin:0;padding:0;border:0;max-width:none;align-self:start;color:var(--rf-soft);font:400 clamp(14px,1.25vw,18px)/1.6 var(--sans);letter-spacing:0}
+.rcs .rc__q strong{display:block;max-width:15em;margin:0 0 clamp(18px,2vw,30px);font:500 clamp(28px,3.9vw,56px)/1.06 var(--serif);letter-spacing:-.018em;color:var(--rf-ink);text-wrap:balance}
+.rcs .rc__q strong+*,.rcs .rc__q{text-wrap:pretty}
+.rcs .rc__q{padding-right:clamp(0px,6vw,96px)}
 
-/* the quote: a large lead sentence, the rest small */
-.rcs .rc__q{grid-area:q;margin:0;padding:0;border:0;max-width:32em;align-self:start;font:400 clamp(14px,1.45vw,20px)/1.55 var(--sans);letter-spacing:0;color:var(--rf-soft)}
-.rcs .rc__q strong{display:block;margin:0 0 clamp(14px,1.6vw,22px);font:500 clamp(28px,3.3vw,46px)/1.1 var(--serif);letter-spacing:-.015em;color:var(--rf-ink);text-wrap:balance}
-
-/* the person: a small signature under a hairline */
-.rcs .rc__av,.rcs .rc__mono{grid-area:av;align-self:center;width:48px;height:48px;margin-top:clamp(24px,3vw,40px);box-shadow:0 0 0 1px var(--rf-line)}
-.rcs .rc__mono{font-size:16px;background:var(--rf-chip);color:#23261B}
-.rcs .rc__id{grid-area:id;align-self:center;margin-top:clamp(24px,3vw,40px);min-width:0}
+/* level 3: the person */
+.rcs .rc__av,.rcs .rc__mono{grid-area:av;justify-self:start;width:48px;height:48px;margin:0 0 16px;box-shadow:0 0 0 1px var(--rf-line)}
+.rcs .rc__mono{background:var(--rf-chip);color:var(--rf-chip-ink);font-size:16px}
+.rcs .rc__id{grid-area:id;min-width:0}
 .rcs .rc__nm{font:600 16px/1.25 var(--sans);color:var(--rf-ink)}
-.rcs .rc__nm a{border-bottom:0}
+.rcs .rc__nm a{color:inherit;border-bottom:0;text-decoration:none}
 .rcs .rc__nm a:hover,.rcs .rc__nm a:focus-visible{color:var(--rf-acc);text-decoration:underline;text-underline-offset:3px}
-.rcs .rc__rl{margin-top:2px;font:400 14px/1.35 var(--sans);color:var(--rf-mute);opacity:1}
+.rcs .rc__rl{margin-top:4px;font:400 14px/1.4 var(--sans);color:var(--rf-mute);opacity:1}
 html[data-mode] .rcs .rc__rl{color:var(--rf-mute)!important}
 
-/* hairline above the signature */
-.rcs .rc__q{padding-bottom:0}
-.rcs .rc__c::after{content:none}
+/* level 4: the company on a paper chip */
+.rcs .rc__co{grid-area:co;justify-self:start;display:inline-flex;align-items:center;height:32px;margin:16px 0 0;padding:0 12px;border-radius:8px;background:var(--rf-chip);box-shadow:0 0 0 1px var(--rf-chip-ring)}
+.rcs .rc__co img{height:16px;max-width:112px;filter:none;opacity:1}
+html[data-mode] .rcs .rc__co img{filter:none;opacity:1}
+.rcs .rc__co span{font:700 12px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--rf-chip-ink);opacity:1}
 
 .rcs .rc__bar i,.rcs .rc__dots button[aria-current="true"]::before{background:var(--rf-acc)}
+.rcs .rc__ct{margin-top:clamp(28px,3vw,44px)}
 
+/* the phone: the quote first, the person under it */
 @media (max-width:767px){
-  .rcs .rc__c{flex-basis:88%;grid-template-columns:40px minmax(0,1fr);padding:22px 20px 24px;border-radius:20px}
-  .rcs .rc__co{margin-bottom:20px}
-  .rcs .rc__q{font-size:14px;line-height:1.5}
-  .rcs .rc__q strong{font-size:28px;line-height:1.14;margin-bottom:14px}
-  .rcs .rc__av,.rcs .rc__mono{width:40px;height:40px;margin-top:20px}
-  .rcs .rc__id{margin-top:20px}
+  html[data-mode] .rcs .rc__c{
+    flex-basis:86%;grid-template-columns:48px minmax(0,1fr);column-gap:14px;
+    grid-template-areas:"q q" "av id" ". co";grid-template-rows:auto auto auto;
+    padding:24px 0 8px;
+  }
+  .rcs .rc__q{padding-right:0;font-size:14px;line-height:1.55}
+  .rcs .rc__q strong{max-width:none;margin-bottom:16px;font-size:28px;line-height:1.14}
+  .rcs .rc__av,.rcs .rc__mono{margin:28px 0 0}
+  .rcs .rc__id{align-self:end;margin-top:28px}
+  .rcs .rc__co{margin-top:12px}
 }
-@media (prefers-reduced-motion:reduce){html[data-mode] .rcs .rc__c:not(.on){transform:none}}
+@media (min-width:768px) and (max-width:1023px){
+  .rcs{--rf-rail:176px}
+  .rcs .rc__q{padding-right:0}
+}
+@media (prefers-reduced-motion:reduce){html[data-mode] .rcs .rc__c,.rcs .rc__c::before{transition:none}}
 /* /HOME R5 */
