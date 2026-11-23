@@ -537,10 +537,24 @@ html .nlb__is i{font-size:12px}
 @media (max-width:767px){
   /* 5. the dark footer card fills the screen edge to edge; with side margins on a 100% box it ran 16 px past the right edge */
   html .s.ft .lw{margin:0}
-  /* 6. one footer column, edge to edge, everything to the left (it shrank to its content and "Follow on" sat right) */
-  html .s.ft .links{align-self:stretch;width:100%;padding:32px var(--gut) 0}
+  /* 6. the end of the page as one column on one 16 px axis: headline and line, the button right under them, the portrait, then the links.
+     The photo layer stops being a box (display:contents) so the button and the portrait take their own places in the column. */
+  html .s.ft .clip{align-items:stretch;padding-top:40px}
+  html .s.ft .stm{order:1;align-items:flex-start;text-align:left;padding:0 var(--gut);gap:12px}
+  html .s.ft .stm h2,html .s.ft .stm h2 .line{text-align:left!important}
+  html .s.ft .ft__sub{margin:0;max-width:34ch;text-align:left!important}
+  html .s.ft .ft__bg{display:contents}
+  html .s.ft .ft__lap{order:2;position:relative!important;z-index:3;inset:auto!important;align-self:stretch;justify-content:center;margin:20px var(--gut) 0!important}
+  /* the portrait: cropped to head and shoulders (object-position), it fades only under the shoulders, never across the face */
+  html .s.ft .ft__me{order:3;position:relative!important;z-index:3;inset:auto!important;transform:none!important;translate:none!important;align-self:center;width:min(100%,360px)!important;height:auto!important;aspect-ratio:1/1;object-fit:cover!important;object-position:50% 12%!important;margin:24px auto 0;-webkit-mask-image:linear-gradient(180deg,#000 82%,transparent 100%);mask-image:linear-gradient(180deg,#000 82%,transparent 100%)}
+  /* Pages and Follow on side by side from one top line, both to the left */
+  html .s.ft .links{order:4;display:grid!important;grid-template-columns:1fr 1fr;column-gap:16px;align-items:start;width:100%;padding:28px var(--gut) 0;border-top:1px solid rgb(244 244 237/.12);margin-top:0}
+  html[data-mode="light"] .s.ft .links{border-top-color:rgb(35 38 27/.14)}
   html .s.ft .flc,html .s.ft .flc.r{text-align:left}
-  /* 7. the portrait fades over its last fifth, not from the chest down */
-  html .ft .ft__me{-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent 100%);mask-image:linear-gradient(180deg,#000 80%,transparent 100%)}
+  html .s.ft .flc b{margin-bottom:6px}
+  /* the client logo strip: its links are 44 px tall, the strip was 24 px and cut every logo in half */
+  html .s.ft .mq2{order:5;margin-top:24px;height:auto!important;min-height:44px}
 }
+/* 8. dark mode: the copyright line and Privacy/Cookies were #1C1F16 on the #1C1F16 footer at every width; they take the light ink of the footer */
+html:not([data-mode="light"]) .s.ft .legal,html:not([data-mode="light"]) .s.ft .legal a{color:rgb(244 244 237/.75)}
 /* ==== /MOBILE R4 ==== */
