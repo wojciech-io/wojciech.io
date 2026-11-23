@@ -517,3 +517,44 @@ html .mnt>.wl-mk{top:clamp(24px,3.5vh,40px);right:auto;left:54vw;width:min(21vw,
 }
 @media (min-width:768px){html[data-mode="light"]:has(.pg>.mnt:first-child) .nav .brand{color:#282C20}}
 @media (prefers-reduced-motion:reduce){html .mnt>.wl-mk,html .lx-h>.wl-mk{animation:none;clip-path:none}html .mt__bg img,html .lx-h__bg img{animation:none}}
+
+/* ==== MOBILE R4 / tap targets ==== */
+/* 1. decoration never takes a tap: the contour pattern sat over the footer Book a call on every page */
+html .pat,html .pat *,html svg.contours,html .wl-mk{pointer-events:none}
+/* the photo layer under it lets taps through on purpose; the button inside it inherited that and never took a tap */
+html .ft .ft__bg .ft__lap{pointer-events:auto}
+/* 2. carousel dots are a phone control; on a desktop the arrows do the job and the bare 4 px buttons stacked their hit areas */
+@media (min-width:768px){html .g22-dots{display:none}}
+/* 3. one floor for small type: the issue numbers 01 to 03 on the newsletter band */
+html .nlb__is i{font-size:12px}
+@media (max-width:1024px){
+  /* 4. 44 px to the finger, the look stays: padding grows the box, the negative margin keeps the line */
+  html .sh__go{min-height:44px!important;box-sizing:border-box}
+  html .rc__nm a{padding-block:11px}
+  html .nlf__c a{display:inline-block;padding:14px 5px;margin:-14px -5px}
+  html body .ft .flc a{min-height:44px;box-sizing:border-box}
+}
+@media (max-width:767px){
+  /* 5. the dark footer card fills the screen edge to edge; with side margins on a 100% box it ran 16 px past the right edge */
+  html .s.ft .lw{margin:0}
+  /* 6. the end of the page as one column on one 16 px axis: headline and line, the button right under them, the portrait, then the links.
+     The photo layer stops being a box (display:contents) so the button and the portrait take their own places in the column. */
+  html .s.ft .clip{align-items:stretch;padding-top:40px}
+  html .s.ft .stm{order:1;align-items:flex-start;text-align:left;padding:0 var(--gut);gap:12px}
+  html .s.ft .stm h2,html .s.ft .stm h2 .line{text-align:left!important}
+  html .s.ft .ft__sub{margin:0;max-width:34ch;text-align:left!important}
+  html .s.ft .ft__bg{display:contents}
+  html .s.ft .ft__lap{order:2;position:relative!important;z-index:3;inset:auto!important;align-self:stretch;justify-content:center;margin:20px var(--gut) 0!important}
+  /* the portrait: cropped to head and shoulders (object-position), it fades only under the shoulders, never across the face */
+  html .s.ft .ft__me{order:3;position:relative!important;z-index:3;inset:auto!important;transform:none!important;translate:none!important;align-self:center;width:min(100%,360px)!important;height:auto!important;aspect-ratio:1/1;object-fit:cover!important;object-position:50% 12%!important;margin:24px auto 0;-webkit-mask-image:linear-gradient(180deg,#000 82%,transparent 100%);mask-image:linear-gradient(180deg,#000 82%,transparent 100%)}
+  /* Pages and Follow on side by side from one top line, both to the left */
+  html .s.ft .links{order:4;display:grid!important;grid-template-columns:1fr 1fr;column-gap:16px;align-items:start;width:100%;padding:28px var(--gut) 0;border-top:1px solid rgb(244 244 237/.12);margin-top:0}
+  html[data-mode="light"] .s.ft .links{border-top-color:rgb(35 38 27/.14)}
+  html .s.ft .flc,html .s.ft .flc.r{text-align:left}
+  html .s.ft .flc b{margin-bottom:6px}
+  /* the client logo strip: its links are 44 px tall, the strip was 24 px and cut every logo in half */
+  html .s.ft .mq2{order:5;margin-top:24px;height:auto!important;min-height:44px}
+}
+/* 8. dark mode: the copyright line and Privacy/Cookies were #1C1F16 on the #1C1F16 footer at every width; they take the light ink of the footer */
+html:not([data-mode="light"]) .s.ft .legal,html:not([data-mode="light"]) .s.ft .legal a{color:rgb(244 244 237/.75)}
+/* ==== /MOBILE R4 ==== */
