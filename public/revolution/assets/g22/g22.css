@@ -503,3 +503,17 @@ html .tk .it.spr .iw:has(img[src*="wt-sentione"])::before{background-image:url(.
 html .tk .it.spr .iw:has(img[src*="wt-symfonia"])::before{background-image:url(../logos/symfonia.webp)}
 html .tk .it.spr .iw:has(img[src*="wt-getresponse"])::before{background-image:url(../logos/getresponse.svg)}
 html .tk .it.spr .iw:has(img[src*="wt-webwave"])::before{background-image:url(../logos/webwave.svg)}
+/* 404 and maintenance: the photo settles once, then the WL signature is drawn over its dark side in lime */
+@keyframes wlPaint{to{clip-path:inset(0 0 0 0)}}
+@keyframes wlSettle{from{transform:scale(1.07)}to{transform:scale(1)}}
+html .mnt>.wl-mk,html .lx-h>.wl-mk{position:absolute;z-index:0;top:clamp(64px,8vh,110px);right:clamp(16px,5vw,80px);width:min(25vw,380px);height:auto;color:#D2FF00;pointer-events:none;clip-path:inset(0 100% 0 0);animation:wlPaint 1.7s cubic-bezier(.65,0,.25,1) 2.3s forwards}
+html .wl-mk path{fill:currentColor;stroke:none}
+html .mnt .mt__in,html .lx-h .lx-h__in{position:relative;z-index:1}
+html .mt__bg img,html .lx-h__bg img{animation:wlSettle 2.8s cubic-bezier(.2,.7,.1,1) 2s both}
+html .mnt>.wl-mk{top:clamp(24px,3.5vh,40px);right:auto;left:54vw;width:min(21vw,330px)}
+@media (max-width:767px){
+  html .lx-h>.wl-mk{top:92px;right:16px;width:min(54vw,240px)}
+  html .mnt>.wl-mk{top:68px;left:auto;right:16px;width:min(42vw,190px)}
+}
+@media (min-width:768px){html[data-mode="light"]:has(.pg>.mnt:first-child) .nav .brand{color:#282C20}}
+@media (prefers-reduced-motion:reduce){html .mnt>.wl-mk,html .lx-h>.wl-mk{animation:none;clip-path:none}html .mt__bg img,html .lx-h__bg img{animation:none}}
