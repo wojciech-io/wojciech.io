@@ -82,3 +82,24 @@
 .pl3__hd:has(.lh-cv){grid-template-columns:1fr;padding-bottom:32px}
 .pl3__hd:has(.lh-cv) .lh-cv{grid-column:1/-1}
 .pl3__hd:has(.lh-cv) p{max-width:46em}
+
+/* whole screens: an interface is never cut by the plate edge. The two-screen plates (a, b) and the one-screen plate (c) keep every
+   screen inside the art box, the back screen top right, the front one bottom left, and the plus sits clear of both. */
+.lh-cv--a .lh-cv__art,.lh-cv--b .lh-cv__art{min-height:0;align-self:center;aspect-ratio:20/19}
+.lh-cv--a .lh-cv__plus,.lh-cv--b .lh-cv__plus{display:none}
+.lh-cv--a .lh-cv__art img:nth-child(1){right:2%;left:auto;top:0;bottom:auto;width:72%;transform:none}
+.lh-cv--a .lh-cv__art img:nth-child(2){right:auto;left:0;top:auto;bottom:0;width:50%;transform:none}
+.lh-cv--b .lh-cv__art img:nth-child(1){left:2%;right:auto;top:0;bottom:auto;width:72%;transform:none}
+.lh-cv--b .lh-cv__art img:nth-child(2){left:auto;right:0;top:auto;bottom:0;width:50%;transform:none}
+.lh-cv--c .lh-cv__art{min-height:clamp(240px,30vw,420px)}
+.lh-cv--c .lh-cv__art img{right:auto;left:50%;top:50%;bottom:auto;width:min(88%,640px);max-width:none;transform:translate(-50%,-50%);border-radius:14px}
+.lh-cv__plus{z-index:1}
+@media (max-width:900px){
+  .lh-cv--a .lh-cv__art,.lh-cv--b .lh-cv__art{min-height:0;height:auto;aspect-ratio:20/17;margin:0 -22px;overflow:visible}
+  .lh-cv--a .lh-cv__art img:nth-child(1),.lh-cv--b .lh-cv__art img:nth-child(1){left:auto;right:6%;top:0;bottom:auto;width:70%;transform:none}
+  .lh-cv--a .lh-cv__art img:nth-child(2),.lh-cv--b .lh-cv__art img:nth-child(2){left:6%;right:auto;top:auto;bottom:0;width:50%;transform:none}
+  .lh-cv--c .lh-cv__art{min-height:0;height:auto;aspect-ratio:16/11;margin:0 -22px;overflow:visible}
+  .lh-cv--c .lh-cv__art img{left:50%;top:50%;bottom:auto;right:auto;width:84%;transform:translate(-50%,-50%)}
+  .lh-cv{padding-bottom:28px}
+  .lh-cv__plus{display:none}
+}
