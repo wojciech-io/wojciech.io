@@ -1,0 +1,65 @@
+/* Vertical rhythm and phone fixes for /revolution (loaded by ui.js on every page; section gaps skip Home, whose sections live in g22.css). One place for section gaps, the phone menu and Work on a phone.
+   Section padding was 128 px (desktop) and 72 to 80 px (phone) top and bottom, which made 150 to 250 px of empty space between blocks. */
+:root{--rh:clamp(44px,6.2vw,88px)}
+body:not(:has(.c3h)) .s.abk,
+body:not(:has(.c3h)) .s.abt,
+body:not(:has(.c3h)) .s.crb,
+body:not(:has(.c3h)) .s.rcs,
+body:not(:has(.c3h)) .s.abh,
+body:not(:has(.c3h)) .s.cl,
+body:not(:has(.c3h)) .s.nli,
+body:not(:has(.c3h)) .s.nla,
+body:not(:has(.c3h)) .s.nlh,
+body:not(:has(.c3h)) .s.gr-cs,
+body:not(:has(.c3h)) .s.gr-fq,
+body:not(:has(.c3h)) .s.gr-pov,
+body:not(:has(.c3h)) .s.gr-sheet:not(.gr-rw),
+body:not(:has(.c3h)) .s.gt-rail,
+body:not(:has(.c3h)) .s.gt-bd,
+body:not(:has(.c3h)) .s.gt-cs,
+body:not(:has(.c3h)) .s.gt-ap,
+body:not(:has(.c3h)) .s.gt-fq,
+body:not(:has(.c3h)) .s.mk-bd,
+body:not(:has(.c3h)) .s.mk-cs,
+body:not(:has(.c3h)) .s.mk-fq,
+body:not(:has(.c3h)) .s.mk-tools,
+body:not(:has(.c3h)) .s.mk-pov,
+body:not(:has(.c3h)) .sec:not(.hero){padding-block:var(--rh)!important}
+html body:not(:has(.c3h)) .sec:not(.hero,.cvr,.body,.trk){padding-block:var(--rh)!important}
+html body:not(:has(.c3h)) .s:is(.abk,.abt,.crb,.rcs,.cl,.nli,.nla,.gr-cs,.gr-fq,.gt-rail,.gt-bd,.gt-cs,.gt-ap,.gt-fq,.mk-bd,.mk-cs,.mk-fq,.mk-tools,.mk-pov,.gr-pov){padding-block:var(--rh)!important}
+body:not(:has(.c3h)) .s.abh{padding-top:clamp(96px,10vw,130px)!important}
+body:not(:has(.c3h)) .s.nlh{padding-top:clamp(92px,9vw,110px)!important}
+body:not(:has(.c3h)) .s.lg{padding-block:clamp(96px,10vw,130px) clamp(64px,7vw,96px)!important}
+body:not(:has(.c3h)) .s.ar2__rel{padding-block:clamp(48px,6vw,80px)!important}
+
+/* phone menu: one screen. The picture is a desktop extra, the links shrink a little. */
+@media (max-width:767px){
+  .mn .mn__ph,.mn .mns__gl{display:none!important}
+  .mn .contours{max-height:100%!important;top:0!important}
+  .mn .mn__links a{font-size:clamp(34px,10.5vw,46px)!important;line-height:1.02!important;padding-block:.08em!important}
+}
+
+/* Work on a phone: "Beyond the screens" was nine 25 to 30 rem tiles in a row (3600 px). Now one compact row per project. */
+@media (max-width:767px){
+  #track .tk{display:block!important;width:auto!important;height:auto!important;transform:none!important}
+  #track .tk .col{width:auto!important;padding-top:0!important}
+  #track .tk__hd{padding-bottom:20px}
+  #track .sxg{display:none!important}
+  #track .it{width:auto!important;display:grid!important;grid-template-columns:84px minmax(0,1fr);column-gap:16px;row-gap:2px;align-items:center;padding:14px 0;border-top:1px solid rgb(128 128 118/.28);text-decoration:none}
+  #track .it .iw{grid-column:1;grid-row:1/span 3;width:84px!important;height:84px!important;border-radius:12px;overflow:hidden}
+  #track .it .iw img{position:absolute!important;inset:0!important;left:0!important;top:0!important;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover;transform:none!important}
+  #track .it .cap,#track .it .it__t,#track .it .it__m{grid-column:2;margin:0!important}
+  #track .it .it__t{font-size:17px!important;line-height:1.2!important}
+  #track .tk__end{padding-top:24px}
+}
+
+/* Work hero on a phone: the rotated fan of cards was cut by the screen edge. A flat swipe row instead, one card in focus, the next peeks. */
+@media (max-width:767px){
+  .so .cards{width:calc(100% + 2*var(--gut,16px))!important;max-width:none!important;height:auto!important;display:flex!important;justify-content:flex-start!important;align-items:stretch!important;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 calc(-1*var(--gut,16px));padding:0 var(--gut,16px)}
+  .so .cards::-webkit-scrollbar{display:none}
+  .so .card{position:relative!important;inset:auto!important;top:auto!important;bottom:auto!important;left:auto!important;right:auto!important;flex:0 0 min(72%,300px);aspect-ratio:4/5;transform:none!important;opacity:1!important;scroll-snap-align:center;border-radius:20px!important}
+}
+
+/* case images show whole: the picture is 4:3, the frame was 8:5 and cut the top of every interface */
+.v4s__g--cases .v4s__im{aspect-ratio:4/3!important}
+.v4s__g--cases .v4s__im img{object-fit:contain!important}

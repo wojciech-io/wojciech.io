@@ -7,7 +7,7 @@
     if (!base || document.querySelector('link[href*="motion/' + name + '"]')) return;
     var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = base + name; document.head.appendChild(l);
   }
-  css('motion.css'); css('ui.css');
+  css('motion.css'); css('ui.css'); css('rhythm.css');
 
   var root = document.documentElement, bar, on = false, tick = false, max = 0;
   function measure() { max = Math.max(0, root.scrollHeight - innerHeight); }
