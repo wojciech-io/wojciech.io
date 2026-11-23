@@ -30,86 +30,117 @@ const t = getUiStringsForPath(Astro.url.pathname);
 </div>
 
 <style is:global>
-  /* The bar stays dark in both colour modes, like the footer card and the app
-     window chrome on the home page. Radius 12 for the bar, 8 for controls. */
+  /* A compact pill that follows the colour mode: paper with an olive accent in
+     light, raised ink with lime in dark. Bottom left on wide screens, a slim
+     strip on phones. Radius 16 for the pill, 10 for controls, 44 px targets. */
   .cnb {
+    --cnb-bg: #f5f6ee;
+    --cnb-fg: #23261b;
+    --cnb-mute: #565c49;
+    --cnb-line: rgb(40 44 32 / 0.14);
+    --cnb-accent: #4d5c00;
+    --cnb-on-accent: #f5f6ee;
+    --cnb-shadow: 0 22px 44px -22px rgb(40 44 32 / 0.5), 0 6px 14px -8px rgb(40 44 32 / 0.3);
     position: fixed;
     inset: auto 0 0 0;
     z-index: 95;
-    padding: 0 16px 16px;
+    padding: 0 24px 24px;
     pointer-events: none;
     font-family: var(--sans, ui-sans-serif, system-ui, sans-serif);
     transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease, visibility 0s;
   }
+  html[data-mode='dark'] .cnb {
+    --cnb-bg: #20241a;
+    --cnb-fg: #f4f4ed;
+    --cnb-mute: #b6baa8;
+    --cnb-line: rgb(210 255 0 / 0.18);
+    --cnb-accent: #d2ff00;
+    --cnb-on-accent: #1c1f16;
+    --cnb-shadow: 0 26px 50px -22px #000, inset 0 1px 0 rgb(255 255 255 / 0.05);
+  }
   .cnb[data-state='hidden'] {
-    transform: translateY(calc(100% + 16px));
+    transform: translateY(calc(100% + 24px));
     opacity: 0;
     visibility: hidden;
     transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease, visibility 0s 0.35s;
   }
   .cnb__in {
     pointer-events: auto;
-    max-width: 1120px;
-    margin: 0 auto;
+    width: fit-content;
+    max-width: min(100%, 720px);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 14px 16px;
-    border: 1px solid rgb(244 244 237 / 0.14);
-    border-radius: 12px;
-    background: #282c20;
-    color: #f4f4ed;
-    box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.55);
+    gap: 8px 24px;
+    padding: 12px 12px 12px 20px;
+    border-radius: 16px;
+    background: var(--cnb-bg);
+    color: var(--cnb-fg);
+    box-shadow: 0 0 0 1px var(--cnb-line), var(--cnb-shadow);
   }
   .cnb__t {
     margin: 0;
     font-size: 14px;
     line-height: 1.45;
-    color: rgb(244 244 237 / 0.82);
+    color: var(--cnb-mute);
   }
   .cnb__t a {
-    color: #f4f4ed;
+    color: var(--cnb-fg);
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
     white-space: nowrap;
   }
   .cnb__b {
     display: flex;
     flex: none;
-    gap: 8px;
+    gap: 4px;
   }
   .cnb button {
     min-height: 44px;
     padding: 0 18px;
-    border-radius: 8px;
+    border-radius: 10px;
     font: 600 14px/1 var(--sans, ui-sans-serif, system-ui, sans-serif);
     white-space: nowrap;
     cursor: pointer;
   }
   .cnb__no {
-    border: 1px solid rgb(244 244 237 / 0.3);
+    border: 0;
     background: transparent;
-    color: #f4f4ed;
+    color: var(--cnb-fg);
+  }
+  .cnb__no:hover {
+    background: rgb(128 128 110 / 0.14);
   }
   .cnb__yes {
-    border: 1px solid #d2ff00;
-    background: #d2ff00;
-    color: #1c1f16;
+    border: 0;
+    background: var(--cnb-accent);
+    color: var(--cnb-on-accent);
   }
   .cnb a:focus-visible,
   .cnb button:focus-visible {
-    outline: 2px solid #d2ff00;
+    outline: 2px solid var(--cnb-accent);
     outline-offset: 2px;
   }
   @media (max-width: 640px) {
+    .cnb {
+      padding: 0 12px 12px;
+    }
     .cnb__in {
+      width: auto;
+      max-width: none;
       flex-direction: column;
       align-items: stretch;
+      gap: 8px;
+      padding: 14px 14px 12px;
+      border-radius: 16px;
     }
     .cnb__b {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 8px;
+    }
+    .cnb__no {
+      box-shadow: inset 0 0 0 1px var(--cnb-line);
     }
   }
   @media (prefers-reduced-motion: reduce) {
