@@ -332,3 +332,17 @@ html[data-mode="light"] span.cv:not(.cv--ph):not(.cv--sc) .cv__lg{filter:brightn
   /* the menu footer now carries the single Book a call and the single theme switch on desktop */
   html .mn .mn__foot>.btn,html .mn .mn__mode{display:inline-flex!important}
 }
+
+/* ==== MENU R4 / languages in reach on a phone ==== */
+/* the panel scrolls on its own in portrait and landscape (Lenis leaves it alone via data-lenis-prevent), the page under it stays put */
+@media (max-width:767px),(max-height:600px) and (pointer:coarse){
+  html .mn.mn{overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;height:100vh;height:100dvh;max-height:100dvh}
+  html .mn .mn__lang a{display:inline-grid;place-items:center;min-width:44px;min-height:44px}
+  /* while the panel scrolls, the header keeps the panel colour so links do not slide under the name */
+  html.mn-open body .nav.nav{background:#1c1f16!important}
+}
+/* "More languages soon" only while a language is still marked soon (on `/` every language is a live link) */
+html .mn__lang:not(:has([aria-disabled]))::after{content:none}
+/* the consent bar waits while the menu is open; the choice and its logic stay as they are */
+html.mn-open .cnb{visibility:hidden}
+/* ==== /MENU R4 ==== */
