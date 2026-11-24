@@ -559,6 +559,30 @@ html .nlb__is i{font-size:12px}
 html:not([data-mode="light"]) .s.ft .legal,html:not([data-mode="light"]) .s.ft .legal a{color:rgb(244 244 237/.75)}
 /* ==== /MOBILE R4 ==== */
 
+/* ==== PODSTRONY R5 / contrast, note header, text card, light mini screens (card 4.1) ==== */
+/* 1. dark: the three big words and numbers of the work and app pages (Map / Check / Track, 0-100 / 1 / ~$5).
+   They sit in dl.mtr inside the .nums section itself, so the old `.sec.cream .nums dt` rule never matched and
+   `:is(.cream,.paper,.lime) .mtr dt{color:ink}` from v4.css left near-black type on the near-black section.
+   One notch more specific than that rule, so no !important is needed. 17:1 on #0F110B. */
+html[data-mode="dark"] :is(.cream,.paper) .mtr dt,html[data-mode="dark"] :is(.cream,.paper) .big__n{color:#F4F4ED}
+/* 2. the scroll-fill sentences (.stm .st, .big__s, .pull): the words still to be lit sat at .2 and were invisible,
+   in the dark most of all. .5 keeps the fill visible and gives the unlit words 3.4:1 (ink on cream) to 4.3:1 (dark) in both modes. */
+html.mo .st .w:not(.lit),html.mo .stm.paper .st .w:not(.lit),html.mo .stm.cream .st .w:not(.lit){opacity:.5}
+/* the moss accent words (#4D5C00 on the light stm and footer panel) are lighter than ink, so they take .72 for the same 3:1 */
+html[data-mode="light"].mo .stm.paper .st .s .w:not(.lit),html[data-mode="light"].mo .stm.cream .st .s .w:not(.lit),html[data-mode="light"].mo .stm.paper .st .w.s:not(.lit),html[data-mode="light"].mo .stm.cream .st .w.s:not(.lit),html[data-mode="light"].mo .ftr__pn .st .s .w:not(.lit),html[data-mode="light"].mo .ftr__pn .st .w.s:not(.lit){opacity:.72}
+/* 3. note header on a phone: 80px from the section rule above left the kicker at 44px, under the logo and the buttons (the bar ends at 68px) */
+@media (max-width:767px){
+  html body header.sec.art__hd.art__hd{padding-top:104px!important}
+}
+/* 4. text card "Next note": it only has a kicker, a title and a line, and flex-end left an empty field above them.
+   Text from the top, no fixed floor; the row still stretches it to the height of the card next to it. */
+html .rel__cards{align-items:stretch}
+html .vc.vc--t{justify-content:flex-start;min-height:auto}
+/* 5. light pages: mini screens that carry data-skin="dk" in Keep going / Related notes / the note cover take the light skin of #792.
+   The skin is only custom properties, so this is the .ui.lt set from ui4.css applied to the host. */
+html[data-mode="light"] :is(.next,.rel,.cvr) [data-skin="dk"] .ui{--ul:rgba(17,17,18,.11);--u1:#FBFBF6;--u2:#FFFFFF;--u3:#E4E7D6;--ut:#2B2F22;--um:#555947;--uh:#111112;--us:#F0F1E5;--uon:#E1E4D3;--uac:#282C20;--upos:#56680A;--uneg:#8A6A1C;--ub2:rgba(17,17,18,.26);--ucr:#111112;--ucrt:#F4F4ED;--upb:#282C20;--upt:#F4F4ED;--ubi:var(--upos)}
+/* ==== /PODSTRONY R5 ==== */
+
 /* ==== MENU R4 / languages in reach on a phone ==== */
 /* the panel scrolls on its own in portrait and landscape (Lenis leaves it alone via data-lenis-prevent), the page under it stays put */
 @media (max-width:767px),(max-height:600px) and (pointer:coarse){
