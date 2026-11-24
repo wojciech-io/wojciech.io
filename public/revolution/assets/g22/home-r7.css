@@ -1,0 +1,121 @@
+/* ==== HOME R7: depth and motion. Loaded after home-r6.css, paired with home-r7.js. Hero first (this file), scenes and micro-interactions follow.
+   Rules of the house: everything moves with transform, translate, scale or opacity; the tokens come from motion/motion.css (with fallbacks, because
+   ui.js loads that file a moment later); nothing here touches g22.css or the v4 files; without script or with reduced motion the hero is a still, finished picture. ==== */
+
+:root{
+  --m-spring:cubic-bezier(.34,1.25,.5,1); /* extends the motion tokens: a small overshoot for things that settle */
+  --hw-lime:#D2FF00;--hw-olive:#4D5C00;--hw-ink:#282C20;
+}
+@supports (transition-timing-function:linear(0,1)){
+  :root{--m-spring:linear(0,.2 4%,.58 10%,.92 19%,1.07 29%,1.085 37%,1.04 47%,1.01 60%,.998 78%,1)}
+}
+
+/* ---------- 1. HERO: layers ---------- */
+.hero{isolation:isolate}
+.hw{pointer-events:none}
+.hw>i{position:absolute;display:block;pointer-events:none}
+
+/* far to near: contours (existing canvas + one nearer static layer) < light < graph < him < the claims < foreground haze */
+.hero .contours,.hero .hw__ct{will-change:transform}
+/* the contour canvas is created by script with the 300 x 150 default size, then stretched: size it from the start so nothing jumps (CLS) */
+.hero canvas.contours{left:0;top:0;width:100%;height:100%}
+.hw__ct{position:absolute;display:block;pointer-events:none;inset:-8%;width:116%;height:116%;z-index:1;color:var(--hw-ink);opacity:.1;overflow:visible}
+.hw__ct path{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;vector-effect:non-scaling-stroke}
+
+/* the light behind him: in the dark a lime bloom, in the light a warm studio backlight */
+.hw__glow{z-index:1;left:50%;top:calc(100% - var(--hwm,min(86vh,1100px)) * .62);width:var(--hwg,min(118vh,100vw,1180px));height:var(--hwg,min(118vh,100vw,1180px));margin:calc(var(--hwg,min(118vh,100vw,1180px)) / -2) 0 0 calc(var(--hwg,min(118vh,100vw,1180px)) / -2);border-radius:50%}
+.hw__hit{z-index:1;left:0;top:0;width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;opacity:0;will-change:opacity,transform}
+.hw__vig{z-index:1;inset:0}
+.hw__fg{z-index:5;border-radius:50%}
+.hw__grain{z-index:6;inset:-12%;background-size:220px 220px}
+html[data-mode="dark"] .hw__grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+html[data-mode="light"] .hw__grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .17 0 0 0 0 .08 0 0 0 .9 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* dark: night shift. Deep blacks at the edges, a lime bloom behind him, lime light on his outline, a little film grain */
+html[data-mode="dark"] .hero{background:#0B0D08}
+html[data-mode="dark"] .hero .hero__ct{color:var(--hw-lime)!important;opacity:.2!important}
+html[data-mode="dark"] .hero canvas.contours{opacity:.2}
+html[data-mode="dark"] .hw__ct{color:var(--hw-lime);opacity:.1}
+html[data-mode="dark"] .hw__vig{background:radial-gradient(125% 92% at 50% 42%,transparent 34%,rgb(3 4 2/.55) 72%,rgb(3 4 2/.9) 100%),linear-gradient(0deg,rgb(3 4 2/.7),transparent 26%)}
+html[data-mode="dark"] .hw__glow{background:radial-gradient(closest-side,rgb(210 255 0/.28),rgb(210 255 0/.11) 38%,rgb(210 255 0/.035) 62%,transparent 100%)}
+html[data-mode="dark"] .hw__hit{background:radial-gradient(closest-side,rgb(210 255 0/.5),rgb(210 255 0/.14) 46%,transparent 100%)}
+html[data-mode="dark"] .hw__fg{background:radial-gradient(closest-side,rgb(210 255 0/.16),transparent)}
+html[data-mode="dark"] .hw__grain{opacity:.07;mix-blend-mode:screen}
+html[data-mode="dark"] .hero:is(.hw-live,:not(.hw-go)) .hh em{text-shadow:0 0 .22em rgb(210 255 0/.5),0 0 .9em rgb(210 255 0/.2)}
+html[data-mode="dark"] .hero:is(.hw-live,:not(.hw-go)) .hh .l1{text-shadow:0 .08em .5em rgb(0 0 0/.5)}
+html[data-mode="dark"] .tm__p .h{fill:var(--hw-lime);opacity:.4}
+html[data-mode="dark"] .tm__p circle:last-child{fill:var(--hw-lime)}
+
+/* light: studio paper. A white backlight and soft layered shadows, paper fibre, ink contours, no glow */
+html[data-mode="light"] .hw__vig{background:radial-gradient(130% 96% at 50% 40%,transparent 42%,rgb(120 118 92/.13) 82%,rgb(120 118 92/.24) 100%)}
+html[data-mode="light"] .hw__glow{background:radial-gradient(closest-side,rgb(255 255 255/.95),rgb(255 255 255/.5) 42%,rgb(255 255 255/.12) 70%,transparent 100%)}
+html[data-mode="light"] .hw__hit{background:radial-gradient(closest-side,rgb(77 92 0/.2),transparent 100%)}
+html[data-mode="light"] .hw__fg{background:radial-gradient(closest-side,rgb(77 92 0/.09),transparent)}
+html[data-mode="light"] .hw__grain{opacity:.2;mix-blend-mode:multiply}
+/* the portrait keeps the single shadow it had: a filter on a 1219 x 2100 image costs ~50 ms of LCP, so depth comes from the layers around him */
+html[data-mode="light"] .hero:is(.hw-live,:not(.hw-go)) .hh .l1{text-shadow:0 1px 0 rgb(255 255 255/.8),0 .1em .38em rgb(40 44 32/.1)}
+html[data-mode="light"] .hero:is(.hw-live,:not(.hw-go)) .hh em{text-shadow:0 1px 0 rgb(255 255 255/.7),0 .1em .38em rgb(77 92 0/.14)}
+html[data-mode="light"] .tm__p .h{fill:var(--hw-olive);opacity:.22}
+html[data-mode="light"] .tm__p circle:last-child{fill:var(--hw-olive)}
+
+/* foreground haze: three soft discs close to the lens, they move most */
+.hw__fg--a{left:-9%;bottom:-14%;width:min(46vw,520px);height:min(46vw,520px)}
+.hw__fg--b{right:-8%;top:-12%;width:min(34vw,380px);height:min(34vw,380px)}
+.hw__fg--c{right:12%;bottom:-18%;width:min(30vw,340px);height:min(30vw,340px);opacity:.7}
+
+/* data packets: drawn inside the tool map's own svg, so they follow its parallax for free */
+.hw__pk .t{fill:currentColor}
+.hw__pk .h{fill:currentColor;opacity:.22}
+html[data-mode="dark"] .hw__pk{color:var(--hw-lime)}
+html[data-mode="light"] .hw__pk{color:var(--hw-olive)}
+
+/* phone: smaller light, haze pushed to the corners */
+@media (max-width:599px){
+  .hero{--hwm:43vh;--hwg:min(96vw,60vh)}
+  .hw__fg--a{width:70vw;height:70vw}.hw__fg--b{width:56vw;height:56vw}.hw__fg--c{display:none}
+}
+
+/* ---------- 2. HERO: the entrance. Starts when the loader lifts (.hw-go), so the first thing seen on screen is the show ---------- */
+/* the tool map draws after the loader, not behind it */
+html.hw-js .hero:not(.hw-go) .tm.in .tm__tr,
+html.hw-js .hero:not(.hw-go) .tm.in .tm__br{stroke-dashoffset:1;transition:none}
+html.hw-js .hero:not(.hw-go) .tm.in .tm__g,
+html.hw-js .hero:not(.hw-go) .tm.in .tm__hub,
+html.hw-js .hero:not(.hw-go) .tm.in .tm__l,
+html.hw-js .hero:not(.hw-go) .tm.in .tm__hl{opacity:0;transition:none}
+html.hw-js .hero:not(.hw-go) .tm.in .tm__g use{transform:scale(.4);transition:none}
+html.hw-js .hero:not(.hw-go) .tm.in .tm__halo use{opacity:0;transition:none}
+
+html.hw-js .hero:not(.hw-go) .hw>i{opacity:0}
+html.hw-js .hero:not(.hw-go) .hw>.hw__hit{opacity:0}
+.hw>i:not(.hw__hit){transition:opacity 1.8s var(--m-out,cubic-bezier(.2,.7,.1,1))}
+.hero.hw-go .hw__glow{animation:hw-bloom 2.2s var(--m-out,cubic-bezier(.2,.7,.1,1)) backwards}
+@keyframes hw-bloom{from{opacity:0;scale:.5}}
+.hero.hw-go .hero__me{animation:hw-rise 1.7s var(--m-out,cubic-bezier(.2,.7,.1,1)) backwards;transform-origin:50% 100%}
+@keyframes hw-rise{from{scale:1.05;translate:0 2.2%}}
+
+/* the claims: letters in a mask. Left half rises from below with a small overshoot, right half drops in from above, a beat later */
+html.hw-split .hero .hh>span{opacity:1;animation:none}
+.hw-ln{display:block;overflow:hidden;padding:.12em .07em;margin:-.12em -.07em}
+.hero.hw-live .hw-ln{overflow:visible}
+.hw-w{display:inline-block;white-space:nowrap}
+.hw-c{display:inline-block;visibility:hidden}
+.hero.hw-go .hw-c{visibility:visible;animation:hw-up 1.05s var(--m-spring) backwards;animation-delay:calc(var(--ld,0) * 150ms + var(--ci,0) * 32ms + var(--ls,0ms))}
+.hero.hw-go .l2 .hw-c{animation-name:hw-down}
+@keyframes hw-up{from{translate:0 112%;rotate:7deg;opacity:0}30%{opacity:1}}
+@keyframes hw-down{from{translate:0 -112%;rotate:-7deg;opacity:0}30%{opacity:1}}
+
+/* ---------- 3. HERO: life after the entrance (only while the hero is on screen) ---------- */
+@media (prefers-reduced-motion:no-preference){
+  html[data-mode="dark"] .hero.hw-live .hw__grain{animation:hw-grain 1.1s steps(1,end) infinite}
+  .hero.hw-live .hw__glow::after{content:"";position:absolute;inset:0;border-radius:50%;background:inherit;animation:hw-breathe 7s ease-in-out infinite alternate}
+}
+@keyframes hw-grain{0%{translate:0 0}17%{translate:-3% 2%}34%{translate:2% -3%}51%{translate:-2% -1%}68%{translate:3% 3%}85%{translate:-1% 2%}}
+@keyframes hw-breathe{from{opacity:0;scale:.92}to{opacity:.55;scale:1.04}}
+
+/* ---------- 4. reduced motion: the finished picture, nothing moves ---------- */
+@media (prefers-reduced-motion:reduce){
+  .hw>i,.hero .hero__me,.hw-c{animation:none!important;transition:none!important}
+  .hw-c{visibility:visible!important}
+  .hw__hit{display:none}
+}
