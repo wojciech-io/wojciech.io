@@ -1,0 +1,69 @@
+/* AI Espresso landing (newsletter.html), round 4. Linked last in <head>.
+   Hero: copy and form on the left, the latest issue as a light inbox window on an olive backdrop on the right.
+   The window carries the text of the 30 June issue word for word (the same text sits in section.nli below).
+   Dark: olive backdrop, lime accent. Light: #4D5C00 backdrop. The window itself is paper in both modes.
+   Entry: the three items drop in one after another once the figure is revealed; no motion without JS or with reduced motion. */
+
+.nlh__ph{
+  --nlw-pad:clamp(14px,2.6vw,36px);
+  position:relative;margin:0;padding:var(--nlw-pad);border-radius:28px;
+  background:
+    radial-gradient(120% 90% at 100% 0%,rgb(210 255 0/.16),transparent 55%),
+    linear-gradient(155deg,#3F4912 0%,#2A3009 100%);
+  box-shadow:0 0 0 1px rgb(221 225 210/.12),0 40px 80px -44px rgb(0 0 0/.8);
+}
+html[data-mode="light"] .nlh__ph{
+  background:linear-gradient(155deg,#56680A 0%,#4D5C00 60%);
+  box-shadow:0 0 0 1px rgb(77 92 0/.5),0 40px 70px -40px rgb(77 92 0/.55);
+}
+
+/* ---------- the window ---------- */
+.nlw{
+  --ink:#14160F;--ink2:rgb(20 22 15/.78);--mute:#565C49;--olive:#4D5C00;--chip:#EEF3D2;--chipt:#3E4A00;--rule:rgb(20 22 15/.12);
+  display:block;overflow:hidden;border-radius:16px;
+  background:#FBFBF6;color:var(--ink);
+  box-shadow:0 0 0 1px rgb(20 22 15/.1),0 30px 50px -28px rgb(0 0 0/.55);
+}
+.nlw__bar{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--rule);background:#F3F4EA}
+.nlw__ic{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#D2FF00;color:#1c1f16}
+.nlw__ic svg{width:22px;height:auto;display:block}
+.nlw__from{display:grid;gap:2px;min-width:0;margin-right:auto}
+.nlw__from b{font:700 14px/1.1 var(--sans);color:var(--ink)}
+.nlw__from small{font:500 12px/1.1 var(--sans);color:var(--mute)}
+.nlw__bar time{flex:none;font:600 12px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+
+.nlw__bd{padding:20px 22px 22px}
+.nlw__t{font:500 clamp(26px,2.3vw,34px)/1.04 var(--serif);letter-spacing:-.01em;color:var(--ink)}
+.nlw__lead{margin:10px 0 0;font:400 13.5px/1.5 var(--sans);color:var(--ink2)}
+.nlw__l{list-style:none;margin:16px 0 0;padding:0}
+.nlw__it{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px;padding:13px 0 0;margin-top:13px;border-top:1px solid var(--rule)}
+.nlw__n{font:700 22px/1 var(--sans);font-stretch:75%;color:var(--olive)}
+.nlw__lb{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--chip);font:600 12px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--chipt)}
+.nlw__it b{display:block;margin:7px 0 3px;font:700 15px/1.28 var(--sans);color:var(--ink)}
+.nlw__it p{margin:0;font:400 13.5px/1.5 var(--sans);color:var(--ink2)}
+
+/* ---------- entry ---------- */
+.rv-on .nlh__ph .nlw__it{opacity:0;translate:0 16px}
+.rv-on .nlh__ph.rv-in .nlw__it{
+  opacity:1;translate:0 0;
+  transition:opacity .6s ease,translate .8s cubic-bezier(.2,.7,.1,1);
+  transition-delay:calc(.45s + var(--i) * .16s);
+}
+@media (prefers-reduced-motion:reduce){
+  .rv-on .nlh__ph .nlw__it{opacity:1;translate:none;transition:none}
+}
+
+/* ---------- desktop: the whole window fits the first screen ---------- */
+@media (min-width:768px){
+  .nlh{padding-top:104px;padding-bottom:48px}
+}
+
+/* ---------- phone: window under the form, whole, text at least 12 px ---------- */
+@media (max-width:767px){
+  .nlh__ph{border-radius:20px}
+  .nlw{border-radius:12px}
+  .nlw__bar{padding:10px 14px}
+  .nlw__bd{padding:16px 16px 18px}
+  .nlw__t{font-size:26px}
+  .nlw__it{grid-template-columns:28px minmax(0,1fr)}
+}
