@@ -204,10 +204,10 @@
   var raf = 0, onScreen = true, last = 0;
   new IntersectionObserver(function (es) {
     onScreen = es[0].isIntersecting;
-    if (!onScreen) { cancelAnimationFrame(raf); raf = 0; clearPackets(); last = 0; } else if (hero.classList.contains('hw-go') && !raf) { raf = requestAnimationFrame(frame); }
+    if (!onScreen) { cancelAnimationFrame(raf); raf = 0; clearPackets(); last = 0; } 
   }, { rootMargin: '60px' }).observe(hero);
 
-  function startLoop() { goAt = performance.now(); nextSpawn = goAt + 2500; if (onScreen && !raf) { raf = requestAnimationFrame(frame); } }
+  function startLoop() { /* graphic objects stay still: no pointer, drift, scroll or packet loop */ }
 
   function frame(now) {
     raf = requestAnimationFrame(frame);

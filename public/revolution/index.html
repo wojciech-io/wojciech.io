@@ -3055,7 +3055,7 @@ if(D&&!RM&&document.getElementById('track')){
   const setH=()=>{sec.style.height=(tr.offsetWidth-innerWidth+innerHeight)+'px'};setH();
   const move=window.__trMove=gsap.to(tr,{x:()=>-(tr.offsetWidth-innerWidth),ease:'none',scrollTrigger:{trigger:sec,start:'top top',end:()=>'+='+(tr.offsetWidth-innerWidth),scrub:1,invalidateOnRefresh:true}});
   tr.querySelectorAll('.iw img,.iw video').forEach(img=>{const it=img.closest('.it');
-    gsap.fromTo(img,{x:0},{x:()=>4*rem(),ease:'none',scrollTrigger:{trigger:it,containerAnimation:move,start:'left right',end:'right left',scrub:true}})});
+    void 0});
   const PAL={dark:[[40,44,32],[165,168,152],[244,244,237]],light:[[221,226,206],[233,235,222],[244,244,237]]};const mix=(a,b,t)=>a.map((x,i)=>Math.round(x+(b[i]-x)*t));
   const sm=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t)};let trP=-1;
   const paintTr=()=>{if(trP<0)return;const [C0,C1,C2]=PAL[MODE.get()],t=sm(.16,.3,trP);const bg=t<.5?mix(C0,C1,t*2):mix(C1,C2,(t-.5)*2);sec.style.background='rgb('+bg+')';const rgb=String(bg).split(',').map(Number),lum=(.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2])/255,on=lum>.42;sec.classList.toggle('on',on);sec.dataset.theme=on?'light':'dark';navTone()};
@@ -3064,7 +3064,7 @@ if(D&&!RM&&document.getElementById('track')){
 
 /* on stage / in code: photos slide in from the edges; wide photo drifts */
 if(D&&!RM&&document.getElementById('oeimg')){
-  gsap.fromTo('#oeimg',{y:'-7rem'},{y:'0rem',ease:'none',scrollTrigger:{trigger:'.oe',start:'top bottom',end:'bottom top',scrub:true}});
+  /* graphic objects stay still: no scroll parallax */
   gsap.fromTo('#oeimg',{clipPath:'inset(0rem 0rem 0rem 0rem round 0rem)',filter:'brightness(1)'},{clipPath:'inset(0rem 15rem 0rem 15rem round 1.4rem)',filter:'brightness(.5)',ease:'none',scrollTrigger:{trigger:'.oe',start:'center center',end:'bottom top',scrub:true}});
 }
 document.querySelectorAll('[data-oh]').forEach(h=>{if(RM)return;const w=h.querySelectorAll('.w');gsap.from(w,{yPercent:60,opacity:0,duration:.9,stagger:.12,ease:'power3.out',scrollTrigger:{trigger:h,start:'top 85%',once:true}})});
@@ -3075,7 +3075,7 @@ document.querySelectorAll('video[loop]').forEach(v=>{if(RM)return;new Intersecti
 /* apps grid: columns start lower by 5rem each and settle while scrolling (as the helmet grid) */
 if(D&&!RM){
   const cols=[...document.querySelectorAll('#grid .gc')];
-  cols.forEach((c,i)=>{if(i>0){gsap.set(c,{y:i*5+'rem'});gsap.to(c,{y:0,ease:'none',scrollTrigger:{trigger:'#grid',start:'top bottom',end:'bottom top',scrub:true}})}});
+  cols.forEach((c,i)=>{if(i>0){void 0}});
 }
 
 /* channel tiles rise once */
@@ -3486,7 +3486,7 @@ function makeGraph3D(cv,o){
     b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();qx((e.clientX-r.left-r.width/2)*.3);qy((e.clientY-r.top-r.height/2)*.45)});b.addEventListener('pointerleave',()=>{qx(0);qy(0)})});
   if(RM||!document.querySelector('main.pg'))return;
   /* photo band: settles in and drifts as the page scrolls */
-  const lb=document.querySelector('.lb__ph img');if(lb){gsap.fromTo(lb,{scale:1.18},{scale:1,duration:2,ease:'power3.out'});gsap.to(lb,{yPercent:12,ease:'none',scrollTrigger:{trigger:'.lb__ph',start:'top top',end:'bottom top',scrub:true}})}
+  const lb=document.querySelector('.lb__ph img');if(lb){}
   gsap.utils.toArray('.lb .pp,.lb__bar').forEach((el,i)=>gsap.from(el,{y:30,opacity:0,duration:1,delay:.5+i*.15,ease:'power3.out'}));
   /* images open from the bottom while the photo inside settles */
   const reveal=(box,st)=>{const im=box.querySelector('img,video');box.classList.add('rv');const tl=gsap.timeline({scrollTrigger:st});tl.to(box,{clipPath:'inset(0% 0 0 0)',duration:1.2,ease:'power4.out'});if(im)tl.to(im,{scale:1,duration:1.6,ease:'power3.out'},0);return tl};
@@ -3495,7 +3495,7 @@ function makeGraph3D(cv,o){
     const tt=it.querySelectorAll('.it__t,.cap,.it__m');gsap.from(tt,{y:24,opacity:0,duration:.9,stagger:.08,ease:'power3.out',scrollTrigger:H?{trigger:it,containerAnimation:window.__trMove,start:'left 85%'}:{trigger:it,start:'top 85%'}})});
   document.querySelectorAll('.cp__f,.lx-ct,.lx-pv__ph,.lx-sc,.lx-bk').forEach(b=>reveal(b,{trigger:b,start:'top 88%'}));
   /* the track leans with scroll speed */
-  if(H){const items=gsap.utils.toArray('#track .it');const sk=gsap.quickTo(items,'skewX',{duration:.5,ease:'power3'});ScrollTrigger.create({trigger:'#track',start:'top top',end:'bottom bottom',onUpdate:s=>sk(gsap.utils.clamp(-7,7,s.getVelocity()/-300))});
+  if(H){const items=gsap.utils.toArray('#track .it');
     const hd=document.querySelector('.tk__hd h2');if(hd)gsap.timeline({scrollTrigger:{trigger:'#track',start:'top 60%'}}).from(hd,{y:50,opacity:0,duration:1,ease:'power3.out'}).from(hd.querySelector('span'),{x:-40,opacity:0,duration:1,ease:'power3.out'},'-=.7')}
   /* promo photos move at different speeds */
   document.querySelectorAll('.cp__f').forEach((f,i)=>gsap.to(f,{yPercent:[-12,-24,-6][i%3],ease:'none',scrollTrigger:{trigger:f.closest('.cp'),start:'top bottom',end:'bottom top',scrub:true}}));
