@@ -6,6 +6,12 @@ import { test, expect } from '@playwright/test';
 // hand-tuned size or weight per component, each harmless on its own.
 const BUDGET = 24;
 
+// The home page is built from the /revolution/ preview, which has its own type
+// scale (g22: phone sizes 12/14/18/28/56) and a longer page. It measures 53
+// styles today, so it gets its own ceiling instead of the 24 of the other
+// pages. Raise it only on purpose, the same way as BUDGET.
+const BUDGET_BY_PATH: Record<string, number> = { '/': 56 };
+
 const PAGES = [
   '/',
   '/about/',
@@ -50,6 +56,6 @@ for (const path of PAGES) {
       return [...seen.entries()].map(([k, v]) => `${k} "${v}"`);
     });
 
-    expect(styles.length, `${path} renders ${styles.length} text styles:\n${styles.join('\n')}`).toBeLessThanOrEqual(BUDGET);
+    expect(styles.length, `${path} renders ${styles.length} text styles:\n${styles.join('\n')}`).toBeLessThanOrEqual(BUDGET_BY_PATH[path] ?? BUDGET);
   });
 }

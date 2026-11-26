@@ -146,7 +146,7 @@ span.cv .cv__p--alt{background:#1D2118!important}
 span.cv .cv__ghost{display:none!important}
 span.cv .cv__m svg{width:clamp(26px,13cqw,64px)!important;height:auto!important;filter:none!important;fill:currentColor}
 span.cv.cv--one .cv__m svg{width:clamp(36px,18cqw,88px)!important}
-span.cv .cv__m small{font:600 10px/1 var(--sans)!important;letter-spacing:.1em!important;opacity:.62}
+span.cv .cv__m small{font:600 10px/1 var(--sans)!important;letter-spacing:.1em!important;opacity:.8}
 span.cv .cv__m,span.cv .cv__pl{translate:none!important;rotate:none!important}
 span.cv .cv__pl,span.cv .cv__x{background:#161912!important;color:#D2FF00!important;box-shadow:0 0 0 var(--g-line) rgb(210 255 0/.55)!important;width:22px!important}
 span.cv .cv__x{width:34px!important;font-size:11px!important}
@@ -582,3 +582,17 @@ html .vc.vc--t{justify-content:flex-start;min-height:auto}
    The skin is only custom properties, so this is the .ui.lt set from ui4.css applied to the host. */
 html[data-mode="light"] :is(.next,.rel,.cvr) [data-skin="dk"] .ui{--ul:rgba(17,17,18,.11);--u1:#FBFBF6;--u2:#FFFFFF;--u3:#E4E7D6;--ut:#2B2F22;--um:#555947;--uh:#111112;--us:#F0F1E5;--uon:#E1E4D3;--uac:#282C20;--upos:#56680A;--uneg:#8A6A1C;--ub2:rgba(17,17,18,.26);--ucr:#111112;--ucrt:#F4F4ED;--upb:#282C20;--upt:#F4F4ED;--ubi:var(--upos)}
 /* ==== /PODSTRONY R5 ==== */
+
+/* ==== MENU R4 / languages in reach on a phone ==== */
+/* the panel scrolls on its own in portrait and landscape (Lenis leaves it alone via data-lenis-prevent), the page under it stays put */
+@media (max-width:767px),(max-height:600px) and (pointer:coarse){
+  html .mn.mn{overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;height:100vh;height:100dvh;max-height:100dvh}
+  html .mn .mn__lang a{display:inline-grid;place-items:center;min-width:44px;min-height:44px}
+  /* while the panel scrolls, the header keeps the panel colour so links do not slide under the name */
+  html.mn-open body .nav.nav{background:#1c1f16!important}
+}
+/* "More languages soon" only while a language is still marked soon (on `/` every language is a live link) */
+html .mn__lang:not(:has([aria-disabled]))::after{content:none}
+/* the consent bar waits while the menu is open; the choice and its logic stay as they are */
+html.mn-open .cnb{visibility:hidden}
+/* ==== /MENU R4 ==== */

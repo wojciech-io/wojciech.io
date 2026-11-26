@@ -48,11 +48,15 @@ for (const loc of LOCALE_SECTIONS) {
   });
 }
 
-test('EN homepage still uses English section headings', async ({ page }) => {
+// The EN home is the new page built from the /revolution/ preview (see
+// lib/revolutionHome.ts), so it has its own section names, not the old
+// "Selected work / Writing" headings the localized homes still use.
+test('EN homepage is English and carries the new section eyebrows', async ({ page }) => {
   await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   const body = await page.textContent('body');
-  expect(body).toContain('Selected work');
-  expect(body).toContain('AI systems');
-  expect(body).toContain('Writing');
-  expect(body).toContain('Testimonials');
+  expect(body).toContain('What I do');
+  expect(body).toContain('Track record');
+  expect(body).toContain('Book a call');
+  expect(body).toContain('Twenty years, ten roles');
 });

@@ -1,0 +1,56 @@
+---
+// Layout for the home page, which is built from the static /revolution/ preview
+// (see lib/revolutionHome.ts). The preview brings its own design system, header,
+// footer, motion and colour-mode handling, so this layout deliberately leaves out
+// everything that would restyle it: no Tailwind sheet, no site Header/Footer, no
+// ClientRouter. It adds only what is invisible or consent-related: the SEO and
+// social head (SEOHead), the language cookie, the consent bar, outbound-link
+// telemetry and the consent-gated analytics. Sentry comes from the Astro
+// integration, which injects it into every page.
+import SEOHead from '../components/seo/SEOHead.astro';
+import ConsentBar from '../components/revolution/ConsentBar.astro';
+import ConsentAnalytics from '../components/layout/ConsentAnalytics.astro';
+import LangCookie from '../components/layout/LangCookie.astro';
+import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage: string;
+  ogImageAlt?: string;
+  alternates: Array<{ lang: string; href: string }>;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  /** The preview's own <head> contributions (styles, colour-mode script). */
+  headHtml: string;
+  /** The preview body, paths and links already absolute. */
+  bodyHtml: string;
+}
+
+const { title, description, ogImage, ogImageAlt, alternates, schema, headHtml, bodyHtml } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <LangCookie />
+    <SEOHead
+      standalone
+      title={title}
+      description={description}
+      canonical="/"
+      ogImage={ogImage}
+      ogImageAlt={ogImageAlt}
+      alternates={alternates}
+      schema={schema}
+    />
+    <Fragment set:html={headHtml} />
+  </head>
+  <body>
+    <Fragment set:html={bodyHtml} />
+    <ConsentBar />
+    <OutboundTelemetry />
+    <ConsentAnalytics />
+  </body>
+</html>

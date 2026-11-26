@@ -1,44 +1,26 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import CTABand from '../components/ui/CTABand.astro';
-import HeroSection from '../components/home/HeroSection.astro';
-import MetricsStrip from '../components/home/MetricsStrip.astro';
-import ThreeLenses from '../components/home/ThreeLenses.astro';
-import HowIWork from '../components/home/HowIWork.astro';
-import ProjectsSection from '../components/home/ProjectsSection.astro';
-import AILeverage from '../components/home/AILeverage.astro';
-import TestimonialsSection from '../components/home/TestimonialsSection.astro';
-import InsightsPreview from '../components/home/InsightsPreview.astro';
-import BrandLogos from '../components/ui/BrandLogos.astro';
+// The home page. Its markup, styles and scripts are the static preview at
+// public/revolution/index.html (still served, noindex, at /revolution/); this
+// page turns that file into the real `/` at build time, so a change to the
+// preview reaches `/` without copying. See lib/revolutionHome.ts for exactly
+// what is adjusted (absolute paths and links, CTA tracking attributes) and what
+// RevolutionLayout adds (SEO head, consent, analytics).
+import RevolutionLayout from '../layouts/RevolutionLayout.astro';
+import previewHtml from '../../public/revolution/index.html?raw';
+import { buildRevolutionHome } from '../lib/revolutionHome';
 import { homeAlternates } from '../data/locales';
+import { espressoSchema } from '../data/espressoSchema';
+import { homeSchema } from '../data/homeSchema';
+
+const { headHtml, bodyHtml } = buildRevolutionHome(previewHtml, homeAlternates);
 ---
 
-<Layout
+<RevolutionLayout
   title="Wojciech Luszczynski · AI-native GTM operator"
   description="Build AI-native revenue systems for B2B SaaS. Fractional GTM architect connecting CRM, outbound, paid acquisition, and AI workflows into one operating model."
   ogImage="/og/pages/home.png"
   alternates={homeAlternates}
-  preloadImage="/images/wojciech-hero-loft.webp"
->
-  <div class="scroll-progress" aria-hidden="true"></div>
-  <HeroSection />
-  <MetricsStrip />
-  <section class="border-b border-[var(--color-border)] py-10 md:py-12">
-    <div class="mx-auto max-w-6xl px-6">
-      <p class="obs-label-accent mb-7 text-center sm:text-left">Operated at</p>
-      <BrandLogos variant="marquee" />
-    </div>
-  </section>
-  <ThreeLenses />
-  <HowIWork />
-  <ProjectsSection />
-  <AILeverage />
-  <TestimonialsSection />
-  <InsightsPreview />
-  <CTABand
-    heading="Know what is broken. Not sure what to build."
-    subtext="Send the context, the bottleneck, and what already runs. I will tell you where I would start, and whether I am the right person to build it."
-    ctaSecondary="Read AI Espresso"
-    ctaSecondaryHref="/subscribe/"
-  />
-</Layout>
+  schema={[...homeSchema(), espressoSchema('en')]}
+  headHtml={headHtml}
+  bodyHtml={bodyHtml}
+/>

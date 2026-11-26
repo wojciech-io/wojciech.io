@@ -6,6 +6,8 @@ import Footer from '../components/layout/Footer.astro';
 import CookieBanner from '../components/ui/CookieBanner.astro';
 import CalEmbed from '../components/ui/CalEmbed.astro';
 import OutboundTelemetry from '@wojciech/ui/components/OutboundTelemetry.astro';
+import ConsentAnalytics from '../components/layout/ConsentAnalytics.astro';
+import LangCookie from '../components/layout/LangCookie.astro';
 import ClientRouter from 'astro/components/ClientRouter.astro';
 import '../styles/global.css';
 
@@ -103,25 +105,7 @@ const skipToContent = skipToContentLabels[htmlLang] ?? 'Skip to content';
         } catch(_) {}
       })();
     </script>
-    <!-- Cross-subdomain language: write the same cookie subscribe/app/academy read. -->
-    <script is:inline>
-      (function () {
-        try {
-          var path = location.pathname || '/';
-          var seg = path.split('/').filter(Boolean)[0] || '';
-          var known = ['en','pl','it','de','dk','no','jp','es'];
-          var lang = known.indexOf(seg) >= 0 ? seg : 'en';
-          var host = location.hostname;
-          if (!host || host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) {
-            try { localStorage.setItem('appLang', lang); } catch (_) {}
-            return;
-          }
-          var domain = host.endsWith('wojciech.io') ? '.wojciech.io' : '.' + host.split('.').slice(-2).join('.');
-          var secure = location.protocol === 'https:' ? '; Secure' : '';
-          document.cookie = 'wio_lang=' + lang + '; Path=/; Max-Age=31536000; SameSite=Lax; Domain=' + domain + secure;
-        } catch (_) {}
-      })();
-    </script>
+    <LangCookie />
     <SEOHead
       title={title}
       description={description}
@@ -153,99 +137,7 @@ const skipToContent = skipToContentLabels[htmlLang] ?? 'Skip to content';
     <OutboundTelemetry />
 
     <!-- Analytics: GA4 + PostHog, loaded only after consent -->
-    <script>
-      const GA_ID = 'G-4ED804XJLP';
-      const hasAnalyticsConsent = () => localStorage.getItem('cookie-consent') === 'accepted';
-      let analyticsModule: Promise<typeof import('../utils/analytics')> | null = null;
-      let googleAnalyticsLoaded = false;
-
-      const initGoogleAnalytics = () => {
-        if (googleAnalyticsLoaded) return;
-        googleAnalyticsLoaded = true;
-
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-        document.head.appendChild(script);
-
-        const w = window as typeof window & {
-          dataLayer?: unknown[];
-          gtag?: (...args: unknown[]) => void;
-        };
-        w.dataLayer = w.dataLayer || [];
-        // gtag.js reads each dataLayer entry as an `arguments` object, not an
-        // array. An arrow function spreading into push() looks equivalent but
-        // leaves GA4 uninitialised: the tag loads, no _ga cookie is written and
-        // no hit is ever sent. Google's snippet uses `function` + `arguments`
-        // for exactly this reason, so keep it verbatim.
-        function gtag() {
-          // eslint-disable-next-line prefer-rest-params
-          w.dataLayer!.push(arguments);
-        }
-        w.gtag = gtag as unknown as (...args: unknown[]) => void;
-        gtag('js', new Date());
-        gtag('config', GA_ID);
-      };
-
-      const loadAnalytics = async () => {
-        if (!hasAnalyticsConsent()) return null;
-        initGoogleAnalytics();
-        analyticsModule ??= import('../utils/analytics');
-        const analytics = await analyticsModule;
-        analytics.initAfterConsent();
-        return analytics;
-      };
-
-      const trackCurrentPage = () => {
-        loadAnalytics().then((analytics) => {
-          analytics?.trackPageViewed({
-            path: window.location.pathname,
-            title: document.title,
-          });
-        });
-      };
-
-      setTimeout(trackCurrentPage, 300);
-      window.addEventListener('analytics-consent-accepted', trackCurrentPage, { once: true });
-
-      window.addEventListener('wio:outbound-clicked', (event) => {
-        const detail = (event as CustomEvent<{
-          href?: string;
-          original_href?: string;
-          label?: string;
-          destination_host?: string;
-          source_host?: string;
-          path?: string;
-        }>).detail;
-        if (!detail.href) return;
-        loadAnalytics().then((analytics) => analytics?.trackOutboundClicked({
-          href: detail.href,
-          original_href: detail.original_href,
-          label: detail.label,
-          destination_host: detail.destination_host,
-          source_host: detail.source_host,
-          path: detail.path,
-        }));
-      });
-
-      // Track internal CTAs tagged with data-mp-cta globally via event delegation
-      document.addEventListener('click', (e) => {
-        const a = (e.target as Element)?.closest('a');
-        if (!a) return;
-        const href = a.getAttribute('href') ?? '';
-
-        // Internal CTAs tagged with data-mp-cta
-        const cta = a.dataset.mpCta;
-        if (cta) {
-          const location = a.dataset.mpLocation ?? 'unknown';
-          if (cta === 'newsletter') {
-            loadAnalytics().then((analytics) => analytics?.trackNewsletterCtaClicked({ location }));
-          } else {
-            loadAnalytics().then((analytics) => analytics?.trackCtaClicked({ label: cta, href, location }));
-          }
-        }
-      });
-    </script>
+    <ConsentAnalytics />
 
     <!-- Scroll-triggered reveal via native IntersectionObserver.
          Re-registers on every View Transitions navigation (astro:page-load). -->

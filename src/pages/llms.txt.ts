@@ -81,7 +81,7 @@ export const GET: APIRoute = async ({ site }) => {
 
 ## Key pages
 
-- [Home](${origin}/): AI-native GTM operator building revenue systems for B2B SaaS.
+- [Home](${origin}/): AI-native GTM operator building revenue systems for B2B SaaS. One page covering what he fixes (pipeline, marketing, growth, reporting), the three services, the apps he built, the AI workflow and ten roles over twenty years.
 - [GTM](${origin}/gtm/): CRM, outbound, paid and RevOps wired into one pipeline you can trust.
 - [Marketing](${origin}/marketing/): positioning, demand and brand you can trace to revenue.
 - [Growth](${origin}/growth/): experiments, activation, retention and lifecycle, measured in revenue.
@@ -90,6 +90,7 @@ export const GET: APIRoute = async ({ site }) => {
 - [Insights](${origin}/insights/): original articles on AI-native GTM and growth systems.
 - [Model comparisons](${origin}/compare/): every AI model comparison on this site, indexed by model. Published price, the independent Artificial Analysis score, and measured cost per finished task rather than price per million tokens.
 - [Contact](${origin}/contact/): book a 30-minute call directly on the live calendar (timezone auto-detected), or reach him on LinkedIn.
+- [Apps and demos](https://app.wojciech.io/): eight tools built for revenue work (Relora, AdsAI, NotchCue, GrowthHub, Content Studio, Recruitify, Camper Rental, Starter Pack), most as live demos on sample data.
 - [AI Espresso newsletter](https://subscribe.wojciech.io/): a day of AI, in one sip.
 
 ## Model comparisons, by model
