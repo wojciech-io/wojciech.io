@@ -12,16 +12,22 @@ for (const path of PAGES) {
   test(`reduced motion shows every data-m block at once: ${path}`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(path);
+    // let the one-shot .01ms animations of the page settle, then nothing may loop or still run
+    await page.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.playState === 'running').map((a) => a.finished.catch(() => undefined))));
     const res = await page.evaluate(() => {
       const hidden = [...document.querySelectorAll('[data-m]')].filter(
         (el) => parseFloat(getComputedStyle(el).opacity) < 0.1 || getComputedStyle(el).visibility === 'hidden',
       ).length;
-      const running = document.getAnimations().filter((a) => a.playState === 'running' && a.effect && (a.effect as KeyframeEffect).target?.closest?.('[data-m]')).length;
-      return { hidden, running, on: document.documentElement.classList.contains('m-on') };
+      const anims = document.getAnimations();
+      const runList = anims.filter((a) => a.playState === 'running').map((a) => `${(a as CSSAnimation).animationName ?? (a as CSSTransition).transitionProperty}@${(a.effect as KeyframeEffect)?.target?.tagName}.${(a.effect as KeyframeEffect)?.target?.getAttribute?.('class')}`);
+      const running = runList.length;
+      const looping = anims.filter((a) => a.effect && a.effect.getComputedTiming().iterations !== 1).length;
+      return { hidden, running, runList, looping, on: document.documentElement.classList.contains('m-on') };
     });
+    expect(res.looping).toBe(0);
     expect(res.on).toBe(false);
     expect(res.hidden).toBe(0);
-    expect(res.running).toBe(0);
+    expect(res.running, JSON.stringify(res.runList)).toBe(0);
   });
 }
 

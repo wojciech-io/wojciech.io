@@ -582,3 +582,11 @@ html .vc.vc--t{justify-content:flex-start;min-height:auto}
    The skin is only custom properties, so this is the .ui.lt set from ui4.css applied to the host. */
 html[data-mode="light"] :is(.next,.rel,.cvr) [data-skin="dk"] .ui{--ul:rgba(17,17,18,.11);--u1:#FBFBF6;--u2:#FFFFFF;--u3:#E4E7D6;--ut:#2B2F22;--um:#555947;--uh:#111112;--us:#F0F1E5;--uon:#E1E4D3;--uac:#282C20;--upos:#56680A;--uneg:#8A6A1C;--ub2:rgba(17,17,18,.26);--ucr:#111112;--ucrt:#F4F4ED;--upb:#282C20;--upt:#F4F4ED;--ubi:var(--upos)}
 /* ==== /PODSTRONY R5 ==== */
+
+/* ==== REDUCED MOTION: no loops ====
+   Page-level rules already set .01ms durations, but infinite loops kept running at that speed (a frame-by-frame repaint
+   that crashed WebKit on filtered SVG). Under reduce every animation plays once and ends. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-iteration-count:1!important;animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+}
+/* ==== /REDUCED MOTION ==== */
