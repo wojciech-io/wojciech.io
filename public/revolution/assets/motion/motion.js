@@ -5,7 +5,12 @@
      depth     an app screen with glass cards: cards arrive in sequence, no parallax, optional hot spots
      count     a number counts up once
      bar, barv a bar draws once (horizontal, vertical)
-   Nothing is hidden without JS. With prefers-reduced-motion nothing moves; hot spots still answer to hover, focus and tap. */
+     draw      a bar, rule or SVG line draws once to its value: <i data-m="draw" style="--v:66%"></i>; on <path>/<line> pathLength is set to 1
+     words     a heading arrives word by word, each word rising out of its own line (plain text and inline tags only)
+     scene     a pinned stage whose steps change with scroll: <section data-m="scene" style="--n:3"><div class="m-pin"><div data-m-step>..</div>..</div></section>
+               optional [data-m-tab] items follow the active step and jump to it on click; [data-m-fill] scales 0..1 with scene progress (--p)
+     data-m-delay on any hook adds a start delay, e.g. data-m-delay=".2s".
+   Nothing is hidden without JS. With prefers-reduced-motion nothing is hidden or moves (no html.m-on, scenes stack); hot spots still answer to hover, focus and tap. */
 (function () {
   "use strict";
   var root = document.documentElement;
@@ -191,6 +196,86 @@
     };
   }
 
+
+  /* ---- words: split a heading into words, keep tags and spaces ---- */
+  function splitWords(el) {
+    if (el.__mSplit) { return; }
+    el.__mSplit = true;
+    var n = 0;
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (c) {
+        if (c.nodeType === 3) {
+          var parts = c.nodeValue.split(/(\s+)/);
+          var frag = document.createDocumentFragment();
+          parts.forEach(function (p) {
+            if (!p) { return; }
+            if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
+            var w = document.createElement("span");
+            var i = document.createElement("span");
+            w.className = "m-w";
+            i.className = "m-wi";
+            i.style.setProperty("--i", String(n));
+            n += 1;
+            i.textContent = p;
+            w.appendChild(i);
+            frag.appendChild(w);
+          });
+          node.replaceChild(frag, c);
+        } else if (c.nodeType === 1 && c.nodeName !== "BR") { walk(c); }
+      });
+    })(el);
+  }
+
+  /* ---- scene: scroll position picks the active step ---- */
+  var scenes = [];
+  var sraf = 0;
+  function sceneFrame() {
+    sraf = 0;
+    if (!live) { return; }
+    var vh = window.innerHeight;
+    scenes.forEach(function (s) {
+      if (!s.vis) { return; }
+      var r = s.el.getBoundingClientRect();
+      var span = r.height - vh;
+      var p = span > 0 ? clamp(-r.top / span, 0, 1) : 0;
+      var idx = Math.min(s.steps.length - 1, Math.floor(p * s.steps.length * 0.9999));
+      s.el.style.setProperty("--p", p.toFixed(3));
+      if (idx !== s.idx) {
+        s.idx = idx;
+        s.steps.forEach(function (st, i) {
+          st.classList.toggle("is-on", i === idx);
+          st.classList.toggle("is-past", i < idx);
+        });
+        s.tabs.forEach(function (t, i) {
+          t.classList.toggle("is-on", i === idx);
+          if (t.hasAttribute("aria-selected") || t.getAttribute("role") === "tab") { t.setAttribute("aria-selected", i === idx ? "true" : "false"); }
+        });
+        s.el.setAttribute("data-step", String(idx));
+      }
+    });
+  }
+  function sceneKick() { if (!sraf) { sraf = requestAnimationFrame(sceneFrame); } }
+  function initScene(el) {
+    var steps = Array.prototype.slice.call(el.querySelectorAll("[data-m-step]"));
+    if (steps.length < 2) { return; }
+    var tabs = Array.prototype.slice.call(el.querySelectorAll("[data-m-tab]"));
+    var s = { el: el, steps: steps, tabs: tabs, vis: false, idx: -1 };
+    scenes.push(s);
+    el.style.setProperty("--n", String(steps.length));
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () {
+        var r = el.getBoundingClientRect();
+        var span = r.height - window.innerHeight;
+        var top = window.pageYOffset + r.top + span * ((i + 0.5) / steps.length);
+        window.scrollTo(0, top);
+      });
+    });
+    new IntersectionObserver(function (entries) {
+      s.vis = entries[0].isIntersecting;
+      if (s.vis) { sceneKick(); }
+    }, { rootMargin: "100px 0px" }).observe(el);
+  }
+
   /* ---- wiring ---- */
   function enter(el) {
     el.classList.add("m-in");
@@ -203,7 +288,14 @@
       each(el.children, function (kid, i) { kid.style.setProperty("--i", String(i)); });
     });
     each(document.querySelectorAll("[data-m-delay]"), function (el) { el.style.setProperty("--m-delay", el.getAttribute("data-m-delay")); });
-    var targets = document.querySelectorAll('[data-m="rise"],[data-m="stagger"],[data-m="depth"],[data-m="bar"],[data-m="barv"],[data-m="count"]');
+    var targets = document.querySelectorAll('[data-m="rise"],[data-m="stagger"],[data-m="depth"],[data-m="bar"],[data-m="barv"],[data-m="draw"],[data-m="words"],[data-m="count"]');
+    each(document.querySelectorAll('svg [data-m="draw"]'), function (p) { if (p.setAttribute) { p.setAttribute("pathLength", "1"); } });
+    if (live) {
+      each(document.querySelectorAll('[data-m="words"]'), splitWords);
+      each(document.querySelectorAll('[data-m="scene"]'), initScene);
+      window.addEventListener("scroll", sceneKick, { passive: true });
+      window.addEventListener("resize", sceneKick);
+    }
     each(document.querySelectorAll('[data-m="depth"]'), function (fig) {
       fig.__mStart = initHot(fig);
       if (live) { initDepth(fig); }
@@ -221,7 +313,7 @@
     }, { rootMargin: "0px 0px -8% 0px" });
     each(targets, function (el) { io.observe(el); });
     setTimeout(function () { if (!alive) { root.classList.remove("m-on"); live = false; } }, 3000);
-    /* no pointer or scroll parallax: screens stay still, only the entrance moves */
+    /* scenes only read scroll to pick a step; nothing drifts. no pointer or scroll parallax: screens stay still, only the entrance moves */
   }
   function ready(fn) {
     if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", fn); } else { fn(); }
