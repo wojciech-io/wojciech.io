@@ -1,0 +1,67 @@
+/* Article template, scenes (4.8). Entrances come from the shared motion layer (assets/motion: data-m rise, stagger, bar, count), not from here.
+   Reference points looked at on 26.11: landonorris.com (huge type, serif accent word, one accent colour, scenes that change as you scroll)
+   and claude.com (calm paper, big numbers, small precise motion). One accent: lime on the dark scenes, olive #4D5C00 on paper.
+   Motion here: transform and opacity only, one curve; reduced motion = static. Loaded after the inline page styles, so equal specificity wins. */
+
+/* ---- 1. hero: gigantic title, the price as the one serif accent ---- */
+.ar2__hd{padding-top:clamp(116px,13vw,190px);padding-bottom:clamp(48px,7vw,104px)}
+.ar2__in{max-width:1240px}
+.ar2__hd h1{max-width:none;margin:26px 0 clamp(24px,3vw,40px);font-size:clamp(44px,8.4vw,136px);line-height:.9;letter-spacing:-.02em;text-wrap:balance}
+.ar2__hd h1 em{font:400 .92em/.9 var(--serif);font-style:normal;font-stretch:100%;text-transform:none;letter-spacing:-.03em;color:var(--lt,#D2FF00);font-variant-numeric:lining-nums;font-feature-settings:"zero" 0,"tnum" 0}
+.ar2__lead{max-width:34em;font-size:clamp(19px,1.9vw,26px);line-height:1.4}
+
+/* ---- 2. TL;DR as a scene of four numbers on the dark ---- */
+.ar4n{padding:clamp(56px,9vw,136px) var(--gut,24px);background:var(--sf0,#1c1f16);color:rgb(var(--on,244 244 237))}
+.ar2 .ar4n .ar4n__in{max-width:1240px;margin:0 auto;padding:0;border-radius:0;background:none;box-shadow:none;color:inherit}
+.ar2 .ar4n .ar4n__k{display:flex;align-items:center;gap:12px;margin:0 0 clamp(28px,4vw,56px);font:700 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--lt,#D2FF00)}
+.ar4n__k::after{content:"";flex:1;max-width:120px;height:1px;background:currentColor;opacity:.5}
+.ar2 .ar4n .ar4n__g{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(36px,5vw,72px) clamp(20px,4vw,64px)}
+.ar2 .ar4n .ar4n__g li{margin:0;padding-top:20px;border-top:1px solid rgb(var(--on,244 244 237)/.2);font:inherit}
+.ar2 .ar4n .ar4n__v{display:block;margin:0;font:800 clamp(38px,9.4vw,140px)/.86 var(--sans);font-stretch:75%;letter-spacing:-.045em;white-space:nowrap;color:var(--lt,#D2FF00);font-feature-settings:"zero" 0,"tnum" 0;font-variant-numeric:lining-nums}
+.ar4n__v i{margin-left:.14em;font:400 max(14px,.34em)/1 var(--serif);font-style:normal;font-stretch:100%;letter-spacing:0;color:rgb(var(--on,244 244 237))}
+.ar4n__g li>span{display:block;margin-top:16px;font:500 clamp(15px,1.5vw,20px)/1.3 var(--sans);color:rgb(var(--on,244 244 237)/.74)}
+.ar4n__s{margin:clamp(48px,7vw,104px) 0 0;max-width:13em;font:400 clamp(28px,4.6vw,68px)/1.06 var(--serif);letter-spacing:-.02em;font-variant-numeric:lining-nums;color:rgb(var(--on,244 244 237))}
+@media (max-width:560px){.ar2 .ar4n .ar4n__v{font-size:clamp(30px,8.2vw,40px)}}
+
+/* ---- 3. body: a serif statement first, numbered sections with a rule ---- */
+.ar2 .prose{counter-reset:ar4h}
+.ar2 .prose>p:first-child{margin-bottom:1.8rem;font:400 clamp(26px,3vw,38px)/1.2 var(--serif);letter-spacing:-.015em;font-variant-numeric:lining-nums;color:#1c1f16}
+.ar2 .prose h2{counter-increment:ar4h;margin:clamp(64px,9vw,120px) 0 1.2rem;padding-top:22px;border-top:2px solid #1c1f16;font-size:clamp(34px,5vw,64px);line-height:.94;text-wrap:balance}
+.ar2 .prose h2::before{content:counter(ar4h,decimal-leading-zero);display:block;margin-bottom:16px;font:700 13px/1 var(--sans);font-stretch:100%;letter-spacing:.08em;color:#4D5C00}
+.ar2 .prose h3{scroll-margin-top:7rem}
+.ar2 .prose hr{display:none}
+
+/* ---- 4. the four layers as a stack; the layer you are reading lights up ---- */
+.ar2 .prose .ar4s{margin:2rem 0 2.6rem}
+.ar2 .prose .ar4s ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ar2 .prose .ar4s li{margin:0;padding:0;font:inherit}
+.ar2 .prose .ar4s li:nth-child(2){margin-left:clamp(6px,2vw,22px)}
+.ar2 .prose .ar4s li:nth-child(3){margin-left:clamp(12px,4vw,44px)}
+.ar2 .prose .ar4s li:nth-child(4){margin-left:clamp(18px,6vw,66px)}
+.ar2 .prose .ar4s a{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;column-gap:clamp(14px,2.4vw,24px);align-items:center;min-height:76px;padding:14px clamp(16px,2.4vw,24px);border-radius:14px;background:#1c1f16;color:#F4F4ED;text-decoration:none;transition:transform .32s var(--m-out,cubic-bezier(.2,.7,.1,1)),background-color .32s var(--m-out,cubic-bezier(.2,.7,.1,1)),color .32s var(--m-out,cubic-bezier(.2,.7,.1,1))}
+.ar2 .prose .ar4s a::after{content:"↓" / "";position:absolute;right:clamp(16px,2.4vw,24px);top:50%;translate:0 -50%;font:700 22px/1 var(--sans);color:var(--lime,#D2FF00);transition:color .32s}
+.ar2 .prose .ar4s i{grid-row:1/3;font:800 clamp(34px,5vw,52px)/1 var(--sans);font-style:normal;font-stretch:75%;letter-spacing:-.04em;color:var(--lime,#D2FF00);font-feature-settings:"zero" 0,"tnum" 0;transition:color .32s}
+.ar2 .prose .ar4s b{display:block;padding-right:34px;font:700 clamp(20px,2.4vw,28px)/1.1 var(--sans);letter-spacing:-.01em}
+.ar2 .prose .ar4s span{display:block;margin-top:3px;padding-right:34px;font:500 14px/1.3 var(--sans);opacity:.74}
+.ar2 .prose .ar4s a:hover,.ar2 .prose .ar4s a[aria-current]{background:var(--lime,#D2FF00);color:#111112;transform:translateX(8px)}
+.ar2 .prose .ar4s a:hover i,.ar2 .prose .ar4s a[aria-current] i,.ar2 .prose .ar4s a:hover::after,.ar2 .prose .ar4s a[aria-current]::after{color:#111112}
+.ar2 .prose .ar4s a:focus-visible{outline:3px solid #4D5C00;outline-offset:3px}
+
+/* ---- 5. cost and time as bars that draw once ---- */
+.ar4b{margin:2.4rem 0 2.8rem;padding:0}
+.ar4b figcaption{max-width:34em;margin:0 0 6px;font:500 13px/1.45 var(--sans);color:#4A4E3B}
+.ar4b__r{display:grid;gap:8px;margin-top:22px}
+.ar4b__l{font:700 12px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#4A4E3B}
+.ar4b__t{display:flex;height:clamp(28px,4vw,44px);border-radius:8px;overflow:hidden;background:rgb(28 31 22/.07)}
+.ar4b__t i{display:block;flex:none;width:var(--w);height:100%;background:#1c1f16}
+.ar4b__r.is-me .ar4b__t i{background:#4D5C00}
+.ar4b__r.is-me .ar4b__t i.is-r{background:rgb(77 92 0/.42)}
+.ar4b__r>b{font:800 clamp(26px,4.2vw,46px)/1 var(--sans);font-stretch:75%;letter-spacing:-.02em;color:#1c1f16;font-feature-settings:"zero" 0,"tnum" 0;font-variant-numeric:lining-nums}
+.ar4b__r.is-me>b{color:#4D5C00}
+
+/* ---- 6. numbered run steps ---- */
+.ar2 .prose ol:not(.ar4s ol){list-style:none;margin-left:0;padding:0;counter-reset:ar4o}
+.ar2 .prose ol:not(.ar4s ol)>li{counter-increment:ar4o;position:relative;margin:0;padding:18px 0 18px 64px;border-top:1px solid rgb(28 31 22/.16)}
+.ar2 .prose ol:not(.ar4s ol)>li::before{content:counter(ar4o,decimal-leading-zero);position:absolute;left:0;top:16px;font:800 34px/1 var(--sans);font-stretch:75%;letter-spacing:-.03em;color:#4D5C00;font-feature-settings:"zero" 0,"tnum" 0}
+
+@media (prefers-reduced-motion:reduce){.ar2 .prose .ar4s a,.ar2 .prose .ar4s a::after,.ar2 .prose .ar4s i{transition:none}.ar2 .prose .ar4s a:hover,.ar2 .prose .ar4s a[aria-current]{transform:none}}
